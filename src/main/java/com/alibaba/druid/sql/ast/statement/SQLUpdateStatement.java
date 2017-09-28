@@ -18,7 +18,9 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceable {
@@ -112,22 +114,8 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     @Override
     public void output(StringBuffer buf) {
-        buf.append("UPDATE ");
-
-        this.tableSource.output(buf);
-
-        buf.append(" SET ");
-        for (int i = 0, size = items.size(); i < size; ++i) {
-            if (i != 0) {
-                buf.append(", ");
-            }
-            items.get(i).output(buf);
-        }
-
-        if (this.where != null) {
-            buf.append(" WHERE ");
-            this.where.output(buf);
-        }
+        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(buf, dbType);
+        this.accept(visitor);
     }
 
     @Override
