@@ -597,10 +597,12 @@ public class MySqlStatementParser extends SQLStatementParser {
                     stmt.setLockType(LockType.READ);
                 }
             } else if (lexer.identifierEquals(WRITE)) {
+                lexer.nextToken();
                 stmt.setLockType(LockType.WRITE);
             } else if (lexer.identifierEquals(FnvHash.Constants.LOW_PRIORITY)) {
                 lexer.nextToken();
                 acceptIdentifier(WRITE);
+                lexer.nextToken();
                 stmt.setLockType(LockType.LOW_PRIORITY_WRITE);
             } else {
                 throw new ParserException("syntax error, expect READ or WRITE, actual " + lexer.token() + ", " + lexer.info());
