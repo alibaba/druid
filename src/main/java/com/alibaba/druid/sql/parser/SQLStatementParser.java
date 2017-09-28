@@ -2621,7 +2621,7 @@ public class SQLStatementParser extends SQLParser {
     public SQLOpenStatement parseOpen() {
         SQLOpenStatement stmt = new SQLOpenStatement();
         accept(Token.OPEN);
-        stmt.setCursorName(exprParser.name().getSimpleName());
+        stmt.setCursorName(exprParser.name());
 
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
@@ -2674,7 +2674,7 @@ public class SQLStatementParser extends SQLParser {
     public SQLStatement parseClose() {
         SQLCloseStatement stmt = new SQLCloseStatement();
         accept(Token.CLOSE);
-        stmt.setCursorName(exprParser.name().getSimpleName());
+        stmt.setCursorName(exprParser.name());
         accept(Token.SEMI);
         stmt.setAfterSemi(true);
         return stmt;

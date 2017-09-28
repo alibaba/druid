@@ -17,6 +17,8 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -135,6 +137,11 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        return Arrays.asList(this.left, this.right);
     }
 
     @Override

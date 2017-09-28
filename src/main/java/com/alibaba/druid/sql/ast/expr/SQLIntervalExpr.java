@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.expr;
+package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlIntervalExpr extends SQLExprImpl implements MySqlExpr {
+import java.util.Collections;
+import java.util.List;
+
+public class SQLIntervalExpr extends SQLExprImpl {
 
     private SQLExpr           value;
-    private MySqlIntervalUnit unit;
+    private SQLIntervalUnit unit;
 
-    public MySqlIntervalExpr(){
+    public SQLIntervalExpr(){
     }
 
-    public MySqlIntervalExpr clone() {
-        MySqlIntervalExpr x = new MySqlIntervalExpr();
+    public SQLIntervalExpr clone() {
+        SQLIntervalExpr x = new SQLIntervalExpr();
         if (value != null) {
             x.setValue(value.clone());
         }
@@ -45,27 +47,34 @@ public class MySqlIntervalExpr extends SQLExprImpl implements MySqlExpr {
         this.value = value;
     }
 
-    public MySqlIntervalUnit getUnit() {
+    public SQLIntervalUnit getUnit() {
         return unit;
     }
 
-    public void setUnit(MySqlIntervalUnit unit) {
+    public void setUnit(SQLIntervalUnit unit) {
         this.unit = unit;
     }
 
     @Override
     public void output(StringBuffer buf) {
+        buf.append("INTERVAL ");
         value.output(buf);
-        buf.append(' ');
-        buf.append(unit.name());
+        if (unit != null) {
+            buf.append(' ');
+            buf.append(unit.name());
+        }
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        MySqlASTVisitor mysqlVisitor = (MySqlASTVisitor) visitor;
-        if (mysqlVisitor.visit(this)) {
+        if (visitor.visit(this)) {
             acceptChild(visitor, this.value);
         }
-        mysqlVisitor.endVisit(this);
+        visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        return Collections.singletonList(value);
     }
 
     @Override
@@ -88,7 +97,7 @@ public class MySqlIntervalExpr extends SQLExprImpl implements MySqlExpr {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        MySqlIntervalExpr other = (MySqlIntervalExpr) obj;
+        SQLIntervalExpr other = (SQLIntervalExpr) obj;
         if (unit != other.unit) {
             return false;
         }

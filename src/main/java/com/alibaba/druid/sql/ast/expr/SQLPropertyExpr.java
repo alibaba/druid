@@ -21,6 +21,9 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
+import java.util.Collections;
+import java.util.List;
+
 public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     private   SQLExpr             owner;
     private   String              name;
@@ -130,6 +133,11 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        return Collections.singletonList(this.owner);
     }
 
     @Override

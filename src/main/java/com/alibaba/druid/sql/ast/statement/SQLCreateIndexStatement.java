@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
@@ -109,11 +110,26 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, getName());
-            acceptChild(visitor, getTable());
-            acceptChild(visitor, getItems());
+            acceptChild(visitor, name);
+            acceptChild(visitor, table);
+            acceptChild(visitor, items);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (name != null) {
+            children.add(name);
+        }
+
+        if (table != null) {
+            children.add(table);
+        }
+
+        children.addAll(this.items);
+        return children;
     }
 
     public String getSchema() {

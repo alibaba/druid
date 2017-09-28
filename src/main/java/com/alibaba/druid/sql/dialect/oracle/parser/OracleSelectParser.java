@@ -108,6 +108,9 @@ public class OracleSelectParser extends SQLSelectParser {
             if (lexer.token() == Token.OF) {
                 lexer.nextToken();
                 this.exprParser.exprList(queryBlock.getForUpdateOf(), queryBlock);
+            } else if (lexer.token() == Token.LPAREN
+                    && queryBlock.isForUpdate()) {
+                this.exprParser.exprList(queryBlock.getForUpdateOf(), queryBlock);
             }
 
             if (lexer.token() == Token.NOWAIT) {

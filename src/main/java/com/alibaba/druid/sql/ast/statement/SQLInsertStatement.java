@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -65,6 +66,20 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+
+        children.add(tableSource);
+        children.addAll(this.columns);
+        children.addAll(this.valuesList);
+        if (query != null) {
+            children.add(query);
+        }
+
+        return children;
     }
 
     public boolean isUpsert() {

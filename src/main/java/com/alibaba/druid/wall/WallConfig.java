@@ -277,6 +277,7 @@ public class WallConfig implements WallConfigMBean {
     }
 
     public WallConfig(String dir){
+        this();
         this.dir = dir;
         this.init();
     }

@@ -39,7 +39,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
@@ -686,21 +685,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(collate);
         }
 
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlIntervalExpr x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlIntervalExpr x) {
-        print0(ucase ? "INTERVAL " : "interval ");
-        SQLExpr value = x.getValue();
-        value.accept(this);
-        print(' ');
-        print0(ucase ? x.getUnit().name() : x.getUnit().name_lcase);
         return false;
     }
 

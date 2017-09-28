@@ -19,6 +19,9 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceable {
     protected SQLWithSubqueryClause  with;
 
@@ -146,6 +149,19 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (with != null) {
+            children.add(with);
+        }
+        children.add(tableSource);
+        if (where != null) {
+            children.add(where);
+        }
+        return children;
     }
 
     public SQLTableSource getFrom() {

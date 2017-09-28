@@ -17,13 +17,11 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
@@ -143,6 +141,17 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         }
 
         visitor.endVisit(this);
+    }
+
+    public List getChildren() {
+        if (this.owner == null) {
+            return this.parameters;
+        }
+
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.add(owner);
+        children.addAll(this.parameters);
+        return children;
     }
 
     protected void accept0(OracleASTVisitor visitor) {

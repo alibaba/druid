@@ -42,8 +42,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Match;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Option;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalUnit;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalUnit;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr.SearchModifier;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
@@ -352,7 +352,7 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         String unitVal = lexer.stringVal();
-        MySqlIntervalUnit unit = MySqlIntervalUnit.valueOf(unitVal.toUpperCase());
+        SQLIntervalUnit unit = SQLIntervalUnit.valueOf(unitVal.toUpperCase());
         lexer.nextToken();
 
         accept(Token.FROM);
@@ -441,9 +441,9 @@ public class MySqlExprParser extends SQLExprParser {
                 String unit = lexer.stringVal();
                 lexer.nextToken();
                 
-                MySqlIntervalExpr intervalExpr = new MySqlIntervalExpr();
+                SQLIntervalExpr intervalExpr = new SQLIntervalExpr();
                 intervalExpr.setValue(value);
-                intervalExpr.setUnit(MySqlIntervalUnit.valueOf(unit.toUpperCase()));
+                intervalExpr.setUnit(SQLIntervalUnit.valueOf(unit.toUpperCase()));
                 return intervalExpr;
             } else {
                 return primaryRest(methodInvokeExpr);
@@ -458,9 +458,9 @@ public class MySqlExprParser extends SQLExprParser {
             String unit = lexer.stringVal();
             lexer.nextToken();
 
-            MySqlIntervalExpr intervalExpr = new MySqlIntervalExpr();
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr();
             intervalExpr.setValue(value);
-            intervalExpr.setUnit(MySqlIntervalUnit.valueOf(unit.toUpperCase()));
+            intervalExpr.setUnit(SQLIntervalUnit.valueOf(unit.toUpperCase()));
 
             return intervalExpr;
         }

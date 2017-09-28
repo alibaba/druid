@@ -21,6 +21,9 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
+import java.util.Collections;
+import java.util.List;
+
 public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     protected String    name;
     private   long      hashCode64;
@@ -211,5 +214,18 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
     public boolean nameEquals(String name) {
         return SQLUtils.nameEquals(this.name, name);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.emptyList();
+    }
+
+    public static boolean matchIgnoreCase(SQLExpr expr, String name) {
+        if (!(expr instanceof SQLIdentifierExpr)) {
+            return false;
+        }
+        SQLIdentifierExpr ident = (SQLIdentifierExpr) expr;
+        return ident.getName().equalsIgnoreCase(name);
     }
 }

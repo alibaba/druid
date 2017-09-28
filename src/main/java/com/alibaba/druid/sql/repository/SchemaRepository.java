@@ -44,7 +44,6 @@ public class SchemaRepository {
     protected String dbType;
     protected SQLASTVisitor consoleVisitor;
 
-
     public SchemaRepository() {
 
     }

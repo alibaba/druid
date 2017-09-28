@@ -66,6 +66,17 @@ public class SQLCaseStatement extends SQLStatementImpl implements Serializable {
         visitor.endVisit(this);
     }
 
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (valueExpr != null) {
+            children.add(valueExpr);
+        }
+        children.addAll(this.items);
+        children.addAll(this.elseStatements);
+        return children;
+    }
+
     public static class Item extends SQLObjectImpl implements Serializable {
 
         private static final long serialVersionUID = 1L;

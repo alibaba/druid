@@ -142,6 +142,24 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         visitor.endVisit(this);
     }
 
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (tableSource != null) {
+            children.add(tableSource);
+        }
+        if (from != null) {
+            children.add(from);
+        }
+        children.addAll(this.items);
+        if (where != null) {
+            children.add(where);
+        }
+        if (orderBy != null) {
+            children.add(orderBy);
+        }
+        return children;
+    }
+
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
         if (where == expr) {

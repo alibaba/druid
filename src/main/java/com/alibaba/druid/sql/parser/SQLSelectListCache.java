@@ -21,11 +21,12 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SQLSelectListCache {
     private final String dbType;
-    private List<String> sqlCache = new ArrayList<String>();
-    private List<SQLSelectQueryBlock> queryBlockCache = new ArrayList<SQLSelectQueryBlock>();
+    private List<String> sqlCache = new CopyOnWriteArrayList<String>();
+    private List<SQLSelectQueryBlock> queryBlockCache = new CopyOnWriteArrayList<SQLSelectQueryBlock>();
     private List<String> printSqlList = new ArrayList<String>();
 
     public SQLSelectListCache(String dbType) {

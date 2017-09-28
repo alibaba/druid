@@ -2034,13 +2034,21 @@ public class SQLExprParser extends SQLParser {
             }
         } else if (lexer.token == Token.IN) {
             lexer.nextToken();
-            accept(Token.LPAREN);
 
             SQLInListExpr inListExpr = new SQLInListExpr(expr, true);
-            exprList(inListExpr.getTargetList(), inListExpr);
-            expr = inListExpr;
+            if (lexer.token == Token.LPAREN) {
+                lexer.nextToken();
 
-            accept(Token.RPAREN);
+                exprList(inListExpr.getTargetList(), inListExpr);
+                expr = inListExpr;
+
+                accept(Token.RPAREN);
+            } else {
+                SQLExpr valueExpr = this.primary();
+                valueExpr.setParent(inListExpr);
+                inListExpr.getTargetList().add(valueExpr);
+                expr = inListExpr;
+            }
 
             if (inListExpr.getTargetList().size() == 1) {
                 SQLExpr targetExpr = inListExpr.getTargetList().get(0);
@@ -2670,14 +2678,17 @@ public class SQLExprParser extends SQLParser {
 
             if (token == Token.AS) {
                 lexer.nextToken();
-                String as = lexer.stringVal();
+                String as = null;
+                if (lexer.token != Token.COMMA && lexer.token != Token.FROM) {
+                    as = lexer.stringVal();
 
-                lexer.nextTokenComma();
+                    lexer.nextTokenComma();
 
-                if (lexer.token == Token.DOT) {
-                    lexer.nextToken();
-                    as += '.' + lexer.stringVal();
-                    lexer.nextToken();
+                    if (lexer.token == Token.DOT) {
+                        lexer.nextToken();
+                        as += '.' + lexer.stringVal();
+                        lexer.nextToken();
+                    }
                 }
 
                 return new SQLSelectItem(expr, as, connectByRoot);
@@ -2689,7 +2700,8 @@ public class SQLExprParser extends SQLParser {
                 return new SQLSelectItem(expr, as, connectByRoot);
             }
 
-            if (token == Token.IDENTIFIER && hash_lower != FnvHash.Constants.CURRENT) {
+            if ((token == Token.IDENTIFIER && hash_lower != FnvHash.Constants.CURRENT)
+                    || token == Token.MODEL) {
                 String as = lexer.stringVal();
                 lexer.nextTokenComma();
                 return new SQLSelectItem(expr, as, connectByRoot);
@@ -2716,6 +2728,7 @@ public class SQLExprParser extends SQLParser {
         final String alias;
         switch (lexer.token) {
             case FULL:
+            case MODEL:
                 alias = lexer.stringVal();
                 lexer.nextToken();
                 break;

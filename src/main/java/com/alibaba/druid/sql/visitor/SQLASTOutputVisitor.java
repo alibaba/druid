@@ -4110,7 +4110,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLOpenStatement x) {
         print0(ucase ? "OPEN " : "open ");
-        print0(x.getCursorName());
+        printExpr(x.getCursorName());
 
         List<SQLName> columns = x.getColumns();
         if (columns.size() > 0) {
@@ -4143,7 +4143,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLCloseStatement x) {
         print0(ucase ? "CLOSE " : "close ");
-        print0(x.getCursorName());
+        printExpr(x.getCursorName());
         return false;
     }
 
@@ -5349,6 +5349,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " REUSE SETTINGS" : " reuse settings");
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLIntervalExpr x) {
+        print0(ucase ? "INTERVAL " : "interval ");
+        SQLExpr value = x.getValue();
+        value.accept(this);
+
+        SQLIntervalUnit unit = x.getUnit();
+        if (unit != null) {
+            print(' ');
+            print0(ucase ? unit.name() : unit.name_lcase);
+        }
         return false;
     }
 

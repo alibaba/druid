@@ -22,6 +22,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public final class SQLInListExpr extends SQLExprImpl implements Serializable {
@@ -93,6 +94,15 @@ public final class SQLInListExpr extends SQLExprImpl implements Serializable {
         }
 
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (this.expr != null) {
+            children.add(this.expr);
+        }
+        children.addAll(this.targetList);
+        return children;
     }
 
     @Override

@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.postgresql.visitor;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -27,7 +26,6 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGIntervalExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
@@ -308,16 +306,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     
     @Override
     public boolean visit(PGLineSegmentsExpr x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGIntervalExpr x) {
-
-    }
-
-    @Override
-    public boolean visit(PGIntervalExpr x) {
         return true;
     }
 

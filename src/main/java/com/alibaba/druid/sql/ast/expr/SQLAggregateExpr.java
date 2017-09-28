@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -138,6 +139,22 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.addAll(this.arguments);
+        if (keep != null) {
+            children.add(this.keep);
+        }
+        if (over != null) {
+            children.add(over);
+        }
+        if (withinGroup != null) {
+            children.add(withinGroup);
+        }
+        return children;
     }
 
     @Override

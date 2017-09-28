@@ -19,7 +19,8 @@ public enum SQLParserFeature {
     KeepInsertValueClauseOriginalString,
     EnableSQLBinaryOpExprGroup,
     OptimizedForParameterized,
-    KeepComments
+    KeepComments,
+    SkipComments
     ;
 
     private SQLParserFeature(){

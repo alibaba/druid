@@ -1113,6 +1113,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 return false;
             }
 
+            if (x.getResolvedOwnerObject() instanceof SQLParameter) {
+                return false;
+            }
+
             boolean skip = false;
             for (SQLObject parent = x.getParent();parent != null;parent = parent.getParent()) {
                 if (parent instanceof SQLSelectQueryBlock) {

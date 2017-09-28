@@ -17,7 +17,11 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class SQLCurrentOfCursorExpr extends SQLExprImpl {
 
@@ -63,6 +67,11 @@ public class SQLCurrentOfCursorExpr extends SQLExprImpl {
         }
         visitor.endVisit(this);
     }
+
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.cursorName);
+    }
+
 
     @Override
     public int hashCode() {

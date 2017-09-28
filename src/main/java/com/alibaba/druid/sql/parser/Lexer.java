@@ -21,6 +21,7 @@ import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.SQLParserFeature.KeepComments;
 import static com.alibaba.druid.sql.parser.SQLParserFeature.OptimizedForParameterized;
+import static com.alibaba.druid.sql.parser.SQLParserFeature.SkipComments;
 import static com.alibaba.druid.sql.parser.Token.*;
 
 import java.math.BigDecimal;
@@ -1924,6 +1925,8 @@ public class Lexer {
             optimizedForParameterized = state;
         } else if (feature == KeepComments) {
             this.keepComments = state;
+        } else if (feature == SkipComments) {
+            this.skipComment = state;
         }
     }
 

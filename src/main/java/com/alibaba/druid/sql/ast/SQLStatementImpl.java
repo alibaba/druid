@@ -50,6 +50,10 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
         throw new UnsupportedOperationException(this.getClass().getName());
     }
 
+    public List<SQLObject> getChildren() {
+        throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
     public boolean isAfterSemi() {
         return afterSemi;
     }

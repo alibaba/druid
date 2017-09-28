@@ -186,7 +186,21 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
         visitor.endVisit(this);
     }
-    
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.add(tableSource);
+        children.addAll(tableElementList);
+        if (inherits != null) {
+            children.add(inherits);
+        }
+        if (select != null) {
+            children.add(select);
+        }
+        return children;
+    }
+
     @SuppressWarnings("unchecked")
     public void addBodyBeforeComment(List<String> comments) {
         if (attributes == null) {

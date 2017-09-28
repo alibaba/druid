@@ -23,13 +23,11 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGIntervalExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
@@ -552,18 +550,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
-    public void endVisit(PGIntervalExpr x) {
-
-    }
-
-    @Override
-    public boolean visit(PGIntervalExpr x) {
-        print0(ucase ? "INTERVAL " : "interval ");
-        x.getValue().accept(this);
-        return true;
-    }
-
-    @Override
     public void endVisit(PGLineSegmentsExpr x) {
         
     }
@@ -872,5 +858,109 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public boolean visit(OracleUnique x) {
         visit((SQLUnique) x);
         return false;
+    }
+
+    public boolean visit(OracleSelectSubqueryTableSource x) {
+        print('(');
+        this.indentCount++;
+        println();
+        x.getSelect().accept(this);
+        this.indentCount--;
+        println();
+        print(')');
+
+        if (x.getPivot() != null) {
+            println();
+            x.getPivot().accept(this);
+        }
+
+        printFlashback(x.getFlashback());
+
+        if ((x.getAlias() != null) && (x.getAlias().length() != 0)) {
+            print(' ');
+            print0(x.getAlias());
+        }
+
+        return false;
+    }
+
+    public boolean visit(OracleSelectJoin x) {
+        x.getLeft().accept(this);
+        SQLTableSource right = x.getRight();
+
+        if (x.getJoinType() == SQLJoinTableSource.JoinType.COMMA) {
+            print0(", ");
+            x.getRight().accept(this);
+        } else {
+            boolean isRoot = x.getParent() instanceof SQLSelectQueryBlock;
+            if (isRoot) {
+                this.indentCount++;
+            }
+
+            println();
+            print0(ucase ? x.getJoinType().name : x.getJoinType().name_lcase);
+            print(' ');
+
+            if (right instanceof SQLJoinTableSource) {
+                print('(');
+                right.accept(this);
+                print(')');
+            } else {
+                right.accept(this);
+            }
+
+            if (isRoot) {
+                this.indentCount--;
+            }
+
+            if (x.getCondition() != null) {
+                print0(ucase ? " ON " : " on ");
+                x.getCondition().accept(this);
+                print(' ');
+            }
+
+            if (x.getUsing().size() > 0) {
+                print0(ucase ? " USING (" : " using (");
+                printAndAccept(x.getUsing(), ", ");
+                print(')');
+            }
+
+            printFlashback(x.getFlashback());
+        }
+
+        return false;
+    }
+
+    public boolean visit(OracleDbLinkExpr x) {
+        SQLExpr expr = x.getExpr();
+        if (expr != null) {
+            expr.accept(this);
+            print('@');
+        }
+        print0(x.getDbLink());
+        return false;
+    }
+
+    public void endVisit(OracleDbLinkExpr x) {
+
+    }
+
+    public boolean visit(OracleDeleteStatement x) {
+        return visit((SQLDeleteStatement) x);
+    }
+
+    private void printFlashback(SQLExpr flashback) {
+        if (flashback == null) {
+            return;
+        }
+
+        println();
+
+        if (flashback instanceof SQLBetweenExpr) {
+            flashback.accept(this);
+        } else {
+            print0(ucase ? "AS OF " : "as of ");
+            flashback.accept(this);
+        }
     }
 }

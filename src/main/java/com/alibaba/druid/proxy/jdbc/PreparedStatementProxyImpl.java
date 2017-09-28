@@ -100,7 +100,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         this.statement = statement;
     }
 
-    void setParameter(int jdbcIndex, JdbcParameter parameter) {
+    public void setParameter(int jdbcIndex, JdbcParameter parameter) {
         int index = jdbcIndex - 1;
 
         if (jdbcIndex > parametersSize) {

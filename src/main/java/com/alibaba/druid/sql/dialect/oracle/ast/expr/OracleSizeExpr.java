@@ -16,8 +16,12 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class OracleSizeExpr extends OracleSQLObjectImpl implements OracleExpr {
 
@@ -40,6 +44,10 @@ public class OracleSizeExpr extends OracleSQLObjectImpl implements OracleExpr {
             acceptChild(visitor, value);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(value);
     }
 
     public SQLExpr getValue() {

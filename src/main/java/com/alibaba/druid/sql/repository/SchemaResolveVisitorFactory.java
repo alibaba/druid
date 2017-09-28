@@ -630,6 +630,11 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLFetchStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -1685,6 +1690,36 @@ class SchemaResolveVisitorFactory {
                 SQLUtils.replaceInParent(x, propertyExpr);
             }
         }
+
+        if (x.getResolvedColumn() == null
+                && x.getResolvedTableSource() == null) {
+            for (SchemaResolveVisitor.Context parentCtx = ctx;
+                 parentCtx != null;
+                 parentCtx = parentCtx.parent)
+            {
+                SQLDeclareItem declareItem = parentCtx.findDeclare(hash);
+                if (declareItem != null) {
+                    x.setResolvedDeclareItem(declareItem);
+                    return;
+                }
+
+                if (parentCtx.object instanceof SQLBlockStatement) {
+                    SQLBlockStatement block = (SQLBlockStatement) parentCtx.object;
+                    SQLParameter parameter = block.findParameter(hash);
+                    if (parameter != null) {
+                        x.setResolvedParameter(parameter);
+                        return;
+                    }
+                } else if (parentCtx.object instanceof SQLCreateProcedureStatement) {
+                    SQLCreateProcedureStatement createProc = (SQLCreateProcedureStatement) parentCtx.object;
+                    SQLParameter parameter = createProc.findParameter(hash);
+                    if (parameter != null) {
+                        x.setResolvedParameter(parameter);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     static void resolve(SchemaResolveVisitor visitor, SQLPropertyExpr x) {
@@ -2462,6 +2497,13 @@ class SchemaResolveVisitorFactory {
         }
 
         visitor.popContext();
+    }
+
+    static void resolve(SchemaResolveVisitor visitor, SQLFetchStatement x) {
+        resolveExpr(visitor, x.getCursorName());
+        for (SQLExpr expr : x.getInto()) {
+            resolveExpr(visitor, expr);
+        }
     }
 
     static void resolve(SchemaResolveVisitor visitor, SQLForeignKeyConstraint x) {

@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.util.FnvHash;
-import oracle.jdbc.rowset.OracleJoinable;
 
 import java.util.List;
 
@@ -553,6 +552,8 @@ public class SQLTransformUtils {
                 SQLExpr arg0 = argumentns.get(0);
                 if (arg0 instanceof SQLNumericLiteralExpr) {
                     len = ((SQLNumericLiteralExpr) arg0).getNumber().intValue();
+                } else if (arg0 instanceof SQLVariantRefExpr) {
+                    len = 2000;
                 } else {
                     throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
                 }
@@ -678,6 +679,53 @@ public class SQLTransformUtils {
             xx.setMethodName("CURRENT_TIMESTAMP");
             xx.setParent(x.getParent());
             return xx;
+        }
+
+        if (nameHashCode64 == FnvHash.Constants.USERENV) {
+            if (x.getParameters().size() == 1) {
+                SQLExpr param0 = x.getParameters().get(0);
+                if (param0 instanceof SQLCharExpr) {
+                    String text = ((SQLCharExpr) param0).getText();
+                    if ("SESSIONID".equalsIgnoreCase(text)) {
+                        SQLMethodInvokeExpr xx = new SQLMethodInvokeExpr();
+                        xx.setMethodName("get_session_id");
+                        xx.setParent(x.getParent());
+                        return xx;
+                    }
+                }
+            }
+        }
+
+        if (nameHashCode64 == FnvHash.Constants.USERENV) {
+            if (x.getParameters().size() == 1) {
+                SQLExpr param0 = x.getParameters().get(0);
+                if (param0 instanceof SQLCharExpr) {
+                    String text = ((SQLCharExpr) param0).getText();
+                    if ("SESSIONID".equalsIgnoreCase(text)) {
+                        SQLMethodInvokeExpr xx = new SQLMethodInvokeExpr();
+                        xx.setMethodName("get_session_id");
+                        xx.setParent(x.getParent());
+                        return xx;
+                    }
+                }
+            }
+        }
+
+        if (nameHashCode64 == FnvHash.Constants.NUMTODSINTERVAL) {
+            if (x.getParameters().size() == 2) {
+                SQLExpr param0 = x.getParameters().get(0);
+                SQLExpr param1 = x.getParameters().get(1);
+
+                if (param0 instanceof SQLIntegerExpr && param1 instanceof SQLCharExpr) {
+                    String text = ((SQLCharExpr) param1).getText();
+                    if ("DAY".equalsIgnoreCase(text)) {
+                        SQLIntervalExpr intervalExpr = new SQLIntervalExpr();
+                        intervalExpr.setValue(new SQLCharExpr(param0.toString() + " DAYS"));
+                        intervalExpr.setParent(x.getParent());
+                        return intervalExpr;
+                    }
+                }
+            }
         }
 
         return x;

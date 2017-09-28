@@ -18,10 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCreateStatement {
@@ -62,6 +59,25 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
             acceptChild(visitor, body);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (name != null) {
+            children.add(name);
+        }
+        children.addAll(updateOfColumns);
+        if (on != null) {
+            children.add(on);
+        }
+        if (when != null) {
+            children.add(when);
+        }
+        if (body != null) {
+            children.add(body);
+        }
+        return children;
     }
 
     public SQLExprTableSource getOn() {

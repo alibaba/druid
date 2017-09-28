@@ -21,6 +21,10 @@ import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLObjectWithDataType;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType {
 
     protected SQLExpr     expr;
@@ -58,6 +62,11 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType {
             acceptChild(visitor, this.dataType);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        return Arrays.asList(this.expr, this.dataType);
     }
 
     @Override

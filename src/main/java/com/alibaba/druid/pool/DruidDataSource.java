@@ -172,6 +172,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private volatile boolean                 keepAlive               = false;
 
+    private boolean                          asyncInit               = false;
+
     protected boolean killWhenSocketReadTimeout = false;
 
     public DruidDataSource(){
@@ -816,22 +818,24 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             SQLException connectError = null;
 
-            try {
-                // init connections
-                for (int i = 0, size = getInitialSize(); i < size; ++i) {
-                    PhysicalConnectionInfo pyConnectInfo = createPhysicalConnection();
-                    DruidConnectionHolder holder = new DruidConnectionHolder(this, pyConnectInfo);
-                    connections[poolingCount] = holder;
-                    incrementPoolingCount();
-                }
+            if (!asyncInit) {
+                try {
+                    // init connections
+                    for (int i = 0, size = getInitialSize(); i < size; ++i) {
+                        PhysicalConnectionInfo pyConnectInfo = createPhysicalConnection();
+                        DruidConnectionHolder holder = new DruidConnectionHolder(this, pyConnectInfo);
+                        connections[poolingCount] = holder;
+                        incrementPoolingCount();
+                    }
 
-                if (poolingCount > 0) {
-                    poolingPeak = poolingCount;
-                    poolingPeakTime = System.currentTimeMillis();
+                    if (poolingCount > 0) {
+                        poolingPeak = poolingCount;
+                        poolingPeakTime = System.currentTimeMillis();
+                    }
+                } catch (SQLException ex) {
+                    LOG.error("init datasource error, url: " + this.getUrl(), ex);
+                    connectError = ex;
                 }
-            } catch (SQLException ex) {
-                LOG.error("init datasource error, url: " + this.getUrl(), ex);
-                connectError = ex;
             }
 
             createAndLogThread();

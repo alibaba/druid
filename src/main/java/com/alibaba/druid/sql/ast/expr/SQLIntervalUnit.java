@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.expr;
+package com.alibaba.druid.sql.ast.expr;
 
-public enum MySqlIntervalUnit {
+public enum SQLIntervalUnit {
     YEAR, YEAR_MONTH,
 
     QUARTER,
@@ -32,7 +32,7 @@ public enum MySqlIntervalUnit {
     
     public final String name_lcase;
     
-    private MySqlIntervalUnit() {
+    private SQLIntervalUnit() {
         this.name_lcase = name().toLowerCase();
     }
 }

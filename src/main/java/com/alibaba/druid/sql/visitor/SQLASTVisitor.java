@@ -64,9 +64,9 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLSelectStatement selectStatement);
 
-    void postVisit(SQLObject astNode);
+    void postVisit(SQLObject x);
 
-    void preVisit(SQLObject astNode);
+    void preVisit(SQLObject x);
 
     boolean visit(SQLAllColumnExpr x);
 
@@ -758,4 +758,8 @@ public interface SQLASTVisitor {
     boolean visit(SQLAlterTypeStatement x);
 
     void endVisit(SQLAlterTypeStatement x);
+
+    boolean visit(SQLIntervalExpr x);
+
+    void endVisit(SQLIntervalExpr x);
 }

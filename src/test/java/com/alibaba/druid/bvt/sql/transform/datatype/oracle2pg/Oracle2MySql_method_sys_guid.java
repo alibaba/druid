@@ -15,4 +15,18 @@ public class Oracle2MySql_method_sys_guid extends TestCase {
         SQLExpr targetExpr = SQLTransformUtils.transformOracleToPostgresql(expr);
         assertEquals("uuid_generate_v4()", targetExpr.toString());
     }
+
+    public void test_oracle2pg_sessionid() throws Exception {
+        String sql = "USERENV('SESSIONID')";
+        SQLMethodInvokeExpr expr = (SQLMethodInvokeExpr) SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).expr();
+        SQLExpr targetExpr = SQLTransformUtils.transformOracleToPostgresql(expr);
+        assertEquals("get_session_id()", targetExpr.toString());
+    }
+
+    public void test_oracle2pg_numtodsinterval() throws Exception {
+        String sql = "numtodsinterval(1, 'day')";
+        SQLMethodInvokeExpr expr = (SQLMethodInvokeExpr) SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).expr();
+        SQLExpr targetExpr = SQLTransformUtils.transformOracleToPostgresql(expr);
+        assertEquals("INTERVAL '1 DAYS'", targetExpr.toString());
+    }
 }
