@@ -885,17 +885,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     }
 
-    @Override
-    public boolean visit(OracleCursorExpr x) {
-        print0(ucase ? "CURSOR(" : "cursor(");
-        this.indentCount++;
-        println();
-        x.getQuery().accept(this);
-        this.indentCount--;
-        println();
-        print(')');
-        return false;
-    }
 
     @Override
     public void endVisit(OracleCursorExpr x) {

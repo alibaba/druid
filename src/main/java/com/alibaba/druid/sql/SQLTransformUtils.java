@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.util.FnvHash;
@@ -760,6 +761,13 @@ public class SQLTransformUtils {
 
             y.setParent(x.getParent());
             return y;
+        }
+
+        if (x instanceof OracleWithSubqueryEntry) {
+            SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
+            ((OracleWithSubqueryEntry) x).cloneTo(entry);
+            entry.setParent(x.getParent());
+            return entry;
         }
 
         return x;

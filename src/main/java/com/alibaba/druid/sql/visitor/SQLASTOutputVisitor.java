@@ -37,6 +37,8 @@ import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
@@ -2668,7 +2670,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (left instanceof SQLJoinTableSource
                 && ((SQLJoinTableSource) left).getJoinType() == JoinType.COMMA
-                && x.getJoinType() != JoinType.COMMA) {
+                && x.getJoinType() != JoinType.COMMA
+                && !JdbcConstants.POSTGRESQL.equals(dbType)) {
             print('(');
             printTableSource(left);
             print(')');
@@ -5387,5 +5390,34 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         super.setFeatures(features);
         this.ucase = isEnabled(VisitorFeature.OutputUCase);
         this.parameterized = isEnabled(VisitorFeature.OutputParameterized);
+    }
+
+    /////////////// for oracle
+    public boolean visit(OracleCursorExpr x) {
+        print0(ucase ? "CURSOR(" : "cursor(");
+        this.indentCount++;
+        println();
+        x.getQuery().accept(this);
+        this.indentCount--;
+        println();
+        print(')');
+        return false;
+    }
+
+    public boolean visit(OracleDatetimeExpr x) {
+        x.getExpr().accept(this);
+        SQLExpr timeZone = x.getTimeZone();
+
+        if (timeZone instanceof SQLIdentifierExpr) {
+            if (((SQLIdentifierExpr) timeZone).getName().equalsIgnoreCase("LOCAL")) {
+                print0(ucase ? " AT LOCAL" : "alter session set ");
+                return false;
+            }
+        }
+
+        print0(ucase ? " AT TIME ZONE " : " at time zone ");
+        timeZone.accept(this);
+
+        return false;
     }
 }
