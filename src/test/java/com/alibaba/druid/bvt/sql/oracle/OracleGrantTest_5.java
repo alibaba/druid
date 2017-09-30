@@ -18,11 +18,8 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import jdk.nashorn.internal.scripts.JD;
 import org.junit.Assert;
 
 import java.util.List;
