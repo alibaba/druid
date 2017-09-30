@@ -51,7 +51,8 @@ public class MySqlWallTest_comment extends TestCase {
         Assert.assertTrue(provider.checkValid("-- this is comment \n SELECT * FROM t"));
         Assert.assertTrue(provider.checkValid("#this is comment \n SELECT * FROM t"));
         
-        Assert.assertFalse(provider.checkValid("/*!40101fff*/ select * from t"));
+        Assert.assertTrue(provider.checkValid("/*!40101fff*/ select * from t"));
+        Assert.assertFalse(provider.checkValid("select * from t/*!40101fff*/"));
 
         Assert.assertTrue(provider.checkValid("SELECT * FROM t where a=1 #this is comment \n and b=1"));
         Assert.assertTrue(provider.checkValid("SELECT * FROM t where a=1 -- this is comment \n and c=1"));
