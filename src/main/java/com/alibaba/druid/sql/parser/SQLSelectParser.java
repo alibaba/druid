@@ -738,6 +738,16 @@ public class SQLSelectParser extends SQLParser {
             return parseTableSourceRest(join);
         }
 
+        if (tableSource.aliasHashCode64() == FnvHash.Constants.LATERAL
+                && lexer.token() == Token.VIEW) {
+            return parseLateralView(tableSource);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.LATERAL)) {
+            lexer.nextToken();
+            return parseLateralView(tableSource);
+        }
+
         return tableSource;
     }
 
@@ -845,5 +855,26 @@ public class SQLSelectParser extends SQLParser {
             }
             queryBlock.setConnectBy(this.exprParser.expr());
         }
+    }
+
+    protected SQLTableSource parseLateralView(SQLTableSource tableSource) {
+        accept(Token.VIEW);
+        if ("LATERAL".equalsIgnoreCase(tableSource.getAlias())) {
+            tableSource.setAlias(null);
+        }
+        SQLLateralViewTableSource lateralViewTabSrc = new SQLLateralViewTableSource();
+        lateralViewTabSrc.setTableSource(tableSource);
+
+        SQLMethodInvokeExpr udtf = (SQLMethodInvokeExpr) this.exprParser.expr();
+        lateralViewTabSrc.setMethod(udtf);
+
+        String alias = as();
+        lateralViewTabSrc.setAlias(alias);
+
+        accept(Token.AS);
+
+        this.exprParser.names(lateralViewTabSrc.getColumns());
+
+        return parseTableSourceRest(lateralViewTabSrc);
     }
 }

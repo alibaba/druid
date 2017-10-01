@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsLateralViewTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLLateralViewTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -167,41 +167,4 @@ public class OdpsSelectParser extends SQLSelectParser {
 
         return super.parseTableSource();
     }
-    
-    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
-        tableSource = super.parseTableSourceRest(tableSource);
-        
-        if ("LATERAL".equalsIgnoreCase(tableSource.getAlias()) && lexer.token() == Token.VIEW) {
-            return parseLateralView(tableSource);
-        }
-        
-        if (lexer.identifierEquals("LATERAL")) {
-            lexer.nextToken();
-            return parseLateralView(tableSource);
-        }
-        
-        return tableSource;
-    }
-
-    protected SQLTableSource parseLateralView(SQLTableSource tableSource) {
-        accept(Token.VIEW);
-        if ("LATERAL".equalsIgnoreCase(tableSource.getAlias())) {
-            tableSource.setAlias(null);
-        }
-        OdpsLateralViewTableSource lateralViewTabSrc = new OdpsLateralViewTableSource();
-        lateralViewTabSrc.setTableSource(tableSource);
-        
-        SQLMethodInvokeExpr udtf = (SQLMethodInvokeExpr) this.exprParser.expr();
-        lateralViewTabSrc.setMethod(udtf);
-        
-        String alias = as();
-        lateralViewTabSrc.setAlias(alias);
-        
-        accept(Token.AS);
-        
-        this.exprParser.names(lateralViewTabSrc.getColumns());
-        
-        return parseTableSourceRest(lateralViewTabSrc);
-    }
-
 }

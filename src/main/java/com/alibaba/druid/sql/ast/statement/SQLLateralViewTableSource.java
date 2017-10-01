@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.odps.ast;
+package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSourceImpl;
-import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OdpsLateralViewTableSource extends SQLTableSourceImpl {
+public class SQLLateralViewTableSource extends SQLTableSourceImpl {
 
     private SQLTableSource      tableSource;
 
@@ -35,10 +32,6 @@ public class OdpsLateralViewTableSource extends SQLTableSourceImpl {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OdpsASTVisitor) visitor);
-    }
-
-    protected void accept0(OdpsASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, tableSource);
             acceptChild(visitor, method);

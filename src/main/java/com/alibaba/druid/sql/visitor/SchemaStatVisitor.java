@@ -30,7 +30,7 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsLateralViewTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLLateralViewTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
@@ -44,7 +44,6 @@ import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.stat.TableStat.Relationship;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.StringUtils;
 
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
@@ -1106,7 +1105,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         } else if (tableSource instanceof SQLUnionQueryTableSource) {
             return false;
-        } else if (tableSource instanceof OdpsLateralViewTableSource) {
+        } else if (tableSource instanceof SQLLateralViewTableSource) {
             return false;
         } else {
             if (x.getResolvedProcudure() != null) {
@@ -1237,7 +1236,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
         } else if (tableSource instanceof SQLWithSubqueryClause.Entry
                 || tableSource instanceof SQLSubqueryTableSource
-                || tableSource instanceof OdpsLateralViewTableSource) {
+                || tableSource instanceof SQLLateralViewTableSource) {
             return false;
         } else {
             boolean skip = false;

@@ -557,11 +557,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public void endVisit(PGLineSegmentsExpr x) {
         
     }
-    
+
     @Override
     public boolean visit(SQLBinaryExpr x) {
         print0(ucase ? "B'" : "b'");
-        print0(x.getValue());
+        print0(x.getText());
         print('\'');
 
         return false;

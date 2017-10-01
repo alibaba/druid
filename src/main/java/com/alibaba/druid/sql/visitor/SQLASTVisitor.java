@@ -762,4 +762,8 @@ public interface SQLASTVisitor {
     boolean visit(SQLIntervalExpr x);
 
     void endVisit(SQLIntervalExpr x);
+
+    boolean visit(SQLLateralViewTableSource x);
+
+    void endVisit(SQLLateralViewTableSource x);
 }

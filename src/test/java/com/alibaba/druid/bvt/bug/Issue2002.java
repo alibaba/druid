@@ -23,6 +23,7 @@ public class Issue2002 extends TestCase {
                 "group by id";
 
         StatFilter filter = new StatFilter();
+        filter.setMergeSql(true);
         String psql = filter.mergeSql(sql, JdbcConstants.POSTGRESQL);
         System.out.println(psql);
     }

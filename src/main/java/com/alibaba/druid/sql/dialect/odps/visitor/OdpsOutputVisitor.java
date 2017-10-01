@@ -798,26 +798,6 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         return false;
     }
-
-    @Override
-    public void endVisit(OdpsLateralViewTableSource x) {
-        
-    }
-
-    @Override
-    public boolean visit(OdpsLateralViewTableSource x) {
-        x.getTableSource().accept(this);
-        this.indentCount++;
-        println();
-        print0(ucase ? "LATERAL VIEW " : "lateral view ");
-        x.getMethod().accept(this);
-        print(' ');
-        print0(x.getAlias());
-        print0(ucase ? " AS " : " as ");
-        printAndAccept(x.getColumns(), ", ");
-        this.indentCount--;
-        return false;
-    }
     
     public boolean visit(SQLCharExpr x) {
         String text = x.getText();

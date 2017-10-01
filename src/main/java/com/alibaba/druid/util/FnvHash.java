@@ -508,5 +508,7 @@ public final class FnvHash {
         long UNSUPPORTED = fnv1a_64_lower("UNSUPPORTED");
         long USERENV = fnv1a_64_lower("USERENV");
         long NUMTODSINTERVAL = fnv1a_64_lower("NUMTODSINTERVAL");
+
+        long LATERAL = fnv1a_64_lower("LATERAL");
     }
 }

@@ -23,8 +23,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
-import java.util.Map;
-
 public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTVisitor {
 
     public OdpsSchemaStatVisitor() {
@@ -263,16 +261,6 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
     @Override
     public boolean visit(OdpsGrantStmt x) {
         return super.visit((SQLGrantStatement) x);
-    }
-
-    @Override
-    public void endVisit(OdpsLateralViewTableSource x) {
-        
-    }
-    
-    @Override
-    public boolean visit(OdpsLateralViewTableSource x) {
-        return true;
     }
 
     @Override

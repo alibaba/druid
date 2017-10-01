@@ -3918,7 +3918,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLBinaryExpr x) {
         print0("b'");
-        print0(x.getValue());
+        print0(x.getText());
         print('\'');
 
         return false;
@@ -5418,6 +5418,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? " AT TIME ZONE " : " at time zone ");
         timeZone.accept(this);
 
+        return false;
+    }
+
+    ///////////// for odps & hive
+    @Override
+    public boolean visit(SQLLateralViewTableSource x) {
+        x.getTableSource().accept(this);
+        this.indentCount++;
+        println();
+        print0(ucase ? "LATERAL VIEW " : "lateral view ");
+        x.getMethod().accept(this);
+        print(' ');
+        print0(x.getAlias());
+        print0(ucase ? " AS " : " as ");
+        printAndAccept(x.getColumns(), ", ");
+        this.indentCount--;
         return false;
     }
 }

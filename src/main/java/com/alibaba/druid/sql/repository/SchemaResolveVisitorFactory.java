@@ -1609,11 +1609,11 @@ class SchemaResolveVisitorFactory {
             }
         } else if (ctxTable instanceof SQLSubqueryTableSource) {
             tableSource = ctxTable.findTableSourceWithColumn(hash);
-        } else if (ctxTable instanceof OdpsLateralViewTableSource) {
+        } else if (ctxTable instanceof SQLLateralViewTableSource) {
             tableSource = ctxTable.findTableSourceWithColumn(hash);
 
             if (tableSource == null) {
-                tableSource = ((OdpsLateralViewTableSource) ctxTable).getTableSource();
+                tableSource = ((SQLLateralViewTableSource) ctxTable).getTableSource();
             }
         } else {
             for (SchemaResolveVisitor.Context parentCtx = ctx;

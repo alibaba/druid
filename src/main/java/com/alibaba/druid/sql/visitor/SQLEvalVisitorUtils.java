@@ -581,7 +581,7 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLBinaryExpr x) {
-        String text = x.getValue();
+        String text = x.getText();
 
         long[] words = new long[text.length() / 64 + 1];
         for (int i = text.length()-1; i >= 0 ; --i) {
