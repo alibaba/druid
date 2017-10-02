@@ -167,14 +167,15 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             }
         }
 
-        stmt.getPreparedStatementHolder().decrementInUseCount();
+        PreparedStatementHolder stmtHolder = stmt.getPreparedStatementHolder();
+        stmtHolder.decrementInUseCount();
         if (stmt.isPooled() && holder.isPoolPreparedStatements() && stmt.exceptionCount == 0) {
-            holder.getStatementPool().put(stmt.getPreparedStatementHolder());
+            holder.getStatementPool().put(stmtHolder);
 
             stmt.clearResultSet();
             holder.removeTrace(stmt);
 
-            stmt.getPreparedStatementHolder().setFetchRowPeak(stmt.getFetchRowPeak());
+            stmtHolder.setFetchRowPeak(stmt.getFetchRowPeak());
 
             stmt.setClosed(true); // soft set close
         } else if (stmt.isPooled() && holder.isPoolPreparedStatements()) {
@@ -182,7 +183,8 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             stmt.clearResultSet();
             holder.removeTrace(stmt);
 
-            holder.getStatementPool().remove(stmt.getPreparedStatementHolder());
+            holder.getStatementPool()
+                    .remove(stmtHolder);
         } else {
             try {
                 //Connection behind the statement may be in invalid state, which will throw a SQLException.

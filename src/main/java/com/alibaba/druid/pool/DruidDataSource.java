@@ -22,6 +22,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
@@ -436,6 +437,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             String property = properties.getProperty("druid.connectProperties");
             if (property != null) {
                 this.setConnectionProperties(property);
+            }
+        }
+        {
+            String property = properties.getProperty("druid.maxPoolPreparedStatementPerConnectionSize");
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    this.setMaxPoolPreparedStatementPerConnectionSize(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.maxPoolPreparedStatementPerConnectionSize'", e);
+                }
             }
         }
     }
@@ -1443,6 +1455,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
 
                 if (requireDiscard) {
+                    if (holder.statementTrace != null) {
+                        for (Statement stmt : holder.statementTrace) {
+                            JdbcUtils.close(stmt);
+                        }
+                    }
+
                     this.discardConnection(holder.getConnection());
                     holder.setDiscard(true);
                 }
