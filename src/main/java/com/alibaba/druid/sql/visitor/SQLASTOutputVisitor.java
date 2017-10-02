@@ -4885,8 +4885,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(MergeInsertClause x) {
         print0(ucase ? "WHEN NOT MATCHED THEN INSERT" : "when not matched then insert");
         if (x.getColumns().size() > 0) {
-            print(' ');
+            print(" (");
             printAndAccept(x.getColumns(), ", ");
+            print(')');
         }
         print0(ucase ? " VALUES (" : " values (");
         printAndAccept(x.getValues(), ", ");
