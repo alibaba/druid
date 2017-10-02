@@ -667,7 +667,12 @@ public class Lexer {
                     scanChar();
                     if (ch == '?' && JdbcConstants.POSTGRESQL.equals(dbType)) {
                         scanChar();
-                        token = Token.QUESQUES;
+                        if (ch == '|') {
+                            scanChar();
+                            token = Token.QUESBAR;
+                        } else {
+                            token = Token.QUESQUES;
+                        }
                     } else if (ch == '|' && JdbcConstants.POSTGRESQL.equals(dbType)) {
                         scanChar();
                         if (ch == '|') {
