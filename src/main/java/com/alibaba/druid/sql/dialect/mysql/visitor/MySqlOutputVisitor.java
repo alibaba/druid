@@ -484,10 +484,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if (x.getSelect() != null) {
-            this.indentCount++;
+            println();
+            print0(ucase ? "AS" : "as");
             println();
             x.getSelect().accept(this);
-            this.indentCount--;
         }
 
         for (SQLCommentHint hint : x.getOptionHints()) {
