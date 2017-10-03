@@ -574,6 +574,15 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         return from.findColumn(hash);
     }
 
+    public void addCondition(String conditionSql) {
+        if (conditionSql == null || conditionSql.length() == 0) {
+            return;
+        }
+
+        SQLExpr condition = SQLUtils.toSQLExpr(conditionSql, dbType);
+        addCondition(condition);
+    }
+
     public void addCondition(SQLExpr expr) {
         if (expr == null) {
             return;
