@@ -628,7 +628,7 @@ public class JdbcSqlStatValue {
     }
 
     public Map<String, Object> getData() throws JMException {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<String, Object>(48);
 
         // 0 - 4
         map.put("ID", id);
