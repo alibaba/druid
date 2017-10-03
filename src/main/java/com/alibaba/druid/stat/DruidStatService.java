@@ -243,7 +243,7 @@ public final class DruidStatService implements DruidStatServiceMBean {
         orderBy = orderBy == null ? DEFAULT_ORDERBY : orderBy;
         orderType = orderType == null ? DEFAULT_ORDER_TYPE : orderType;
 
-        if (! ORDER_TYPE_DESC.equals(orderType)) {
+        if (!ORDER_TYPE_DESC.equals(orderType)) {
             orderType = ORDER_TYPE_ASC;
         }
 
