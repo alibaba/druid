@@ -85,7 +85,8 @@ public class SpringStat {
     public Map<String, Object> getMethodStatData(String clazz, String method) {
         for (SpringMethodStat methodStat : this.methodStats.values()) {
             SpringMethodInfo methodInfo = methodStat.getMethodInfo();
-            if (methodInfo.getClassName().equals(clazz) && methodInfo.getSignature().equals(method)) {
+            if (methodInfo.getClassName().equals(clazz)
+                    && methodInfo.getSignature().equals(method)) {
                 return methodStat.getStatData();
             }
         }
