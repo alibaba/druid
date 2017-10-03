@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements OracleSQLObject {
 
@@ -72,7 +73,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements Oracl
     }
 
     public OracleSelectQueryBlock(){
-
+        dbType = JdbcConstants.ORACLE;
     }
 
     public ModelClause getModelClause() {
