@@ -25,15 +25,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SQLSelectListCache {
     private final String dbType;
-    private List<String> sqlCache = new CopyOnWriteArrayList<String>();
-    private List<SQLSelectQueryBlock> queryBlockCache = new CopyOnWriteArrayList<SQLSelectQueryBlock>();
-    private List<String> printSqlList = new ArrayList<String>();
+    private final List<String> sqlCache = new ArrayList<String>();
+    private final List<SQLSelectQueryBlock> queryBlockCache = new ArrayList<SQLSelectQueryBlock>();
+    private final List<String> printSqlList = new ArrayList<String>();
 
     public SQLSelectListCache(String dbType) {
         this.dbType = dbType;
     }
 
-    public void add(String select) {
+    public synchronized void add(String select) {
         if (select == null || select.length() == 0) {
             return;
         }
