@@ -692,6 +692,12 @@ public class MySqlExprParser extends SQLExprParser {
         }
         accept(Token.RPAREN);
 
+        if (lexer.identifierEquals(FnvHash.Constants.USING)) {
+            lexer.nextToken();
+            primaryKey.setIndexType(lexer.stringVal());
+            lexer.nextToken();
+        }
+
         return primaryKey;
     }
 

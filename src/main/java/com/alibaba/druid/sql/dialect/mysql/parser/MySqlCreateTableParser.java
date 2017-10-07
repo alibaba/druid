@@ -52,6 +52,7 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
 
 public class MySqlCreateTableParser extends SQLCreateTableParser {
 
@@ -795,7 +796,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             }
 
             // 5.5语法 USING BTREE 放在index 名字后
-            if (lexer.identifierEquals("USING")) {
+            if (lexer.identifierEquals(FnvHash.Constants.USING)) {
                 lexer.nextToken();
                 key.setIndexType(lexer.stringVal());
                 lexer.nextToken();
@@ -825,7 +826,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 key.setName(name);
             }
 
-            if (lexer.identifierEquals("USING")) {
+            if (lexer.identifierEquals(FnvHash.Constants.USING)) {
                 lexer.nextToken();
                 key.setIndexType(lexer.stringVal());
                 lexer.nextToken();
