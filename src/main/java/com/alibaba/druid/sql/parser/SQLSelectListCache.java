@@ -48,9 +48,9 @@ public class SQLSelectListCache {
         selectParser.accept(Token.FROM);
         selectParser.accept(Token.EOF);
 
-        sqlCache.add(select.substring(6));
         queryBlockCache.add(queryBlock);
         printSqlList.add(queryBlock.toString());
+        sqlCache.add(select.substring(6));
     }
 
     public boolean match(Lexer lexer, SQLSelectQueryBlock queryBlock) {
