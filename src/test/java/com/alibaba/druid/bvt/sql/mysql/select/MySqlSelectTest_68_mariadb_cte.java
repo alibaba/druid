@@ -47,6 +47,7 @@ public class MySqlSelectTest_68_mariadb_cte extends MysqlTest {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, JdbcConstants.MYSQL, SQLParserFeature.OptimizedForParameterized);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
+        System.out.println(stmt);
 
         assertEquals(1, statementList.size());
 
