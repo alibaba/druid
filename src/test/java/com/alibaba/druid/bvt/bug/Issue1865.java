@@ -34,6 +34,9 @@ public class Issue1865 extends TestCase {
 
         assertEquals("SELECT *\n" +
                 "FROM t", stmt.toString());
+        queryBlock.addCondition("id = 3");
+        assertEquals("DELETE FROM t\n" +
+                "WHERE id = 3", stmt.toString());
     }
 
     public void test_for_select_group() throws Exception {

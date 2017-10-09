@@ -163,6 +163,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.inputParameters = parameters;
     }
 
+    /**
+     *
+     * @since 1.1.5
+     */
+    public void setOutputParameters(List<Object> parameters) {
+        this.parameters = parameters;
+    }
+
     public int getIndentCount() {
         return indentCount;
     }
@@ -2286,10 +2294,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLDeleteStatement x) {
         SQLTableSource from = x.getFrom();
+        String alias = x.getAlias();
 
         if (from == null) {
             print0(ucase ? "DELETE FROM " : "delete from ");
             printTableSourceExpr(x.getTableName());
+
+            if (alias != null) {
+                print(' ');
+                print0(alias);
+            }
         } else {
             print0(ucase ? "DELETE " : "delete ");
             printTableSourceExpr(x.getTableName());

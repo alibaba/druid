@@ -41,6 +41,7 @@ public class MySqlCreateTableTest81 extends MysqlTest {
 //        Column column = visitor.getColumn("tb_custom_vip_show_message", "custom_vip_show_message_seq");
 //        assertNotNull(column);
 //        assertEquals("INT", column.getDataType());
+        System.out.println(stmt);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
