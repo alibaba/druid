@@ -4530,9 +4530,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLPartitionByRange x) {
         print0(ucase ? "PARTITION BY RANGE" : "partition by range");
-        if (x.getExpr() != null) {
+        if (x.getColumns().size() == 1) {
             print0(" (");
-            x.getExpr().accept(this);
+            x.getColumns().get(0).accept(this);
             print(')');
         } else {
             if (JdbcConstants.MYSQL.equals(getDbType())) {
@@ -4572,9 +4572,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLPartitionByList x) {
         print0(ucase ? "PARTITION BY LIST " : "partition by list ");
-        if (x.getExpr() != null) {
+        if (x.getColumns().size() == 1) {
             print('(');
-            x.getExpr().accept(this);
+            x.getColumns().get(0).accept(this);
             print0(")");
         } else {
             print0(ucase ? "COLUMNS (" : "columns (");
@@ -4601,7 +4601,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         print('(');
-        x.getExpr().accept(this);
+        printAndAccept(x.getColumns(), ", ");
         print(')');
 
         printPartitionsCountAndSubPartitions(x);

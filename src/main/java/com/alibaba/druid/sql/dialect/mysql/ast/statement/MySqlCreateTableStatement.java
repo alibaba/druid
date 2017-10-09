@@ -42,8 +42,6 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     private Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
 
-    private SQLPartitionBy  partitioning;
-
     private List<SQLCommentHint>   hints        = new ArrayList<SQLCommentHint>();
 
     private List<SQLCommentHint>   optionHints  = new ArrayList<SQLCommentHint>();
@@ -68,14 +66,6 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public void setTableOptions(Map<String, SQLObject> tableOptions) {
         this.tableOptions = tableOptions;
-    }
-
-    public SQLPartitionBy getPartitioning() {
-        return partitioning;
-    }
-
-    public void setPartitioning(SQLPartitionBy partitioning) {
-        this.partitioning = partitioning;
     }
 
     public Map<String, SQLObject> getTableOptions() {

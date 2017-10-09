@@ -51,7 +51,8 @@ public class NameResolveVisitor extends OracleASTVisitorAdapter {
         SQLTableSource tableSource = null;
 
         if (hash == FnvHash.Constants.LEVEL
-                || hash == FnvHash.Constants.CONNECT_BY_ISCYCLE) {
+                || hash == FnvHash.Constants.CONNECT_BY_ISCYCLE
+                || hash == FnvHash.Constants.SYSTIMESTAMP) {
             return false;
         }
 

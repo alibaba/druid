@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
@@ -25,8 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlPartitionByKey extends SQLPartitionBy implements MySqlObject {
-
-    private List<SQLName> columns = new ArrayList<SQLName>();
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -48,21 +47,10 @@ public class MySqlPartitionByKey extends SQLPartitionBy implements MySqlObject {
         visitor.endVisit(this);
     }
 
-    public List<SQLName> getColumns() {
-        return columns;
-    }
-    
-    public void addColumn(SQLName column) {
-        if (column != null) {
-            column.setParent(this);
-        }
-        this.columns.add(column);
-    }
-
     public void cloneTo(MySqlPartitionByKey x) {
         super.cloneTo(x);
-        for (SQLName column : columns) {
-            SQLName c2 = column.clone();
+        for (SQLExpr column : columns) {
+            SQLExpr c2 = column.clone();
             c2.setParent(x);
             x.columns.add(c2);
         }

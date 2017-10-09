@@ -39,15 +39,19 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
 
     // for postgresql
-    private SQLExprTableSource      inherits;
+    protected SQLExprTableSource    inherits;
 
     protected SQLSelect             select;
 
     protected SQLExpr               comment;
 
-    protected SQLExprTableSource     like;
+    protected SQLExprTableSource    like;
 
+    protected Boolean               compress;
+    protected Boolean               logging;
 
+    protected SQLName               tablespace;
+    protected SQLPartitionBy        partitioning;
 
     public SQLCreateTableStatement(){
 
@@ -174,6 +178,45 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             like.setParent(this);
         }
         this.like = like;
+    }
+
+    public Boolean getCompress() {
+        return compress;
+    }
+
+    public void setCompress(Boolean compress) {
+        this.compress = compress;
+    }
+
+    public Boolean getLogging() {
+        return logging;
+    }
+
+    public void setLogging(Boolean logging) {
+        this.logging = logging;
+    }
+
+    public SQLName getTablespace() {
+        return tablespace;
+    }
+
+    public void setTablespace(SQLName tablespace) {
+        if (tablespace != null) {
+            tablespace.setParent(this);
+        }
+        this.tablespace = tablespace;
+    }
+
+    public SQLPartitionBy getPartitioning() {
+        return partitioning;
+    }
+
+    public void setPartitioning(SQLPartitionBy partitioning) {
+        if (partitioning != null) {
+            partitioning.setParent(this);
+        }
+
+        this.partitioning = partitioning;
     }
 
     @Override

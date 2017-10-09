@@ -15,11 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.db2.visitor;
 
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2CreateTableStatement;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -77,7 +78,40 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
     public void endVisit(DB2ValuesStatement x) {
 
     }
-    
+
+    @Override
+    public boolean visit(DB2CreateTableStatement x) {
+        printCreateTable(x, true);
+
+        if (x.isDataCaptureNone()) {
+            println();
+            print("DATA CAPTURE NONE");
+        } else if (x.isDataCaptureChanges()) {
+            println();
+            print("DATA CAPTURE CHANGES");
+        }
+
+        SQLName tablespace = x.getTablespace();
+        if (tablespace != null) {
+            println();
+            print("IN ");
+            tablespace.accept(this);
+        }
+
+        SQLPartitionBy partitionBy = x.getPartitioning();
+        if (partitionBy != null) {
+            println();
+            partitionBy.accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(DB2CreateTableStatement x) {
+
+    }
+
     protected void printOperator(SQLBinaryOperator operator) {
         if (operator == SQLBinaryOperator.Concat) {
             print0(ucase ? "CONCAT" : "concat");

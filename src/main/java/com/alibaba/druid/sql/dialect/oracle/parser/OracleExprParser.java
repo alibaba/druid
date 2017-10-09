@@ -1731,7 +1731,7 @@ public class OracleExprParser extends SQLExprParser {
         }
 
         accept(Token.LPAREN);
-        partitionByHash.setExpr(this.expr());
+        this.exprList(partitionByHash.getColumns(), partitionByHash);
         accept(Token.RPAREN);
         return partitionByHash;
     }

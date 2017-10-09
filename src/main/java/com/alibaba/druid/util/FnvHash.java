@@ -510,5 +510,7 @@ public final class FnvHash {
         long NUMTODSINTERVAL = fnv1a_64_lower("NUMTODSINTERVAL");
 
         long LATERAL = fnv1a_64_lower("LATERAL");
+        long NONE = fnv1a_64_lower("NONE");
+        long PARTITIONING = fnv1a_64_lower("PARTITIONING");
     }
 }

@@ -36,8 +36,6 @@ import java.util.List;
 
 public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement, OracleSegmentAttributes {
 
-    private SQLName                 tablespace;
-
     private boolean                 inMemoryMetadata;
 
     private boolean                 cursorSpecificSegment;
@@ -54,8 +52,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private Integer                 maxtrans;
     private Integer                 pctincrease;
 
-    private Boolean                 logging;
-    private Boolean                 compress;
+
     private Integer                 compressLevel;
     private boolean                 compressForOltp;
 
@@ -63,8 +60,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private boolean                 onCommitDeleteRows;
 
     private Boolean                 cache;
-
-    private SQLPartitionBy          partitioning;
 
     private DeferredSegmentCreation deferredSegmentCreation;
 
@@ -122,14 +117,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.deferredSegmentCreation = deferredSegmentCreation;
     }
 
-    public SQLPartitionBy getPartitioning() {
-        return partitioning;
-    }
-
-    public void setPartitioning(SQLPartitionBy partitioning) {
-        this.partitioning = partitioning;
-    }
-
     public Boolean getCache() {
         return cache;
     }
@@ -152,22 +139,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     public void setOnCommitDeleteRows(boolean onCommitDeleteRows) {
         this.onCommitDeleteRows = onCommitDeleteRows;
-    }
-
-    public Boolean getLogging() {
-        return logging;
-    }
-
-    public void setLogging(Boolean logging) {
-        this.logging = logging;
-    }
-
-    public Boolean getCompress() {
-        return compress;
-    }
-
-    public void setCompress(Boolean compress) {
-        this.compress = compress;
     }
 
     public Integer getCompressLevel() {
@@ -240,14 +211,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     public void setInMemoryMetadata(boolean inMemoryMetadata) {
         this.inMemoryMetadata = inMemoryMetadata;
-    }
-
-    public SQLName getTablespace() {
-        return tablespace;
-    }
-
-    public void setTablespace(SQLName tablespace) {
-        this.tablespace = tablespace;
     }
 
     protected void accept0(SQLASTVisitor visitor) {

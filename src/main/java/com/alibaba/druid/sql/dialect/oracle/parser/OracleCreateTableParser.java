@@ -333,7 +333,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         SQLPartitionByList partitionByList = new SQLPartitionByList();
 
         accept(Token.LPAREN);
-        partitionByList.setExpr(this.exprParser.expr());
+        partitionByList.addColumn(this.exprParser.expr());
         accept(Token.RPAREN);
 
         this.getExprParser().parsePartitionByRest(partitionByList);

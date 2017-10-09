@@ -483,7 +483,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     }
 
                     accept(Token.LPAREN);
-                    clause.setExpr(this.exprParser.expr());
+                    this.exprParser.exprList(clause.getColumns(), clause);
                     accept(Token.RPAREN);
                     partitionClause = clause;
 
@@ -501,7 +501,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                     if (lexer.token() == Token.LPAREN) {
                         lexer.nextToken();
-                        clause.setExpr(this.exprParser.expr());
+                        clause.addColumn(this.exprParser.expr());
                         accept(Token.RPAREN);
                     } else {
                         acceptIdentifier("COLUMNS");
@@ -576,7 +576,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
-            clause.setExpr(this.exprParser.expr());
+            clause.addColumn(this.exprParser.expr());
             accept(Token.RPAREN);
         } else {
             acceptIdentifier("COLUMNS");
