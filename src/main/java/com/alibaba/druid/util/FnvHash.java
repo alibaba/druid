@@ -512,5 +512,6 @@ public final class FnvHash {
         long LATERAL = fnv1a_64_lower("LATERAL");
         long NONE = fnv1a_64_lower("NONE");
         long PARTITIONING = fnv1a_64_lower("PARTITIONING");
+        long VALIDPROC = fnv1a_64_lower("VALIDPROC");
     }
 }

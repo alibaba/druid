@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.db2.ast.stmt;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.db2.ast.DB2Statement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
@@ -23,6 +24,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class DB2CreateTableStatement extends SQLCreateTableStatement implements DB2Statement {
     private boolean dataCaptureNone;
     private boolean dataCaptureChanges;
+
+    protected SQLName database;
+    protected SQLName validproc;
 
     public boolean isDataCaptureNone() {
         return dataCaptureNone;
@@ -38,6 +42,28 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
 
     public void setDataCaptureChanges(boolean dataCaptureChanges) {
         this.dataCaptureChanges = dataCaptureChanges;
+    }
+
+    public SQLName getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(SQLName database) {
+        if (database != null) {
+            database.setParent(this);
+        }
+        this.database = database;
+    }
+
+    public SQLName getValidproc() {
+        return validproc;
+    }
+
+    public void setValidproc(SQLName validproc) {
+        if (validproc != null) {
+            validproc.setParent(this);
+        }
+        this.validproc = validproc;
     }
 
     @Override
@@ -57,6 +83,8 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, inherits);
             this.acceptChild(visitor, select);
+            this.acceptChild(visitor, database);
+            this.acceptChild(visitor, validproc);
         }
         visitor.endVisit(this);
     }

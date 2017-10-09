@@ -143,7 +143,9 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
 
                 if (lexer.token() == Token.DATABASE) {
-                    throw new ParserException("TODO "  + lexer.info());
+                    lexer.nextToken();
+                    SQLName database = this.exprParser.name();
+                    createTable.setDatabase(database);
                 } else if (lexer.identifierEquals("tablespace")) {
                     throw new ParserException("TODO "  + lexer.info());
                 } else {
@@ -164,6 +166,10 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
                 acceptIdentifier("HASHING");
                 createTable.setPartitioning(partitionBy);
                 continue;
+            } else if (lexer.identifierEquals(FnvHash.Constants.VALIDPROC)) {
+                lexer.nextToken();
+                SQLName validproc = this.exprParser.name();
+                createTable.setValidproc(validproc);
             }
             break;
         }

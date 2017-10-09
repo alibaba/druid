@@ -98,6 +98,20 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
             tablespace.accept(this);
         }
 
+        SQLName database = x.getDatabase();
+        if (database != null) {
+            println();
+            print("IN DATABASE ");
+            database.accept(this);
+        }
+
+        SQLName validproc = x.getValidproc();
+        if (validproc != null) {
+            println();
+            print("VALIDPROC ");
+            validproc.accept(this);
+        }
+
         SQLPartitionBy partitionBy = x.getPartitioning();
         if (partitionBy != null) {
             println();
