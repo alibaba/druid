@@ -118,6 +118,16 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
             partitionBy.accept(this);
         }
 
+        Boolean compress = x.getCompress();
+        if (compress != null) {
+            println();
+            if (compress.booleanValue()) {
+                print0(ucase ? "COMPRESS YES" : "compress yes");
+            } else {
+                print0(ucase ? "COMPRESS NO" : "compress no");
+            }
+        }
+
         return false;
     }
 

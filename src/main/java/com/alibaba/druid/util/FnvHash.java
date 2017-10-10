@@ -513,5 +513,7 @@ public final class FnvHash {
         long NONE = fnv1a_64_lower("NONE");
         long PARTITIONING = fnv1a_64_lower("PARTITIONING");
         long VALIDPROC = fnv1a_64_lower("VALIDPROC");
+        long COMPRESS = fnv1a_64_lower("COMPRESS");
+        long YES = fnv1a_64_lower("YES");
     }
 }

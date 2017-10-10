@@ -1523,7 +1523,7 @@ public class OracleExprParser extends SQLExprParser {
                 lexer.nextToken();
                 attributes.setCompress(Boolean.FALSE);
                 continue;
-            } else if (lexer.identifierEquals("COMPRESS")) {
+            } else if (lexer.identifierEquals(FnvHash.Constants.COMPRESS)) {
                 lexer.nextToken();
                 attributes.setCompress(Boolean.TRUE);
 

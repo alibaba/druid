@@ -116,10 +116,15 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 stmt.setSelect(query);
             } else {
                 for (;;) {
+                    SQLColumnDefinition column = null;
                     if (lexer.token() == Token.IDENTIFIER //
                         || lexer.token() == Token.LITERAL_CHARS) {
-                        SQLColumnDefinition column = this.exprParser.parseColumn();
+                        column = this.exprParser.parseColumn();
                         stmt.getTableElementList().add(column);
+
+                        if (lexer.isKeepComments() && lexer.hasComment()) {
+                            column.addAfterComment(lexer.readAndResetComments());
+                        }
                     } else if (lexer.token() == Token.CONSTRAINT //
                                || lexer.token() == Token.PRIMARY //
                                || lexer.token() == Token.UNIQUE) {
@@ -175,14 +180,17 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         SQLCheck check = this.exprParser.parseCheck();
                         stmt.getTableElementList().add(check);
                     } else {
-                        SQLColumnDefinition column = this.exprParser.parseColumn();
+                        column = this.exprParser.parseColumn();
                         stmt.getTableElementList().add(column);
                     }
 
-                    if (!(lexer.token() == (Token.COMMA))) {
+                    if (lexer.token() != Token.COMMA) {
                         break;
                     } else {
                         lexer.nextToken();
+                        if (lexer.isKeepComments() && lexer.hasComment() && column != null) {
+                            column.addAfterComment(lexer.readAndResetComments());
+                        }
                     }
                 }
             }

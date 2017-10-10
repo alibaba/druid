@@ -170,6 +170,15 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 SQLName validproc = this.exprParser.name();
                 createTable.setValidproc(validproc);
+                continue;
+            } else if (lexer.identifierEquals(FnvHash.Constants.COMPRESS)) {
+                lexer.nextToken();
+                createTable.setCompress(true);
+
+                if (lexer.identifierEquals(FnvHash.Constants.YES)) {
+                    lexer.nextToken();
+                }
+                continue;
             }
             break;
         }

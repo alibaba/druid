@@ -124,7 +124,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     column.addAfterComment(lexer.readAndResetComments());
                 }
                 
-                if (!(lexer.token() == (Token.COMMA))) {
+                if (lexer.token() != Token.COMMA) {
                     break;
                 } else {
                     lexer.nextToken();
