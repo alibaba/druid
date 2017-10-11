@@ -1048,7 +1048,10 @@ public class SQLExprParser extends SQLParser {
             }
 
             if (lexer.token == Token.LPAREN) {
-                expr = methodRest(expr, name, false);
+                boolean aggregate = hash_lower == FnvHash.Constants.WM_CONCAT
+                        && expr instanceof SQLIdentifierExpr
+                        && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.WMSYS;
+                expr = methodRest(expr, name, aggregate);
             } else {
                 expr = new SQLPropertyExpr(expr, name, hash_lower);
             }
