@@ -62,7 +62,7 @@ public class MySqlSelectTest_43_with_cte extends MysqlTest {
                             "\t\tSELECT c, d\n" +
                             "\t\tFROM table2\n" +
                             "\t)\n" +
-                            "SELECT cte1.b, cte2.d\n" +
+                            "SELECT b, d\n" +
                             "FROM cte1\n" +
                             "\tJOIN cte2\n" +
                             "WHERE cte1.a = cte2.c;", //
@@ -78,7 +78,7 @@ public class MySqlSelectTest_43_with_cte extends MysqlTest {
                             "\t\tselect c, d\n" +
                             "\t\tfrom table2\n" +
                             "\t)\n" +
-                            "select cte1.b, cte2.d\n" +
+                            "select b, d\n" +
                             "from cte1\n" +
                             "\tjoin cte2\n" +
                             "where cte1.a = cte2.c;", //
@@ -95,7 +95,7 @@ public class MySqlSelectTest_43_with_cte extends MysqlTest {
                             "\t\tSELECT c, d\n" +
                             "\t\tFROM table2\n" +
                             "\t)\n" +
-                            "SELECT cte1.b, cte2.d\n" +
+                            "SELECT b, d\n" +
                             "FROM cte1\n" +
                             "\tJOIN cte2\n" +
                             "WHERE cte1.a = cte2.c;", //

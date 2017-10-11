@@ -38,7 +38,12 @@ public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatem
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((PGASTVisitor) visitor);
+        if (visitor instanceof PGASTVisitor) {
+            accept0((PGASTVisitor) visitor);
+            return;
+        }
+
+        super.accept0(visitor);
     }
 
     @Override

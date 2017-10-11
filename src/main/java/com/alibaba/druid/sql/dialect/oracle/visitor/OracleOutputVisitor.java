@@ -187,7 +187,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         if (x.getPrecision() != null) {
             print('(');
-            print(x.getPrecision().intValue());
+            printExpr(x.getPrecision());
             if (x.getFactionalSecondsPrecision() != null) {
                 print0(", ");
                 print(x.getFactionalSecondsPrecision().intValue());
@@ -200,7 +200,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(x.getToType().name());
             if (x.getToFactionalSecondsPrecision() != null) {
                 print('(');
-                print(x.getToFactionalSecondsPrecision().intValue());
+                printExpr(x.getToFactionalSecondsPrecision());
                 print(')');
             }
         }
@@ -295,6 +295,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             }
 
             printFlashback(x.getFlashback());
+        }
+
+        OracleSelectPivotBase pivot = x.getPivot();
+        if (pivot != null) {
+            println();
+            pivot.accept(this);
         }
 
         return false;
@@ -471,9 +477,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         println();
         print(')');
 
-        if (x.getPivot() != null) {
+        OracleSelectPivotBase pivot = x.getPivot();
+        if (pivot != null) {
             println();
-            x.getPivot().accept(this);
+            pivot.accept(this);
         }
 
         printFlashback(x.getFlashback());
@@ -3339,6 +3346,32 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OraclePipeRowStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleIsOfTypeExpr x) {
+        printExpr(x.getExpr());
+        print0(ucase ? " IS OF TYPE (" : " is of type (");
+
+        List<SQLExpr> types = x.getTypes();
+        for (int i = 0, size = types.size(); i < size; ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            SQLExpr type = types.get(i);
+            if (Boolean.TRUE == type.getAttribute("ONLY")) {
+                print0(ucase ? "ONLY " : "only ");
+            }
+            type.accept(this);
+        }
+
+        print(')');
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleIsOfTypeExpr x) {
 
     }
 }

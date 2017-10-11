@@ -37,7 +37,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
     protected SQLKeep             keep;
     protected SQLOver             over;
     protected SQLOrderBy          withinGroup;
-    protected boolean             ignoreNulls      = false;
+    protected Boolean             ignoreNulls      = false;
 
     public SQLAggregateExpr(String methodName){
         this.methodName = methodName;
@@ -117,6 +117,10 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
     }
     
     public boolean isIgnoreNulls() {
+        return this.ignoreNulls != null && this.ignoreNulls;
+    }
+
+    public Boolean getIgnoreNulls() {
         return this.ignoreNulls;
     }
 

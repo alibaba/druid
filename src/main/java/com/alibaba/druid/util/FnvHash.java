@@ -306,6 +306,7 @@ public final class FnvHash {
         long SQL_SMALL_RESULT = fnv1a_64_lower("SQL_SMALL_RESULT");
         long SQL_BIG_RESULT = fnv1a_64_lower("SQL_BIG_RESULT");
         long SQL_BUFFER_RESULT = fnv1a_64_lower("SQL_BUFFER_RESULT");
+        long CACHE = fnv1a_64_lower("CACHE");
         long SQL_CACHE = fnv1a_64_lower("SQL_CACHE");
         long SQL_NO_CACHE = fnv1a_64_lower("SQL_NO_CACHE");
         long SQL_CALC_FOUND_ROWS = fnv1a_64_lower("SQL_CALC_FOUND_ROWS");
@@ -439,6 +440,7 @@ public final class FnvHash {
         long FOLLOWING = fnv1a_64_lower("FOLLOWING");
         long UNBOUNDED = fnv1a_64_lower("UNBOUNDED");
         long SIBLINGS = fnv1a_64_lower("SIBLINGS");
+        long RESPECT = fnv1a_64_lower("RESPECT");
         long NULLS = fnv1a_64_lower("NULLS");
         long FIRST = fnv1a_64_lower("FIRST");
         long LAST = fnv1a_64_lower("LAST");
@@ -511,6 +513,7 @@ public final class FnvHash {
         long TRUNC = fnv1a_64_lower("TRUNC");
         long SYSTIMESTAMP = fnv1a_64_lower("SYSTIMESTAMP");
         long TYPE = fnv1a_64_lower("TYPE");
+        long ONLY = fnv1a_64_lower("ONLY");
         long MEMBER = fnv1a_64_lower("MEMBER");
         long STATIC = fnv1a_64_lower("STATIC");
         long UNSUPPORTED = fnv1a_64_lower("UNSUPPORTED");
@@ -524,5 +527,8 @@ public final class FnvHash {
         long COMPRESS = fnv1a_64_lower("COMPRESS");
         long YES = fnv1a_64_lower("YES");
         long WMSYS = fnv1a_64_lower("WMSYS");
+
+        long DEPTH = fnv1a_64_lower("DEPTH");
+        long BREADTH = fnv1a_64_lower("BREADTH");
     }
 }

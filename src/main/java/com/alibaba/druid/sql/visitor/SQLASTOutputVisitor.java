@@ -41,6 +41,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
@@ -1597,8 +1598,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit(subQuery);
             print(')');
             println();
-        } else if (parent instanceof SQLStatement
-                && !(parent instanceof OracleForStatement)) {
+        } else if ((parent instanceof SQLStatement
+                && !(parent instanceof OracleForStatement))
+                || parent instanceof OracleSelectPivot.Item) {
             this.indentCount++;
 
             println();
@@ -4973,7 +4975,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (x.isNoMaxValue()) {
-            print0(ucase ? " NOMAXVALUE" : " nomaxvalue");
+            if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                print0(ucase ? " NO MAXVALUE" : " no maxvalue");
+            } else {
+                print0(ucase ? " NOMAXVALUE" : " nomaxvalue");
+            }
         }
 
         if (x.getMinValue() != null) {
@@ -4982,14 +4988,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (x.isNoMinValue()) {
-            print0(ucase ? " NOMINVALUE" : " nominvalue");
+            if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                print0(ucase ? " NO MINVALUE" : " no minvalue");
+            } else {
+                print0(ucase ? " NOMINVALUE" : " nominvalue");
+            }
         }
 
         if (x.getCycle() != null) {
             if (x.getCycle().booleanValue()) {
                 print0(ucase ? " CYCLE" : " cycle");
             } else {
-                print0(ucase ? " NOCYCLE" : " nocycle");
+                if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                    print0(ucase ? " NO CYCLE" : " no cycle");
+                } else {
+                    print0(ucase ? " NOCYCLE" : " nocycle");
+                }
             }
         }
 

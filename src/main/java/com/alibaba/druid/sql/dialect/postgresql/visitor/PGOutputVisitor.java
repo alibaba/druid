@@ -1082,7 +1082,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         if (x.getPrecision() != null) {
             print('(');
-            print(x.getPrecision().intValue());
+            printExpr(x.getPrecision());
             if (x.getFactionalSecondsPrecision() != null) {
                 print0(", ");
                 print(x.getFactionalSecondsPrecision().intValue());
@@ -1095,7 +1095,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(x.getToType().name());
             if (x.getToFactionalSecondsPrecision() != null) {
                 print('(');
-                print(x.getToFactionalSecondsPrecision().intValue());
+                printExpr(x.getToFactionalSecondsPrecision());
                 print(')');
             }
         }
@@ -2769,5 +2769,30 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print(' ');
         x.getExpr().accept(this);
         return false;
+    }
+
+    @Override
+    public boolean visit(OracleIsOfTypeExpr x) {
+        printExpr(x.getExpr());
+        print0(ucase ? " IS OF TYPE (" : " is of type (");
+
+        List<SQLExpr> types = x.getTypes();
+        for (int i = 0, size = types.size(); i < size; ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            SQLExpr type = types.get(i);
+            if (Boolean.TRUE == type.getAttribute("ONLY")) {
+                print0(ucase ? "ONLY " : "only ");
+            }
+            type.accept(this);
+        }
+
+        print(')');
+        return false;
+    }
+
+    public void endVisit(OracleIsOfTypeExpr x) {
+
     }
 }

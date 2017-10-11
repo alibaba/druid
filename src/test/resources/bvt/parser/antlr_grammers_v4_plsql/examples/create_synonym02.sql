@@ -1,0 +1,1 @@
+create synonym hr.chicago_employees for hr.employees@chicago_db

@@ -56,11 +56,11 @@ public class DB2SelectTest_23 extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT CURRENT DATE, CURRENT DATE\n" +
+        Assert.assertEquals("SELECT CURRENT DATE, CURRENT TIMESTAMP\n" +
                         "FROM dual", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         
-        Assert.assertEquals("select CURRENT DATE, CURRENT DATE\n" +
+        Assert.assertEquals("select CURRENT DATE, CURRENT TIMESTAMP\n" +
                         "from dual", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }

@@ -1897,6 +1897,11 @@ public class SQLStatementParser extends SQLParser {
                 return parseCreateType();
             }
 
+            if (lexer.identifierEquals(FnvHash.Constants.PUBLIC)) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+                return parseCreateSynonym();
+            }
+
             // lexer.reset(mark_bp, mark_ch, Token.CREATE);
             throw new ParserException("TODO " + lexer.info());
         } else if (token == Token.DATABASE) {
@@ -2726,82 +2731,90 @@ public class SQLStatementParser extends SQLParser {
         accept(Token.ON);
         stmt.setOn(exprParser.expr());
 
-        boolean insertFlag = false;
-        if (lexer.token == Token.WHEN) {
-            lexer.nextToken();
-            if (lexer.token == Token.MATCHED) {
-                SQLMergeStatement.MergeUpdateClause updateClause = new SQLMergeStatement.MergeUpdateClause();
+        for (;;) {
+            boolean insertFlag = false;
+            if (lexer.token == Token.WHEN) {
                 lexer.nextToken();
-                accept(Token.THEN);
-                accept(Token.UPDATE);
-                accept(Token.SET);
+                if (lexer.token == Token.MATCHED) {
+                    SQLMergeStatement.MergeUpdateClause updateClause = new SQLMergeStatement.MergeUpdateClause();
+                    lexer.nextToken();
+                    accept(Token.THEN);
+                    accept(Token.UPDATE);
+                    accept(Token.SET);
 
-                for (;;) {
-                    SQLUpdateSetItem item = this.exprParser.parseUpdateSetItem();
+                    for (; ; ) {
+                        SQLUpdateSetItem item = this.exprParser.parseUpdateSetItem();
 
-                    updateClause.addItem(item);
-                    item.setParent(updateClause);
+                        updateClause.addItem(item);
+                        item.setParent(updateClause);
 
-                    if (lexer.token == (Token.COMMA)) {
-                        lexer.nextToken();
-                        continue;
+                        if (lexer.token == (Token.COMMA)) {
+                            lexer.nextToken();
+                            continue;
+                        }
+
+                        break;
                     }
 
-                    break;
+                    if (lexer.token == Token.WHERE) {
+                        lexer.nextToken();
+                        updateClause.setWhere(exprParser.expr());
+                    }
+
+                    if (lexer.token == Token.DELETE) {
+                        lexer.nextToken();
+                        accept(Token.WHERE);
+                        updateClause.setWhere(exprParser.expr());
+                    }
+
+                    stmt.setUpdateClause(updateClause);
+                } else if (lexer.token == Token.NOT) {
+                    lexer.nextToken();
+                    insertFlag = true;
                 }
+            }
+
+            if (!insertFlag) {
+                if (lexer.token == Token.WHEN) {
+                    lexer.nextToken();
+                }
+
+                if (lexer.token == Token.NOT) {
+                    lexer.nextToken();
+                    insertFlag = true;
+                }
+            }
+
+            if (insertFlag) {
+                SQLMergeStatement.MergeInsertClause insertClause = new SQLMergeStatement.MergeInsertClause();
+
+                accept(Token.MATCHED);
+                accept(Token.THEN);
+                accept(Token.INSERT);
+
+                if (lexer.token == Token.LPAREN) {
+                    accept(Token.LPAREN);
+                    exprParser.exprList(insertClause.getColumns(), insertClause);
+                    accept(Token.RPAREN);
+                }
+                accept(Token.VALUES);
+                accept(Token.LPAREN);
+                exprParser.exprList(insertClause.getValues(), insertClause);
+                accept(Token.RPAREN);
 
                 if (lexer.token == Token.WHERE) {
                     lexer.nextToken();
-                    updateClause.setWhere(exprParser.expr());
+                    insertClause.setWhere(exprParser.expr());
                 }
 
-                if (lexer.token == Token.DELETE) {
-                    lexer.nextToken();
-                    accept(Token.WHERE);
-                    updateClause.setWhere(exprParser.expr());
-                }
-
-                stmt.setUpdateClause(updateClause);
-            } else if (lexer.token == Token.NOT) {
-                lexer.nextToken();
-                insertFlag = true;
+                stmt.setInsertClause(insertClause);
             }
-        }
 
-        if (!insertFlag) {
             if (lexer.token == Token.WHEN) {
-                lexer.nextToken();
+                continue;
             }
 
-            if (lexer.token == Token.NOT) {
-                lexer.nextToken();
-                insertFlag = true;
-            }
-        }
-
-        if (insertFlag) {
-            SQLMergeStatement.MergeInsertClause insertClause = new SQLMergeStatement.MergeInsertClause();
-
-            accept(Token.MATCHED);
-            accept(Token.THEN);
-            accept(Token.INSERT);
-
-            if (lexer.token == Token.LPAREN) {
-                accept(Token.LPAREN);
-                exprParser.exprList(insertClause.getColumns(), insertClause);
-                accept(Token.RPAREN);
-            }
-            accept(Token.VALUES);
-            accept(Token.LPAREN);
-            exprParser.exprList(insertClause.getValues(), insertClause);
-            accept(Token.RPAREN);
-
-            if (lexer.token == Token.WHERE) {
-                lexer.nextToken();
-                insertClause.setWhere(exprParser.expr());
-            }
-
-            stmt.setInsertClause(insertClause);
+            break;
         }
 
         SQLErrorLoggingClause errorClause = parseErrorLoggingClause();

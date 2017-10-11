@@ -24,26 +24,7 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLNotNullConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLNullConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
-import com.alibaba.druid.sql.ast.statement.SQLCheck;
-import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLColumnReference;
-import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueKey;
-import com.alibaba.druid.sql.ast.statement.SQLConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
-import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLUnique;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
@@ -140,8 +121,15 @@ public class SQLExprParser extends SQLParser {
         switch (token) {
             case CARET: {
                 lexer.nextToken();
+                SQLBinaryOperator op;
+                if (lexer.token == Token.EQ) {
+                    lexer.nextToken();
+                    op = SQLBinaryOperator.BitwiseXorEQ;
+                } else {
+                    op = SQLBinaryOperator.BitwiseXor;
+                }
                 SQLExpr rightExp = primary();
-                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BitwiseXor, rightExp, dbType);
+                expr = new SQLBinaryOpExpr(expr, op, rightExp, dbType);
                 expr = bitXorRest(expr);
                 break;
             }
@@ -303,6 +291,13 @@ public class SQLExprParser extends SQLParser {
                 }
                 
                 accept(Token.RPAREN);
+
+                if (lexer.token == Token.UNION && sqlExpr instanceof SQLQueryExpr) {
+                    SQLQueryExpr queryExpr = (SQLQueryExpr) sqlExpr;
+
+                    SQLSelectQuery query = this.createSelectParser().queryRest(queryExpr.getSubQuery().getQuery());
+                    queryExpr.getSubQuery().setQuery(query);
+                }
                 break;
             case INSERT:
                 lexer.nextToken();
@@ -707,6 +702,18 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLBinaryExpr(strVal);
                 break;
             }
+            case SET: {
+                Lexer.SavePoint savePoint = lexer.mark();
+                lexer.nextToken();
+                if (lexer.token() == Token.LPAREN) {
+                    sqlExpr = new SQLIdentifierExpr("SET");
+                } else {
+                    lexer.reset(savePoint);
+                    throw new ParserException("ERROR. " + lexer.info());
+                }
+                break;
+            }
+
             default:
                 throw new ParserException("ERROR. " + lexer.info());
         }
@@ -844,37 +851,37 @@ public class SQLExprParser extends SQLParser {
                 && "GROUPING".equalsIgnoreCase(((SQLIdentifierExpr) expr).getName())) {
             SQLGroupingSetExpr groupingSets = new SQLGroupingSetExpr();
             lexer.nextToken();
-            
+
             accept(Token.LPAREN);
-            
-            for (;;) {
+
+            for (; ; ) {
                 SQLExpr item;
                 if (lexer.token == Token.LPAREN) {
                     lexer.nextToken();
-                    
+
                     SQLListExpr listExpr = new SQLListExpr();
                     this.exprList(listExpr.getItems(), listExpr);
                     item = listExpr;
-                    
+
                     accept(Token.RPAREN);
                 } else {
                     item = this.expr();
                 }
-                
+
                 item.setParent(groupingSets);
                 groupingSets.addParameter(item);
-                
+
                 if (lexer.token == Token.RPAREN) {
                     break;
                 }
-                
+
                 accept(Token.COMMA);
             }
 
             this.exprList(groupingSets.getParameters(), groupingSets);
 
             accept(Token.RPAREN);
-            
+
             return groupingSets;
         } else {
             if (lexer.token == Token.LPAREN) {
@@ -992,7 +999,13 @@ public class SQLExprParser extends SQLParser {
 
         if (lexer.token == Token.USING || lexer.identifierEquals(FnvHash.Constants.USING)) {
             lexer.nextToken();
-            SQLExpr using = this.primary();
+            SQLExpr using;
+            if (lexer.token == Token.STAR) {
+                lexer.nextToken();
+                using = new SQLAllColumnExpr();
+            } else {
+                using = this.primary();
+            }
             methodInvokeExpr.setUsing(using);
         }
 
@@ -1542,8 +1555,13 @@ public class SQLExprParser extends SQLParser {
     public final SQLExpr bitOrRest(SQLExpr expr) {
         while (lexer.token == Token.BAR) {
             lexer.nextToken();
+            SQLBinaryOperator op = SQLBinaryOperator.BitwiseOr;
+            if (lexer.token == Token.BAR) {
+                lexer.nextToken();
+                op = SQLBinaryOperator.Concat;
+            }
             SQLExpr rightExp = bitAnd();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BitwiseOr, rightExp, getDbType());
+            expr = new SQLBinaryOpExpr(expr, op, rightExp, getDbType());
             expr = bitAndRest(expr);
         }
         return expr;

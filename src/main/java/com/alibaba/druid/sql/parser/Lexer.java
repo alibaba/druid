@@ -866,7 +866,40 @@ public class Lexer {
                     scanChar();
                     token = Token.LT_SUB_GT;
                 } else {
-                    token = Token.LT;
+                    if (ch == ' ') {
+                        char c1 = charAt(pos + 1);
+                        if (c1 == '=') {
+                            scanChar();
+                            scanChar();
+                            if (ch == '>') {
+                                token = Token.LTEQGT;
+                                scanChar();
+                            } else {
+                                token = Token.LTEQ;
+                            }
+                        } else if (c1 == '>') {
+                            scanChar();
+                            scanChar();
+                            token = Token.LTGT;
+                        } else if (c1 == '<') {
+                            scanChar();
+                            scanChar();
+                            token = Token.LTLT;
+                        } else if (c1 == '@') {
+                            scanChar();
+                            scanChar();
+                            token = Token.LT_MONKEYS_AT;
+                        } else if (c1 == '-' && charAt(pos + 2) == '>') {
+                            scanChar();
+                            scanChar();
+                            scanChar();
+                            token = Token.LT_SUB_GT;
+                        } else {
+                            token = Token.LT;
+                        }
+                    } else {
+                        token = Token.LT;
+                    }
                 }
                 break;
             case '!':

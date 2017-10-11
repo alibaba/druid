@@ -1375,4 +1375,14 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public void endVisit(OraclePipeRowStatement x) {
 
     }
+
+    @Override
+    public boolean visit(OracleIsOfTypeExpr x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleIsOfTypeExpr x) {
+
+    }
 }
