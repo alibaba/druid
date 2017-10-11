@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.db2.visitor;
 
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.ast.DB2Object;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2CreateTableStatement;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
@@ -56,5 +57,9 @@ public class DB2SchemaStatVisitor extends SchemaStatVisitor implements DB2ASTVis
     @Override
     public void endVisit(DB2CreateTableStatement x) {
 
+    }
+
+    protected boolean isPseudoColumn(long hash64) {
+        return hash64 == DB2Object.Constants.CURRENT_DATE || hash64 == DB2Object.Constants.CURRENT_TIME;
     }
 }

@@ -84,7 +84,9 @@ public class SQLSelectParser extends SQLParser {
     }
 
     protected SQLUnionQuery createSQLUnionQuery() {
-        return new SQLUnionQuery();
+        SQLUnionQuery union = new SQLUnionQuery();
+        union.setDbType(getDbType());
+        return union;
     }
 
     public SQLUnionQuery unionRest(SQLUnionQuery union) {

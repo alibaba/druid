@@ -25,9 +25,14 @@ import java.util.List;
 public class SQLIntervalExpr extends SQLExprImpl {
 
     private SQLExpr           value;
-    private SQLIntervalUnit unit;
+    private SQLIntervalUnit   unit;
 
     public SQLIntervalExpr(){
+    }
+
+    public SQLIntervalExpr(SQLExpr value, SQLIntervalUnit unit){
+        setValue(value);
+        this.unit = unit;
     }
 
     public SQLIntervalExpr clone() {

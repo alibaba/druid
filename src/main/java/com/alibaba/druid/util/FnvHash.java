@@ -350,6 +350,7 @@ public final class FnvHash {
 
         long DATE = fnv1a_64_lower("DATE");
         long DATETIME = fnv1a_64_lower("DATETIME");
+        long TIME = fnv1a_64_lower("TIME");
         long TIMESTAMP = fnv1a_64_lower("TIMESTAMP");
         long CLOB = fnv1a_64_lower("CLOB");
         long NCLOB = fnv1a_64_lower("NCLOB");
@@ -371,7 +372,7 @@ public final class FnvHash {
         long CURRENT = fnv1a_64_lower("CURRENT");
         long COUNT = fnv1a_64_lower("COUNT");
         long ROW_NUMBER = fnv1a_64_lower("ROW_NUMBER");
-        long WM_CONAT = fnv1a_64_lower("WM_CONAT");
+        long WM_CONCAT = fnv1a_64_lower("WM_CONCAT");
         long AVG = fnv1a_64_lower("AVG");
         long MAX = fnv1a_64_lower("MAX");
         long MIN = fnv1a_64_lower("MIN");
@@ -472,6 +473,13 @@ public final class FnvHash {
         long MINUTE = fnv1a_64_lower("MINUTE");
         long SECOND = fnv1a_64_lower("SECOND");
 
+        long SECONDS = fnv1a_64_lower("SECONDS");
+        long MINUTES = fnv1a_64_lower("MINUTES");
+        long HOURS = fnv1a_64_lower("HOURS");
+        long DAYS = fnv1a_64_lower("DAYS");
+        long MONTHS = fnv1a_64_lower("MONTHS");
+        long YEARS = fnv1a_64_lower("YEARS");
+
         long BEFORE = fnv1a_64_lower("BEFORE");
         long AFTER = fnv1a_64_lower("AFTER");
         long INSTEAD = fnv1a_64_lower("INSTEAD");
@@ -515,5 +523,6 @@ public final class FnvHash {
         long VALIDPROC = fnv1a_64_lower("VALIDPROC");
         long COMPRESS = fnv1a_64_lower("COMPRESS");
         long YES = fnv1a_64_lower("YES");
+        long WMSYS = fnv1a_64_lower("WMSYS");
     }
 }

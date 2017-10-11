@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.db2.ast.DB2Object;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
@@ -230,8 +231,6 @@ class SchemaResolveVisitorFactory {
         }
     }
 
-
-
     static class DB2ResolveVisitor extends DB2ASTVisitorAdapter implements SchemaResolveVisitor {
         private SchemaRepository repository;
         private int options;
@@ -283,6 +282,11 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLIdentifierExpr x) {
+            long hash64 = x.hashCode64();
+            if (hash64 == DB2Object.Constants.CURRENT_DATE || hash64 == DB2Object.Constants.CURRENT_TIME) {
+                return false;
+            }
+
             resolve(this, x);
             return true;
         }
@@ -1684,7 +1688,7 @@ class SchemaResolveVisitorFactory {
 
             if (ctxTable instanceof SQLJoinTableSource) {
                 String alias = tableSource.computeAlias();
-                if (alias == null) {
+                if (alias == null || tableSource instanceof SQLWithSubqueryClause.Entry) {
                     return;
                 }
 

@@ -1035,7 +1035,7 @@ public class SQLExprParser extends SQLParser {
             }
 
             if (lexer.token == Token.LPAREN) {
-                expr = methodRest(expr, name);
+                expr = methodRest(expr, name, false);
             } else {
                 expr = new SQLPropertyExpr(expr, name, hash_lower);
             }
@@ -1045,7 +1045,7 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    private SQLExpr methodRest(SQLExpr expr, String name) {
+    private SQLExpr methodRest(SQLExpr expr, String name, boolean aggregate) {
         lexer.nextToken();
 
         if (lexer.token == Token.DISTINCT) {
@@ -1066,6 +1066,21 @@ public class SQLExprParser extends SQLParser {
                 accept(Token.RPAREN);
             }
             expr = aggregateExpr;
+        } else if (aggregate) {
+            SQLAggregateExpr methodInvokeExpr = new SQLAggregateExpr(name);
+            methodInvokeExpr.setMethodName(expr.toString() + "." + name);
+            if (lexer.token == Token.RPAREN) {
+                lexer.nextToken();
+            } else {
+                if (lexer.token == Token.PLUS) {
+                    methodInvokeExpr.addArgument(new SQLIdentifierExpr("+"));
+                    lexer.nextToken();
+                } else {
+                    exprList(methodInvokeExpr.getArguments(), methodInvokeExpr);
+                }
+                accept(Token.RPAREN);
+            }
+            expr = methodInvokeExpr;
         } else {
             SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(name);
             methodInvokeExpr.setOwner(expr);
@@ -2657,7 +2672,8 @@ public class SQLExprParser extends SQLParser {
 
                 token = lexer.token;
                 if (token == Token.LPAREN) {
-                    expr = methodRest(expr, name);
+                    boolean aggregate = hash_lower == FnvHash.Constants.WMSYS && name_hash_lower == FnvHash.Constants.WM_CONCAT;
+                    expr = methodRest(expr, name, aggregate);
                     token = lexer.token;
                 } else {
                     if (name_hash_lower == FnvHash.Constants.NEXTVAL) {

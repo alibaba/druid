@@ -18,6 +18,8 @@ package com.alibaba.druid.sql.dialect.db2.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalUnit;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -93,9 +95,42 @@ public class DB2ExprParser extends SQLExprParser {
                 if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
                     lexer.nextToken();
 
-                    expr = new SQLIdentifierExpr("CURRENT DATE");
+                    expr = new SQLIdentifierExpr("CURRENT TIMESTAMP");
                 }
             }
+        } else if (lexer.identifierEquals(FnvHash.Constants.TIME)) {
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+                if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
+                    lexer.nextToken();
+
+                    expr = new SQLIdentifierExpr("CURRENT TIME");
+                }
+            }
+        } else if (lexer.identifierEquals(FnvHash.Constants.MONTHS)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.MONTH);
+            lexer.nextToken();
+            expr = intervalExpr;
+        } else if (lexer.identifierEquals(FnvHash.Constants.YEARS)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.YEAR);
+            lexer.nextToken();
+            expr = intervalExpr;
+        } else if (lexer.identifierEquals(FnvHash.Constants.DAYS)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.DAY);
+            lexer.nextToken();
+            expr = intervalExpr;
+        } else if (lexer.identifierEquals(FnvHash.Constants.HOURS)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.HOUR);
+            lexer.nextToken();
+            expr = intervalExpr;
+        } else if (lexer.identifierEquals(FnvHash.Constants.MINUTES)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.MINUTE);
+            lexer.nextToken();
+            expr = intervalExpr;
+        } else if (lexer.identifierEquals(FnvHash.Constants.SECONDS)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.SECOND);
+            lexer.nextToken();
+            expr = intervalExpr;
         }
 
         return super.primaryRest(expr);

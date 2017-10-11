@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.db2.visitor;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalUnit;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2CreateTableStatement;
@@ -142,5 +145,18 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
         } else {
             print0(ucase ? operator.name : operator.name_lcase);
         }
+    }
+
+    public boolean visit(SQLIntervalExpr x) {
+        SQLExpr value = x.getValue();
+        value.accept(this);
+
+        SQLIntervalUnit unit = x.getUnit();
+        if (unit != null) {
+            print(' ');
+            print0(ucase ? unit.name() : unit.name_lcase);
+            print(ucase ? 'S' : 's');
+        }
+        return false;
     }
 }

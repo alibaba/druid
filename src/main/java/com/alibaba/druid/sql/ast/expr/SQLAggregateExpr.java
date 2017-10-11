@@ -248,7 +248,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
             }
         }
 
-        if (hash == FnvHash.Constants.WM_CONAT
+        if (hash == FnvHash.Constants.WM_CONCAT
                 || hash == FnvHash.Constants.GROUP_CONCAT) {
             return SQLCharExpr.DEFAULT_DATA_TYPE;
         }
