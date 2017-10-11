@@ -2795,4 +2795,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public void endVisit(OracleIsOfTypeExpr x) {
 
     }
+
+    @Override
+    public boolean visit(OracleRunStatement x) {
+        print0("@@");
+        printExpr(x.getExpr());
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleRunStatement x) {
+
+    }
 }

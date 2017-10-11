@@ -5477,4 +5477,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.indentCount--;
         return false;
     }
+
+    @Override
+    public boolean visit(SQLShowErrorsStatement x) {
+        print0(ucase ? "SHOW ERRORS" : "show errors");
+        return true;
+    }
 }

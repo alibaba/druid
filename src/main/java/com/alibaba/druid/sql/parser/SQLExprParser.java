@@ -2516,6 +2516,10 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
             item.setValue(new SQLBooleanExpr(true));
             return item;
+        } else if (lexer.token == Token.ON) {
+            lexer.nextToken();
+            item.setValue(new SQLIdentifierExpr("ON"));
+            return item;
         } else {
             accept(Token.EQ);
         }

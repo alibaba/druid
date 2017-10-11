@@ -1035,4 +1035,14 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     public void endVisit(OracleIsOfTypeExpr x) {
 
     }
+
+    @Override
+    public boolean visit(OracleRunStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleRunStatement x) {
+
+    }
 }

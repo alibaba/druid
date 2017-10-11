@@ -224,7 +224,13 @@ public class OracleLexer extends Lexer {
 
     protected void scanVariable_at() {
         scanChar();
-        token = Token.MONKEYS_AT;
+
+        if (ch == '@') {
+            scanChar();
+            token = Token.MONKEYS_AT_AT;
+        } else {
+            token = Token.MONKEYS_AT;
+        }
         return;
     }
 

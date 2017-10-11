@@ -50,6 +50,7 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     private boolean            aggregate;
     private SQLName            using;
     private boolean            pipelined;
+    private boolean            resultCache;
 
     public SQLCreateFunctionStatement clone() {
         SQLCreateFunctionStatement x = new SQLCreateFunctionStatement();
@@ -247,5 +248,13 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
 
     public void setPipelined(boolean pipelined) {
         this.pipelined = pipelined;
+    }
+
+    public boolean isResultCache() {
+        return resultCache;
+    }
+
+    public void setResultCache(boolean resultCache) {
+        this.resultCache = resultCache;
     }
 }

@@ -1093,4 +1093,14 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     public void endVisit(OracleIsOfTypeExpr x) {
 
     }
+
+    @Override
+    public boolean visit(OracleRunStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleRunStatement x) {
+
+    }
 }

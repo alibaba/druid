@@ -441,4 +441,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleIsOfTypeExpr x);
 
     void endVisit(OracleIsOfTypeExpr x);
+
+    boolean visit(OracleRunStatement x);
+
+    void endVisit(OracleRunStatement x);
 }
