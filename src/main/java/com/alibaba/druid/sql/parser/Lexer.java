@@ -550,7 +550,7 @@ public class Lexer {
                     return;
                 }
 
-                if (ch == 'N') {
+                if (ch == 'N' || ch == 'n') {
                     if (charAt(pos + 1) == '\'') {
                         ++pos;
                         ch = '\'';
@@ -729,6 +729,14 @@ public class Lexer {
 
                     if (isOperator(ch)) {
                         scanOperator();
+                        return;
+                    }
+
+                    if (ch == '\\' && charAt(pos + 1) == 'N'
+                            && JdbcConstants.MYSQL.equals(dbType)) {
+                        scanChar();
+                        scanChar();
+                        token = Token.NULL;
                         return;
                     }
 

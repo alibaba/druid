@@ -16,12 +16,8 @@
 package com.alibaba.druid.sql.parser;
 
 public class SQLParser {
-
     protected final Lexer lexer;
-
     protected String      dbType;
-
-
 
     public SQLParser(String sql, String dbType){
         this(new Lexer(sql, null, dbType), dbType);

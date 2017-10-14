@@ -1380,17 +1380,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleExprStatement x) {
-        x.getExpr().accept(this);
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleExprStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleDatetimeExpr x) {
         x.getExpr().accept(this);
         SQLExpr timeZone = x.getTimeZone();
@@ -1547,7 +1536,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleAlterProcedureStatement x) {
+    public boolean visit(SQLAlterProcedureStatement x) {
         print0(ucase ? "ALTER PROCEDURE " : "alter procedure ");
         x.getName().accept(this);
         if (x.isCompile()) {
@@ -1557,11 +1546,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? " REUSE SETTINGS" : " reuse settings");
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterProcedureStatement x) {
-
     }
 
     @Override
@@ -2587,7 +2571,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         SQLStatement block = x.getBlock();
 
-        if (!create) {
+        if (block != null && !create) {
             println();
             print("IS");
             println();
@@ -2609,7 +2593,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             return false;
         }
 
-        block.accept(this);
+        boolean afterSemi = false;
+        if (block != null) {
+            block.accept(this);
+
+            if (block instanceof SQLBlockStatement
+                    && ((SQLBlockStatement) block).getStatementList().size() > 0) {
+                afterSemi = ((SQLBlockStatement) block).getStatementList().get(0).isAfterSemi();
+            }
+        }
+
+        if ((!afterSemi) && x.getParent() instanceof OracleCreatePackageStatement) {
+            print(';');
+        }
         return false;
     }
 
@@ -2666,7 +2662,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         SQLStatement block = x.getBlock();
 
-        if (!create) {
+        if (block != null && !create) {
             println();
             println("IS");
         } else {
@@ -3199,15 +3195,16 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         this.indentCount++;
 
-        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+        List<SQLStatement> statements = x.getStatements();
+        for (int i = 0, size = statements.size(); i < size; ++i) {
             println();
-            SQLStatement item = x.getStatements().get(i);
-            item.accept(this);
+            SQLStatement stmt = statements.get(i);
+            stmt.accept(this);
         }
 
         this.indentCount--;
 
-        if (x.isBody()) {
+        if (x.isBody() || statements.size() > 0) {
             println();
             print0(ucase ? "END " : "end ");
             x.getName().accept(this);

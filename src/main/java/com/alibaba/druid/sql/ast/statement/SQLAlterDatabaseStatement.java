@@ -28,6 +28,8 @@ public class SQLAlterDatabaseStatement extends SQLStatementImpl implements SQLAl
     private SQLName name;
 
     private boolean upgradeDataDirectoryName;
+
+    private SQLAlterCharacter character;
     
     public SQLAlterDatabaseStatement() {
         
@@ -46,6 +48,17 @@ public class SQLAlterDatabaseStatement extends SQLStatementImpl implements SQLAl
             name.setParent(this);
         }
         this.name = name;
+    }
+
+    public SQLAlterCharacter getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(SQLAlterCharacter character) {
+        if (character != null) {
+            character.setParent(this);
+        }
+        this.character = character;
     }
 
     public boolean isUpgradeDataDirectoryName() {

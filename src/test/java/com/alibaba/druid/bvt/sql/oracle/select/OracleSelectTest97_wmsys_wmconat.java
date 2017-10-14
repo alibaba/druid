@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
@@ -96,8 +97,13 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        SQLBinaryOpExpr expr = (SQLBinaryOpExpr) stmt.getSelect().getQueryBlock().getSelectList().get(0).getExpr();
-        assertTrue(expr.getLeft() instanceof SQLAggregateExpr);
+        SQLSelectQueryBlock queryBlock = stmt.getSelect()
+                .getQueryBlock();
+
+        SQLMethodInvokeExpr nvl = (SQLMethodInvokeExpr) queryBlock.getSelectList()
+                .get(0).getExpr();
+        SQLMethodInvokeExpr toChar =(SQLMethodInvokeExpr) nvl.getParameters().get(0);
+        assertTrue(toChar.getParameters().get(0) instanceof SQLAggregateExpr);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -105,8 +111,11 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT WMSYS.WM_CONCAT(name) + 1\n" +
-                    "FROM emp", text);
+            assertEquals("SELECT NVL(TO_CHAR(WMSYS.WM_CONCAT(NVL(O.CHILD_ITEM_CODE, O.ITEM_CODE))), ?)\n" +
+                    "FROM ECC_CPR.CCG_GTS_OSG3A_V O\n" +
+                    "WHERE O.ENABLED_FLAG = ?\n" +
+                    "\tAND NVL(O.PRICE, ?) = ?\n" +
+                    "\tAND O.CONTRACT_HEADER_ID = :B1", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());
@@ -116,8 +125,8 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(1, visitor.getTables().size());
-        assertEquals(1, visitor.getColumns().size());
-        assertEquals(0, visitor.getConditions().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(2, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
     }

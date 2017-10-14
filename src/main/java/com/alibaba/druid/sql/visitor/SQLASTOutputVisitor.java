@@ -2225,6 +2225,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public boolean visit(SQLDropEventStatement x) {
+        print0(ucase ? "DROP EVENT " : "drop event ");
+
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+
+        printExpr(x.getName());
+        return false;
+    }
+
     public boolean visit(SQLColumnDefinition x) {
         boolean parameterized = this.parameterized;
         this.parameterized = false;
@@ -3011,6 +3022,38 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " ON " : " on ");
             table.accept(this);
         }
+
+        SQLExpr algorithm = x.getAlgorithm();
+        if (algorithm != null) {
+            print0(ucase ? " ALGORITHM " : " algorithm ");
+            algorithm.accept(this);
+        }
+
+        SQLExpr lockOption = x.getLockOption();
+        if (lockOption != null) {
+            print0(ucase ? " LOCK " : " lock ");
+            lockOption.accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropLogFileGroupStatement x) {
+        print0(ucase ? "DROP LOGFILE GROUP " : "drop logfile group ");
+        x.getName().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropServerStatement x) {
+        print0(ucase ? "DROP SERVER " : "drop server ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+        x.getName().accept(this);
+
         return false;
     }
 
@@ -3064,6 +3107,78 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.getCollate() != null) {
             print0(ucase ? " COLLATE " : " collate ");
             print0(x.getCollate());
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterViewStatement x) {
+        print0(ucase ? "ALTER " : "atler ");
+
+        this.indentCount++;
+        String algorithm = x.getAlgorithm();
+        if (algorithm != null && algorithm.length() > 0) {
+            print0(ucase ? "ALGORITHM = " : "algorithm = ");
+            print0(algorithm);
+            println();
+        }
+
+        SQLName definer = x.getDefiner();
+        if (definer != null) {
+            print0(ucase ? "DEFINER = " : "definer = ");
+            definer.accept(this);
+            println();
+        }
+
+        String sqlSecurity = x.getSqlSecurity();
+        if (sqlSecurity != null && sqlSecurity.length() > 0) {
+            print0(ucase ? "SQL SECURITY = " : "sql security = ");
+            print0(sqlSecurity);
+            println();
+        }
+
+        this.indentCount--;
+
+        print0(ucase ? "VIEW " : "view ");
+
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
+        x.getTableSource().accept(this);
+
+        if (x.getColumns().size() > 0) {
+            print0(" (");
+            this.indentCount++;
+            println();
+            for (int i = 0; i < x.getColumns().size(); ++i) {
+                if (i != 0) {
+                    print0(", ");
+                    println();
+                }
+                x.getColumns().get(i).accept(this);
+            }
+            this.indentCount--;
+            println();
+            print(')');
+        }
+
+        if (x.getComment() != null) {
+            println();
+            print0(ucase ? "COMMENT " : "comment ");
+            x.getComment().accept(this);
+        }
+
+        println();
+        print0(ucase ? "AS" : "as");
+        println();
+
+        x.getSubQuery().accept(this);
+
+        if (x.isWithCheckOption()) {
+            println();
+            print0(ucase ? "WITH CHECK OPTION" : "with check option");
         }
 
         return false;
@@ -3475,6 +3590,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(x.getUsing());
         }
 
+        SQLExpr comment = x.getComment();
+        if (comment != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            comment.accept(this);
+        }
+
         return false;
     }
 
@@ -3525,6 +3646,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(" (");
         printAndAccept(x.getColumns(), ", ");
         print(')');
+
+        SQLForeignKeyImpl.Match match = x.getReferenceMatch();
+        if (match != null) {
+            print0(ucase ? " MATCH " : " match ");
+            print0(ucase ? match.name : match.name_lcase);
+        }
+
+        if (x.getOnDelete() != null) {
+            print0(ucase ? " ON DELETE " : " on delete ");
+            print0(ucase ? x.getOnDelete().name : x.getOnDelete().name_lcase);
+        }
+
+        if (x.getOnUpdate() != null) {
+            print0(ucase ? " ON UPDATE " : " on update ");
+            print0(ucase ? x.getOnUpdate().name : x.getOnUpdate().name_lcase);
+        }
+
         return false;
     }
 
@@ -3759,6 +3897,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getName().accept(this);
 
+        SQLExpr engine = x.getEngine();
+        if (engine != null) {
+            print0(ucase ? " ENGINE " : " engine ");
+            engine.accept(this);
+        }
+
         return false;
     }
 
@@ -3815,6 +3959,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.getUsing() != null) {
             print0(ucase ? " USING " : " using ");
             print0(x.getUsing());
+        }
+
+        SQLExpr comment = x.getComment();
+        if (comment != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            printExpr(comment);
         }
         return false;
     }
@@ -4751,6 +4901,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isUpgradeDataDirectoryName()) {
             print0(ucase ? " UPGRADE DATA DIRECTORY NAME" : " upgrade data directory name");
         }
+
+        SQLAlterCharacter character = x.getCharacter();
+        if (character != null) {
+            print(' ');
+            character.accept(this);
+        }
         return false;
     }
 
@@ -5482,5 +5638,24 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLShowErrorsStatement x) {
         print0(ucase ? "SHOW ERRORS" : "show errors");
         return true;
+    }
+
+    @Override
+    public boolean visit(SQLAlterCharacter x) {
+        print0(ucase ? "CHARACTER SET = " : "character set = ");
+        x.getCharacterSet().accept(this);
+
+        if (x.getCollate() != null) {
+            print0(ucase ? ", COLLATE = " : ", collate = ");
+            x.getCollate().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLExprStatement x) {
+        x.getExpr().accept(this);
+        return false;
     }
 }

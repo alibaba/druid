@@ -15,14 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
-import com.alibaba.druid.sql.ast.SQLPartition;
-import com.alibaba.druid.sql.ast.SQLPartitionValue;
-import com.alibaba.druid.sql.ast.SQLSubPartition;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -35,11 +28,11 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Match;
-import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Option;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
@@ -307,21 +300,7 @@ public class MySqlExprParser extends SQLExprParser {
 //        }
 
         if (lexer.token() == Token.VARIANT && "@".equals(lexer.stringVal())) {
-            lexer.nextToken();
-            MySqlUserName userName = new MySqlUserName();
-            if (expr instanceof SQLCharExpr) {
-                userName.setUserName(((SQLCharExpr) expr).toString());
-            } else {
-                userName.setUserName(((SQLIdentifierExpr) expr).getName());
-            }
-
-            if (lexer.token() == Token.LITERAL_CHARS) {
-                userName.setHost("'" + lexer.stringVal() + "'");
-            } else {
-                userName.setHost(lexer.stringVal());
-            }
-            lexer.nextToken();
-            return userName;
+            return userNameRest(expr);
         }
 
         if (lexer.token() == Token.ERROR) {
@@ -329,6 +308,47 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         return super.primaryRest(expr);
+    }
+
+    public SQLName userName() {
+        SQLName name = this.name();
+        if (lexer.token() == Token.LPAREN && name.hashCode64() == FnvHash.Constants.CURRENT_USER) {
+            lexer.nextToken();
+            accept(Token.RPAREN);
+            return name;
+        }
+
+        return (SQLName) userNameRest(name);
+    }
+
+    private SQLExpr userNameRest(SQLExpr expr) {
+        if (lexer.token() != Token.VARIANT || !lexer.stringVal().startsWith("@")) {
+            return expr;
+        }
+
+        MySqlUserName userName = new MySqlUserName();
+        if (expr instanceof SQLCharExpr) {
+            userName.setUserName(((SQLCharExpr) expr).toString());
+        } else {
+            userName.setUserName(((SQLIdentifierExpr) expr).getName());
+        }
+
+
+        String strVal = lexer.stringVal();
+        lexer.nextToken();
+
+        if (strVal.length() > 1) {
+            userName.setHost(strVal.substring(1));
+            return userName;
+        }
+
+        if (lexer.token() == Token.LITERAL_CHARS) {
+            userName.setHost("'" + lexer.stringVal() + "'");
+        } else {
+            userName.setHost(lexer.stringVal());
+        }
+        lexer.nextToken();
+        return userName;
     }
 
     protected SQLExpr parsePosition() {
@@ -542,14 +562,16 @@ public class MySqlExprParser extends SQLExprParser {
     protected SQLDataType parseDataTypeRest(SQLDataType dataType) {
         super.parseDataTypeRest(dataType);
 
-        if (lexer.identifierEquals(FnvHash.Constants.UNSIGNED)) {
-            lexer.nextToken();
-            dataType.getAttributes().put("UNSIGNED", true);
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.ZEROFILL)) {
-            lexer.nextToken();
-            dataType.getAttributes().put("ZEROFILL", true);
+        for (;;) {
+            if (lexer.identifierEquals(FnvHash.Constants.UNSIGNED)) {
+                lexer.nextToken();
+                ((SQLDataTypeImpl) dataType).setUnsigned(true);
+            } else if (lexer.identifierEquals(FnvHash.Constants.ZEROFILL)) {
+                lexer.nextToken();
+                ((SQLDataTypeImpl) dataType).setZerofill(true);
+            } else {
+                break;
+            }
         }
 
         return dataType;
@@ -778,12 +800,18 @@ public class MySqlExprParser extends SQLExprParser {
         accept(Token.RPAREN);
 
         if (lexer.identifierEquals(FnvHash.Constants.MATCH)) {
-            if (lexer.identifierEquals("FULL")) {
-                fk.setReferenceMatch(Match.FULL);
+            lexer.nextToken();
+            if (lexer.identifierEquals("FULL") || lexer.token() == Token.FULL) {
+                fk.setReferenceMatch(SQLForeignKeyImpl.Match.FULL);
+                lexer.nextToken();
             } else if (lexer.identifierEquals(FnvHash.Constants.PARTIAL)) {
-                fk.setReferenceMatch(Match.PARTIAL);
+                fk.setReferenceMatch(SQLForeignKeyImpl.Match.PARTIAL);
+                lexer.nextToken();
             } else if (lexer.identifierEquals(FnvHash.Constants.SIMPLE)) {
-                fk.setReferenceMatch(Match.SIMPLE);
+                fk.setReferenceMatch(SQLForeignKeyImpl.Match.SIMPLE);
+                lexer.nextToken();
+            } else {
+                throw new ParserException("TODO : " + lexer.info());
             }
         }
 
@@ -806,35 +834,6 @@ public class MySqlExprParser extends SQLExprParser {
             }
         }
         return fk;
-    }
-
-    protected Option parseReferenceOption() {
-        Option option;
-        if (lexer.token() == Token.RESTRICT || lexer.identifierEquals(FnvHash.Constants.RESTRICT)) {
-            option = Option.RESTRICT;
-            lexer.nextToken();
-        } else if (lexer.identifierEquals(FnvHash.Constants.CASCADE)) {
-            option = Option.CASCADE;
-            lexer.nextToken();
-        } else if (lexer.token() == Token.SET) {
-            lexer.nextToken();
-            accept(Token.NULL);
-            option = Option.SET_NULL;
-        } else if (lexer.token() == Token.ON || lexer.identifierEquals(FnvHash.Constants.ON)) {
-            lexer.nextToken();
-            if (lexer.identifierEquals(FnvHash.Constants.ACTION)) {
-                option = Option.NO_ACTION;
-                lexer.nextToken();
-            } else {
-                throw new ParserException("syntax error, expect ACTION, actual " + lexer.token() + " "
-                                          + lexer.info());
-            }
-        } else {
-            throw new ParserException("syntax error, expect ACTION, actual " + lexer.token() + " "
-                                      + lexer.info());
-        }
-        
-        return option;
     }
 
     protected SQLAggregateExpr parseAggregateExprRest(SQLAggregateExpr aggregateExpr) {

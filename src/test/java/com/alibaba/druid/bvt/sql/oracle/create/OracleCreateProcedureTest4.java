@@ -189,7 +189,7 @@ public class OracleCreateProcedureTest4 extends OracleTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("fact_brand_provider")));
 
-        assertEquals(22, visitor.getColumns().size());
+        assertEquals(23, visitor.getColumns().size());
         assertEquals(6, visitor.getConditions().size());
         assertEquals(4, visitor.getRelationships().size());
 

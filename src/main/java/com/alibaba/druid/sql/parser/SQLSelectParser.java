@@ -663,8 +663,12 @@ public class SQLSelectParser extends SQLParser {
             SQLTableSource rightTableSource;
             if (lexer.token == Token.LPAREN) {
                 lexer.nextToken();
-                SQLSelect select = this.select();
-                rightTableSource = new SQLSubqueryTableSource(select);
+                if (lexer.token == Token.SELECT) {
+                    SQLSelect select = this.select();
+                    rightTableSource = new SQLSubqueryTableSource(select);
+                } else  {
+                    rightTableSource = this.parseTableSource();
+                }
                 accept(Token.RPAREN);
             } else {
                 SQLExpr expr = this.expr();
@@ -677,8 +681,12 @@ public class SQLSelectParser extends SQLParser {
                 Lexer.SavePoint savePoint = lexer.mark();
                 lexer.nextToken();
 
-                if (lexer.token == Token.LPAREN
-                        || lexer.token == Token.IDENTIFIER) {
+                if (lexer.token == Token.LPAREN) {
+                    lexer.nextToken();
+                    join.setRight(rightTableSource);
+                    this.exprParser.exprList(join.getUsing(), join);
+                    accept(Token.RPAREN);
+                } else if (lexer.token == Token.IDENTIFIER) {
                     lexer.reset(savePoint);
                     join.setRight(rightTableSource);
                     return join;

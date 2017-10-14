@@ -846,10 +846,6 @@ public class WallVisitorUtils {
             return;
         }
 
-        String tableName = x.getTableName().getSimpleName();
-        Set<String> updateCheckColumns = config.getUpdateCheckTable(tableName);
-        boolean isUpdateCheckTable = updateCheckColumns != null && !updateCheckColumns.isEmpty();
-
         SQLExpr where = x.getWhere();
         if (where == null) {
             WallContext context = WallContext.current();
@@ -877,6 +873,15 @@ public class WallVisitorUtils {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "update alway true condition not allow", x);
                 }
             }
+
+            SQLName table = x.getTableName();
+            if (table == null) {
+                return;
+            }
+
+            String tableName = table.getSimpleName();
+            Set<String> updateCheckColumns = config.getUpdateCheckTable(tableName);
+            boolean isUpdateCheckTable = updateCheckColumns != null && !updateCheckColumns.isEmpty();
 
             WallUpdateCheckHandler updateCheckHandler = config.getUpdateCheckHandler();
             if (isUpdateCheckTable && updateCheckHandler != null) {

@@ -297,7 +297,8 @@ public class MySqlSelectParser extends SQLSelectParser {
             update.setTargetAffectRow(targetAffectRow);
         }
 
-        SQLTableSource updateTableSource = this.exprParser.createSelectParser().parseTableSource();
+        SQLSelectParser selectParser = this.exprParser.createSelectParser();
+        SQLTableSource updateTableSource = selectParser.parseTableSource();
         update.setTableSource(updateTableSource);
 
         accept(Token.SET);

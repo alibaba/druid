@@ -123,4 +123,47 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
         cloneTo(x);
         return x;
     }
+
+    public static enum Match {
+        FULL("FULL"), PARTIAL("PARTIAL"), SIMPLE("SIMPLE");
+
+        public final String name;
+        public final String name_lcase;
+
+        Match(String name){
+            this.name = name;
+            this.name_lcase = name.toLowerCase();
+        }
+    }
+
+    public static enum On {
+        DELETE("DELETE"), //
+        UPDATE("UPDATE");
+
+        public final String name;
+        public final String name_lcase;
+
+        On(String name){
+            this.name = name;
+            this.name_lcase = name.toLowerCase();
+        }
+    }
+
+    public static enum Option {
+
+        RESTRICT("RESTRICT"), CASCADE("CASCADE"), SET_NULL("SET NULL"), NO_ACTION("NO ACTION");
+
+        public final String name;
+        public final String name_lcase;
+
+        Option(String name){
+            this.name = name;
+            this.name_lcase = name.toLowerCase();
+        }
+
+        public String getText() {
+            return name;
+        }
+
+    }
 }

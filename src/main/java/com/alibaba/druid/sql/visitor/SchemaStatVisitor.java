@@ -538,7 +538,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
                 handleRelationship(left, x.getOperator().name, right);
                 break;
-            case BooleanOr:{
+            case BooleanOr: {
                 List<SQLExpr> list = SQLBinaryOpExpr.split(x, op);
 
                 for (SQLExpr item : list) {
@@ -551,6 +551,15 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
                 return false;
             }
+            case Modulus:
+                if (right instanceof SQLIdentifierExpr) {
+                    long hashCode64 = ((SQLIdentifierExpr) right).hashCode64();
+                    if (hashCode64 == FnvHash.Constants.ISOPEN) {
+                        left.accept(this);
+                        return false;
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -1834,6 +1843,16 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
+    public boolean visit(SQLAlterViewStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
+        x.getSubQuery().accept(this);
+        return false;
+    }
+
     @Override
     public boolean visit(SQLAlterTableDropForeignKey x) {
         return false;
@@ -2375,5 +2394,18 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLAlterTypeStatement x) {
         return false;
+    }
+    public boolean visit(SQLAlterProcedureStatement x) {
+        return false;
+    }
+
+    public boolean visit(SQLExprStatement x) {
+        SQLExpr expr = x.getExpr();
+
+        if (expr instanceof SQLName) {
+            return false;
+        }
+
+        return true;
     }
 }

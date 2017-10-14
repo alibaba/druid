@@ -457,6 +457,11 @@ public class SchemaRepository {
             return false;
         }
 
+        public boolean visit(SQLAlterViewStatement x) {
+            acceptView(x);
+            return false;
+        }
+
         public boolean visit(SQLCreateIndexStatement x) {
             acceptCreateIndex(x);
             return false;
@@ -515,6 +520,11 @@ public class SchemaRepository {
             return false;
         }
 
+        public boolean visit(SQLAlterViewStatement x) {
+            acceptView(x);
+            return false;
+        }
+
         public boolean visit(SQLCreateIndexStatement x) {
             acceptCreateIndex(x);
             return false;
@@ -564,6 +574,11 @@ public class SchemaRepository {
         }
 
         public boolean visit(SQLCreateViewStatement x) {
+            acceptView(x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterViewStatement x) {
             acceptView(x);
             return false;
         }
@@ -691,6 +706,22 @@ public class SchemaRepository {
     }
 
     boolean acceptView(SQLCreateViewStatement x) {
+        String schemaName = x.getSchema();
+
+        Schema schema = findSchema(schemaName, true);
+
+        String name = x.computeName();
+        SchemaObject view = schema.findTableOrView(name);
+        if (view != null) {
+            return false;
+        }
+
+        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.View, x.clone());
+        schema.objects.put(object.nameHashCode64(), object);
+        return true;
+    }
+
+    boolean acceptView(SQLAlterViewStatement x) {
         String schemaName = x.getSchema();
 
         Schema schema = findSchema(schemaName, true);

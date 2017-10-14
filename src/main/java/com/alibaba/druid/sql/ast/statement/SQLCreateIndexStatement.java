@@ -39,6 +39,8 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
     // for mysql
     private String                     using;
 
+    private SQLExpr                    comment;
+
     public SQLCreateIndexStatement(){
 
     }
@@ -168,6 +170,20 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
         }
         x.type = type;
         x.using = using;
+        if (comment != null) {
+            x.setComment(comment.clone());
+        }
         return x;
+    }
+
+    public SQLExpr getComment() {
+        return comment;
+    }
+
+    public void setComment(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.comment = x;
     }
 }

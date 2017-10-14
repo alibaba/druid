@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.mysql.select;
+package com.alibaba.druid.not_support.sql.mysql;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -28,7 +28,7 @@ import java.util.List;
 
 public class MySqlSelectTest_69_mysql8_windows_function extends MysqlTest {
 
-    public void test_0() throws Exception {
+    public static void test_0() throws Exception {
         String sql =  "SELECT\n" +
                 "         val,\n" +
                 "         ROW_NUMBER()   OVER w AS 'row_number',\n" +

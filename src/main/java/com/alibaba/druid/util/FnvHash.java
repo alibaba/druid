@@ -405,6 +405,7 @@ public final class FnvHash {
         long LEVEL = fnv1a_64_lower("LEVEL");
         long CONNECT_BY_ISCYCLE = fnv1a_64_lower("CONNECT_BY_ISCYCLE");
         long CURRENT_TIMESTAMP = fnv1a_64_lower("CURRENT_TIMESTAMP");
+        long CURRENT_USER = fnv1a_64_lower("CURRENT_USER");
         long FALSE = fnv1a_64_lower("FALSE");
         long TRUE = fnv1a_64_lower("TRUE");
         long SET = fnv1a_64_lower("SET");
@@ -415,12 +416,15 @@ public final class FnvHash {
         long LONG_RAW = fnv1a_64_lower("LONG RAW");
         long LONG = fnv1a_64_lower("LONG");
         long ROWNUM = fnv1a_64_lower("ROWNUM");
+        long SYSDATE = fnv1a_64_lower("SYSDATE");
+        long SQLCODE = fnv1a_64_lower("SQLCODE");
         long PRECISION = fnv1a_64_lower("PRECISION");
         long DOUBLE = fnv1a_64_lower("DOUBLE");
         long DOUBLE_PRECISION = fnv1a_64_lower("DOUBLE PRECISION");
         long WITHOUT = fnv1a_64_lower("WITHOUT");
 
         long DEFINER = fnv1a_64_lower("DEFINER");
+        long EVENT = fnv1a_64_lower("EVENT");
         long DETERMINISTIC = fnv1a_64_lower("DETERMINISTIC");
         long CONTAINS = fnv1a_64_lower("CONTAINS");
         long SQL = fnv1a_64_lower("SQL");
@@ -506,6 +510,9 @@ public final class FnvHash {
         long OFF = fnv1a_64_lower("OFF");
         long IDENTITY_INSERT = fnv1a_64_lower("IDENTITY_INSERT");
         long PASSWORD = fnv1a_64_lower("PASSWORD");
+        long SOCKET = fnv1a_64_lower("SOCKET");
+        long OWNER = fnv1a_64_lower("OWNER");
+        long PORT = fnv1a_64_lower("PORT");
         long PUBLIC = fnv1a_64_lower("PUBLIC");
         long MATERIALIZED = fnv1a_64_lower("MATERIALIZED");
         long BITMAP = fnv1a_64_lower("BITMAP");
@@ -530,5 +537,27 @@ public final class FnvHash {
 
         long DEPTH = fnv1a_64_lower("DEPTH");
         long BREADTH = fnv1a_64_lower("BREADTH");
+
+        long SCHEDULE = fnv1a_64_lower("SCHEDULE");
+        long COMPLETION = fnv1a_64_lower("COMPLETION");
+        long RENAME = fnv1a_64_lower("RENAME");
+        long AT = fnv1a_64_lower("AT");
+        long LANGUAGE = fnv1a_64_lower("LANGUAGE");
+        long LOGFILE = fnv1a_64_lower("LOGFILE");
+        long INITIAL_SIZE = fnv1a_64_lower("INITIAL_SIZE");
+        long MAX_SIZE = fnv1a_64_lower("MAX_SIZE");
+        long NODEGROUP = fnv1a_64_lower("NODEGROUP");
+        long EXTENT_SIZE = fnv1a_64_lower("EXTENT_SIZE");
+        long AUTOEXTEND_SIZE = fnv1a_64_lower("AUTOEXTEND_SIZE");
+        long FILE_BLOCK_SIZE = fnv1a_64_lower("FILE_BLOCK_SIZE");
+        long SERVER = fnv1a_64_lower("SERVER");
+        long HOST = fnv1a_64_lower("HOST");
+        long ADD = fnv1a_64_lower("ADD");
+        long ALGORITHM = fnv1a_64_lower("ALGORITHM");
+        long EVERY = fnv1a_64_lower("EVERY");
+        long STARTS = fnv1a_64_lower("STARTS");
+        long ENDS = fnv1a_64_lower("ENDS");
+        long BINARY = fnv1a_64_lower("BINARY");
+        long ISOPEN = fnv1a_64_lower("ISOPEN");
     }
 }
