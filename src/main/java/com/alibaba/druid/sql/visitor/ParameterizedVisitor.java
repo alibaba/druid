@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.visitor;
 
+import java.util.List;
+
 public interface ParameterizedVisitor extends PrintableVisitor {
 
     int getReplaceCount();
@@ -23,4 +25,5 @@ public interface ParameterizedVisitor extends PrintableVisitor {
 
     String getDbType();
 
+    void setOutputParameters(List<Object> parameters);
 }

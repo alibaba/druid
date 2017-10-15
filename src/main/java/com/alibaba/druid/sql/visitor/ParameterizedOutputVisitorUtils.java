@@ -34,10 +34,24 @@ public class ParameterizedOutputVisitorUtils {
     };
 
     public static String parameterize(String sql, String dbType) {
-        return parameterize(sql, dbType, null);
+        return parameterize(sql, dbType, null, null);
     }
 
-    public static String parameterize(String sql, String dbType, SQLSelectListCache selectListCache) {
+    public static String parameterize(String sql
+            , String dbType
+            , SQLSelectListCache selectListCache) {
+        return parameterize(sql, dbType, selectListCache, null);
+    }
+
+    public static String parameterize(String sql
+            , String dbType
+            , List<Object> outParameters) {
+        return parameterize(sql, dbType, null, outParameters);
+    }
+
+    public static String parameterize(String sql
+            , String dbType
+            , SQLSelectListCache selectListCache, List<Object> outParameters) {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, features);
 
         if (selectListCache != null) {
@@ -51,6 +65,9 @@ public class ParameterizedOutputVisitorUtils {
 
         StringBuilder out = new StringBuilder(sql.length());
         ParameterizedVisitor visitor = createParameterizedOutputVisitor(out, dbType);
+        if (outParameters != null) {
+            visitor.setOutputParameters(outParameters);
+        }
 
         for (int i = 0; i < statementList.size(); i++) {
             if (i > 0) {
