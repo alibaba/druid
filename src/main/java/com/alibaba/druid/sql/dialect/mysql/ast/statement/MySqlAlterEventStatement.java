@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlAlterEventStatement extends MySqlStatementImpl implements SQLAlterStatement {
@@ -35,6 +36,18 @@ public class MySqlAlterEventStatement extends MySqlStatementImpl implements SQLA
 
     public MySqlAlterEventStatement() {
         setDbType(JdbcConstants.MYSQL);
+    }
+
+    public void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, definer);
+            acceptChild(visitor, name);
+            acceptChild(visitor, schedule);
+            acceptChild(visitor, renameTo);
+            acceptChild(visitor, comment);
+            acceptChild(visitor, eventBody);
+        }
+        visitor.endVisit(this);
     }
 
     public SQLName getDefiner() {

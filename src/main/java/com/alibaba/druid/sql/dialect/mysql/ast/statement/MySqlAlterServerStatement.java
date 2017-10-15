@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlAlterServerStatement extends MySqlStatementImpl implements SQLAlterStatement {
     private SQLName name;
@@ -45,5 +46,13 @@ public class MySqlAlterServerStatement extends MySqlStatementImpl implements SQL
             user.setParent(this);
         }
         this.user = user;
+    }
+
+    public void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, name);
+            acceptChild(visitor, user);
+        }
+        visitor.endVisit(this);
     }
 }

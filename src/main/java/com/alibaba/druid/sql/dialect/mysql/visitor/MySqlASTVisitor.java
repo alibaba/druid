@@ -479,4 +479,16 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlCreateTableSpaceStatement x);
     void endVisit(MySqlCreateTableSpaceStatement x);
 
+    boolean visit(MySqlAlterEventStatement x);
+    void endVisit(MySqlAlterEventStatement x);
+
+    boolean visit(MySqlAlterLogFileGroupStatement x);
+    void endVisit(MySqlAlterLogFileGroupStatement x);
+
+    boolean visit(MySqlAlterServerStatement x);
+    void endVisit(MySqlAlterServerStatement x);
+
+    boolean visit(MySqlAlterTablespaceStatement x);
+    void endVisit(MySqlAlterTablespaceStatement x);
+
 } //

@@ -3918,6 +3918,149 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     }
 
+    @Override
+    public boolean visit(MySqlAlterEventStatement x) {
+        print0(ucase ? "ALTER " : "alter ");
+
+        SQLName definer = x.getDefiner();
+        if (definer != null) {
+            print0(ucase ? "DEFINER = " : "definer = ");
+        }
+
+        print0(ucase ? "EVENT " : "evnet ");
+        printExpr(x.getName());
+
+        MySqlEventSchedule schedule = x.getSchedule();
+        if (schedule != null) {
+            print0(ucase ? " ON SCHEDULE " : " on schedule ");
+            schedule.accept(this);
+        }
+
+        Boolean enable = x.getEnable();
+        if (enable != null) {
+            if (enable) {
+                print0(ucase ? " ENABLE" : " enable");
+            } else {
+                print0(ucase ? " DISABLE" : " disable");
+                if (x.isDisableOnSlave()) {
+                    print0(ucase ? " ON SLAVE" : " on slave");
+                }
+            }
+        }
+
+        SQLExpr comment = x.getComment();
+        if (comment != null) {
+            print0(ucase ? "COMMENT " : "comment ");
+            comment.accept(this);
+        }
+
+        SQLStatement body = x.getEventBody();
+        if (body != null) {
+            println();
+            if (!(body instanceof SQLExprStatement)) {
+                print0(ucase ? "DO" : "do");
+                println();
+            }
+            body.accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterEventStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterLogFileGroupStatement x) {
+        print0(ucase ? "ALTER LOGFILE GROUP " : "alter logfile group ");
+        x.getName().accept(this);
+        print(' ');
+        print0(ucase ? "ADD UNDOFILE " : "add undofile ");
+        printExpr(x.getAddUndoFile());
+
+        SQLExpr initialSize = x.getInitialSize();
+        if (initialSize != null) {
+            print0(ucase ? " INITIAL_SIZE " : " initial_size ");
+            printExpr(initialSize);
+        }
+
+        if (x.isWait()) {
+            print0(ucase ? " WAIT" : " wait");
+        }
+
+        SQLExpr engine = x.getEngine();
+        if (engine != null) {
+            print0(ucase ? " ENGINE " : " engine ");
+            printExpr(engine);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterLogFileGroupStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterServerStatement x) {
+        print0(ucase ? "ATLER SERVER " : "alter server ");
+        x.getName().accept(this);
+
+        print(" OPTIONS(");
+        SQLExpr user = x.getUser();
+        if (user != null) {
+            print0(ucase ? "USER " : "user ");
+            printExpr(user);
+        }
+
+        print(')');
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterServerStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTablespaceStatement x) {
+        print0(ucase ? "CREATE TABLESPACE " : "create tablespace ");
+        x.getName().accept(this);
+
+        SQLExpr addDataFile = x.getAddDataFile();
+        if (addDataFile != null) {
+            print0(ucase ? " ADD DATAFILE " : " add datafile ");
+            addDataFile.accept(this);
+        }
+
+        SQLExpr initialSize = x.getInitialSize();
+        if (initialSize != null) {
+            print0(ucase ? " INITIAL_SIZE = " : " initial_size = ");
+            initialSize.accept(this);
+        }
+
+        if (x.isWait()) {
+            print0(ucase ? " WAIT" : " wait");
+        }
+
+        SQLExpr engine = x.getEngine();
+        if (engine != null) {
+            print0(ucase ? " ENGINE " : " engine ");
+            printExpr(engine);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTablespaceStatement x) {
+
+    }
+
     protected void printQuery(SQLSelectQuery x) {
         Class<?> clazz = x.getClass();
         if (clazz == MySqlSelectQueryBlock.class) {

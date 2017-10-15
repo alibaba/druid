@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlAlterLogFileGroupStatement extends MySqlStatementImpl implements SQLAlterStatement {
     private SQLName name;
@@ -25,6 +26,16 @@ public class MySqlAlterLogFileGroupStatement extends MySqlStatementImpl implemen
     private SQLExpr initialSize;
     private boolean wait;
     private SQLExpr engine;
+
+    public void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, name);
+            acceptChild(visitor, addUndoFile);
+            acceptChild(visitor, initialSize);
+            acceptChild(visitor, engine);
+        }
+        visitor.endVisit(this);
+    }
 
     public SQLName getName() {
         return name;
