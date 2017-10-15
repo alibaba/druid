@@ -559,5 +559,10 @@ public final class FnvHash {
         long ENDS = fnv1a_64_lower("ENDS");
         long BINARY = fnv1a_64_lower("BINARY");
         long ISOPEN = fnv1a_64_lower("ISOPEN");
+
+        long RS = fnv1a_64_lower("RS");
+        long RR = fnv1a_64_lower("RR");
+        long CS = fnv1a_64_lower("CS");
+        long UR = fnv1a_64_lower("UR");
     }
 }

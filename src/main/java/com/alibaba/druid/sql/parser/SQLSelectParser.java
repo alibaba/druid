@@ -20,6 +20,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.util.FnvHash;
@@ -421,9 +422,27 @@ public class SQLSelectParser extends SQLParser {
                 if (lexer.identifierEquals(FnvHash.Constants.CUBE)) {
                     lexer.nextToken();
                     groupBy.setWithCube(true);
-                } else {
-                    acceptIdentifier("ROLLUP");
+                } else if(lexer.identifierEquals(FnvHash.Constants.ROLLUP)) {
+                    lexer.nextToken();
                     groupBy.setWithRollUp(true);
+                } else if (lexer.identifierEquals(FnvHash.Constants.RS)
+                        && JdbcConstants.DB2.equals(dbType)) {
+                    lexer.nextToken();
+                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.RS);
+                } else if (lexer.identifierEquals(FnvHash.Constants.RR)
+                        && JdbcConstants.DB2.equals(dbType)) {
+                    lexer.nextToken();
+                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.RR);
+                } else if (lexer.identifierEquals(FnvHash.Constants.CS)
+                        && JdbcConstants.DB2.equals(dbType)) {
+                    lexer.nextToken();
+                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.CS);
+                } else if (lexer.identifierEquals(FnvHash.Constants.UR)
+                        && JdbcConstants.DB2.equals(dbType)) {
+                    lexer.nextToken();
+                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.UR);
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
                 }
             }
             
