@@ -864,7 +864,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             createAndStartDestroyThread();
 
             initedLatch.await();
-            init = true;
+            init = poolingCount > 0;
 
             initedTime = new Date();
             registerMbean();
@@ -886,19 +886,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
         } catch (SQLException e) {
+            init = false;
             LOG.error("{dataSource-" + this.getID() + "} init error", e);
             throw e;
         } catch (InterruptedException e) {
             throw new SQLException(e.getMessage(), e);
         } catch (RuntimeException e){
+            init = false;
             LOG.error("{dataSource-" + this.getID() + "} init error", e);
             throw e;
         } catch (Error e){
+            init = false;
             LOG.error("{dataSource-" + this.getID() + "} init error", e);
             throw e;
         }
         finally {
-            inited = true;
             lock.unlock();
 
             if (init && LOG.isInfoEnabled()) {
@@ -912,6 +914,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 msg += "} inited";
 
                 LOG.info(msg);
+            }
+
+            if (!init) {
+                close();
             }
         }
     }
