@@ -1836,6 +1836,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     }
 
+    @Override
+    public boolean visit(SQLDropSynonymStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropSynonymStatement x) {
+
+    }
+
     public final boolean isEnabled(VisitorFeature feature) {
         return VisitorFeature.isEnabled(this.features, feature);
     }

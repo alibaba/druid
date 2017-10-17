@@ -790,4 +790,7 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLDropServerStatement x);
     void endVisit(SQLDropServerStatement x);
+
+    boolean visit(SQLDropSynonymStatement x);
+    void endVisit(SQLDropSynonymStatement x);
 }

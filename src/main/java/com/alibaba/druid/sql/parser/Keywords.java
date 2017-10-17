@@ -193,13 +193,13 @@ public class Keywords {
         }
     }
 
-    public Token getKeyword(long hash) {
-        int index = Arrays.binarySearch(hashArray, hash);
-        if (index < 0) {
-            return null;
-        }
-        return tokens[index];
+public Token getKeyword(long hash) {
+    int index = Arrays.binarySearch(hashArray, hash);
+    if (index < 0) {
+        return null;
     }
+    return tokens[index];
+}
 
     public Token getKeyword(String key) {
         long k = Utils.fnv_64_lower(key);

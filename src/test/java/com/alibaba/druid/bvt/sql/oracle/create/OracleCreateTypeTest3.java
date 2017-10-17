@@ -57,7 +57,7 @@ public class OracleCreateTypeTest3 extends OracleTest {
 
             assertEquals("CREATE TYPE data_typ1 AS OBJECT (\n" +
                     "\tyear NUMBER, \n" +
-                    "\tFUNCTION prod (invent NUMBER) RETURN NUMBER\n" +
+                    "\tMEMBER FUNCTION prod (invent NUMBER) RETURN NUMBER\n" +
                     ");", text);
         }
 
@@ -66,7 +66,7 @@ public class OracleCreateTypeTest3 extends OracleTest {
 
             assertEquals("create type data_typ1 AS OBJECT (\n" +
                     "\tyear NUMBER, \n" +
-                    "\tfunction prod (invent NUMBER) return NUMBER\n" +
+                    "\tmember function prod (invent NUMBER) return NUMBER\n" +
                     ");", text);
         }
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));

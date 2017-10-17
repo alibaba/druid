@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.not_support.sql.oracle;
+package com.alibaba.druid.bvt.sql.oracle.create;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -53,19 +53,13 @@ public class OracleCreateTypeTest4 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("CREATE TYPE data_typ1 AS OBJECT (\n" +
-                    "\tyear NUMBER, \n" +
-                    "\tFUNCTION prod (invent NUMBER) RETURN NUMBER\n" +
-                    ");", text);
+            assertEquals("CREATE OR REPLACE TYPE cms_contract_config_obj_TABLE AS TABLE OF ECC_CPR.cms_contract_config_obj", text);
         }
 
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-            assertEquals("create type data_typ1 AS OBJECT (\n" +
-                    "\tyear NUMBER, \n" +
-                    "\tfunction prod (invent NUMBER) return NUMBER\n" +
-                    ");", text);
+            assertEquals("create or replace type cms_contract_config_obj_TABLE as table of ECC_CPR.cms_contract_config_obj", text);
         }
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

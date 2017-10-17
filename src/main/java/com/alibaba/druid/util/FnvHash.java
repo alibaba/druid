@@ -514,16 +514,23 @@ public final class FnvHash {
         long OWNER = fnv1a_64_lower("OWNER");
         long PORT = fnv1a_64_lower("PORT");
         long PUBLIC = fnv1a_64_lower("PUBLIC");
+        long SYNONYM = fnv1a_64_lower("SYNONYM");
         long MATERIALIZED = fnv1a_64_lower("MATERIALIZED");
         long BITMAP = fnv1a_64_lower("BITMAP");
         long PACKAGE = fnv1a_64_lower("PACKAGE");
         long TRUNC = fnv1a_64_lower("TRUNC");
         long SYSTIMESTAMP = fnv1a_64_lower("SYSTIMESTAMP");
         long TYPE = fnv1a_64_lower("TYPE");
+        long MAP = fnv1a_64_lower("MAP");
         long ONLY = fnv1a_64_lower("ONLY");
         long MEMBER = fnv1a_64_lower("MEMBER");
         long STATIC = fnv1a_64_lower("STATIC");
+        long FINAL = fnv1a_64_lower("FINAL");
+        long INSTANTIABLE = fnv1a_64_lower("INSTANTIABLE");
         long UNSUPPORTED = fnv1a_64_lower("UNSUPPORTED");
+        long VARRAY = fnv1a_64_lower("VARRAY");
+        long AUTHID = fnv1a_64_lower("AUTHID");
+        long UNDER = fnv1a_64_lower("UNDER");
         long USERENV = fnv1a_64_lower("USERENV");
         long NUMTODSINTERVAL = fnv1a_64_lower("NUMTODSINTERVAL");
 

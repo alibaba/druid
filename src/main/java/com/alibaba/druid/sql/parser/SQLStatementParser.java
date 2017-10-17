@@ -2031,6 +2031,11 @@ public class SQLStatementParser extends SQLParser {
                 return parseCreateSynonym();
             }
 
+            if (lexer.identifierEquals(FnvHash.Constants.SYNONYM)) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+                return parseCreateSynonym();
+            }
+
             // lexer.reset(mark_bp, mark_ch, Token.CREATE);
             throw new ParserException("TODO " + lexer.info());
         } else if (token == Token.DATABASE) {
@@ -2469,14 +2474,14 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
         }
 
-        if (lexer.identifierEquals("DEFINER")) {
+        if (lexer.identifierEquals(FnvHash.Constants.DEFINER)) {
             lexer.nextToken();
             accept(Token.EQ);
             SQLName definer = (SQLName) ((MySqlExprParser) this.exprParser).userName();
             createView.setDefiner(definer);
         }
 
-        if (lexer.identifierEquals("SQL")) {
+        if (lexer.identifierEquals(FnvHash.Constants.SQL)) {
             lexer.nextToken();
             acceptIdentifier("SECURITY");
             String sqlSecurity = lexer.stringVal();

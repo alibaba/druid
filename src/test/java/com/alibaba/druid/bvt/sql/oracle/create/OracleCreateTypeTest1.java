@@ -58,23 +58,27 @@ public class OracleCreateTypeTest1 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("CREATE OR REPLACE TYPE \"STRCAT_TYPE\" AS OBJECT (\n" +
-                    "\tSTATIC FUNCTION ODCIAggregateInitialize (cs_ctx IN OUT strcat_type) RETURN numberBEGIN\n" +
+            assertEquals("CREATE OR REPLACE TYPE BODY \"STRCAT_TYPE\" IS\n" +
+                    "\tSTATIC FUNCTION ODCIAggregateInitialize (cs_ctx IN OUT strcat_type) RETURN number\n" +
+                    "\tIS\n" +
+                    "\tBEGIN\n" +
                     "\t\tcs_ctx := strcat_type(NULL);\n" +
                     "\t\tRETURN ODCIConst.Success;\n" +
                     "\tEND;\n" +
-                    ")", text);
+                    "END", text);
         }
 
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-            assertEquals("create or replace type \"STRCAT_TYPE\" AS OBJECT (\n" +
-                    "\tstatic function ODCIAggregateInitialize (cs_ctx in out strcat_type) return numberbegin\n" +
+            assertEquals("create or replace type body \"STRCAT_TYPE\" is\n" +
+                    "\tstatic function ODCIAggregateInitialize (cs_ctx in out strcat_type) return number\n" +
+                    "\tis\n" +
+                    "\tbegin\n" +
                     "\t\tcs_ctx := strcat_type(null);\n" +
                     "\t\treturn ODCIConst.Success;\n" +
                     "\tend;\n" +
-                    ")", text);
+                    "END", text);
         }
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 
