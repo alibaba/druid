@@ -34,6 +34,7 @@ public class SQLStatementParser extends SQLParser {
     protected boolean            parseCompleteValues = true;
     protected int                parseValuesSize     = 3;
     protected SQLSelectListCache selectListCache     = null;
+    protected InsertColumnsCache insertColumnsCache  = null;
 
     public SQLStatementParser(String sql){
         this(sql, null);

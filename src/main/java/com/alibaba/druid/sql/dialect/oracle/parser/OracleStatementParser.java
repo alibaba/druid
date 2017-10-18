@@ -2656,13 +2656,38 @@ public class OracleStatementParser extends SQLStatementParser {
 
                 if (type) {
                     accept(Token.IS);
-                    acceptIdentifier("REF");
-                    accept(Token.CURSOR);
-                    varItem.setDataType(new SQLDataTypeImpl("REF CURSOR"));
+                    if (lexer.identifierEquals(FnvHash.Constants.RECORD)) {
+                        lexer.nextToken();
+
+                        SQLRecordDataType recordDataType = new SQLRecordDataType();
+
+                        accept(Token.LPAREN);
+                        for (;;) {
+                            SQLColumnDefinition column = this.exprParser.parseColumn();
+                            recordDataType.addColumn(column);
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            break;
+                        }
+                        accept(Token.RPAREN);
+                        varItem.setDataType(recordDataType);
+                    } else {
+                        acceptIdentifier("REF");
+                        accept(Token.CURSOR);
+                        varItem.setDataType(new SQLDataTypeImpl("REF CURSOR"));
+                    }
                 } else {
                     varItem.setDataType(this.exprParser.parseDataType(false));
                 }
                 varItem.setParent(varDecl);
+
+                if (lexer.token() == Token.COLONEQ) {
+                    lexer.nextToken();
+                    SQLExpr defaultVal = this.exprParser.expr();
+                    varItem.setValue(defaultVal);
+                }
 
                 varDecl.getItems().add(varItem);
 

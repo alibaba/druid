@@ -43,7 +43,7 @@ public class Lexer {
     protected static SymbolTable symbols_l2 = new SymbolTable(512);
 
     protected int          features       = 0; //SQLParserFeature.of(SQLParserFeature.EnableSQLBinaryOpExprGroup);
-    protected final String text;
+    public    final String text;
     protected int          pos;
     protected int          mark;
 
@@ -209,6 +209,11 @@ public class Lexer {
 
     public void reset() {
         this.reset(this.savePoint);
+    }
+
+    public void reset(int pos) {
+        this.pos = pos;
+        this.ch = charAt(pos);
     }
 
     public Lexer(String input, boolean skipComment){

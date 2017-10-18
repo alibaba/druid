@@ -1244,12 +1244,17 @@ public class SQLExprParser extends SQLParser {
 
     public SQLName name() {
         String identName;
+        long hash = 0;
         if (lexer.token == Token.LITERAL_ALIAS) {
             identName = lexer.stringVal();
             lexer.nextToken();
         } else if (lexer.token == Token.IDENTIFIER) {
             identName = lexer.stringVal();
 
+            char c0 = identName.charAt(0);
+            if (c0 != '[') {
+                hash = lexer.hash_lower();
+            }
             lexer.nextToken();
         } else if (lexer.token == Token.LITERAL_CHARS) {
             identName = '\'' + lexer.stringVal() + '\'';
@@ -1312,7 +1317,7 @@ public class SQLExprParser extends SQLParser {
             }
         }
 
-        SQLName name = new SQLIdentifierExpr(identName);
+        SQLName name = new SQLIdentifierExpr(identName, hash);
 
         name = nameRest(name);
 

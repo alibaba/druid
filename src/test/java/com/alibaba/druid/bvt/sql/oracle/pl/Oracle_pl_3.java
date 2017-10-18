@@ -87,8 +87,8 @@ public class Oracle_pl_3 extends OracleTest {
 			String output = SQLUtils.toOracleString(stmt);
 			assertEquals("CREATE OR REPLACE TYPE type_body_elements AS OBJECT (\n" +
 							"\tsome_string varchar2(64), \n" +
-							"\tFUNCTION function_one () RETURN varchar2, \n" +
-							"\tFUNCTION function_two () RETURN varchar2\n" +
+							"\tMEMBER FUNCTION function_one () RETURN varchar2, \n" +
+							"\tMEMBER FUNCTION function_two () RETURN varchar2\n" +
 							");", //
 					output);
 		}
@@ -96,8 +96,8 @@ public class Oracle_pl_3 extends OracleTest {
 			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 			assertEquals("create or replace type type_body_elements AS OBJECT (\n" +
 							"\tsome_string varchar2(64), \n" +
-							"\tfunction function_one () return varchar2, \n" +
-							"\tfunction function_two () return varchar2\n" +
+							"\tmember function function_one () return varchar2, \n" +
+							"\tmember function function_two () return varchar2\n" +
 							");", //
 					output);
 		}

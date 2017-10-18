@@ -793,4 +793,7 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLDropSynonymStatement x);
     void endVisit(SQLDropSynonymStatement x);
+
+    boolean visit(SQLRecordDataType x);
+    void endVisit(SQLRecordDataType x);
 }

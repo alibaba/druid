@@ -2299,8 +2299,9 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLInsertStatement parseInsert() {
-        MySqlInsertStatement insertStatement = new MySqlInsertStatement();
+        MySqlInsertStatement stmt = new MySqlInsertStatement();
 
+        SQLName tableName = null;
         if (lexer.token() == Token.INSERT) {
             lexer.nextToken();
 
@@ -2309,31 +2310,31 @@ public class MySqlStatementParser extends SQLStatementParser {
                     long hash = lexer.hash_lower();
 
                     if (hash == FnvHash.Constants.LOW_PRIORITY) {
-                        insertStatement.setLowPriority(true);
+                        stmt.setLowPriority(true);
                         lexer.nextToken();
                         continue;
                     }
 
                     if (hash == FnvHash.Constants.DELAYED) {
-                        insertStatement.setDelayed(true);
+                        stmt.setDelayed(true);
                         lexer.nextToken();
                         continue;
                     }
 
                     if (hash == FnvHash.Constants.HIGH_PRIORITY) {
-                        insertStatement.setHighPriority(true);
+                        stmt.setHighPriority(true);
                         lexer.nextToken();
                         continue;
                     }
 
                     if (hash == FnvHash.Constants.IGNORE) {
-                        insertStatement.setIgnore(true);
+                        stmt.setIgnore(true);
                         lexer.nextToken();
                         continue;
                     }
 
                     if (hash == FnvHash.Constants.ROLLBACK_ON_FAIL) {
-                        insertStatement.setRollbackOnFail(true);
+                        stmt.setRollbackOnFail(true);
                         lexer.nextToken();
                         continue;
                     }
@@ -2347,18 +2348,18 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
             }
 
-            SQLName tableName = this.exprParser.name();
-            insertStatement.setTableName(tableName);
+            tableName = this.exprParser.name();
+            stmt.setTableName(tableName);
 
             if (lexer.token() == Token.HINT) {
                 String comment = "/*" + lexer.stringVal() + "*/";
                 lexer.nextToken();
-                insertStatement.getTableSource().addAfterComment(comment);
+                stmt.getTableSource().addAfterComment(comment);
             }
 
             if (lexer.token() == Token.IDENTIFIER
                     && !lexer.identifierEquals(FnvHash.Constants.VALUE)) {
-                insertStatement.setAlias(lexer.stringVal());
+                stmt.setAlias(lexer.stringVal());
                 lexer.nextToken();
             }
 
@@ -2366,69 +2367,109 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         int columnSize = 0;
         if (lexer.token() == Token.LPAREN) {
-            lexer.nextToken();
-            if (lexer.token() == Token.SELECT) {
-                SQLSelect select = this.exprParser.createSelectParser().select();
-                select.setParent(insertStatement);
-                insertStatement.setQuery(select);
-            } else {
-                List<SQLExpr> columns = insertStatement.getColumns();
-                //this.exprParser.exprList(insertStatement.getColumns(), insertStatement);
+            boolean useInsertColumnsCache = lexer.isEnabled(SQLParserFeature.UseInsertColumnsCache);
+            InsertColumnsCache insertColumnsCache = null;
 
-                if (lexer.token() != Token.RPAREN) {
-                    for (; ; ) {
-                        String identName;
-                        long hash;
+            InsertColumnsCache.Entry cachedColumns = null;
+            if (useInsertColumnsCache) {
+                insertColumnsCache = this.insertColumnsCache;
+                if (insertColumnsCache == null) {
+                    insertColumnsCache = InsertColumnsCache.global;
+                }
 
-                        Token token = lexer.token();
-                        if (token == Token.IDENTIFIER) {
-                            identName = lexer.stringVal();
-                            hash = lexer.hash_lower();
-                        } else if (token == Token.LITERAL_CHARS) {
-                            identName = '\'' + lexer.stringVal() + '\'';
-                            hash = 0;
-                        } else {
-                            identName = lexer.stringVal();
-                            hash = 0;
-                        }
-                        lexer.nextTokenComma();
-                        SQLExpr expr = new SQLIdentifierExpr(identName, hash);
-                        while (lexer.token() == Token.DOT) {
-                            lexer.nextToken();
-                            String propertyName = lexer.stringVal();
-                            lexer.nextToken();
-                            expr = new SQLPropertyExpr(expr, propertyName);
-                        }
-
-                        expr.setParent(insertStatement);
-                        columns.add(expr);
-                        columnSize++;
-
-                        if (lexer.token() == Token.COMMA) {
-                            lexer.nextTokenIdent();
-                            continue;
-                        }
-
-                        break;
-                    }
-                    columnSize = insertStatement.getColumns().size();
+                if (tableName != null) {
+                    cachedColumns = insertColumnsCache.get(tableName.hashCode64());
                 }
             }
-            accept(Token.RPAREN);
+
+            int pos = lexer.pos();
+            if (cachedColumns != null
+                    && lexer.text.startsWith(cachedColumns.columnsString, pos)) {
+                List<SQLExpr> columns = stmt.getColumns();
+                List<SQLExpr> cachedColumns2 = cachedColumns.columns;
+                for (int i = 0, size = cachedColumns2.size(); i < size; i++) {
+                    columns.add(cachedColumns2.get(i).clone());
+                }
+                stmt.setColumnsString(cachedColumns.columnsString);
+                int p2 = pos + cachedColumns.columnsString.length();
+                lexer.reset(p2);
+                lexer.nextToken();
+            } else {
+                lexer.nextToken();
+                if (lexer.token() == Token.SELECT) {
+                    SQLSelect select = this.exprParser.createSelectParser().select();
+                    select.setParent(stmt);
+                    stmt.setQuery(select);
+                } else {
+                    List<SQLExpr> columns = stmt.getColumns();
+
+                    if (lexer.token() != Token.RPAREN) {
+                        for (; ; ) {
+                            String identName;
+                            long hash;
+
+                            Token token = lexer.token();
+                            if (token == Token.IDENTIFIER) {
+                                identName = lexer.stringVal();
+                                hash = lexer.hash_lower();
+                            } else if (token == Token.LITERAL_CHARS) {
+                                identName = '\'' + lexer.stringVal() + '\'';
+                                hash = 0;
+                            } else {
+                                identName = lexer.stringVal();
+                                hash = 0;
+                            }
+                            lexer.nextTokenComma();
+                            SQLExpr expr = new SQLIdentifierExpr(identName, hash);
+                            while (lexer.token() == Token.DOT) {
+                                lexer.nextToken();
+                                String propertyName = lexer.stringVal();
+                                lexer.nextToken();
+                                expr = new SQLPropertyExpr(expr, propertyName);
+                            }
+
+                            expr.setParent(stmt);
+                            columns.add(expr);
+                            columnSize++;
+
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextTokenIdent();
+                                continue;
+                            }
+
+                            break;
+                        }
+                        columnSize = stmt.getColumns().size();
+
+                        if (insertColumnsCache != null && tableName != null) {
+                            String columnsString = lexer.subString(pos, lexer.pos() - pos);
+
+                            List<SQLExpr> clonedColumns = new ArrayList<SQLExpr>(columnSize);
+                            for (int i = 0; i < columns.size(); i++) {
+                                clonedColumns.add(columns.get(i).clone());
+                            }
+
+                            insertColumnsCache.put(tableName.hashCode64(), columnsString, clonedColumns);
+                            stmt.setColumnsString(columnsString);
+                        }
+                    }
+                }
+                accept(Token.RPAREN);
+            }
         }
 
         if (lexer.token() == Token.VALUES || lexer.identifierEquals(FnvHash.Constants.VALUE)) {
             lexer.nextTokenLParen();
-            parseValueClause(insertStatement.getValuesList(), columnSize, insertStatement);
+            parseValueClause(stmt.getValuesList(), columnSize, stmt);
         } else if (lexer.token() == Token.SET) {
             lexer.nextToken();
 
             SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
-            insertStatement.addValueCause(values);
+            stmt.addValueCause(values);
 
             for (; ; ) {
                 SQLName name = this.exprParser.name();
-                insertStatement.addColumn(name);
+                stmt.addColumn(name);
                 if (lexer.token() == Token.EQ) {
                     lexer.nextToken();
                 } else {
@@ -2446,13 +2487,13 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         } else if (lexer.token() == (Token.SELECT)) {
             SQLSelect select = this.exprParser.createSelectParser().select();
-            select.setParent(insertStatement);
-            insertStatement.setQuery(select);
+            select.setParent(stmt);
+            stmt.setQuery(select);
         } else if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
             SQLSelect select = this.exprParser.createSelectParser().select();
-            select.setParent(insertStatement);
-            insertStatement.setQuery(select);
+            select.setParent(stmt);
+            stmt.setQuery(select);
             accept(Token.RPAREN);
         }
 
@@ -2462,7 +2503,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.KEY);
             accept(Token.UPDATE);
 
-            List<SQLExpr> duplicateKeyUpdate = insertStatement.getDuplicateKeyUpdate();
+            List<SQLExpr> duplicateKeyUpdate = stmt.getDuplicateKeyUpdate();
             for (;;) {
                 SQLName name = this.exprParser.name();
                 accept(Token.EQ);
@@ -2474,7 +2515,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
 
                 SQLBinaryOpExpr assignment = new SQLBinaryOpExpr(name, SQLBinaryOperator.Equality, value);
-                assignment.setParent(insertStatement);
+                assignment.setParent(stmt);
                 duplicateKeyUpdate.add(assignment);
 
                 if (lexer.token() == Token.COMMA) {
@@ -2485,7 +2526,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
         }
 
-        return insertStatement;
+        return stmt;
     }
 
     public MySqlSelectParser createSQLSelectParser() {

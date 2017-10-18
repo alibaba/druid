@@ -643,6 +643,38 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLExpr left = x.getLeft();
         SQLExpr right = x.getRight();
 
+        if (inputParameters != null
+                && operator != SQLBinaryOperator.Equality) {
+            int varIndex = -1;
+            if (right instanceof SQLVariantRefExpr) {
+                varIndex = ((SQLVariantRefExpr) right).getIndex();
+            }
+
+            Object param = null;
+            if (varIndex >= 0 && varIndex < inputParameters.size()) {
+                param = inputParameters.get(varIndex);
+            }
+
+            if (param instanceof Collection) {
+                Collection values  = (Collection) param;
+
+                if (values.size() > 0) {
+                    print('(');
+                    int valIndex = 0;
+                    for (Object value : values) {
+                        if (valIndex++ != 0) {
+                            print0(ucase ? " OR " : " or ");
+                        }
+                        printExpr(left);
+                        printOperator(operator);
+                        printParameter(value);
+                    }
+                    print(')');
+                    return false;
+                }
+            }
+        }
+
         if (operator.isRelational()
                 && left instanceof SQLIntegerExpr
                 && right instanceof SQLIntegerExpr) {
@@ -4604,7 +4636,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLDeclareItem x) {
+        SQLDataType dataType = x.getDataType();
+
+        if (dataType instanceof SQLRecordDataType) {
+            print0(ucase ? "TYPE " : "type ");
+        }
+
         x.getName().accept(this);
+
 
         if (x.getType() == SQLDeclareItem.Type.TABLE) {
             print0(ucase ? " TABLE" : " table");
@@ -4628,9 +4667,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else if (x.getType() == SQLDeclareItem.Type.CURSOR) {
             print0(ucase ? " CURSOR" : " cursor");
         } else {
-            if (x.getDataType() != null) {
-                print(' ');
-                x.getDataType().accept(this);
+
+            if (dataType != null) {
+                if (dataType instanceof SQLRecordDataType) {
+                    print0(ucase ? " IS " : " is ");
+                } else {
+                    print(' ');
+                }
+                dataType.accept(this);
             }
             if (x.getValue() != null) {
                 if (JdbcConstants.MYSQL.equals(getDbType())) {
@@ -5716,6 +5760,28 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? ", COLLATE = " : ", collate = ");
             x.getCollate().accept(this);
         }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLRecordDataType x) {
+        print0(ucase ? "RECORD (" : "record (");
+        indentCount++;
+        println();
+        List<SQLColumnDefinition> columns = x.getColumns();
+        for (int i = 0; i < columns.size(); i++) {
+            if (i != 0) {
+                println();
+            }
+            columns.get(i).accept(this);
+            if (i != columns.size() - 1) {
+                print0(", ");
+            }
+        }
+        indentCount--;
+        println();
+        print(')');
 
         return false;
     }

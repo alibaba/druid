@@ -521,6 +521,7 @@ public final class FnvHash {
         long TRUNC = fnv1a_64_lower("TRUNC");
         long SYSTIMESTAMP = fnv1a_64_lower("SYSTIMESTAMP");
         long TYPE = fnv1a_64_lower("TYPE");
+        long RECORD = fnv1a_64_lower("RECORD");
         long MAP = fnv1a_64_lower("MAP");
         long ONLY = fnv1a_64_lower("ONLY");
         long MEMBER = fnv1a_64_lower("MEMBER");
