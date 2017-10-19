@@ -16,16 +16,16 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_restore_0 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        String sqlTemplate = "SELECT id, name, x, y, city_code FROM `geo_poi_raw_data` `geo_poi_raw_data` WHERE 1 = 1 AND `id` > ? ORDER BY `id`";
+        String sqlTemplate = "SELECT id, name, x, y, city_code FROM `gpo_abi_raw_data` `gpo_abi_raw_data` WHERE 1 = 1 AND `id` > ? ORDER BY `id`";
         String params = "[[1200000,1250000]]";
         params = params.replaceAll("''", "'");
         sqlTemplate = SQLUtils.formatMySql(sqlTemplate);
-        String table = "[\"`geo_poi_raw_data`\"]";
+        String table = "[\"`gpo_abi_raw_data`\"]";
         String formattedSql = ParseUtil.restore(sqlTemplate, table, params);
         assertEquals("SELECT id, name, x, y, city_code\n" +
-                "FROM `geo_poi_raw_data` `geo_poi_raw_data`\n" +
+                "FROM `gpo_abi_raw_data` `gpo_abi_raw_data`\n" +
                 "WHERE 1 = 1\n" +
-                "\tAND (`id`>1200000 OR `id`>1250000)\n" +
+                "\tAND (`id` > 1200000 OR `id` > 1250000)\n" +
                 "ORDER BY `id`", formattedSql);
     }
 }

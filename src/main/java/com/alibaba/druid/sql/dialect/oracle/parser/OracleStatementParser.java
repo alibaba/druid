@@ -873,8 +873,8 @@ public class OracleStatementParser extends SQLStatementParser {
 
         accept(Token.FUNCTION);
 
-        SQLName procedureName = this.exprParser.name();
-        stmt.setName(procedureName);
+        SQLName functionName = this.exprParser.name();
+        stmt.setName(functionName);
 
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
@@ -963,13 +963,13 @@ public class OracleStatementParser extends SQLStatementParser {
 
         stmt.setBlock(block);
 
-        if (lexer.identifierEquals(procedureName.getSimpleName())) {
+        if (lexer.identifierEquals(functionName.getSimpleName())) {
             lexer.nextToken();
         }
 
         // return stmt;
 
-        if (lexer.identifierEquals(procedureName.getSimpleName())) {
+        if (lexer.identifierEquals(functionName.getSimpleName())) {
             lexer.nextToken();
         }
 
@@ -2704,6 +2704,22 @@ public class OracleStatementParser extends SQLStatementParser {
                 proc.setParent(stmt);
                 stmt.getStatements().add(proc);
             } else if (lexer.token() == Token.END) {
+                break;
+
+            } else if (lexer.token() == Token.BEGIN) {
+                lexer.nextToken();
+                SQLBlockStatement block = new SQLBlockStatement();
+                parseStatementList(block.getStatementList(), -1, block);
+                accept(Token.END);
+                block.setParent(stmt);
+                stmt.getStatements().add(block);
+
+                if (lexer.identifierEquals(pkgName.getSimpleName())) {
+                    lexer.nextToken();
+                    accept(Token.SEMI);
+                    return stmt;
+                }
+
                 break;
             } else {
                 throw new ParserException("TODO : " + lexer.info());

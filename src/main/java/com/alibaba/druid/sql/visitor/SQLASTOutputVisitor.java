@@ -666,7 +666,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                             print0(ucase ? " OR " : " or ");
                         }
                         printExpr(left);
-                        printOperator(operator);
+                        print(' ');
+                        if (operator == SQLBinaryOperator.Is) {
+                            print('=');
+                        } else {
+                            printOperator(operator);
+                        }
+                        print(' ');
                         printParameter(value);
                     }
                     print(')');

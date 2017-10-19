@@ -18,6 +18,9 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLColumnPrimaryKey extends SQLConstraintImpl implements SQLColumnConstraint {
+    public SQLColumnPrimaryKey() {
+
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
