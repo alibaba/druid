@@ -50,7 +50,7 @@ public final class DruidConnectionHolder {
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
     private final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
     protected final long                        connectTimeMillis;
-    protected transient long                    lastActiveTimeMillis;
+    protected volatile long                     lastActiveTimeMillis;
     private long                                useCount                 = 0;
     private long                                keepAliveCheckCount      = 0;
 
