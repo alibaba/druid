@@ -83,6 +83,9 @@ public class OracleCreatePackageTest5 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
+        SQLUtils.toPGString(stmt);
+        stmt.clone();
+
 //        Assert.assertEquals(2, visitor.getTables().size());
 //
 //        Assert.assertEquals(5, visitor.getColumns().size());

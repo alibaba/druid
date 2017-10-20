@@ -1896,15 +1896,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         this.indentCount++;
 
-        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+        List<SQLStatement> statements = x.getStatements();
+        for (int i = 0, size = statements.size(); i < size; ++i) {
             println();
-            SQLStatement item = x.getStatements().get(i);
-            item.accept(this);
+            SQLStatement stmt = statements.get(i);
+            stmt.accept(this);
         }
 
         this.indentCount--;
 
-        if (x.isBody()) {
+        if (x.isBody() || statements.size() > 0) {
             println();
             print0(ucase ? "END " : "end ");
             x.getName().accept(this);

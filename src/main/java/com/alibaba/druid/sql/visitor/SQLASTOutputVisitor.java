@@ -3097,6 +3097,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLDropTypeStatement x) {
+        print0(ucase ? "DROP TYPE " : "drop type ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+        x.getName().accept(this);
+
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLDropSynonymStatement x) {
         if (x.isPublic()) {
             print0(ucase ? "DROP PUBLIC SYNONYM " : "drop public synonym ");
@@ -5795,6 +5806,141 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLExprStatement x) {
         x.getExpr().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLBlockStatement x) {
+        if (x.getParameters().size() != 0) {
+            this.indentCount++;
+            if (x.getParent() instanceof SQLCreateProcedureStatement) {
+                SQLCreateProcedureStatement procedureStatement = (SQLCreateProcedureStatement) x.getParent();
+                if (procedureStatement.isCreate()) {
+                    printIndent();
+                }
+            }
+            if (!(x.getParent() instanceof SQLCreateProcedureStatement
+                    || x.getParent() instanceof SQLCreateFunctionStatement
+                    || x.getParent() instanceof OracleFunctionDataType
+                    || x.getParent() instanceof OracleProcedureDataType)
+                    ) {
+                print0(ucase ? "DECLARE" : "declare");
+                println();
+            }
+
+            for (int i = 0, size = x.getParameters().size(); i < size; ++i) {
+                if (i != 0) {
+                    println();
+                }
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+                print(';');
+            }
+
+            this.indentCount--;
+            println();
+        }
+        print0(ucase ? "BEGIN" : "begin");
+        this.indentCount++;
+
+        for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
+            println();
+            SQLStatement stmt = x.getStatementList().get(i);
+            stmt.accept(this);
+        }
+        this.indentCount--;
+
+        SQLStatement exception = x.getException();
+        if (exception != null) {
+            println();
+            exception.accept(this);
+        }
+
+        println();
+        print0(ucase ? "END;" : "end;");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateProcedureStatement x) {
+        boolean create = x.isCreate();
+        if (!create) {
+            print0(ucase ? "PROCEDURE " : "procedure ");
+        } else if (x.isOrReplace()) {
+            print0(ucase ? "CREATE OR REPLACE PROCEDURE " : "create or replace procedure ");
+        } else {
+            print0(ucase ? "CREATE PROCEDURE " : "create procedure ");
+        }
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+
+        if (paramSize > 0) {
+            print0(" (");
+            this.indentCount++;
+            println();
+
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                    println();
+                }
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+            }
+
+            this.indentCount--;
+            println();
+            print(')');
+        }
+
+        SQLName authid = x.getAuthid();
+        if (authid != null) {
+            print(ucase ? " AUTHID " : " authid ");
+            authid.accept(this);
+        }
+
+        SQLStatement block = x.getBlock();
+
+        if (block != null && !create) {
+            println();
+            print("IS");
+            println();
+        } else {
+            println();
+            if (block instanceof SQLBlockStatement) {
+                SQLBlockStatement blockStatement = (SQLBlockStatement) block;
+                if (blockStatement.getParameters().size() > 0 || authid != null) {
+                    println(ucase ? "AS" : "as");
+                } else {
+                    println(ucase ? "IS" : "is");
+                }
+            } else {
+                println(ucase ? "IS" : "is");
+            }
+        }
+
+        String javaCallSpec = x.getJavaCallSpec();
+        if (javaCallSpec != null) {
+            print0(ucase ? "LANGUAGE JAVA NAME '" : "language java name '");
+            print0(javaCallSpec);
+            print('\'');
+            return false;
+        }
+
+        boolean afterSemi = false;
+        if (block != null) {
+            block.accept(this);
+
+            if (block instanceof SQLBlockStatement
+                    && ((SQLBlockStatement) block).getStatementList().size() > 0) {
+                afterSemi = ((SQLBlockStatement) block).getStatementList().get(0).isAfterSemi();
+            }
+        }
+
+        if ((!afterSemi) && x.getParent() instanceof OracleCreatePackageStatement) {
+            print(';');
+        }
         return false;
     }
 }

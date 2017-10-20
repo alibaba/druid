@@ -597,6 +597,15 @@ public class OracleStatementParser extends SQLStatementParser {
                     continue;
                 }
 
+                if (lexer.identifierEquals(FnvHash.Constants.TYPE)) {
+                    lexer.reset(savePoint);
+
+                    SQLStatement stmt = parseDropType();
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
+
                 throw new ParserException("TODO : " + lexer.info());
             }
 
@@ -687,6 +696,19 @@ public class OracleStatementParser extends SQLStatementParser {
 
             throw new ParserException("TODO : " + lexer.info());
         }
+    }
+
+    public SQLStatement parseDropType() {
+        if (lexer.token() == Token.DROP) {
+            lexer.nextToken();
+        }
+        SQLDropTypeStatement stmt = new SQLDropTypeStatement();
+        stmt.setDbType(dbType);
+
+        acceptIdentifier("TYPE");
+
+        stmt.setName(this.exprParser.name());
+        return stmt;
     }
 
     public SQLStatement parseDropSynonym() {
@@ -2819,6 +2841,14 @@ public class OracleStatementParser extends SQLStatementParser {
             accept(Token.OF);
             SQLDataType dataType = this.exprParser.parseDataType();
             stmt.setVarrayDataType(dataType);
+        } else if (lexer.identifierEquals(FnvHash.Constants.WRAPPED)) {
+            int pos = lexer.text.indexOf(';', lexer.pos());
+            if (pos != -1) {
+                String wrappedString = lexer.subString(lexer.pos(), pos - lexer.pos());
+                stmt.setWrappedSource(wrappedString);
+                lexer.reset(pos, ';', Token.LITERAL_CHARS);
+                lexer.nextToken();
+            }
         } else {
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();

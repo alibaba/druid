@@ -1847,6 +1847,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     @Override
+    public boolean visit(SQLDropTypeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropTypeStatement x) {
+
+    }
+
+    @Override
     public boolean visit(SQLRecordDataType x) {
         return true;
     }

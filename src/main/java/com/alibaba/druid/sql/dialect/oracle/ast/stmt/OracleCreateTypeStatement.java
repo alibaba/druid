@@ -48,6 +48,8 @@ public class OracleCreateTypeStatement extends OracleStatementImpl implements SQ
     private SQLExpr            varraySizeLimit;
     private SQLDataType        varrayDataType;
 
+    private String             wrappedSource;
+
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -198,5 +200,13 @@ public class OracleCreateTypeStatement extends OracleStatementImpl implements SQ
 
     public void setParen(boolean paren) {
         this.paren = paren;
+    }
+
+    public String getWrappedSource() {
+        return wrappedSource;
+    }
+
+    public void setWrappedSource(String wrappedSource) {
+        this.wrappedSource = wrappedSource;
     }
 }

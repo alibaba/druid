@@ -530,6 +530,7 @@ public final class FnvHash {
         long INSTANTIABLE = fnv1a_64_lower("INSTANTIABLE");
         long UNSUPPORTED = fnv1a_64_lower("UNSUPPORTED");
         long VARRAY = fnv1a_64_lower("VARRAY");
+        long WRAPPED = fnv1a_64_lower("WRAPPED");
         long AUTHID = fnv1a_64_lower("AUTHID");
         long UNDER = fnv1a_64_lower("UNDER");
         long USERENV = fnv1a_64_lower("USERENV");

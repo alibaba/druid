@@ -25,22 +25,19 @@ import org.junit.Assert;
 
 import java.util.List;
 
-public class OracleCreateTriggerTest4 extends OracleTest {
+public class OracleCreateTriggerTest5 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "TRIGGER RRP.TRG_HR_AK_AFTINST AFTER INSERT ON hr_structure FOR EACH ROW\n" +
-                "DECLARE\n" +
-                "BEGIN\n" +
-                "  INSERT INTO hr_structure_temp\n" +
-                "    (com_code,CODE,NAME,status,sjcode,\n" +
-                "     isdept,type,selfcode,POS,createdate,\n" +
-                "     issync,syncdate,deptsale)\n" +
-                "  VALUES\n" +
-                "    (:NEW.com_code,:NEW.CODE,:NEW.NAME,:NEW.status,:NEW.sjcode,\n" +
-                "     :NEW.isdept,:NEW.type,:NEW.selfcode,:NEW.POS,SYSDATE,\n" +
-                "     'N',NULL,:NEW.deptsale);\n" +
-                "END;";
+                "CREATE OR REPLACE TRIGGER ECC.GAPM_PROJECT_INFO_SYNC_IOA_t\n" +
+                        "\tBEFORE INSERT\n" +
+                        "\tON ECC.GAPM_PROJECT_INFO_SYNC_IOA\n" +
+                        "\tFOR EACH ROW\n" +
+                        "BEGIN\n" +
+                        "\tSELECT ECC.GAPM_PROJECT_INFO_SYNC_IOA_S.Nextval\n" +
+                        "\tINTO :New.PROJECT_SYN_ID\n" +
+                        "\tFROM dual;\n" +
+                        "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -49,20 +46,27 @@ public class OracleCreateTriggerTest4 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TRIGGER RRP.TRG_HR_AK_AFTINST\n" +
-                        "\tAFTER INSERT\n" +
-                        "\tON hr_structure\n" +
+        Assert.assertEquals("CREATE OR REPLACE TRIGGER ECC.GAPM_PROJECT_INFO_SYNC_IOA_t\n" +
+                        "\tBEFORE INSERT\n" +
+                        "\tON ECC.GAPM_PROJECT_INFO_SYNC_IOA\n" +
                         "\tFOR EACH ROW\n" +
                         "BEGIN\n" +
-                        "\tINSERT INTO hr_structure_temp\n" +
-                        "\t\t(com_code, CODE, NAME, status, sjcode\n" +
-                        "\t\t, isdept, type, selfcode, POS, createdate\n" +
-                        "\t\t, issync, syncdate, deptsale)\n" +
-                        "\tVALUES (:NEW.com_code, :NEW.CODE, :NEW.NAME, :NEW.status, :NEW.sjcode\n" +
-                        "\t\t, :NEW.isdept, :NEW.type, :NEW.selfcode, :NEW.POS, SYSDATE\n" +
-                        "\t\t, 'N', NULL, :NEW.deptsale);\n" +
+                        "\tSELECT ECC.GAPM_PROJECT_INFO_SYNC_IOA_S.Nextval\n" +
+                        "\tINTO :New.PROJECT_SYN_ID\n" +
+                        "\tFROM dual;\n" +
                         "END;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
+        Assert.assertEquals("CREATE OR REPLACE TRIGGER ECC.GAPM_PROJECT_INFO_SYNC_IOA_t\n" +
+                        "\tBEFORE INSERT\n" +
+                        "\tON ECC.GAPM_PROJECT_INFO_SYNC_IOA\n" +
+                        "\tFOR EACH ROW\n" +
+                        "BEGIN\n" +
+                        "\tSELECT ECC.GAPM_PROJECT_INFO_SYNC_IOA_S.Nextval\n" +
+                        "\tINTO :New.PROJECT_SYN_ID\n" +
+                        "\tFROM dual;\n" +
+                        "END;",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.POSTGRESQL));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
