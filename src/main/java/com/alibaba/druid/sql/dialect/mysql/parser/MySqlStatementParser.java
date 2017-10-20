@@ -1823,7 +1823,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     private SQLShowTablesStatement parseShowTabless() {
         SQLShowTablesStatement stmt = new SQLShowTablesStatement();
 
-        if (lexer.token() == Token.FROM) {
+        if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
             lexer.nextToken();
             SQLName database = exprParser.name();
             if (lexer.token() == Token.SUB && database instanceof SQLIdentifierExpr) {
