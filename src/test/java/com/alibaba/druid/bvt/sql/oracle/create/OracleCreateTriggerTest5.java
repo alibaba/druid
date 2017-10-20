@@ -29,12 +29,12 @@ public class OracleCreateTriggerTest5 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-                "CREATE OR REPLACE TRIGGER ECC.GAPM_PROJECT_INFO_SYNC_IOA_t\n" +
+                "CREATE OR REPLACE TRIGGER XONN.GAPM_PROJECT_INFO_SYNC_IOA_t\n" +
                         "\tBEFORE INSERT\n" +
-                        "\tON ECC.GAPM_PROJECT_INFO_SYNC_IOA\n" +
+                        "\tON XONN.GAPM_PROJECT_INFO_SYNC_IOA\n" +
                         "\tFOR EACH ROW\n" +
                         "BEGIN\n" +
-                        "\tSELECT ECC.GAPM_PROJECT_INFO_SYNC_IOA_S.Nextval\n" +
+                        "\tSELECT XONN.GAPM_PROJECT_INFO_SYNC_IOA_S.Nextval\n" +
                         "\tINTO :New.PROJECT_SYN_ID\n" +
                         "\tFROM dual;\n" +
                         "END;";
@@ -46,23 +46,23 @@ public class OracleCreateTriggerTest5 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE TRIGGER ECC.GAPM_PROJECT_INFO_SYNC_IOA_t\n" +
+        Assert.assertEquals("CREATE OR REPLACE TRIGGER XONN.GAPM_PROJECT_INFO_SYNC_IOA_t\n" +
                         "\tBEFORE INSERT\n" +
-                        "\tON ECC.GAPM_PROJECT_INFO_SYNC_IOA\n" +
+                        "\tON XONN.GAPM_PROJECT_INFO_SYNC_IOA\n" +
                         "\tFOR EACH ROW\n" +
                         "BEGIN\n" +
-                        "\tSELECT ECC.GAPM_PROJECT_INFO_SYNC_IOA_S.Nextval\n" +
+                        "\tSELECT XONN.GAPM_PROJECT_INFO_SYNC_IOA_S.Nextval\n" +
                         "\tINTO :New.PROJECT_SYN_ID\n" +
                         "\tFROM dual;\n" +
                         "END;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
-        Assert.assertEquals("CREATE OR REPLACE TRIGGER ECC.GAPM_PROJECT_INFO_SYNC_IOA_t\n" +
+        Assert.assertEquals("CREATE OR REPLACE TRIGGER XONN.GAPM_PROJECT_INFO_SYNC_IOA_t\n" +
                         "\tBEFORE INSERT\n" +
-                        "\tON ECC.GAPM_PROJECT_INFO_SYNC_IOA\n" +
+                        "\tON XONN.GAPM_PROJECT_INFO_SYNC_IOA\n" +
                         "\tFOR EACH ROW\n" +
                         "BEGIN\n" +
-                        "\tSELECT ECC.GAPM_PROJECT_INFO_SYNC_IOA_S.Nextval\n" +
+                        "\tSELECT XONN.GAPM_PROJECT_INFO_SYNC_IOA_S.Nextval\n" +
                         "\tINTO :New.PROJECT_SYN_ID\n" +
                         "\tFROM dual;\n" +
                         "END;",//

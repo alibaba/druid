@@ -619,13 +619,19 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             SQLExpr target = item.getTarget();
             target.accept(this);
 
-            if (target instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) target).getName().equalsIgnoreCase("TIME ZONE")) {
+            SQLExpr value = item.getValue();
+
+            if (target instanceof SQLIdentifierExpr
+                    && ((SQLIdentifierExpr) target).getName().equalsIgnoreCase("TIME ZONE")) {
                 print(' ');
             } else {
-                print0(" TO ");
+                if (value instanceof SQLPropertyExpr
+                        && ((SQLPropertyExpr) value).getOwner() instanceof SQLVariantRefExpr) {
+                    print0(" := ");
+                } else {
+                    print0(" TO ");
+                }
             }
-
-            SQLExpr value = item.getValue();
 
             if (value instanceof SQLListExpr) {
                 SQLListExpr listExpr = (SQLListExpr) value;
@@ -2864,5 +2870,77 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public void endVisit(OracleRunStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(SQLIfStatement.Else x) {
+        print0(ucase ? "ELSE" : "else");
+        this.indentCount++;
+        println();
+
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            if (i != 0) {
+                println();
+            }
+            SQLStatement item = x.getStatements().get(i);
+            item.accept(this);
+        }
+
+        this.indentCount--;
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLIfStatement.ElseIf x) {
+        print0(ucase ? "ELSE IF " : "else if ");
+        x.getCondition().accept(this);
+        print0(ucase ? " THEN" : " then");
+        this.indentCount++;
+
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            println();
+            SQLStatement item = x.getStatements().get(i);
+            item.accept(this);
+        }
+
+        this.indentCount--;
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLIfStatement x) {
+        print0(ucase ? "IF " : "if ");
+        int lines = this.lines;
+        this.indentCount++;
+        x.getCondition().accept(this);
+        this.indentCount--;
+
+        if (lines != this.lines) {
+            println();
+        } else {
+            print(' ');
+        }
+        print0(ucase ? "THEN" : "then");
+
+        this.indentCount++;
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            println();
+            SQLStatement item = x.getStatements().get(i);
+            item.accept(this);
+        }
+        this.indentCount--;
+
+        for (SQLIfStatement.ElseIf elseIf : x.getElseIfList()) {
+            println();
+            elseIf.accept(this);
+        }
+
+        if (x.getElseItem() != null) {
+            println();
+            x.getElseItem().accept(this);
+        }
+        println();
+        print0(ucase ? "END IF" : "end if");
+        return false;
     }
 }

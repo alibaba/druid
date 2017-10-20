@@ -5901,31 +5901,34 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         SQLStatement block = x.getBlock();
-
-        if (block != null && !create) {
-            println();
-            print("IS");
-            println();
+        String wrappedSource = x.getWrappedSource();
+        if (wrappedSource != null) {
+            print0(ucase ? " WRAPPED " : " wrapped ");
+            print0(wrappedSource);
         } else {
-            println();
-            if (block instanceof SQLBlockStatement) {
-                SQLBlockStatement blockStatement = (SQLBlockStatement) block;
-                if (blockStatement.getParameters().size() > 0 || authid != null) {
-                    println(ucase ? "AS" : "as");
-                } else {
-                    println(ucase ? "IS" : "is");
-                }
+            if (block != null && !create) {
+                println();
+                print("IS");
+                println();
             } else {
-                println(ucase ? "IS" : "is");
+                println();
+                if (block instanceof SQLBlockStatement) {
+                    SQLBlockStatement blockStatement = (SQLBlockStatement) block;
+                    if (blockStatement.getParameters().size() > 0 || authid != null) {
+                        println(ucase ? "AS" : "as");
+                    } else {
+                        println(ucase ? "IS" : "is");
+                    }
+                }
             }
-        }
 
-        String javaCallSpec = x.getJavaCallSpec();
-        if (javaCallSpec != null) {
-            print0(ucase ? "LANGUAGE JAVA NAME '" : "language java name '");
-            print0(javaCallSpec);
-            print('\'');
-            return false;
+            String javaCallSpec = x.getJavaCallSpec();
+            if (javaCallSpec != null) {
+                print0(ucase ? "LANGUAGE JAVA NAME '" : "language java name '");
+                print0(javaCallSpec);
+                print('\'');
+                return false;
+            }
         }
 
         boolean afterSemi = false;

@@ -2517,6 +2517,17 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(')');
         }
 
+        String wrappedSource = x.getWrappedSource();
+        if (wrappedSource != null) {
+            print0(ucase ? " WRAPPED " : " wrapped ");
+            print0(wrappedSource);
+
+            if (x.isAfterSemi()) {
+                print(';');
+            }
+            return false;
+        }
+
         println();
         print(ucase ? "RETURN " : "return ");
         x.getReturnDataType().accept(this);
@@ -2578,11 +2589,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             block.accept(this);
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLCreateProcedureStatement x) {
-
     }
 
     @Override

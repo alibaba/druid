@@ -904,6 +904,25 @@ public class OracleStatementParser extends SQLStatementParser {
             accept(Token.RPAREN);
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.WRAPPED)) {
+            lexer.nextToken();
+            int pos = lexer.text.indexOf(';', lexer.pos());
+            if (pos != -1) {
+                String wrappedString = lexer.subString(lexer.pos(), pos - lexer.pos());
+                stmt.setWrappedSource(wrappedString);
+                lexer.reset(pos, ';', Token.LITERAL_CHARS);
+                lexer.nextToken();
+                stmt.setAfterSemi(true);
+            } else {
+                String wrappedString = lexer.text.substring(lexer.pos());
+                stmt.setWrappedSource(wrappedString);
+                lexer.reset(lexer.text.length(),(char) LayoutCharacters.EOI, Token.EOF);
+                return stmt;
+            }
+
+            return stmt;
+        }
+
         accept(Token.RETURN);
         SQLDataType returnDataType = this.exprParser.parseDataType(false);
         stmt.setReturnDataType(returnDataType);
@@ -2586,6 +2605,23 @@ public class OracleStatementParser extends SQLStatementParser {
             }
             SQLName authid = new SQLIdentifierExpr(strVal);
             stmt.setAuthid(authid);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.WRAPPED)) {
+            lexer.nextToken();
+            int pos = lexer.text.indexOf(';', lexer.pos());
+            if (pos != -1) {
+                String wrappedString = lexer.subString(lexer.pos(), pos - lexer.pos());
+                stmt.setWrappedSource(wrappedString);
+                lexer.reset(pos, ';', Token.LITERAL_CHARS);
+                lexer.nextToken();
+                stmt.setAfterSemi(true);
+            } else {
+                String wrappedString = lexer.text.substring(lexer.pos());
+                stmt.setWrappedSource(wrappedString);
+                lexer.reset(lexer.text.length(),(char) LayoutCharacters.EOI, Token.EOF);
+            }
+            return stmt;
         }
 
         if (lexer.token() == Token.SEMI) {
