@@ -124,9 +124,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected volatile String                          validationQuery                           = DEFAULT_VALIDATION_QUERY;
     protected volatile int                             validationQueryTimeout                    = -1;
-    private volatile boolean                           testOnBorrow                              = DEFAULT_TEST_ON_BORROW;
-    private volatile boolean                           testOnReturn                              = DEFAULT_TEST_ON_RETURN;
-    private volatile boolean                           testWhileIdle                             = DEFAULT_WHILE_IDLE;
+    protected volatile boolean                         testOnBorrow                              = DEFAULT_TEST_ON_BORROW;
+    protected volatile boolean                         testOnReturn                              = DEFAULT_TEST_ON_RETURN;
+    protected volatile boolean                         testWhileIdle                             = DEFAULT_WHILE_IDLE;
     protected volatile boolean                         poolPreparedStatements                    = false;
     protected volatile boolean                         sharePreparedStatements                   = false;
     protected volatile int                             maxPoolPreparedStatementPerConnectionSize = 10;
@@ -1444,7 +1444,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     void initStatement(DruidPooledConnection conn, Statement stmt) throws SQLException {
-        boolean transaction = !conn.getConnectionHolder().isUnderlyingAutoCommit();
+        boolean transaction = !conn.getConnectionHolder().underlyingAutoCommit;
 
         int queryTimeout = transaction ? getTransactionQueryTimeout() : getQueryTimeout();
 
@@ -1600,9 +1600,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             conn.setAutoCommit(defaultAutoCommit);
         }
 
-        if (getDefaultReadOnly() != null) {
-            if (conn.isReadOnly() != getDefaultReadOnly()) {
-                conn.setReadOnly(getDefaultReadOnly());
+        if (defaultReadOnly != null) {
+            if (conn.isReadOnly() != defaultReadOnly) {
+                conn.setReadOnly(defaultReadOnly);
             }
         }
 

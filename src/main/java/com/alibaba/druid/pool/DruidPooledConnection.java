@@ -63,19 +63,17 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     protected volatile DruidConnectionHolder holder;
     protected TransactionInfo                transactionInfo;
     private final boolean                    dupCloseLogEnable;
-    private volatile boolean                 traceEnable          = false;
+    protected volatile boolean               traceEnable          = false;
     private boolean                          disable              = false;
     private boolean                          closed               = false;
-    private final Thread                     ownerThread;
+    protected final Thread                   ownerThread;
     private long                             connectedTimeMillis;
     private long                             connectedTimeNano;
     private volatile boolean                 running              = false;
-
     private volatile boolean                 abandoned            = false;
 
-    private StackTraceElement[]              connectStackTrace;
-
-    private Throwable                        disableError         = null;
+    protected StackTraceElement[]            connectStackTrace;
+    protected Throwable                      disableError         = null;
 
     public  ReentrantLock                    lock                 = new ReentrantLock();
 
@@ -205,7 +203,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
     @Override
     public Connection getConnection() {
-        if (!holder.isUnderlyingAutoCommit()) {
+        if (!holder.underlyingAutoCommit) {
             createTransactionInfo();
         }
 
@@ -706,7 +704,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         boolean useLocalSessionState = holder.getDataSource().isUseLocalSessionState();
 
         if (useLocalSessionState) {
-            if (autoCommit == holder.isUnderlyingAutoCommit()) {
+            if (autoCommit == holder.underlyingAutoCommit) {
                 return;
             }
         }
@@ -871,7 +869,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public DatabaseMetaData getMetaData() throws SQLException {
         checkState();
 
-        if (!holder.isUnderlyingAutoCommit()) {
+        if (!holder.underlyingAutoCommit) {
             createTransactionInfo();
         }
 
@@ -999,7 +997,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public int getHoldability() throws SQLException {
         checkState();
 
-        if (!holder.isUnderlyingAutoCommit()) {
+        if (!holder.underlyingAutoCommit) {
             createTransactionInfo();
         }
 
