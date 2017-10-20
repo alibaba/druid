@@ -33,7 +33,7 @@ select .2e3 c1, .2e-4 as c5;
 #begin
 -- -- -- Number float collision test
 select t1e2 as e1 from t;
-select 1e2t as col from t;
+# select 1e2t as col from t; -- not support
 #end
 #begin
 -- -- -- Hexadecimal literal
@@ -49,8 +49,8 @@ select x'79' as `select`, 0x2930 cc, 0x313233 as c2;
 -- -- -- Null literal
 SELECT null;
 SELECT not null;
-select \N;
-select ((\N));
+#select \N;
+#select ((\N));
 select not ((\N));
 #end
 #begin
