@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
@@ -31,5 +34,4 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
     public HiveOutputVisitor(Appendable appender, boolean parameterized) {
         super(appender, parameterized);
     }
-
 }

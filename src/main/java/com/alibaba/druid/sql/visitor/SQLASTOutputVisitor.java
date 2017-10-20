@@ -2537,6 +2537,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
+        SQLName storedAs = x.getStoredAs();
+        if (storedAs != null) {
+            print0(ucase ? " STORE AS " : " store as ");
+            printExpr(storedAs);
+        }
+
         SQLSelect select = x.getSelect();
         if (printSelect && select != null) {
             println();

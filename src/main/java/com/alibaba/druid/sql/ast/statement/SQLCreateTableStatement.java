@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.ListDG;
 import com.alibaba.druid.util.lang.Consumer;
 
@@ -52,6 +53,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     protected SQLName               tablespace;
     protected SQLPartitionBy        partitioning;
+    protected SQLName               storedAs;
 
     public SQLCreateTableStatement(){
 
@@ -976,6 +978,17 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         if (comment != null) {
             x.setComment(comment.clone());
         }
+    }
+
+    public SQLName getStoredAs() {
+        return storedAs;
+    }
+
+    public void setStoredAs(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedAs = x;
     }
 
     public SQLCreateTableStatement clone() {
