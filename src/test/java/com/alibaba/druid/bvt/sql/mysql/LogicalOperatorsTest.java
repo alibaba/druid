@@ -183,6 +183,47 @@ public class LogicalOperatorsTest extends TestCase {
         Assert.assertEquals("SELECT 1 XOR 1 XOR 1;", text);
     }
 
+
+
+    public void test14(){
+        String sql = "SELECT ~1;";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SELECT ~1;", text);
+
+
+        sql = "SELECT ~(1+1);";
+
+        parser = new MySqlStatementParser(sql);
+        stmtList = parser.parseStatementList();
+
+        text = output(stmtList);
+
+        Assert.assertEquals("SELECT ~(1 + 1);", text);
+    }
+
+    public void test15(){
+        String sql = "SELECT * FROM SUNTEST WHERE ~ID = 1;";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
+        Assert.assertEquals("SELECT *\nFROM SUNTEST\nWHERE ~ID = 1;", text);
+
+
+        sql = "SELECT * FROM SUNTEST WHERE ~(ID = 1);";
+
+        parser = new MySqlStatementParser(sql);
+        stmtList = parser.parseStatementList();
+
+        text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
+        Assert.assertEquals("SELECT *\nFROM SUNTEST\nWHERE ~(ID = 1);", text);
+    }
     private String output(List<SQLStatement> stmtList) {
         return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
