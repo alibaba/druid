@@ -24,19 +24,29 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import org.junit.Test;
 
 public class SHOW_TABLES_Syntax_Test extends TestCase {
 
-    public void test_() throws Exception {
+    public void test_0() throws Exception {
 
         String sql = "SHOW TABLES FROM     SUNTEST   ";
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
         Assert.assertEquals("SHOW TABLES FROM SUNTEST", text);
+
+        sql = "SHOW       TABLES";
+        parser = new MySqlStatementParser(sql);
+        stmtList = parser.parseStatementList();
+        text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
+        Assert.assertEquals("SHOW TABLES", text);
+
+        sql = "SHOW   FULL    TABLES";
+        parser = new MySqlStatementParser(sql);
+        stmtList = parser.parseStatementList();
+        text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
+        Assert.assertEquals("SHOW FULL TABLES", text);
 
         sql = "SHOW   FULL    TABLES    FROM    SUNTEST   ";
         parser = new MySqlStatementParser(sql);
