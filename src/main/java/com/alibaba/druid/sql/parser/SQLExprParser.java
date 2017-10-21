@@ -693,7 +693,7 @@ public class SQLExprParser extends SQLParser {
                 break;
             case TILDE:
                 lexer.nextToken();
-                SQLExpr unaryValueExpr = expr();
+                SQLExpr unaryValueExpr = primary();
                 SQLUnaryExpr unary = new SQLUnaryExpr(SQLUnaryOperator.Compl, unaryValueExpr);
                 sqlExpr = unary;
                 break;
