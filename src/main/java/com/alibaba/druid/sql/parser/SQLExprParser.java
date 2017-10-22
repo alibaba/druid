@@ -1309,6 +1309,7 @@ public class SQLExprParser extends SQLParser {
                 case ORDER:
                 case DO:
                 case JOIN:
+                case TYPE:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;

@@ -45,7 +45,7 @@ public class H2_CreateTableTest_0 extends OracleTest {
         {
             String text = SQLUtils.toSQLString(stmt, JdbcConstants.HIVE);
 
-            assertEquals("CREATE TABLE sc001.test STORE AS parquet\n" +
+            assertEquals("CREATE TABLE IF NOT EXISTS sc001.test STORE AS parquet\n" +
                     "AS\n" +
                     "SELECT *\n" +
                     "FROM sc002.test;", text);
