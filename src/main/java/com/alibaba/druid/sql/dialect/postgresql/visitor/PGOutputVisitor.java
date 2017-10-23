@@ -305,6 +305,42 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             }
         }
 
+        List<SQLExpr> onConflictTarget = x.getOnConflictTarget();
+        List<SQLUpdateSetItem> onConflictUpdateSetItems = x.getOnConflictUpdateSetItems();
+        boolean onConflictDoNothing = x.isOnConflictDoNothing();
+
+        if (onConflictDoNothing
+                || (onConflictTarget != null && onConflictTarget.size() > 0)
+                || (onConflictUpdateSetItems != null && onConflictUpdateSetItems.size() > 0)) {
+            println();
+            print0(ucase ? "ON CONFLICT" : "on conflict");
+
+            if ((onConflictTarget != null && onConflictTarget.size() > 0)) {
+                print0(" (");
+                printAndAccept(onConflictTarget, ", ");
+                print(')');
+            }
+
+            SQLName onConflictConstraint = x.getOnConflictConstraint();
+            if (onConflictConstraint != null) {
+                print0(ucase ? " ON CONSTRAINT " : " on constraint ");
+                printExpr(onConflictConstraint);
+            }
+
+            SQLExpr onConflictWhere = x.getOnConflictWhere();
+            if (onConflictWhere != null) {
+                print0(ucase ? " WHERE " : " where ");
+                printExpr(onConflictWhere);
+            }
+
+            if (onConflictDoNothing) {
+                print0(ucase ? " DO NOTHING" : " do nothing");
+            } else if ((onConflictUpdateSetItems != null && onConflictUpdateSetItems.size() > 0)) {
+                print0(ucase ? " UPDATE SET " : " update set ");
+                printAndAccept(onConflictUpdateSetItems, ", ");
+            }
+        }
+
         if (x.getReturning() != null) {
             println();
             print0(ucase ? "RETURNING " : "returning ");

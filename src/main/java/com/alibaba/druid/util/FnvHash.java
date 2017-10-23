@@ -568,6 +568,8 @@ public final class FnvHash {
         long ENDS = fnv1a_64_lower("ENDS");
         long BINARY = fnv1a_64_lower("BINARY");
         long ISOPEN = fnv1a_64_lower("ISOPEN");
+        long CONFLICT = fnv1a_64_lower("CONFLICT");
+        long NOTHING = fnv1a_64_lower("NOTHING");
 
         long RS = fnv1a_64_lower("RS");
         long RR = fnv1a_64_lower("RR");

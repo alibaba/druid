@@ -150,6 +150,57 @@ public class PGSQLStatementParser extends SQLStatementParser {
             stmt.setQuery(queryExpr.getSubQuery());
         }
 
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            if (lexer.identifierEquals(FnvHash.Constants.CONFLICT)) {
+                lexer.nextToken();
+
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    List<SQLExpr> onConflictTarget = new ArrayList<SQLExpr>();
+                    this.exprParser.exprList(onConflictTarget, stmt);
+                    stmt.setOnConflictTarget(onConflictTarget);
+                    accept(Token.RPAREN);
+                }
+
+                if (lexer.token() == Token.ON) {
+                    lexer.nextToken();
+                    accept(Token.CONSTRAINT);
+                    SQLName constraintName = this.exprParser.name();
+                    stmt.setOnConflictConstraint(constraintName);
+                }
+
+                if (lexer.token() == Token.WHERE) {
+                    lexer.nextToken();
+                    SQLExpr where = this.exprParser.expr();
+                    stmt.setOnConflictWhere(where);
+                }
+
+                if (lexer.token() == Token.DO) {
+                    lexer.nextToken();
+
+                    if (lexer.identifierEquals(FnvHash.Constants.NOTHING)) {
+                        lexer.nextToken();
+                        stmt.setOnConflictDoNothing(true);
+                    } else {
+                        accept(Token.UPDATE);
+                        accept(Token.SET);
+
+                        for (;;) {
+                            SQLUpdateSetItem item = this.exprParser.parseUpdateSetItem();
+                            stmt.addConflicUpdateItem(item);
+
+                            if (lexer.token() != Token.COMMA) {
+                                break;
+                            }
+
+                            lexer.nextToken();
+                        }
+                    }
+                }
+            }
+        }
+
         if (lexer.token() == Token.RETURNING) {
             lexer.nextToken();
             SQLExpr returning = this.exprParser.expr();
