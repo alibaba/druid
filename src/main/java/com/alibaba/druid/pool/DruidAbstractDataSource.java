@@ -85,7 +85,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public final static boolean                        DEFAULT_TEST_ON_RETURN                    = false;
     public final static boolean                        DEFAULT_WHILE_IDLE                        = true;
     public static final long                           DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = 60 * 1000L;
-    public static final long                           DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
+    public static final long                           DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 500;
     public static final int                            DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 3;
 
     /**
@@ -189,7 +189,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected final Date                               createdTime                               = new Date();
     protected Date                                     initedTime;
 
-    protected int                                      connectionErrorRetryAttempts              = 30;
+    protected int                                      connectionErrorRetryAttempts              = 1;
 
     protected boolean                                  breakAfterAcquireFailure                  = false;
 
