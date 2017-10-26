@@ -2956,7 +2956,7 @@ public class SQLExprParser extends SQLParser {
         }
 
         SQLSelectItem selectItem = new SQLSelectItem(expr, alias, connectByRoot);
-        if (lexer.token == Token.HINT) {
+        if (lexer.token == Token.HINT && !lexer.isEnabled(SQLParserFeature.StrictForWall)) {
             String comment = "/*" + lexer.stringVal() + "*/";
             selectItem.addAfterComment(comment);
             lexer.nextToken();

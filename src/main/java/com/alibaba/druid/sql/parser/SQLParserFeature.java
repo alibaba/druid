@@ -21,7 +21,8 @@ public enum SQLParserFeature {
     EnableSQLBinaryOpExprGroup,
     OptimizedForParameterized,
     KeepComments,
-    SkipComments
+    SkipComments,
+    StrictForWall
     ;
 
     private SQLParserFeature(){
