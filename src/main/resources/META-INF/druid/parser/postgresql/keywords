@@ -138,7 +138,6 @@ localtimestamp
 lower
 max
 max_cardinality
-member
 merge
 min
 mod
