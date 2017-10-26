@@ -56,9 +56,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private Integer                 compressLevel;
     private boolean                 compressForOltp;
 
-    private boolean                 onCommitPreserveRows;
-    private boolean                 onCommitDeleteRows;
-
     private Boolean                 cache;
 
     private DeferredSegmentCreation deferredSegmentCreation;
@@ -123,14 +120,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     public void setCache(Boolean cache) {
         this.cache = cache;
-    }
-
-    public boolean isOnCommitPreserveRows() {
-        return onCommitPreserveRows;
-    }
-
-    public void setOnCommitPreserveRows(boolean onCommitPreserveRows) {
-        this.onCommitPreserveRows = onCommitPreserveRows;
     }
 
     public boolean isOnCommitDeleteRows() {

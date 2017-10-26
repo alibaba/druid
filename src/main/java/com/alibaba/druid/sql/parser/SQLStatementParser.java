@@ -353,7 +353,7 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            if (lexer.identifierEquals("COMMIT")) {
+            if (lexer.identifierEquals(FnvHash.Constants.COMMIT)) {
                 SQLStatement stmt = parseCommit();
 
                 statementList.add(stmt);

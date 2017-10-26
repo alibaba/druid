@@ -801,18 +801,18 @@ public class OracleExprParser extends SQLExprParser {
             over.setOrderBy(parseOrderBy());
             if (over.getOrderBy() != null) {
                 OracleAnalyticWindowing windowing = null;
-                if (lexer.stringVal().equalsIgnoreCase("ROWS")) {
+                if (lexer.identifierEquals(FnvHash.Constants.ROWS)) {
                     lexer.nextToken();
                     windowing = new OracleAnalyticWindowing();
                     windowing.setType(OracleAnalyticWindowing.Type.ROWS);
-                } else if (lexer.stringVal().equalsIgnoreCase("RANGE")) {
+                } else if (lexer.identifierEquals(FnvHash.Constants.RANGE)) {
                     lexer.nextToken();
                     windowing = new OracleAnalyticWindowing();
                     windowing.setType(OracleAnalyticWindowing.Type.RANGE);
                 }
 
                 if (windowing != null) {
-                    if (lexer.stringVal().equalsIgnoreCase("CURRENT")) {
+                    if (lexer.identifierEquals(FnvHash.Constants.CURRENT)) {
                         lexer.nextToken();
                         if (lexer.stringVal().equalsIgnoreCase("ROW")) {
                             lexer.nextToken();
@@ -821,7 +821,7 @@ public class OracleExprParser extends SQLExprParser {
                         }
                         throw new ParserException("syntax error. " + lexer.info());
                     }
-                    if (lexer.stringVal().equalsIgnoreCase("UNBOUNDED")) {
+                    if (lexer.identifierEquals(FnvHash.Constants.UNBOUNDED)) {
                         lexer.nextToken();
                         if (lexer.stringVal().equalsIgnoreCase("PRECEDING")) {
                             lexer.nextToken();
@@ -829,6 +829,12 @@ public class OracleExprParser extends SQLExprParser {
                         } else {
                             throw new ParserException("syntax error. " + lexer.info());
                         }
+                    } else {
+                        SQLExpr expr = this.expr();
+                        windowing.setExpr(expr);
+
+                        acceptIdentifier("PRECEDING");
+                        over.setWindowingPreceding(true);
                     }
 
                     over.setWindowing(windowing);

@@ -1310,6 +1310,11 @@ public class SQLExprParser extends SQLParser {
                 case DO:
                 case JOIN:
                 case TYPE:
+                case FUNCTION:
+                case KEY:
+                case SCHEMA:
+                case INTERVAL:
+                case EXPLAIN:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;

@@ -116,6 +116,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             visit(windowing);
         }
 
+        if (x.isWindowingPreceding()) {
+            print0(ucase ? " PRECEDING" : " preceding");
+        }
+
         print(')');
         
         return false;

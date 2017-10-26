@@ -55,6 +55,9 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected SQLPartitionBy        partitioning;
     protected SQLName               storedAs;
 
+    protected boolean               onCommitPreserveRows;
+    protected boolean               onCommitDeleteRows;
+
     public SQLCreateTableStatement(){
 
     }
@@ -786,6 +789,22 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return true;
     }
 
+    public boolean renameColumn(String colummName, String newColumnName) {
+        if (colummName == null || newColumnName == null || newColumnName.length() == 0) {
+            return false;
+        }
+
+        int columnIndex = columnIndexOf(new SQLIdentifierExpr(colummName));
+        if (columnIndex == -1) {
+            return false;
+        }
+
+        SQLColumnDefinition column = (SQLColumnDefinition) tableElementList.get(columnIndex);
+        column.setName(new SQLIdentifierExpr(newColumnName));
+
+        return true;
+    }
+
     private boolean apply(SQLAlterTableRename item) {
         SQLName name = item.getToName();
         if (name == null) {
@@ -978,6 +997,9 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         if (comment != null) {
             x.setComment(comment.clone());
         }
+
+        x.onCommitPreserveRows = onCommitPreserveRows;
+        x.onCommitDeleteRows = onCommitDeleteRows;
     }
 
     public SQLName getStoredAs() {
@@ -999,6 +1021,14 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     public String toString() {
         return SQLUtils.toSQLString(this, dbType);
+    }
+
+    public boolean isOnCommitPreserveRows() {
+        return onCommitPreserveRows;
+    }
+
+    public void setOnCommitPreserveRows(boolean onCommitPreserveRows) {
+        this.onCommitPreserveRows = onCommitPreserveRows;
     }
 
 }

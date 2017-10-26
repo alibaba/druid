@@ -570,6 +570,7 @@ public final class FnvHash {
         long ISOPEN = fnv1a_64_lower("ISOPEN");
         long CONFLICT = fnv1a_64_lower("CONFLICT");
         long NOTHING = fnv1a_64_lower("NOTHING");
+        long COMMIT = fnv1a_64_lower("COMMIT");
 
         long RS = fnv1a_64_lower("RS");
         long RR = fnv1a_64_lower("RR");
