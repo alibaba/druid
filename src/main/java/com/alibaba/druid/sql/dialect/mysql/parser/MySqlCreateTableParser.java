@@ -849,7 +849,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 pk.setName(name);
             }
             pk.setHasConstaint(hasConstaint);
-            return (SQLTableConstraint) pk;
+            return pk;
         }
 
         if (lexer.token() == Token.UNIQUE) {
@@ -858,14 +858,23 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 uk.setName(name);
             }
             uk.setHasConstaint(hasConstaint);
-            return (SQLTableConstraint) uk;
+            return uk;
         }
 
         if (lexer.token() == Token.FOREIGN) {
             MysqlForeignKey fk = this.getExprParser().parseForeignKey();
             fk.setName(name);
             fk.setHasConstraint(hasConstaint);
-            return (SQLTableConstraint) fk;
+            return fk;
+        }
+
+        if (lexer.token() == Token.CHECK) {
+            lexer.nextToken();
+            SQLCheck check = new SQLCheck();
+            check.setName(name);
+            SQLExpr expr = this.exprParser.expr();
+            check.setExpr(expr);
+            return check;
         }
 
         throw new ParserException("TODO. " + lexer.info());

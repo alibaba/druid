@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCheck extends SQLConstraintImpl implements SQLTableElement {
+public class SQLCheck extends SQLConstraintImpl implements SQLTableElement, SQLTableConstraint {
 
     private SQLExpr expr;
 
@@ -34,11 +34,11 @@ public class SQLCheck extends SQLConstraintImpl implements SQLTableElement {
         return expr;
     }
 
-    public void setExpr(SQLExpr expr) {
-        if (expr != null) {
-            expr.setParent(this);
+    public void setExpr(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.expr = expr;
+        this.expr = x;
     }
 
     @Override
