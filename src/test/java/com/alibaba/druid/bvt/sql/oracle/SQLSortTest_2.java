@@ -10,13 +10,9 @@ public class SQLSortTest_2 extends TestCase {
                 "   FOR hr.locations;create table hr.locations(fid varchar(200));";
 
         String sortedSql = SQLUtils.sort(sql, JdbcConstants.ORACLE);
-        assertEquals("CREATE VIEW v0\n" +
-                "AS\n" +
-                "SELECT *\n" +
-                "FROM t;\n" +
-                "CREATE VIEW v1\n" +
-                "AS\n" +
-                "SELECT *\n" +
-                "FROM v0;", sortedSql);
+        assertEquals("CREATE TABLE hr.locations (\n" +
+                "\tfid varchar(200)\n" +
+                ");\n" +
+                "CREATE SYNONYM offices FOR hr.locations;", sortedSql);
     }
 }
