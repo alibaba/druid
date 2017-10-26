@@ -158,6 +158,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private String                           initStackTrace;
 
+    private volatile boolean                 closing                 = false;
     private volatile boolean                 closed                  = false;
     private long                             closeTimeMillis         = -1L;
 
@@ -1651,6 +1652,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 return;
             }
 
+            this.closing = true;
+
             if (logStatsThread != null) {
                 logStatsThread.interrupt();
             }
@@ -2316,8 +2319,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     lastCreateError = e;
                     lastErrorTimeMillis = System.currentTimeMillis();
 
-                    LOG.error("create connection Thread Interrupted, url: " + jdbcUrl, e);
-
+                    if (!closing) {
+                        LOG.error("create connection Thread Interrupted, url: " + jdbcUrl, e);
+                    }
                     break;
                 } finally {
                     lock.unlock();
