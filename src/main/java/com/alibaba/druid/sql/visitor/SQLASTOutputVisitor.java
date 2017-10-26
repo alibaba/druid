@@ -479,7 +479,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     SQLExpr left = binaryItem.getLeft();
                     SQLExpr right = binaryItem.getRight();
 
-                    if (right instanceof SQLLiteralExpr) {
+                    if (right instanceof SQLLiteralExpr && !(right instanceof SQLNullExpr)) {
                         if (left instanceof SQLLiteralExpr) {
                             if (literalItems == null) {
                                 literalItems = new ArrayList<SQLBinaryOpExpr>();

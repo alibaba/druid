@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -28,7 +29,7 @@ public class MySqlParameterizedOutputVisitorTest_57 extends TestCase {
                 "       OR (`ktv_resource`.`AVAILABLE_COUNT` = -1))" +
                 ") limit 0,20";
 
-        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, SQLParserFeature.EnableSQLBinaryOpExprGroup);
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
 
@@ -48,6 +49,8 @@ public class MySqlParameterizedOutputVisitorTest_57 extends TestCase {
         String psql = out.toString();
 
         System.out.println(psql);
+
+
 
 
         assertEquals("SELECT `ktv_resource`.`VERSION`\n" +
