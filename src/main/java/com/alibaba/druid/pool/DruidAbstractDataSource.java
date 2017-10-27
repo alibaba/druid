@@ -1123,6 +1123,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             throw new IllegalArgumentException("driverClassName length > 256.");
         }
 
+        if (JdbcConstants.ORACLE_DRIVER2.equalsIgnoreCase(driverClass)) {
+            LOG.error("oracle.jdbc.driver.OracleDriver is deprecated.");
+        }
+
         if (inited) {
             if (StringUtils.equals(this.driverClass, driverClass)) {
                 return;
