@@ -314,13 +314,11 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
 
                 if (hash_lower == FnvHash.Constants.DATE
-                        && lexer.token == Token.LITERAL_CHARS
+                        && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)
                         && (JdbcConstants.ORACLE.equals(dbType)
                             || JdbcConstants.POSTGRESQL.equals(dbType)
                             || JdbcConstants.MYSQL.equals(dbType))) {
-                    String literal = lexer.stringVal();
-                    lexer.nextToken();
-
+                    SQLExpr literal = this.primary();
                     SQLDateExpr dateExpr = new SQLDateExpr();
                     dateExpr.setLiteral(literal);
                     sqlExpr = dateExpr;

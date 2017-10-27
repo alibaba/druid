@@ -5329,9 +5329,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLDateExpr x) {
-        print0(ucase ? "DATE '" : "date '");
-        print0(x.getLiteral());
-        print('\'');
+        SQLExpr literal = x.getLiteral();
+        print0(ucase ? "DATE " : "date ");
+        printExpr(literal);
+
         return false;
     }
 
