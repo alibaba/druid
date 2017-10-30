@@ -644,35 +644,19 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
         }
 
-        String varName = x.getName();
         if (x.isGlobal()) {
             print0("@@global.");
-        } else {
-//            if ((!varName.startsWith("@")) // /
-//                    && (!varName.equals("?")) //
-//                    && (!varName.startsWith("#")) //
-//                    && (!varName.startsWith("$")) //
-//                    && (!varName.startsWith(":"))) {
-//
-//                boolean subPartitionOption = false;
-//                if (x.getParent() != null) {
-//                    subPartitionOption = x.getParent().getParent() instanceof SQLSubPartitionBy;
-//                }
-//
-//                if (!subPartitionOption) {
-//                    print0("@@");
-//                }
-//            }
         }
 
-        for (int i = 0; i < x.getName().length(); ++i) {
-            char ch = x.getName().charAt(i);
+        String varName = x.getName();
+        for (int i = 0; i < varName.length(); ++i) {
+            char ch = varName.charAt(i);
             if (ch == '\'') {
-                if (x.getName().startsWith("@@") && i == 2) {
+                if (varName.startsWith("@@") && i == 2) {
                     print(ch);
-                } else if (x.getName().startsWith("@") && i == 1) {
+                } else if (varName.startsWith("@") && i == 1) {
                     print(ch);
-                } else if (i != 0 && i != x.getName().length() - 1) {
+                } else if (i != 0 && i != varName.length() - 1) {
                     print0("\\'");
                 } else {
                     print(ch);
@@ -2461,38 +2445,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public void endVisit(MySqlRenameTableStatement x) {
 
     }
-
-//    public boolean visit(SQLUnionQuery x) {
-//        print('(');
-//        x.getLeft().accept(this);
-//        print(')');
-//        println();
-//        print0(ucase ? x.getOperator().name : x.getOperator().name_lcase);
-//        println();
-//
-//        SQLSelectQuery right = x.getRight();
-//        boolean needParen = ! (right instanceof SQLUnionQuery);
-//
-//        if (needParen) {
-//            print('(');
-//            right.accept(this);
-//            print(')');
-//        } else {
-//            right.accept(this);
-//        }
-//
-//        if (x.getOrderBy() != null) {
-//            println();
-//            x.getOrderBy().accept(this);
-//        }
-//
-//        if (x.getLimit() != null) {
-//            println();
-//            x.getLimit().accept(this);
-//        }
-//
-//        return false;
-//    }
 
     @Override
     public boolean visit(MySqlUseIndexHint x) {

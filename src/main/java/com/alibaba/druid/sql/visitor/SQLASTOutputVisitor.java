@@ -1870,6 +1870,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (expr instanceof SQLIdentifierExpr) {
             print0(((SQLIdentifierExpr) expr).getName());
+        } else if (expr instanceof SQLPropertyExpr) {
+            visit((SQLPropertyExpr) expr);
         } else {
             printExpr(expr);
         }

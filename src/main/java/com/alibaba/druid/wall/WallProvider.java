@@ -460,7 +460,7 @@ public abstract class WallProvider {
 
         String mergedSql;
         try {
-            mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+            mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType, (List<Object>) null);
         } catch (Exception ex) {
             // skip
             return null;

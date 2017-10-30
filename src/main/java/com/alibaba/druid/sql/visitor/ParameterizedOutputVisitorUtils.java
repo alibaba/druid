@@ -18,6 +18,10 @@ package com.alibaba.druid.sql.visitor;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
@@ -78,7 +82,15 @@ public class ParameterizedOutputVisitorUtils {
             if (stmt.hasBeforeComment()) {
                 stmt.getBeforeCommentsDirect().clear();
             }
-            stmt.accept(visitor);
+
+            Class<?> stmtClass = stmt.getClass();
+            if (stmtClass == SQLSelectStatement.class) { // only for performance
+                SQLSelectStatement selectStatement = (SQLSelectStatement) stmt;
+                visitor.visit(selectStatement);
+                visitor.postVisit(selectStatement);
+            } else {
+                stmt.accept(visitor);
+            }
         }
 
         if (visitor.getReplaceCount() == 0
