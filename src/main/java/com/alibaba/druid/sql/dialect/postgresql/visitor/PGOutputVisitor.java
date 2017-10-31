@@ -41,6 +41,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.Fetc
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.LinkedHashSet;
@@ -453,17 +454,32 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(PGTypeCastExpr x) {
         SQLExpr expr = x.getExpr();
+        SQLDataType dataType = x.getDataType();
+
+        if (dataType.nameHashCode64() == FnvHash.Constants.VARBIT) {
+            dataType.accept(this);
+            print(' ');
+            printExpr(expr);
+            return false;
+        }
+
         if (expr != null) {
             if (expr instanceof SQLBinaryOpExpr) {
                 print('(');
                 expr.accept(this);
                 print(')');
+            } else if (expr instanceof PGTypeCastExpr && dataType.getArguments().size() == 0) {
+                dataType.accept(this);
+                print('(');
+                visit((PGTypeCastExpr) expr);
+                print(')');
+                return false;
             } else {
                 expr.accept(this);
             }
         }
         print0("::");
-        x.getDataType().accept(this);
+        dataType.accept(this);
         return false;
     }
 
@@ -1775,7 +1791,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             if (count != 0) {
                 print0(", ");
             }
-            print0(ucase ? "FOREIGHN KEY" : "foreighn key");
+            print0(ucase ? "FOREIGN KEY" : "foreign key");
             count++;
         }
 

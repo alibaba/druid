@@ -48,6 +48,11 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
         addArgument(new SQLIntegerExpr(precision));
     }
 
+    public SQLDataTypeImpl(String name, SQLExpr arg) {
+        this(name);
+        addArgument(arg);
+    }
+
     public SQLDataTypeImpl(String name, int precision, int scale) {
         this(name);
         addArgument(new SQLIntegerExpr(precision));

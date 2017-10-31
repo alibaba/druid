@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -1012,6 +1013,19 @@ public class SQLExprParser extends SQLParser {
             } else if (hash_lower == FnvHash.Constants.POSITION
                     && JdbcConstants.MYSQL.equals(dbType)) {
                 return parsePosition();
+            } else if (hash_lower == FnvHash.Constants.INT4 && JdbcConstants.POSTGRESQL.equals(dbType)) {
+                PGTypeCastExpr castExpr = new PGTypeCastExpr();
+                castExpr.setExpr(this.expr());
+                castExpr.setDataType(new SQLDataTypeImpl(methodName));
+                accept(Token.RPAREN);
+                return castExpr;
+            } else if (hash_lower == FnvHash.Constants.VARBIT && JdbcConstants.POSTGRESQL.equals(dbType)) {
+                PGTypeCastExpr castExpr = new PGTypeCastExpr();
+                SQLExpr len = this.primary();
+                castExpr.setDataType(new SQLDataTypeImpl(methodName, len));
+                accept(Token.RPAREN);
+                castExpr.setExpr(this.expr());
+                return castExpr;
             }
             aggMethodName = getAggreateFunction(hash_lower);
         } else if (expr instanceof SQLPropertyExpr) {

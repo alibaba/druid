@@ -2922,7 +2922,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             if (count != 0) {
                 print0(", ");
             }
-            print0(ucase ? "FOREIGHN KEY" : "foreighn key");
+            print0(ucase ? "FOREIGN KEY" : "foreign key");
             count++;
         }
 
