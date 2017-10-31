@@ -3392,6 +3392,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                     SQLAlterTableAddIndex item = parseAlterTableAddIndex();
                     item.setParent(stmt);
                     stmt.addItem(item);
+                } else if (lexer.token() == Token.FOREIGN) {
+                    MysqlForeignKey fk = this.getExprParser().parseForeignKey();
+                    SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(fk);
+
+                    stmt.addItem(item);
                 } else if (lexer.token() == Token.CONSTRAINT) {
                     lexer.nextToken();
 
