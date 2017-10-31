@@ -576,5 +576,8 @@ public final class FnvHash {
         long RR = fnv1a_64_lower("RR");
         long CS = fnv1a_64_lower("CS");
         long UR = fnv1a_64_lower("UR");
+
+        long INT4 = fnv1a_64_lower("INT4");
+        long VARBIT = fnv1a_64_lower("VARBIT");
     }
 }
