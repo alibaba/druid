@@ -3134,6 +3134,8 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected void parseValueClause(List<SQLInsertStatement.ValuesClause> valueClauseList, int columnSize, SQLObject parent) {
+        final boolean optimizedForParameterized = lexer.isEnabled(SQLParserFeature.OptimizedForParameterized);
+
         for (int i = 0; ; ++i) {
             int startPos = lexer.pos() - 1;
 
@@ -3149,17 +3151,34 @@ public class SQLStatementParser extends SQLParser {
                 } else {
                     valueExprList = new ArrayList<SQLExpr>();
                 }
+                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(valueExprList);
+                values.setParent(parent);
 
                 for (; ; ) {
                     SQLExpr expr;
                     if (lexer.token() == Token.LITERAL_INT) {
-                        expr = new SQLIntegerExpr(lexer.integerValue());
+                        if (optimizedForParameterized) {
+                            expr = new SQLVariantRefExpr("?");
+                            values.incrementReplaceCount();
+                        } else {
+                            expr = new SQLIntegerExpr(lexer.integerValue());
+                        }
                         lexer.nextTokenComma();
                     } else if (lexer.token() == Token.LITERAL_CHARS) {
-                        expr = new SQLCharExpr(lexer.stringVal());
+                        if (optimizedForParameterized) {
+                            expr = new SQLVariantRefExpr("?");
+                            values.incrementReplaceCount();
+                        } else {
+                            expr = new SQLCharExpr(lexer.stringVal());
+                        }
                         lexer.nextTokenComma();
                     } else if (lexer.token() == Token.LITERAL_NCHARS) {
-                        expr = new SQLNCharExpr(lexer.stringVal());
+                        if (optimizedForParameterized) {
+                            expr = new SQLVariantRefExpr("?");
+                            values.incrementReplaceCount();
+                        } else {
+                            expr = new SQLNCharExpr(lexer.stringVal());
+                        }
                         lexer.nextTokenComma();
                     } else {
                         expr = exprParser.expr();
@@ -3167,10 +3186,12 @@ public class SQLStatementParser extends SQLParser {
 
                     if (lexer.token() == Token.COMMA) {
                         valueExprList.add(expr);
+                        expr.setParent(values);
                         lexer.nextTokenValue();
                         continue;
                     } else if (lexer.token() == Token.RPAREN) {
                         valueExprList.add(expr);
+                        expr.setParent(values);
                         break;
                     } else {
                         expr = this.exprParser.primaryRest(expr);
@@ -3187,9 +3208,6 @@ public class SQLStatementParser extends SQLParser {
                         }
                     }
                 }
-
-                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(valueExprList);
-                values.setParent(parent);
 
                 if (lexer.isEnabled(SQLParserFeature.KeepInsertValueClauseOriginalString)) {
                     int endPos = lexer.pos();

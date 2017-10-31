@@ -15,25 +15,24 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SQLSelectListCache {
-    private final String dbType;
-    private final List<String> sqlCache = new ArrayList<String>();
-    private final List<SQLSelectQueryBlock> queryBlockCache = new ArrayList<SQLSelectQueryBlock>();
-    private final List<String> printSqlList = new ArrayList<String>();
+    private final static Log                LOG             = LogFactory.getLog(SQLSelectListCache.class);
+    private final String                    dbType;
+    private final List<Entry>               entries         = new CopyOnWriteArrayList<Entry>();
 
     public SQLSelectListCache(String dbType) {
         this.dbType = dbType;
     }
 
-    public synchronized void add(String select) {
+    public void add(String select) {
         if (select == null || select.length() == 0) {
             return;
         }
@@ -48,9 +47,23 @@ public class SQLSelectListCache {
         selectParser.accept(Token.FROM);
         selectParser.accept(Token.EOF);
 
-        queryBlockCache.add(queryBlock);
-        printSqlList.add(queryBlock.toString());
-        sqlCache.add(select.substring(6));
+        entries.add(
+                new Entry(select.substring(6)
+                        , queryBlock
+                        , queryBlock.toString())
+        );
+
+        if (entries.size() > 5) {
+            LOG.warn("SelectListCache is too large.");
+        }
+    }
+
+    public int getSize() {
+        return entries.size();
+    }
+
+    public void clear() {
+        entries.clear();
     }
 
     public boolean match(Lexer lexer, SQLSelectQueryBlock queryBlock) {
@@ -61,12 +74,13 @@ public class SQLSelectListCache {
         int pos = lexer.pos;
         String text = lexer.text;
 
-        for (int i = 0; i < sqlCache.size(); i++) {
-            String block = sqlCache.get(i);
+        for (int i = 0; i < entries.size(); i++) {
+            Entry entry = entries.get(i);
+            String block = entry.sql;
             if (text.startsWith(block, pos)) {
                 //SQLSelectQueryBlock queryBlockCached = queryBlockCache.get(i);
                 // queryBlockCached.cloneSelectListTo(queryBlock);
-                String printSql = printSqlList.get(i);
+                String printSql = entry.printSql;
                 queryBlock.setCachedSelectList(printSql);
 
                 int len = pos + block.length();
@@ -75,5 +89,17 @@ public class SQLSelectListCache {
             }
         }
         return false;
+    }
+
+    private static class Entry {
+        public final String sql;
+        public final SQLSelectQueryBlock queryBlock;
+        public final String printSql;
+
+        public Entry(String sql, SQLSelectQueryBlock queryBlock, String printSql) {
+            this.sql = sql;
+            this.queryBlock = queryBlock;
+            this.printSql = printSql;
+        }
     }
 }

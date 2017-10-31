@@ -92,9 +92,9 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
     public static class ValuesClause extends SQLObjectImpl {
 
-        private final List<SQLExpr> values;
-
-        private transient String originalString;
+        private final     List<SQLExpr> values;
+        private transient String        originalString;
+        private transient int           replaceCount;
 
         public ValuesClause(){
             this(new ArrayList<SQLExpr>());
@@ -150,6 +150,14 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
         public void setOriginalString(String originalString) {
             this.originalString = originalString;
+        }
+
+        public int getReplaceCount() {
+            return replaceCount;
+        }
+
+        public void incrementReplaceCount() {
+            this.replaceCount++;
         }
     }
 

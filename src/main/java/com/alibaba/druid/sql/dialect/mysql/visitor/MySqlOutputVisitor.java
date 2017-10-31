@@ -859,27 +859,32 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             tableSource.accept(this);
         }
 
-        List<SQLExpr> columns = x.getColumns();
-        if (columns.size() > 0) {
-            this.indentCount++;
-            print0(" (");
-            for (int i = 0, size = columns.size(); i < size; ++i) {
-                if (i != 0) {
-                    if (i % 5 == 0) {
-                        println();
+        String columnsString = x.getColumnsString();
+        if (columnsString != null) {
+            print0(columnsString);
+        } else {
+            List<SQLExpr> columns = x.getColumns();
+            if (columns.size() > 0) {
+                this.indentCount++;
+                print0(" (");
+                for (int i = 0, size = columns.size(); i < size; ++i) {
+                    if (i != 0) {
+                        if (i % 5 == 0) {
+                            println();
+                        }
+                        print0(", ");
                     }
-                    print0(", ");
-                }
 
-                SQLExpr column = columns.get(i);
-                if (column instanceof SQLIdentifierExpr) {
-                    print0(((SQLIdentifierExpr) column).getName());
-                } else {
-                    printExpr(column);
+                    SQLExpr column = columns.get(i);
+                    if (column instanceof SQLIdentifierExpr) {
+                        print0(((SQLIdentifierExpr) column).getName());
+                    } else {
+                        printExpr(column);
+                    }
                 }
+                print(')');
+                this.indentCount--;
             }
-            print(')');
-            this.indentCount--;
         }
 
         List<SQLInsertStatement.ValuesClause>  valuesList = x.getValuesList();
@@ -2682,6 +2687,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         printAndAccept(x.getColumns(), ", ");
         print(')');
 
+        SQLExpr comment = x.getComment();
+        if (comment != null) {
+            print0(" COMMENT ");
+            comment.accept(this);
+        }
+
         return false;
     }
 
@@ -4023,6 +4034,42 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             visit((SQLUnionQuery) x);
         } else {
             x.accept(this);
+        }
+    }
+
+    public void printInsertColumns(List<SQLExpr> columns) {
+        final int size = columns.size();
+        if (size > 0) {
+            if (size > 5) {
+                this.indentCount++;
+                print(' ');
+            }
+            print('(');
+            for (int i = 0; i < size; ++i) {
+                if (i != 0) {
+                    if (i % 5 == 0) {
+                        println();
+                    }
+                    print0(", ");
+                }
+
+                SQLExpr column = columns.get(i);
+                if (column instanceof SQLIdentifierExpr) {
+                    visit((SQLIdentifierExpr) column);
+                } else {
+                    printExpr(column);
+                }
+
+                String dataType = (String) column.getAttribute("dataType");
+                if (dataType != null) {
+                    print(' ');
+                    print(dataType);
+                }
+            }
+            print(')');
+            if (size > 5) {
+                this.indentCount--;
+            }
         }
     }
 } //

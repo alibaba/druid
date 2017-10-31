@@ -2392,7 +2392,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getTableSource().accept(this);
 
-        printInsertColumns(x.getColumns());
+        String columnsString = x.getColumnsString();
+        if (columnsString != null) {
+            print0(columnsString);
+        } else {
+            printInsertColumns(x.getColumns());
+        }
 
         if (!x.getValuesList().isEmpty()) {
             println();
@@ -2408,7 +2413,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-    protected void printInsertColumns(List<SQLExpr> columns) {
+    public void printInsertColumns(List<SQLExpr> columns) {
         final int size = columns.size();
         if (size > 0) {
             if (size > 5) {
@@ -2848,6 +2853,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         print('(');
         this.indentCount++;
+
+        this.replaceCount += x.getReplaceCount();
 
         final List<SQLExpr> values = x.getValues();
         for (int i = 0, size = values.size(); i < size; ++i) {

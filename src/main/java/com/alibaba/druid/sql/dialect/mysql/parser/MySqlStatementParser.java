@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.SQLParameter.ParameterType;
 import com.alibaba.druid.sql.ast.expr.*;
@@ -36,6 +37,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement.LockType;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -2385,12 +2387,14 @@ public class MySqlStatementParser extends SQLStatementParser {
             int pos = lexer.pos();
             if (cachedColumns != null
                     && lexer.text.startsWith(cachedColumns.columnsString, pos)) {
-                List<SQLExpr> columns = stmt.getColumns();
-                List<SQLExpr> cachedColumns2 = cachedColumns.columns;
-                for (int i = 0, size = cachedColumns2.size(); i < size; i++) {
-                    columns.add(cachedColumns2.get(i).clone());
+                if (!lexer.isEnabled(SQLParserFeature.OptimizedForParameterized)) {
+                    List<SQLExpr> columns = stmt.getColumns();
+                    List<SQLExpr> cachedColumns2 = cachedColumns.columns;
+                    for (int i = 0, size = cachedColumns2.size(); i < size; i++) {
+                        columns.add(cachedColumns2.get(i).clone());
+                    }
                 }
-                stmt.setColumnsString(cachedColumns.columnsString);
+                stmt.setColumnsString(cachedColumns.columnsFormattedString);
                 int p2 = pos + cachedColumns.columnsString.length();
                 lexer.reset(p2);
                 lexer.nextToken();
@@ -2449,8 +2453,14 @@ public class MySqlStatementParser extends SQLStatementParser {
                                 clonedColumns.add(columns.get(i).clone());
                             }
 
-                            insertColumnsCache.put(tableName.hashCode64(), columnsString, clonedColumns);
-                            stmt.setColumnsString(columnsString);
+                            StringBuilder buf = new StringBuilder();
+                            SQLASTOutputVisitor outputVisitor = SQLUtils.createOutputVisitor(buf, dbType);
+                            outputVisitor.printInsertColumns(columns);
+
+                            String formattedColumnsString = buf.toString();
+
+                            insertColumnsCache.put(tableName.hashCode64(), columnsString, formattedColumnsString, clonedColumns);
+                            stmt.setColumnsString(formattedColumnsString);
                         }
                     }
                 }

@@ -34,6 +34,7 @@ import com.alibaba.druid.util.JdbcUtils;
 public class ParameterizedOutputVisitorUtils {
     private final static SQLParserFeature[] features = {
             SQLParserFeature.EnableSQLBinaryOpExprGroup,
+            SQLParserFeature.UseInsertColumnsCache,
             SQLParserFeature.OptimizedForParameterized
     };
 

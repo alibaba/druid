@@ -49,7 +49,7 @@ public class InsertColumnsCache {
         return null;
     }
 
-    public boolean put(long hashCode64, String columnsString, List<SQLExpr> columns) {
+    public boolean put(long hashCode64, String columnsString, String columnsFormattedString, List<SQLExpr> columns) {
         final int bucket = ((int) hashCode64) & indexMask;
 
         for (Entry entry = buckets[bucket]; entry != null; entry = entry.next) {
@@ -58,7 +58,7 @@ public class InsertColumnsCache {
             }
         }
 
-        Entry entry = new Entry(hashCode64, columnsString, columns, buckets[bucket]);
+        Entry entry = new Entry(hashCode64, columnsString, columnsFormattedString, columns, buckets[bucket]);
         buckets[bucket] = entry;  // 并发是处理时会可能导致缓存丢失，但不影响正确性
 
         return false;
@@ -67,12 +67,14 @@ public class InsertColumnsCache {
     public final static class Entry {
         public final long hashCode64;
         public final String columnsString;
+        public final String columnsFormattedString;
         public final List<SQLExpr> columns;
         public final Entry next;
 
-        public Entry(long hashCode64, String columnsString, List<SQLExpr> columns, Entry next) {
+        public Entry(long hashCode64, String columnsString, String columnsFormattedString, List<SQLExpr> columns, Entry next) {
             this.hashCode64 = hashCode64;
             this.columnsString = columnsString;
+            this.columnsFormattedString = columnsFormattedString;
             this.columns = columns;
             this.next = next;
         }
