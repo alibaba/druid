@@ -1206,16 +1206,16 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
     final void beforeExecute() {
         final DruidConnectionHolder holder = this.holder;
-        if (holder != null && holder.getDataSource().isRemoveAbandoned()) {
+        if (holder != null && holder.dataSource.removeAbandoned) {
             running = true;
         }
     }
 
     final void afterExecute() {
         final DruidConnectionHolder holder = this.holder;
-        if (holder != null && holder.getDataSource().isRemoveAbandoned()) {
+        if (holder != null && holder.dataSource.removeAbandoned) {
             running = false;
-            holder.setLastActiveTimeMillis(System.currentTimeMillis());
+            holder.lastActiveTimeMillis = System.currentTimeMillis();
         }
     }
 
