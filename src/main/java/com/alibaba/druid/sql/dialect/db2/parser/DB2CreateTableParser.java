@@ -179,6 +179,12 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
                     lexer.nextToken();
                 }
                 continue;
+            } else if (lexer.token() == Token.INDEX) {
+                lexer.nextToken();
+                accept(Token.IN);
+                SQLName indexIn = this.exprParser.name();
+                createTable.setIndexIn(indexIn);
+                continue;
             }
             break;
         }

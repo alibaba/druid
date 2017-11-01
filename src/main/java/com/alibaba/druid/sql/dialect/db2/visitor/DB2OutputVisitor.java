@@ -101,6 +101,13 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
             tablespace.accept(this);
         }
 
+        SQLName indexIn = x.getIndexIn();
+        if (indexIn != null) {
+            println();
+            print("INDEX IN ");
+            indexIn.accept(this);
+        }
+
         SQLName database = x.getDatabase();
         if (database != null) {
             println();

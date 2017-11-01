@@ -3164,6 +3164,10 @@ public class SQLStatementParser extends SQLParser {
                             expr = new SQLIntegerExpr(lexer.integerValue());
                         }
                         lexer.nextTokenComma();
+
+                        if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
+                            expr = this.exprParser.exprRest(expr);
+                        }
                     } else if (lexer.token() == Token.LITERAL_CHARS) {
                         if (optimizedForParameterized) {
                             expr = new SQLVariantRefExpr("?");
@@ -3172,6 +3176,9 @@ public class SQLStatementParser extends SQLParser {
                             expr = new SQLCharExpr(lexer.stringVal());
                         }
                         lexer.nextTokenComma();
+                        if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
+                            expr = this.exprParser.exprRest(expr);
+                        }
                     } else if (lexer.token() == Token.LITERAL_NCHARS) {
                         if (optimizedForParameterized) {
                             expr = new SQLVariantRefExpr("?");
@@ -3180,6 +3187,20 @@ public class SQLStatementParser extends SQLParser {
                             expr = new SQLNCharExpr(lexer.stringVal());
                         }
                         lexer.nextTokenComma();
+                        if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
+                            expr = this.exprParser.exprRest(expr);
+                        }
+                    } else if (lexer.token == Token.NULL) {
+                        if (optimizedForParameterized) {
+                            expr = new SQLVariantRefExpr("?");
+                            values.incrementReplaceCount();
+                        } else {
+                            expr = new SQLNullExpr();
+                        }
+                        lexer.nextTokenComma();
+                        if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
+                            expr = this.exprParser.exprRest(expr);
+                        }
                     } else {
                         expr = exprParser.expr();
                     }

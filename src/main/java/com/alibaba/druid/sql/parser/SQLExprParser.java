@@ -89,7 +89,7 @@ public class SQLExprParser extends SQLParser {
         if (token == Token.COMMA) {
             return expr;
         } else if (token == Token.EQ) {
-            expr = equalityRest(expr);
+            expr = equalityRest2(expr);
             expr = andRest(expr);
             expr = orRest(expr);
             return expr;
@@ -1668,6 +1668,53 @@ public class SQLExprParser extends SQLParser {
         return equalityRest(expr);
     }
 
+    private SQLExpr equalityRest2(SQLExpr expr) {
+        SQLExpr rightExp;
+        lexer.nextToken();
+        try {
+            if (lexer.token == Token.LITERAL_INT) {
+                rightExp = new SQLIntegerExpr(lexer.integerValue());
+                lexer.nextToken();
+
+                if (lexer.token == Token.AND
+                        || lexer.token == Token.RPAREN
+                        || lexer.token == Token.EOF
+                        || lexer.token == Token.OR) {
+                    return new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, dbType);
+                }
+
+                rightExp = primaryRest(rightExp);
+                rightExp = bitXorRest(rightExp);
+                rightExp = multiplicativeRest(rightExp);
+                rightExp = additiveRest(rightExp);
+                rightExp = shiftRest(rightExp);
+                rightExp = bitAndRest(rightExp);
+                rightExp = bitOrRest(rightExp);
+                rightExp = inRest(rightExp);
+                rightExp = relationalRest(rightExp);
+            } else {
+                rightExp = bitOr();
+            }
+        } catch (EOFParserException e) {
+            throw new ParserException("EOF, " + expr + "=", e);
+        }
+
+        if (lexer.token == Token.COLONEQ) {
+            lexer.nextToken();
+            SQLExpr colonExpr = expr();
+            rightExp = new SQLBinaryOpExpr(rightExp, SQLBinaryOperator.Assignment, colonExpr, dbType);
+        }
+
+        expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, dbType);
+
+        if (lexer.token == Token.IS || lexer.token == Token.BETWEEN) {
+            expr = relationalRest(expr);
+        }
+
+        return expr;
+    }
+
+
     public SQLExpr equalityRest(SQLExpr expr) {
         SQLExpr rightExp;
 
@@ -1728,7 +1775,18 @@ public class SQLExprParser extends SQLParser {
                 }
 
                 for (;;) {
-                    SQLExpr item = this.expr();
+                    SQLExpr item;
+                    if (lexer.token == Token.LITERAL_INT) {
+                        item = new SQLIntegerExpr(lexer.integerValue());
+                        lexer.nextToken();
+                        if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
+                            item = this.primaryRest(item);
+                            item = this.exprRest(item);
+                        }
+                    } else {
+                        item = this.expr();
+                    }
+
                     item.setParent(inListExpr);
                     targetList.add(item);
                     if (lexer.token == Token.COMMA) {
@@ -3049,15 +3107,39 @@ public class SQLExprParser extends SQLParser {
 
     public SQLLimit parseLimit() {
         if (lexer.token == Token.LIMIT) {
-            lexer.nextToken();
+            lexer.nextTokenValue();
 
             SQLLimit limit = new SQLLimit();
 
-            SQLExpr temp = this.expr();
+            SQLExpr temp;
+            if (lexer.token == Token.LITERAL_INT) {
+                temp = new SQLIntegerExpr(lexer.integerValue());
+                lexer.nextTokenComma();
+                if (lexer.token != Token.COMMA && lexer.token != Token.EOF && lexer.token != Token.IDENTIFIER) {
+                    temp = this.primaryRest(temp);
+                    temp = this.exprRest(temp);
+                }
+            } else {
+                temp = this.expr();
+            }
+
             if (lexer.token == (Token.COMMA)) {
                 limit.setOffset(temp);
-                lexer.nextToken();
-                limit.setRowCount(this.expr());
+                lexer.nextTokenValue();
+
+                SQLExpr rowCount;
+                if (lexer.token == Token.LITERAL_INT) {
+                    rowCount = new SQLIntegerExpr(lexer.integerValue());
+                    lexer.nextToken();
+                    if (lexer.token != Token.EOF && lexer.token != Token.IDENTIFIER) {
+                        rowCount = this.primaryRest(rowCount);
+                        rowCount = this.exprRest(rowCount);
+                    }
+                } else {
+                    rowCount = this.expr();
+                }
+
+                limit.setRowCount(rowCount);
             } else if (lexer.identifierEquals(FnvHash.Constants.OFFSET)) {
                 limit.setRowCount(temp);
                 lexer.nextToken();

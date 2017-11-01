@@ -21,12 +21,16 @@ import com.alibaba.druid.sql.dialect.db2.ast.DB2Statement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DB2CreateTableStatement extends SQLCreateTableStatement implements DB2Statement {
     private boolean dataCaptureNone;
     private boolean dataCaptureChanges;
 
     protected SQLName database;
     protected SQLName validproc;
+    protected SQLName indexIn;
 
     public boolean isDataCaptureNone() {
         return dataCaptureNone;
@@ -59,11 +63,22 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
         return validproc;
     }
 
-    public void setValidproc(SQLName validproc) {
+    public void setValidproc(SQLName x) {
         if (validproc != null) {
-            validproc.setParent(this);
+            x.setParent(this);
         }
-        this.validproc = validproc;
+        this.validproc = x;
+    }
+
+    public SQLName getIndexIn() {
+        return indexIn;
+    }
+
+    public void setIndexIn(SQLName x) {
+        if (validproc != null) {
+            x.setParent(this);
+        }
+        this.indexIn = x;
     }
 
     @Override
@@ -85,6 +100,7 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
             this.acceptChild(visitor, select);
             this.acceptChild(visitor, database);
             this.acceptChild(visitor, validproc);
+            this.acceptChild(visitor, indexIn);
         }
         visitor.endVisit(this);
     }

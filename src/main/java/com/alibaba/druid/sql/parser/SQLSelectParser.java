@@ -585,7 +585,7 @@ public class SQLSelectParser extends SQLParser {
     }
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
-        if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
+        if (tableSource.getAlias() == null || tableSource.getAlias().length() == 0) {
             Token token = lexer.token;
             long hash;
             if (token != Token.LEFT
@@ -599,6 +599,11 @@ public class SQLSelectParser extends SQLParser {
                 String alias = tableAlias();
                 if (alias != null) {
                     tableSource.setAlias(alias);
+
+                    if (lexer.token == Token.WHERE) {
+                        return tableSource;
+                    }
+
                     return parseTableSourceRest(tableSource);
                 }
             }

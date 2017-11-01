@@ -66,7 +66,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected List<Object> parameters;
     protected List<Object> inputParameters;
-    protected Set<String> tables;
+    protected Set<String>  tables;
+    protected String       table; // for improved
 
     protected boolean exportTables = false;
 
@@ -149,6 +150,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public Set<String> getTables() {
+        if (this.table != null && this.tables == null) {
+            return Collections.singleton(this.table);
+        }
         return this.tables;
     }
 
@@ -1586,7 +1590,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else {
             if (owner instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr ownerIdent = (SQLIdentifierExpr) owner;
-                printName(ownerIdent, ownerIdent.getName());
+                printName(ownerIdent
+                        , ownerIdent.getName()
+                        , this.shardingSupport && this.parameterized);
             } else {
                 printExpr(owner);
             }
@@ -1944,7 +1950,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void addTable(String table) {
         if (tables == null) {
-            tables = new LinkedHashSet<String>();
+            if (this.table == null) {
+                this.table = table;
+                return;
+            } else {
+                tables = new LinkedHashSet<String>();
+                tables.add(this.table);
+            }
         }
         this.tables.add(table);
     }
@@ -2842,6 +2854,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? joinType.name : joinType.name_lcase);
     }
 
+    static String[] variantValuesCache = new String[64];
+    static {
+        for (int len = 0; len < variantValuesCache.length; ++len) {
+            StringBuffer buf = new StringBuffer();
+            buf.append('(');
+            for (int i = 0; i < len; ++i) {
+                if (i != 0) {
+                    if (i % 5 == 0) {
+                        buf.append("\n\t\t");
+                    }
+                    buf.append(", ");
+                }
+                buf.append('?');
+            }
+            buf.append(')');
+            variantValuesCache[len] = buf.toString();
+        }
+    }
+
     @Override
     public boolean visit(ValuesClause x) {
         if ((!this.parameterized)
@@ -2851,12 +2882,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return false;
         }
 
+        int xReplaceCount = x.getReplaceCount();
+        final List<SQLExpr> values = x.getValues();
+
+        this.replaceCount += xReplaceCount;
+
+        if (xReplaceCount == values.size() && xReplaceCount < variantValuesCache.length) {
+            String variantValues = variantValuesCache[xReplaceCount];
+            print0(variantValues);
+            return false;
+        }
+
         print('(');
         this.indentCount++;
 
-        this.replaceCount += x.getReplaceCount();
 
-        final List<SQLExpr> values = x.getValues();
         for (int i = 0, size = values.size(); i < size; ++i) {
             if (i != 0) {
                 if (i % 5 == 0) {
