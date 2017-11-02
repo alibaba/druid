@@ -226,7 +226,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long                            lastCreateStartTimeMillis;
 
     protected boolean                                  isOracle                                  = false;
-
+    protected boolean                                  isMySql                                   = false;
     protected boolean                                  useOracleImplicitCache                    = true;
 
     protected ReentrantLock                            lock;
@@ -1354,18 +1354,20 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     holder.lastValidTimeMillis = currentTimeMillis;
                 }
 
-                if (valid && JdbcConstants.MYSQL_DRIVER.equals(driverClass)) { // unexcepted branch
+                if (valid && isMySql) { // unexcepted branch
                     long lastPacketReceivedTimeMs = MySqlUtils.getLastPacketReceivedTimeMs(conn);
-                    long mysqlIdleMillis = currentTimeMillis - lastPacketReceivedTimeMs;
-                    if (lastPacketReceivedTimeMs > 0 //
-                            && mysqlIdleMillis >= timeBetweenEvictionRunsMillis) {
-                        discardConnection(conn);
-                        String errorMsg = "discard long time none received connection. "
-                                + ", jdbcUrl : " + jdbcUrl
-                                + ", jdbcUrl : " + jdbcUrl
-                                + ", lastPacketReceivedIdleMillis : " + mysqlIdleMillis;
-                        LOG.error(errorMsg);
-                        return false;
+                    if (lastPacketReceivedTimeMs > 0) {
+                        long mysqlIdleMillis = currentTimeMillis - lastPacketReceivedTimeMs;
+                        if (lastPacketReceivedTimeMs > 0 //
+                                && mysqlIdleMillis >= timeBetweenEvictionRunsMillis) {
+                            discardConnection(conn);
+                            String errorMsg = "discard long time none received connection. "
+                                    + ", jdbcUrl : " + jdbcUrl
+                                    + ", jdbcUrl : " + jdbcUrl
+                                    + ", lastPacketReceivedIdleMillis : " + mysqlIdleMillis;
+                            LOG.error(errorMsg);
+                            return false;
+                        }
                     }
                 }
 

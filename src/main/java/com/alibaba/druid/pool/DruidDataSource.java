@@ -1082,6 +1082,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             oracleValidationQueryCheck();
         } else if (JdbcUtils.DB2.equals(dbType)) {
             db2ValidationQueryCheck();
+        } else if (JdbcUtils.MYSQL.equals(this.dbType)
+                || JdbcUtils.MYSQL_DRIVER_6.equals(this.dbType)) {
+            isMySql = true;
         }
     }
 
@@ -1182,6 +1185,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
                     || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)) {
                 this.exceptionSorter = new MySqlExceptionSorter();
+                this.isMySql = true;
             } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
                     || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
                 this.exceptionSorter = new OracleExceptionSorter();
