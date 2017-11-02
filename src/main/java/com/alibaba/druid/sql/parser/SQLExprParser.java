@@ -1403,7 +1403,9 @@ public class SQLExprParser extends SQLParser {
 
         exprList(aggregateExpr.getArguments(), aggregateExpr);
 
-        parseAggregateExprRest(aggregateExpr);
+        if (lexer.token != Token.RPAREN) {
+            parseAggregateExprRest(aggregateExpr);
+        }
 
         accept(Token.RPAREN);
 
