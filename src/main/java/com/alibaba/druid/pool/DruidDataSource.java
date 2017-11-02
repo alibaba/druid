@@ -1175,28 +1175,37 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
-        String realDriverClassName = driver.getClass().getName();
-        if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
-            || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)) {
-            this.exceptionSorter = new MySqlExceptionSorter();
-        } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
-                || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
-            this.exceptionSorter = new OracleExceptionSorter();
-        } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
-            this.exceptionSorter = new InformixExceptionSorter();
+        Class driverTemp = driver.getClass();
+        do {
+            String realDriverClassName = driverTemp.getName();
+            if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
+                    || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)) {
+                this.exceptionSorter = new MySqlExceptionSorter();
+            } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
+                    || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
+                this.exceptionSorter = new OracleExceptionSorter();
+            } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
+                this.exceptionSorter = new InformixExceptionSorter();
 
-        } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
-            this.exceptionSorter = new SybaseExceptionSorter();
+            } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
+                this.exceptionSorter = new SybaseExceptionSorter();
 
-        } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
-                || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)) {
-            this.exceptionSorter = new PGExceptionSorter();
+            } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
+                    || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)) {
+                this.exceptionSorter = new PGExceptionSorter();
 
-        } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
-            this.exceptionSorter = new MockExceptionSorter();
-        } else if (realDriverClassName.contains("DB2")) {
-            this.exceptionSorter = new DB2ExceptionSorter();
-        }
+            } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
+                this.exceptionSorter = new MockExceptionSorter();
+            } else if (realDriverClassName.contains("DB2")) {
+                this.exceptionSorter = new DB2ExceptionSorter();
+            } else if (realDriverClassName.equals("com.taobao.tddl.driver")) {
+                this.exceptionSorter = new MySqlExceptionSorter();
+            }
+            if (this.exceptionSorter != null) {
+                break;
+            }
+        } while ( (driverTemp = driverTemp.getSuperclass() ) != Object.class);
+
     }
 
     @Override
