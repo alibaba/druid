@@ -262,13 +262,26 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             DruidConnectionHolder holder = conn.holder;
             DruidAbstractDataSource dataSource = holder.dataSource;
 
+            long currentTimeMillis = System.currentTimeMillis();
             long lastActiveTimeMillis = holder.lastActiveTimeMillis;
-            long idleMillis = System.currentTimeMillis() - lastActiveTimeMillis;
+            long idleMillis = currentTimeMillis - lastActiveTimeMillis;
+            long lastValidIdleMillis = currentTimeMillis - holder.lastActiveTimeMillis;
 
-            LOG.error("CommunicationsException, druid version " + VERSION.getVersionNumber()
+            String errorMsg = "CommunicationsException, druid version " + VERSION.getVersionNumber()
                     + ", jdbcUrl : " + dataSource.jdbcUrl
                     + ", testWhileIdle " + dataSource.testWhileIdle
-                    + ", idle millis " + idleMillis);
+                    + ", idle millis " + idleMillis
+                    + ", minIdle " + dataSource.minIdle
+                    + ", poolingCount " + dataSource.getPoolingCount()
+                    + ", timeBetweenEvictionRunsMillis " + dataSource.timeBetweenEvictionRunsMillis
+                    + ", lastValidIdleMillis " + lastValidIdleMillis
+                    + ", driver " + dataSource.driver.getClass().getName();
+
+            if (dataSource.exceptionSorter != null) {
+                errorMsg += ", exceptionSorter " + dataSource.exceptionSorter.getClass().getName();
+            }
+
+            LOG.error(errorMsg);
         }
     }
 

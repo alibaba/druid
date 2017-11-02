@@ -1295,6 +1295,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             Exception error = null;
             try {
                 result = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
+            } catch (SQLException ex) {
+                throw ex;
             } catch (Exception ex) {
                 error = ex;
             }
@@ -1327,7 +1329,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
     }
 
+    /**
+     * @deprecated
+     */
     protected boolean testConnectionInternal(Connection conn) {
+        return testConnectionInternal(null, conn);
+    }
+
+    protected boolean testConnectionInternal(DruidConnectionHolder holder, Connection conn) {
         String sqlFile = JdbcSqlStat.getContextSqlFile();
         String sqlName = JdbcSqlStat.getContextSqlName();
 
@@ -1339,7 +1348,28 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
         try {
             if (validConnectionChecker != null) {
-                return validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
+                boolean valid = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
+                long currentTimeMillis = System.currentTimeMillis();
+                if (holder != null) {
+                    holder.lastValidTimeMillis = currentTimeMillis;
+                }
+
+                if (valid && JdbcConstants.MYSQL_DRIVER.equals(driverClass)) { // unexcepted branch
+                    long lastPacketReceivedTimeMs = MySqlUtils.getLastPacketReceivedTimeMs(conn);
+                    long mysqlIdleMillis = currentTimeMillis - lastPacketReceivedTimeMs;
+                    if (lastPacketReceivedTimeMs > 0 //
+                            && mysqlIdleMillis >= timeBetweenEvictionRunsMillis) {
+                        discardConnection(conn);
+                        String errorMsg = "discard long time none received connection. "
+                                + ", jdbcUrl : " + jdbcUrl
+                                + ", jdbcUrl : " + jdbcUrl
+                                + ", lastPacketReceivedIdleMillis : " + mysqlIdleMillis;
+                        LOG.error(errorMsg);
+                        return false;
+                    }
+                }
+
+                return valid;
             }
 
             if (conn.isClosed()) {
@@ -1367,7 +1397,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             }
 
             return true;
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             // skip
             return false;
         } finally {

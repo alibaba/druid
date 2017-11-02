@@ -54,28 +54,23 @@ import com.alibaba.druid.support.logging.LogFactory;
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidPooledConnection extends PoolableWrapper implements javax.sql.PooledConnection, Connection {
-
-    private final static Log                 LOG                  = LogFactory.getLog(DruidPooledConnection.class);
-
-    public static final int                  MAX_RECORD_SQL_COUNT = 10;
-
-    protected Connection                     conn;
-    protected volatile DruidConnectionHolder holder;
-    protected TransactionInfo                transactionInfo;
-    private final boolean                    dupCloseLogEnable;
-    protected volatile boolean               traceEnable          = false;
-    private boolean                          disable              = false;
-    private boolean                          closed               = false;
-    protected final Thread                   ownerThread;
-    private long                             connectedTimeMillis;
-    private long                             connectedTimeNano;
-    private volatile boolean                 running              = false;
-    private volatile boolean                 abandoned            = false;
-
-    protected StackTraceElement[]            connectStackTrace;
-    protected Throwable                      disableError         = null;
-
-    public  ReentrantLock                    lock                 = new ReentrantLock();
+    private final static Log                   LOG                  = LogFactory.getLog(DruidPooledConnection.class);
+    public static final  int                   MAX_RECORD_SQL_COUNT = 10;
+    protected            Connection            conn;
+    protected volatile   DruidConnectionHolder holder;
+    protected            TransactionInfo       transactionInfo;
+    private final        boolean               dupCloseLogEnable;
+    protected volatile   boolean               traceEnable          = false;
+    private              boolean               disable              = false;
+    private              boolean               closed               = false;
+    protected final      Thread                ownerThread;
+    private              long                  connectedTimeMillis;
+    private              long                  connectedTimeNano;
+    private volatile     boolean               running              = false;
+    private volatile     boolean               abandoned            = false;
+    protected            StackTraceElement[]   connectStackTrace;
+    protected            Throwable             disableError         = null;
+    public               ReentrantLock         lock                 = new ReentrantLock();
 
     public DruidPooledConnection(DruidConnectionHolder holder){
         super(holder.getConnection());
