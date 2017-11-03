@@ -348,8 +348,13 @@ public class SQLStatementParser extends SQLParser {
 
             if (lexer.identifierEquals("ROLLBACK")) {
                 SQLRollbackStatement stmt = parseRollback();
-
                 statementList.add(stmt);
+
+                if (parent instanceof SQLBlockStatement
+                        && JdbcConstants.MYSQL.equals(dbType)) {
+                    return;
+                }
+
                 continue;
             }
 
@@ -357,6 +362,12 @@ public class SQLStatementParser extends SQLParser {
                 SQLStatement stmt = parseCommit();
 
                 statementList.add(stmt);
+
+                if (parent instanceof SQLBlockStatement
+                        && JdbcConstants.MYSQL.equals(dbType)) {
+                    return;
+                }
+
                 continue;
             }
 

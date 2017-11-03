@@ -17,10 +17,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import org.junit.Assert;
@@ -73,6 +75,11 @@ public class OracleMergeTest11 extends OracleTest {
                 "WHERE THE_DATE = '{THISMONTH}'\n" +
                 "\tAND AREA_LEVEL <= 1\n" +
                 "\tAND TYPE_ID = '2'", select.toString());
+
+        SQLUpdateSetItem updateSetItem = mergeStatement.getUpdateClause().getItems().get(0);
+        SQLExpr value = updateSetItem.getValue();
+
+        assertEquals("ROUND(B.TOTAL_CHARGE * 1.00 / 10000, 2)", value.toString());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));

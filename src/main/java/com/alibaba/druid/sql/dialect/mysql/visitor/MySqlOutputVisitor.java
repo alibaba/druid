@@ -2977,8 +2977,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             this.indentCount--;
             println();
         }
+
         print0(ucase ? "BEGIN" : "begin");
-        this.indentCount++;
+        if (!x.isEndOfCommit()) {
+            this.indentCount++;
+        } else {
+            print(';');
+        }
         println();
         List<SQLStatement> statementList = x.getStatementList();
         for (int i = 0, size = statementList.size(); i < size; ++i) {
@@ -2988,13 +2993,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             SQLStatement stmt = statementList.get(i);
             stmt.accept(this);
         }
-        this.indentCount--;
-        println();
-        print0(ucase ? "END" : "end");
-        if (labelName != null && !labelName.equals("")) {
-            print(' ');
-            print0(labelName);
+
+        if (!x.isEndOfCommit()) {
+            this.indentCount--;
+            println();
+            print0(ucase ? "END" : "end");
+            if (labelName != null && !labelName.equals("")) {
+                print(' ');
+                print0(labelName);
+            }
         }
+
         return false;
     }
 

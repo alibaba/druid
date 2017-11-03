@@ -35,6 +35,10 @@ public class SQLCommitStatement extends SQLStatementImpl {
     private SQLExpr transactionName;
     private SQLExpr delayedDurability;
 
+    public SQLCommitStatement() {
+
+    }
+
     public SQLCommitStatement clone() {
         SQLCommitStatement x = new SQLCommitStatement();
         x.write = write;
