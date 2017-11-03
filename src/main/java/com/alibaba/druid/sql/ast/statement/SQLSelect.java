@@ -20,7 +20,9 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLSelect extends SQLObjectImpl {
 
@@ -146,6 +148,18 @@ public class SQLSelect extends SQLObjectImpl {
         if (parent instanceof SQLStatement) {
             String dbType = ((SQLStatement) parent).getDbType();
             
+            if (dbType != null) {
+                return SQLUtils.toSQLString(this, dbType);
+            }
+        }
+
+        if (parent instanceof OracleSQLObject) {
+            return SQLUtils.toSQLString(this, JdbcConstants.ORACLE);
+        }
+
+        if (query instanceof SQLSelectQueryBlock) {
+            String dbType = ((SQLSelectQueryBlock) query).dbType;
+
             if (dbType != null) {
                 return SQLUtils.toSQLString(this, dbType);
             }
