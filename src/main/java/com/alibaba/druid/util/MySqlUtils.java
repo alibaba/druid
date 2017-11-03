@@ -296,7 +296,7 @@ public class MySqlUtils {
             if (connImpl == null) {
                 return -1;
             }
-            
+
             Object mysqlio = method_getIO.invoke(connImpl);
             Long ms = (Long) method_getLastPacketReceivedTimeMs.invoke(mysqlio);
             return ms.longValue();
