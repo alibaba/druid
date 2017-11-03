@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.Utils;
 
@@ -215,6 +216,11 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
 
     public String toString() {
         return SQLUtils.toSQLString(this, getDbType());
+    }
+
+    public void output(StringBuffer buf) {
+        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(buf, dbType);
+        this.accept(visitor);
     }
 
     public static SQLExpr combine(List<? extends SQLExpr> items, SQLBinaryOperator op) {
