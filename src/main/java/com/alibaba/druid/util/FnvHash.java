@@ -134,6 +134,38 @@ public final class FnvHash {
         return hashCode;
     }
 
+    public static long fnv1a_64_lower(StringBuilder key) {
+        long hashCode = BASIC;
+        for (int i = 0; i < key.length(); ++i) {
+            char ch = key.charAt(i);
+
+            if (ch >= 'A' && ch <= 'Z') {
+                ch = (char) (ch + 32);
+            }
+
+            hashCode ^= ch;
+            hashCode *= PRIME;
+        }
+
+        return hashCode;
+    }
+
+    public static long fnv1a_64_lower(long basic, StringBuilder key) {
+        long hashCode = basic;
+        for (int i = 0; i < key.length(); ++i) {
+            char ch = key.charAt(i);
+
+            if (ch >= 'A' && ch <= 'Z') {
+                ch = (char) (ch + 32);
+            }
+
+            hashCode ^= ch;
+            hashCode *= PRIME;
+        }
+
+        return hashCode;
+    }
+
     public static long hashCode64(String key, int offset, int end) {
         long hashCode = BASIC;
         for (int i = offset; i < end; ++i) {

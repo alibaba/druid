@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.FnvHash;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,10 +48,13 @@ public class SQLSelectListCache {
         selectParser.accept(Token.FROM);
         selectParser.accept(Token.EOF);
 
+        String printSql = queryBlock.toString();
+        long printSqlHash = FnvHash.fnv1a_64_lower(printSql);
         entries.add(
                 new Entry(select.substring(6)
                         , queryBlock
-                        , queryBlock.toString())
+                        , printSql
+                        , printSqlHash)
         );
 
         if (entries.size() > 5) {
@@ -80,8 +84,7 @@ public class SQLSelectListCache {
             if (text.startsWith(block, pos)) {
                 //SQLSelectQueryBlock queryBlockCached = queryBlockCache.get(i);
                 // queryBlockCached.cloneSelectListTo(queryBlock);
-                String printSql = entry.printSql;
-                queryBlock.setCachedSelectList(printSql);
+                queryBlock.setCachedSelectList(entry.printSql, entry.printSqlHash);
 
                 int len = pos + block.length();
                 lexer.reset(len, text.charAt(len), Token.FROM);
@@ -92,14 +95,16 @@ public class SQLSelectListCache {
     }
 
     private static class Entry {
-        public final String sql;
+        public final String              sql;
         public final SQLSelectQueryBlock queryBlock;
-        public final String printSql;
+        public final String              printSql;
+        public final long                printSqlHash;
 
-        public Entry(String sql, SQLSelectQueryBlock queryBlock, String printSql) {
+        public Entry(String sql, SQLSelectQueryBlock queryBlock, String printSql, long printSqlHash) {
             this.sql = sql;
             this.queryBlock = queryBlock;
             this.printSql = printSql;
+            this.printSqlHash = printSqlHash;
         }
     }
 }

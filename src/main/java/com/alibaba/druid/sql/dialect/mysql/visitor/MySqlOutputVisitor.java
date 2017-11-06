@@ -118,7 +118,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         String cachedSelectList = x.getCachedSelectList();
 
         if (cachedSelectList != null) {
-            print0(cachedSelectList);
+            if (!isEnabled(VisitorFeature.OutputSkipSelectListCacheString)) {
+                print0(cachedSelectList);
+            }
         } else {
             print0(ucase ? "SELECT " : "select ");
 
@@ -861,7 +863,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         String columnsString = x.getColumnsString();
         if (columnsString != null) {
-            print0(columnsString);
+            if (!isEnabled(VisitorFeature.OutputSkipInsertColumnsString)) {
+                print0(columnsString);
+            }
         } else {
             List<SQLExpr> columns = x.getColumns();
             if (columns.size() > 0) {

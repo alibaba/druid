@@ -54,6 +54,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected List<SQLSelectOrderByItem> sortBy;
 
     protected String                     cachedSelectList; // optimized for SelectListCache
+    protected long                       cachedSelectListHash; // optimized for SelectListCache
 
     protected String                     dbType;
 
@@ -666,8 +667,13 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         return cachedSelectList;
     }
 
-    public void setCachedSelectList(String cachedSelectList) {
+    public void setCachedSelectList(String cachedSelectList, long cachedSelectListHash) {
         this.cachedSelectList = cachedSelectList;
+        this.cachedSelectListHash = cachedSelectListHash;
+    }
+
+    public long getCachedSelectListHash() {
+        return cachedSelectListHash;
     }
 
     public String getDbType() {

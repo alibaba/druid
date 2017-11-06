@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,6 +69,7 @@ public class InsertColumnsCache {
         public final long hashCode64;
         public final String columnsString;
         public final String columnsFormattedString;
+        public final long columnsFormattedStringHash;
         public final List<SQLExpr> columns;
         public final Entry next;
 
@@ -75,6 +77,7 @@ public class InsertColumnsCache {
             this.hashCode64 = hashCode64;
             this.columnsString = columnsString;
             this.columnsFormattedString = columnsFormattedString;
+            this.columnsFormattedStringHash = FnvHash.fnv1a_64_lower(columnsFormattedString);
             this.columns = columns;
             this.next = next;
         }

@@ -3145,7 +3145,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected void parseValueClause(List<SQLInsertStatement.ValuesClause> valueClauseList, int columnSize, SQLObject parent) {
-        final boolean optimizedForParameterized = lexer.isEnabled(SQLParserFeature.OptimizedForParameterized);
+        final boolean optimizedForParameterized = lexer.isEnabled(SQLParserFeature.OptimizedForForParameterizedSkipValue);
 
         for (int i = 0; ; ++i) {
             int startPos = lexer.pos() - 1;

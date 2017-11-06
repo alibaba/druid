@@ -2403,7 +2403,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         columns.add(cachedColumns2.get(i).clone());
                     }
                 }
-                stmt.setColumnsString(cachedColumns.columnsFormattedString);
+                stmt.setColumnsString(cachedColumns.columnsFormattedString, cachedColumns.columnsFormattedStringHash);
                 int p2 = pos + cachedColumns.columnsString.length();
                 lexer.reset(p2);
                 lexer.nextToken();
@@ -2467,9 +2467,10 @@ public class MySqlStatementParser extends SQLStatementParser {
                             outputVisitor.printInsertColumns(columns);
 
                             String formattedColumnsString = buf.toString();
+                            long columnsFormattedStringHash = FnvHash.fnv1a_64_lower(formattedColumnsString);
 
                             insertColumnsCache.put(tableName.hashCode64(), columnsString, formattedColumnsString, clonedColumns);
-                            stmt.setColumnsString(formattedColumnsString);
+                            stmt.setColumnsString(formattedColumnsString, columnsFormattedStringHash);
                         }
                     }
                 }

@@ -26,4 +26,6 @@ public interface ParameterizedVisitor extends PrintableVisitor {
     String getDbType();
 
     void setOutputParameters(List<Object> parameters);
+
+    void config(VisitorFeature feature, boolean state);
 }

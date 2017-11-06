@@ -21,6 +21,7 @@ public enum SQLParserFeature {
     UseInsertColumnsCache,
     EnableSQLBinaryOpExprGroup,
     OptimizedForParameterized,
+    OptimizedForForParameterizedSkipValue,
     KeepComments,
     SkipComments,
     StrictForWall

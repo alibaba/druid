@@ -20,8 +20,9 @@ public enum  VisitorFeature {
     OutputPrettyFormat,
     OutputParameterized,
     OutputDesensitize,
-    OutputUseInsertValueClauseOriginalString
-
+    OutputUseInsertValueClauseOriginalString,
+    OutputSkipSelectListCacheString,
+    OutputSkipInsertColumnsString,
     ;
 
     private VisitorFeature(){

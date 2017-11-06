@@ -27,6 +27,7 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
     protected SQLExprTableSource        tableSource;
     protected final List<SQLExpr>       columns = new ArrayList<SQLExpr>();
     protected transient String          columnsString;
+    protected transient long            columnsStringHash;
     protected SQLSelect                 query;
     protected final List<ValuesClause>  valuesList = new ArrayList<ValuesClause>();
 
@@ -142,7 +143,12 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
         return columnsString;
     }
 
-    public void setColumnsString(String columnsString) {
+    public long getColumnsStringHash() {
+        return columnsStringHash;
+    }
+
+    public void setColumnsString(String columnsString, long columnsStringHash) {
         this.columnsString = columnsString;
+        this.columnsStringHash = columnsStringHash;
     }
 }
