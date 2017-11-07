@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import oracle.sql.SQLUtil;
 
 public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlObject {
     private boolean              hignPriority;

@@ -25,7 +25,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 
 public class WallProviderStatLoggerImpl extends WallProviderStatLoggerAdapter implements WallProviderStatLogger {
 
-    private static Log LOG    = LogFactory.getLog(DruidDataSourceStatLoggerImpl.class);
+    private static Log LOG    = LogFactory.getLog(WallProviderStatLoggerImpl.class);
 
     private Log        logger = LOG;
 

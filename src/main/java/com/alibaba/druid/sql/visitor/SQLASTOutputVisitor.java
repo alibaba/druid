@@ -46,7 +46,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
-import oracle.sql.SQLUtil;
 
 import static com.alibaba.druid.util.Utils.getBoolean;
 

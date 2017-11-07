@@ -58,7 +58,7 @@ public class OracleSelectTest88_bindvar extends OracleTest {
                     "FROM (\n" +
                     "\tSELECT *\n" +
                     "\tFROM \"rme\" \"rm\"\n" +
-                    "\tWHERE \"rm\".a - (:\"sys_b_07\") DAY(:\"sys_b_08\") TO SECOND(:\"sys_b_09\")\n" +
+                    "\tWHERE \"rm\".a - INTERVAL :\"sys_b_07\" DAY(:\"sys_b_08\") TO SECOND(:\"sys_b_09\")\n" +
                     ")", text);
         }
 

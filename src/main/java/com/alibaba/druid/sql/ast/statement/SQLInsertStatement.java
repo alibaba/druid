@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import oracle.sql.SQLUtil;
 
 public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     protected SQLWithSubqueryClause with;

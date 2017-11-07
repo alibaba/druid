@@ -6,6 +6,9 @@ import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MySqlParamTest extends TestCase {
     public final static String dbType = JdbcConstants.MYSQL;
 
@@ -15,10 +18,12 @@ public class MySqlParamTest extends TestCase {
         long hash2 = FnvHash.fnv1a_64_lower(ParameterizedOutputVisitorUtils.parameterize(sql, dbType));
         assertEquals(hash1, hash2);
 
+
         SQLSelectListCache cache = new SQLSelectListCache(dbType);
         cache.add("select `miller_cart`.`CART_ID`,`miller_cart`.`SKU_ID`,`miller_cart`.`ITEM_ID`,`miller_cart`.`QUANTITY`,`miller_cart`.`USER_ID`,`miller_cart`.`SELLER_ID`,`miller_cart`.`STATUS`,`miller_cart`.`EXT_STATUS`,`miller_cart`.`TYPE`,`miller_cart`.`SUB_TYPE`,`miller_cart`.`GMT_CREATE`,`miller_cart`.`GMT_MODIFIED`,`miller_cart`.`ATTRIBUTE`,`miller_cart`.`ATTRIBUTE_CC`,`miller_cart`.`EX2` from");
 
-        long hash3 = ParameterizedOutputVisitorUtils.parameterizeHash(sql, dbType, cache, null);
+        List<Object> outParameters = new ArrayList<Object>(); // 这个参数如果为null时，性能会进一步提升
+        long hash3 = ParameterizedOutputVisitorUtils.parameterizeHash(sql, dbType, cache, outParameters);
         assertEquals(hash1, hash3);
     }
 }
