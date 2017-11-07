@@ -27,16 +27,16 @@ public class PGVisitorDemo extends TestCase {
         System.out.println(tableSource);
     }
 
-public static class ExportTableAliasVisitor extends PGASTVisitorAdapter {
-    private Map<String, SQLTableSource> aliasMap = new HashMap<String, SQLTableSource>();
-    public boolean visit(SQLExprTableSource x) {
-        String alias = x.getAlias();
-        aliasMap.put(alias, x);
-        return true;
-    }
+    public static class ExportTableAliasVisitor extends PGASTVisitorAdapter {
+        private Map<String, SQLTableSource> aliasMap = new HashMap<String, SQLTableSource>();
+        public boolean visit(SQLExprTableSource x) {
+            String alias = x.getAlias();
+            aliasMap.put(alias, x);
+            return true;
+        }
 
-    public Map<String, SQLTableSource> getAliasMap() {
-        return aliasMap;
+        public Map<String, SQLTableSource> getAliasMap() {
+            return aliasMap;
+        }
     }
-}
 }
