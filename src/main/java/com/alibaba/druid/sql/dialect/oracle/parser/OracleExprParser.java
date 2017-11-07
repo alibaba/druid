@@ -885,6 +885,8 @@ public class OracleExprParser extends SQLExprParser {
             interval.setValue(new SQLCharExpr(lexer.stringVal()));
         } else if (lexer.token() == Token.VARIANT) {
             interval.setValue(new SQLVariantRefExpr(lexer.stringVal()));
+        } else if (lexer.token() == Token.QUES) {
+            interval.setValue(new SQLVariantRefExpr("?"));
         } else {
             return new SQLIdentifierExpr("INTERVAL");
         }
