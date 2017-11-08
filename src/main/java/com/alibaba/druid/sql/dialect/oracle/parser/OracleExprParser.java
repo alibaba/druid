@@ -400,6 +400,7 @@ public class OracleExprParser extends SQLExprParser {
                     case VARIANT:
                     case QUES:
                     case IDENTIFIER:
+                    case LITERAL_ALIAS:
                         sqlExpr = expr();
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         break;

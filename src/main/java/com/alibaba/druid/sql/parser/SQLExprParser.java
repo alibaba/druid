@@ -3019,6 +3019,7 @@ public class SQLExprParser extends SQLParser {
         switch (lexer.token) {
             case FULL:
             case MODEL:
+            case TABLESPACE:
                 alias = lexer.stringVal();
                 lexer.nextToken();
                 break;
