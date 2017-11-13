@@ -15,47 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.hive.stmt;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HiveCreateTableStatement extends SQLCreateTableStatement {
-    protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
-    protected final List<SQLName> clusteredBy = new ArrayList<SQLName>();
-    protected final List<SQLSelectOrderByItem> sortedBy = new ArrayList<SQLSelectOrderByItem>();
-    protected int buckets;
 
     public HiveCreateTableStatement() {
         this.dbType = JdbcConstants.HIVE;
-    }
-
-    public List<SQLName> getClusteredBy() {
-        return clusteredBy;
-    }
-
-    public List<SQLSelectOrderByItem> getSortedBy() {
-        return sortedBy;
-    }
-
-    public void addSortedByItem(SQLSelectOrderByItem item) {
-        item.setParent(this);
-        this.sortedBy.add(item);
-    }
-
-    public int getBuckets() {
-        return buckets;
-    }
-
-    public void setBuckets(int buckets) {
-        this.buckets = buckets;
     }
 
     @Override

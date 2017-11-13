@@ -34,30 +34,36 @@ import com.alibaba.druid.util.lang.Consumer;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
 
-    protected boolean               ifNotExiists = false;
-    protected Type                  type;
-    protected SQLExprTableSource    tableSource;
+    protected boolean                          ifNotExiists = false;
+    protected Type                             type;
+    protected SQLExprTableSource               tableSource;
 
-    protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
+    protected List<SQLTableElement>            tableElementList = new ArrayList<SQLTableElement>();
 
     // for postgresql
-    protected SQLExprTableSource    inherits;
+    protected SQLExprTableSource               inherits;
 
-    protected SQLSelect             select;
+    protected SQLSelect                        select;
 
-    protected SQLExpr               comment;
+    protected SQLExpr                          comment;
 
-    protected SQLExprTableSource    like;
+    protected SQLExprTableSource               like;
 
-    protected Boolean               compress;
-    protected Boolean               logging;
+    protected Boolean                          compress;
+    protected Boolean                          logging;
 
-    protected SQLName               tablespace;
-    protected SQLPartitionBy        partitioning;
-    protected SQLName               storedAs;
+    protected SQLName                          tablespace;
+    protected SQLPartitionBy                   partitioning;
+    protected SQLName                          storedAs;
 
-    protected boolean               onCommitPreserveRows;
-    protected boolean               onCommitDeleteRows;
+    protected boolean                          onCommitPreserveRows;
+    protected boolean                          onCommitDeleteRows;
+
+    // for hive & odps
+    protected final List<SQLColumnDefinition>  partitionColumns = new ArrayList<SQLColumnDefinition>(2);
+    protected final List<SQLName>              clusteredBy = new ArrayList<SQLName>();
+    protected final List<SQLSelectOrderByItem> sortedBy = new ArrayList<SQLSelectOrderByItem>();
+    protected int                              buckets;
 
     public SQLCreateTableStatement(){
 
@@ -1044,4 +1050,35 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.onCommitPreserveRows = onCommitPreserveRows;
     }
 
+    public List<SQLName> getClusteredBy() {
+        return clusteredBy;
+    }
+
+    public List<SQLSelectOrderByItem> getSortedBy() {
+        return sortedBy;
+    }
+
+    public void addSortedByItem(SQLSelectOrderByItem item) {
+        item.setParent(this);
+        this.sortedBy.add(item);
+    }
+
+    public int getBuckets() {
+        return buckets;
+    }
+
+    public void setBuckets(int buckets) {
+        this.buckets = buckets;
+    }
+
+    public List<SQLColumnDefinition> getPartitionColumns() {
+        return partitionColumns;
+    }
+
+    public void addPartitionColumn(SQLColumnDefinition column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.partitionColumns.add(column);
+    }
 }

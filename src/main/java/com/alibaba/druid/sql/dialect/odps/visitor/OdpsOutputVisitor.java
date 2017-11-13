@@ -139,11 +139,11 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print(')');
         }
 
-        List<SQLName> sortedBy = x.getSortedBy();
+        List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
         if (sortedBy.size() > 0) {
             println();
             print0(ucase ? "SORTED BY (" : "sorted by (");
-            printAndAccept(sortedBy, ",");
+            printAndAccept(sortedBy, ", ");
             print(')');
         }
 
