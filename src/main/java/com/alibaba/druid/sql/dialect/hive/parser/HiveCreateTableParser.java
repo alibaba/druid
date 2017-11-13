@@ -120,6 +120,37 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             }
         }
 
+
+        if (lexer.token() == Token.PARTITIONED) {
+            lexer.nextToken();
+            accept(Token.BY);
+            accept(Token.LPAREN);
+
+            for (;;) {
+                if (lexer.token() != Token.IDENTIFIER) {
+                    throw new ParserException("expect identifier. " + lexer.info());
+                }
+
+                SQLColumnDefinition column = this.exprParser.parseColumn();
+                stmt.addPartitionColumn(column);
+
+                if (lexer.isKeepComments() && lexer.hasComment()) {
+                    column.addAfterComment(lexer.readAndResetComments());
+                }
+
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                } else {
+                    lexer.nextToken();
+                    if (lexer.isKeepComments() && lexer.hasComment()) {
+                        column.addAfterComment(lexer.readAndResetComments());
+                    }
+                }
+            }
+
+            accept(Token.RPAREN);
+        }
+
         if (lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
             lexer.nextToken();
             accept(Token.BY);

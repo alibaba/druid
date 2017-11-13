@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.hive.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HiveCreateTableStatement extends SQLCreateTableStatement {
+    protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
     protected final List<SQLName> clusteredBy = new ArrayList<SQLName>();
     protected final List<SQLSelectOrderByItem> sortedBy = new ArrayList<SQLSelectOrderByItem>();
     protected int buckets;
@@ -63,6 +65,17 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
         } else {
             super.accept0(visitor);
         }
+    }
+
+    public List<SQLColumnDefinition> getPartitionColumns() {
+        return partitionColumns;
+    }
+
+    public void addPartitionColumn(SQLColumnDefinition column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.partitionColumns.add(column);
     }
 
     protected void accept0(HiveASTVisitor visitor) {

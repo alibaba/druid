@@ -16,10 +16,7 @@
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -69,6 +66,33 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         if (inherits != null) {
             print0(ucase ? " INHERITS (" : " inherits (");
             inherits.accept(this);
+            print(')');
+        }
+
+        int partitionSize = x.getPartitionColumns().size();
+        if (partitionSize > 0) {
+            println();
+            print0(ucase ? "PARTITIONED BY (" : "partitioned by (");
+            this.indentCount++;
+            println();
+            for (int i = 0; i < partitionSize; ++i) {
+                SQLColumnDefinition column = x.getPartitionColumns().get(i);
+                column.accept(this);
+
+                if (i != partitionSize - 1) {
+                    print(',');
+                }
+                if (this.isPrettyFormat() && column.hasAfterComment()) {
+                    print(' ');
+                    printlnComment(column.getAfterCommentsDirect());
+                }
+
+                if (i != partitionSize - 1) {
+                    println();
+                }
+            }
+            this.indentCount--;
+            println();
             print(')');
         }
 
