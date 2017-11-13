@@ -36,8 +36,11 @@ public class SQLUpdateSetItem extends SQLObjectImpl implements SQLReplaceable {
         return column;
     }
 
-    public void setColumn(SQLExpr column) {
-        this.column = column;
+    public void setColumn(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.column = x;
     }
 
     public SQLExpr getValue() {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.h2;
+package com.alibaba.druid.bvt.sql.hive;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -24,7 +24,7 @@ import org.junit.Assert;
 
 import java.util.List;
 
-public class H2_CreateTableTest_0 extends OracleTest {
+public class HiveCreateTableTest_1 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
@@ -45,7 +45,8 @@ public class H2_CreateTableTest_0 extends OracleTest {
         {
             String text = SQLUtils.toSQLString(stmt, JdbcConstants.HIVE);
 
-            assertEquals("CREATE TABLE IF NOT EXISTS sc001.test STORE AS parquet\n" +
+            assertEquals("CREATE TABLE IF NOT EXISTS sc001.test\n" +
+                    "STORE AS parquet\n" +
                     "AS\n" +
                     "SELECT *\n" +
                     "FROM sc002.test;", text);

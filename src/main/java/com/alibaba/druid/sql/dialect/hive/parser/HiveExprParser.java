@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.hive.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
@@ -53,5 +56,15 @@ public class HiveExprParser extends SQLExprParser {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
+    }
+
+    public SQLExpr primaryRest(SQLExpr expr) {
+        if (lexer.token() == Token.COLONCOLON) {
+            lexer.nextToken();
+            String propertyName = lexer.stringVal();
+            lexer.nextToken();
+            expr = new SQLPropertyExpr(expr, propertyName);
+        }
+        return super.primaryRest(expr);
     }
 }

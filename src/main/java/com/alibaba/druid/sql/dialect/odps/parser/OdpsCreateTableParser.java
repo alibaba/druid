@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
 
 public class OdpsCreateTableParser extends SQLCreateTableParser {
 
@@ -137,7 +138,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
-        if (lexer.identifierEquals("CLUSTERED")) {
+        if (lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
             lexer.nextToken();
             accept(Token.BY);
             accept(Token.LPAREN);
@@ -145,7 +146,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
-        if (lexer.identifierEquals("SORTED")) {
+        if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
             lexer.nextToken();
             accept(Token.BY);
             accept(Token.LPAREN);
@@ -164,7 +165,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             acceptIdentifier("BUCKETS");
         }
         
-        if (lexer.identifierEquals("LIFECYCLE")) {
+        if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
             lexer.nextToken();
             stmt.setLifecycle(this.exprParser.expr());
         }

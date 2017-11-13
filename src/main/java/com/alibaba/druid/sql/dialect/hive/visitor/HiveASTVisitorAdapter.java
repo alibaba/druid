@@ -15,7 +15,17 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class HiveASTVisitorAdapter extends SQLASTVisitorAdapter implements HiveASTVisitor {
+    @Override
+    public boolean visit(HiveCreateTableStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(HiveCreateTableStatement x) {
+
+    }
 }

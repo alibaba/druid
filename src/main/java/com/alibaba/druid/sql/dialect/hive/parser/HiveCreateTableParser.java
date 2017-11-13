@@ -120,6 +120,41 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             }
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
+            lexer.nextToken();
+            accept(Token.BY);
+            accept(Token.LPAREN);
+            this.exprParser.names(stmt.getClusteredBy());
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
+            lexer.nextToken();
+            accept(Token.BY);
+            accept(Token.LPAREN);
+            for (; ; ) {
+                SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+                stmt.addSortedByItem(item);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            accept(Token.RPAREN);
+        }
+
+        if (stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) {
+            accept(Token.INTO);
+            if (lexer.token() == Token.LITERAL_INT) {
+                stmt.setBuckets(lexer.integerValue().intValue());
+                lexer.nextToken();
+            } else {
+                throw new ParserException("into buckets must be integer. " + lexer.info());
+            }
+            acceptIdentifier("BUCKETS");
+        }
+
         if (lexer.identifierEquals(FnvHash.Constants.STORED)) {
             lexer.nextToken();
             accept(Token.AS);
@@ -132,7 +167,6 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             SQLSelect select = this.createSQLSelectParser().select();
             stmt.setSelect(select);
         }
-
         return stmt;
     }
 

@@ -611,5 +611,8 @@ public final class FnvHash {
 
         long INT4 = fnv1a_64_lower("INT4");
         long VARBIT = fnv1a_64_lower("VARBIT");
+        long CLUSTERED = fnv1a_64_lower("CLUSTERED");
+        long SORTED = fnv1a_64_lower("SORTED");
+        long LIFECYCLE = fnv1a_64_lower("LIFECYCLE");
     }
 }
