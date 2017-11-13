@@ -1900,6 +1900,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         acceptIdentifier("TRANSACTION");
 
         SQLStartTransactionStatement stmt = new SQLStartTransactionStatement();
+        stmt.setDbType(dbType);
 
         if (lexer.token() == Token.WITH) {
             lexer.nextToken();
