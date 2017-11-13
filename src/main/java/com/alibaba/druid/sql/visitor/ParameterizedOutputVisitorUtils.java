@@ -87,10 +87,26 @@ public class ParameterizedOutputVisitorUtils {
         }
 
         for (int i = 0; i < statementList.size(); i++) {
-            if (i > 0) {
-                out.append(";\n");
-            }
             SQLStatement stmt = statementList.get(i);
+
+            if (i > 0) {
+                SQLStatement preStmt = statementList.get(i - 1);
+
+                if (preStmt.getClass() == stmt.getClass()) {
+                    StringBuilder buf = new StringBuilder();
+                    ParameterizedVisitor v1 = createParameterizedOutputVisitor(buf, dbType);
+                    preStmt.accept(v1);
+                    if (out.toString().equals(buf.toString())) {
+                        continue;
+                    }
+                }
+
+                if (!preStmt.isAfterSemi()) {
+                    out.append(";\n");
+                } else {
+                    out.append('\n');
+                }
+            }
 
             if (stmt.hasBeforeComment()) {
                 stmt.getBeforeCommentsDirect().clear();
