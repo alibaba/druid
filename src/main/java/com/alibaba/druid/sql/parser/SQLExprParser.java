@@ -2992,8 +2992,24 @@ public class SQLExprParser extends SQLParser {
 
             if ((token == Token.IDENTIFIER && hash_lower != FnvHash.Constants.CURRENT)
                     || token == Token.MODEL) {
-                String as = lexer.stringVal();
-                lexer.nextTokenComma();
+                String as;
+                if (lexer.hash_lower == FnvHash.Constants.FORCE && JdbcConstants.MYSQL.equals(dbType)) {
+                    String force = lexer.stringVal();
+
+                    Lexer.SavePoint savePoint = lexer.mark();
+                    lexer.nextToken();
+
+                    if (lexer.token == Token.PARTITION) {
+                        lexer.reset(savePoint);
+                        as = null;
+                    } else {
+                        as = force;
+                        lexer.nextTokenComma();
+                    }
+                } else {
+                    as = lexer.stringVal();
+                    lexer.nextTokenComma();
+                }
                 return new SQLSelectItem(expr, as, connectByRoot);
             }
 

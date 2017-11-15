@@ -614,5 +614,6 @@ public final class FnvHash {
         long CLUSTERED = fnv1a_64_lower("CLUSTERED");
         long SORTED = fnv1a_64_lower("SORTED");
         long LIFECYCLE = fnv1a_64_lower("LIFECYCLE");
+        long PARTITIONS = fnv1a_64_lower("PARTITIONS");
     }
 }

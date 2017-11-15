@@ -491,4 +491,7 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlAlterTablespaceStatement x);
     void endVisit(MySqlAlterTablespaceStatement x);
 
+    boolean visit(MySqlShowDatabasePartitionStatusStatement x);
+    void endVisit(MySqlShowDatabasePartitionStatusStatement x);
+
 } //

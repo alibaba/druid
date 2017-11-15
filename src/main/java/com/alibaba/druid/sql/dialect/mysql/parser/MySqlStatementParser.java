@@ -157,6 +157,26 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
             }
 
+            if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
+                Lexer.SavePoint savePoint = lexer.mark();
+                lexer.nextToken();
+
+                if (lexer.token() == Token.ALL) {
+                    lexer.nextToken();
+                    acceptIdentifier("PARTITIONS");
+                    deleteStatement.setForceAllPartitions(true);
+                } else if (lexer.identifierEquals(FnvHash.Constants.PARTITIONS)){
+                    lexer.nextToken();
+                    deleteStatement.setForceAllPartitions(true);
+                } else if (lexer.token() == Token.PARTITION) {
+                    lexer.nextToken();
+                    SQLName partition = this.exprParser.name();
+                    deleteStatement.setForcePartition(partition);
+                } else {
+                    lexer.reset(savePoint);
+                }
+            }
+
             if (lexer.token() == Token.IDENTIFIER) {
                 deleteStatement.setTableSource(createSQLSelectParser().parseTableSource());
 
@@ -1737,6 +1757,16 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setWhere(this.exprParser.expr());
             }
 
+            return stmt;
+        }
+
+        if (lexer.token() == Token.DATABASE) {
+            lexer.nextToken();
+            accept(Token.PARTITION);
+            acceptIdentifier("STATUS");
+            accept(Token.FOR);
+            MySqlShowDatabasePartitionStatusStatement stmt = new MySqlShowDatabasePartitionStatusStatement();
+            stmt.setDatabase(this.exprParser.name());
             return stmt;
         }
 

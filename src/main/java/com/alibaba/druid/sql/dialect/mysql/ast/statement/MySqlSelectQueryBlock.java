@@ -40,6 +40,7 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     private List<SQLExpr>        procedureArgumentList;
     private boolean              lockInShareMode;
     private List<SQLCommentHint> hints;
+    private SQLName              forcePartition; // for petadata
 
     public MySqlSelectQueryBlock(){
         dbType = JdbcConstants.MYSQL;
@@ -241,6 +242,7 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.selectList);
+            acceptChild(visitor, this.forcePartition);
             acceptChild(visitor, this.from);
             acceptChild(visitor, this.where);
             acceptChild(visitor, this.groupBy);
@@ -252,6 +254,17 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
         }
 
         visitor.endVisit(this);
+    }
+
+    public SQLName getForcePartition() {
+        return forcePartition;
+    }
+
+    public void setForcePartition(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.forcePartition = x;
     }
 
     public String toString() {

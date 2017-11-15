@@ -160,6 +160,13 @@ public class MySqlSelectParser extends SQLSelectParser {
             }
 
             parseSelectList(queryBlock);
+
+            if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
+                lexer.nextToken();
+                accept(Token.PARTITION);
+                SQLName partition = this.exprParser.name();
+                queryBlock.setForcePartition(partition);
+            }
             
             parseInto(queryBlock);
         }
@@ -295,6 +302,25 @@ public class MySqlSelectParser extends SQLSelectParser {
             lexer.nextToken();
             SQLExpr targetAffectRow = this.exprParser.expr();
             update.setTargetAffectRow(targetAffectRow);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
+            lexer.nextToken();
+
+            if (lexer.token() == Token.ALL) {
+                lexer.nextToken();
+                acceptIdentifier("PARTITIONS");
+                update.setForceAllPartitions(true);
+            } else if (lexer.identifierEquals(FnvHash.Constants.PARTITIONS)){
+                lexer.nextToken();
+                update.setForceAllPartitions(true);
+            } else if (lexer.token() == Token.PARTITION) {
+                lexer.nextToken();
+                SQLName partition = this.exprParser.name();
+                update.setForcePartition(partition);
+            } else {
+                throw new ParserException("TODO. " + lexer.info());
+            }
         }
 
         SQLSelectParser selectParser = this.exprParser.createSelectParser();

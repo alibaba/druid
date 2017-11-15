@@ -1218,4 +1218,14 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
 
     }
 
+    @Override
+    public boolean visit(MySqlShowDatabasePartitionStatusStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlShowDatabasePartitionStatusStatement x) {
+
+    }
+
 } //

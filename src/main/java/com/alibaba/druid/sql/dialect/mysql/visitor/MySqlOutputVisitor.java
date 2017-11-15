@@ -173,6 +173,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
             printSelectList(x.getSelectList());
 
+            SQLName forcePartition = x.getForcePartition();
+            if (forcePartition != null) {
+                println();
+                print0(ucase ? "FORCE PARTITION " : "force partition ");
+                printExpr(forcePartition);
+            }
+
             SQLExprTableSource into = x.getInto();
             if (into != null) {
                 println();
@@ -780,6 +787,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.isIgnore()) {
             print0(ucase ? "IGNORE " : "ignore ");
+        }
+
+        if (x.isForceAllPartitions()) {
+            print0(ucase ? "FORCE ALL PARTITIONS " : "force all partitions ");
+        } else {
+            SQLName partition = x.getForcePartition();
+            if (partition != null) {
+                print0(ucase ? "FORCE PARTITION " : "force partition ");
+                printExpr(partition);
+                print(' ');
+            }
         }
 
         SQLTableSource from = x.getFrom();
@@ -1591,6 +1609,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? "TARGET_AFFECT_ROW " : "target_affect_row ");
             printExpr(targetAffectRow);
             print(' ');
+        }
+
+        if (x.isForceAllPartitions()) {
+            print0(ucase ? "FORCE ALL PARTITIONS " : "force all partitions ");
+        } else {
+            SQLName partition = x.getForcePartition();
+            if (partition != null) {
+                print0(ucase ? "FORCE PARTITION " : "force partition ");
+                printExpr(partition);
+                print(' ');
+            }
         }
 
         printTableSource(x.getTableSource());
@@ -4034,6 +4063,18 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlAlterTablespaceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowDatabasePartitionStatusStatement x) {
+        print0(ucase ? "SHOW DATABASE PARTITION STATUS FOR " : "show database partition status for ");
+        x.getDatabase().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowDatabasePartitionStatusStatement x) {
 
     }
 
