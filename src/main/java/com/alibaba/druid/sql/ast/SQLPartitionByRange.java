@@ -21,27 +21,10 @@ import java.util.List;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPartitionByRange extends SQLPartitionBy {
-
-    protected List<SQLName> columns = new ArrayList<SQLName>();
-
     protected SQLExpr       interval;
-
-    // mysql
-    protected SQLExpr       expr;
 
     public SQLPartitionByRange() {
 
-    }
-
-    public List<SQLName> getColumns() {
-        return columns;
-    }
-    
-    public void addColumn(SQLName column) {
-        if (column != null) {
-            column.setParent(this);
-        }
-        this.columns.add(column);
     }
 
     public SQLExpr getInterval() {
@@ -56,22 +39,10 @@ public class SQLPartitionByRange extends SQLPartitionBy {
         this.interval = interval;
     }
 
-    public SQLExpr getExpr() {
-        return expr;
-    }
-
-    public void setExpr(SQLExpr expr) {
-        if (expr != null) {
-            expr.setParent(this);
-        }
-        this.expr = expr;
-    }
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, columns);
-            acceptChild(visitor, expr);
             acceptChild(visitor, interval);
             acceptChild(visitor, storeIn);
             acceptChild(visitor, partitions);
@@ -82,16 +53,12 @@ public class SQLPartitionByRange extends SQLPartitionBy {
     public SQLPartitionByRange clone() {
         SQLPartitionByRange x = new SQLPartitionByRange();
 
-        if (expr != null) {
-            x.setExpr(expr.clone());
-        }
-
         if (interval != null) {
             x.setInterval(interval.clone());
         }
 
-        for (SQLName column : columns) {
-            SQLName c2 = column.clone();
+        for (SQLExpr column : columns) {
+            SQLExpr c2 = column.clone();
             c2.setParent(x);
             x.columns.add(c2);
         }

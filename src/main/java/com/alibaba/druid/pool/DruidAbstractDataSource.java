@@ -85,7 +85,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public final static boolean                        DEFAULT_TEST_ON_RETURN                    = false;
     public final static boolean                        DEFAULT_WHILE_IDLE                        = true;
     public static final long                           DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = 60 * 1000L;
-    public static final long                           DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
+    public static final long                           DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 500;
     public static final int                            DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 3;
 
     /**
@@ -124,9 +124,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected volatile String                          validationQuery                           = DEFAULT_VALIDATION_QUERY;
     protected volatile int                             validationQueryTimeout                    = -1;
-    private volatile boolean                           testOnBorrow                              = DEFAULT_TEST_ON_BORROW;
-    private volatile boolean                           testOnReturn                              = DEFAULT_TEST_ON_RETURN;
-    private volatile boolean                           testWhileIdle                             = DEFAULT_WHILE_IDLE;
+    protected volatile boolean                         testOnBorrow                              = DEFAULT_TEST_ON_BORROW;
+    protected volatile boolean                         testOnReturn                              = DEFAULT_TEST_ON_RETURN;
+    protected volatile boolean                         testWhileIdle                             = DEFAULT_WHILE_IDLE;
     protected volatile boolean                         poolPreparedStatements                    = false;
     protected volatile boolean                         sharePreparedStatements                   = false;
     protected volatile int                             maxPoolPreparedStatementPerConnectionSize = 10;
@@ -189,7 +189,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected final Date                               createdTime                               = new Date();
     protected Date                                     initedTime;
 
-    protected int                                      connectionErrorRetryAttempts              = 30;
+    protected int                                      connectionErrorRetryAttempts              = 1;
 
     protected boolean                                  breakAfterAcquireFailure                  = false;
 
@@ -226,7 +226,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long                            lastCreateStartTimeMillis;
 
     protected boolean                                  isOracle                                  = false;
-
+    protected boolean                                  isMySql                                   = false;
     protected boolean                                  useOracleImplicitCache                    = true;
 
     protected ReentrantLock                            lock;
@@ -1123,6 +1123,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             throw new IllegalArgumentException("driverClassName length > 256.");
         }
 
+        if (JdbcConstants.ORACLE_DRIVER2.equalsIgnoreCase(driverClass)) {
+            LOG.error("oracle.jdbc.driver.OracleDriver is deprecated.");
+        }
+
         if (inited) {
             if (StringUtils.equals(this.driverClass, driverClass)) {
                 return;
@@ -1291,6 +1295,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             Exception error = null;
             try {
                 result = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
+            } catch (SQLException ex) {
+                throw ex;
             } catch (Exception ex) {
                 error = ex;
             }
@@ -1323,7 +1329,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
     }
 
+    /**
+     * @deprecated
+     */
     protected boolean testConnectionInternal(Connection conn) {
+        return testConnectionInternal(null, conn);
+    }
+
+    protected boolean testConnectionInternal(DruidConnectionHolder holder, Connection conn) {
         String sqlFile = JdbcSqlStat.getContextSqlFile();
         String sqlName = JdbcSqlStat.getContextSqlName();
 
@@ -1335,7 +1348,30 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
         try {
             if (validConnectionChecker != null) {
-                return validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
+                boolean valid = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
+                long currentTimeMillis = System.currentTimeMillis();
+                if (holder != null) {
+                    holder.lastValidTimeMillis = currentTimeMillis;
+                }
+
+                if (valid && isMySql) { // unexcepted branch
+                    long lastPacketReceivedTimeMs = MySqlUtils.getLastPacketReceivedTimeMs(conn);
+                    if (lastPacketReceivedTimeMs > 0) {
+                        long mysqlIdleMillis = currentTimeMillis - lastPacketReceivedTimeMs;
+                        if (lastPacketReceivedTimeMs > 0 //
+                                && mysqlIdleMillis >= timeBetweenEvictionRunsMillis) {
+                            discardConnection(conn);
+                            String errorMsg = "discard long time none received connection. "
+                                    + ", jdbcUrl : " + jdbcUrl
+                                    + ", jdbcUrl : " + jdbcUrl
+                                    + ", lastPacketReceivedIdleMillis : " + mysqlIdleMillis;
+                            LOG.error(errorMsg);
+                            return false;
+                        }
+                    }
+                }
+
+                return valid;
             }
 
             if (conn.isClosed()) {
@@ -1363,7 +1399,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             }
 
             return true;
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             // skip
             return false;
         } finally {
@@ -1444,7 +1480,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     void initStatement(DruidPooledConnection conn, Statement stmt) throws SQLException {
-        boolean transaction = !conn.getConnectionHolder().isUnderlyingAutoCommit();
+        boolean transaction = !conn.getConnectionHolder().underlyingAutoCommit;
 
         int queryTimeout = transaction ? getTransactionQueryTimeout() : getQueryTimeout();
 
@@ -1600,9 +1636,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             conn.setAutoCommit(defaultAutoCommit);
         }
 
-        if (getDefaultReadOnly() != null) {
-            if (conn.isReadOnly() != getDefaultReadOnly()) {
-                conn.setReadOnly(getDefaultReadOnly());
+        if (defaultReadOnly != null) {
+            if (conn.isReadOnly() != defaultReadOnly) {
+                conn.setReadOnly(defaultReadOnly);
             }
         }
 

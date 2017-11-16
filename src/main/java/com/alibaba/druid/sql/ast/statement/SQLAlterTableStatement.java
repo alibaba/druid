@@ -156,6 +156,16 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
         visitor.endVisit(this);
     }
 
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (tableSource != null) {
+            children.add(tableSource);
+        }
+        children.addAll(this.items);
+        return children;
+    }
+
     public String getTableName() {
         if (tableSource == null) {
             return null;

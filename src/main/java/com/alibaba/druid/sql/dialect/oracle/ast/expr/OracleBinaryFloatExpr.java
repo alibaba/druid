@@ -15,9 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements OracleExpr {
 
@@ -34,6 +38,11 @@ public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements Orac
 
     public OracleBinaryFloatExpr clone() {
         return new OracleBinaryFloatExpr(value);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.emptyList();
     }
 
     @Override

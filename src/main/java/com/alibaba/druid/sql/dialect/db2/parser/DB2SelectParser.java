@@ -22,15 +22,18 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock.Isolation;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectParser extends SQLSelectParser {
 
     public DB2SelectParser(SQLExprParser exprParser){
         super(exprParser);
+        dbType = JdbcConstants.DB2;
     }
 
     public DB2SelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
         super(exprParser, selectListCache);
+        dbType = JdbcConstants.DB2;
     }
 
     public DB2SelectParser(String sql){

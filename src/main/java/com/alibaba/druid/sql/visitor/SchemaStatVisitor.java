@@ -30,7 +30,7 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsLateralViewTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLLateralViewTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
@@ -44,7 +44,6 @@ import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.stat.TableStat.Relationship;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.StringUtils;
 
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
@@ -539,7 +538,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
                 handleRelationship(left, x.getOperator().name, right);
                 break;
-            case BooleanOr:{
+            case BooleanOr: {
                 List<SQLExpr> list = SQLBinaryOpExpr.split(x, op);
 
                 for (SQLExpr item : list) {
@@ -552,6 +551,15 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
                 return false;
             }
+            case Modulus:
+                if (right instanceof SQLIdentifierExpr) {
+                    long hashCode64 = ((SQLIdentifierExpr) right).hashCode64();
+                    if (hashCode64 == FnvHash.Constants.ISOPEN) {
+                        left.accept(this);
+                        return false;
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -1106,10 +1114,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         } else if (tableSource instanceof SQLUnionQueryTableSource) {
             return false;
-        } else if (tableSource instanceof OdpsLateralViewTableSource) {
+        } else if (tableSource instanceof SQLLateralViewTableSource) {
             return false;
         } else {
             if (x.getResolvedProcudure() != null) {
+                return false;
+            }
+
+            if (x.getResolvedOwnerObject() instanceof SQLParameter) {
                 return false;
             }
 
@@ -1233,7 +1245,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
         } else if (tableSource instanceof SQLWithSubqueryClause.Entry
                 || tableSource instanceof SQLSubqueryTableSource
-                || tableSource instanceof OdpsLateralViewTableSource) {
+                || tableSource instanceof SQLLateralViewTableSource) {
             return false;
         } else {
             boolean skip = false;
@@ -1831,6 +1843,16 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
+    public boolean visit(SQLAlterViewStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
+        x.getSubQuery().accept(this);
+        return false;
+    }
+
     @Override
     public boolean visit(SQLAlterTableDropForeignKey x) {
         return false;
@@ -2369,8 +2391,29 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLAlterFunctionStatement x) {
         return false;
     }
+    public boolean visit(SQLDropSynonymStatement x) {
+        return false;
+    }
 
     public boolean visit(SQLAlterTypeStatement x) {
+        return false;
+    }
+    public boolean visit(SQLAlterProcedureStatement x) {
+        return false;
+    }
+
+    public boolean visit(SQLExprStatement x) {
+        SQLExpr expr = x.getExpr();
+
+        if (expr instanceof SQLName) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLDropTypeStatement x) {
         return false;
     }
 }

@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -28,9 +30,15 @@ import com.alibaba.druid.util.JdbcConstants;
 public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatement {
 
 
-    private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
-    private SQLExpr            returning;
-    private boolean			   defaultValues = false;
+    private List<ValuesClause>     valuesList = new ArrayList<ValuesClause>();
+    private SQLExpr                returning;
+    private boolean			       defaultValues = false;
+
+    private List<SQLExpr>          onConflictTarget;
+    private SQLName                onConflictConstraint;
+    private SQLExpr                onConflictWhere;
+    private boolean                onConflictDoNothing;
+    private List<SQLUpdateSetItem> onConflictUpdateSetItems;
 
     public PGInsertStatement() {
         dbType = JdbcConstants.POSTGRESQL;
@@ -112,5 +120,56 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
         PGInsertStatement x = new PGInsertStatement();
         cloneTo(x);
         return x;
+    }
+
+    public List<SQLExpr> getOnConflictTarget() {
+        return onConflictTarget;
+    }
+
+    public void setOnConflictTarget(List<SQLExpr> onConflictTarget) {
+        this.onConflictTarget = onConflictTarget;
+    }
+
+    public boolean isOnConflictDoNothing() {
+        return onConflictDoNothing;
+    }
+
+    public void setOnConflictDoNothing(boolean onConflictDoNothing) {
+        this.onConflictDoNothing = onConflictDoNothing;
+    }
+
+    public List<SQLUpdateSetItem> getOnConflictUpdateSetItems() {
+        return onConflictUpdateSetItems;
+    }
+
+    public void addConflicUpdateItem(SQLUpdateSetItem item) {
+        if (onConflictUpdateSetItems == null) {
+            onConflictUpdateSetItems = new ArrayList<SQLUpdateSetItem>();
+        }
+
+        item.setParent(this);
+        onConflictUpdateSetItems.add(item);
+    }
+
+    public SQLName getOnConflictConstraint() {
+        return onConflictConstraint;
+    }
+
+    public void setOnConflictConstraint(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.onConflictConstraint = x;
+    }
+
+    public SQLExpr getOnConflictWhere() {
+        return onConflictWhere;
+    }
+
+    public void setOnConflictWhere(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.onConflictWhere = x;
     }
 }

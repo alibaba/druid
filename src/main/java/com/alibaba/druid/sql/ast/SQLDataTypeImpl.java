@@ -32,6 +32,9 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     private         boolean       withLocalTimeZone = false;
     private         String        dbType;
 
+    private         boolean       unsigned;
+    private         boolean       zerofill;
+
     public SQLDataTypeImpl(){
 
     }
@@ -43,6 +46,11 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     public SQLDataTypeImpl(String name, int precision) {
         this(name);
         addArgument(new SQLIntegerExpr(precision));
+    }
+
+    public SQLDataTypeImpl(String name, SQLExpr arg) {
+        this(name);
+        addArgument(arg);
     }
 
     public SQLDataTypeImpl(String name, int precision, int scale) {
@@ -149,9 +157,27 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
         x.withTimeZone = withTimeZone;
         x.withLocalTimeZone = withLocalTimeZone;
+        x.zerofill = zerofill;
+        x.unsigned = unsigned;
     }
 
     public String toString() {
         return SQLUtils.toSQLString(this, dbType);
+    }
+
+    public boolean isUnsigned() {
+        return unsigned;
+    }
+
+    public void setUnsigned(boolean unsigned) {
+        this.unsigned = unsigned;
+    }
+
+    public boolean isZerofill() {
+        return zerofill;
+    }
+
+    public void setZerofill(boolean zerofill) {
+        this.zerofill = zerofill;
     }
 }

@@ -67,6 +67,7 @@ public class Oracle_pl_param_inout_0 extends OracleTest {
 							"\tp IN OUT NOCOPY hr.person_typ, \n" +
 							"\tnew_job VARCHAR2\n" +
 							")\n" +
+							"IS\n" +
 							"BEGIN\n" +
 							"\tp.change_job(new_job);\n" +
 							"END;", //
@@ -78,6 +79,7 @@ public class Oracle_pl_param_inout_0 extends OracleTest {
 							"\tp in out nocopy hr.person_typ, \n" +
 							"\tnew_job VARCHAR2\n" +
 							")\n" +
+							"is\n" +
 							"begin\n" +
 							"\tp.change_job(new_job);\n" +
 							"end;", //

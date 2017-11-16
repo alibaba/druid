@@ -315,6 +315,13 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLCreateViewStatement x) {
     }
 
+    public boolean visit(SQLAlterViewStatement x) {
+        return true;
+    }
+
+    public void endVisit(SQLAlterViewStatement x) {
+    }
+
     public boolean visit(SQLCreateViewStatement.Column x) {
         return true;
     }
@@ -1736,6 +1743,126 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTypeStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLIntervalExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLIntervalExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLLateralViewTableSource x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLLateralViewTableSource x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLShowErrorsStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLShowErrorsStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterCharacter x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterCharacter x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLExprStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLExprStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterProcedureStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterProcedureStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropEventStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropEventStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropLogFileGroupStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropLogFileGroupStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropServerStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropServerStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropSynonymStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropSynonymStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropTypeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropTypeStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLRecordDataType x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLRecordDataType x) {
 
     }
 

@@ -16,7 +16,12 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class MySqlShowCharacterSetStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
@@ -45,6 +50,11 @@ public class MySqlShowCharacterSetStatement extends MySqlStatementImpl implement
 
     public void setPattern(SQLExpr pattern) {
         this.pattern = pattern;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Arrays.<SQLObject>asList(this.where, pattern);
     }
 
 }

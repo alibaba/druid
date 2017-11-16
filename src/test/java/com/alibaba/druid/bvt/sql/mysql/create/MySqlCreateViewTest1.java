@@ -44,7 +44,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
         stmt.accept(visitor);
 
         assertEquals("CREATE ALGORITHM = UNDEFINED\n" +
-                        "\tDEFINER = root\n" +
+                        "\tDEFINER = root@localhost\n" +
                         "\tSQL SECURITY = DEFINER\n" +
                         "\tVIEW view_audit_enroll\n" +
                         "AS\n" +
@@ -81,7 +81,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                 SQLUtils.toMySqlString(stmt));
 
         Assert.assertEquals("create algorithm = UNDEFINED\n" +
-                        "\tdefiner = root\n" +
+                        "\tdefiner = root@localhost\n" +
                         "\tsql security = DEFINER\n" +
                         "\tview view_audit_enroll\n" +
                         "as\n" +

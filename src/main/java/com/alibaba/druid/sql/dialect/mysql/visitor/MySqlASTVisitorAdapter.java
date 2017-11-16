@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLAlterCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
@@ -34,7 +35,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
@@ -78,13 +79,11 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
     }
 
     @Override
-    public void endVisit(MySqlIntervalExpr x) {
-
+    public void endVisit(SQLIntervalExpr x) {
     }
 
     @Override
-    public boolean visit(MySqlIntervalExpr x) {
-
+    public boolean visit(SQLIntervalExpr x) {
         return true;
     }
 
@@ -820,12 +819,12 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
     }
 
     @Override
-    public boolean visit(MySqlAlterTableCharacter x) {
+    public boolean visit(SQLAlterCharacter x) {
         return true;
     }
 
     @Override
-    public void endVisit(MySqlAlterTableCharacter x) {
+    public void endVisit(SQLAlterCharacter x) {
 
     }
 
@@ -1128,5 +1127,105 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
 	public void endVisit(MySqlFlushStatement x) {
 
 	}
+
+    @Override
+    public boolean visit(MySqlEventSchedule x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlEventSchedule x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateEventStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateEventStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateAddLogFileGroupStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateAddLogFileGroupStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateServerStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateServerStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateTableSpaceStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateTableSpaceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterEventStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterEventStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterLogFileGroupStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterLogFileGroupStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterServerStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterServerStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTablespaceStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTablespaceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowDatabasePartitionStatusStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlShowDatabasePartitionStatusStatement x) {
+
+    }
 
 } //

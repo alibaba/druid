@@ -57,7 +57,7 @@ public class TestDataSourceBasic2 extends TestCase {
         dataSource.setConnectionInitSqls(Arrays.<Object> asList("SELECT 1", null, ""));
         assertEquals(1, dataSource.getConnectionInitSqls().size());
 
-        assertEquals(30 * 1000, dataSource.getTimeBetweenConnectErrorMillis());
+        assertEquals(500, dataSource.getTimeBetweenConnectErrorMillis());
         assertEquals(234, dataSource.getMaxOpenPreparedStatements());
         assertEquals(300, dataSource.getRemoveAbandonedTimeout());
         dataSource.setRemoveAbandonedTimeout(400);

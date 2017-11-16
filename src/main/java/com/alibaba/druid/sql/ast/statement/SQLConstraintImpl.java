@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -24,12 +25,12 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import java.util.List;
 
 public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLConstraint {
-    protected String dbType;
-
+    protected String  dbType;
     protected SQLName name;
-    private Boolean enable;
-    private Boolean validate;
-    private Boolean rely;
+    protected Boolean enable;
+    protected Boolean validate;
+    protected Boolean rely;
+    protected SQLExpr comment;
 
     public List<SQLCommentHint> hints;
 
@@ -104,6 +105,17 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
 
     public void setDbType(String dbType) {
         this.dbType = dbType;
+    }
+
+    public SQLExpr getComment() {
+        return comment;
+    }
+
+    public void setComment(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.comment = x;
     }
 
     public void simplify() {

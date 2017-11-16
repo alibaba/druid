@@ -17,9 +17,14 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr{
     public static final SQLDataType DEFAULT_DATA_TYPE = new SQLCharacterDataType("varchar");
@@ -61,5 +66,9 @@ public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr{
 
     public SQLDataType computeDataType() {
         return DEFAULT_DATA_TYPE;
+    }
+
+    public List<SQLObject> getChildren() {
+        return Collections.emptyList();
     }
 }

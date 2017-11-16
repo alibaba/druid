@@ -839,7 +839,8 @@ public class SQLUtils {
                     if (MySqlUtils.isKeyword(normalizeName)) {
                         return name;
                     }
-                } else if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                } else if (JdbcConstants.POSTGRESQL.equals(dbType)
+                        || JdbcConstants.ENTERPRISEDB.equals(dbType)) {
                     if (PGUtils.isKeyword(normalizeName)) {
                         return name;
                     }

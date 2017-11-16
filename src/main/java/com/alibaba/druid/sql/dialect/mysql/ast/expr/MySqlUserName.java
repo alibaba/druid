@@ -16,8 +16,12 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.util.FnvHash;
+
+import java.util.Collections;
+import java.util.List;
 
 public class MySqlUserName extends MySqlExprImpl implements SQLName, Cloneable {
 
@@ -70,6 +74,11 @@ public class MySqlUserName extends MySqlExprImpl implements SQLName, Cloneable {
         x.host     = host;
 
         return x;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.emptyList();
     }
 
     public long nameHashCode64() {

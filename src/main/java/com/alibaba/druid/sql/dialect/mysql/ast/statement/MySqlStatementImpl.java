@@ -15,10 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public abstract class MySqlStatementImpl extends SQLStatementImpl implements MySqlStatement {
 
@@ -36,6 +39,10 @@ public abstract class MySqlStatementImpl extends SQLStatementImpl implements MyS
     }
 
     public void accept0(MySqlASTVisitor visitor) {
+        throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
+    public List<SQLObject> getChildren() {
         throw new UnsupportedOperationException(this.getClass().getName());
     }
 }

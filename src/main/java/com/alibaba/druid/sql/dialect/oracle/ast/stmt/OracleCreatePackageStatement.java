@@ -49,6 +49,24 @@ public class OracleCreatePackageStatement extends OracleStatementImpl implements
         visitor.endVisit(this);
     }
 
+    public OracleCreatePackageStatement clone() {
+        OracleCreatePackageStatement x = new OracleCreatePackageStatement();
+
+        x.orReplace = orReplace;
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        x.body = body;
+
+        for (SQLStatement stmt : statements) {
+            SQLStatement s2 = stmt.clone();
+            s2.setParent(x);
+            x.statements.add(s2);
+        }
+
+        return x;
+    }
+
     public boolean isOrReplace() {
         return orReplace;
     }

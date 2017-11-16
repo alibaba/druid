@@ -46,6 +46,8 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
     private boolean            readSqlData;
     private boolean            modifiesSqlData;
 
+    private String             wrappedSource;
+
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -175,5 +177,13 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
         }
 
         return null;
+    }
+
+    public String getWrappedSource() {
+        return wrappedSource;
+    }
+
+    public void setWrappedSource(String wrappedSource) {
+        this.wrappedSource = wrappedSource;
     }
 }

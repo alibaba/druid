@@ -16,9 +16,13 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class OracleCursorExpr extends SQLExprImpl implements OracleExpr {
 
@@ -58,6 +62,11 @@ public class OracleCursorExpr extends SQLExprImpl implements OracleExpr {
             acceptChild(visitor, query);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.query);
     }
 
     @Override

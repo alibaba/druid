@@ -90,7 +90,7 @@ public class CharTypes {
         if (c <= identifierFlags.length) {
             return identifierFlags[c];
         }
-        return c != '　' && c != '，';
+        return c != '　' && c != '，' && c != '）';
     }
 
     public static String valueOf(char ch) {

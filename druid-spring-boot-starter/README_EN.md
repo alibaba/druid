@@ -12,12 +12,12 @@ Spring Boot with Druid support, help you simplify Druid config in Spring Boot.
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.3</version>
+       <version>1.1.5</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.3'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.5'
     ```
 2. Add configuration properties.
     ```xml

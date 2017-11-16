@@ -25,14 +25,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLBlockStatement extends SQLStatementImpl {
     private String             labelName;
-
-    private String endLabel;
-
+    private String             endLabel;
     private List<SQLParameter> parameters    = new ArrayList<SQLParameter>();
-
     private List<SQLStatement> statementList = new ArrayList<SQLStatement>();
-
-    public SQLStatement exception;
+    public SQLStatement        exception;
+    private boolean            endOfCommit;
 
     public SQLBlockStatement() {
 
@@ -123,5 +120,13 @@ public class SQLBlockStatement extends SQLStatementImpl {
         }
 
         return null;
+    }
+
+    public boolean isEndOfCommit() {
+        return endOfCommit;
+    }
+
+    public void setEndOfCommit(boolean value) {
+        this.endOfCommit = value;
     }
 }

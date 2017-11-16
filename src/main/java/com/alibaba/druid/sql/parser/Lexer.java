@@ -21,6 +21,7 @@ import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.SQLParserFeature.KeepComments;
 import static com.alibaba.druid.sql.parser.SQLParserFeature.OptimizedForParameterized;
+import static com.alibaba.druid.sql.parser.SQLParserFeature.SkipComments;
 import static com.alibaba.druid.sql.parser.Token.*;
 
 import java.math.BigDecimal;
@@ -42,7 +43,7 @@ public class Lexer {
     protected static SymbolTable symbols_l2 = new SymbolTable(512);
 
     protected int          features       = 0; //SQLParserFeature.of(SQLParserFeature.EnableSQLBinaryOpExprGroup);
-    protected final String text;
+    public    final String text;
     protected int          pos;
     protected int          mark;
 
@@ -208,6 +209,11 @@ public class Lexer {
 
     public void reset() {
         this.reset(this.savePoint);
+    }
+
+    public void reset(int pos) {
+        this.pos = pos;
+        this.ch = charAt(pos);
     }
 
     public Lexer(String input, boolean skipComment){
@@ -549,7 +555,7 @@ public class Lexer {
                     return;
                 }
 
-                if (ch == 'N') {
+                if (ch == 'N' || ch == 'n') {
                     if (charAt(pos + 1) == '\'') {
                         ++pos;
                         ch = '\'';
@@ -666,7 +672,12 @@ public class Lexer {
                     scanChar();
                     if (ch == '?' && JdbcConstants.POSTGRESQL.equals(dbType)) {
                         scanChar();
-                        token = Token.QUESQUES;
+                        if (ch == '|') {
+                            scanChar();
+                            token = Token.QUESBAR;
+                        } else {
+                            token = Token.QUESQUES;
+                        }
                     } else if (ch == '|' && JdbcConstants.POSTGRESQL.equals(dbType)) {
                         scanChar();
                         if (ch == '|') {
@@ -723,6 +734,14 @@ public class Lexer {
 
                     if (isOperator(ch)) {
                         scanOperator();
+                        return;
+                    }
+
+                    if (ch == '\\' && charAt(pos + 1) == 'N'
+                            && JdbcConstants.MYSQL.equals(dbType)) {
+                        scanChar();
+                        scanChar();
+                        token = Token.NULL;
                         return;
                     }
 
@@ -860,7 +879,40 @@ public class Lexer {
                     scanChar();
                     token = Token.LT_SUB_GT;
                 } else {
-                    token = Token.LT;
+                    if (ch == ' ') {
+                        char c1 = charAt(pos + 1);
+                        if (c1 == '=') {
+                            scanChar();
+                            scanChar();
+                            if (ch == '>') {
+                                token = Token.LTEQGT;
+                                scanChar();
+                            } else {
+                                token = Token.LTEQ;
+                            }
+                        } else if (c1 == '>') {
+                            scanChar();
+                            scanChar();
+                            token = Token.LTGT;
+                        } else if (c1 == '<') {
+                            scanChar();
+                            scanChar();
+                            token = Token.LTLT;
+                        } else if (c1 == '@') {
+                            scanChar();
+                            scanChar();
+                            token = Token.LT_MONKEYS_AT;
+                        } else if (c1 == '-' && charAt(pos + 2) == '>') {
+                            scanChar();
+                            scanChar();
+                            scanChar();
+                            token = Token.LT_SUB_GT;
+                        } else {
+                            token = Token.LT;
+                        }
+                    } else {
+                        token = Token.LT;
+                    }
                 }
                 break;
             case '!':
@@ -1924,6 +1976,8 @@ public class Lexer {
             optimizedForParameterized = state;
         } else if (feature == KeepComments) {
             this.keepComments = state;
+        } else if (feature == SkipComments) {
+            this.skipComment = state;
         }
     }
 

@@ -19,11 +19,13 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
 
 public class OdpsCreateTableParser extends SQLCreateTableParser {
 
@@ -124,7 +126,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     column.addAfterComment(lexer.readAndResetComments());
                 }
                 
-                if (!(lexer.token() == (Token.COMMA))) {
+                if (lexer.token() != Token.COMMA) {
                     break;
                 } else {
                     lexer.nextToken();
@@ -137,7 +139,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
-        if (lexer.identifierEquals("CLUSTERED")) {
+        if (lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
             lexer.nextToken();
             accept(Token.BY);
             accept(Token.LPAREN);
@@ -145,11 +147,19 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
-        if (lexer.identifierEquals("SORTED")) {
+        if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
             lexer.nextToken();
             accept(Token.BY);
             accept(Token.LPAREN);
-            this.exprParser.names(stmt.getSortedBy());
+            for (; ; ) {
+                SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+                stmt.addSortedByItem(item);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
             accept(Token.RPAREN);
         }
 
@@ -164,7 +174,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             acceptIdentifier("BUCKETS");
         }
         
-        if (lexer.identifierEquals("LIFECYCLE")) {
+        if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
             lexer.nextToken();
             stmt.setLifecycle(this.exprParser.expr());
         }

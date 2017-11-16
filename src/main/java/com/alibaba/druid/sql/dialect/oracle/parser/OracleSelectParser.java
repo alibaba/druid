@@ -48,6 +48,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 
 public class OracleSelectParser extends SQLSelectParser {
 
@@ -107,6 +108,9 @@ public class OracleSelectParser extends SQLSelectParser {
 
             if (lexer.token() == Token.OF) {
                 lexer.nextToken();
+                this.exprParser.exprList(queryBlock.getForUpdateOf(), queryBlock);
+            } else if (lexer.token() == Token.LPAREN
+                    && queryBlock.isForUpdate()) {
                 this.exprParser.exprList(queryBlock.getForUpdateOf(), queryBlock);
             }
 
@@ -201,8 +205,16 @@ public class OracleSelectParser extends SQLSelectParser {
                     throw new ParserException("syntax erorr : " + lexer.token());
                 }
 
-                searchClause.setType(SearchClause.Type.valueOf(lexer.stringVal()));
-                lexer.nextToken();
+                if (lexer.identifierEquals(FnvHash.Constants.DEPTH)) {
+                    lexer.nextToken();
+                    searchClause.setType(SearchClause.Type.DEPTH);
+                } else if (lexer.identifierEquals(FnvHash.Constants.BREADTH)) {
+                    lexer.nextToken();
+                    searchClause.setType(SearchClause.Type.BREADTH);
+                } else {
+                    searchClause.setType(SearchClause.Type.valueOf(lexer.stringVal().toUpperCase()));
+                    lexer.nextToken();
+                }
 
                 acceptIdentifier("FIRST");
                 accept(Token.BY);
@@ -519,9 +531,16 @@ public class OracleSelectParser extends SQLSelectParser {
             item.setCellAssignment(parseCellAssignment());
             item.setOrderBy(this.parseOrderBy());
             accept(Token.EQ);
-            item.setExpr(expr());
+
+            SQLExpr expr = this.expr();
+            item.setExpr(expr);
 
             modelRulesClause.getCellAssignmentItems().add(item);
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
         }
 
         mainModel.setModelRulesClause(modelRulesClause);
@@ -530,7 +549,7 @@ public class OracleSelectParser extends SQLSelectParser {
     private CellAssignment parseCellAssignment() {
         CellAssignment cellAssignment = new CellAssignment();
 
-        cellAssignment.setMeasureColumn(expr());
+        cellAssignment.setMeasureColumn(this.exprParser.name());
         accept(Token.LBRACKET);
         this.exprParser.exprList(cellAssignment.getConditions(), cellAssignment);
         accept(Token.RBRACKET);
@@ -606,6 +625,7 @@ public class OracleSelectParser extends SQLSelectParser {
             } else if (lexer.token() == Token.IDENTIFIER) {
                 SQLTableSource identTable = parseTableSource();
                 accept(Token.RPAREN);
+                parsePivot((OracleSelectTableSource) identTable);
                 return identTable;
             } else {
                 throw new ParserException("TODO :" + lexer.info());
@@ -683,6 +703,11 @@ public class OracleSelectParser extends SQLSelectParser {
 
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
+                partition.setPartition(exprParser.name());
+                accept(Token.RPAREN);
+            } else if (lexer.token() == Token.BY) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
                 partition.setPartition(exprParser.name());
                 accept(Token.RPAREN);
             } else {
@@ -858,12 +883,22 @@ public class OracleSelectParser extends SQLSelectParser {
             if (lexer.token() == Token.ON) {
                 lexer.nextToken();
                 join.setCondition(this.exprParser.expr());
+
+                if (lexer.token() == Token.ON
+                        && tableSource instanceof SQLJoinTableSource
+                        && ((SQLJoinTableSource) tableSource).getCondition() == null) {
+                    lexer.nextToken();
+                    SQLExpr leftCondidition = this.exprParser.expr();
+                    ((SQLJoinTableSource) tableSource).setCondition(leftCondidition);
+                }
             } else if (lexer.token() == Token.USING) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 this.exprParser.exprList(join.getUsing(), join);
                 accept(Token.RPAREN);
             }
+
+            parsePivot(join);
 
             return parseTableSourceRest(join);
         }
@@ -918,25 +953,28 @@ public class OracleSelectParser extends SQLSelectParser {
 
             accept(Token.IN);
             accept(Token.LPAREN);
-            if (lexer.token() == (Token.LPAREN)) {
-                throw new ParserException("TODO. " + lexer.info());
-            }
+//            if (lexer.token() == (Token.LPAREN)) {
+//                throw new ParserException("TODO. " + lexer.info());
+//            }
 
             if (lexer.token() == (Token.SELECT)) {
-                throw new ParserException("TODO. " + lexer.info());
-            }
-
-            for (;;) {
+                SQLExpr expr = this.exprParser.expr();
                 item = new OracleSelectPivot.Item();
-                item.setExpr(this.exprParser.expr());
-                item.setAlias(as());
+                item.setExpr(expr);
                 pivot.getPivotIn().add(item);
+            } else {
+                for (; ; ) {
+                    item = new OracleSelectPivot.Item();
+                    item.setExpr(this.exprParser.expr());
+                    item.setAlias(as());
+                    pivot.getPivotIn().add(item);
 
-                if (lexer.token() != Token.COMMA) {
-                    break;
+                    if (lexer.token() != Token.COMMA) {
+                        break;
+                    }
+
+                    lexer.nextToken();
                 }
-
-                lexer.nextToken();
             }
 
             accept(Token.RPAREN);

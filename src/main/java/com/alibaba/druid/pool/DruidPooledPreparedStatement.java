@@ -236,6 +236,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
 
             return poolableResultSet;
         } catch (Throwable t) {
+            errorCheck(t);
+
             throw checkException(t);
         } finally {
             conn.afterExecute();
@@ -253,6 +255,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         try {
             return stmt.executeUpdate();
         } catch (Throwable t) {
+            errorCheck(t);
+
             throw checkException(t);
         } finally {
             conn.afterExecute();
@@ -493,6 +497,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         try {
             return stmt.execute();
         } catch (Throwable t) {
+            errorCheck(t);
+
             throw checkException(t);
         } finally {
             conn.afterExecute();
@@ -559,6 +565,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         try {
             return stmt.executeBatch();
         } catch (Throwable t) {
+            errorCheck(t);
+
             throw checkException(t);
         } finally {
             conn.afterExecute();

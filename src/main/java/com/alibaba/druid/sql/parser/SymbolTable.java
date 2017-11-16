@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.util.Utils;
+
 import java.nio.charset.Charset;
 
 /**
@@ -22,8 +24,19 @@ import java.nio.charset.Charset;
  */
 public class SymbolTable {
     private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final boolean JVM_16;
 
-    public static SymbolTable global = new SymbolTable(8192);
+    static {
+        String version = null;
+        try {
+            version = System.getProperty("java.specification.version");
+        } catch (Throwable error) {
+            // skip
+        }
+        JVM_16 = "1.6".equals(version);
+    }
+
+    public static SymbolTable global = new SymbolTable(32768);
 
     private final Entry[] entries;
     private final int      indexMask;
@@ -42,12 +55,16 @@ public class SymbolTable {
                 return entry.value;
             }
 
-            String str = subString(buffer, offset, len);
+            String str = JVM_16
+                    ? subString(buffer, offset, len)
+                    : buffer.substring(offset, offset + len);
 
             return str;
         }
 
-        String str = subString(buffer, offset, len);
+        String str = JVM_16
+                ? subString(buffer, offset, len)
+                : buffer.substring(offset, offset + len);
         entry = new Entry(hash, len, str);
         entries[bucket] = entry;
         return str;

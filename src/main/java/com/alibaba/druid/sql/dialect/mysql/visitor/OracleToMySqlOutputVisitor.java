@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
-import com.alibaba.druid.sql.ast.statement.SQLScriptCommitStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.*;
@@ -457,16 +457,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public boolean visit(OracleExprStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleExprStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleDatetimeExpr x) {
         return false;
     }
@@ -533,16 +523,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
 
     @Override
     public void endVisit(OracleExplainStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleAlterProcedureStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterProcedureStatement x) {
 
     }
 
@@ -1023,6 +1003,26 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
 
     @Override
     public void endVisit(OraclePipeRowStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleIsOfTypeExpr x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleIsOfTypeExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleRunStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleRunStatement x) {
 
     }
 }

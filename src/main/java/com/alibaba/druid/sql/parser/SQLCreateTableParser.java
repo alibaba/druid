@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLCreateTableParser extends SQLDDLParser {
@@ -77,6 +78,14 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
         accept(Token.TABLE);
 
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+
+            createTable.setIfNotExiists(true);
+        }
+
         createTable.setName(this.exprParser.name());
 
         if (lexer.token == Token.LPAREN) {
@@ -118,15 +127,6 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
                 break;
             }
-
-            // while
-            // (this.tokenList.current().equals(OracleToken.ConstraintToken)) {
-            // parseConstaint(table.getConstraints());
-            //
-            // if (this.tokenList.current().equals(OracleToken.CommaToken))
-            // ;
-            // lexer.nextToken();
-            // }
 
             accept(Token.RPAREN);
 

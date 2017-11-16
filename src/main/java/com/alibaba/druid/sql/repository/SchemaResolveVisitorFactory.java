@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.db2.ast.DB2Object;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
@@ -230,8 +231,6 @@ class SchemaResolveVisitorFactory {
         }
     }
 
-
-
     static class DB2ResolveVisitor extends DB2ASTVisitorAdapter implements SchemaResolveVisitor {
         private SchemaRepository repository;
         private int options;
@@ -283,6 +282,11 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLIdentifierExpr x) {
+            long hash64 = x.hashCode64();
+            if (hash64 == DB2Object.Constants.CURRENT_DATE || hash64 == DB2Object.Constants.CURRENT_TIME) {
+                return false;
+            }
+
             resolve(this, x);
             return true;
         }
@@ -503,6 +507,10 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLIdentifierExpr x) {
+            if (x.nameHashCode64() == FnvHash.Constants.ROWNUM) {
+                return false;
+            }
+
             resolve(this, x);
             return true;
         }
@@ -626,6 +634,11 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLOver x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLFetchStatement x) {
             resolve(this, x);
             return false;
         }
@@ -1600,11 +1613,11 @@ class SchemaResolveVisitorFactory {
             }
         } else if (ctxTable instanceof SQLSubqueryTableSource) {
             tableSource = ctxTable.findTableSourceWithColumn(hash);
-        } else if (ctxTable instanceof OdpsLateralViewTableSource) {
+        } else if (ctxTable instanceof SQLLateralViewTableSource) {
             tableSource = ctxTable.findTableSourceWithColumn(hash);
 
             if (tableSource == null) {
-                tableSource = ((OdpsLateralViewTableSource) ctxTable).getTableSource();
+                tableSource = ((SQLLateralViewTableSource) ctxTable).getTableSource();
             }
         } else {
             for (SchemaResolveVisitor.Context parentCtx = ctx;
@@ -1675,7 +1688,7 @@ class SchemaResolveVisitorFactory {
 
             if (ctxTable instanceof SQLJoinTableSource) {
                 String alias = tableSource.computeAlias();
-                if (alias == null) {
+                if (alias == null || tableSource instanceof SQLWithSubqueryClause.Entry) {
                     return;
                 }
 
@@ -1683,6 +1696,36 @@ class SchemaResolveVisitorFactory {
                 propertyExpr.setResolvedColumn(x.getResolvedColumn());
                 propertyExpr.setResolvedTableSource(x.getResolvedTableSource());
                 SQLUtils.replaceInParent(x, propertyExpr);
+            }
+        }
+
+        if (x.getResolvedColumn() == null
+                && x.getResolvedTableSource() == null) {
+            for (SchemaResolveVisitor.Context parentCtx = ctx;
+                 parentCtx != null;
+                 parentCtx = parentCtx.parent)
+            {
+                SQLDeclareItem declareItem = parentCtx.findDeclare(hash);
+                if (declareItem != null) {
+                    x.setResolvedDeclareItem(declareItem);
+                    return;
+                }
+
+                if (parentCtx.object instanceof SQLBlockStatement) {
+                    SQLBlockStatement block = (SQLBlockStatement) parentCtx.object;
+                    SQLParameter parameter = block.findParameter(hash);
+                    if (parameter != null) {
+                        x.setResolvedParameter(parameter);
+                        return;
+                    }
+                } else if (parentCtx.object instanceof SQLCreateProcedureStatement) {
+                    SQLCreateProcedureStatement createProc = (SQLCreateProcedureStatement) parentCtx.object;
+                    SQLParameter parameter = createProc.findParameter(hash);
+                    if (parameter != null) {
+                        x.setResolvedParameter(parameter);
+                        return;
+                    }
+                }
             }
         }
     }
@@ -2462,6 +2505,13 @@ class SchemaResolveVisitorFactory {
         }
 
         visitor.popContext();
+    }
+
+    static void resolve(SchemaResolveVisitor visitor, SQLFetchStatement x) {
+        resolveExpr(visitor, x.getCursorName());
+        for (SQLExpr expr : x.getInto()) {
+            resolveExpr(visitor, expr);
+        }
     }
 
     static void resolve(SchemaResolveVisitor visitor, SQLForeignKeyConstraint x) {

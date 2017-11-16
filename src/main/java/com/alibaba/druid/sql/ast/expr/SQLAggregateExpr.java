@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -36,7 +37,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
     protected SQLKeep             keep;
     protected SQLOver             over;
     protected SQLOrderBy          withinGroup;
-    protected boolean             ignoreNulls      = false;
+    protected Boolean             ignoreNulls      = false;
 
     public SQLAggregateExpr(String methodName){
         this.methodName = methodName;
@@ -116,6 +117,10 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
     }
     
     public boolean isIgnoreNulls() {
+        return this.ignoreNulls != null && this.ignoreNulls;
+    }
+
+    public Boolean getIgnoreNulls() {
         return this.ignoreNulls;
     }
 
@@ -138,6 +143,22 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.addAll(this.arguments);
+        if (keep != null) {
+            children.add(this.keep);
+        }
+        if (over != null) {
+            children.add(over);
+        }
+        if (withinGroup != null) {
+            children.add(withinGroup);
+        }
+        return children;
     }
 
     @Override
@@ -231,7 +252,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
             }
         }
 
-        if (hash == FnvHash.Constants.WM_CONAT
+        if (hash == FnvHash.Constants.WM_CONCAT
                 || hash == FnvHash.Constants.GROUP_CONCAT) {
             return SQLCharExpr.DEFAULT_DATA_TYPE;
         }

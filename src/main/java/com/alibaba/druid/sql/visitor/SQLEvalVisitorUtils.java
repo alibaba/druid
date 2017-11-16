@@ -581,14 +581,14 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLBinaryExpr x) {
-        String text = x.getValue();
+        String text = x.getText();
 
         long[] words = new long[text.length() / 64 + 1];
-        for (int i = 0; i < text.length(); ++i) {
+        for (int i = text.length()-1; i >= 0 ; --i) {
             char ch = text.charAt(i);
             if (ch == '1') {
                 int wordIndex = i >> 6;
-                words[wordIndex] |= (1L << i);
+                words[wordIndex] |= (1L << (text.length() - 1 - i));
             }
         }
 
@@ -600,7 +600,7 @@ public class SQLEvalVisitorUtils {
             byte[] bytes = new byte[words.length * 8];
 
             for (int i = 0; i < words.length; ++i) {
-                Utils.putLong(bytes, i * 8, words[i]);
+                Utils.putLong(bytes, (words.length-1-i) * 8, words[i]);
             }
 
             val = new BigInteger(bytes);

@@ -134,6 +134,38 @@ public final class FnvHash {
         return hashCode;
     }
 
+    public static long fnv1a_64_lower(StringBuilder key) {
+        long hashCode = BASIC;
+        for (int i = 0; i < key.length(); ++i) {
+            char ch = key.charAt(i);
+
+            if (ch >= 'A' && ch <= 'Z') {
+                ch = (char) (ch + 32);
+            }
+
+            hashCode ^= ch;
+            hashCode *= PRIME;
+        }
+
+        return hashCode;
+    }
+
+    public static long fnv1a_64_lower(long basic, StringBuilder key) {
+        long hashCode = basic;
+        for (int i = 0; i < key.length(); ++i) {
+            char ch = key.charAt(i);
+
+            if (ch >= 'A' && ch <= 'Z') {
+                ch = (char) (ch + 32);
+            }
+
+            hashCode ^= ch;
+            hashCode *= PRIME;
+        }
+
+        return hashCode;
+    }
+
     public static long hashCode64(String key, int offset, int end) {
         long hashCode = BASIC;
         for (int i = offset; i < end; ++i) {
@@ -306,6 +338,7 @@ public final class FnvHash {
         long SQL_SMALL_RESULT = fnv1a_64_lower("SQL_SMALL_RESULT");
         long SQL_BIG_RESULT = fnv1a_64_lower("SQL_BIG_RESULT");
         long SQL_BUFFER_RESULT = fnv1a_64_lower("SQL_BUFFER_RESULT");
+        long CACHE = fnv1a_64_lower("CACHE");
         long SQL_CACHE = fnv1a_64_lower("SQL_CACHE");
         long SQL_NO_CACHE = fnv1a_64_lower("SQL_NO_CACHE");
         long SQL_CALC_FOUND_ROWS = fnv1a_64_lower("SQL_CALC_FOUND_ROWS");
@@ -350,6 +383,7 @@ public final class FnvHash {
 
         long DATE = fnv1a_64_lower("DATE");
         long DATETIME = fnv1a_64_lower("DATETIME");
+        long TIME = fnv1a_64_lower("TIME");
         long TIMESTAMP = fnv1a_64_lower("TIMESTAMP");
         long CLOB = fnv1a_64_lower("CLOB");
         long NCLOB = fnv1a_64_lower("NCLOB");
@@ -371,7 +405,7 @@ public final class FnvHash {
         long CURRENT = fnv1a_64_lower("CURRENT");
         long COUNT = fnv1a_64_lower("COUNT");
         long ROW_NUMBER = fnv1a_64_lower("ROW_NUMBER");
-        long WM_CONAT = fnv1a_64_lower("WM_CONAT");
+        long WM_CONCAT = fnv1a_64_lower("WM_CONCAT");
         long AVG = fnv1a_64_lower("AVG");
         long MAX = fnv1a_64_lower("MAX");
         long MIN = fnv1a_64_lower("MIN");
@@ -403,6 +437,7 @@ public final class FnvHash {
         long LEVEL = fnv1a_64_lower("LEVEL");
         long CONNECT_BY_ISCYCLE = fnv1a_64_lower("CONNECT_BY_ISCYCLE");
         long CURRENT_TIMESTAMP = fnv1a_64_lower("CURRENT_TIMESTAMP");
+        long CURRENT_USER = fnv1a_64_lower("CURRENT_USER");
         long FALSE = fnv1a_64_lower("FALSE");
         long TRUE = fnv1a_64_lower("TRUE");
         long SET = fnv1a_64_lower("SET");
@@ -413,12 +448,15 @@ public final class FnvHash {
         long LONG_RAW = fnv1a_64_lower("LONG RAW");
         long LONG = fnv1a_64_lower("LONG");
         long ROWNUM = fnv1a_64_lower("ROWNUM");
+        long SYSDATE = fnv1a_64_lower("SYSDATE");
+        long SQLCODE = fnv1a_64_lower("SQLCODE");
         long PRECISION = fnv1a_64_lower("PRECISION");
         long DOUBLE = fnv1a_64_lower("DOUBLE");
         long DOUBLE_PRECISION = fnv1a_64_lower("DOUBLE PRECISION");
         long WITHOUT = fnv1a_64_lower("WITHOUT");
 
         long DEFINER = fnv1a_64_lower("DEFINER");
+        long EVENT = fnv1a_64_lower("EVENT");
         long DETERMINISTIC = fnv1a_64_lower("DETERMINISTIC");
         long CONTAINS = fnv1a_64_lower("CONTAINS");
         long SQL = fnv1a_64_lower("SQL");
@@ -438,6 +476,7 @@ public final class FnvHash {
         long FOLLOWING = fnv1a_64_lower("FOLLOWING");
         long UNBOUNDED = fnv1a_64_lower("UNBOUNDED");
         long SIBLINGS = fnv1a_64_lower("SIBLINGS");
+        long RESPECT = fnv1a_64_lower("RESPECT");
         long NULLS = fnv1a_64_lower("NULLS");
         long FIRST = fnv1a_64_lower("FIRST");
         long LAST = fnv1a_64_lower("LAST");
@@ -472,6 +511,13 @@ public final class FnvHash {
         long MINUTE = fnv1a_64_lower("MINUTE");
         long SECOND = fnv1a_64_lower("SECOND");
 
+        long SECONDS = fnv1a_64_lower("SECONDS");
+        long MINUTES = fnv1a_64_lower("MINUTES");
+        long HOURS = fnv1a_64_lower("HOURS");
+        long DAYS = fnv1a_64_lower("DAYS");
+        long MONTHS = fnv1a_64_lower("MONTHS");
+        long YEARS = fnv1a_64_lower("YEARS");
+
         long BEFORE = fnv1a_64_lower("BEFORE");
         long AFTER = fnv1a_64_lower("AFTER");
         long INSTEAD = fnv1a_64_lower("INSTEAD");
@@ -496,15 +542,78 @@ public final class FnvHash {
         long OFF = fnv1a_64_lower("OFF");
         long IDENTITY_INSERT = fnv1a_64_lower("IDENTITY_INSERT");
         long PASSWORD = fnv1a_64_lower("PASSWORD");
+        long SOCKET = fnv1a_64_lower("SOCKET");
+        long OWNER = fnv1a_64_lower("OWNER");
+        long PORT = fnv1a_64_lower("PORT");
         long PUBLIC = fnv1a_64_lower("PUBLIC");
+        long SYNONYM = fnv1a_64_lower("SYNONYM");
         long MATERIALIZED = fnv1a_64_lower("MATERIALIZED");
         long BITMAP = fnv1a_64_lower("BITMAP");
         long PACKAGE = fnv1a_64_lower("PACKAGE");
         long TRUNC = fnv1a_64_lower("TRUNC");
         long SYSTIMESTAMP = fnv1a_64_lower("SYSTIMESTAMP");
         long TYPE = fnv1a_64_lower("TYPE");
+        long RECORD = fnv1a_64_lower("RECORD");
+        long MAP = fnv1a_64_lower("MAP");
+        long ONLY = fnv1a_64_lower("ONLY");
         long MEMBER = fnv1a_64_lower("MEMBER");
         long STATIC = fnv1a_64_lower("STATIC");
+        long FINAL = fnv1a_64_lower("FINAL");
+        long INSTANTIABLE = fnv1a_64_lower("INSTANTIABLE");
         long UNSUPPORTED = fnv1a_64_lower("UNSUPPORTED");
+        long VARRAY = fnv1a_64_lower("VARRAY");
+        long WRAPPED = fnv1a_64_lower("WRAPPED");
+        long AUTHID = fnv1a_64_lower("AUTHID");
+        long UNDER = fnv1a_64_lower("UNDER");
+        long USERENV = fnv1a_64_lower("USERENV");
+        long NUMTODSINTERVAL = fnv1a_64_lower("NUMTODSINTERVAL");
+
+        long LATERAL = fnv1a_64_lower("LATERAL");
+        long NONE = fnv1a_64_lower("NONE");
+        long PARTITIONING = fnv1a_64_lower("PARTITIONING");
+        long VALIDPROC = fnv1a_64_lower("VALIDPROC");
+        long COMPRESS = fnv1a_64_lower("COMPRESS");
+        long YES = fnv1a_64_lower("YES");
+        long WMSYS = fnv1a_64_lower("WMSYS");
+
+        long DEPTH = fnv1a_64_lower("DEPTH");
+        long BREADTH = fnv1a_64_lower("BREADTH");
+
+        long SCHEDULE = fnv1a_64_lower("SCHEDULE");
+        long COMPLETION = fnv1a_64_lower("COMPLETION");
+        long RENAME = fnv1a_64_lower("RENAME");
+        long AT = fnv1a_64_lower("AT");
+        long LANGUAGE = fnv1a_64_lower("LANGUAGE");
+        long LOGFILE = fnv1a_64_lower("LOGFILE");
+        long INITIAL_SIZE = fnv1a_64_lower("INITIAL_SIZE");
+        long MAX_SIZE = fnv1a_64_lower("MAX_SIZE");
+        long NODEGROUP = fnv1a_64_lower("NODEGROUP");
+        long EXTENT_SIZE = fnv1a_64_lower("EXTENT_SIZE");
+        long AUTOEXTEND_SIZE = fnv1a_64_lower("AUTOEXTEND_SIZE");
+        long FILE_BLOCK_SIZE = fnv1a_64_lower("FILE_BLOCK_SIZE");
+        long SERVER = fnv1a_64_lower("SERVER");
+        long HOST = fnv1a_64_lower("HOST");
+        long ADD = fnv1a_64_lower("ADD");
+        long ALGORITHM = fnv1a_64_lower("ALGORITHM");
+        long EVERY = fnv1a_64_lower("EVERY");
+        long STARTS = fnv1a_64_lower("STARTS");
+        long ENDS = fnv1a_64_lower("ENDS");
+        long BINARY = fnv1a_64_lower("BINARY");
+        long ISOPEN = fnv1a_64_lower("ISOPEN");
+        long CONFLICT = fnv1a_64_lower("CONFLICT");
+        long NOTHING = fnv1a_64_lower("NOTHING");
+        long COMMIT = fnv1a_64_lower("COMMIT");
+
+        long RS = fnv1a_64_lower("RS");
+        long RR = fnv1a_64_lower("RR");
+        long CS = fnv1a_64_lower("CS");
+        long UR = fnv1a_64_lower("UR");
+
+        long INT4 = fnv1a_64_lower("INT4");
+        long VARBIT = fnv1a_64_lower("VARBIT");
+        long CLUSTERED = fnv1a_64_lower("CLUSTERED");
+        long SORTED = fnv1a_64_lower("SORTED");
+        long LIFECYCLE = fnv1a_64_lower("LIFECYCLE");
+        long PARTITIONS = fnv1a_64_lower("PARTITIONS");
     }
 }

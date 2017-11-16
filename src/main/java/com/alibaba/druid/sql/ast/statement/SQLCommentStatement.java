@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLCommentStatement extends SQLStatementImpl {
 
@@ -71,4 +71,15 @@ public class SQLCommentStatement extends SQLStatementImpl {
         visitor.endVisit(this);
     }
 
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (on != null) {
+            children.add(on);
+        }
+        if (comment != null) {
+            children.add(comment);
+        }
+        return children;
+    }
 }

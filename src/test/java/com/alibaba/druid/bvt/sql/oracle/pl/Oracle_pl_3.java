@@ -26,70 +26,40 @@ import java.util.List;
 public class Oracle_pl_3 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "FUNCTION F_PINYIN(P_NAME IN VARCHAR2) RETURN VARCHAR2 AS\n" +
-				"     V_COMPARE VARCHAR2(100);\n" +
-				"     V_RETURN VARCHAR2(4000);\n" +
-				"     FUNCTION F_NLSSORT(P_WORD IN VARCHAR2) RETURN VARCHAR2 AS\n" +
-				"     BEGIN\n" +
-				"      RETURN NLSSORT(P_WORD, 'NLS_SORT=SCHINESE_PINYIN_M');\n" +
-				"     END;\n" +
-				"    BEGIN\n" +
-				"    FOR I IN 1..NVL(LENGTH(P_NAME), 0) LOOP\n" +
-				"     V_COMPARE := F_NLSSORT(SUBSTR(P_NAME, I, 1));\n" +
-				"     IF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'A';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'B';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'C';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'D';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'E';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'F';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'G';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'H';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'J';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'K';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'L';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'M';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'N';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'O';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'P';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'Q';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'R';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'S';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'T';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'W';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'X';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'Y';\n" +
-				"     ELSIF V_COMPARE >= F_NLSSORT('?') AND V_COMPARE <= F_NLSSORT('?') THEN\n" +
-				"      V_RETURN := V_RETURN || 'Z';\n" +
-				"     END IF;\n" +
-				"    END LOOP;\n" +
-				"    RETURN V_RETURN;\n"; //
+        String sql = "create or replace type type_body_elements\n" +
+				"as object\n" +
+				"(\n" +
+				"  some_string varchar2(64),\n" +
+				"  member function function_one\n" +
+				"  return varchar2,\n" +
+				"  member function function_two\n" +
+				"  return varchar2\n" +
+				");\n" +
+				"/\n" +
+				"\n" +
+				"create or replace type body type_body_elements\n" +
+				"is\n" +
+				"\n" +
+				"  member function function_one\n" +
+				"  return varchar2\n" +
+				"  is\n" +
+				"  begin\n" +
+				"    return 'the function_one result';\n" +
+				"  end function_one;\n" +
+				"\n" +
+				"  member function function_two\n" +
+				"  return varchar2\n" +
+				"  is\n" +
+				"  begin\n" +
+				"    return 'the function_two result';\n" +
+				"  end function_two;\n" +
+				"\n" +
+				"end;\n" +
+				"/\n"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
+		assertEquals(4, statementList.size());
 		SQLStatement stmt = statementList.get(0);
-
-        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -115,24 +85,20 @@ public class Oracle_pl_3 extends OracleTest {
 
 		{
 			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("CREATE OR REPLACE PROCEDURE reassign (\n" +
-							"\tp IN OUT NOCOPY hr.person_typ, \n" +
-							"\tnew_job VARCHAR2\n" +
-							")\n" +
-							"BEGIN\n" +
-							"\tp.change_job(new_job);\n" +
-							"END;", //
+			assertEquals("CREATE OR REPLACE TYPE type_body_elements AS OBJECT (\n" +
+							"\tsome_string varchar2(64), \n" +
+							"\tMEMBER FUNCTION function_one () RETURN varchar2, \n" +
+							"\tMEMBER FUNCTION function_two () RETURN varchar2\n" +
+							");", //
 					output);
 		}
 		{
 			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("create or replace procedure reassign (\n" +
-							"\tp in out nocopy hr.person_typ, \n" +
-							"\tnew_job VARCHAR2\n" +
-							")\n" +
-							"begin\n" +
-							"\tp.change_job(new_job);\n" +
-							"end;", //
+			assertEquals("create or replace type type_body_elements AS OBJECT (\n" +
+							"\tsome_string varchar2(64), \n" +
+							"\tmember function function_one () return varchar2, \n" +
+							"\tmember function function_two () return varchar2\n" +
+							");", //
 					output);
 		}
 	}

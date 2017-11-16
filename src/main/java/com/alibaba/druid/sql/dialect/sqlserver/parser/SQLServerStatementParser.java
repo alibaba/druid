@@ -494,6 +494,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             SQLStartTransactionStatement startTrans = new SQLStartTransactionStatement();
+            startTrans.setDbType(dbType);
 
             if (lexer.token() == Token.IDENTIFIER) {
                 SQLName name = this.exprParser.name();

@@ -210,10 +210,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleAlterSessionStatement x);
 
-    boolean visit(OracleExprStatement x);
-
-    void endVisit(OracleExprStatement x);
-
     boolean visit(OracleDatetimeExpr x);
 
     void endVisit(OracleDatetimeExpr x);
@@ -241,10 +237,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleExplainStatement x);
 
     void endVisit(OracleExplainStatement x);
-
-    boolean visit(OracleAlterProcedureStatement x);
-
-    void endVisit(OracleAlterProcedureStatement x);
 
     boolean visit(OracleAlterTableDropPartition x);
 
@@ -437,4 +429,12 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OraclePipeRowStatement x);
 
     void endVisit(OraclePipeRowStatement x);
+
+    boolean visit(OracleIsOfTypeExpr x);
+
+    void endVisit(OracleIsOfTypeExpr x);
+
+    boolean visit(OracleRunStatement x);
+
+    void endVisit(OracleRunStatement x);
 }

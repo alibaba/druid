@@ -16,7 +16,11 @@
 package com.alibaba.druid.sql.dialect.postgresql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class PGLineSegmentsExpr extends PGExprImpl {
 
@@ -44,6 +48,11 @@ public class PGLineSegmentsExpr extends PGExprImpl {
             acceptChild(visitor, value);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(value);
     }
 
     @Override

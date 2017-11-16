@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
@@ -49,4 +50,8 @@ public class MySqlDeclareStatement extends MySqlStatementImpl {
         visitor.endVisit(this);
     }
 
+    @Override
+    public List getChildren() {
+        return varList;
+    }
 }

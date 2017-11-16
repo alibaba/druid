@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
+import com.alibaba.druid.util.FnvHash;
 
 /**
  * Created by wenshao on 26/07/2017.
@@ -43,6 +44,15 @@ public class NameResolveVisitor extends OracleASTVisitorAdapter {
         String name = x.getName();
 
         if ("ROWNUM".equalsIgnoreCase(name)) {
+            return false;
+        }
+
+        long hash = x.nameHashCode64();
+        SQLTableSource tableSource = null;
+
+        if (hash == FnvHash.Constants.LEVEL
+                || hash == FnvHash.Constants.CONNECT_BY_ISCYCLE
+                || hash == FnvHash.Constants.SYSTIMESTAMP) {
             return false;
         }
 

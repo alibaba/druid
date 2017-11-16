@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
@@ -40,5 +41,9 @@ public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements Oracl
 
     public SQLDataType computeDataType() {
         return null;
+    }
+
+    public String toString() {
+        return SQLUtils.toOracleString(this);
     }
 }

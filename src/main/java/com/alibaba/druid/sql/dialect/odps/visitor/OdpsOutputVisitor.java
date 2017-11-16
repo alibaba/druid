@@ -139,11 +139,11 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print(')');
         }
 
-        List<SQLName> sortedBy = x.getSortedBy();
+        List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
         if (sortedBy.size() > 0) {
             println();
             print0(ucase ? "SORTED BY (" : "sorted by (");
-            printAndAccept(sortedBy, ",");
+            printAndAccept(sortedBy, ", ");
             print(')');
         }
 
@@ -796,26 +796,6 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             x.getExpire().accept(this);
         }
 
-        return false;
-    }
-
-    @Override
-    public void endVisit(OdpsLateralViewTableSource x) {
-        
-    }
-
-    @Override
-    public boolean visit(OdpsLateralViewTableSource x) {
-        x.getTableSource().accept(this);
-        this.indentCount++;
-        println();
-        print0(ucase ? "LATERAL VIEW " : "lateral view ");
-        x.getMethod().accept(this);
-        print(' ');
-        print0(x.getAlias());
-        print0(ucase ? " AS " : " as ");
-        printAndAccept(x.getColumns(), ", ");
-        this.indentCount--;
         return false;
     }
     

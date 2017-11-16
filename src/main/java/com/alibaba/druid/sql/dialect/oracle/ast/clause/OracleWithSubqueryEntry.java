@@ -63,7 +63,7 @@ public class OracleWithSubqueryEntry extends Entry implements OracleSQLObject {
         this.accept0((OracleASTVisitor) visitor);
     }
 
-    protected void cloneTo(OracleWithSubqueryEntry x) {
+    public void cloneTo(OracleWithSubqueryEntry x) {
         super.cloneTo(x);
 
         if (searchClause != null) {

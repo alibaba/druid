@@ -18,9 +18,13 @@ package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
+
+import java.util.Collections;
+import java.util.List;
 
 public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr {
 
@@ -75,6 +79,11 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
     }
 
     @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.expr);
+    }
+
+    @Override
     public int hashCode() {
         long value = hashCode64();
         return (int)(value ^ (value >>> 32));
@@ -97,12 +106,10 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
 
     public OracleDbLinkExpr clone() {
         OracleDbLinkExpr x = new OracleDbLinkExpr();
-
         if (expr != null) {
-            expr = expr.clone();
+            x.setExpr(expr.clone());
         }
         x.dbLink = dbLink;
-
         return x;
     }
 

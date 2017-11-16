@@ -18,19 +18,16 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private SQLName                  name;
-
     private boolean                  orReplace      = false;
-
     private TriggerType              triggerType;
+
+    private SQLName                  definer;
 
     private boolean                  update;
     private boolean                  delete;
@@ -62,6 +59,25 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
             acceptChild(visitor, body);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (name != null) {
+            children.add(name);
+        }
+        children.addAll(updateOfColumns);
+        if (on != null) {
+            children.add(on);
+        }
+        if (when != null) {
+            children.add(when);
+        }
+        if (body != null) {
+            children.add(body);
+        }
+        return children;
     }
 
     public SQLExprTableSource getOn() {
@@ -137,11 +153,11 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
         return when;
     }
 
-    public void setWhen(SQLExpr when) {
-        if (when != null) {
-            when.setParent(this);
+    public void setWhen(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.when = when;
+        this.when = x;
     }
 
     public boolean isUpdate() {
@@ -166,6 +182,17 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
 
     public void setInsert(boolean insert) {
         this.insert = insert;
+    }
+
+    public SQLName getDefiner() {
+        return definer;
+    }
+
+    public void setDefiner(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.definer = x;
     }
 
     public static enum TriggerType {

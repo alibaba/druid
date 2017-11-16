@@ -453,7 +453,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             sqlStat.decrementRunningCount();
             sqlStat.addExecuteTime(statement.getLastExecuteType(), firstResult, nanos);
             statement.setLastExecuteTimeNano(nanos);
-            if ((!statement.isFirstResultSet()) && statement.getLastExecuteType() == StatementExecuteType.Execute) {
+            if ((!firstResult) && statement.getLastExecuteType() == StatementExecuteType.Execute) {
                 try {
                     int updateCount = statement.getUpdateCount();
                     sqlStat.addUpdateCount(updateCount);
@@ -473,9 +473,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 String slowParameters = buildSlowParameters(statement);
                 sqlStat.setLastSlowParameters(slowParameters);
 
+                String lastExecSql = statement.getLastExecuteSql();
                 if (logSlowSql) {
-                    LOG.error("slow sql " + millis + " millis. " + statement.getLastExecuteSql() + "" + slowParameters);
+                    LOG.error("slow sql " + millis + " millis. " + lastExecSql + "" + slowParameters);
                 }
+
+                handleSlowSql(statement);
             }
         }
 
@@ -483,6 +486,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         StatFilterContext.getInstance().executeAfter(sql, nanos, null);
 
         Profiler.release(nanos);
+    }
+
+    protected void handleSlowSql(StatementProxy statementProxy) {
+
     }
 
     @Override
@@ -513,7 +520,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Profiler.release(nanos);
     }
 
-    private String buildSlowParameters(StatementProxy statement) {
+    protected String buildSlowParameters(StatementProxy statement) {
         JSONWriter out = new JSONWriter();
 
         out.writeArrayStart();

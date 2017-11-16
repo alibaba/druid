@@ -74,7 +74,7 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         protected SQLSelect           subQuery;
         protected SQLStatement        returningStatement;
 
-        protected void cloneTo(Entry x) {
+        public void cloneTo(Entry x) {
             for (SQLName column : columns) {
                 SQLName column2 = column.clone();
                 column2.setParent(x);

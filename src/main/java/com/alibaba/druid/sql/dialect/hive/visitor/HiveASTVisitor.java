@@ -15,7 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface HiveASTVisitor extends SQLASTVisitor {
+    boolean visit(HiveCreateTableStatement x);
+    void endVisit(HiveCreateTableStatement x);
 }

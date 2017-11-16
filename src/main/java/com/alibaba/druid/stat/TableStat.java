@@ -220,7 +220,7 @@ public class TableStat {
         }
 
         public String toString() {
-            return this.name;
+            return SQLUtils.normalize(this.name);
         }
     }
 
@@ -545,10 +545,10 @@ public class TableStat {
 
         public String toString() {
             if (table != null) {
-                return table + "." + name;
+                return SQLUtils.normalize(table) + "." + SQLUtils.normalize(name);
             }
 
-            return name;
+            return SQLUtils.normalize(name);
         }
 
         public boolean equals(Object obj) {

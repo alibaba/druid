@@ -39,7 +39,9 @@ public class MySqlWallProvider extends WallProvider {
 
     @Override
     public SQLStatementParser createParser(String sql) {
-        return new MySqlStatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup
+        return new MySqlStatementParser(sql
+                , SQLParserFeature.EnableSQLBinaryOpExprGroup
+                , SQLParserFeature.StrictForWall
         );
     }
 

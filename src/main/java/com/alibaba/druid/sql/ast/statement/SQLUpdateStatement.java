@@ -18,7 +18,12 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExprGroup;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceable {
@@ -112,22 +117,8 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     @Override
     public void output(StringBuffer buf) {
-        buf.append("UPDATE ");
-
-        this.tableSource.output(buf);
-
-        buf.append(" SET ");
-        for (int i = 0, size = items.size(); i < size; ++i) {
-            if (i != 0) {
-                buf.append(", ");
-            }
-            items.get(i).output(buf);
-        }
-
-        if (this.where != null) {
-            buf.append(" WHERE ");
-            this.where.output(buf);
-        }
+        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(buf, dbType);
+        this.accept(visitor);
     }
 
     @Override
@@ -140,6 +131,24 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
             acceptChild(visitor, orderBy);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (tableSource != null) {
+            children.add(tableSource);
+        }
+        if (from != null) {
+            children.add(from);
+        }
+        children.addAll(this.items);
+        if (where != null) {
+            children.add(where);
+        }
+        if (orderBy != null) {
+            children.add(orderBy);
+        }
+        return children;
     }
 
     @Override
@@ -172,5 +181,83 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
             with.setParent(this);
         }
         this.with = with;
+    }
+
+    public void addCondition(String conditionSql) {
+        if (conditionSql == null || conditionSql.length() == 0) {
+            return;
+        }
+
+        SQLExpr condition = SQLUtils.toSQLExpr(conditionSql, dbType);
+        addCondition(condition);
+    }
+
+    public void addCondition(SQLExpr expr) {
+        if (expr == null) {
+            return;
+        }
+
+        this.setWhere(SQLBinaryOpExpr.and(where, expr));
+    }
+
+    public boolean removeCondition(String conditionSql) {
+        if (conditionSql == null || conditionSql.length() == 0) {
+            return false;
+        }
+
+        SQLExpr condition = SQLUtils.toSQLExpr(conditionSql, dbType);
+
+        return removeCondition(condition);
+    }
+
+    public boolean removeCondition(SQLExpr condition) {
+        if (condition == null) {
+            return false;
+        }
+
+        if (where instanceof SQLBinaryOpExprGroup) {
+            SQLBinaryOpExprGroup group = (SQLBinaryOpExprGroup) where;
+
+            int removedCount = 0;
+            List<SQLExpr> items = group.getItems();
+            for (int i = items.size() - 1; i >= 0; i--) {
+                if (items.get(i).equals(condition)) {
+                    items.remove(i);
+                    removedCount++;
+                }
+            }
+            if (items.size() == 0) {
+                where = null;
+            }
+
+            return removedCount > 0;
+        }
+
+        if (where instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpWhere = (SQLBinaryOpExpr) where;
+            SQLBinaryOperator operator = binaryOpWhere.getOperator();
+            if (operator == SQLBinaryOperator.BooleanAnd || operator == SQLBinaryOperator.BooleanOr) {
+                List<SQLExpr> items = SQLBinaryOpExpr.split(binaryOpWhere);
+
+                int removedCount = 0;
+                for (int i = items.size() - 1; i >= 0; i--) {
+                    SQLExpr item = items.get(i);
+                    if (item.equals(condition)) {
+                        if (SQLUtils.replaceInParent(item, null)) {
+                            removedCount++;
+                        }
+                    }
+                }
+
+                return removedCount > 0;
+            }
+        }
+
+        if (condition.equals(where)) {
+            where = null;
+            return true;
+        }
+
+        return false;
     }
 }

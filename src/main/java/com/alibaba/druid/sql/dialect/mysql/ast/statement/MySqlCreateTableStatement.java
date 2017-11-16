@@ -26,11 +26,9 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
@@ -41,8 +39,6 @@ import com.alibaba.druid.util.JdbcConstants;
 public class MySqlCreateTableStatement extends SQLCreateTableStatement implements MySqlStatement {
 
     private Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
-
-    private SQLPartitionBy  partitioning;
 
     private List<SQLCommentHint>   hints        = new ArrayList<SQLCommentHint>();
 
@@ -68,14 +64,6 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public void setTableOptions(Map<String, SQLObject> tableOptions) {
         this.tableOptions = tableOptions;
-    }
-
-    public SQLPartitionBy getPartitioning() {
-        return partitioning;
-    }
-
-    public void setPartitioning(SQLPartitionBy partitioning) {
-        this.partitioning = partitioning;
     }
 
     public Map<String, SQLObject> getTableOptions() {
@@ -208,8 +196,8 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         } else if (item instanceof MySqlAlterTableChangeColumn) {
             return apply((MySqlAlterTableChangeColumn) item);
 
-        } else if (item instanceof MySqlAlterTableCharacter) {
-            return apply((MySqlAlterTableCharacter) item);
+        } else if (item instanceof SQLAlterCharacter) {
+            return apply((SQLAlterCharacter) item);
 
         } else if (item instanceof MySqlAlterTableModifyColumn) {
             return apply((MySqlAlterTableModifyColumn) item);
@@ -250,7 +238,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         return true;
     }
 
-    public boolean apply(MySqlAlterTableCharacter item) {
+    public boolean apply(SQLAlterCharacter item) {
         SQLExpr charset = item.getCharacterSet();
         if (charset != null) {
             this.tableOptions.put("CHARACTER SET", charset);

@@ -51,7 +51,7 @@ public class StatFilterTest3 extends TestCase {
 
         Assert.assertEquals(JdbcConstants.POSTGRESQL, filter.getDbType());
 
-        Assert.assertEquals("DROP TABLE IF EXISTS test_site_data_select_111;;\n" +
+        Assert.assertEquals("DROP TABLE IF EXISTS test_site_data_select_111;\n" +
                 "CREATE TABLE test_site_data_select_111\n" +
                 "AS\n" +
                 "SELECT *\n" +

@@ -101,10 +101,6 @@ public interface PGASTVisitor extends SQLASTVisitor {
     
     boolean visit(PGLineSegmentsExpr x);
 
-    void endVisit(PGIntervalExpr x);
-
-    boolean visit(PGIntervalExpr x);
-    
     void endVisit(PGShowStatement x);
     
     boolean visit(PGShowStatement x);

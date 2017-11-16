@@ -144,7 +144,8 @@ public class OracleLexer extends Lexer {
     }
 
     public void scanVariable() {
-        if (ch != ':' && ch != '#' && ch != '$') {
+        final char c0 = ch;
+        if (c0 != ':' && c0 != '#' && c0 != '$') {
             throw new ParserException("illegal variable. " + info());
         }
 
@@ -154,25 +155,46 @@ public class OracleLexer extends Lexer {
 
         boolean quoteFlag = false;
         boolean mybatisFlag = false;
-        if (charAt(pos + 1) == '"') {
+
+        char c1 = charAt(pos + 1);
+        if (c0 == ':' && c1 == ' ') {
+            pos++;
+            bufPos = 2;
+            c1 = charAt(pos + 1);
+        }
+
+        if (c1 == '"') {
             pos++;
             bufPos++;
             quoteFlag = true;
-        } else if (charAt(pos + 1) == '{') {
+        } else if (c1 == '{') {
             pos++;
             bufPos++;
             mybatisFlag = true;
         }
 
-        for (;;) {
-            ch = charAt(++pos);
+        if (c0 == ':' && c1 >= '0' && c1 <= '9') {
+            for (; ; ) {
+                ch = charAt(++pos);
 
-            if (!isIdentifierChar(ch)) {
-                break;
+                if (ch < '0' || ch > '9') {
+                    break;
+                }
+
+                bufPos++;
+                continue;
             }
+        } else {
+            for (; ; ) {
+                ch = charAt(++pos);
 
-            bufPos++;
-            continue;
+                if (!isIdentifierChar(ch)) {
+                    break;
+                }
+
+                bufPos++;
+                continue;
+            }
         }
 
         if (quoteFlag) {
@@ -202,7 +224,13 @@ public class OracleLexer extends Lexer {
 
     protected void scanVariable_at() {
         scanChar();
-        token = Token.MONKEYS_AT;
+
+        if (ch == '@') {
+            scanChar();
+            token = Token.MONKEYS_AT_AT;
+        } else {
+            token = Token.MONKEYS_AT;
+        }
         return;
     }
 

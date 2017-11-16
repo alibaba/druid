@@ -35,7 +35,7 @@ public class MySqlParameterizedOutputVisitorTest_34 extends TestCase {
         List<Object> parameters = new ArrayList<Object>();
         visitor.setParameterized(true);
         visitor.setParameterizedMergeInList(true);
-        visitor.setParameters(parameters);
+        visitor.setOutputParameters(parameters);
         visitor.setExportTables(true);
         /*visitor.setPrettyFormat(false);*/
 

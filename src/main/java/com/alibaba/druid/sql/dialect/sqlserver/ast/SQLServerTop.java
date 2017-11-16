@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.sqlserver.ast;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
 public class SQLServerTop extends SQLServerObjectImpl {
@@ -41,6 +42,10 @@ public class SQLServerTop extends SQLServerObjectImpl {
             expr.setParent(this);
         }
         this.expr = expr;
+    }
+
+    public void setExpr(int expr) {
+        this.setExpr(new SQLIntegerExpr(expr));
     }
 
     public boolean isPercent() {

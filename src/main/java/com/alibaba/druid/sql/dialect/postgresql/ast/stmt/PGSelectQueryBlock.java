@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObject;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObject{
 
@@ -38,6 +39,10 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
 
     public static enum IntoOption {
         TEMPORARY, TEMP, UNLOGGED
+    }
+
+    public PGSelectQueryBlock() {
+        dbType = JdbcConstants.POSTGRESQL;
     }
 
     public IntoOption getIntoOption() {

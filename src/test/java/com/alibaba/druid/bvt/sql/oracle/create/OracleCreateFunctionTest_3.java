@@ -134,7 +134,7 @@ public class OracleCreateFunctionTest_3 extends OracleTest {
 
         assertEquals(1, visitor.getTables().size());
 
-        assertEquals(2, visitor.getColumns().size());
+        assertEquals(1, visitor.getColumns().size());
 
 //        assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "order_total")));
     }

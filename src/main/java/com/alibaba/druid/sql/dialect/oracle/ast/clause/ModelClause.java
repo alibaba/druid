@@ -19,10 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class ModelClause extends OracleSQLObjectImpl {
 
@@ -391,7 +395,7 @@ public class ModelClause extends OracleSQLObjectImpl {
 
     }
 
-    public static class CellAssignment extends OracleSQLObjectImpl {
+    public static class CellAssignment extends SQLExprImpl implements OracleExpr {
 
         private SQLExpr             measureColumn;
         private final List<SQLExpr> conditions = new ArrayList<SQLExpr>();
@@ -404,8 +408,11 @@ public class ModelClause extends OracleSQLObjectImpl {
             return measureColumn;
         }
 
-        public void setMeasureColumn(SQLExpr measureColumn) {
-            this.measureColumn = measureColumn;
+        public void setMeasureColumn(SQLExpr e) {
+            if (e != null) {
+                e.setParent(this);
+            }
+            this.measureColumn = e;
         }
 
         @Override
@@ -417,6 +424,46 @@ public class ModelClause extends OracleSQLObjectImpl {
             visitor.endVisit(this);
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            CellAssignment that = (CellAssignment) o;
+
+            if (measureColumn != null ? !measureColumn.equals(that.measureColumn) : that.measureColumn != null)
+                return false;
+            return conditions != null ? conditions.equals(that.conditions) : that.conditions == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = measureColumn != null ? measureColumn.hashCode() : 0;
+            result = 31 * result + (conditions != null ? conditions.hashCode() : 0);
+            return result;
+        }
+
+        @Override
+        protected void accept0(SQLASTVisitor visitor) {
+            accept0((OracleASTVisitor) visitor);
+        }
+
+        @Override
+        public SQLExpr clone() {
+            CellAssignment x = new CellAssignment();
+            if (measureColumn != null) {
+                x.setMeasureColumn(measureColumn.clone());
+            }
+            return null;
+        }
+
+        @Override
+        public List<SQLObject> getChildren() {
+            List children = new ArrayList();
+            children.add(measureColumn);
+            children.addAll(conditions);
+            return children;
+        }
     }
 
     public ModelClause clone() {

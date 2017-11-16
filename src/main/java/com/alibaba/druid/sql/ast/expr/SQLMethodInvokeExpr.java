@@ -17,13 +17,11 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
@@ -102,8 +100,11 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         return from;
     }
 
-    public void setFrom(SQLExpr from) {
-        this.from = from;
+    public void setFrom(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.from = x;
     }
 
     public List<SQLExpr> getParameters() {
@@ -140,15 +141,32 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         if (visitor.visit(this)) {
             acceptChild(visitor, this.owner);
             acceptChild(visitor, this.parameters);
+            acceptChild(visitor, this.from);
+            acceptChild(visitor, this.using);
+            acceptChild(visitor, this._for);
         }
 
         visitor.endVisit(this);
+    }
+
+    public List getChildren() {
+        if (this.owner == null) {
+            return this.parameters;
+        }
+
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.add(owner);
+        children.addAll(this.parameters);
+        return children;
     }
 
     protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.owner);
             acceptChild(visitor, this.parameters);
+            acceptChild(visitor, this.from);
+            acceptChild(visitor, this.using);
+            acceptChild(visitor, this._for);
         }
 
         visitor.endVisit(this);
@@ -206,6 +224,7 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         if (target == null) {
             return false;
         }
+
         for (int i = 0; i < parameters.size(); ++i) {
             if (parameters.get(i) == expr) {
                 parameters.set(i, target);
@@ -213,6 +232,22 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
                 return true;
             }
         }
+
+        if (from == expr) {
+            setFrom(target);
+            return true;
+        }
+
+        if (using == expr) {
+            setUsing(target);
+            return true;
+        }
+
+        if (_for == expr) {
+            setFor(target);
+            return true;
+        }
+
         return false;
     }
 
@@ -269,11 +304,11 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         return using;
     }
 
-    public void setUsing(SQLExpr using) {
-        if (using != null) {
-            using.setParent(this);
+    public void setUsing(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.using = using;
+        this.using = x;
     }
 
     public SQLExpr getFor() {

@@ -21,15 +21,9 @@ import java.util.List;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPartitionByList extends SQLPartitionBy {
-
-    protected SQLExpr       expr;
-
-    protected List<SQLName> columns = new ArrayList<SQLName>();
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, expr);
             acceptChild(visitor, columns);
             acceptChild(visitor, partitionsCount);
             acceptChild(visitor, getPartitions());
@@ -38,37 +32,11 @@ public class SQLPartitionByList extends SQLPartitionBy {
         visitor.endVisit(this);
     }
 
-    public SQLExpr getExpr() {
-        return expr;
-    }
-
-    public void setExpr(SQLExpr expr) {
-        if (expr != null) {
-            expr.setParent(this);
-        }
-        this.expr = expr;
-    }
-
-    public List<SQLName> getColumns() {
-        return columns;
-    }
-
-    public void addColumn(SQLName column) {
-        if (column != null) {
-            column.setParent(this);
-        }
-        this.columns.add(column);
-    }
-
     public SQLPartitionByList clone() {
         SQLPartitionByList x = new SQLPartitionByList();
 
-        if (expr != null) {
-            x.setExpr(expr.clone());
-        }
-
-        for (SQLName column : columns) {
-            SQLName c2 = column.clone();
+        for (SQLExpr column : columns) {
+            SQLExpr c2 = column.clone();
             c2.setParent(x);
             x.columns.add(c2);
         }

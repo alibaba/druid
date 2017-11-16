@@ -16,15 +16,11 @@
 package com.alibaba.druid.util;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.mysql.jdbc.ConnectionImpl;
-import com.mysql.jdbc.MySQLConnection;
-import com.mysql.jdbc.MysqlIO;
 
 import javax.sql.XAConnection;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.*;
@@ -233,5 +229,83 @@ public class MySqlUtils {
             SQLCreateTableStatement.sort(stmtList);
         }
         return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
+    }
+
+    private static Class   class_connectionImpl                     = null;
+    private static boolean class_connectionImpl_Error               = false;
+    private static Method  method_getIO                             = null;
+    private static boolean method_getIO_error                       = false;
+    private static Class   class_MysqlIO                            = null;
+    private static boolean class_MysqlIO_Error                      = false;
+    private static Method  method_getLastPacketReceivedTimeMs       = null;
+    private static boolean method_getLastPacketReceivedTimeMs_error = false;
+
+    public static long getLastPacketReceivedTimeMs(Connection conn) throws SQLException {
+        if (class_connectionImpl == null && !class_connectionImpl_Error) {
+            try {
+                class_connectionImpl = Utils.loadClass("com.mysql.jdbc.ConnectionImpl");
+            } catch (Throwable error){
+                class_connectionImpl_Error = true;
+            }
+        }
+
+        if (class_connectionImpl == null) {
+            return -1;
+        }
+
+        if (method_getIO == null && !method_getIO_error) {
+            try {
+                method_getIO = class_connectionImpl.getMethod("getIO");
+            } catch (Throwable error){
+                method_getIO_error = true;
+            }
+        }
+
+        if (method_getIO == null) {
+            return -1;
+        }
+
+        if (class_MysqlIO == null && !class_MysqlIO_Error) {
+            try {
+                class_MysqlIO = Utils.loadClass("com.mysql.jdbc.MysqlIO");
+            } catch (Throwable error){
+                class_MysqlIO_Error = true;
+            }
+        }
+
+        if (class_MysqlIO == null) {
+            return -1;
+        }
+
+        if (method_getLastPacketReceivedTimeMs == null && !method_getLastPacketReceivedTimeMs_error) {
+            try {
+                Method method = class_MysqlIO.getDeclaredMethod("getLastPacketReceivedTimeMs");
+                method.setAccessible(true);
+                method_getLastPacketReceivedTimeMs = method;
+            } catch (Throwable error){
+                method_getLastPacketReceivedTimeMs_error = true;
+            }
+        }
+
+        if (method_getLastPacketReceivedTimeMs == null) {
+            return -1;
+        }
+
+        try {
+            Object connImpl = conn.unwrap(class_connectionImpl);
+            if (connImpl == null) {
+                return -1;
+            }
+
+            Object mysqlio = method_getIO.invoke(connImpl);
+            Long ms = (Long) method_getLastPacketReceivedTimeMs.invoke(mysqlio);
+            return ms.longValue();
+        } catch (IllegalArgumentException e) {
+            throw new SQLException("getLastPacketReceivedTimeMs error", e);
+        } catch (IllegalAccessException e) {
+            throw new SQLException("getLastPacketReceivedTimeMs error", e);
+        } catch (InvocationTargetException e) {
+            throw new SQLException("getLastPacketReceivedTimeMs error", e);
+        }
     }
 }

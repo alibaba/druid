@@ -16,8 +16,12 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class SQLReturnStatement extends SQLStatementImpl {
 
@@ -56,5 +60,10 @@ public class SQLReturnStatement extends SQLStatementImpl {
             x.setExpr(expr.clone());
         }
         return x;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.expr);
     }
 }

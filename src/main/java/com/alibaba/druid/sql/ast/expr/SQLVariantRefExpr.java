@@ -16,7 +16,11 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class SQLVariantRefExpr extends SQLExprImpl {
 
@@ -108,5 +112,10 @@ public class SQLVariantRefExpr extends SQLExprImpl {
         SQLVariantRefExpr var =  new SQLVariantRefExpr(name, global);
         var.index = index;
         return var;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.emptyList();
     }
 }

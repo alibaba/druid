@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -75,6 +76,11 @@ public class SQLBinaryOpExprGroup extends SQLExprImpl {
         }
 
         return x;
+    }
+
+    @Override
+    public List getChildren() {
+        return items;
     }
 
     public void add(SQLExpr item) {

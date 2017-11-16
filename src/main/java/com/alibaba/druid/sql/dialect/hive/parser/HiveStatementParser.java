@@ -20,10 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class HiveStatementParser extends SQLStatementParser {
@@ -74,5 +71,9 @@ public class HiveStatementParser extends SQLStatementParser {
         }
 
         return stmt;
+    }
+
+    public SQLCreateTableParser getSQLCreateTableParser() {
+        return new HiveCreateTableParser(this.exprParser);
     }
 }

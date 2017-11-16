@@ -20,6 +20,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.util.FnvHash;
@@ -84,7 +85,9 @@ public class SQLSelectParser extends SQLParser {
     }
 
     protected SQLUnionQuery createSQLUnionQuery() {
-        return new SQLUnionQuery();
+        SQLUnionQuery union = new SQLUnionQuery();
+        union.setDbType(getDbType());
+        return union;
     }
 
     public SQLUnionQuery unionRest(SQLUnionQuery union) {
@@ -419,9 +422,27 @@ public class SQLSelectParser extends SQLParser {
                 if (lexer.identifierEquals(FnvHash.Constants.CUBE)) {
                     lexer.nextToken();
                     groupBy.setWithCube(true);
-                } else {
-                    acceptIdentifier("ROLLUP");
+                } else if(lexer.identifierEquals(FnvHash.Constants.ROLLUP)) {
+                    lexer.nextToken();
                     groupBy.setWithRollUp(true);
+                } else if (lexer.identifierEquals(FnvHash.Constants.RS)
+                        && JdbcConstants.DB2.equals(dbType)) {
+                    lexer.nextToken();
+                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.RS);
+                } else if (lexer.identifierEquals(FnvHash.Constants.RR)
+                        && JdbcConstants.DB2.equals(dbType)) {
+                    lexer.nextToken();
+                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.RR);
+                } else if (lexer.identifierEquals(FnvHash.Constants.CS)
+                        && JdbcConstants.DB2.equals(dbType)) {
+                    lexer.nextToken();
+                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.CS);
+                } else if (lexer.identifierEquals(FnvHash.Constants.UR)
+                        && JdbcConstants.DB2.equals(dbType)) {
+                    lexer.nextToken();
+                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.UR);
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
                 }
             }
             
@@ -564,7 +585,7 @@ public class SQLSelectParser extends SQLParser {
     }
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
-        if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
+        if (tableSource.getAlias() == null || tableSource.getAlias().length() == 0) {
             Token token = lexer.token;
             long hash;
             if (token != Token.LEFT
@@ -578,6 +599,11 @@ public class SQLSelectParser extends SQLParser {
                 String alias = tableAlias();
                 if (alias != null) {
                     tableSource.setAlias(alias);
+
+                    if (lexer.token == Token.WHERE) {
+                        return tableSource;
+                    }
+
                     return parseTableSourceRest(tableSource);
                 }
             }
@@ -661,8 +687,12 @@ public class SQLSelectParser extends SQLParser {
             SQLTableSource rightTableSource;
             if (lexer.token == Token.LPAREN) {
                 lexer.nextToken();
-                SQLSelect select = this.select();
-                rightTableSource = new SQLSubqueryTableSource(select);
+                if (lexer.token == Token.SELECT) {
+                    SQLSelect select = this.select();
+                    rightTableSource = new SQLSubqueryTableSource(select);
+                } else  {
+                    rightTableSource = this.parseTableSource();
+                }
                 accept(Token.RPAREN);
             } else {
                 SQLExpr expr = this.expr();
@@ -675,8 +705,12 @@ public class SQLSelectParser extends SQLParser {
                 Lexer.SavePoint savePoint = lexer.mark();
                 lexer.nextToken();
 
-                if (lexer.token == Token.LPAREN
-                        || lexer.token == Token.IDENTIFIER) {
+                if (lexer.token == Token.LPAREN) {
+                    lexer.nextToken();
+                    join.setRight(rightTableSource);
+                    this.exprParser.exprList(join.getUsing(), join);
+                    accept(Token.RPAREN);
+                } else if (lexer.token == Token.IDENTIFIER) {
                     lexer.reset(savePoint);
                     join.setRight(rightTableSource);
                     return join;
@@ -736,6 +770,16 @@ public class SQLSelectParser extends SQLParser {
             }
 
             return parseTableSourceRest(join);
+        }
+
+        if (tableSource.aliasHashCode64() == FnvHash.Constants.LATERAL
+                && lexer.token() == Token.VIEW) {
+            return parseLateralView(tableSource);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.LATERAL)) {
+            lexer.nextToken();
+            return parseLateralView(tableSource);
         }
 
         return tableSource;
@@ -845,5 +889,26 @@ public class SQLSelectParser extends SQLParser {
             }
             queryBlock.setConnectBy(this.exprParser.expr());
         }
+    }
+
+    protected SQLTableSource parseLateralView(SQLTableSource tableSource) {
+        accept(Token.VIEW);
+        if ("LATERAL".equalsIgnoreCase(tableSource.getAlias())) {
+            tableSource.setAlias(null);
+        }
+        SQLLateralViewTableSource lateralViewTabSrc = new SQLLateralViewTableSource();
+        lateralViewTabSrc.setTableSource(tableSource);
+
+        SQLMethodInvokeExpr udtf = (SQLMethodInvokeExpr) this.exprParser.expr();
+        lateralViewTabSrc.setMethod(udtf);
+
+        String alias = as();
+        lateralViewTabSrc.setAlias(alias);
+
+        accept(Token.AS);
+
+        this.exprParser.names(lateralViewTabSrc.getColumns());
+
+        return parseTableSourceRest(lateralViewTabSrc);
     }
 }

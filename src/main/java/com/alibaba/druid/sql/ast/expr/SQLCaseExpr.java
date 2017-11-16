@@ -17,10 +17,12 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
@@ -74,6 +76,19 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
             acceptChild(visitor, this.elseExpr);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (valueExpr != null) {
+            children.add(this.valueExpr);
+        }
+        children.addAll(this.items);
+        if (elseExpr != null) {
+            children.add(this.elseExpr);
+        }
+        return children;
     }
 
     @Override
@@ -171,6 +186,10 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
                 x.setValueExpr(valueExpr.clone());
             }
             return x;
+        }
+
+        public void output(StringBuffer buf) {
+            new SQLASTOutputVisitor(buf).visit(this);
         }
 
         @Override

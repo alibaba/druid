@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wenshao on 16/9/14.
@@ -52,6 +52,27 @@ public class SQLCreateSequenceStatement extends SQLStatementImpl implements SQLC
             acceptChild(visitor, maxValue);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (name != null) {
+            children.add(name);
+        }
+        if (startWith != null) {
+            children.add(startWith);
+        }
+        if (incrementBy != null) {
+            children.add(incrementBy);
+        }
+        if (minValue != null) {
+            children.add(minValue);
+        }
+        if (maxValue != null) {
+            children.add(maxValue);
+        }
+        return children;
     }
 
     public SQLName getName() {

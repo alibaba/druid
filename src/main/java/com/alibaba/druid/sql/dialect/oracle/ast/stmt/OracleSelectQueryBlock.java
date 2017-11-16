@@ -27,11 +27,13 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
+public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements OracleSQLObject {
 
     private List<SQLCommentHint>       hints;
 
@@ -71,7 +73,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
     }
 
     public OracleSelectQueryBlock(){
-
+        dbType = JdbcConstants.ORACLE;
     }
 
     public ModelClause getModelClause() {
@@ -115,7 +117,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
         super.accept0(visitor);
     }
 
-    protected void accept0(OracleASTVisitor visitor) {
+    public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.hints);
             acceptChild(visitor, this.selectList);

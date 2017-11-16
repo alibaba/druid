@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
+
 public class SQLParser {
-
     protected final Lexer lexer;
-
     protected String      dbType;
-
-
 
     public SQLParser(String sql, String dbType){
         this(new Lexer(sql, null, dbType), dbType);
@@ -326,5 +325,9 @@ public class SQLParser {
 
     public final boolean isEnabled(SQLParserFeature feature) {
         return lexer.isEnabled(feature);
+    }
+
+    protected SQLCreateTableStatement newCreateStatement() {
+        return new SQLCreateTableStatement(getDbType());
     }
 }

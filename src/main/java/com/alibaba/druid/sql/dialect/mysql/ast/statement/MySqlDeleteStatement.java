@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -30,14 +31,15 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlDeleteStatement extends SQLDeleteStatement {
 
-    private boolean              lowPriority = false;
-    private boolean              quick       = false;
-    private boolean              ignore      = false;
-
+    private boolean              lowPriority        = false;
+    private boolean              quick              = false;
+    private boolean              ignore             = false;
     private SQLOrderBy           orderBy;
-    private SQLLimit limit;
-
+    private SQLLimit             limit;
     private List<SQLCommentHint> hints;
+    // for petadata
+    private boolean              forceAllPartitions = false;
+    private SQLName              forcePartition;
 
     public MySqlDeleteStatement(){
         super(JdbcConstants.MYSQL);
@@ -137,14 +139,33 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
 
     protected void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, getTableSource());
-            acceptChild(visitor, getWhere());
-            acceptChild(visitor, getFrom());
-            acceptChild(visitor, getUsing());
+            acceptChild(visitor, tableSource);
+            acceptChild(visitor, where);
+            acceptChild(visitor, from);
+            acceptChild(visitor, using);
             acceptChild(visitor, orderBy);
             acceptChild(visitor, limit);
         }
 
         visitor.endVisit(this);
+    }
+
+    public boolean isForceAllPartitions() {
+        return forceAllPartitions;
+    }
+
+    public void setForceAllPartitions(boolean forceAllPartitions) {
+        this.forceAllPartitions = forceAllPartitions;
+    }
+
+    public SQLName getForcePartition() {
+        return forcePartition;
+    }
+
+    public void setForcePartition(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.forcePartition = x;
     }
 }

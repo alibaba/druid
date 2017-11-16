@@ -18,6 +18,7 @@ package com.alibaba.druid.bvt.sql.db2;
 import com.alibaba.druid.sql.DB2Test;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
@@ -33,8 +34,8 @@ public class DB2SelectTest_25_concat extends DB2Test {
 
         DB2StatementParser parser = new DB2StatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement stmt = statementList.get(0);
-        System.out.println(SQLUtils.toDB2String(stmt));
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
+        System.out.println(stmt.getSelect().getQuery());
 
         Assert.assertEquals(1, statementList.size());
 

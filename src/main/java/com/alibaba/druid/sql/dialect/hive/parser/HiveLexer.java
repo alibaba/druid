@@ -39,6 +39,7 @@ public class HiveLexer extends Lexer {
 
         map.put("ROW", Token.ROW);
         map.put("LIMIT", Token.LIMIT);
+        map.put("PARTITIONED", Token.PARTITIONED);
 
         DEFAULT_HIVE_KEYWORDS = new Keywords(map);
     }

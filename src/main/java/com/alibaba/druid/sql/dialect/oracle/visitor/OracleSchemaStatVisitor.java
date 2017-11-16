@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
@@ -198,23 +196,23 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     public boolean visit(SQLIdentifierExpr x) {
         String name = x.getName();
-        if ("ROWNUM".equalsIgnoreCase(name)) {
-            return false;
-        }
-
-        if ("SYSDATE".equalsIgnoreCase(name)) {
-            return false;
-        }
 
         if ("+".equalsIgnoreCase(name)) {
             return false;
         }
 
-        if ("LEVEL".equals(name)) {
+        long hashCode64 = x.hashCode64();
+
+        if (hashCode64 == FnvHash.Constants.ROWNUM
+                || hashCode64 == FnvHash.Constants.SYSDATE
+                || hashCode64 == FnvHash.Constants.LEVEL
+                || hashCode64 == FnvHash.Constants.SQLCODE) {
             return false;
         }
 
-        if ("SQLCODE".equalsIgnoreCase(name)) {
+        if (hashCode64 == FnvHash.Constants.ISOPEN
+                && x.getParent() instanceof SQLBinaryOpExpr
+                && ((SQLBinaryOpExpr) x.getParent()).getOperator() == SQLBinaryOperator.Modulus) {
             return false;
         }
 
@@ -708,16 +706,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleExprStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleExprStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleLockTableStatement x) {
         getTableStat(x.getTable());
         return false;
@@ -811,16 +799,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleExplainStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleAlterProcedureStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterProcedureStatement x) {
 
     }
 
@@ -1373,6 +1351,26 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OraclePipeRowStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleIsOfTypeExpr x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleIsOfTypeExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleRunStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleRunStatement x) {
 
     }
 }

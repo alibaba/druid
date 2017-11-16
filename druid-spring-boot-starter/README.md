@@ -12,12 +12,12 @@ Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Drui
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.3</version>
+       <version>1.1.5</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.3'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.5'
     
     ```
 2. 添加配置
