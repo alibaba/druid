@@ -29,6 +29,17 @@ public class MySqlSetTransactionStatement extends MySqlStatementImpl {
 
     private String  accessModel;
 
+    private Boolean hasSessionBefore;
+
+
+    public Boolean getHasSessionBefore() {
+        return hasSessionBefore;
+    }
+
+    public void setHasSessionBefore(Boolean hasSessionBefore) {
+        this.hasSessionBefore = hasSessionBefore;
+    }
+
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
