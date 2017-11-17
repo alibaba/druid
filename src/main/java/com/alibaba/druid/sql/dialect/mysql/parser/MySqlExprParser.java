@@ -596,7 +596,7 @@ public class MySqlExprParser extends SQLExprParser {
             } else if (identHash == FnvHash.Constants.SESSION) {
                 ident = lexer.stringVal();
                 lexer.nextToken();
-                var = new SQLVariantRefExpr(ident, false);
+                var = new SQLVariantRefExpr(ident, false, true);
             } else {
                 var = new SQLVariantRefExpr(ident);
             }
