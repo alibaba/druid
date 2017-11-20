@@ -334,19 +334,19 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            if (lexer.identifierEquals("RELEASE")) {
+            if (lexer.identifierEquals(FnvHash.Constants.RELEASE)) {
                 SQLStatement stmt = parseReleaseSavePoint();
                 statementList.add(stmt);
                 continue;
             }
 
-            if (lexer.identifierEquals("SAVEPOINT")) {
+            if (lexer.identifierEquals(FnvHash.Constants.SAVEPOINT)) {
                 SQLStatement stmt = parseSavePoint();
                 statementList.add(stmt);
                 continue;
             }
 
-            if (lexer.identifierEquals("ROLLBACK")) {
+            if (lexer.identifierEquals(FnvHash.Constants.ROLLBACK)) {
                 SQLRollbackStatement stmt = parseRollback();
                 statementList.add(stmt);
 
@@ -355,6 +355,13 @@ public class SQLStatementParser extends SQLParser {
                     return;
                 }
 
+                continue;
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.MERGE)) {
+                SQLStatement stmt = parseMerge();
+                stmt.setParent(parent);
+                statementList.add(stmt);
                 continue;
             }
 
