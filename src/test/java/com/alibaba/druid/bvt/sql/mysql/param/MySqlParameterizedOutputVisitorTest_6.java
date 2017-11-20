@@ -32,7 +32,7 @@ public class MySqlParameterizedOutputVisitorTest_6 extends TestCase {
 
     public void test_1() throws Exception {
         String sql = "SET GLOBAL sort_buffer_size=1000000, SESSION sort_buffer_size=1000000;";
-        String paramSql = "SET @@global.sort_buffer_size = ?, sort_buffer_size = ?;";
+        String paramSql = "SET @@global.sort_buffer_size = ?, @@session.sort_buffer_size = ?;";
         Assert.assertEquals(paramSql, ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
 }

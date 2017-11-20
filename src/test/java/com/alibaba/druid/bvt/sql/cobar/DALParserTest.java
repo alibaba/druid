@@ -128,7 +128,7 @@ public class DALParserTest extends TestCase {
         SQLSetStatement set = (SQLSetStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
-        Assert.assertEquals("SET @@global.var1 = 1, var2 = 2", output);
+        Assert.assertEquals("SET @@global.var1 = 1, @@session.var2 = 2", output);
     }
     
     public void testSet_5() throws Exception {
@@ -137,7 +137,7 @@ public class DALParserTest extends TestCase {
         SQLSetStatement set = (SQLSetStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
-        Assert.assertEquals("SET @@global.var1 = 1, var2 = 2", output);
+        Assert.assertEquals("SET @@global.var1 = 1, @@session.var2 = 2", output);
     }
     
     public void testSetTxn_0() throws Exception {
