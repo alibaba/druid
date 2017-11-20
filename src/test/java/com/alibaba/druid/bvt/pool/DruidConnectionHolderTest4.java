@@ -3,6 +3,7 @@ package com.alibaba.druid.bvt.pool;
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -11,11 +12,13 @@ import com.alibaba.druid.pool.DruidConnectionHolder;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 
-public class DruidConnectionHolderTest4 extends TestCase {
+public class DruidConnectionHolderTest4 extends PoolTestCase {
 
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
@@ -25,6 +28,8 @@ public class DruidConnectionHolderTest4 extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+
+        super.tearDown();
     }
 
     public void test_toString() throws Exception {
