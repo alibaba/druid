@@ -90,36 +90,30 @@ import com.alibaba.druid.wall.WallProviderStatValue;
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource, MBeanRegistration {
 
-    private final static Log                 LOG                     = LogFactory.getLog(DruidDataSource.class);
-
-    private static final long                serialVersionUID        = 1L;
-
+    private final static Log                 LOG                       = LogFactory.getLog(DruidDataSource.class);
+    private static final long                serialVersionUID          = 1L;
     // stats
-    private final AtomicLong                 recycleErrorCount       = new AtomicLong();
-    private long                             connectCount            = 0L;
-    private long                             closeCount              = 0L;
-    private final AtomicLong                 connectErrorCount       = new AtomicLong();
-    private long                             recycleCount            = 0L;
-    private long                             removeAbandonedCount    = 0L;
-    private long                             notEmptyWaitCount       = 0L;
-    private long                             notEmptySignalCount     = 0L;
-    private long                             notEmptyWaitNanos       = 0L;
-
-    private int                              keepAliveCheckCount     = 0;
-
-    private int                              activePeak              = 0;
-    private long                             activePeakTime          = 0;
-    private int                              poolingPeak             = 0;
-    private long                             poolingPeakTime         = 0;
-
+    private final AtomicLong                 recycleErrorCount         = new AtomicLong();
+    private long                             connectCount              = 0L;
+    private long                             closeCount                = 0L;
+    private final AtomicLong                 connectErrorCount         = new AtomicLong();
+    private long                             recycleCount              = 0L;
+    private long                             removeAbandonedCount      = 0L;
+    private long                             notEmptyWaitCount         = 0L;
+    private long                             notEmptySignalCount       = 0L;
+    private long                             notEmptyWaitNanos         = 0L;
+    private int                              keepAliveCheckCount       = 0;
+    private int                              activePeak                = 0;
+    private long                             activePeakTime            = 0;
+    private int                              poolingPeak               = 0;
+    private long                             poolingPeakTime           = 0;
     // store
     private volatile DruidConnectionHolder[] connections;
-    private int                              poolingCount            = 0;
-    private int                              activeCount             = 0;
-    private long                             discardCount            = 0;
-    private int                              notEmptyWaitThreadCount = 0;
-    private int                              notEmptyWaitThreadPeak  = 0;
-
+    private int                              poolingCount              = 0;
+    private int                              activeCount               = 0;
+    private long                             discardCount              = 0;
+    private int                              notEmptyWaitThreadCount   = 0;
+    private int                              notEmptyWaitThreadPeak    = 0;
     //
     private DruidConnectionHolder[]          evictConnections;
     private DruidConnectionHolder[]          keepAliveConnections;
@@ -135,30 +129,27 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private LogStatsThread                   logStatsThread;
     private int                              createTaskCount;
 
-    private final CountDownLatch             initedLatch             = new CountDownLatch(2);
+    private final CountDownLatch             initedLatch               = new CountDownLatch(2);
 
-    private volatile boolean                 enable                  = true;
+    private volatile boolean                 enable                    = true;
 
-    private boolean                          resetStatEnable         = true;
-    private final AtomicLong                 resetCount              = new AtomicLong();
+    private boolean                          resetStatEnable           = true;
+    private final AtomicLong                 resetCount                = new AtomicLong();
 
     private String                           initStackTrace;
 
-    private volatile boolean                 closing                 = false;
-    private volatile boolean                 closed                  = false;
-    private long                             closeTimeMillis         = -1L;
+    private volatile boolean                 closing                   = false;
+    private volatile boolean                 closed                    = false;
+    private long                             closeTimeMillis           = -1L;
 
     protected JdbcDataSourceStat             dataSourceStat;
 
-    private boolean                          useGlobalDataSourceStat = false;
-
-    private boolean                          mbeanRegistered         = false;
-
-    public static ThreadLocal<Long>          waitNanosLocal          = new ThreadLocal<Long>();
-    private boolean                          logDifferentThread      = true;
-    private volatile boolean                 keepAlive               = false;
-    private boolean                          asyncInit               = false;
-
+    private boolean                          useGlobalDataSourceStat   = false;
+    private boolean                          mbeanRegistered           = false;
+    public static ThreadLocal<Long>          waitNanosLocal            = new ThreadLocal<Long>();
+    private boolean                          logDifferentThread        = true;
+    private volatile boolean                 keepAlive                 = false;
+    private boolean                          asyncInit                 = false;
     protected boolean                        killWhenSocketReadTimeout = false;
 
     public DruidDataSource(){
@@ -1371,12 +1362,19 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         try {
-            if (maxWaitThreadCount > 0) {
-                if (notEmptyWaitThreadCount >= maxWaitThreadCount) {
+            if (maxWaitThreadCount > 0
+                    && notEmptyWaitThreadCount >= maxWaitThreadCount)
+            {
                     connectErrorCount.incrementAndGet();
                     throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
                                            + lock.getQueueLength());
-                }
+            }
+
+            if (onFatalError
+                    && onFatalErrorMaxActive > 0
+                    && activeCount >= onFatalErrorMaxActive) {
+                connectErrorCount.incrementAndGet();
+                throw new SQLException("onFatalError, activeCount " + activeCount + ", onFatalErrorMaxActive " + onFatalErrorMaxActive);
             }
 
             connectCount++;
@@ -1482,6 +1480,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         pooledConnection.disable(t);
                         requireDiscard = true;
                     }
+
+                    onFatalError = true;
                 } finally {
                     lock.unlock();
                 }

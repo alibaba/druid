@@ -61,7 +61,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     protected            TransactionInfo       transactionInfo;
     private final        boolean               dupCloseLogEnable;
     protected volatile   boolean               traceEnable          = false;
-    private              boolean               disable              = false;
+    private   volatile   boolean               disable              = false;
     private              boolean               closed               = false;
     protected final      Thread                ownerThread;
     private              long                  connectedTimeMillis;
@@ -1208,9 +1208,13 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
     final void afterExecute() {
         final DruidConnectionHolder holder = this.holder;
-        if (holder != null && holder.dataSource.removeAbandoned) {
-            running = false;
-            holder.lastActiveTimeMillis = System.currentTimeMillis();
+        if (holder != null) {
+            DruidAbstractDataSource dataSource = holder.dataSource;
+            if (dataSource.removeAbandoned) {
+                running = false;
+                holder.lastActiveTimeMillis = System.currentTimeMillis();
+            }
+            dataSource.onFatalError = false;
         }
     }
 

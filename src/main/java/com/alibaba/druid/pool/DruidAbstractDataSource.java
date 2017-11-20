@@ -255,6 +255,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected boolean                                  initVariants                              = false;
     protected boolean                                  initGlobalVariants                        = false;
+    protected volatile boolean                         onFatalError                              = false;
+    protected volatile int                             onFatalErrorMaxActive                     = 0;
 
     public DruidAbstractDataSource(boolean lockFair){
         lock = new ReentrantLock(lockFair);
@@ -1953,6 +1955,18 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     
     public void setFailFast(boolean failFast) {
         this.failFast = failFast;
+    }
+
+    public int getOnFatalErrorMaxActive() {
+        return onFatalErrorMaxActive;
+    }
+
+    public void setOnFatalErrorMaxActive(int onFatalErrorMaxActive) {
+        this.onFatalErrorMaxActive = onFatalErrorMaxActive;
+    }
+
+    public boolean isOnFatalError() {
+        return onFatalError;
     }
 
     public static class PhysicalConnectionInfo {
