@@ -24,11 +24,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -93,10 +92,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private final static Log                 LOG                       = LogFactory.getLog(DruidDataSource.class);
     private static final long                serialVersionUID          = 1L;
     // stats
-    private final AtomicLong                 recycleErrorCount         = new AtomicLong();
+    private volatile long                    recycleErrorCount         = 0L;
     private long                             connectCount              = 0L;
     private long                             closeCount                = 0L;
-    private final AtomicLong                 connectErrorCount         = new AtomicLong();
+    private volatile long                    connectErrorCount         = 0L;
+//    private final AtomicLong                 connectErrorCount         = new AtomicLong();
     private long                             recycleCount              = 0L;
     private long                             removeAbandonedCount      = 0L;
     private long                             notEmptyWaitCount         = 0L;
@@ -151,6 +151,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private volatile boolean                 keepAlive                 = false;
     private boolean                          asyncInit                 = false;
     protected boolean                        killWhenSocketReadTimeout = false;
+
+    protected static final AtomicLongFieldUpdater<DruidDataSource> recycleErrorCountUpdater
+            = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "recycleErrorCount");
+    protected static final AtomicLongFieldUpdater<DruidDataSource> connectErrorCountUpdater
+            = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "connectErrorCount");
 
     public DruidDataSource(){
         this(false);
@@ -548,7 +553,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
 
-        connectErrorCount.set(0);
+        connectErrorCountUpdater.set(this, 0);
         errorCount.set(0);
         commitCount.set(0);
         rollbackCount.set(0);
@@ -558,7 +563,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         preparedStatementCount.set(0);
         transactionHistogram.reset();
         cachedPreparedStatementDeleteCount.set(0);
-        recycleErrorCount.set(0);
+        recycleErrorCountUpdater.set(this, 0);
 
         resetCount.incrementAndGet();
     }
@@ -1341,12 +1346,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private DruidPooledConnection getConnectionInternal(long maxWait) throws SQLException {
         if (closed) {
-            connectErrorCount.incrementAndGet();
+            connectErrorCountUpdater.incrementAndGet(this);
             throw new DataSourceClosedException("dataSource already closed at " + new Date(closeTimeMillis));
         }
 
         if (!enable) {
-            connectErrorCount.incrementAndGet();
+            connectErrorCountUpdater.incrementAndGet(this);
             throw new DataSourceDisableException();
         }
 
@@ -1354,52 +1359,104 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final int maxWaitThreadCount = this.maxWaitThreadCount;
 
         DruidConnectionHolder holder;
-        try {
-            lock.lockInterruptibly();
-        } catch (InterruptedException e) {
-            connectErrorCount.incrementAndGet();
-            throw new SQLException("interrupt", e);
-        }
 
-        try {
-            if (maxWaitThreadCount > 0
-                    && notEmptyWaitThreadCount >= maxWaitThreadCount)
-            {
-                    connectErrorCount.incrementAndGet();
-                    throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
-                                           + lock.getQueueLength());
-            }
+        for (boolean createDirect = false;;) {
+            if (createDirect) {
+                if (createCountUpdater.compareAndSet(this, 0, 1)) {
+                    PhysicalConnectionInfo pyConnInfo = DruidDataSource.this.createPhysicalConnection();
+                    holder = new DruidConnectionHolder(this, pyConnInfo);
+                    holder.lastActiveTimeMillis = System.currentTimeMillis();
 
-            if (onFatalError
-                    && onFatalErrorMaxActive > 0
-                    && activeCount >= onFatalErrorMaxActive) {
-                connectErrorCount.incrementAndGet();
-                throw new SQLException("onFatalError, activeCount " + activeCount + ", onFatalErrorMaxActive " + onFatalErrorMaxActive);
-            }
+                    createCountUpdater.decrementAndGet(this);
+                    directCreateCountUpdater.incrementAndGet(this);
 
-            connectCount++;
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("conn-direct_create ");
+                    }
 
-            if (maxWait > 0) {
-                holder = pollLast(nanos);
-            } else {
-                holder = takeLast();
-            }
+                    boolean discard = false;
+                    lock.lock();
+                    try {
+                        if (activeCount < maxActive) {
+                            activeCount++;
+                            if (activeCount > activePeak) {
+                                activePeak = activeCount;
+                                activePeakTime = System.currentTimeMillis();
+                            }
+                            break;
+                        } else {
+                            discard = true;
+                        }
+                    } finally {
+                        lock.unlock();
+                    }
 
-            if (holder != null) {
-                activeCount++;
-                if (activeCount > activePeak) {
-                    activePeak = activeCount;
-                    activePeakTime = System.currentTimeMillis();
+                    if (discard) {
+                        JdbcUtils.close(pyConnInfo.getPhysicalConnection());
+                    }
                 }
             }
-        } catch (InterruptedException e) {
-            connectErrorCount.incrementAndGet();
-            throw new SQLException(e.getMessage(), e);
-        } catch (SQLException e) {
-            connectErrorCount.incrementAndGet();
-            throw e;
-        } finally {
-            lock.unlock();
+
+            try {
+                lock.lockInterruptibly();
+            } catch (InterruptedException e) {
+                connectErrorCountUpdater.incrementAndGet(this);
+                throw new SQLException("interrupt", e);
+            }
+
+            try {
+                if (maxWaitThreadCount > 0
+                        && notEmptyWaitThreadCount >= maxWaitThreadCount) {
+                    connectErrorCountUpdater.incrementAndGet(this);
+                    throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
+                            + lock.getQueueLength());
+                }
+
+                if (onFatalError
+                        && onFatalErrorMaxActive > 0
+                        && activeCount >= onFatalErrorMaxActive) {
+                    connectErrorCountUpdater.incrementAndGet(this);
+                    throw new SQLException("onFatalError, activeCount " + activeCount + ", onFatalErrorMaxActive " + onFatalErrorMaxActive);
+                }
+
+                connectCount++;
+
+                if (createScheduler != null
+                        && poolingCount == 0
+                        && activeCount < maxActive
+                        && createCountUpdater.get(this) == 0
+                        && createScheduler instanceof ScheduledThreadPoolExecutor) {
+                    ScheduledThreadPoolExecutor executor = (ScheduledThreadPoolExecutor) createScheduler;
+                    if (executor.getQueue().size() > 0) {
+                        createDirect = true;
+                        continue;
+                    }
+                }
+
+                if (maxWait > 0) {
+                    holder = pollLast(nanos);
+                } else {
+                    holder = takeLast();
+                }
+
+                if (holder != null) {
+                    activeCount++;
+                    if (activeCount > activePeak) {
+                        activePeak = activeCount;
+                        activePeakTime = System.currentTimeMillis();
+                    }
+                }
+            } catch (InterruptedException e) {
+                connectErrorCountUpdater.incrementAndGet(this);
+                throw new SQLException(e.getMessage(), e);
+            } catch (SQLException e) {
+                connectErrorCountUpdater.incrementAndGet(this);
+                throw e;
+            } finally {
+                lock.unlock();
+            }
+
+            break;
         }
 
         if (holder == null) {
@@ -1410,7 +1467,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                .append(waitNanos / (1000 * 1000))//
                .append(", active ").append(activeCount)//
                .append(", maxActive ").append(maxActive)//
-               .append(", creating ").append(creatingCount.get())//
+               .append(", creating ").append(creatingCount)//
             ;
 
             List<JdbcSqlStatValue> sqlList = this.getDataSourceStat().getRuningSqlList();
@@ -1629,12 +1686,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             LOG.error("recyle error", e);
-            recycleErrorCount.incrementAndGet();
+            recycleErrorCountUpdater.incrementAndGet(this);
         }
     }
 
     public long getRecycleErrorCount() {
-        return recycleErrorCount.get();
+        return recycleErrorCountUpdater.get(this);
     }
 
     public void clearStatementCache() throws SQLException {
@@ -1804,7 +1861,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 notEmptyWaitCount++;
 
                 if (!enable) {
-                    connectErrorCount.incrementAndGet();
+                    connectErrorCountUpdater.incrementAndGet(this);
                     throw new DataSourceDisableException();
                 }
             }
@@ -1851,7 +1908,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     notEmptyWaitNanos += (startEstimate - estimate);
 
                     if (!enable) {
-                        connectErrorCount.incrementAndGet();
+                        connectErrorCountUpdater.incrementAndGet(this);
                         throw new DataSourceDisableException();
                     }
                 } catch (InterruptedException ie) {
@@ -1936,7 +1993,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public long getConnectErrorCount() {
-        return connectErrorCount.get();
+        return connectErrorCountUpdater.get(this);
     }
 
     @Override
@@ -2054,7 +2111,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
         value.setDefaultTransactionIsolation(this.getDefaultTransactionIsolation());
 
-        value.setLogicConnectErrorCount(connectErrorCount.getAndSet(0));
+        value.setLogicConnectErrorCount(connectErrorCountUpdater.getAndSet(this, 0));
 
         value.setPhysicalConnectCount(createCount.getAndSet(0));
         value.setPhysicalCloseCount(destroyCount.getAndSet(0));
@@ -3260,7 +3317,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             try {
                 lock.lockInterruptibly();
             } catch (InterruptedException e) {
-                connectErrorCount.incrementAndGet();
+                connectErrorCountUpdater.incrementAndGet(this);
                 throw new SQLException("interrupt", e);
             }
 
@@ -3278,14 +3335,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 holder = new DruidConnectionHolder(this, pyConnInfo);
             } catch (SQLException e) {
                 LOG.error("fill connection error, url: " + this.jdbcUrl, e);
-                connectErrorCount.incrementAndGet();
+                connectErrorCountUpdater.incrementAndGet(this);
                 throw e;
             }
 
             try {
                 lock.lockInterruptibly();
             } catch (InterruptedException e) {
-                connectErrorCount.incrementAndGet();
+                connectErrorCountUpdater.incrementAndGet(this);
                 throw new SQLException("interrupt", e);
             }
 

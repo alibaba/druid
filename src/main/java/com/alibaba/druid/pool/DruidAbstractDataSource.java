@@ -37,9 +37,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
@@ -235,9 +233,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected ReentrantLock                            activeConnectionLock                      = new ReentrantLock();
 
-    protected AtomicInteger                            creatingCount                             = new AtomicInteger();
+    protected volatile int                             creatingCount                             = 0;
     protected AtomicLong                               createCount                               = new AtomicLong();
     protected AtomicLong                               destroyCount                              = new AtomicLong();
+    protected volatile int                             directCreateCount                         = 0;
 
     private Boolean                                    useUnfairLock                             = null;
 
@@ -257,6 +256,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected boolean                                  initGlobalVariants                        = false;
     protected volatile boolean                         onFatalError                              = false;
     protected volatile int                             onFatalErrorMaxActive                     = 0;
+
+    protected static AtomicIntegerFieldUpdater<DruidAbstractDataSource> directCreateCountUpdater    = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "directCreateCount");
+    protected static AtomicIntegerFieldUpdater<DruidAbstractDataSource> createCountUpdater          = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "creatingCount");
 
     public DruidAbstractDataSource(boolean lockFair){
         lock = new ReentrantLock(lockFair);
@@ -1562,7 +1564,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 ? new HashMap<String, Object>()
                 : null;
 
-        creatingCount.incrementAndGet();
+        createCountUpdater.incrementAndGet(this);
         try {
             conn = createPhysicalConnection(url, physicalConnectProperties);
             connectedNanos = System.nanoTime();
@@ -1594,7 +1596,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         } finally {
             long nano = System.nanoTime() - connectStartNanos;
             createTimespan += nano;
-            creatingCount.decrementAndGet();
+            createCountUpdater.decrementAndGet(this);
         }
 
         return new PhysicalConnectionInfo(conn, connectStartNanos, connectedNanos, initedNanos, validatedNanos, variables, globalVariables);
