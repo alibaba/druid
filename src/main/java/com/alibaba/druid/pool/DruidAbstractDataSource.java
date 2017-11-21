@@ -256,6 +256,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected boolean                                  initGlobalVariants                        = false;
     protected volatile boolean                         onFatalError                              = false;
     protected volatile int                             onFatalErrorMaxActive                     = 0;
+    protected volatile long                            lastFatalErrorTimeMillis                  = 0;
+    protected volatile String                          lastFatalErrorSql                         = null;
+    protected volatile Throwable                       lastFatalError                            = null;
 
     protected static AtomicIntegerFieldUpdater<DruidAbstractDataSource> directCreateCountUpdater    = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "directCreateCount");
     protected static AtomicIntegerFieldUpdater<DruidAbstractDataSource> createCountUpdater          = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "creatingCount");
@@ -1493,8 +1496,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
     }
 
-    public abstract void handleConnectionException(DruidPooledConnection pooledConnection, Throwable t)
-                                                                                                       throws SQLException;
+    public void handleConnectionException(DruidPooledConnection conn, Throwable t) throws SQLException {
+        handleConnectionException(conn, t, null);
+    }
+
+    public abstract void handleConnectionException(DruidPooledConnection conn, Throwable t, String sql) throws SQLException;
 
     protected abstract void recycle(DruidPooledConnection pooledConnection) throws SQLException;
 

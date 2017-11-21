@@ -3,9 +3,11 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.pool.DruidAbstractDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.util.JdbcUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,13 +30,15 @@ public class OnFatalErrorMaxActiveTest extends PoolTestCase {
         Field field = DruidAbstractDataSource.class.getDeclaredField("onFatalError");
         field.setAccessible(true);
 
+        SQLException faltalError = new SQLException();
         {
             Connection conn = dataSource.getConnection();
+
+            Method method = DruidDataSource.class.getDeclaredMethod("handleFatalError", DruidPooledConnection.class, SQLException.class, String.class);
+            method.setAccessible(true);
+            method.invoke(dataSource, conn.unwrap(DruidPooledConnection.class), faltalError, "select 'x'");
             conn.close();
         }
-
-        field.set(dataSource, true);
-
 
         Connection conn_0 = dataSource.getConnection();
         assertTrue(dataSource.isOnFatalError());
@@ -46,7 +50,10 @@ public class OnFatalErrorMaxActiveTest extends PoolTestCase {
             error = ex;
         }
         assertNotNull(error);
-        assertEquals("onFatalError, activeCount 1, onFatalErrorMaxActive 1", error.getMessage());
+        assertTrue(error.getMessage().startsWith("onFatalError, activeCount 1, onFatalErrorMaxActive 1"));
+        System.out.println(error.getMessage());
+        assertNotNull(error.getCause());
+        assertSame(faltalError, error.getCause());
 
         Statement stmt = conn_0.createStatement();
         ResultSet rs = stmt.executeQuery("select 1");

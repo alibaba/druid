@@ -66,13 +66,25 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     protected SQLException checkException(Throwable error) throws SQLException {
+        String sql = null;
+        if (this instanceof DruidPooledPreparedStatement) {
+            sql = ((DruidPooledPreparedStatement) this).getSql();
+        }
+
         handleScoketTimeout(error);
 
         exceptionCount++;
-        return conn.handleException(error);
+        return conn.handleException(error, sql);
     }
 
-    private void handleScoketTimeout(Throwable error) throws SQLException {
+    protected SQLException checkException(Throwable error, String sql) throws SQLException {
+        handleScoketTimeout(error);
+
+        exceptionCount++;
+        return conn.handleException(error, sql);
+    }
+
+    protected void handleScoketTimeout(Throwable error) throws SQLException {
         if (this.conn == null
                 || this.conn.transactionInfo != null
                 || this.conn.holder == null) {
@@ -228,7 +240,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         } catch (Throwable t) {
             errorCheck(t);
 
-            throw checkException(t);
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -247,7 +259,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         } catch (Throwable t) {
             errorCheck(t);
 
-            throw checkException(t);
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -298,7 +310,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         } catch (Throwable t) {
             errorCheck(t);
 
-            throw checkException(t);
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -317,7 +329,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         } catch (Throwable t) {
             errorCheck(t);
 
-            throw checkException(t);
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -336,7 +348,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         } catch (Throwable t) {
             errorCheck(t);
 
-            throw checkException(t);
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -355,7 +367,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         } catch (Throwable t) {
             errorCheck(t);
 
-            throw checkException(t);
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -374,7 +386,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         } catch (Throwable t) {
             errorCheck(t);
 
-            throw checkException(t);
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -393,7 +405,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         } catch (Throwable t) {
             errorCheck(t);
 
-            throw checkException(t);
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -547,7 +559,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         } catch (Throwable t) {
             errorCheck(t);
 
-            throw checkException(t);
+            throw checkException(t, sql);
         }
     }
 
@@ -677,7 +689,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         try {
             stmt.addBatch(sql);
         } catch (Throwable t) {
-            throw checkException(t);
+            throw checkException(t, sql);
         }
     }
 

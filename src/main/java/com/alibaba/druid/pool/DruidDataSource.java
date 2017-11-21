@@ -23,9 +23,9 @@ import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.locks.Lock;
@@ -1416,7 +1416,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         && onFatalErrorMaxActive > 0
                         && activeCount >= onFatalErrorMaxActive) {
                     connectErrorCountUpdater.incrementAndGet(this);
-                    throw new SQLException("onFatalError, activeCount " + activeCount + ", onFatalErrorMaxActive " + onFatalErrorMaxActive);
+
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String errorMsg = "onFatalError, activeCount " + activeCount
+                            + ", onFatalErrorMaxActive " + onFatalErrorMaxActive;
+
+                    if (lastFatalErrorTimeMillis > 0) {
+                        errorMsg += ", time '" + format.format(new Date(lastFatalErrorTimeMillis)) + "'";
+                    }
+
+                    if (lastFatalErrorSql != null) {
+                        errorMsg += ", sql \n" + lastFatalErrorSql;
+                    }
+
+                    throw new SQLException(errorMsg, lastFatalError);
                 }
 
                 connectCount++;
@@ -1498,7 +1511,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return poolalbeConnection;
     }
 
-    public void handleConnectionException(DruidPooledConnection pooledConnection, Throwable t) throws SQLException {
+    public void handleConnectionException(DruidPooledConnection pooledConnection, Throwable t, String sql) throws SQLException {
         final DruidConnectionHolder holder = pooledConnection.getConnectionHolder();
 
         errorCount.incrementAndGet();
@@ -1516,51 +1529,65 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             // exceptionSorter.isExceptionFatal
             if (exceptionSorter != null && exceptionSorter.isExceptionFatal(sqlEx)) {
-                if (pooledConnection.isTraceEnable()) {
-                    activeConnectionLock.lock();
-                    try {
-                        if (pooledConnection.isTraceEnable()) {
-                            activeConnections.remove(pooledConnection);
-                            pooledConnection.setTraceEnable(false);
-                        }
-                    } finally {
-                        activeConnectionLock.unlock();
-                    }
-                }
-
-                boolean requireDiscard = false;
-                final ReentrantLock lock = pooledConnection.lock;
-                lock.lock();
-                try {
-                    if ((!pooledConnection.isClosed()) || !pooledConnection.isDisable()) {
-                        holder.setDiscard(true);
-                        pooledConnection.disable(t);
-                        requireDiscard = true;
-                    }
-
-                    onFatalError = true;
-                } finally {
-                    lock.unlock();
-                }
-
-                if (requireDiscard) {
-                    if (holder.statementTrace != null) {
-                        for (Statement stmt : holder.statementTrace) {
-                            JdbcUtils.close(stmt);
-                        }
-                    }
-
-                    this.discardConnection(holder.getConnection());
-                    holder.setDiscard(true);
-                }
-
-                LOG.error("discard connection", sqlEx);
+                handleFatalError(pooledConnection, sqlEx, sql);
             }
 
             throw sqlEx;
         } else {
             throw new SQLException("Error", t);
         }
+    }
+
+    protected final void handleFatalError(DruidPooledConnection conn, SQLException error, String sql) throws SQLException {
+        final DruidConnectionHolder holder = conn.holder;
+
+        if (conn.isTraceEnable()) {
+            activeConnectionLock.lock();
+            try {
+                if (conn.isTraceEnable()) {
+                    activeConnections.remove(conn);
+                    conn.setTraceEnable(false);
+                }
+            } finally {
+                activeConnectionLock.unlock();
+            }
+        }
+
+        long lastErrorTimeMillis = this.lastErrorTimeMillis;
+        if (lastErrorTimeMillis == 0) {
+            lastErrorTimeMillis = System.currentTimeMillis();
+        }
+
+        boolean requireDiscard = false;
+        final ReentrantLock lock = conn.lock;
+        lock.lock();
+        try {
+            if ((!conn.isClosed()) || !conn.isDisable()) {
+                holder.setDiscard(true);
+                conn.disable(error);
+                requireDiscard = true;
+            }
+
+            lastFatalErrorTimeMillis = lastErrorTimeMillis;
+            onFatalError = true;
+            lastFatalError = error;
+            lastFatalErrorSql = sql;
+        } finally {
+            lock.unlock();
+        }
+
+        if (requireDiscard) {
+            if (holder.statementTrace != null) {
+                for (Statement stmt : holder.statementTrace) {
+                    JdbcUtils.close(stmt);
+                }
+            }
+
+            this.discardConnection(holder.getConnection());
+            holder.setDiscard(true);
+        }
+
+        LOG.error("discard connection", error);
     }
 
     /**

@@ -195,7 +195,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
                     currentFetchSize = defaultFetchSize;
                 }
             } catch (Exception e) {
-                this.conn.handleException(e);
+                this.conn.handleException(e, null);
             }
         }
 
