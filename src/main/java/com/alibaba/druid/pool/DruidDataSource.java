@@ -1558,6 +1558,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lastErrorTimeMillis = System.currentTimeMillis();
         }
 
+        if (sql != null && sql.length() > 1024) {
+            sql = sql.substring(0, 1024);
+        }
+
         boolean requireDiscard = false;
         final ReentrantLock lock = conn.lock;
         lock.lock();
