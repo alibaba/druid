@@ -13,7 +13,8 @@ druid.lang = function() {
 		'Spring' : ['Spring' , 'spring监控'],
 		'JSON API' : ['JSON API' , 'JSON API'],
 		'ResetAll' : ['Reset All' , '重置'],
-		
+		'LogAndReset' : ['Log And Reset' , '记录日志并重置'],
+
 		'StatIndex' : ['Stat Index', '统计索引'],
 		'ViewJSONAPI' : ['View JSON API','查看JSON API'],
 		'Version' : ['Version' , '版本'],
@@ -68,10 +69,11 @@ druid.lang = function() {
 		'RollbackCount' : ['RollbackCount', '回滚数'],
 		'PSCacheAccessCount' : ['PSCacheAccessCount', 'PSCache访问次数'],
 		'PSCacheHitCount' : ['PSCacheHitCount', 'PSCache命中次数'],
-		'PSCacheMissCount' : ['PSCacheMissCount', 'PSCache丢失次数'],//
+		'PSCacheMissCount' : ['PSCacheMissCount', 'PSCache不命中次数'],//
 		'ConnectionHoldTimeHistogram' : ['ConnectionHoldTimeHistogram', '连接持有时间分布'],
 		'ClobOpenCount' : ['ClobOpenCount', 'Clob打开次数'],
 		'BlobOpenCount' : ['BlobOpenCount', 'Blob打开次数'],
+		'KeepAliveCheckCount' : ['KeepAliveCheckCount', 'KeepAlive检测次数'],
 		'ActiveConnectionStackTrace' : ['ActiveConnection StackTrace', '活跃连接堆栈查看'],
 		'PollingConnectionInfo' : ['PollingConnection Info', '连接池中连接信息'],
 		'SQLList' : ['SQL List', 'sql列表'],
@@ -109,16 +111,19 @@ druid.lang = function() {
 		'LogicConnectCountDesc' : ['Total connect times from datasource', '产生的逻辑连接建立总数'],
 		'LogicCloseCountDesc' : ['Total close connect times from datasource', '产生的逻辑连接关闭总数'],
 		'LogicConnectErrorCountDesc' : ['Total connect error times', '产生的逻辑连接出错总数'],
+		'RecycleErrorCount' : ['Logic Connection Recycle Count', '逻辑连接回收重用次数'],
 		'PhysicalConnectCountDesc' : ['Create physical connnection count', '产生的物理连接建立总数'],
 		'PhysicalCloseCountDesc' : ['Close physical connnection count', '产生的物理关闭总数'],
 		'PhysicalConnectErrorCountDesc' : ['Total physical connect error times', '产生的物理连接失败总数'],
 		'ExecuteCountDesc' : ['', ''],
 		'ErrorCountDesc' : ['', ''],
-		'CommitCountDesc' : ['', ''],
-		'RollbackCountDesc' : ['', ''],
+		'CommitCountDesc' : ['', '事务提交次数'],
+		'RollbackCountDesc' : ['', '事务回滚次数'],
 		'PSCacheAccessCountDesc' : ['PerpareStatement access count', 'PSCache访问总数'],
 		'PSCacheHitCountDesc' : ['PerpareStatement hit count', 'PSCache命中次数'],
-		'PSCacheMissCountDesc' : ['PerpareStatement miss count', 'PSCache丢失次数'],//
+		'PSCacheMissCountDesc' : ['PerpareStatement miss count', 'PSCache不命中次数'],//
+		'PreparedStatementOpenCount' : ['Real PreparedStatement Open Count', '真实PreparedStatement打开次数'],//
+		'PreparedStatementClosedCount' : ['Real PreparedStatement Closed Count', '真实PreparedStatement关闭次数'],//
 		'ConnectionHoldTimeHistogramDesc' : ['The histogram values of connection hold time, [0-1 ms, 1-10 ms, 10-100 ms, 100ms-1s, 1-10 s, 10-100 s, 100-1000 s, >1000 s]', '连接持有时间分布，分布区间为[0-1 ms, 1-10 ms, 10-100 ms, 100ms-1s, 1-10 s, 10-100 s, 100-1000 s, >1000 s]'],
 		'ClobOpenCountDesc' : ['', 'Clob打开数'],
 		'BlobOpenCountDesc' : ['', 'Blob打开数'],
@@ -168,7 +173,7 @@ druid.lang = function() {
 		'ExecRsHisto':['ExecRsHisto','执行+RS时分布'],
 		'FetchRowHisto':['FetchRowHisto','读取行分布'],
 		'UpdateHisto':['UpdateHisto','更新行分布'],
-		'InTransactionCount' : ['Txn','事务中'],
+		'InTransactionCount' : ['Txn','事务执行'],
 		'MaxTimespanDesc' : ['Execute Time Millis Max','最慢的执行耗时'],
 		'InTransactionCountDesc' : ['Execute In Transaction Count','在事务中运行的次数'],
 		
@@ -230,6 +235,7 @@ druid.lang = function() {
     'SQLStatWhiteList':['SQL Stat - White List', 'SQL防御统计 - 白名单'],
     'SQLStatBlackList':['SQL Stat - Black List', 'SQL防御统计 - 黑名单'],
 		/**session-detail*/
+		'PrincipalOnly':['Principal Only', 'Principal过滤'],
 		'SESSIONID':['SESSIONID', 'SESSIONID'],
 		'UserAgent':['UserAgent', 'UserAgent'],
 		'Principal':['Principal', 'Principal'],
@@ -240,7 +246,11 @@ druid.lang = function() {
 		'RequestTimeMillisTotal':['RequestTimeMillisTotal', '总共请求时间'],
 		'RequestInterval':['RequestInterval', '请求间隔'],
 		/**weburi-detail*/
-		'RequestTimeMillis':['RequestTimeMillis', '请求时间'],
+		'RefreshPeriod':['Refresh Period', '刷新时间'],
+		'SuspendRefresh':['Suspend Refresh', '暂停刷新'],
+		'RequestTimeMillis':['RequestTimeMillisTotal', '请求时间（和）'],
+		'RequestTimeMillisMax':['RequestTimeMillisMax', '请求最慢（单次）'],
+		'RequestTimeMillisMaxOccurTime':['RequestTimeMillisMaxOccurTime', '请求最慢发生时间'],
 		'JdbcExecutePeak':['JdbcExecutePeak', 'jdbc执行峰值'],
 		'JdbcFetchRowPeak':['JdbcFetchRowPeak', 'jdbc查询取回行数峰值'],
 		'JdbcUpdatePeak':['JdbcUpdatePeak', 'jdbc更新峰值'],

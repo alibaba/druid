@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,48 +20,45 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlPartitionByKey extends MySqlPartitioningClause {
+public class MySqlPartitionByKey extends SQLPartitionBy implements MySqlObject {
 
-    private List<SQLName> columns = new ArrayList<SQLName>();
-
-    private SQLExpr       partitionCount;
-
-    private boolean       linear;
-
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+        }
+    }
+    
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, columns);
-            acceptChild(visitor, partitionCount);
+            acceptChild(visitor, partitionsCount);
             acceptChild(visitor, getPartitions());
+            acceptChild(visitor, subPartitionBy);
         }
         visitor.endVisit(this);
     }
 
-    public SQLExpr getPartitionCount() {
-        return partitionCount;
+    public void cloneTo(MySqlPartitionByKey x) {
+        super.cloneTo(x);
+        for (SQLExpr column : columns) {
+            SQLExpr c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
     }
 
-    public void setPartitionCount(SQLExpr partitionCount) {
-        this.partitionCount = partitionCount;
+    public MySqlPartitionByKey clone() {
+        MySqlPartitionByKey x = new MySqlPartitionByKey();
+        cloneTo(x);
+        return x;
     }
-
-    public List<SQLName> getColumns() {
-        return columns;
-    }
-
-    public void setColumns(List<SQLName> columns) {
-        this.columns = columns;
-    }
-
-    public boolean isLinear() {
-        return linear;
-    }
-
-    public void setLinear(boolean linear) {
-        this.linear = linear;
-    }
-
 }

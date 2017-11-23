@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLExistsExpr extends SQLExprImpl implements Serializable {
+public final class SQLExistsExpr extends SQLExprImpl implements Serializable {
 
     private static final long serialVersionUID = 1L;
     public boolean            not              = false;
@@ -68,6 +70,11 @@ public class SQLExistsExpr extends SQLExprImpl implements Serializable {
     }
 
     @Override
+    public List getChildren() {
+        return Collections.singletonList(this.subQuery);
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -99,5 +106,16 @@ public class SQLExistsExpr extends SQLExprImpl implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public SQLExistsExpr clone () {
+        SQLExistsExpr x = new SQLExistsExpr();
+
+        x.not = not;
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+
+        return x;
     }
 }

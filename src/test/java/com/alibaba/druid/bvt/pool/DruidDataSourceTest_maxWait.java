@@ -12,7 +12,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 /**
  * 这个场景测试initialSize > maxActive
  * 
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_maxWait extends TestCase {
 

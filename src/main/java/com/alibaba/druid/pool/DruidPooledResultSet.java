@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,13 +34,13 @@ import java.sql.Statement;
 import java.util.Calendar;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public final class DruidPooledResultSet extends PoolableWrapper implements ResultSet {
 
     private final ResultSet         rs;
     private final DruidPooledStatement stmt;
-    private boolean                 closed        = false;
+    protected boolean               closed        = false;
 
     protected int                   cursorIndex   = 0;
     protected int                   fetchRowCount = 0;

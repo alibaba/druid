@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,9 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerInsertStatement extends SQLInsertStatement implements SQLServerObject {
-
-    private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
 
     private boolean            defaultValues;
 
@@ -35,23 +34,19 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
 
     private SQLServerOutput    output;
 
-    public ValuesClause getValues() {
-        if (valuesList.size() == 0) {
-            return null;
-        }
-        return valuesList.get(0);
+    public SQLServerInsertStatement() {
+        dbType = JdbcConstants.SQL_SERVER;
     }
 
-    public void setValues(ValuesClause values) {
-        if (valuesList.size() == 0) {
-            valuesList.add(values);
-        } else {
-            valuesList.set(0, values);
+    public void cloneTo(SQLServerInsertStatement x) {
+        super.cloneTo(x);
+        x.defaultValues = defaultValues;
+        if (top != null) {
+            x.setTop(top.clone());
         }
-    }
-
-    public List<ValuesClause> getValuesList() {
-        return valuesList;
+        if (output != null) {
+            x.setOutput(output.clone());
+        }
     }
 
     @Override
@@ -97,4 +92,9 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
         this.top = top;
     }
 
+    public SQLServerInsertStatement clone() {
+        SQLServerInsertStatement x = new SQLServerInsertStatement();
+        cloneTo(x);
+        return x;
+    }
 }

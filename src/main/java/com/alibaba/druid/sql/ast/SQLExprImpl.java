@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+
 public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
 
     public SQLExprImpl(){
@@ -24,4 +26,12 @@ public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
     public abstract boolean equals(Object o);
 
     public abstract int hashCode();
+
+    public abstract SQLExpr clone();
+
+    public SQLDataType computeDataType() {
+        return null;
+    }
+
+
 }

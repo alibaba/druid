@@ -28,7 +28,7 @@ public class SQLServerGrantTest_1 extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
-        Assert.assertEquals("GRANT CONTROL ON USER::Wanida TO RolandX", output);
+        Assert.assertEquals("GRANT CONTROL ON USER::Wanida TO RolandX;", output);
 
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,23 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLRollbackStatement extends SQLStatementImpl {
 
     private SQLName to;
+
+    // for mysql
+    private Boolean chain;
+    private Boolean release;
+    private SQLExpr force;
     
     public SQLRollbackStatement() {
         
@@ -35,8 +45,22 @@ public class SQLRollbackStatement extends SQLStatementImpl {
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, to);
+
+            acceptChild(visitor, force);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (to != null) {
+            children.add(to);
+        }
+        if (force != null) {
+            children.add(force);
+        }
+        return children;
     }
 
     public SQLName getTo() {
@@ -45,6 +69,30 @@ public class SQLRollbackStatement extends SQLStatementImpl {
 
     public void setTo(SQLName to) {
         this.to = to;
+    }
+
+    public Boolean getChain() {
+        return chain;
+    }
+
+    public void setChain(Boolean chain) {
+        this.chain = chain;
+    }
+
+    public Boolean getRelease() {
+        return release;
+    }
+
+    public void setRelease(Boolean release) {
+        this.release = release;
+    }
+
+    public SQLExpr getForce() {
+        return force;
+    }
+
+    public void setForce(SQLExpr force) {
+        this.force = force;
     }
 
 }

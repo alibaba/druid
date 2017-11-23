@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 
+import java.util.Collections;
+import java.util.List;
+
 public abstract class SQLNumericLiteralExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     public SQLNumericLiteralExpr(){
@@ -26,4 +29,11 @@ public abstract class SQLNumericLiteralExpr extends SQLExprImpl implements SQLLi
     public abstract Number getNumber();
 
     public abstract void setNumber(Number number);
+
+    public abstract SQLNumericLiteralExpr clone();
+
+    @Override
+    public List getChildren() {
+        return Collections.emptyList();
+    }
 }

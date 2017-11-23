@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,28 @@ package com.alibaba.druid.pool.vendor;
 
 import com.alibaba.druid.pool.ExceptionSorter;
 
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
 public class MySqlExceptionSorter implements ExceptionSorter {
 
     @Override
     public boolean isExceptionFatal(SQLException e) {
-        String sqlState = e.getSQLState();
+        if (e instanceof SQLRecoverableException) {
+            return true;
+        }
+
+        final String sqlState = e.getSQLState();
         final int errorCode = e.getErrorCode();
 
         if (sqlState != null && sqlState.startsWith("08")) {
             return true;
         }
+        
         switch (errorCode) {
         // Communications Errors
             case 1040: // ER_CON_COUNT_ERROR
@@ -50,17 +59,31 @@ public class MySqlExceptionSorter implements ExceptionSorter {
                 // Out-of-memory errors
             case 1037: // ER_OUTOFMEMORY
             case 1038: // ER_OUT_OF_SORTMEMORY
+                // Access denied
+            case 1142: // ER_TABLEACCESS_DENIED_ERROR
+            case 1227: // ER_SPECIFIC_ACCESS_DENIED_ERROR
                 return true;
             default:
                 break;
         }
         
+        // for oceanbase
         if (errorCode >= -10000 && errorCode <= -9000) {
+            return true;
+        }
+        
+        String className = e.getClass().getName();
+        if (className.endsWith(".CommunicationsException")) {
             return true;
         }
 
         String message = e.getMessage();
         if (message != null && message.length() > 0) {
+            if (message.startsWith("Streaming result set com.mysql.jdbc.RowDataDynamic")
+                    && message.endsWith("is still active. No statements may be issued when any streaming result sets are open and in use on a given connection. Ensure that you have called .close() on any active streaming result sets before attempting more queries.")) {
+                return true;
+            }
+            
             final String errorText = message.toUpperCase();
 
             if ((errorCode == 0 && (errorText.contains("COMMUNICATIONS LINK FAILURE")) //
@@ -70,6 +93,21 @@ public class MySqlExceptionSorter implements ExceptionSorter {
                 return true;
             }
         }
+
+        Throwable cause = e.getCause();
+        for (int i = 0; i < 5 && cause != null; ++i) {
+            if (cause instanceof SocketTimeoutException) {
+                return true;
+            }
+
+            className = cause.getClass().getName();
+            if (className.endsWith(".CommunicationsException")) {
+                return true;
+            }
+
+            cause = cause.getCause();
+        }
+        
         return false;
     }
 

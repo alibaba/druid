@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlCreateUserStatement extends MySqlStatementImpl {
+public class MySqlCreateUserStatement extends MySqlStatementImpl implements SQLCreateStatement {
 
     private List<UserSpecification> users = new ArrayList<UserSpecification>(2);
 
@@ -30,8 +31,11 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl {
         return users;
     }
 
-    public void setUsers(List<UserSpecification> users) {
-        this.users = users;
+    public void addUser(UserSpecification user) {
+        if (user != null) {
+            user.setParent(this);
+        }
+        this.users.add(user);
     }
 
     @Override

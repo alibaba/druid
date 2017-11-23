@@ -15,7 +15,7 @@ import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 /**
  * 这个场景测试defaultAutoCommit
  * 
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_testOnWhileIdleFailed extends TestCase {
 

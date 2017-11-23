@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,77 +15,36 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
-import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
-import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.Utils;
+
+import junit.framework.TestCase;
 
 public class OdpsSelectTest extends TestCase {
 
-    public void test_0() throws Exception {
-        exec_test("bvt/parser/odps-3.sql");
+    public void test_distribute_by() throws Exception {
+        String sql = "select region from sale_detail distribute by region;";//
+        Assert.assertEquals("SELECT region" //
+                            + "\nFROM sale_detail" //
+                            + "\nDISTRIBUTE BY region;", SQLUtils.formatOdps(sql));
     }
-
-    public void exec_test(String resource) throws Exception {
-        System.out.println(resource);
-        InputStream is = null;
-
-        is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-        Reader reader = new InputStreamReader(is, "UTF-8");
-        String input = Utils.read(reader);
-        JdbcUtils.close(reader);
-        String[] items = input.split("---------------------------");
-        String sql = items[0].trim();
-        String expect = items[1].trim();
-
-        OdpsStatementParser parser = new OdpsStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement stmt = statementList.get(0);
-
-        Assert.assertEquals(1, statementList.size());
-
-        SchemaStatVisitor visitor = new OdpsSchemaStatVisitor();
-        stmt.accept(visitor);
-
-        System.out.println(sql);
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-
-        System.out.println();
-        System.out.println("---------------------------");
-        System.out.println(SQLUtils.toOdpsString(stmt));
+    
+    public void test_distribute_by_1() throws Exception {
+        String sql = " select region from sale_detail distribute by region sort by f1;";//
+        Assert.assertEquals("SELECT region" //
+                            + "\nFROM sale_detail" //
+                            + "\nDISTRIBUTE BY region SORT BY f1;", SQLUtils.formatOdps(sql));
     }
-
-    void mergValidate(String sql, String expect) {
-
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-
-        Assert.assertEquals(1, statementList.size());
-
-        StringBuilder out = new StringBuilder();
-        MySqlParameterizedOutputVisitor visitor = new MySqlParameterizedOutputVisitor(out);
-        statemen.accept(visitor);
-
-        System.out.println(out.toString());
-
-        Assert.assertEquals(expect, out.toString());
+    
+    public void test_distribute_by_2() throws Exception {
+        String sql = " select region from sale_detail distribute by region sort by f1 asc;";//
+        Assert.assertEquals("SELECT region" //
+                            + "\nFROM sale_detail" //
+                            + "\nDISTRIBUTE BY region SORT BY f1 ASC;", SQLUtils.formatOdps(sql));
+        Assert.assertEquals("select region" //
+                            + "\nfrom sale_detail" //
+                            + "\ndistribute by region sort by f1 asc;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-
 
 }

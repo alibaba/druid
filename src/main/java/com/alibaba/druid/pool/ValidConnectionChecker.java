@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import java.util.Properties;
 
 public interface ValidConnectionChecker {
 
-    boolean isValidConnection(Connection c, String query, int validationQueryTimeout);
-
+    boolean isValidConnection(Connection c, String query, int validationQueryTimeout) throws Exception;
+    
     /**
      * @param properties
      * @since 0.2.21

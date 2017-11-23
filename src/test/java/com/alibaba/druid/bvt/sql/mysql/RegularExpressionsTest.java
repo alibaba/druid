@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,10 @@ public class RegularExpressionsTest extends TestCase {
         List<SQLStatement> stmtList = parser.parseStatementList();
 
         String text = output(stmtList);
+        
+        String e = "SELECT 'new*\n*line' REGEXP 'new\\*.\\*line';";
 
-        Assert.assertEquals("SELECT 'new*\n*line' REGEXP 'new\\*.\\*line';", text);
+        Assert.assertEquals("SELECT 'new*\n*line' REGEXP 'new\\\\*.\\\\*line';", text);
     }
 
     public void test_2() throws Exception {

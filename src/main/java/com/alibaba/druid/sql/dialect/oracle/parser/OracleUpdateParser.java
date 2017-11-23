@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class OracleUpdateParser extends SQLStatementParser {
 
             parseHints(update);
 
-            if (identifierEquals("ONLY")) {
+            if (lexer.identifierEquals("ONLY")) {
                 update.setOnly(true);
             }
 
@@ -49,7 +49,7 @@ public class OracleUpdateParser extends SQLStatementParser {
             update.setTableSource(tableSource);
 
             if ((update.getAlias() == null) || (update.getAlias().length() == 0)) {
-                update.setAlias(as());
+                update.setAlias(tableAlias());
             }
         }
 
@@ -65,13 +65,13 @@ public class OracleUpdateParser extends SQLStatementParser {
     }
 
     private void parseErrorLoging(OracleUpdateStatement update) {
-        if (identifierEquals("LOG")) {
-            throw new ParserException("TODO");
+        if (lexer.identifierEquals("LOG")) {
+            throw new ParserException("TODO. " + lexer.info());
         }
     }
 
     private void parseReturn(OracleUpdateStatement update) {
-        if (identifierEquals("RETURN") || lexer.token() == Token.RETURNING) {
+        if (lexer.identifierEquals("RETURN") || lexer.token() == Token.RETURNING) {
             lexer.nextToken();
 
             for (;;) {

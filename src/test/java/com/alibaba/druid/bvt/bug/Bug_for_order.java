@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,16 @@
  */
 package com.alibaba.druid.bvt.bug;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
+import com.alibaba.druid.sql.SQLUtils;
+import junit.framework.TestCase;
 import org.junit.Assert;
 
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.mock.MockPreparedStatement;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcUtils;
-
 public class Bug_for_order extends TestCase {
-
-
-
+    
     public void test_bug_for_xuershan() throws Exception {
         String sql = "select * from order";
         String format = SQLUtils.formatMySql(sql);
-        
+        String expected = "SELECT *\nFROM order";
+        Assert.assertEquals(expected, format);
     }
 }

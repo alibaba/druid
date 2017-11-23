@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,10 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
@@ -53,7 +56,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.profile.Profiler;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
@@ -64,10 +67,9 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     private static final String       SYS_PROP_MERGE_SQL         = "druid.stat.mergeSql";
 
     public final static String        ATTR_NAME_CONNECTION_STAT  = "stat.conn";
-    public final static String        ATTR_NAME_STATEMENT_STAT   = "stat.stmt";
-    public final static String        ATTR_UPDATE_COUNT          = "stat.updteCount";
     public final static String        ATTR_TRANSACTION           = "stat.tx";
-    public final static String        ATTR_RESULTSET_CLOSED      = "stat.rs.closed";
+
+    private final Lock                lock                       = new ReentrantLock();
 
     // protected JdbcDataSourceStat dataSourceStat;
 
@@ -144,20 +146,25 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         try {
             sql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
         } catch (Exception e) {
-            LOG.error("merge sql error, dbType " + dbType + ", sql : \n" + sql, e);
+            LOG.error("merge sql error, dbType " + dbType + ", druid-" + VERSION.getVersionNumber() + ", sql : " + sql, e);
         }
 
         return sql;
     }
 
     @Override
-    public synchronized void init(DataSourceProxy dataSource) {
-        if (this.dbType == null || this.dbType.trim().length() == 0) {
-            this.dbType = dataSource.getDbType();
-        }
+    public void init(DataSourceProxy dataSource) {
+        lock.lock();
+        try {
+            if (this.dbType == null || this.dbType.trim().length() == 0) {
+                this.dbType = dataSource.getDbType();
+            }
 
-        configFromProperties(dataSource.getConnectProperties());
-        configFromProperties(System.getProperties());
+            configFromProperties(dataSource.getConnectProperties());
+            configFromProperties(System.getProperties());
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void configFromProperties(Properties properties) {
@@ -198,38 +205,38 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
         ConnectionProxy connection = null;
-        {
-            long startNano = System.nanoTime();
-            long startTime = System.currentTimeMillis();
 
-            long nanoSpan;
-            long nowTime = System.currentTimeMillis();
+        long startNano = System.nanoTime();
+        long startTime = System.currentTimeMillis();
 
-            JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
-            dataSourceStat.getConnectionStat().beforeConnect();
-            try {
-                connection = chain.connection_connect(info);
-                nanoSpan = System.nanoTime() - startNano;
-            } catch (SQLException ex) {
-                dataSourceStat.getConnectionStat().connectError(ex);
-                throw ex;
-            }
-            dataSourceStat.getConnectionStat().afterConnected(nanoSpan);
+        long nanoSpan;
+        long nowTime = System.currentTimeMillis();
 
-            if (connection != null) {
-                JdbcConnectionStat.Entry statEntry = getConnectionInfo(connection);
-
-                dataSourceStat.getConnections().put(connection.getId(), statEntry);
-
-                statEntry.setConnectTime(new Date(startTime));
-                statEntry.setConnectTimespanNano(nanoSpan);
-                statEntry.setEstablishNano(System.nanoTime());
-                statEntry.setEstablishTime(nowTime);
-                statEntry.setConnectStackTrace(new Exception());
-
-                dataSourceStat.getConnectionStat().setActiveCount(dataSourceStat.getConnections().size());
-            }
+        JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
+        dataSourceStat.getConnectionStat().beforeConnect();
+        try {
+            connection = chain.connection_connect(info);
+            nanoSpan = System.nanoTime() - startNano;
+        } catch (SQLException ex) {
+            dataSourceStat.getConnectionStat().connectError(ex);
+            throw ex;
         }
+        dataSourceStat.getConnectionStat().afterConnected(nanoSpan);
+
+        if (connection != null) {
+            JdbcConnectionStat.Entry statEntry = getConnectionInfo(connection);
+
+            dataSourceStat.getConnections().put(connection.getId(), statEntry);
+
+            statEntry.setConnectTime(new Date(startTime));
+            statEntry.setConnectTimespanNano(nanoSpan);
+            statEntry.setEstablishNano(System.nanoTime());
+            statEntry.setEstablishTime(nowTime);
+            statEntry.setConnectStackTrace(new Exception());
+
+            dataSourceStat.getConnectionStat().setActiveCount(dataSourceStat.getConnections().size());
+        }
+
         return connection;
     }
 
@@ -268,7 +275,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         chain.connection_rollback(connection);
 
         JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
-        dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
     }
 
@@ -422,7 +428,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         StatFilterContext.getInstance().executeBefore(sql, inTransaction);
 
-        Profiler.enter(sql, Profiler.PROFILE_TYPE_SQL);
+        String mergedSql;
+        if (sqlStat != null) {
+            mergedSql = sqlStat.getSql();
+        } else {
+            mergedSql = sql;
+        }
+        Profiler.enter(mergedSql, Profiler.PROFILE_TYPE_SQL);
     }
 
     private final void internalAfterStatementExecute(StatementProxy statement, boolean firstResult,
@@ -441,7 +453,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             sqlStat.decrementRunningCount();
             sqlStat.addExecuteTime(statement.getLastExecuteType(), firstResult, nanos);
             statement.setLastExecuteTimeNano(nanos);
-            if ((!statement.isFirstResultSet()) && statement.getLastExecuteType() == StatementExecuteType.Execute) {
+            if ((!firstResult) && statement.getLastExecuteType() == StatementExecuteType.Execute) {
                 try {
                     int updateCount = statement.getUpdateCount();
                     sqlStat.addUpdateCount(updateCount);
@@ -461,10 +473,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 String slowParameters = buildSlowParameters(statement);
                 sqlStat.setLastSlowParameters(slowParameters);
 
+                String lastExecSql = statement.getLastExecuteSql();
                 if (logSlowSql) {
-                    LOG.error("slow sql " + millis + " millis. \n" + statement.getLastExecuteSql() + "\n"
-                              + slowParameters);
+                    LOG.error("slow sql " + millis + " millis. " + lastExecSql + "" + slowParameters);
                 }
+
+                handleSlowSql(statement);
             }
         }
 
@@ -472,6 +486,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         StatFilterContext.getInstance().executeAfter(sql, nanos, null);
 
         Profiler.release(nanos);
+    }
+
+    protected void handleSlowSql(StatementProxy statementProxy) {
+
     }
 
     @Override
@@ -492,6 +510,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         JdbcSqlStat sqlStat = statement.getSqlStat();
 
         if (sqlStat != null) {
+            sqlStat.decrementExecutingCount();
             sqlStat.error(error);
             sqlStat.addExecuteTime(statement.getLastExecuteType(), statement.isFirstResultSet(), nanos);
             statement.setLastExecuteTimeNano(nanos);
@@ -501,7 +520,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Profiler.release(nanos);
     }
 
-    private String buildSlowParameters(StatementProxy statement) {
+    protected String buildSlowParameters(StatementProxy statement) {
         JSONWriter out = new JSONWriter();
 
         out.writeArrayStart();

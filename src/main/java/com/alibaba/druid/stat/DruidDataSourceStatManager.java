@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,16 @@
  */
 package com.alibaba.druid.stat;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.DruidDataSourceUtils;
-import com.alibaba.druid.util.JMXUtils;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -31,16 +36,17 @@ import javax.management.openmbean.SimpleType;
 import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Method;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.DruidDataSourceUtils;
+import com.alibaba.druid.util.JMXUtils;
 
 @SuppressWarnings("rawtypes")
 public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBean {
+
+    private final static Lock                       staticLock                     = new ReentrantLock();
 
     public final static String                      SYS_PROP_INSTANCES             = "druid.dataSources";
     public final static String                      SYS_PROP_REGISTER_SYS_PROPERTY = "druid.registerToSysProperty";
@@ -52,7 +58,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     private final AtomicLong                        resetCount                     = new AtomicLong();
 
     // global instances
-    private static volatile IdentityHashMap         dataSources;
+    private static volatile Map                     dataSources;
 
     private final static String                     MBEAN_NAME                     = "com.alibaba.druid:type=DruidDataSourceStat";
 
@@ -61,9 +67,10 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     }
 
     public static void clear() {
-        IdentityHashMap<Object, ObjectName> dataSources = getInstances();
+        staticLock.lock();
+        try {
+            Map<Object, ObjectName> dataSources = getInstances();
 
-        synchronized (dataSources) {
             MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
             for (Object item : dataSources.entrySet()) {
                 Map.Entry entry = (Map.Entry) item;
@@ -79,23 +86,27 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                     LOG.error(e.getMessage(), e);
                 }
             }
-            dataSources.clear();
+        } finally {
+            staticLock.unlock();
         }
     }
 
     @SuppressWarnings("unchecked")
-    public static IdentityHashMap<Object, ObjectName> getInstances() {
-        IdentityHashMap<Object, ObjectName> tmp = dataSources;
+    public static Map<Object, ObjectName> getInstances() {
+        Map<Object, ObjectName> tmp = dataSources;
         if (tmp == null) {
-            synchronized (DruidDataSourceStatManager.class) {
+            staticLock.lock();
+            try {
                 if (isRegisterToSystemProperty()) {
                     dataSources = getInstances0();
                 } else {
                     tmp = dataSources;
                     if (null == tmp) {
-                        dataSources = tmp = new IdentityHashMap<Object, ObjectName>();
+                        dataSources = tmp = Collections.synchronizedMap(new IdentityHashMap<Object, ObjectName>());
                     }
                 }
+            } finally {
+                staticLock.unlock();
             }
         }
 
@@ -108,16 +119,16 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     }
 
     @SuppressWarnings("unchecked")
-    static IdentityHashMap<Object, ObjectName> getInstances0() {
+    static Map<Object, ObjectName> getInstances0() {
         Properties properties = System.getProperties();
-        IdentityHashMap<Object, ObjectName> instances = (IdentityHashMap<Object, ObjectName>) properties.get(SYS_PROP_INSTANCES);
+        Map<Object, ObjectName> instances = (Map<Object, ObjectName>) properties.get(SYS_PROP_INSTANCES);
 
         if (instances == null) {
             synchronized (properties) {
                 instances = (IdentityHashMap<Object, ObjectName>) properties.get(SYS_PROP_INSTANCES);
 
                 if (instances == null) {
-                    instances = new IdentityHashMap<Object, ObjectName>();
+                    instances = Collections.synchronizedMap(new IdentityHashMap<Object, ObjectName>());
                     properties.put(SYS_PROP_INSTANCES, instances);
                 }
             }
@@ -127,13 +138,12 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     }
 
     public synchronized static ObjectName addDataSource(Object dataSource, String name) {
-        final IdentityHashMap<Object, ObjectName> instances = getInstances();
+        final Map<Object, ObjectName> instances = getInstances();
 
+        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
         synchronized (instances) {
-            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
             if (instances.size() == 0) {
                 try {
-
                     ObjectName objectName = new ObjectName(MBEAN_NAME);
                     if (!mbeanServer.isRegistered(objectName)) {
                         mbeanServer.registerMBean(instance, objectName);
@@ -141,69 +151,67 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 } catch (JMException ex) {
                     LOG.error("register mbean error", ex);
                 }
-                
+
                 DruidStatService.registerMBean();
             }
-
-            ObjectName objectName = null;
-            if (name != null) {
-                try {
-                    objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + name);
-                    mbeanServer.registerMBean(dataSource, objectName);
-                } catch (Throwable ex) {
-                    LOG.error("register mbean error", ex);
-                    objectName = null;
-                }
-            }
-
-            if (objectName == null) {
-                try {
-                    int id = System.identityHashCode(dataSource);
-                    objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + id);
-                    mbeanServer.registerMBean(dataSource, objectName);
-                } catch (Throwable ex) {
-                    LOG.error("register mbean error", ex);
-                    objectName = null;
-                }
-            }
-
-            instances.put(dataSource, objectName);
-            return objectName;
         }
+
+        ObjectName objectName = null;
+        if (name != null) {
+            try {
+                objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + name);
+                mbeanServer.registerMBean(dataSource, objectName);
+            } catch (Throwable ex) {
+                LOG.error("register mbean error", ex);
+                objectName = null;
+            }
+        }
+
+        if (objectName == null) {
+            try {
+                int id = System.identityHashCode(dataSource);
+                objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + id);
+                mbeanServer.registerMBean(dataSource, objectName);
+            } catch (Throwable ex) {
+                LOG.error("register mbean error", ex);
+                objectName = null;
+            }
+        }
+
+        instances.put(dataSource, objectName);
+        return objectName;
     }
 
     public synchronized static void removeDataSource(Object dataSource) {
-        IdentityHashMap<Object, ObjectName> instances = getInstances();
+        Map<Object, ObjectName> instances = getInstances();
 
-        synchronized (instances) {
-            ObjectName objectName = (ObjectName) instances.remove(dataSource);
+        ObjectName objectName = (ObjectName) instances.remove(dataSource);
 
-            if (objectName == null) {
-                objectName = DruidDataSourceUtils.getObjectName(dataSource);
-            }
+        if (objectName == null) {
+            objectName = DruidDataSourceUtils.getObjectName(dataSource);
+        }
 
-            if (objectName == null) {
-                LOG.error("unregister mbean failed. url " + DruidDataSourceUtils.getUrl(dataSource));
-                return;
-            }
+        if (objectName == null) {
+            LOG.error("unregister mbean failed. url " + DruidDataSourceUtils.getUrl(dataSource));
+            return;
+        }
 
-            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
 
+        try {
+            mbeanServer.unregisterMBean(objectName);
+        } catch (Throwable ex) {
+            LOG.error("unregister mbean error", ex);
+        }
+
+        if (instances.size() == 0) {
             try {
-                mbeanServer.unregisterMBean(objectName);
+                mbeanServer.unregisterMBean(new ObjectName(MBEAN_NAME));
             } catch (Throwable ex) {
                 LOG.error("unregister mbean error", ex);
             }
 
-            if (instances.size() == 0) {
-                try {
-                    mbeanServer.unregisterMBean(new ObjectName(MBEAN_NAME));
-                } catch (Throwable ex) {
-                    LOG.error("unregister mbean error", ex);
-                }
-                
-                DruidStatService.unregisterMBean();
-            }
+            DruidStatService.unregisterMBean();
         }
     }
 
@@ -214,20 +222,33 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     }
 
     public void reset() {
-        IdentityHashMap<Object, ObjectName> dataSources = getInstances();
+        Map<Object, ObjectName> dataSources = getInstances();
 
-        synchronized (dataSources) {
-            for (Object item : dataSources.keySet()) {
-                try {
-                    Method method = item.getClass().getMethod("resetStat");
-                    method.invoke(item);
-                } catch (Exception e) {
-                    LOG.error("resetStat error", e);
-                }
+        for (Object item : dataSources.keySet()) {
+            try {
+                Method method = item.getClass().getMethod("resetStat");
+                method.invoke(item);
+            } catch (Exception e) {
+                LOG.error("resetStat error", e);
             }
-
-            resetCount.incrementAndGet();
         }
+
+        resetCount.incrementAndGet();
+    }
+
+    public void logAndResetDataSource() {
+        Map<Object, ObjectName> dataSources = getInstances();
+
+        for (Object item : dataSources.keySet()) {
+            try {
+                Method method = item.getClass().getMethod("logStats");
+                method.invoke(item);
+            } catch (Exception e) {
+                LOG.error("resetStat error", e);
+            }
+        }
+
+        resetCount.incrementAndGet();
     }
 
     public long getResetCount() {
@@ -396,8 +417,11 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         };
 
         String[] indexDescriptions = indexNames;
-        COMPOSITE_TYPE = new CompositeType("DataSourceStatistic", "DataSource Statistic", indexNames,
-                                           indexDescriptions, indexTypes);
+        COMPOSITE_TYPE = new CompositeType("DataSourceStatistic",
+            "DataSource Statistic",
+            indexNames,
+            indexDescriptions,
+            indexTypes);
 
         return COMPOSITE_TYPE;
     }

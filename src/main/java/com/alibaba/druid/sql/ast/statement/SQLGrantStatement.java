@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLGrantStatement extends SQLStatementImpl {
 
-    private final List<SQLExpr> privileges = new ArrayList<SQLExpr>();
+    protected final List<SQLExpr> privileges = new ArrayList<SQLExpr>();
 
-    private SQLObject           on;
-    private SQLExpr             to;
+    protected SQLObject           on;
+    protected SQLExpr             to;
 
     public SQLGrantStatement(){
 
@@ -39,24 +39,44 @@ public class SQLGrantStatement extends SQLStatementImpl {
     }
 
     // mysql
-    private SQLObjectType objectType;
-    private SQLExpr       maxQueriesPerHour;
-    private SQLExpr       maxUpdatesPerHour;
-    private SQLExpr       maxConnectionsPerHour;
-    private SQLExpr       maxUserConnections;
+    protected SQLObjectType objectType;
+    private SQLExpr         maxQueriesPerHour;
+    private SQLExpr         maxUpdatesPerHour;
+    private SQLExpr         maxConnectionsPerHour;
+    private SQLExpr         maxUserConnections;
 
-    private boolean       adminOption;
+    private boolean         adminOption;
 
-    private SQLExpr       identifiedBy;
+    private SQLExpr         identifiedBy;
+    private String          identifiedByPassword;
+
+    private boolean         withGrantOption;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, this.privileges);
             acceptChild(visitor, on);
             acceptChild(visitor, to);
             acceptChild(visitor, identifiedBy);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.addAll(privileges);
+        if (on != null) {
+            children.add(on);
+        }
+        if (to != null) {
+            children.add(to);
+        }
+        if (identifiedBy != null) {
+            children.add(identifiedBy);
+        }
+        return children;
     }
 
     public SQLObjectType getObjectType() {
@@ -134,5 +154,21 @@ public class SQLGrantStatement extends SQLStatementImpl {
 
     public void setIdentifiedBy(SQLExpr identifiedBy) {
         this.identifiedBy = identifiedBy;
+    }
+
+    public String getIdentifiedByPassword() {
+        return identifiedByPassword;
+    }
+
+    public void setIdentifiedByPassword(String identifiedByPassword) {
+        this.identifiedByPassword = identifiedByPassword;
+    }
+
+    public boolean getWithGrantOption() {
+        return withGrantOption;
+    }
+
+    public void setWithGrantOption(boolean withGrantOption) {
+        this.withGrantOption = withGrantOption;
     }
 }

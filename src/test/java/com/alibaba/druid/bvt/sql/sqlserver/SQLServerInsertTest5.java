@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,9 +48,8 @@ public class SQLServerInsertTest5 extends TestCase {
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
 
-        String formatSql = "INSERT INTO t"//
-                           + "\n\t(a, b)"//
-                           + "\nVALUES" + "\n('a1', 'b1'),"//
+        String formatSql = "INSERT INTO t (a, b)"//
+                           + "\nVALUES ('a1', 'b1'),"//
                            + "\n('a2', 'b2'),"//
                            + "\n('a3', 'b3')";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
@@ -74,13 +73,11 @@ public class SQLServerInsertTest5 extends TestCase {
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
 
-        String formatSql = "INSERT INTO t"//
-                           + "\n\t(a, b)"//
-                           + "\nVALUES"//
-                           + "\n('a1', 'b1'),"//
+        String formatSql = "INSERT INTO t (a, b)"//
+                           + "\nVALUES ('a1', 'b1'),"//
                            + "\n('a2', 'b2'),"//
                            + "\n('a3', 'b3'),"//
-                           + "\n('a4', 'b4')";
+                           + "\n('a4', 'b4');";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 }

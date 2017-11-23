@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,16 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
-import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+
+import junit.framework.TestCase;
 
 public class CALL_Test extends TestCase {
 
@@ -55,9 +58,10 @@ public class CALL_Test extends TestCase {
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
 
-        String text = output(stmtList);
+        SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("EXECUTE s USING @version, @increment;", text);
+        assertEquals("EXECUTE s USING @version, @increment;", SQLUtils.toMySqlString(stmt));
+        assertEquals("execute s using @version, @increment;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_3() throws Exception {
@@ -66,19 +70,13 @@ public class CALL_Test extends TestCase {
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
 
-        String text = output(stmtList);
+        SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("EXECUTE s;", text);
+        assertEquals("EXECUTE s", SQLUtils.toMySqlString(stmt));
+        assertEquals("execute s", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

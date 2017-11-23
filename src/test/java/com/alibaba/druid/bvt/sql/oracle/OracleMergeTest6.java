@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,26 +28,24 @@ import com.alibaba.druid.stat.TableStat;
 public class OracleMergeTest6 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "MERGE INTO console_stb_ipstatus T1 "
-                     + //
-                     "USING (SELECT '02222601005592002863423471' AS stbid  FROM dual) T2 "
-                     + //
-                     "ON ( T1.stbid=T2.stbid) "
-                     + //
-                     "WHEN MATCHED THEN update set t1.ip='10.104.131.175',t1.port='6666',t1.status = 1, t1.time = to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss')  "
-                     + //
+        String sql = "MERGE INTO console_stb_ipstatus T1 " + //
+                     "USING (SELECT '02222601005592002863423471' AS stbid  FROM dual) T2 " + //
+                     "ON ( T1.stbid=T2.stbid) " + //
+                     "WHEN MATCHED THEN " + //
+                     "update set t1.ip='10.104.131.175',t1.port='6666',t1.status = 1, t1.time = to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss')  " + //
                      "WHEN NOT MATCHED THEN  insert (id, stbid, ip, port, time, firsttime, status) " + //
                      "values (CONSOLE_SEQ.nextval,'02222601005592002863423471','10.104.131.175','6666',to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss'),to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss'),1) ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-        print(statementList);
+        SQLStatement stmt = statementList.get(0);
+
+        System.out.println(stmt);
 
         Assert.assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -60,11 +58,13 @@ public class OracleMergeTest6 extends OracleTest {
 
         Assert.assertEquals(7, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "stbid"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "ip"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "port"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "status"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "time"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "id"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "firsttime"));
     }
 
 }

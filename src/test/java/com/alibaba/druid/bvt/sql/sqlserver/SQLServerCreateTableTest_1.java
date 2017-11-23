@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,9 +54,9 @@ public class SQLServerCreateTableTest_1 extends TestCase {
         stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(12, visitor.getColumns().size());
@@ -64,9 +64,9 @@ public class SQLServerCreateTableTest_1 extends TestCase {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("projects")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("projects", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("projects", "name")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("projects", "enabled")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("projects", "scope")));
+        Assert.assertTrue(visitor.containsColumn("projects", "id"));
+        Assert.assertTrue(visitor.containsColumn("projects", "name"));
+        Assert.assertTrue(visitor.containsColumn("projects", "enabled"));
+        Assert.assertTrue(visitor.containsColumn("projects", "scope"));
     }
 }

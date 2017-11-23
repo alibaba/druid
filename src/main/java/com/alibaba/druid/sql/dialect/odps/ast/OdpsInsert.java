@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,13 @@ public class OdpsInsert extends SQLObjectImpl {
 
     public List<SQLAssignItem> getPartitions() {
         return partitions;
+    }
+    
+    public void addPartition(SQLAssignItem partition) {
+        if (partition != null) {
+            partition.setParent(this);
+        }
+        this.partitions.add(partition);
     }
 
     public void setPartitions(List<SQLAssignItem> partitions) {

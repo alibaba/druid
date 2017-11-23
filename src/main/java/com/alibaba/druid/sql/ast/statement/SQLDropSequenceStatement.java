@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,18 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropSequenceStatement extends SQLStatementImpl implements SQLDDLStatement {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SQLDropSequenceStatement extends SQLStatementImpl implements SQLDropStatement {
 
     private SQLName name;
+    private boolean ifExists;
     
     public SQLDropSequenceStatement() {
         
@@ -39,6 +45,15 @@ public class SQLDropSequenceStatement extends SQLStatementImpl implements SQLDDL
         visitor.endVisit(this);
     }
 
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (name != null) {
+            children.add(name);
+        }
+        return children;
+    }
+
     public SQLName getName() {
         return name;
     }
@@ -47,4 +62,24 @@ public class SQLDropSequenceStatement extends SQLStatementImpl implements SQLDDL
         this.name = name;
     }
 
+    public boolean isIfExists() {
+        return ifExists;
+    }
+
+    public void setIfExists(boolean ifExists) {
+        this.ifExists = ifExists;
+    }
+
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
+        }
+
+        return null;
+    }
 }

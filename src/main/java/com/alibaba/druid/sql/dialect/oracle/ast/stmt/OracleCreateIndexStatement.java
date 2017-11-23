@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,45 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleCreateIndexStatement extends SQLCreateIndexStatement implements OracleDDLStatement {
+import java.util.ArrayList;
+import java.util.List;
+
+public class OracleCreateIndexStatement extends SQLCreateIndexStatement implements OracleDDLStatement, OracleSegmentAttributes, SQLCreateStatement {
 
     private boolean online            = false;
 
     private boolean indexOnlyTopLevel = false;
+    private boolean cluster           = false;
 
     private boolean noParallel;
 
     private SQLExpr parallel;
 
-    private SQLName tablespace;
+    private Integer pctfree;
+    private Integer pctused;
+    private Integer initrans;
 
-    private SQLExpr ptcfree;
-    private SQLExpr pctused;
-    private SQLExpr initrans;
-    private SQLExpr maxtrans;
+    private Integer maxtrans;
+    private Integer pctincrease;
+    private Integer freeLists;
+    private Boolean compress;
+    private Integer compressLevel;
+    private boolean compressForOltp;
+    private Integer pctthreshold;
+
+    private Boolean logging;
+    private Boolean sort;
+
+    protected SQLName tablespace;
+    protected SQLObject storage;
 
     private Boolean enable            = null;
 
@@ -45,14 +61,6 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     
     public OracleCreateIndexStatement() {
         super (JdbcConstants.ORACLE);
-    }
-
-    public SQLName getTablespace() {
-        return tablespace;
-    }
-
-    public void setTablespace(SQLName tablespace) {
-        this.tablespace = tablespace;
     }
 
     public SQLExpr getParallel() {
@@ -79,6 +87,21 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
         this.indexOnlyTopLevel = indexOnlyTopLevel;
     }
 
+    public Boolean getSort() {
+        return sort;
+    }
+
+    public void setSort(Boolean sort) {
+        this.sort = sort;
+    }
+
+    private boolean local;
+    private List<SQLName> localStoreIn = new ArrayList<SQLName>();
+    private List<SQLPartition> localPartitions = new ArrayList<SQLPartition>();
+
+    private boolean global;
+    private List<SQLPartitionBy> globalPartitions = new ArrayList<SQLPartitionBy>();
+
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);
     }
@@ -95,37 +118,6 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
         visitor.endVisit(this);
     }
 
-    public SQLExpr getPtcfree() {
-        return ptcfree;
-    }
-
-    public void setPtcfree(SQLExpr ptcfree) {
-        this.ptcfree = ptcfree;
-    }
-
-    public SQLExpr getPctused() {
-        return pctused;
-    }
-
-    public void setPctused(SQLExpr pctused) {
-        this.pctused = pctused;
-    }
-
-    public SQLExpr getInitrans() {
-        return initrans;
-    }
-
-    public void setInitrans(SQLExpr initrans) {
-        this.initrans = initrans;
-    }
-
-    public SQLExpr getMaxtrans() {
-        return maxtrans;
-    }
-
-    public void setMaxtrans(SQLExpr maxtrans) {
-        this.maxtrans = maxtrans;
-    }
 
     public Boolean getEnable() {
         return enable;
@@ -151,4 +143,148 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
         this.online = online;
     }
 
+    public boolean isCluster() {
+        return cluster;
+    }
+
+    public void setCluster(boolean cluster) {
+        this.cluster = cluster;
+    }
+
+    //////////////
+
+    public SQLName getTablespace() {
+        return tablespace;
+    }
+
+    public void setTablespace(SQLName tablespace) {
+        if (tablespace != null) {
+            tablespace.setParent(this);
+        }
+        this.tablespace = tablespace;
+    }
+
+    public Boolean getCompress() {
+        return compress;
+    }
+
+    public void setCompress(Boolean compress) {
+        this.compress = compress;
+    }
+
+    public Integer getCompressLevel() {
+        return compressLevel;
+    }
+
+    public void setCompressLevel(Integer compressLevel) {
+        this.compressLevel = compressLevel;
+    }
+
+    public Integer getPctthreshold() {
+        return pctthreshold;
+    }
+
+    public void setPctthreshold(Integer pctthreshold) {
+        this.pctthreshold = pctthreshold;
+    }
+
+    public Integer getPctfree() {
+        return pctfree;
+    }
+
+    public void setPctfree(Integer ptcfree) {
+        this.pctfree = ptcfree;
+    }
+
+    public Integer getPctused() {
+        return pctused;
+    }
+
+    public void setPctused(Integer ptcused) {
+        this.pctused = ptcused;
+    }
+
+    public Integer getInitrans() {
+        return initrans;
+    }
+
+    public void setInitrans(Integer initrans) {
+        this.initrans = initrans;
+    }
+
+    public Integer getMaxtrans() {
+        return maxtrans;
+    }
+
+    public void setMaxtrans(Integer maxtrans) {
+        this.maxtrans = maxtrans;
+    }
+
+    public Integer getPctincrease() {
+        return pctincrease;
+    }
+
+    public void setPctincrease(Integer pctincrease) {
+        this.pctincrease = pctincrease;
+    }
+
+    public Integer getFreeLists() {
+        return freeLists;
+    }
+
+    public void setFreeLists(Integer freeLists) {
+        this.freeLists = freeLists;
+    }
+
+    public Boolean getLogging() {
+        return logging;
+    }
+
+    public void setLogging(Boolean logging) {
+        this.logging = logging;
+    }
+
+    public SQLObject getStorage() {
+        return storage;
+    }
+
+    public void setStorage(SQLObject storage) {
+        this.storage = storage;
+    }
+
+    public boolean isCompressForOltp() {
+        return compressForOltp;
+    }
+
+    public void setCompressForOltp(boolean compressForOltp) {
+        this.compressForOltp = compressForOltp;
+    }
+
+    public List<SQLPartition> getLocalPartitions() {
+        return localPartitions;
+    }
+
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
+    }
+
+    public List<SQLName> getLocalStoreIn() {
+        return localStoreIn;
+    }
+
+    public List<SQLPartitionBy> getGlobalPartitions() {
+        return globalPartitions;
+    }
+
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        this.global = global;
+    }
 }

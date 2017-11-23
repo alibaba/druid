@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlAlterUserStatement extends MySqlStatementImpl {
+public class MySqlAlterUserStatement extends MySqlStatementImpl implements SQLAlterStatement {
 
     private final List<SQLExpr> users = new ArrayList<SQLExpr>();
     
@@ -36,4 +37,10 @@ public class MySqlAlterUserStatement extends MySqlStatementImpl {
         return users;
     }
 
+    public void addUser(SQLExpr user) {
+        if (user != null) {
+            user.setParent(this);
+        }
+        this.users.add(user);
+    }
 }

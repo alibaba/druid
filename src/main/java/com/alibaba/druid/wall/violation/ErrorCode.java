@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ public interface ErrorCode {
     public final static int COMMIT_NOT_ALLOW              = 1301;
     public final static int ROLLBACK_NOT_ALLOW            = 1302;
     public final static int START_TRANSACTION_NOT_ALLOW   = 1303;
+    public final static int BLOCK_NOT_ALLOW               = 1304;
 
     public final static int SET_NOT_ALLOW                 = 1200;
     public final static int DESC_NOT_ALLOW                = 1201;
@@ -83,6 +84,8 @@ public interface ErrorCode {
     public final static int UNION                         = 5000;
 
     public final static int COMPOUND                      = 8000;
+
+    public final static int UPDATE_CHECK_FAIL             = 9000;
 
     public final static int OTHER                         = 9999;
 }

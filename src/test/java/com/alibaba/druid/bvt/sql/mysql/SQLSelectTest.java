@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,11 +98,13 @@ public class SQLSelectTest extends TestCase {
         output(stmtList);
     }
 
-    private void output(List<SQLStatement> stmtList) {
+    private String output(List<SQLStatement> stmtList) {
+        StringBuilder out = new StringBuilder();
         for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(System.out));
-            System.out.println(";");
-            System.out.println();
+            stmt.accept(new MySqlOutputVisitor(out));
+//            System.out.println(";");
+//            System.out.println();
         }
+        return out.toString();
     }
 }

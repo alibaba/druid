@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,28 @@
  */
 package com.alibaba.druid.sql.visitor;
 
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -73,27 +75,11 @@ import com.alibaba.druid.sql.visitor.functions.Trim;
 import com.alibaba.druid.sql.visitor.functions.Ucase;
 import com.alibaba.druid.sql.visitor.functions.Unhex;
 import com.alibaba.druid.util.HexBin;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 public class SQLEvalVisitorUtils {
 
@@ -138,12 +124,19 @@ public class SQLEvalVisitorUtils {
     public static Object eval(String dbType, SQLObject sqlObject, List<Object> parameters, boolean throwError) {
         SQLEvalVisitor visitor = createEvalVisitor(dbType);
         visitor.setParameters(parameters);
-        sqlObject.accept(visitor);
 
-        Object value = getValue(sqlObject);
-        if (value == null) {
-            if (throwError && !sqlObject.getAttributes().containsKey(EVAL_VALUE)) {
-                throw new DruidRuntimeException("eval error : " + SQLUtils.toSQLString(sqlObject, dbType));
+        Object value;
+        if (sqlObject instanceof SQLValuableExpr) {
+            value = ((SQLValuableExpr) sqlObject).getValue();
+        } else {
+            sqlObject.accept(visitor);
+
+            value = getValue(sqlObject);
+
+            if (value == null) {
+                if (throwError && !sqlObject.getAttributes().containsKey(EVAL_VALUE)) {
+                    throw new DruidRuntimeException("eval error : " + SQLUtils.toSQLString(sqlObject, dbType));
+                }
             }
         }
 
@@ -167,7 +160,8 @@ public class SQLEvalVisitorUtils {
             return new OracleEvalVisitor();
         }
 
-        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+        if (JdbcConstants.POSTGRESQL.equals(dbType)
+                || JdbcConstants.ENTERPRISEDB.equals(dbType)) {
             return new PGEvalVisitor();
         }
 
@@ -178,7 +172,7 @@ public class SQLEvalVisitorUtils {
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2EvalVisitor();
         }
-
+        
         return new SQLEvalVisitorImpl();
     }
 
@@ -258,12 +252,16 @@ public class SQLEvalVisitorUtils {
                 return false;
             }
 
-            int intValue0 = castToInteger(param0Value);
-            int intValue1 = castToInteger(param1Value);
+            long intValue0 = castToLong(param0Value);
+            long intValue1 = castToLong(param1Value);
 
-            int result = intValue0 % intValue1;
-
-            x.putAttribute(EVAL_VALUE, result);
+            long result = intValue0 % intValue1;
+            if (result >= Integer.MIN_VALUE && result <= Integer.MAX_VALUE) {
+                int intResult = (int) result;
+                x.putAttribute(EVAL_VALUE, intResult);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
         } else if ("abs".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
@@ -583,14 +581,14 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLBinaryExpr x) {
-        String text = x.getValue();
+        String text = x.getText();
 
         long[] words = new long[text.length() / 64 + 1];
-        for (int i = 0; i < text.length(); ++i) {
+        for (int i = text.length()-1; i >= 0 ; --i) {
             char ch = text.charAt(i);
             if (ch == '1') {
                 int wordIndex = i >> 6;
-                words[wordIndex] |= (1L << i);
+                words[wordIndex] |= (1L << (text.length() - 1 - i));
             }
         }
 
@@ -602,7 +600,7 @@ public class SQLEvalVisitorUtils {
             byte[] bytes = new byte[words.length * 8];
 
             for (int i = 0; i < words.length; ++i) {
-                Utils.putLong(bytes, i * 8, words[i]);
+                Utils.putLong(bytes, (words.length-1-i) * 8, words[i]);
             }
 
             val = new BigInteger(bytes);
@@ -1048,6 +1046,20 @@ public class SQLEvalVisitorUtils {
                 String result = leftValue.toString() + rightValue.toString();
                 x.putAttribute(EVAL_VALUE, result);
                 break;
+            }
+            case BooleanAnd:
+            {
+            	boolean first = eq(leftValue, true);
+            	boolean second = eq(rightValue, true);
+            	x.putAttribute(EVAL_VALUE, first&&second);
+            	break;
+            }
+            case BooleanOr:
+            {
+            	boolean first = eq(leftValue, true);
+            	boolean second = eq(rightValue, true);
+            	x.putAttribute(EVAL_VALUE, first||second);
+            	break;
             }
             default:
                 break;

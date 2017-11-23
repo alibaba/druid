@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -460,7 +460,7 @@ public abstract class WallProvider {
 
         String mergedSql;
         try {
-            mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+            mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType, (List<Object>) null);
         } catch (Exception ex) {
             // skip
             return null;
@@ -504,7 +504,9 @@ public abstract class WallProvider {
         try {
             WallContext.create(dbType);
             WallCheckResult result = checkInternal(sql);
-            return result.getViolations().isEmpty();
+            return result
+                    .getViolations()
+                    .isEmpty();
         } finally {
 
             if (originalContext == null) {
@@ -703,6 +705,8 @@ public abstract class WallProvider {
             resultSql = sql;
         }
         result.setSql(resultSql);
+
+        result.setUpdateCheckItems(visitor.getUpdateCheckItems());
 
         return result;
     }
@@ -926,7 +930,7 @@ public abstract class WallProvider {
 
                     long sqlHash = sqlStat.getSqlHash();
                     if (sqlHash == 0) {
-                        sqlHash = Utils.murmurhash2_64(sql);
+                        sqlHash = Utils.fnv_64(sql);
                         sqlStat.setSqlHash(sqlHash);
                     }
                     sqlStatValue.setSqlHash(sqlHash);

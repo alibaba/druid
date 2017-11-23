@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,41 +18,60 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlObject {
-
     private boolean              hignPriority;
     private boolean              straightJoin;
-
     private boolean              smallResult;
     private boolean              bigResult;
     private boolean              bufferResult;
     private Boolean              cache;
     private boolean              calcFoundRows;
-
-    private SQLOrderBy           orderBy;
-
-    private Limit                limit;
-
     private SQLName              procedureName;
     private List<SQLExpr>        procedureArgumentList;
-
-    private boolean              forUpdate       = false;
-    private boolean              lockInShareMode = false;
-
+    private boolean              lockInShareMode;
     private List<SQLCommentHint> hints;
+    private SQLName              forcePartition; // for petadata
 
     public MySqlSelectQueryBlock(){
+        dbType = JdbcConstants.MYSQL;
+    }
 
+    public MySqlSelectQueryBlock clone() {
+        MySqlSelectQueryBlock x = new MySqlSelectQueryBlock();
+        cloneTo(x);
+
+        x.hignPriority = hignPriority;
+        x.straightJoin = straightJoin;
+
+        x.smallResult = smallResult;
+        x.bigResult = bigResult;
+        x.bufferResult = bufferResult;
+        x.cache = cache;
+        x.calcFoundRows = calcFoundRows;
+
+        if (procedureName != null) {
+            x.setProcedureName(procedureName.clone());
+        }
+        if (procedureArgumentList != null) {
+            for (SQLExpr arg : procedureArgumentList) {
+                SQLExpr arg_cloned = arg.clone();
+                arg_cloned.setParent(this);
+                x.procedureArgumentList.add(arg_cloned);
+            }
+        }
+        x.lockInShareMode = lockInShareMode;
+
+        return x;
     }
 
     public int getHintsSize() {
@@ -72,14 +91,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
     public void setHints(List<SQLCommentHint> hints) {
         this.hints = hints;
-    }
-
-    public boolean isForUpdate() {
-        return forUpdate;
-    }
-
-    public void setForUpdate(boolean forUpdate) {
-        this.forUpdate = forUpdate;
     }
 
     public boolean isLockInShareMode() {
@@ -103,10 +114,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
             procedureArgumentList = new ArrayList<SQLExpr>(2);
         }
         return procedureArgumentList;
-    }
-
-    public void setProcedureArgumentList(List<SQLExpr> procedureArgumentList) {
-        this.procedureArgumentList = procedureArgumentList;
     }
 
     public boolean isHignPriority() {
@@ -163,25 +170,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
     public void setCalcFoundRows(boolean calcFoundRows) {
         this.calcFoundRows = calcFoundRows;
-    }
-
-    public SQLOrderBy getOrderBy() {
-        return orderBy;
-    }
-
-    public void setOrderBy(SQLOrderBy orderBy) {
-        this.orderBy = orderBy;
-    }
-
-    public Limit getLimit() {
-        return limit;
-    }
-
-    public void setLimit(Limit limit) {
-        if (limit != null) {
-            limit.setParent(this);
-        }
-        this.limit = limit;
     }
 
     @Override
@@ -254,6 +242,7 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.selectList);
+            acceptChild(visitor, this.forcePartition);
             acceptChild(visitor, this.from);
             acceptChild(visitor, this.where);
             acceptChild(visitor, this.groupBy);
@@ -267,50 +256,18 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
         visitor.endVisit(this);
     }
 
-    public static class Limit extends SQLObjectImpl {
-
-        public Limit(){
-
-        }
-
-        private SQLExpr rowCount;
-        private SQLExpr offset;
-
-        public SQLExpr getRowCount() {
-            return rowCount;
-        }
-
-        public void setRowCount(SQLExpr rowCount) {
-            if (rowCount != null) {
-                rowCount.setParent(this);
-            }
-            this.rowCount = rowCount;
-        }
-
-        public SQLExpr getOffset() {
-            return offset;
-        }
-
-        public void setOffset(SQLExpr offset) {
-            if (offset != null) {
-                offset.setParent(this);
-            }
-            this.offset = offset;
-        }
-
-        @Override
-        protected void accept0(SQLASTVisitor visitor) {
-            if (visitor instanceof MySqlASTVisitor) {
-                MySqlASTVisitor mysqlVisitor = (MySqlASTVisitor) visitor;
-
-                if (mysqlVisitor.visit(this)) {
-                    acceptChild(visitor, offset);
-                    acceptChild(visitor, rowCount);
-                }
-                mysqlVisitor.endVisit(this);
-            }
-        }
-
+    public SQLName getForcePartition() {
+        return forcePartition;
     }
 
+    public void setForcePartition(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.forcePartition = x;
+    }
+
+    public String toString() {
+        return SQLUtils.toMySqlString(this);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,12 @@ public class JdbcUtilsTest extends TestCase {
         String jdbcUrl = "jdbc:cobar://localhost:8066/test";
         String dbType = JdbcUtils.getDbType(jdbcUrl, null);
         assertEquals("not support cobar driver, url like jdbc:cobar:...", JdbcConstants.MYSQL, dbType);
+    }
+    
+    public void test_log4jdbc_mysql() {
+        String jdbcUrl = "jdbc:log4jdbc:mysql://localhost:8066/test";
+        String dbType = JdbcUtils.getDbType(jdbcUrl, null);
+        assertEquals("not support log4jdbc mysql, url like jdbc:log4jdbc:mysql:...", JdbcConstants.MYSQL, dbType);
     }
 
 }

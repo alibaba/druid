@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,12 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLListExpr extends SQLExprImpl {
@@ -28,6 +30,13 @@ public class SQLListExpr extends SQLExprImpl {
 
     public List<SQLExpr> getItems() {
         return items;
+    }
+    
+    public void addItem(SQLExpr item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
 
     @Override
@@ -68,4 +77,17 @@ public class SQLListExpr extends SQLExprImpl {
         return true;
     }
 
+    public SQLListExpr clone() {
+        SQLListExpr x = new SQLListExpr();
+        for (SQLExpr item : items) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        return x;
+    }
+
+    public List getChildren() {
+        return this.items;
+    }
 }

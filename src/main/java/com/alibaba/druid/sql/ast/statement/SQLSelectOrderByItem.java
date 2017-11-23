@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,17 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLSelectOrderByItem extends SQLObjectImpl {
+public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLReplaceable {
 
     protected SQLExpr                  expr;
     protected String                   collate;
     protected SQLOrderingSpecification type;
-    protected NullsOrderType             nullsOrderType;
+    protected NullsOrderType           nullsOrderType;
+
+    protected transient SQLSelectItem  resolvedSelectItem;
 
     public SQLSelectOrderByItem(){
 
@@ -104,6 +107,15 @@ public class SQLSelectOrderByItem extends SQLObjectImpl {
         return true;
     }
 
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.expr == expr) {
+            this.setExpr(target);
+            return true;
+        }
+        return false;
+    }
+
     public static enum NullsOrderType {
         NullsFirst, NullsLast;
 
@@ -118,5 +130,24 @@ public class SQLSelectOrderByItem extends SQLObjectImpl {
 
             throw new IllegalArgumentException();
         }
+    }
+
+    public SQLSelectOrderByItem clone() {
+        SQLSelectOrderByItem x = new SQLSelectOrderByItem();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        x.collate = collate;
+        x.type = type;
+        x.nullsOrderType = nullsOrderType;
+        return x;
+    }
+
+    public SQLSelectItem getResolvedSelectItem() {
+        return resolvedSelectItem;
+    }
+
+    public void setResolvedSelectItem(SQLSelectItem resolvedSelectItem) {
+        this.resolvedSelectItem = resolvedSelectItem;
     }
 }

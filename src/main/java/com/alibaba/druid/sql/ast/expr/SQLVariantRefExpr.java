@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,19 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class SQLVariantRefExpr extends SQLExprImpl {
 
     private String  name;
 
     private boolean global = false;
+
+    private boolean hasSessionBefore = false;
 
     private int     index  = -1;
 
@@ -33,6 +39,12 @@ public class SQLVariantRefExpr extends SQLExprImpl {
     public SQLVariantRefExpr(String name, boolean global){
         this.name = name;
         this.global = global;
+    }
+
+    public SQLVariantRefExpr(String name, boolean global,boolean hasSessionBefore){
+        this.name = name;
+        this.global = global;
+        this.hasSessionBefore = hasSessionBefore;
     }
 
     public SQLVariantRefExpr(){
@@ -57,6 +69,15 @@ public class SQLVariantRefExpr extends SQLExprImpl {
 
     public void output(StringBuffer buf) {
         buf.append(this.name);
+    }
+
+
+    public boolean isHasSessionBefore() {
+        return hasSessionBefore;
+    }
+
+    public void setHasSessionBefore(boolean hasSessionBefore) {
+        this.hasSessionBefore = hasSessionBefore;
     }
 
     @Override
@@ -104,4 +125,14 @@ public class SQLVariantRefExpr extends SQLExprImpl {
         this.global = global;
     }
 
+    public SQLVariantRefExpr clone() {
+        SQLVariantRefExpr var =  new SQLVariantRefExpr(name, global);
+        var.index = index;
+        return var;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.emptyList();
+    }
 }

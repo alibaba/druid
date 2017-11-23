@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -34,9 +36,9 @@ public class NumberTest extends TestCase {
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
 
-        String text = output(stmtList);
+        String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SELECT -3.20326809E+14;", text);
+        Assert.assertEquals("SELECT -32032.6809e+10;", text);
     }
 
     public void test_1() throws Exception {
@@ -45,19 +47,9 @@ public class NumberTest extends TestCase {
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
 
-        String text = output(stmtList);
+        String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
         Assert.assertEquals("SELECT 294.42;", text);
     }
 
-    private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
-    }
 }

@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 
@@ -13,18 +13,18 @@ public class EqualTest_interval_mysql extends TestCase {
     public void test_exits() throws Exception {
         String sql = "INTERVAL 3 YEAR";
         String sql_c = "INTERVAL 3 MONTH";
-        MySqlIntervalExpr exprA, exprB, exprC;
+        SQLIntervalExpr exprA, exprB, exprC;
         {
             SQLExprParser parser = new MySqlExprParser(sql);
-            exprA = (MySqlIntervalExpr) parser.expr();
+            exprA = (SQLIntervalExpr) parser.expr();
         }
         {
             SQLExprParser parser = new MySqlExprParser(sql);
-            exprB = (MySqlIntervalExpr) parser.expr();
+            exprB = (SQLIntervalExpr) parser.expr();
         }
         {
             SQLExprParser parser = new MySqlExprParser(sql_c);
-            exprC = (MySqlIntervalExpr) parser.expr();
+            exprC = (SQLIntervalExpr) parser.expr();
         }
         Assert.assertEquals(exprA, exprB);
         Assert.assertNotEquals(exprA, exprC);
@@ -32,7 +32,7 @@ public class EqualTest_interval_mysql extends TestCase {
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
         
-        Assert.assertEquals(new MySqlIntervalExpr(), new MySqlIntervalExpr());
-        Assert.assertEquals(new MySqlIntervalExpr().hashCode(), new MySqlIntervalExpr().hashCode());
+        Assert.assertEquals(new SQLIntervalExpr(), new SQLIntervalExpr());
+        Assert.assertEquals(new SQLIntervalExpr().hashCode(), new SQLIntervalExpr().hashCode());
     }
 }

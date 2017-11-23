@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,10 +48,8 @@ public class SQLServerInsertTest6 extends TestCase {
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
 
-        String formatSql = "INSERT INTO [dbo].[SurveyAnswer]"//
-                           + "\n\t([CustomerId], [QuestionId], [OptionId], [CreateTime], [LastUpdateTime])"//
-                           + "\nVALUES" //
-                           + "\n(@0, @1, @2, @3, @4)";
+        String formatSql = "INSERT INTO [dbo].[SurveyAnswer] ([CustomerId], [QuestionId], [OptionId], [CreateTime], [LastUpdateTime])"//
+                           + "\nVALUES (@0, @1, @2, @3, @4)";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,21 +30,11 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
     private final List<SQLHint> hints         = new ArrayList<SQLHint>(1);
     private boolean             only          = false;
     private String              alias;
-    private SQLExpr             where;
 
-    private List<SQLExpr>       returning     = new ArrayList<SQLExpr>();
     private List<SQLExpr>       returningInto = new ArrayList<SQLExpr>();
 
     public OracleUpdateStatement(){
         super (JdbcConstants.ORACLE);
-    }
-
-    public List<SQLExpr> getReturning() {
-        return returning;
-    }
-
-    public void setReturning(List<SQLExpr> returning) {
-        this.returning = returning;
     }
 
     public List<SQLExpr> getReturningInto() {
@@ -84,14 +74,6 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
 
     public void setAlias(String alias) {
         this.alias = alias;
-    }
-
-    public SQLExpr getWhere() {
-        return this.where;
-    }
-
-    public void setWhere(SQLExpr where) {
-        this.where = where;
     }
 
     public boolean isOnly() {

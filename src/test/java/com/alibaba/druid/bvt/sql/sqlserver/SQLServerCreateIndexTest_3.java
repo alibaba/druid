@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,16 +43,16 @@ public class SQLServerCreateIndexTest_3 extends TestCase {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("CREATE NONCLUSTERED INDEX IX_SalesPerson_SalesQuota_SalesYTD" //
-                            + " ON Sales.SalesPerson (SalesQuota, SalesYTD)", //
+                            + " ON Sales.SalesPerson (SalesQuota, SalesYTD);", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());

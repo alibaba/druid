@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
@@ -44,7 +44,7 @@ public class OracleMergeTest7 extends OracleTest {
 
         SQLStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
-        OracleMergeStatement mergeStatement = (OracleMergeStatement) stmtList.get(0);
+        SQLMergeStatement mergeStatement = (SQLMergeStatement) stmtList.get(0);
         String result = SQLUtils.toOracleString(mergeStatement);
         Assert.assertEquals("MERGE INTO copy_emp c" //
                                     + "\nUSING employees e ON (c.employee_id = e.employee_id) " //

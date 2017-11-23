@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,43 @@
 package com.alibaba.druid.pool;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Properties;
 
+import com.alibaba.druid.util.JdbcUtils;
+
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  * @since 0.2.21
  */
 public class ValidConnectionCheckerAdapter implements ValidConnectionChecker {
 
     @Override
-    public boolean isValidConnection(Connection c, String query, int validationQueryTimeout) {
-        return true;
+    public boolean isValidConnection(Connection conn, String query, int validationQueryTimeout) throws Exception {
+        if (query == null || query.length() == 0) {
+            return true;
+        }
+        
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.createStatement();
+            if (validationQueryTimeout > 0) {
+                stmt.setQueryTimeout(validationQueryTimeout);
+            }
+            rs = stmt.executeQuery(query);
+            return true;
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
+        }
     }
 
     @Override
     public void configFromProperties(Properties properties) {
         
     }
+
 
 }

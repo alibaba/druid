@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,11 @@ public class NoLoggingImpl implements Log {
     private int    warnCount;
     private int    debugCount;
     private String loggerName;
+    
+    private boolean debugEnable = false;
+    private boolean infoEnable = true;
+    private boolean warnEnable = true;
+    private boolean errorEnable = true;
 
     public NoLoggingImpl(String loggerName){
         this.loggerName = loggerName;
@@ -32,10 +37,14 @@ public class NoLoggingImpl implements Log {
     }
 
     public boolean isDebugEnabled() {
-        return false;
+        return debugEnable;
     }
 
     public void error(String s, Throwable e) {
+        if (!errorEnable) {
+            return;
+        }
+        
         error(s);
 
         if (e != null) {
@@ -86,7 +95,7 @@ public class NoLoggingImpl implements Log {
 
     @Override
     public boolean isInfoEnabled() {
-        return false;
+        return infoEnable;
     }
 
     @Override
@@ -96,7 +105,7 @@ public class NoLoggingImpl implements Log {
 
     @Override
     public boolean isWarnEnabled() {
-        return false;
+        return warnEnable;
     }
 
     public int getInfoCount() {
@@ -107,4 +116,11 @@ public class NoLoggingImpl implements Log {
         return debugCount;
     }
 
+    public boolean isErrorEnabled() {
+        return errorEnable;
+    }
+    
+    public void setErrorEnabled(boolean value) {
+        this.errorEnable = value;
+    }
 }

@@ -26,8 +26,10 @@ druid.common = function () {
 		},
 		
 		buildFooter : function() {
-			var html = '<footer class="footer">'+
+
+			var html ='<footer class="footer">'+
 					  '    		<div class="container">'+
+					  '<a href="https://render.alipay.com/p/s/taobaonpm_click/druid_banner_click" target="new"><img src="https://render.alipay.com/p/s/taobaonpm_click/druid_banner"></a><br/>' +
 				  	  '	powered by <a href="https://github.com/alibaba/" target="_blank">AlibabaTech</a> & <a href="http://www.sandzhang.com/" target="_blank">sandzhang</a> & <a href="http://melin.iteye.com/" target="_blank">melin</a> & <a href="https://github.com/shrekwang" target="_blank">shrek.wang</a>'+
 				  	  '			</div>'+
 					  ' </footer>';
@@ -42,6 +44,23 @@ druid.common = function () {
 			$.ajax({
 				type: 'POST',
 				url: "reset-all.json",
+				success: function(data) {
+					if (data.ResultCode == 1) {
+						alert("already reset all stat");
+					}
+				},
+				dataType: "json"
+			});
+		},
+
+		ajaxRequestForLogAndReset : function() {
+			if(!confirm("Are you sure to reset data source stat? It'll clear and log all stat data !")){
+				return;
+			}
+
+			$.ajax({
+				type: 'POST',
+				url: "log-and-reset.json",
 				success: function(data) {
 					if (data.ResultCode == 1) {
 						alert("already reset all stat");

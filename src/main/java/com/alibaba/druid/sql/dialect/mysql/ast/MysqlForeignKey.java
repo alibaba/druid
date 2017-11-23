@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +19,21 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 /**
  * @author kiki
  */
 public class MysqlForeignKey extends SQLForeignKeyImpl {
+    private SQLName  indexName;
+    private boolean  hasConstraint;
+    private Match    referenceMatch;
+    protected Option onUpdate;
+    protected Option onDelete;
 
-    private SQLName indexName;
-
-    private boolean hasConstraint;
-
-    private Match   referenceMatch;
-
-    private On      referenceOn;
-
-    private Option  referenceOption;
+    public MysqlForeignKey() {
+        dbType = JdbcConstants.MYSQL;
+    }
 
     public SQLName getIndexName() {
         return indexName;
@@ -70,6 +70,17 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
         visitor.endVisit(this);
     }
 
+    public MysqlForeignKey clone() {
+        MysqlForeignKey x = new MysqlForeignKey();
+        cloneTo(x);
+
+        x.referenceMatch = referenceMatch;
+        x.onUpdate = onUpdate;
+        x.onDelete = onDelete;
+
+        return x;
+    }
+
     public Match getReferenceMatch() {
         return referenceMatch;
     }
@@ -78,43 +89,20 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
         this.referenceMatch = referenceMatch;
     }
 
-    public On getReferenceOn() {
-        return referenceOn;
+    public Option getOnUpdate() {
+        return onUpdate;
     }
 
-    public void setReferenceOn(On referenceOn) {
-        this.referenceOn = referenceOn;
+    public void setOnUpdate(Option onUpdate) {
+        this.onUpdate = onUpdate;
     }
 
-    public Option getReferenceOption() {
-        return referenceOption;
+    public Option getOnDelete() {
+        return onDelete;
     }
 
-    public void setReferenceOption(Option referenceOption) {
-        this.referenceOption = referenceOption;
+    public void setOnDelete(Option onDelete) {
+        this.onDelete = onDelete;
     }
 
-    public static enum Option {
-
-        RESTRICT("RESTRICT"), CASCADE("CASCADE"), SET_NULL("SET NULL"), NO_ACTION("NO ACTION");
-
-        private String text;
-
-        Option(String text){
-            this.text = text;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-    }
-
-    public static enum Match {
-        FULL, PARTIAL, SIMPLE;
-    }
-
-    public static enum On {
-        DELETE, UPDATE;
-    }
 }

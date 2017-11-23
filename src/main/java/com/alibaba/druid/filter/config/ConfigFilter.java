@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,8 +137,6 @@ public class ConfigFilter extends FilterAdapter {
     }
 
     public boolean isDecrypt(Properties connectinProperties, Properties configFileProperties) {
-        boolean decrypt = false;
-
         String decrypterId = connectinProperties.getProperty(CONFIG_DECRYPT);
         if (decrypterId == null || decrypterId.length() == 0) {
             if (configFileProperties != null) {
@@ -150,11 +148,7 @@ public class ConfigFilter extends FilterAdapter {
             decrypterId = System.getProperty(SYS_PROP_CONFIG_DECRYPT);
         }
 
-        if ("true".equals(decrypterId)) {
-            decrypt = true;
-        }
-
-        return decrypt;
+        return Boolean.valueOf(decrypterId);
     }
 
     Properties loadPropertyFromConfigFile(Properties connectinProperties) {
@@ -215,7 +209,7 @@ public class ConfigFilter extends FilterAdapter {
     public PublicKey getPublicKey(Properties connectinProperties, Properties configFileProperties) {
         String key = null;
         if (configFileProperties != null) {
-            configFileProperties.getProperty(CONFIG_KEY);
+            key = configFileProperties.getProperty(CONFIG_KEY);
         }
 
         if (StringUtils.isEmpty(key) && connectinProperties != null) {

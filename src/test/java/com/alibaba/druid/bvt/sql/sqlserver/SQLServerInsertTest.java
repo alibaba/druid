@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,8 @@ public class SQLServerInsertTest extends TestCase {
         String sql = "INSERT INTO Cities (Location)" + //
                      "VALUES ( CONVERT(Point, '12.3:46.2') );";
 
-        String expect = "INSERT INTO Cities" + //
-                        "\n\t(Location)" + //
-                        "\nVALUES" + //
-                        "\n(CONVERT(Point, '12.3:46.2'))";
+        String expect = "INSERT INTO Cities (Location)" + //
+                        "\nVALUES (CONVERT(Point, '12.3:46.2'));";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
@@ -40,6 +38,6 @@ public class SQLServerInsertTest extends TestCase {
 
         Assert.assertEquals(expect, text);
 
-        System.out.println(text);
+//        System.out.println(text);
     }
 }

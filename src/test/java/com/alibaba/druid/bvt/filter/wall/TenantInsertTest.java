@@ -47,7 +47,7 @@ public class TenantInsertTest extends TestCase {
     public void testMySql3() throws Exception {
         String insert_sql = "INSERT INTO orders (ID, NAME) VALUES (1, \"KIKI\")";
         String expect_sql = "INSERT INTO orders (ID, NAME, tenant)" + //
-                            "\nVALUES (1, 'KIKI', 123)";
+                            "\nVALUES (1, \"KIKI\", 123)";
         {
             MySqlWallProvider provider = new MySqlWallProvider(config_callback);
             WallCheckResult checkResult = provider.check(insert_sql);
@@ -72,8 +72,8 @@ public class TenantInsertTest extends TestCase {
     public void testMySql4() throws Exception {
         String insert_sql = "INSERT INTO orders (ID, NAME) VALUES (1, \"KIKI\"), (1, \"CICI\")";
         String expect_sql = "INSERT INTO orders (ID, NAME, tenant)" + //
-                            "\nVALUES (1, 'KIKI', 123)," + //
-                            "\n\t(1, 'CICI', 123)";
+                            "\nVALUES (1, \"KIKI\", 123)," + //
+                            "\n\t(1, \"CICI\", 123)";
 
         {
             MySqlWallProvider provider = new MySqlWallProvider(config_callback);
@@ -125,16 +125,16 @@ public class TenantInsertTest extends TestCase {
 
     public void testMySql6() throws Exception {
         String insert_sql = "INSERT INTO orders (ID, NAME) SELECT ID, NAME FROM temp1 WHERE age = 18 UNION SELECT ID, NAME FROM temp2 UNION ALL SELECT ID, NAME FROM temp3";
-        String expect_sql = "INSERT INTO orders (ID, NAME, tenant)" + //
-                            "\nSELECT ID, NAME, 123" + //
-                            "\nFROM temp1" + //
-                            "\nWHERE age = 18" + //
-                            "\nUNION" + //
-                            "\nSELECT ID, NAME, 123" + //
-                            "\nFROM temp2" + //
-                            "\nUNION ALL" + //
-                            "\nSELECT ID, NAME, 123" + //
-                            "\nFROM temp3";
+        String expect_sql = "INSERT INTO orders (ID, NAME, tenant)\n" +
+                "SELECT ID, NAME, 123\n" +
+                "FROM temp1\n" +
+                "WHERE age = 18\n" +
+                "UNION\n" +
+                "SELECT ID, NAME, 123\n" +
+                "FROM temp2\n" +
+                "UNION ALL\n" +
+                "SELECT ID, NAME, 123\n" +
+                "FROM temp3";
 
         {
             MySqlWallProvider provider = new MySqlWallProvider(config_callback);

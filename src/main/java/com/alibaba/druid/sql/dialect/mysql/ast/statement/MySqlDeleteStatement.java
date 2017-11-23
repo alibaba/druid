@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,15 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -26,17 +31,54 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlDeleteStatement extends SQLDeleteStatement {
 
-    private boolean        lowPriority = false;
-    private boolean        quick       = false;
-    private boolean        ignore      = false;
+    private boolean              lowPriority        = false;
+    private boolean              quick              = false;
+    private boolean              ignore             = false;
+    private SQLOrderBy           orderBy;
+    private SQLLimit             limit;
+    private List<SQLCommentHint> hints;
+    // for petadata
+    private boolean              forceAllPartitions = false;
+    private SQLName              forcePartition;
 
-    private SQLTableSource from;
-    private SQLTableSource using;
-    private SQLOrderBy     orderBy;
-    private Limit          limit;
+    public MySqlDeleteStatement(){
+        super(JdbcConstants.MYSQL);
+    }
+
+    public MySqlDeleteStatement clone() {
+        MySqlDeleteStatement x = new MySqlDeleteStatement();
+        cloneTo(x);
+
+        x.lowPriority = lowPriority;
+        x.quick = quick;
+        x.ignore = ignore;
+
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
+
+        return x;
+    }
+
+    public List<SQLCommentHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLCommentHint>();
+        }
+        return hints;
+    }
     
-    public MySqlDeleteStatement() {
-        super (JdbcConstants.MYSQL);
+    public int getHintsSize() {
+        if (hints == null) {
+            return 0;
+        }
+        
+        return hints.size();
     }
 
     public boolean isLowPriority() {
@@ -63,22 +105,6 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         this.ignore = ignore;
     }
 
-    public SQLTableSource getFrom() {
-        return from;
-    }
-
-    public SQLTableSource getUsing() {
-        return using;
-    }
-
-    public void setUsing(SQLTableSource using) {
-        this.using = using;
-    }
-
-    public void setFrom(SQLTableSource from) {
-        this.from = from;
-    }
-
     public SQLOrderBy getOrderBy() {
         return orderBy;
     }
@@ -87,11 +113,11 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         this.orderBy = orderBy;
     }
 
-    public Limit getLimit() {
+    public SQLLimit getLimit() {
         return limit;
     }
 
-    public void setLimit(Limit limit) {
+    public void setLimit(SQLLimit limit) {
         if (limit != null) {
             limit.setParent(this);
         }
@@ -113,14 +139,33 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
 
     protected void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, getTableSource());
-            acceptChild(visitor, getWhere());
-            acceptChild(visitor, getFrom());
-            acceptChild(visitor, getUsing());
+            acceptChild(visitor, tableSource);
+            acceptChild(visitor, where);
+            acceptChild(visitor, from);
+            acceptChild(visitor, using);
             acceptChild(visitor, orderBy);
             acceptChild(visitor, limit);
         }
 
         visitor.endVisit(this);
+    }
+
+    public boolean isForceAllPartitions() {
+        return forceAllPartitions;
+    }
+
+    public void setForceAllPartitions(boolean forceAllPartitions) {
+        this.forceAllPartitions = forceAllPartitions;
+    }
+
+    public SQLName getForcePartition() {
+        return forcePartition;
+    }
+
+    public void setForcePartition(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.forcePartition = x;
     }
 }

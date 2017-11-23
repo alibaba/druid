@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import com.taobao.datasource.resource.adapter.jdbc.local.LocalTxDataSource;
 /**
  * 测试各个连接池在进行批量插入时操作的性能
  * 
- * @author yunnysunny<yunnysunny@gmail.com> 2013-3-18 下午01:11:40
+ * @author yunnysunny[yunnysunny@gmail.com] 2013-3-18 下午01:11:40
  */
 public class Case4 extends TestCase {
 

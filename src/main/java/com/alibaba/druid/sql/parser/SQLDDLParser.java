@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,22 +28,22 @@ public class SQLDDLParser extends SQLStatementParser {
     }
 
     protected SQLTableConstraint parseConstraint() {
-        if (lexer.token() == Token.CONSTRAINT) {
+        if (lexer.token == Token.CONSTRAINT) {
             lexer.nextToken();
         }
 
-        if (lexer.token() == Token.IDENTIFIER) {
+        if (lexer.token == Token.IDENTIFIER) {
             this.exprParser.name();
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
-        if (lexer.token() == Token.PRIMARY) {
+        if (lexer.token == Token.PRIMARY) {
             lexer.nextToken();
             accept(Token.KEY);
 
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
-        throw new ParserException("TODO");
+        throw new ParserException("TODO " + lexer.info());
     }
 }

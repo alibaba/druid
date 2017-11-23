@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.odps.ast;
 
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -22,7 +23,10 @@ import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OdpsShowStatisticStmt extends SQLStatementImpl implements SQLStatement {
+import java.util.Collections;
+import java.util.List;
+
+public class OdpsShowStatisticStmt extends SQLStatementImpl {
 
     private SQLExprTableSource tableSource;
     
@@ -48,5 +52,10 @@ public class OdpsShowStatisticStmt extends SQLStatementImpl implements SQLStatem
             acceptChild(visitor, tableSource);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.tableSource);
     }
 }

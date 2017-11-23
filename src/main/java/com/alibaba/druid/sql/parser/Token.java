@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@ package com.alibaba.druid.sql.parser;
 /**
  * 
  * SQL Token 
- * @author wenshao 2011-5-18 下午05:16:49
- * @formatter:off
+ * @author wenshao [szujobs@hotmail.com]
  */
 public enum Token {
     SELECT("SELECT"), 
@@ -96,7 +95,8 @@ public enum Token {
     CASE("CASE"), 
     WHEN("WHEN"), 
     THEN("THEN"), 
-    ELSE("ELSE"), 
+    ELSE("ELSE"),
+    ELSIF("ELSIF"),
     END("END"), 
     EXISTS("EXISTS"), 
     IN("IN"),
@@ -116,6 +116,8 @@ public enum Token {
     ANY("ANY"),
     TRUNCATE("TRUNCATE"),
 
+    RETURN("RETURN"),
+
     // mysql
     TRUE("TRUE"), 
     FALSE("FALSE"),
@@ -127,6 +129,25 @@ public enum Token {
     BINARY("BINARY"),
     SHOW("SHOW"),
     REPLACE("REPLACE"),
+
+    BITS,
+
+    // MySql procedure add by zz
+    WHILE("WHILE"),
+    DO("DO"),
+    LEAVE("LEAVE"),
+    ITERATE("ITERATE"),
+    REPEAT("REPEAT"),
+    UNTIL("UNTIL"),
+    OPEN("OPEN"),
+    CLOSE("CLOSE"),
+    OUT("OUT"),
+    INOUT("INOUT"),
+    EXIT("EXIT"),
+    UNDO("UNDO"),
+    SQLSTATE("SQLSTATE"),
+    CONDITION("CONDITION"),
+    DIV("DIV"),
     
     //postgresql
     WINDOW("WINDOW"),
@@ -154,7 +175,9 @@ public enum Token {
     RETURNING("RETURNING"),
     COMMENT("COMMENT"),
     OVER("OVER"),
-    
+    TYPE("TYPE"),
+    ILIKE("ILIKE"),
+
     // oracle
     START("START"),
     PRIOR("PRIOR"),
@@ -201,7 +224,6 @@ public enum Token {
     PCTINCREASE("PCTINCREASE"),
     FLASH_CACHE("FLASH_CACHE"),
     CELL_FLASH_CACHE("CELL_FLASH_CACHE"),
-    KEEP("KEEP"),
     NONE("NONE"),
     LOB("LOB"),
     STORE("STORE"),
@@ -222,6 +244,7 @@ public enum Token {
     TOP("TOP"),
     
     ARRAY("ARRAY"),
+    DISTRIBUTE("DISTRIBUTE"),
     
     // hive
 
@@ -235,7 +258,7 @@ public enum Token {
     LITERAL_HEX,
     LITERAL_CHARS,
     LITERAL_NCHARS,
-    
+
     LITERAL_ALIAS,
     LINE_COMMENT,
     MULTI_LINE_COMMENT,
@@ -248,6 +271,22 @@ public enum Token {
     PARTITION,
     PARTITIONED,
     OVERWRITE,
+    
+    // Teradata
+    SEL("SEL"),
+    LOCKING("LOCKING"),
+    ACCESS("ACCESS"),
+    VOLATILE("VOLATILE"),
+    MULTISET("MULTISET"),
+    POSITION("POSITION"),
+    RANGE_N("RANGE_N"),
+    FORMAT("FORMAT"),
+    QUALIFY("QUALIFY"),
+    MOD("MOD"),
+    
+    CONCAT("CONCAT"), // DB2
+
+    UPSERT("UPSERT"), // Phoenix
 
     LPAREN("("), 
     RPAREN(")"), 
@@ -262,15 +301,24 @@ public enum Token {
     DOTDOTDOT("..,"), 
     EQ("="), 
     GT(">"), 
-    LT("<"), 
+    LT("<"),
+    LT_SUB_GT("<->"),
     BANG("!"),
     BANGBANG("!!"),
-    TILDE("~"), 
-    QUES("?"), 
+    BANG_TILDE("!~"),
+    BANG_TILDE_STAR("!~*"),
+    TILDE("~"),
+    TILDE_STAR("~*"),
+    TILDE_EQ("~="),
+    QUES("?"),
+    QUESQUES("??"),
+    QUESBAR("?|"),
+    QUESAMP("?&"),
     COLON(":"), 
-    COLONCOLON(":"), 
+    COLONCOLON("::"), 
     COLONEQ(":="), 
-    EQEQ("=="), 
+    EQEQ("=="),
+    EQGT("=>"),
     LTEQ("<="), 
     LTEQGT("<=>"), 
     LTGT("<>"), 
@@ -284,16 +332,24 @@ public enum Token {
     BARSLASH("|/"), 
     PLUS("+"), 
     SUB("-"), 
+    SUBGT("->"), 
+    SUBGTGT("->>"), 
     STAR("*"), 
     SLASH("/"), 
     AMP("&"), 
     BAR("|"), 
-    CARET("^"), 
+    CARET("^"),
+    CARETEQ("^="),
     PERCENT("%"), 
     LTLT("<<"), 
     GTGT(">>"),
     MONKEYS_AT("@"),
-    POUND("#")
+    MONKEYS_AT_AT("@@"),
+    POUND("#"),
+    POUNDGT("#>"),
+    POUNDGTGT("#>>"),
+    MONKEYS_AT_GT("@>"),
+    LT_MONKEYS_AT("<@"),
     ;
 
     public final String name;
