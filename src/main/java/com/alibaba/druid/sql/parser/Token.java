@@ -125,6 +125,7 @@ public enum Token {
     KILL("KILL"),
     IDENTIFIED("IDENTIFIED"),
     PASSWORD("PASSWORD"),
+    ALGORITHM("ALGORITHM"),
     DUAL("DUAL"),
     BINARY("BINARY"),
     SHOW("SHOW"),

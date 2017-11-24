@@ -454,6 +454,13 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         clause.setLinear(true);
                     }
 
+                    if (lexer.token() == Token.ALGORITHM) {
+                        lexer.nextToken();
+                        accept(Token.EQ);
+                        clause.setAlgorithm(lexer.integerValue().shortValue());
+                        lexer.nextToken();
+                    }
+
                     accept(Token.LPAREN);
                     if (lexer.token() != Token.RPAREN) {
                         for (;;) {
@@ -633,6 +640,13 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                 if (linear) {
                     clause.setLinear(true);
+                }
+
+                if (lexer.token() == Token.ALGORITHM) {
+                    lexer.nextToken();
+                    accept(Token.EQ);
+                    subPartitionKey.setAlgorithm(lexer.integerValue().shortValue());
+                    lexer.nextToken();
                 }
 
                 accept(Token.LPAREN);

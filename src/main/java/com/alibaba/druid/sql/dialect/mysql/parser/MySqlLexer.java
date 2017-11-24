@@ -35,6 +35,7 @@ public class MySqlLexer extends Lexer {
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
+	map.put("ALGORITHM", Token.ALGORITHM);
         map.put("DUAL", Token.DUAL);
         map.put("FALSE", Token.FALSE);
         map.put("IDENTIFIED", Token.IDENTIFIED);
