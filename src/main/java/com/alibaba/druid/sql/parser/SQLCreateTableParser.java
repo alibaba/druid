@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.parser;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.util.FnvHash;
@@ -130,7 +131,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
             accept(Token.RPAREN);
 
-            if (lexer.identifierEquals("INHERITS")) {
+            if (lexer.identifierEquals(FnvHash.Constants.INHERITS)) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 SQLName inherits = this.exprParser.name();
@@ -143,6 +144,29 @@ public class SQLCreateTableParser extends SQLDDLParser {
             lexer.nextToken();
             SQLSelect select = this.createSQLSelectParser().select();
             createTable.setSelect(select);
+        }
+
+        if (lexer.token == Token.WITH && JdbcConstants.POSTGRESQL.equals(dbType)) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+
+            for (;;) {
+                String name = lexer.stringVal();
+                lexer.nextToken();
+                accept(Token.EQ);
+                SQLExpr value = this.exprParser.expr();
+                value.setParent(createTable);
+
+                createTable.getTableOptions().put(name, value);
+
+                if (lexer.token == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+
+                break;
+            }
+            accept(Token.RPAREN);
         }
 
         return createTable;

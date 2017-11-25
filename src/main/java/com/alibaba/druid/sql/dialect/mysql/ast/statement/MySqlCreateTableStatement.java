@@ -66,10 +66,6 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         this.tableOptions = tableOptions;
     }
 
-    public Map<String, SQLObject> getTableOptions() {
-        return tableOptions;
-    }
-
     @Deprecated
     public SQLSelect getQuery() {
         return select;

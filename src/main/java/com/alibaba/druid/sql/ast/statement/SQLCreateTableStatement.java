@@ -65,6 +65,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected final List<SQLSelectOrderByItem> sortedBy = new ArrayList<SQLSelectOrderByItem>();
     protected int                              buckets;
 
+    protected Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
+
     public SQLCreateTableStatement(){
 
     }
@@ -229,6 +231,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
 
         this.partitioning = partitioning;
+    }
+
+    public Map<String, SQLObject> getTableOptions() {
+        return tableOptions;
     }
 
     @Override

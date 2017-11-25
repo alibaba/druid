@@ -46,6 +46,7 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor, OracleASTVisitor {
@@ -2275,6 +2276,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             println();
             x.getSelect().accept(this);
         }
+
         return false;
     }
 

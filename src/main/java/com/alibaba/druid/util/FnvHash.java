@@ -620,5 +620,6 @@ public final class FnvHash {
         long SAVEPOINT = fnv1a_64_lower("SAVEPOINT");
         long RELEASE = fnv1a_64_lower("RELEASE");
         long MERGE = fnv1a_64_lower("MERGE");
+        long INHERITS = fnv1a_64_lower("INHERITS");
     }
 }

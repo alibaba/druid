@@ -2530,6 +2530,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLCreateTableStatement x) {
         printCreateTable(x, true);
 
+        Map<String, SQLObject> options = x.getTableOptions();
+        if (options.size() > 0) {
+            println();
+            print0(ucase ? "WITH (" : "with (");
+            int i = 0;
+            for (Map.Entry<String, SQLObject> option : x.getTableOptions().entrySet()) {
+                if (i > 0) {
+                    print0(", ");
+                }
+                String key = option.getKey();
+                print0(key);
+
+                print0(" = ");
+
+                option.getValue().accept(this);
+                ++i;
+            }
+            print(')');
+        }
+
         return false;
     }
 

@@ -2431,10 +2431,14 @@ public class SQLExprParser extends SQLParser {
         if (lexer.identifierEquals(FnvHash.Constants.COLLATE)) {
             lexer.nextToken();
 
-            if (lexer.token != Token.IDENTIFIER) {
+            if (lexer.token == Token.LITERAL_ALIAS) {
+                charType.setCollate(lexer.stringVal());
+            } else if (lexer.token == Token.IDENTIFIER) {
+                charType.setCollate(lexer.stringVal());
+            } else {
                 throw new ParserException();
             }
-            charType.setCollate(lexer.stringVal());
+
             lexer.nextToken();
         }
 
