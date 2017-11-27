@@ -1025,6 +1025,13 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         x.onCommitPreserveRows = onCommitPreserveRows;
         x.onCommitDeleteRows = onCommitDeleteRows;
+
+        if (tableOptions != null) {
+            for (Map.Entry<String, SQLObject> entry : tableOptions.entrySet()) {
+                SQLObject entryVal = entry.getValue().clone();
+                x.tableOptions.put(entry.getKey(), entryVal);
+            }
+        }
     }
 
     public SQLName getStoredAs() {

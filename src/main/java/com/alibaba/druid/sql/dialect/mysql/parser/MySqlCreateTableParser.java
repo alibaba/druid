@@ -454,7 +454,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         clause.setLinear(true);
                     }
 
-                    if (lexer.token() == Token.ALGORITHM) {
+                    if (lexer.identifierEquals(FnvHash.Constants.ALGORITHM)) {
                         lexer.nextToken();
                         accept(Token.EQ);
                         clause.setAlgorithm(lexer.integerValue().shortValue());
@@ -642,7 +642,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     clause.setLinear(true);
                 }
 
-                if (lexer.token() == Token.ALGORITHM) {
+                if (lexer.identifierEquals(FnvHash.Constants.ALGORITHM)) {
                     lexer.nextToken();
                     accept(Token.EQ);
                     subPartitionKey.setAlgorithm(lexer.integerValue().shortValue());
