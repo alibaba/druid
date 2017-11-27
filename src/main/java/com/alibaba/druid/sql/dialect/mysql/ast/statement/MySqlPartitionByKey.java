@@ -26,7 +26,16 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlPartitionByKey extends SQLPartitionBy implements MySqlObject {
+    private short algorithm = 2;
 
+    public short getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(short algorithm) {
+        this.algorithm = algorithm;
+    }
+    
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {
@@ -54,6 +63,7 @@ public class MySqlPartitionByKey extends SQLPartitionBy implements MySqlObject {
             c2.setParent(x);
             x.columns.add(c2);
         }
+	x.setAlgorithm(algorithm);
     }
 
     public MySqlPartitionByKey clone() {
