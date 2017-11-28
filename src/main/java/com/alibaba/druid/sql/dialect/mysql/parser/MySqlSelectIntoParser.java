@@ -277,11 +277,18 @@ public class MySqlSelectIntoParser extends SQLSelectParser {
             return tableSource;
         }
 
-        if (lexer.token() == Token.USE) {
+        parseIndexHintList(tableSource);
+	
+        return super.parseTableSourceRest(tableSource);
+    }
+
+    private void parseIndexHintList(SQLTableSource tableSource) {
+	if (lexer.token() == Token.USE) {
             lexer.nextToken();
             MySqlUseIndexHint hint = new MySqlUseIndexHint();
             parseIndexHint(hint);
             tableSource.getHints().add(hint);
+	    parseIndexHintList(tableSource);
         }
 
         if (lexer.identifierEquals("IGNORE")) {
@@ -289,6 +296,7 @@ public class MySqlSelectIntoParser extends SQLSelectParser {
             MySqlIgnoreIndexHint hint = new MySqlIgnoreIndexHint();
             parseIndexHint(hint);
             tableSource.getHints().add(hint);
+	    parseIndexHintList(tableSource);
         }
 
         if (lexer.identifierEquals("FORCE")) {
@@ -296,9 +304,8 @@ public class MySqlSelectIntoParser extends SQLSelectParser {
             MySqlForceIndexHint hint = new MySqlForceIndexHint();
             parseIndexHint(hint);
             tableSource.getHints().add(hint);
+	    parseIndexHintList(tableSource);
         }
-
-        return super.parseTableSourceRest(tableSource);
     }
 
     private void parseIndexHint(MySqlIndexHintImpl hint) {

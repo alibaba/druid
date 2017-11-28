@@ -424,26 +424,7 @@ public class MySqlSelectParser extends SQLSelectParser {
     }
 
     protected SQLTableSource primaryTableSourceRest(SQLTableSource tableSource) {
-        if (lexer.token() == Token.USE) {
-            lexer.nextToken();
-            MySqlUseIndexHint hint = new MySqlUseIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
-
-        if (lexer.identifierEquals("IGNORE")) {
-            lexer.nextToken();
-            MySqlIgnoreIndexHint hint = new MySqlIgnoreIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
-
-        if (lexer.identifierEquals("FORCE")) {
-            lexer.nextToken();
-            MySqlForceIndexHint hint = new MySqlForceIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
+        parseIndexHintList(tableSource);
 
         if (lexer.token() == Token.PARTITION) {
             lexer.nextToken();
@@ -460,26 +441,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             return tableSource;
         }
 
-        if (lexer.token() == Token.USE) {
-            lexer.nextToken();
-            MySqlUseIndexHint hint = new MySqlUseIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.IGNORE)) {
-            lexer.nextToken();
-            MySqlIgnoreIndexHint hint = new MySqlIgnoreIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
-            lexer.nextToken();
-            MySqlForceIndexHint hint = new MySqlForceIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
+        parseIndexHintList(tableSource);
         
         if (lexer.token() == Token.PARTITION) {
             lexer.nextToken();
@@ -489,6 +451,32 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
 
         return super.parseTableSourceRest(tableSource);
+    }
+
+    private void parseIndexHintList(SQLTableSource tableSource) {
+	if (lexer.token() == Token.USE) {
+            lexer.nextToken();
+            MySqlUseIndexHint hint = new MySqlUseIndexHint();
+            parseIndexHint(hint);
+            tableSource.getHints().add(hint);
+	    parseIndexHintList(tableSource);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.IGNORE)) {
+            lexer.nextToken();
+            MySqlIgnoreIndexHint hint = new MySqlIgnoreIndexHint();
+            parseIndexHint(hint);
+            tableSource.getHints().add(hint);
+	    parseIndexHintList(tableSource);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
+            lexer.nextToken();
+            MySqlForceIndexHint hint = new MySqlForceIndexHint();
+            parseIndexHint(hint);
+            tableSource.getHints().add(hint);
+	    parseIndexHintList(tableSource);
+        }
     }
 
     private void parseIndexHint(MySqlIndexHintImpl hint) {
