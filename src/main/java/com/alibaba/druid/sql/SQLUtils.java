@@ -254,6 +254,9 @@ public class SQLUtils {
             SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, FORMAT_DEFAULT_FEATURES);
             List<SQLStatement> statementList = parser.parseStatementList();
             return toSQLString(statementList, dbType, parameters, option);
+        } catch (ClassCastException ex) {
+            LOG.warn("format error", ex);
+            return sql;
         } catch (ParserException ex) {
             LOG.warn("format error", ex);
             return sql;
