@@ -32,7 +32,11 @@ public class PGSelectStatement extends SQLSelectStatement implements PGSQLStatem
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((PGASTVisitor) visitor);
+        if (visitor instanceof PGASTVisitor) {
+            accept0((PGASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
     public void accept0(PGASTVisitor visitor) {
