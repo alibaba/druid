@@ -18,11 +18,9 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
-import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
@@ -310,7 +308,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
         private SQLName externalType;
         private SQLExpr externalDirectory;
-        private OracleExternalRecordFormat externalDirectoryRecordFormat;
+        private SQLExternalRecordFormat externalDirectoryRecordFormat;
         private List<SQLExpr> externalDirectoryLocation = new ArrayList<SQLExpr>();
         private SQLExpr externalRejectLimit;
 
@@ -350,11 +348,11 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             this.externalDirectory = externalDirectory;
         }
 
-        public OracleExternalRecordFormat getExternalDirectoryRecordFormat() {
+        public SQLExternalRecordFormat getExternalDirectoryRecordFormat() {
             return externalDirectoryRecordFormat;
         }
 
-        public void setExternalDirectoryRecordFormat(OracleExternalRecordFormat recordFormat) {
+        public void setExternalDirectoryRecordFormat(SQLExternalRecordFormat recordFormat) {
             if (recordFormat != null) {
                 recordFormat.setParent(this);
             }
@@ -374,42 +372,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
         public List<SQLExpr> getExternalDirectoryLocation() {
             return externalDirectoryLocation;
-        }
-    }
-
-    public static class OracleExternalRecordFormat extends OracleSQLObjectImpl {
-        private SQLExpr delimitedBy;
-        private SQLExpr terminatedBy;
-
-        @Override
-        public void accept0(OracleASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, delimitedBy);
-                acceptChild(visitor, terminatedBy);
-            }
-            visitor.endVisit(this);
-        }
-
-        public SQLExpr getDelimitedBy() {
-            return delimitedBy;
-        }
-
-        public void setDelimitedBy(SQLExpr delimitedBy) {
-            if (delimitedBy != null) {
-                delimitedBy.setParent(this);
-            }
-            this.delimitedBy = delimitedBy;
-        }
-
-        public SQLExpr getTerminatedBy() {
-            return terminatedBy;
-        }
-
-        public void setTerminatedBy(SQLExpr terminatedBy) {
-            if (terminatedBy != null) {
-                terminatedBy.setParent(this);
-            }
-            this.terminatedBy = terminatedBy;
         }
     }
 

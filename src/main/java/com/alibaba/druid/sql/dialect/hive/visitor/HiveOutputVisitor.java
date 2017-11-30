@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
@@ -69,6 +70,13 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             print(')');
         }
 
+        SQLExpr comment = x.getComment();
+        if (comment != null) {
+            println();
+            print0(ucase ? "COMMENT " : "comment ");
+            comment.accept(this);
+        }
+
         int partitionSize = x.getPartitionColumns().size();
         if (partitionSize > 0) {
             println();
@@ -102,6 +110,13 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             print0(ucase ? "CLUSTERED BY (" : "clustered by (");
             printAndAccept(clusteredBy, ",");
             print(')');
+        }
+
+        SQLExternalRecordFormat format = x.getRowFormat();
+        if (format != null) {
+            println();
+            print0(ucase ? "ROW FORMAT DELIMITED " : "row format delimited ");
+            visit(format);
         }
 
         List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
@@ -140,5 +155,21 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
     @Override
     public void endVisit(HiveCreateTableStatement x) {
 
+    }
+
+    public boolean visit(SQLExternalRecordFormat x) {
+        if (x.getDelimitedBy() != null) {
+            println();
+            print0(ucase ? "LINES TERMINATED BY " : "lines terminated by ");
+            x.getDelimitedBy().accept(this);
+        }
+
+        if (x.getTerminatedBy() != null) {
+            println();
+            print0(ucase ? "FIELDS TERMINATED BY " : "fields terminated by ");
+            x.getTerminatedBy().accept(this);
+        }
+
+        return false;
     }
 }

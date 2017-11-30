@@ -60,6 +60,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected boolean                          onCommitDeleteRows;
 
     // for hive & odps
+    protected SQLExternalRecordFormat          rowFormat;
     protected final List<SQLColumnDefinition>  partitionColumns = new ArrayList<SQLColumnDefinition>(2);
     protected final List<SQLName>              clusteredBy = new ArrayList<SQLName>();
     protected final List<SQLSelectOrderByItem> sortedBy = new ArrayList<SQLSelectOrderByItem>();
@@ -1093,5 +1094,16 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             column.setParent(this);
         }
         this.partitionColumns.add(column);
+    }
+
+    public SQLExternalRecordFormat getRowFormat() {
+        return rowFormat;
+    }
+
+    public void setRowFormat(SQLExternalRecordFormat x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.rowFormat = x;
     }
 }

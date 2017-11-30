@@ -46,7 +46,6 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor, OracleASTVisitor {
@@ -1887,28 +1886,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public void endVisit(OracleCreateTableStatement.Organization x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-        if (x.getDelimitedBy() != null) {
-            println();
-            print0(ucase ? "RECORDS DELIMITED BY " : "records delimited by ");
-            x.getDelimitedBy().accept(this);
-        }
-
-        if (x.getTerminatedBy() != null) {
-            println();
-            print0(ucase ? "FIELDS TERMINATED BY " : "fields terminated by ");
-            x.getTerminatedBy().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
 
     }
 

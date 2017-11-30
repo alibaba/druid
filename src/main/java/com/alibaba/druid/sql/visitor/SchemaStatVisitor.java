@@ -2416,4 +2416,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLDropTypeStatement x) {
         return false;
     }
+
+    @Override
+    public boolean visit(SQLExternalRecordFormat x) {
+        return false;
+    }
 }

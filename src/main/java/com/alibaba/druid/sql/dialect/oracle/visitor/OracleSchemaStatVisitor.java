@@ -1224,16 +1224,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCreateTableStatement.OIDIndex x) {
         return false;
     }

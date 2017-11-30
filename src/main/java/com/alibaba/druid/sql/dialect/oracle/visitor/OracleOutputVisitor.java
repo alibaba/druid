@@ -3020,26 +3020,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     }
 
-    public boolean visit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-        if (x.getDelimitedBy() != null) {
-            println();
-            print0(ucase ? "RECORDS DELIMITED BY " : "records delimited by ");
-            x.getDelimitedBy().accept(this);
-        }
-
-        if (x.getTerminatedBy() != null) {
-            println();
-            print0(ucase ? "FIELDS TERMINATED BY " : "fields terminated by ");
-            x.getTerminatedBy().accept(this);
-        }
-
-        return false;
-    }
-
-    public void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-
-    }
-
     public boolean visit(OracleCreateTableStatement.OIDIndex x) {
         print0(ucase ? "OIDINDEX" : "oidindex");
 

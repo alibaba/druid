@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.hive.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
@@ -120,6 +121,11 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             }
         }
 
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+            SQLExpr comment = this.exprParser.expr();
+            stmt.setComment(comment);
+        }
 
         if (lexer.token() == Token.PARTITIONED) {
             lexer.nextToken();
@@ -157,6 +163,23 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             accept(Token.LPAREN);
             this.exprParser.names(stmt.getClusteredBy());
             accept(Token.RPAREN);
+        }
+
+        if (lexer.token() == Token.ROW) {
+            lexer.nextToken();
+            acceptIdentifier("FORMAT");
+
+            if (lexer.identifierEquals(FnvHash.Constants.DELIMITED)) {
+                lexer.nextToken();
+                acceptIdentifier("FIELDS");
+                acceptIdentifier("TERMINATED");
+                accept(Token.BY);
+                SQLExternalRecordFormat format = new SQLExternalRecordFormat();
+                format.setTerminatedBy(this.exprParser.expr());
+                stmt.setRowFormat(format);
+            } else {
+                throw new ParserException("TODO " + lexer.info());
+            }
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {

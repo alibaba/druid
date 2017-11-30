@@ -1866,6 +1866,14 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     }
 
+    public boolean visit(SQLExternalRecordFormat x) {
+        return true;
+    }
+
+    public void endVisit(SQLExternalRecordFormat x) {
+
+    }
+
     public final boolean isEnabled(VisitorFeature feature) {
         return VisitorFeature.isEnabled(this.features, feature);
     }

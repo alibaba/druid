@@ -6025,4 +6025,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         return false;
     }
+
+    public boolean visit(SQLExternalRecordFormat x) {
+        if (x.getDelimitedBy() != null) {
+            println();
+            print0(ucase ? "RECORDS DELIMITED BY " : "records delimited by ");
+            x.getDelimitedBy().accept(this);
+        }
+
+        if (x.getTerminatedBy() != null) {
+            println();
+            print0(ucase ? "FIELDS TERMINATED BY " : "fields terminated by ");
+            x.getTerminatedBy().accept(this);
+        }
+
+        return false;
+    }
 }

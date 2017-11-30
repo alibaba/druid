@@ -621,5 +621,6 @@ public final class FnvHash {
         long RELEASE = fnv1a_64_lower("RELEASE");
         long MERGE = fnv1a_64_lower("MERGE");
         long INHERITS = fnv1a_64_lower("INHERITS");
+        long DELIMITED = fnv1a_64_lower("DELIMITED");
     }
 }
