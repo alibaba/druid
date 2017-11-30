@@ -62,7 +62,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     private final        boolean               dupCloseLogEnable;
     protected volatile   boolean               traceEnable          = false;
     private   volatile   boolean               disable              = false;
-    private              boolean               closed               = false;
+    protected volatile   boolean               closed               = false;
     protected final      Thread                ownerThread;
     private              long                  connectedTimeMillis;
     private              long                  connectedTimeNano;
@@ -857,7 +857,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             return true;
         }
 
-        return conn.isClosed();
+        return closed || disable;
     }
 
     public boolean isAbandonded() {
