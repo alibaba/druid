@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCommentHint extends SQLObjectImpl implements SQLHint {
@@ -45,5 +46,9 @@ public class SQLCommentHint extends SQLObjectImpl implements SQLHint {
 
     public SQLCommentHint clone() {
         return new SQLCommentHint(text);
+    }
+
+    public void output(StringBuffer buf) {
+        new SQLASTOutputVisitor(buf).visit(this);
     }
 }
