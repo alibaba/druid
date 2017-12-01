@@ -509,6 +509,22 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return aggregateFunctions;
     }
 
+    public boolean visit(SQLBetweenExpr x) {
+        SQLObject parent = x.getParent();
+
+        SQLExpr test = x.getTestExpr();
+        SQLExpr begin = x.getBeginExpr();
+        SQLExpr end = x.getEndExpr();
+
+        statExpr(test);
+        statExpr(begin);
+        statExpr(end);
+
+        handleCondition(test, "BETWEEN", begin, end);
+
+        return false;
+    }
+
     public boolean visit(SQLBinaryOpExpr x) {
         SQLObject parent = x.getParent();
 
