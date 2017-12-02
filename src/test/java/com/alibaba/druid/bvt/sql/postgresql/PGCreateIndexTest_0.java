@@ -33,9 +33,9 @@ public class PGCreateIndexTest_0 extends PGTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         
-        assertEquals("CREATE UNIQUE INDEX  USING btree\"test_idx\" ON \"public\".\"city\" (\"name\");", SQLUtils.toPGString(stmt));
-        
-        assertEquals("create UNIQUE index  using btree\"test_idx\" on \"public\".\"city\" (\"name\");", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("CREATE UNIQUE INDEX \"test_idx\" USING btree ON \"public\".\"city\" (\"name\");", SQLUtils.toPGString(stmt));
+
+        assertEquals("create UNIQUE index \"test_idx\" using btree on \"public\".\"city\" (\"name\");", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, statementList.size());
 

@@ -2985,13 +2985,14 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         print0(ucase ? "INDEX " : "index ");
 
+        x.getName().accept(this);
+
         if (x.getUsing() != null) {
             print0(ucase ? " USING " : " using ");
             ;
             print0(x.getUsing());
         }
 
-        x.getName().accept(this);
         print0(ucase ? " ON " : " on ");
         x.getTable().accept(this);
         print0(" (");
