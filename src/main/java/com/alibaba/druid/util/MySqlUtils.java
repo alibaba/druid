@@ -121,10 +121,10 @@ public class MySqlUtils {
                 // pinGlobalTxToPhysicalConnection
                 boolean pinGlobTx = (Boolean) method_6_getValue.invoke(
                         method_6_getBooleanReadableProperty.invoke(
-                            method_6_getPropertySet.invoke(physicalConn)
-                        , "pinGlobalTxToPhysicalConnection"
+                                method_6_getPropertySet.invoke(physicalConn)
+                                , "pinGlobalTxToPhysicalConnection"
                         )
-                    );
+                );
 
                 if (pinGlobTx) {
                     try {
@@ -150,6 +150,11 @@ public class MySqlUtils {
                         method_6_getInstanceXA_error = true;
                     }
                     return (XAConnection) method_6_getInstanceXA.invoke(null, physicalConn, Boolean.FALSE);
+                }
+            } catch (InvocationTargetException e) {
+                Throwable cause = e.getCause();
+                if (cause instanceof RuntimeException) {
+                    throw (RuntimeException) cause;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
