@@ -6041,4 +6041,39 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         return false;
     }
+
+    @Override
+    public boolean visit(SQLArrayDataType x) {
+        print0(ucase ? "ARRAY<" : "array<");
+        x.getComponentType().accept(this);
+        print('>');
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLMapDataType x) {
+        print0(ucase ? "MAP<" : "map<");
+        x.getKeyType().accept(this);
+        print0(", ");
+        x.getValueType().accept(this);
+        print('>');
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLStructDataType x) {
+        print0(ucase ? "STRUCT<" : "struct<");
+        printAndAccept(x.getFields(), ", ");
+        print('>');
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLStructDataType.Field x) {
+        x.getName().accept(this);
+        print(':');
+        x.getDataType().accept(this);
+        print('>');
+        return false;
+    }
 }

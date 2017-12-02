@@ -1874,6 +1874,46 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     }
 
+    @Override
+    public boolean visit(SQLArrayDataType x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLArrayDataType x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLMapDataType x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLMapDataType x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLStructDataType x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLStructDataType x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLStructDataType.Field x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLStructDataType.Field x) {
+
+    }
+
     public final boolean isEnabled(VisitorFeature feature) {
         return VisitorFeature.isEnabled(this.features, feature);
     }

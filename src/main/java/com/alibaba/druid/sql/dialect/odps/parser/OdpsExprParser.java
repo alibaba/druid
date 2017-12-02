@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.odps.parser;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -166,6 +166,55 @@ public class OdpsExprParser extends SQLExprParser {
 
         return super.relationalRest(expr);
     }
+
+    public SQLDataType parseDataType() {
+        if (lexer.identifierEquals(FnvHash.Constants.ARRAY)) {
+            lexer.nextToken();
+            accept(Token.LT);
+            SQLDataType itemType = parseDataType();
+            accept(Token.GT);
+
+            return new SQLArrayDataType(itemType, dbType);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.MAP)) {
+            lexer.nextToken();
+            accept(Token.LT);
+
+            SQLDataType keyType = parseDataType();
+            accept(Token.COMMA);
+            SQLDataType valueType = parseDataType();
+            accept(Token.GT);
+
+            return new SQLMapDataType(keyType, valueType, dbType);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.STRUCT)) {
+            lexer.nextToken();
+
+            SQLStructDataType struct = new SQLStructDataType(dbType);
+            accept(Token.LT);
+            for (;;) {
+                SQLName name = this.name();
+                accept(Token.COLON);
+                SQLDataType dataType = this.parseDataType();
+                struct.addField(name, dataType);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            accept(Token.GT);
+            return struct;
+//            throw new ParserException("TODO : " + lexer.info());
+        }
+
+
+        return super.parseDataType();
+    }
+
 
     @Override
     public OdpsSelectParser createSelectParser() {

@@ -615,6 +615,8 @@ public final class FnvHash {
         long SORTED = fnv1a_64_lower("SORTED");
         long LIFECYCLE = fnv1a_64_lower("LIFECYCLE");
         long PARTITIONS = fnv1a_64_lower("PARTITIONS");
+        long ARRAY = fnv1a_64_lower("ARRAY");
+        long STRUCT = fnv1a_64_lower("STRUCT");
 
         long ROLLBACK = fnv1a_64_lower("ROLLBACK");
         long SAVEPOINT = fnv1a_64_lower("SAVEPOINT");
