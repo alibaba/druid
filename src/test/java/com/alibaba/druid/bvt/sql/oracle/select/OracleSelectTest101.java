@@ -145,7 +145,7 @@ public class OracleSelectTest101 extends OracleTest {
 
         assertEquals(5, visitor.getTables().size());
         assertEquals(24, visitor.getColumns().size());
-        assertEquals(11, visitor.getConditions().size());
+        assertEquals(12, visitor.getConditions().size());
         assertEquals(4, visitor.getRelationships().size());
         assertEquals(1, visitor.getOrderByColumns().size());
     }

@@ -77,7 +77,7 @@ public class DB2SelectTest_26 extends DB2Test {
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
+        Assert.assertEquals(3, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("MK.M_BROAD_BAND_USER_FACT")));
 

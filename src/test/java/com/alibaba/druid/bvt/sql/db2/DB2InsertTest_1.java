@@ -93,7 +93,7 @@ public class DB2InsertTest_1 extends DB2Test {
 
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(11, visitor.getColumns().size());
-        Assert.assertEquals(3, visitor.getConditions().size());
+        Assert.assertEquals(4, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("MK.KPI_AREA_SORT_FACT_LATN_ID_MID")));
 
