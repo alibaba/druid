@@ -17,7 +17,6 @@ package com.alibaba.druid.util;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.mysql.jdbc.ConnectionImpl;
 
 import javax.sql.XAConnection;
 import java.lang.reflect.Constructor;
@@ -30,21 +29,38 @@ import java.util.List;
 import java.util.Set;
 
 public class MySqlUtils {
-    static Class<?> utilClass;
-    static boolean utilClassError = false;
-    static boolean utilClass_isJdbc4 = false;
+    static Class<?>       utilClass;
+    static boolean        utilClassError = false;
+    static boolean        utilClass_isJdbc4 = false;
 
-    static Class<?> connectionClass = null;
-    static Method getPinGlobalTxToPhysicalConnectionMethod = null;
+    static Class<?>       class_5_connection= null;
+    static Method         method_5_getPinGlobalTxToPhysicalConnection = null;
+    static Class<?>       class_5_suspendableXAConnection = null;
+    static Constructor<?> constructor_5_suspendableXAConnection = null;
+    static Class<?>       class_5_JDBC4SuspendableXAConnection = null;
+    static Constructor<?> constructor_5_JDBC4SuspendableXAConnection = null;
+    static Class<?>       class_5_MysqlXAConnection = null;
+    static Constructor<?> constructor_5_MysqlXAConnection = null;
 
-    static Class<?> suspendableXAConnectionClass = null;
-    static Constructor<?> suspendableXAConnectionConstructor = null;
+    static Class<?>       class_5_ConnectionImpl = null;
+    static Method         method_5_getId         = null;
 
-    static Class<?> JDBC4SuspendableXAConnectionClass = null;
-    static Constructor<?> JDBC4SuspendableXAConnectionConstructor = null;
+    static Class<?>       class_6_ConnectionImpl = null;
+    static Method         method_6_getId         = null;
 
-    static Class<?> MysqlXAConnectionClass = null;
-    static Constructor<?> MysqlXAConnectionConstructor = null;
+    volatile static Class<?>       class_6_connection= null;
+    volatile static Method         method_6_getPropertySet = null;
+    volatile static Method         method_6_getBooleanReadableProperty = null;
+    volatile static Method         method_6_getValue = null;
+    volatile static boolean        method_6_getValue_error = false;
+
+    volatile static Class<?>       class_6_suspendableXAConnection = null;
+    volatile static Method         method_6_getInstance = null;
+    volatile static boolean        method_6_getInstance_error = false;
+    volatile static Method         method_6_getInstanceXA = null;
+    volatile static boolean        method_6_getInstanceXA_error = false;
+    volatile static Class<?>       class_6_JDBC4SuspendableXAConnection = null;
+
 
     public static XAConnection createXAConnection(Driver driver, Connection physicalConn) throws SQLException {
         final int major = driver.getMajorVersion();
@@ -56,17 +72,17 @@ public class MySqlUtils {
                     Method method = utilClass.getMethod("isJdbc4");
                     utilClass_isJdbc4 = (Boolean) method.invoke(null);
 
-                    connectionClass = Class.forName("com.mysql.jdbc.Connection");
-                    getPinGlobalTxToPhysicalConnectionMethod = connectionClass.getMethod("getPinGlobalTxToPhysicalConnection");
+                    class_5_connection = Class.forName("com.mysql.jdbc.Connection");
+                    method_5_getPinGlobalTxToPhysicalConnection = class_5_connection.getMethod("getPinGlobalTxToPhysicalConnection");
 
-                    suspendableXAConnectionClass = Class.forName("com.mysql.jdbc.jdbc2.optional.SuspendableXAConnection");
-                    suspendableXAConnectionConstructor = suspendableXAConnectionClass.getConstructor(connectionClass);
+                    class_5_suspendableXAConnection = Class.forName("com.mysql.jdbc.jdbc2.optional.SuspendableXAConnection");
+                    constructor_5_suspendableXAConnection = class_5_suspendableXAConnection.getConstructor(class_5_connection);
 
-                    JDBC4SuspendableXAConnectionClass = Class.forName("com.mysql.jdbc.jdbc2.optional.JDBC4SuspendableXAConnection");
-                    JDBC4SuspendableXAConnectionConstructor = JDBC4SuspendableXAConnectionClass.getConstructor(connectionClass);
+                    class_5_JDBC4SuspendableXAConnection = Class.forName("com.mysql.jdbc.jdbc2.optional.JDBC4SuspendableXAConnection");
+                    constructor_5_JDBC4SuspendableXAConnection = class_5_JDBC4SuspendableXAConnection.getConstructor(class_5_connection);
 
-                    MysqlXAConnectionClass = Class.forName("com.mysql.jdbc.jdbc2.optional.MysqlXAConnection");
-                    MysqlXAConnectionConstructor = MysqlXAConnectionClass.getConstructor(connectionClass, boolean.class);
+                    class_5_MysqlXAConnection = Class.forName("com.mysql.jdbc.jdbc2.optional.MysqlXAConnection");
+                    constructor_5_MysqlXAConnection = class_5_MysqlXAConnection.getConstructor(class_5_connection, boolean.class);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     utilClassError = true;
@@ -74,34 +90,118 @@ public class MySqlUtils {
             }
 
             try {
-                boolean pinGlobTx = (Boolean) getPinGlobalTxToPhysicalConnectionMethod.invoke(physicalConn);
+                boolean pinGlobTx = (Boolean) method_5_getPinGlobalTxToPhysicalConnection.invoke(physicalConn);
                 if (pinGlobTx) {
                     if (!utilClass_isJdbc4) {
-                        return (XAConnection) suspendableXAConnectionConstructor.newInstance(physicalConn);
+                        return (XAConnection) constructor_5_suspendableXAConnection.newInstance(physicalConn);
                     }
 
-                    return (XAConnection) JDBC4SuspendableXAConnectionConstructor.newInstance(physicalConn);
+                    return (XAConnection) constructor_5_JDBC4SuspendableXAConnection.newInstance(physicalConn);
                 }
 
-                return (XAConnection) MysqlXAConnectionConstructor.newInstance(physicalConn, Boolean.FALSE);
+                return (XAConnection) constructor_5_MysqlXAConnection.newInstance(physicalConn, Boolean.FALSE);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
+        } else if (major == 6) {
+            if (method_6_getValue == null && !method_6_getValue_error) {
+                try {
+                    class_6_connection = Class.forName("com.mysql.cj.api.jdbc.JdbcConnection");
+                    method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
+                    method_6_getBooleanReadableProperty = Class.forName("com.mysql.cj.api.conf.PropertySet").getMethod("getBooleanReadableProperty", String.class);
+                    method_6_getValue = Class.forName("com.mysql.cj.api.conf.ReadableProperty").getMethod("getValue");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    method_6_getValue_error = true;
+                }
+            }
+
+            try {
+                // pinGlobalTxToPhysicalConnection
+                boolean pinGlobTx = (Boolean) method_6_getValue.invoke(
+                        method_6_getBooleanReadableProperty.invoke(
+                            method_6_getPropertySet.invoke(physicalConn)
+                        , "pinGlobalTxToPhysicalConnection"
+                        )
+                    );
+
+                if (pinGlobTx) {
+                    try {
+                        if (method_6_getInstance == null && !method_6_getInstance_error) {
+                            class_6_suspendableXAConnection = Class.forName("com.mysql.cj.jdbc.SuspendableXAConnection");
+                            method_6_getInstance = class_6_suspendableXAConnection.getDeclaredMethod("getInstance", class_6_connection);
+                            method_6_getInstance.setAccessible(true);
+                        }
+                    } catch (Throwable ex) {
+                        ex.printStackTrace();
+                        method_6_getInstance_error = true;
+                    }
+                    return (XAConnection) method_6_getInstance.invoke(null, physicalConn);
+                } else {
+                    try {
+                        if (method_6_getInstanceXA == null && !method_6_getInstanceXA_error) {
+                            class_6_JDBC4SuspendableXAConnection = Class.forName("com.mysql.cj.jdbc.MysqlXAConnection");
+                            method_6_getInstanceXA = class_6_JDBC4SuspendableXAConnection.getDeclaredMethod("getInstance", class_6_connection, boolean.class);
+                            method_6_getInstanceXA.setAccessible(true);
+                        }
+                    } catch (Throwable ex) {
+                        ex.printStackTrace();
+                        method_6_getInstanceXA_error = true;
+                    }
+                    return (XAConnection) method_6_getInstanceXA.invoke(null, physicalConn, Boolean.FALSE);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                method_6_getInstance_error = true;
+            }
         }
 
         throw new SQLFeatureNotSupportedException();
     }
 
     public static String buildKillQuerySql(Connection connection, SQLException error) throws SQLException {
+        Long threadId = null;
         try {
-            ConnectionImpl connImpl = (ConnectionImpl) connection;
-            long threadId = connImpl.getId();
-            return  "KILL QUERY " + threadId;
+            Class clazz = connection.getClass();
+
+            if (class_5_ConnectionImpl == null) {
+                if (clazz.getName().equals("com.mysql.jdbc.ConnectionImpl")) {
+                    class_5_ConnectionImpl = clazz;
+                }
+            }
+
+            if (class_5_ConnectionImpl == clazz) {
+                if (method_5_getId == null) {
+                    method_5_getId = class_5_ConnectionImpl.getMethod("getId");
+                }
+
+                threadId = (Long) method_5_getId.invoke(connection);
+            }
+
+            if (class_6_ConnectionImpl == null) {
+                if (clazz.getName().equals("com.mysql.cj.jdbc.ConnectionImpl")) {
+                    class_6_ConnectionImpl = clazz;
+                }
+            }
+
+            if (class_6_ConnectionImpl == clazz) {
+                if (method_6_getId == null) {
+                    method_6_getId = class_6_ConnectionImpl.getMethod("getId");
+                }
+
+                threadId = (Long) method_6_getId.invoke(connection);
+            }
         } catch (Exception e) {
             // skip
         }
-        return null;
+
+        if (threadId == null) {
+            return null;
+        }
+
+        return  "KILL QUERY " + threadId;
+
     }
 
     private static Set<String> keywords;
@@ -307,5 +407,30 @@ public class MySqlUtils {
         } catch (InvocationTargetException e) {
             throw new SQLException("getLastPacketReceivedTimeMs error", e);
         }
+    }
+
+    static Class<?> class_5_CommunicationsException = null;
+    static Class<?> class_6_CommunicationsException = null;
+
+    public static Class getCommunicationsExceptionClass() {
+        if (class_5_CommunicationsException != null) {
+            return class_5_CommunicationsException;
+        }
+
+        if (class_6_CommunicationsException != null) {
+            return class_6_CommunicationsException;
+        }
+
+        class_5_CommunicationsException = Utils.loadClass("com.mysql.jdbc.CommunicationsException");
+        if (class_5_CommunicationsException != null) {
+            return class_5_CommunicationsException;
+        }
+
+        class_6_CommunicationsException = Utils.loadClass("com.mysql.cj.jdbc.exceptions.CommunicationsException");
+        if (class_6_CommunicationsException != null) {
+            return class_6_CommunicationsException;
+        }
+
+        return null;
     }
 }

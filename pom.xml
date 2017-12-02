@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.1.6-SNAPSHOT</version>
+	<version>1.1.6-preview_30</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -462,7 +462,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.41</version>
+			<version>6.0.6</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

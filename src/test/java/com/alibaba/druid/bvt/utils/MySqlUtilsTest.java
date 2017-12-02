@@ -19,7 +19,11 @@ public class MySqlUtilsTest extends TestCase {
             Connection conn = (Connection) constructor.newInstance();
             MySqlUtils.createXAConnection(driver, conn);
         } else if (majorVersion == 6) {
-
+            Class<?> clazz_ConnectionImpl = Class.forName("com.mysql.cj.jdbc.ConnectionImpl");
+            Constructor<?> constructor = clazz_ConnectionImpl.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            Connection conn = (Connection) constructor.newInstance();
+            MySqlUtils.createXAConnection(driver, conn);
         }
     }
 }
