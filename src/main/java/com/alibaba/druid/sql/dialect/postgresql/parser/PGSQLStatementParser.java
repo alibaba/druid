@@ -519,4 +519,57 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    public SQLStatement parseCreateIndex(boolean acceptCreate) {
+        if (acceptCreate) {
+            accept(Token.CREATE);
+        }
+
+        SQLCreateIndexStatement stmt = new SQLCreateIndexStatement(getDbType());
+        if (lexer.token() == Token.UNIQUE) {
+            lexer.nextToken();
+            if (lexer.identifierEquals("CLUSTERED")) {
+                lexer.nextToken();
+                stmt.setType("UNIQUE CLUSTERED");
+            } else {
+                stmt.setType("UNIQUE");
+            }
+        } else if (lexer.identifierEquals("FULLTEXT")) {
+            stmt.setType("FULLTEXT");
+            lexer.nextToken();
+        } else if (lexer.identifierEquals("NONCLUSTERED")) {
+            stmt.setType("NONCLUSTERED");
+            lexer.nextToken();
+        }
+
+        accept(Token.INDEX);
+
+        stmt.setName(this.exprParser.name());
+
+        accept(Token.ON);
+
+        stmt.setTable(this.exprParser.name());
+
+        if (lexer.token() == Token.USING) {
+            lexer.nextToken();
+            String using = lexer.stringVal();
+            accept(Token.IDENTIFIER);
+            stmt.setUsing(using);
+        }
+
+        accept(Token.LPAREN);
+
+        for (;;) {
+            SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+            item.setParent(stmt);
+            stmt.addItem(item);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        accept(Token.RPAREN);
+
+        return stmt;
+    }
 }

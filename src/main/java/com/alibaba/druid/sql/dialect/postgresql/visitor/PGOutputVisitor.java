@@ -2974,4 +2974,36 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print0(ucase ? "END IF" : "end if");
         return false;
     }
+
+    @Override
+    public boolean visit(SQLCreateIndexStatement x) {
+        print0(ucase ? "CREATE " : "create ");
+        if (x.getType() != null) {
+            print0(x.getType());
+            print(' ');
+        }
+
+        print0(ucase ? "INDEX " : "index ");
+
+        if (x.getUsing() != null) {
+            print0(ucase ? " USING " : " using ");
+            ;
+            print0(x.getUsing());
+        }
+
+        x.getName().accept(this);
+        print0(ucase ? " ON " : " on ");
+        x.getTable().accept(this);
+        print0(" (");
+        printAndAccept(x.getItems(), ", ");
+        print(')');
+
+        SQLExpr comment = x.getComment();
+        if (comment != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            comment.accept(this);
+        }
+
+        return false;
+    }
 }
