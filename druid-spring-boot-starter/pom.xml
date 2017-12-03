@@ -4,15 +4,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
     <artifactId>druid-spring-boot-starter</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     <packaging>jar</packaging>
     <name>druid-spring-boot-starter</name>
     <description>Spring Boot with Druid support,help you simplify Druid config in Spring Boot.</description>
     <url>https://github.com/alibaba/druid</url>
 
     <properties>
-        <druid.version>1.1.5</druid.version>
-        <spring-boot.version>1.5.6.RELEASE</spring-boot.version>
+        <druid.version>1.1.6</druid.version>
+        <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
     </properties>
 
     <developers>
@@ -45,6 +45,10 @@
             <version>${druid.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
@@ -52,6 +56,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
