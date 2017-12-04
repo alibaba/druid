@@ -149,6 +149,14 @@ Currently, configuration support is provided for the following filters. Please r
 
 Druid Spring Boot Starter will enable StatFilter by default, and you can also set its enabled to false.，make the Filter configuration take effect and need to set enabled to true.
 
+## Spring Boot Actuator Endpoints
+
+```endpoints.druid.enabled=true```
+
+default endpoint address is : `/druid-endpoint`, can be used `endpoints.druid.path=` to customize it. 
+
+
+
 ## IDE Hints
 ![](https://raw.githubusercontent.com/lihengming/java-codes/master/shared-resources/github-images/druid-spring-boot-starter-ide-hint.jpg)
 
