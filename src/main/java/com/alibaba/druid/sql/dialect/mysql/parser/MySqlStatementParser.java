@@ -934,8 +934,6 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setLocal(true);
         }
 
-        acceptIdentifier("TABLES");
-
         for (;;) {
             if (lexer.token() == Token.WITH) {
                 lexer.nextToken();
@@ -946,7 +944,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 acceptIdentifier("EXPORT");
                 stmt.setForExport(true);
-            } else if (lexer.identifierEquals("BINARY")) {
+            } else if (lexer.identifierEquals("BINARY") || lexer.token() == Token.BINARY) {
                 lexer.nextToken();
                 acceptIdentifier("LOGS");
                 stmt.setBinaryLogs(true);
@@ -979,11 +977,12 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setOptimizerCosts(true);
             } else if (lexer.identifierEquals("QUERY")) {
                 lexer.nextToken();
-                acceptIdentifier("CACHE");
+                accept(Token.CACHE);
                 stmt.setQueryCache(true);
             }  else if (lexer.identifierEquals("RELAY")) {
                 lexer.nextToken();
                 acceptIdentifier("LOGS");
+                stmt.setRelayLogs(true);
                 if (lexer.token() == Token.FOR) {
                     lexer.nextToken();
                     acceptIdentifier("CHANNEL");
@@ -996,10 +995,11 @@ public class MySqlStatementParser extends SQLStatementParser {
             } else if (lexer.identifierEquals("STATUS")) {
                 lexer.nextToken();
                 stmt.setStatus(true);
-            } else  if (lexer.identifierEquals("USER_RESOURCES")) {
+            } else if (lexer.identifierEquals("USER_RESOURCES")) {
                 lexer.nextToken();
                 stmt.setUserResources(true);
-            } else if (lexer.token() == Token.IDENTIFIER){
+            } else if (lexer.identifierEquals(FnvHash.Constants.TABLES)) {
+                lexer.nextToken();
                 for (;;) {
                     SQLName name = this.exprParser.name();
                     stmt.addTable(name);
