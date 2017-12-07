@@ -2609,20 +2609,20 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         Boolean global = null;
-        Boolean sessionBefore = null;
+        Boolean session = null;
         if (lexer.identifierEquals(GLOBAL)) {
             global = Boolean.TRUE;
             lexer.nextToken();
         } else if (lexer.identifierEquals(SESSION)) {
             global = Boolean.FALSE;
-            sessionBefore = Boolean.TRUE;
+            session = Boolean.TRUE;
             lexer.nextToken();
         }
 
         if (lexer.identifierEquals("TRANSACTION")) {
             MySqlSetTransactionStatement stmt = new MySqlSetTransactionStatement();
             stmt.setGlobal(global);
-            stmt.setHasSessionBefore(sessionBefore);
+            stmt.setSession(session);
 
             lexer.nextToken();
             if (lexer.identifierEquals("ISOLATION")) {
@@ -2722,14 +2722,14 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             parseAssignItems(stmt.getItems(), stmt);
 
-            if (global != null && global.booleanValue()) {
+            if (global != null && global) {
                 SQLVariantRefExpr varRef = (SQLVariantRefExpr) stmt.getItems().get(0).getTarget();
                 varRef.setGlobal(true);
             }
 
-            if(sessionBefore != null && sessionBefore.booleanValue()){
+            if(session != null && session){
                 SQLVariantRefExpr varRef = (SQLVariantRefExpr) stmt.getItems().get(0).getTarget();
-                varRef.setHasSessionBefore(true);
+                varRef.setSession(true);
             }
 
             if (lexer.token() == Token.HINT) {

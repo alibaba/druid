@@ -655,7 +655,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.isGlobal()) {
             print0("@@global.");
-        }else if(x.isHasSessionBefore()){
+        }else if(x.isSession()){
             print0("@@session.");
         }
 
