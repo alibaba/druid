@@ -16,9 +16,14 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class OracleDatetimeExpr extends OracleSQLObjectImpl implements SQLExpr {
 
@@ -71,5 +76,10 @@ public class OracleDatetimeExpr extends OracleSQLObjectImpl implements SQLExpr {
         }
 
         return x;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Arrays.<SQLObject>asList(this.expr, this.timeZone);
     }
 }

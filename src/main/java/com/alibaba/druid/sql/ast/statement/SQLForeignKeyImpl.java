@@ -22,12 +22,11 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKeyConstraint {
-
-    private SQLName       referencedTableName;
-    private List<SQLName> referencingColumns = new ArrayList<SQLName>();
-    private List<SQLName> referencedColumns  = new ArrayList<SQLName>();
-    private boolean       onDeleteCascade    = false;
-    private boolean       onDeleteSetNull    = false;
+    private SQLExprTableSource referencedTable;
+    private List<SQLName>      referencingColumns = new ArrayList<SQLName>();
+    private List<SQLName>      referencedColumns  = new ArrayList<SQLName>();
+    private boolean            onDeleteCascade    = false;
+    private boolean            onDeleteSetNull    = false;
 
     public SQLForeignKeyImpl(){
 
@@ -39,13 +38,32 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
     }
 
     @Override
+    public SQLExprTableSource getReferencedTable() {
+        return referencedTable;
+    }
+
+    @Override
     public SQLName getReferencedTableName() {
-        return referencedTableName;
+        if (referencedTable == null) {
+            return null;
+        }
+        return referencedTable.getName();
     }
 
     @Override
     public void setReferencedTableName(SQLName value) {
-        this.referencedTableName = value;
+        if (value == null) {
+            this.referencedTable = null;
+            return;
+        }
+        this.setReferencedTable(new SQLExprTableSource(value));
+    }
+
+    public void setReferencedTable(SQLExprTableSource x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.referencedTable = x;
     }
 
     @Override
@@ -83,8 +101,8 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
     public void cloneTo(SQLForeignKeyImpl x) {
         super.cloneTo(x);
 
-        if (referencedTableName != null) {
-            x.setReferencedTableName(referencedTableName.clone());
+        if (referencedTable != null) {
+            x.setReferencedTable(referencedTable.clone());
         }
 
         for (SQLName column : referencingColumns) {
@@ -104,5 +122,48 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
         SQLForeignKeyImpl x = new SQLForeignKeyImpl();
         cloneTo(x);
         return x;
+    }
+
+    public static enum Match {
+        FULL("FULL"), PARTIAL("PARTIAL"), SIMPLE("SIMPLE");
+
+        public final String name;
+        public final String name_lcase;
+
+        Match(String name){
+            this.name = name;
+            this.name_lcase = name.toLowerCase();
+        }
+    }
+
+    public static enum On {
+        DELETE("DELETE"), //
+        UPDATE("UPDATE");
+
+        public final String name;
+        public final String name_lcase;
+
+        On(String name){
+            this.name = name;
+            this.name_lcase = name.toLowerCase();
+        }
+    }
+
+    public static enum Option {
+
+        RESTRICT("RESTRICT"), CASCADE("CASCADE"), SET_NULL("SET NULL"), NO_ACTION("NO ACTION");
+
+        public final String name;
+        public final String name_lcase;
+
+        Option(String name){
+            this.name = name;
+            this.name_lcase = name.toLowerCase();
+        }
+
+        public String getText() {
+            return name;
+        }
+
     }
 }

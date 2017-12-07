@@ -42,23 +42,19 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implem
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        x = ParameterizedOutputVisitorUtils.merge(this, x);
+        x = SQLBinaryOpExpr.merge(this, x);
 
         return super.visit(x);
     }
 
-    public boolean visit(SQLNumberExpr x) {
-        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return super.visit(x);
-        }
-
-        print('?');
-        incrementReplaceCunt();
-        
-        if(this instanceof ExportParameterVisitor || this.parameters != null){
-            ExportParameterVisitorUtils.exportParameter((this).getParameters(), x);
-        }
-        return false;
-    }
+//    public boolean visit(SQLNumberExpr x) {
+//        print('?');
+//        incrementReplaceCunt();
+//
+//        if(this instanceof ExportParameterVisitor || this.parameters != null){
+//            ExportParameterVisitorUtils.exportParameter((this).getParameters(), x);
+//        }
+//        return false;
+//    }
 
 }

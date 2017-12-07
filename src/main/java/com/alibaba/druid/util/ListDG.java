@@ -259,26 +259,26 @@ public class ListDG {
         return true;
     }
 
-    public static void main(String[] args) {
-        Object[] vexs = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
-        Edge[] edges = new Edge[]{
-                new Edge(vexs[0], vexs[6]),
-                new Edge(vexs[1], vexs[0]),
-                new Edge(vexs[1], vexs[3]),
-                new Edge(vexs[2], vexs[5]),
-                new Edge(vexs[2], vexs[6]),
-                new Edge(vexs[3], vexs[4]),
-                new Edge(vexs[3], vexs[5])};
-        ListDG pG;
-
-        // 自定义"图"(输入矩阵队列)
-        //pG = new ListDG();
-        // 采用已有的"图"
-        pG = new ListDG(Arrays.asList(vexs), Arrays.asList(edges));
-
-        pG.print();   // 打印图
-        //pG.DFS();     // 深度优先遍历
-        //pG.BFS();     // 广度优先遍历
-        pG.topologicalSort();     // 拓扑排序
-    }
+//    public static void main(String[] args) {
+//        Object[] vexs = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+//        Edge[] edges = new Edge[]{
+//                new Edge(vexs[0], vexs[6]),
+//                new Edge(vexs[1], vexs[0]),
+//                new Edge(vexs[1], vexs[3]),
+//                new Edge(vexs[2], vexs[5]),
+//                new Edge(vexs[2], vexs[6]),
+//                new Edge(vexs[3], vexs[4]),
+//                new Edge(vexs[3], vexs[5])};
+//        ListDG pG;
+//
+//        // 自定义"图"(输入矩阵队列)
+//        //pG = new ListDG();
+//        // 采用已有的"图"
+//        pG = new ListDG(Arrays.asList(vexs), Arrays.asList(edges));
+//
+//        pG.print();   // 打印图
+//        //pG.DFS();     // 深度优先遍历
+//        //pG.BFS();     // 广度优先遍历
+//        pG.topologicalSort();     // 拓扑排序
+//    }
 }

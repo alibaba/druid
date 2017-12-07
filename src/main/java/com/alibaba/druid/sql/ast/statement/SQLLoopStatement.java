@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -53,5 +54,10 @@ public class SQLLoopStatement extends SQLStatementImpl {
             stmt.setParent(this);
         }
         statements.add(stmt);
+    }
+
+    @Override
+    public List getChildren() {
+        return statements;
     }
 }

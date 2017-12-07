@@ -41,7 +41,7 @@ public class MySqlParameterizedOutputVisitorTest_41 extends TestCase {
 
         String psql = out.toString();
         assertEquals("SELECT *\n" +
-                "FROM db_00.t\n" +
+                "FROM db.t\n" +
                 "WHERE id > ?", psql);
         String params_json = JSONArray.toJSONString(parameters, SerializerFeature.WriteClassName);
         System.out.println(params_json);
@@ -51,7 +51,7 @@ public class MySqlParameterizedOutputVisitorTest_41 extends TestCase {
 
         String rsql = SQLUtils.toSQLString(SQLUtils.parseStatements(psql, dbType), dbType, jsonArray);
         assertEquals("SELECT *\n" +
-                "FROM db_00.t\n" +
+                "FROM db.t\n" +
                 "WHERE id > 1", rsql);
     }
 }

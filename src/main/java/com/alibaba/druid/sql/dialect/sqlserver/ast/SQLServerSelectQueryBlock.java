@@ -20,10 +20,15 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerSelectQueryBlock extends SQLSelectQueryBlock {
 
     private SQLServerTop top;
+
+    public SQLServerSelectQueryBlock() {
+        dbType = JdbcConstants.SQL_SERVER;
+    }
 
     public SQLServerTop getTop() {
         return top;

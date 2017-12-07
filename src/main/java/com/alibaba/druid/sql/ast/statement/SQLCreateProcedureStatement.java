@@ -46,6 +46,8 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
     private boolean            readSqlData;
     private boolean            modifiesSqlData;
 
+    private String             wrappedSource;
+
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -165,5 +167,23 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
 
     public void setModifiesSqlData(boolean modifiesSqlData) {
         this.modifiesSqlData = modifiesSqlData;
+    }
+
+    public SQLParameter findParameter(long hash) {
+        for (SQLParameter param : this.parameters) {
+            if (param.getName().nameHashCode64() == hash) {
+                return param;
+            }
+        }
+
+        return null;
+    }
+
+    public String getWrappedSource() {
+        return wrappedSource;
+    }
+
+    public void setWrappedSource(String wrappedSource) {
+        this.wrappedSource = wrappedSource;
     }
 }

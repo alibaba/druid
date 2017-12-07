@@ -50,10 +50,11 @@ public class OceanbaseHintTest_parallel extends MysqlTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
+        Assert.assertTrue(visitor.containsTable("t1"));
+        Assert.assertTrue(visitor.containsColumn("t1", "*"));
 
     }
 }

@@ -99,7 +99,7 @@ public class OracleCreateTableTest41 extends OracleTest {
                         "\tSUPPLEMENTAL LOG GROUP \"GGS_16346\" (\"NUM\") ALWAYS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (PRIMARY KEY) COLUMNS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (UNIQUE INDEX) COLUMNS,\n" +
-                        "\tSUPPLEMENTAL LOG DATA (FOREIGHN KEY) COLUMNS,\n" +
+                        "\tSUPPLEMENTAL LOG DATA (FOREIGN KEY) COLUMNS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (ALL) COLUMNS,\n" +
                         "\tSUPPLEMENTAL LOG GROUP \"ALLINS_POLNO\" (\"NUM\") ALWAYS\n" +
                         ")\n" +
@@ -157,6 +157,6 @@ public class OracleCreateTableTest41 extends OracleTest {
 
         Assert.assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "BLOB_COL")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "BLOB_COL"));
     }
 }

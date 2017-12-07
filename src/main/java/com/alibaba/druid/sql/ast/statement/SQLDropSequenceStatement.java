@@ -16,9 +16,13 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLDropSequenceStatement extends SQLStatementImpl implements SQLDropStatement {
 
@@ -39,6 +43,15 @@ public class SQLDropSequenceStatement extends SQLStatementImpl implements SQLDro
             acceptChild(visitor, name);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (name != null) {
+            children.add(name);
+        }
+        return children;
     }
 
     public SQLName getName() {

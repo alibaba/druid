@@ -200,17 +200,19 @@ public class OdpsSelectTest24 extends TestCase {
         
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
+
+        System.out.println(stmt);
         
-//        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("Tables : " + visitor.getTables());
       System.out.println("fields : " + visitor.getColumns());
-//      System.out.println("coditions : " + visitor.getConditions());
+      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         assertEquals(3, visitor.getTables().size());
-        assertEquals(20, visitor.getColumns().size());
-        assertEquals(16, visitor.getConditions().size());
+        assertEquals(18, visitor.getColumns().size());
+        assertEquals(13, visitor.getConditions().size());
 
-        System.out.println(SQLUtils.formatOdps(sql));
+//        System.out.println(SQLUtils.formatOdps(sql));
         
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }

@@ -277,6 +277,7 @@ public class WallConfig implements WallConfigMBean {
     }
 
     public WallConfig(String dir){
+        this();
         this.dir = dir;
         this.init();
     }
@@ -862,6 +863,18 @@ public class WallConfig implements WallConfigMBean {
                 for (String item : items) {
                     addUpdateCheckCoumns(item);
                 }
+            }
+        }
+        {
+            Boolean propertyValue = getBoolean(properties, "druid.wall.updateWhereNoneCheck");
+            if (propertyValue != null) {
+                this.setUpdateWhereNoneCheck(propertyValue);
+            }
+        }
+        {
+            Boolean propertyValue = getBoolean(properties, "druid.wall.deleteWhereNoneCheck");
+            if (propertyValue != null) {
+                this.setDeleteWhereNoneCheck(propertyValue);
             }
         }
     }

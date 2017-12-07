@@ -38,7 +38,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSynonymStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
@@ -59,7 +59,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
@@ -70,7 +70,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
+import com.alibaba.druid.sql.ast.statement.SQLScriptCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
@@ -89,7 +89,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
     public void test_adapter() throws Exception {
         OracleASTVisitorAdapter adapter = new OracleASTVisitorAdapter();
 
-        new OraclePLSQLCommitStatement().accept(adapter);
+        new SQLScriptCommitStatement().accept(adapter);
         new OracleAnalytic().accept(adapter);
         new OracleAnalyticWindowing().accept(adapter);
         new SQLDateExpr().accept(adapter);
@@ -142,7 +142,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new SQLBlockStatement().accept(adapter);
         new OracleLockTableStatement().accept(adapter);
         new OracleAlterSessionStatement().accept(adapter);
-        new OracleExprStatement().accept(adapter);
+        new SQLExprStatement().accept(adapter);
         new OracleDatetimeExpr().accept(adapter);
         new OracleExceptionStatement().accept(adapter);
         new OracleExceptionStatement.Item().accept(adapter);
@@ -157,7 +157,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new SQLFetchStatement().accept(adapter);
         new OracleExitStatement().accept(adapter);
         new OracleExplainStatement().accept(adapter);
-        new OracleAlterProcedureStatement().accept(adapter);
+        new SQLAlterProcedureStatement().accept(adapter);
         new OracleAlterTableDropPartition().accept(adapter);
         new OracleAlterTableTruncatePartition().accept(adapter);
         new OracleAlterTableSplitPartition.TableSpaceItem().accept(adapter);

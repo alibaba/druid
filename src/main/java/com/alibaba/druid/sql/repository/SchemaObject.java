@@ -26,6 +26,7 @@ public interface SchemaObject {
     SQLStatement getStatement();
 
     SQLColumnDefinition findColumn(String columName);
+    SQLColumnDefinition findColumn(long columNameHash);
 
     boolean matchIndex(String columnName);
 
@@ -34,6 +35,7 @@ public interface SchemaObject {
     SchemaObjectType getType();
 
     String getName();
+    long nameHashCode64();
 
     long getRowCount();
 }

@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 /**
  * Created by wenshao on 16/9/25.
  */
-public class SQLLimit extends SQLObjectImpl {
+public final class SQLLimit extends SQLObjectImpl {
 
     public SQLLimit() {
 

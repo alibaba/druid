@@ -55,11 +55,28 @@ public class SQLGrantStatement extends SQLStatementImpl {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, this.privileges);
             acceptChild(visitor, on);
             acceptChild(visitor, to);
             acceptChild(visitor, identifiedBy);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.addAll(privileges);
+        if (on != null) {
+            children.add(on);
+        }
+        if (to != null) {
+            children.add(to);
+        }
+        if (identifiedBy != null) {
+            children.add(identifiedBy);
+        }
+        return children;
     }
 
     public SQLObjectType getObjectType() {

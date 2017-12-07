@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.pool.vendor;
 
 import java.sql.SQLException;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -9,7 +10,7 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 
 
-public class MySqlExceptionSorterTest_oceanbase extends TestCase {
+public class MySqlExceptionSorterTest_oceanbase extends PoolTestCase {
     public void test_true() throws Exception {
         MySqlExceptionSorter sorter = new MySqlExceptionSorter();
         SQLException exception = new SQLException("", "", -9000);

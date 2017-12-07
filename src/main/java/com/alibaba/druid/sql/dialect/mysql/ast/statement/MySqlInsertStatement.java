@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlInsertStatement extends SQLInsertStatement {
 
@@ -33,6 +34,10 @@ public class MySqlInsertStatement extends SQLInsertStatement {
     private boolean             rollbackOnFail     = false;
 
     private final List<SQLExpr> duplicateKeyUpdate = new ArrayList<SQLExpr>();
+
+    public MySqlInsertStatement() {
+        dbType = JdbcConstants.MYSQL;
+    }
 
     public void cloneTo(MySqlInsertStatement x) {
         super.cloneTo(x);

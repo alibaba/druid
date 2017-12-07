@@ -44,77 +44,77 @@ public class MySqlParameterizedOutputVisitorTest_46 extends TestCase {
         assertEquals("SELECT COUNT(*) AS count, `ipv_uv_1d_001` AS col\n" +
                 "FROM (\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 "\tUNION ALL\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +
-                "\tFROM `cbu_da_dihu_16`.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
+                "\tFROM cbu_da_dihu.ads_tb_sycm_eff_slr_itm_1d_s015_p\n" +
                 "\tWHERE `auto_seq_id` > ?\n" +
                 "\tLIMIT ?)\n" +
                 ") ads_tb_sycm_eff_slr_itm_1d_s015_p033\n" +

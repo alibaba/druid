@@ -1,11 +1,3 @@
-package com.alibaba.druid.sql.ast.expr;
-
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 /*
  * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
@@ -21,7 +13,18 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class SQLTimestampExpr extends SQLExprImpl {
+package com.alibaba.druid.sql.ast.expr;
+
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
+
+public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr {
     public static final SQLDataType DEFAULT_DATA_TYPE = new SQLCharacterDataType("datetime");
 
     protected String  literal;
@@ -38,6 +41,10 @@ public class SQLTimestampExpr extends SQLExprImpl {
         x.timeZone = timeZone;
         x.withTimeZone = withTimeZone;
         return x;
+    }
+
+    public String getValue() {
+        return literal;
     }
 
     public String getLiteral() {
@@ -119,5 +126,10 @@ public class SQLTimestampExpr extends SQLExprImpl {
 
     public SQLDataType computeDataType() {
         return DEFAULT_DATA_TYPE;
+    }
+
+    @Override
+    public List getChildren() {
+        return Collections.emptyList();
     }
 }

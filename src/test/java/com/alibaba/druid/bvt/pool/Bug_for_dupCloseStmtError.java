@@ -18,6 +18,8 @@ package com.alibaba.druid.bvt.pool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -27,11 +29,13 @@ import com.alibaba.druid.mock.MockConnectionClosedException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
-public class Bug_for_dupCloseStmtError extends TestCase {
+public class Bug_for_dupCloseStmtError extends PoolTestCase {
 
     protected DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
         dataSource.setPoolPreparedStatements(false);
@@ -41,8 +45,10 @@ public class Bug_for_dupCloseStmtError extends TestCase {
     protected void tearDown() throws Exception {
         dataSource.close();
         for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
-            dataSource.close();
+            JdbcUtils.close(dataSource);
         }
+
+        super.tearDown();
     }
 
     public void test_2() throws Exception {

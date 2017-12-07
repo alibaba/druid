@@ -25,12 +25,17 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleInsertStatement extends SQLInsertStatement implements OracleStatement {
 
     private OracleReturningClause returning;
     private SQLErrorLoggingClause errorLogging;
     private List<SQLHint>         hints = new ArrayList<SQLHint>();
+
+    public OracleInsertStatement() {
+        dbType = JdbcConstants.ORACLE;
+    }
 
     public void cloneTo(OracleInsertStatement x) {
         super.cloneTo(x);

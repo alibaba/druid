@@ -132,6 +132,13 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
         return (SQLName) getTableSource().getExpr();
     }
 
+    public long nameHashCode64() {
+        if (getTableSource() == null) {
+            return 0L;
+        }
+        return ((SQLName) getTableSource().getExpr()).nameHashCode64();
+    }
+
     public void setName(SQLName name) {
         this.setTableSource(new SQLExprTableSource(name));
     }
@@ -147,6 +154,16 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
             acceptChild(visitor, getItems());
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (tableSource != null) {
+            children.add(tableSource);
+        }
+        children.addAll(this.items);
+        return children;
     }
 
     public String getTableName() {

@@ -24,8 +24,6 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.servlet.GenericServlet;
-
 public class Utils {
 
     public final static int DEFAULT_BUFFER_SIZE = 1024 * 4;
@@ -239,58 +237,58 @@ public class Utils {
      *
      * @author Viliam Holub
      */
-    public static long murmurhash2_64(final byte[] data, int length, int seed) {
-        final long m = 0xc6a4a7935bd1e995L;
-        final int r = 47;
+public static long murmurhash2_64(final byte[] data, int length, int seed) {
+    final long m = 0xc6a4a7935bd1e995L;
+    final int r = 47;
 
-        long h = (seed & 0xffffffffl) ^ (length * m);
+    long h = (seed & 0xffffffffl) ^ (length * m);
 
-        int length8 = length / 8;
+    int length8 = length / 8;
 
-        for (int i = 0; i < length8; i++) {
-            final int i8 = i * 8;
-            long k = ((long) data[i8 + 0] & 0xff) //
-                    + (((long) data[i8 + 1] & 0xff) << 8) //
-                    + (((long) data[i8 + 2] & 0xff) << 16)//
-                    + (((long) data[i8 + 3] & 0xff) << 24) //
-                    + (((long) data[i8 + 4] & 0xff) << 32)//
-                    + (((long) data[i8 + 5] & 0xff) << 40)//
-                    + (((long) data[i8 + 6] & 0xff) << 48) //
-                    + (((long) data[i8 + 7] & 0xff) << 56);
+    for (int i = 0; i < length8; i++) {
+        final int i8 = i * 8;
+        long k = ((long) data[i8 + 0] & 0xff) //
+                + (((long) data[i8 + 1] & 0xff) << 8) //
+                + (((long) data[i8 + 2] & 0xff) << 16)//
+                + (((long) data[i8 + 3] & 0xff) << 24) //
+                + (((long) data[i8 + 4] & 0xff) << 32)//
+                + (((long) data[i8 + 5] & 0xff) << 40)//
+                + (((long) data[i8 + 6] & 0xff) << 48) //
+                + (((long) data[i8 + 7] & 0xff) << 56);
 
-            k *= m;
-            k ^= k >>> r;
-            k *= m;
+        k *= m;
+        k ^= k >>> r;
+        k *= m;
 
-            h ^= k;
-            h *= m;
-        }
-
-        switch (length % 8) {
-            case 7:
-                h ^= (long) (data[(length & ~7) + 6] & 0xff) << 48;
-            case 6:
-                h ^= (long) (data[(length & ~7) + 5] & 0xff) << 40;
-            case 5:
-                h ^= (long) (data[(length & ~7) + 4] & 0xff) << 32;
-            case 4:
-                h ^= (long) (data[(length & ~7) + 3] & 0xff) << 24;
-            case 3:
-                h ^= (long) (data[(length & ~7) + 2] & 0xff) << 16;
-            case 2:
-                h ^= (long) (data[(length & ~7) + 1] & 0xff) << 8;
-            case 1:
-                h ^= (long) (data[length & ~7] & 0xff);
-                h *= m;
-        }
-        ;
-
-        h ^= h >>> r;
+        h ^= k;
         h *= m;
-        h ^= h >>> r;
-
-        return h;
     }
+
+    switch (length % 8) {
+        case 7:
+            h ^= (long) (data[(length & ~7) + 6] & 0xff) << 48;
+        case 6:
+            h ^= (long) (data[(length & ~7) + 5] & 0xff) << 40;
+        case 5:
+            h ^= (long) (data[(length & ~7) + 4] & 0xff) << 32;
+        case 4:
+            h ^= (long) (data[(length & ~7) + 3] & 0xff) << 24;
+        case 3:
+            h ^= (long) (data[(length & ~7) + 2] & 0xff) << 16;
+        case 2:
+            h ^= (long) (data[(length & ~7) + 1] & 0xff) << 8;
+        case 1:
+            h ^= (long) (data[length & ~7] & 0xff);
+            h *= m;
+    }
+    ;
+
+    h ^= h >>> r;
+    h *= m;
+    h ^= h >>> r;
+
+    return h;
+}
 
     public static byte[] md5Bytes(String text) {
         MessageDigest msgDigest = null;
@@ -409,56 +407,15 @@ public class Utils {
     }
 
     public static long fnv_64(String input) {
-        if (input == null) {
-            return 0;
-        }
-
-        long hash = 0xcbf29ce484222325L;
-        for (int i = 0; i < input.length(); ++i) {
-            char c = input.charAt(i);
-            hash ^= c;
-            hash *= 0x100000001b3L;
-        }
-
-        return hash;
+        return FnvHash.fnv1a_64(input);
     }
 
     public static long fnv_64_lower(String key) {
-        long hashCode = 0xcbf29ce484222325L;
-        for (int i = 0; i < key.length(); ++i) {
-            char ch = key.charAt(i);
-            if (ch == '_' || ch == '-') {
-                continue;
-            }
-
-            if (ch >= 'A' && ch <= 'Z') {
-                ch = (char) (ch + 32);
-            }
-
-            hashCode ^= ch;
-            hashCode *= 0x100000001b3L;
-        }
-
-        return hashCode;
+        return FnvHash.fnv1a_64_lower(key);
     }
 
     public static long fnv_32_lower(String key) {
-        long hashCode = 0x811c9dc5;
-        for (int i = 0; i < key.length(); ++i) {
-            char ch = key.charAt(i);
-            if (ch == '_' || ch == '-') {
-                continue;
-            }
-
-            if (ch >= 'A' && ch <= 'Z') {
-                ch = (char) (ch + 32);
-            }
-
-            hashCode ^= ch;
-            hashCode *= 0x01000193;
-        }
-
-        return hashCode;
+        return FnvHash.fnv_32_lower(key);
     }
 
     public static void loadFromFile(String path, Set<String> set) {
@@ -487,4 +444,5 @@ public class Utils {
             JdbcUtils.close(reader);
         }
     }
+
 }

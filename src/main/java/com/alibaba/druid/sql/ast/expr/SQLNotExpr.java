@@ -16,13 +16,15 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLNotExpr extends SQLExprImpl implements Serializable {
+public final class SQLNotExpr extends SQLExprImpl implements Serializable {
 
     private static final long serialVersionUID = 1L;
     public SQLExpr            expr;
@@ -56,6 +58,11 @@ public class SQLNotExpr extends SQLExprImpl implements Serializable {
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        return Collections.singletonList(this.expr);
     }
 
     @Override

@@ -16,8 +16,12 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLReleaseSavePointStatement extends SQLStatementImpl {
 
@@ -45,5 +49,14 @@ public class SQLReleaseSavePointStatement extends SQLStatementImpl {
             acceptChild(visitor, name);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (name != null) {
+            children.add(name);
+        }
+        return children;
     }
 }

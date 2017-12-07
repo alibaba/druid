@@ -16,31 +16,50 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr {
+import java.util.Collections;
+import java.util.List;
+
+public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
     public static final SQLDataType DEFAULT_DATA_TYPE = new SQLCharacterDataType("date");
 
-    private String literal;
+    private SQLExpr literal;
 
     public SQLDateExpr(){
 
     }
 
     public SQLDateExpr(String literal) {
-        this.literal = literal;
+        this.setLiteral(literal);
     }
 
-    public String getLiteral() {
+    public SQLExpr getLiteral() {
         return literal;
     }
 
     public void setLiteral(String literal) {
-        this.literal = literal;
+        setLiteral(new SQLCharExpr(literal));
+    }
+
+    public void setLiteral(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.literal = x;
+    }
+
+    public String getValue() {
+        if (literal instanceof SQLCharExpr) {
+            return ((SQLCharExpr) literal).getText();
+        }
+        return null;
     }
 
     @Override
@@ -80,6 +99,17 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr {
     }
 
     public SQLDateExpr clone() {
-        return new SQLDateExpr(literal);
+        SQLDateExpr x = new SQLDateExpr();
+
+        if (this.literal != null) {
+            x.setLiteral(literal.clone());
+        }
+
+        return x;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.emptyList();
     }
 }

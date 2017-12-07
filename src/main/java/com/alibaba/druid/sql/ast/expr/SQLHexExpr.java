@@ -19,7 +19,10 @@ import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.HexBin;
 
-public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr {
+import java.util.Collections;
+import java.util.List;
+
+public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
 
     private final String hex;
 
@@ -83,5 +86,14 @@ public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     public SQLHexExpr clone () {
         return new SQLHexExpr(hex);
+    }
+
+    public byte[] getValue() {
+        return toBytes();
+    }
+
+    @Override
+    public List getChildren() {
+        return Collections.emptyList();
     }
 }

@@ -16,7 +16,15 @@
 package com.alibaba.druid.sql.parser;
 
 public enum SQLParserFeature {
-    KeepInsertValueClauseOriginalString
+    KeepInsertValueClauseOriginalString,
+    KeepSelectListOriginalString, // for improved sql parameterized performance
+    UseInsertColumnsCache,
+    EnableSQLBinaryOpExprGroup,
+    OptimizedForParameterized,
+    OptimizedForForParameterizedSkipValue,
+    KeepComments,
+    SkipComments,
+    StrictForWall
     ;
 
     private SQLParserFeature(){
@@ -40,7 +48,7 @@ public enum SQLParserFeature {
         return features;
     }
 
-    public static int of(SQLParserFeature[] features) {
+    public static int of(SQLParserFeature... features) {
         if (features == null) {
             return 0;
         }

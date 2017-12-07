@@ -17,22 +17,27 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
-public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
+public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
 
     private static final long     serialVersionUID = 1L;
+
     protected String              methodName;
+    protected long                methodNameHashCod64;
+
     protected SQLAggregateOption  option;
     protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
     protected SQLKeep             keep;
     protected SQLOver             over;
     protected SQLOrderBy          withinGroup;
-    protected boolean             ignoreNulls      = false;
+    protected Boolean             ignoreNulls      = false;
 
     public SQLAggregateExpr(String methodName){
         this.methodName = methodName;
@@ -49,6 +54,13 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
+    }
+
+    public long methodNameHashCod64() {
+        if (methodNameHashCod64 == 0) {
+            methodNameHashCod64 = FnvHash.hashCode64(methodName);
+        }
+        return methodNameHashCod64;
     }
 
     public SQLOrderBy getWithinGroup() {
@@ -105,6 +117,10 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     }
     
     public boolean isIgnoreNulls() {
+        return this.ignoreNulls != null && this.ignoreNulls;
+    }
+
+    public Boolean getIgnoreNulls() {
         return this.ignoreNulls;
     }
 
@@ -121,10 +137,28 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.arguments);
+            acceptChild(visitor, this.keep);
             acceptChild(visitor, this.over);
+            acceptChild(visitor, this.withinGroup);
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.addAll(this.arguments);
+        if (keep != null) {
+            children.add(this.keep);
+        }
+        if (over != null) {
+            children.add(over);
+        }
+        if (withinGroup != null) {
+            children.add(withinGroup);
+        }
+        return children;
     }
 
     @Override
@@ -204,8 +238,10 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     }
 
     public SQLDataType computeDataType() {
-        if ("count".equals(methodName)
-                || "row_number".equals(methodName)) {
+        long hash = methodNameHashCod64();
+
+        if (hash == FnvHash.Constants.COUNT
+                || hash == FnvHash.Constants.ROW_NUMBER) {
             return SQLIntegerExpr.DEFAULT_DATA_TYPE;
         }
 
@@ -216,11 +252,25 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
             }
         }
 
-        if ("wm_conat".equals(methodName)
-                || "group_concat".equals(methodName)) {
+        if (hash == FnvHash.Constants.WM_CONCAT
+                || hash == FnvHash.Constants.GROUP_CONCAT) {
             return SQLCharExpr.DEFAULT_DATA_TYPE;
         }
 
         return null;
+    }
+
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (target == null) {
+            return false;
+        }
+        for (int i = 0; i < arguments.size(); ++i) {
+            if (arguments.get(i) == expr) {
+                arguments.set(i, target);
+                target.setParent(this);
+                return true;
+            }
+        }
+        return false;
     }
 }

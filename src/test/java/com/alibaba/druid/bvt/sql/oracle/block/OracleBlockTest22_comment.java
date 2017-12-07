@@ -72,10 +72,11 @@ public class OracleBlockTest22_comment extends OracleTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("USER_OBJECTS")));
 
-        assertEquals(1, visitor.getColumns().size());
+        assertEquals(2, visitor.getColumns().size());
         assertEquals(1, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
 
-         assertTrue(visitor.getColumns().contains(new TableStat.Column("USER_OBJECTS", "OBJECT_TYPE")));
+         assertTrue(visitor.containsColumn("USER_OBJECTS", "OBJECT_TYPE"));
+         assertTrue(visitor.containsColumn("USER_OBJECTS", "*"));
     }
 }

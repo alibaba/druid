@@ -33,7 +33,12 @@ public class PGTypeCastExpr extends SQLCastExpr implements PGExpr {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((PGASTVisitor) visitor);
+        if (visitor instanceof PGASTVisitor) {
+            accept0((PGASTVisitor) visitor);
+            return;
+        }
+
+        super.accept0(visitor);
     }
 
     public String toString() {

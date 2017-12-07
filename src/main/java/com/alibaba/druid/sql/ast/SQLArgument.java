@@ -33,6 +33,18 @@ public class SQLArgument extends SQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public SQLArgument clone() {
+        SQLArgument x = new SQLArgument();
+
+        x.type = type;
+
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+
+        return x;
+    }
+
     public SQLParameter.ParameterType getType() {
         return type;
     }
@@ -45,10 +57,10 @@ public class SQLArgument extends SQLObjectImpl {
         this.type = type;
     }
 
-    public void setExpr(SQLExpr expr) {
-        if (expr != null) {
-            expr.setParent(this);
+    public void setExpr(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.expr = expr;
+        this.expr = x;
     }
 }

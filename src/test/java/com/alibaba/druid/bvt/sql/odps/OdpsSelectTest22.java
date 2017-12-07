@@ -136,6 +136,8 @@ public class OdpsSelectTest22 extends TestCase {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
+        System.out.println(stmt);
+
         assertEquals(1, statementList.size());
         
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
@@ -143,16 +145,16 @@ public class OdpsSelectTest22 extends TestCase {
         
 //        System.out.println("Tables : " + visitor.getTables());
       System.out.println("fields : " + visitor.getColumns());
-//      System.out.println("coditions : " + visitor.getConditions());
-//      System.out.println("orderBy : " + visitor.getOrderByColumns());
+      System.out.println("coditions : " + visitor.getConditions());
+      System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         assertEquals(2, visitor.getTables().size());
-        assertEquals(17, visitor.getColumns().size());
+        assertEquals(15, visitor.getColumns().size());
         assertEquals(6, visitor.getConditions().size());
 
         System.out.println(SQLUtils.formatOdps(sql));
         
-//        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
+        assertTrue(visitor.containsColumn("alimama_algo.fund_mlr_n_chicago_user_track_distinct_shark", "item_id"));
     }
 
 

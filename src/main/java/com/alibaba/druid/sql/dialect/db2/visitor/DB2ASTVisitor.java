@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.db2.visitor;
 
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2CreateTableStatement;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -28,4 +29,7 @@ public interface DB2ASTVisitor extends SQLASTVisitor {
     boolean visit(DB2ValuesStatement x);
     
     void endVisit(DB2ValuesStatement x);
+
+    boolean visit(DB2CreateTableStatement x);
+    void endVisit(DB2CreateTableStatement x);
 }

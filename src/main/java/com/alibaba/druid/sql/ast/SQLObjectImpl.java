@@ -25,8 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLObjectImpl implements SQLObject {
 
-    private SQLObject             parent;
-
+    protected SQLObject           parent;
     protected Map<String, Object> attributes;
 
     public SQLObjectImpl(){
@@ -169,6 +168,10 @@ public abstract class SQLObjectImpl implements SQLObject {
     
     @SuppressWarnings("unchecked")
     public void addAfterComment(List<String> comments) {
+        if (comments == null) {
+            return;
+        }
+
         if (attributes == null) {
             attributes = new HashMap<String, Object>(1);
         }
@@ -191,7 +194,12 @@ public abstract class SQLObjectImpl implements SQLObject {
     }
     
     public boolean hasBeforeComment() {
-        List<String> comments = getBeforeCommentsDirect();
+        if (attributes == null) {
+            return false;
+        }
+
+        List<String> comments = (List<String>) attributes.get("format.before_comment");
+
         if (comments == null) {
             return false;
         }
@@ -200,7 +208,11 @@ public abstract class SQLObjectImpl implements SQLObject {
     }
     
     public boolean hasAfterComment() {
-        List<String> comments = getAfterCommentsDirect();
+        if (attributes == null) {
+            return false;
+        }
+
+        List<String> comments = (List<String>) attributes.get("format.after_comment");
         if (comments == null) {
             return false;
         }

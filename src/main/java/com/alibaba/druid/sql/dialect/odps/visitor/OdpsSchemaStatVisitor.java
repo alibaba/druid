@@ -21,10 +21,13 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-
-import java.util.Map;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTVisitor {
+
+    public OdpsSchemaStatVisitor() {
+        super(JdbcConstants.ODPS);
+    }
 
     @Override
     public void endVisit(OdpsCreateTableStatement x) {
@@ -43,6 +46,10 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
 
     @Override
     public boolean visit(OdpsInsertStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
         return true;
     }
 
@@ -55,21 +62,13 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
     public boolean visit(OdpsInsert x) {
         setMode(x, TableStat.Mode.Insert);
 
-        setAliasMap();
-
         SQLExprTableSource tableSource = x.getTableSource();
         SQLExpr tableName = tableSource.getExpr();
 
         if (tableName instanceof SQLName) {
-            String ident = ((SQLName) tableName).toString();
-            setCurrentTable(ident);
-
-            TableStat stat = getTableStat(ident);
+            TableStat stat = getTableStat((SQLName) tableName);
             stat.incrementInsertCount();
 
-            Map<String, String> aliasMap = getAliasMap();
-            putAliasMap(aliasMap, tableSource.getAlias(), ident);
-            putAliasMap(aliasMap, ident, ident);
         }
 
         for (SQLAssignItem partition : x.getPartitions()) {
@@ -265,27 +264,12 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
     }
 
     @Override
-    public void endVisit(OdpsLateralViewTableSource x) {
-        
-    }
-    
-    @Override
-    public boolean visit(OdpsLateralViewTableSource x) {
-        return true;
-    }
-
-    @Override
     public void endVisit(OdpsValuesTableSource x) {
 
     }
 
     @Override
     public boolean visit(OdpsValuesTableSource x) {
-        Map<String, String> aliasMap = getAliasMap();
-        if (aliasMap != null && x.getAlias() != null) {
-            putAliasMap(aliasMap, x.getAlias(), null);
-            addSubQuery(x.getAlias(), x);
-        }
         return false;
     }
 }

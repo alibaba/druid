@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
@@ -58,11 +57,7 @@ public interface SQLServerASTVisitor extends SQLASTVisitor {
     boolean visit(SQLServerSetTransactionIsolationLevelStatement x);
 
     void endVisit(SQLServerSetTransactionIsolationLevelStatement x);
-    
-    boolean visit(SQLServerSetStatement x);
 
-    void endVisit(SQLServerSetStatement x);
-    
     boolean visit(SQLServerOutput x);
 
     void endVisit(SQLServerOutput x);

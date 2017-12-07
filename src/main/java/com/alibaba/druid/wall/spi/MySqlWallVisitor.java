@@ -34,7 +34,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
@@ -400,11 +399,6 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean visit(SQLSetStatement x) {
         return false;
-    }
-
-    @Override
-    public boolean visit(MySqlReplaceStatement x) {
-        return true;
     }
 
     @Override

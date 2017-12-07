@@ -25,14 +25,15 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLBlockStatement extends SQLStatementImpl {
     private String             labelName;
-
-    private String endLabel;
-
+    private String             endLabel;
     private List<SQLParameter> parameters    = new ArrayList<SQLParameter>();
-
     private List<SQLStatement> statementList = new ArrayList<SQLStatement>();
+    public SQLStatement        exception;
+    private boolean            endOfCommit;
 
-    public SQLStatement exception;
+    public SQLBlockStatement() {
+
+    }
 
     public List<SQLStatement> getStatementList() {
         return statementList;
@@ -109,5 +110,23 @@ public class SQLBlockStatement extends SQLStatementImpl {
         }
 
         return x;
+    }
+
+    public SQLParameter findParameter(long hash) {
+        for (SQLParameter param : this.parameters) {
+            if (param.getName().nameHashCode64() == hash) {
+                return param;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean isEndOfCommit() {
+        return endOfCommit;
+    }
+
+    public void setEndOfCommit(boolean value) {
+        this.endOfCommit = value;
     }
 }

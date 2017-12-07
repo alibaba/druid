@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
 import org.junit.Assert;
 
 import java.util.List;
@@ -50,11 +51,15 @@ public class PGSelectTest42 extends PGTest {
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getTables().size());
+
+        assertTrue(visitor.containsColumn("sys_account", "online"));
+        assertTrue(visitor.containsColumn("sys_account", "id"));
+        assertTrue(visitor.containsColumn("auto_handler_online", "account_id"));
     }
 }

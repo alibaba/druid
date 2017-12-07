@@ -23,8 +23,9 @@ package com.alibaba.druid.sql.ast.expr;
 public enum SQLBinaryOperator {
     Union("UNION", 0), 
     COLLATE("COLLATE", 20),
-    BitwiseXor("^", 50), 
-    
+    BitwiseXor("^", 50),
+    BitwiseXorEQ("^=", 110),
+
     Multiply("*", 60), 
     Divide("/", 60),
     DIV("DIV", 60), // mysql integer division
@@ -70,7 +71,7 @@ public enum SQLBinaryOperator {
     Array_Contains("@>", 110),
     Array_ContainedBy("<@", 110),
     SAME_AS("~=", 110),
-    
+
     RLike("RLIKE", 110),
     NotRLike("NOT RLIKE", 110),
     
@@ -148,5 +149,20 @@ public enum SQLBinaryOperator {
     
     public boolean isLogical() {
         return this == BooleanAnd || this == BooleanOr || this == BooleanXor;
+    }
+
+    public boolean isArithmetic() {
+        switch (this) {
+            case Add:
+            case Subtract:
+            case Multiply:
+            case Divide:
+            case DIV:
+            case Modulus:
+            case Mod:
+                return true;
+            default:
+                return false;
+        }
     }
 }

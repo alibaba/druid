@@ -28,16 +28,16 @@ public class SQLDDLParser extends SQLStatementParser {
     }
 
     protected SQLTableConstraint parseConstraint() {
-        if (lexer.token() == Token.CONSTRAINT) {
+        if (lexer.token == Token.CONSTRAINT) {
             lexer.nextToken();
         }
 
-        if (lexer.token() == Token.IDENTIFIER) {
+        if (lexer.token == Token.IDENTIFIER) {
             this.exprParser.name();
             throw new ParserException("TODO. " + lexer.info());
         }
 
-        if (lexer.token() == Token.PRIMARY) {
+        if (lexer.token == Token.PRIMARY) {
             lexer.nextToken();
             accept(Token.KEY);
 

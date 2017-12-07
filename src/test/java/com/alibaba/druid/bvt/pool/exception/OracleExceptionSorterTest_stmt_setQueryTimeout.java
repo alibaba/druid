@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -17,11 +18,13 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class OracleExceptionSorterTest_stmt_setQueryTimeout extends TestCase {
+public class OracleExceptionSorterTest_stmt_setQueryTimeout extends PoolTestCase {
 
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
         
         dataSource = new DruidDataSource();
@@ -37,7 +40,8 @@ public class OracleExceptionSorterTest_stmt_setQueryTimeout extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+
+        super.tearDown();
     }
 
     public void test_connect() throws Exception {

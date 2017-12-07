@@ -315,6 +315,13 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLCreateViewStatement x) {
     }
 
+    public boolean visit(SQLAlterViewStatement x) {
+        return true;
+    }
+
+    public void endVisit(SQLAlterViewStatement x) {
+    }
+
     public boolean visit(SQLCreateViewStatement.Column x) {
         return true;
     }
@@ -1675,8 +1682,236 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     }
 
+    @Override
+    public boolean visit(SQLBinaryOpExprGroup x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLBinaryOpExprGroup x) {
+
+    }
+
     public void config(VisitorFeature feature, boolean state) {
         features = VisitorFeature.config(features, feature, state);
+    }
+
+    @Override
+    public boolean visit(SQLScriptCommitStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLScriptCommitStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLReplaceStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLReplaceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLCreateUserStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCreateUserStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterFunctionStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterFunctionStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterTypeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTypeStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLIntervalExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLIntervalExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLLateralViewTableSource x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLLateralViewTableSource x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLShowErrorsStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLShowErrorsStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterCharacter x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterCharacter x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLExprStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLExprStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterProcedureStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterProcedureStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropEventStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropEventStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropLogFileGroupStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropLogFileGroupStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropServerStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropServerStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropSynonymStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropSynonymStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropTypeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropTypeStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLRecordDataType x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLRecordDataType x) {
+
+    }
+
+    public boolean visit(SQLExternalRecordFormat x) {
+        return true;
+    }
+
+    public void endVisit(SQLExternalRecordFormat x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLArrayDataType x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLArrayDataType x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLMapDataType x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLMapDataType x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLStructDataType x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLStructDataType x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLStructDataType.Field x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLStructDataType.Field x) {
+
     }
 
     public final boolean isEnabled(VisitorFeature feature) {

@@ -18,9 +18,7 @@ package com.alibaba.druid.support.calcite;
 import com.google.common.collect.*;
 import org.apache.calcite.linq4j.tree.Expression;
 import org.apache.calcite.materialize.Lattice;
-import org.apache.calcite.schema.Function;
-import org.apache.calcite.schema.Schema;
-import org.apache.calcite.schema.SchemaPlus;
+import org.apache.calcite.schema.*;
 import org.apache.calcite.schema.Table;
 
 import java.util.Collection;
@@ -106,6 +104,11 @@ public class DDLSchema implements Schema, SchemaPlus {
     }
 
     @Override
+    public Schema snapshot(SchemaVersion version) {
+        return null;
+    }
+
+    @Override
     public <T> T unwrap(Class<T> clazz) {
         return null;
     }
@@ -124,12 +127,10 @@ public class DDLSchema implements Schema, SchemaPlus {
 
     }
 
-    @Override
     public boolean contentsHaveChangedSince(long lastCheck, long now) {
         return false;
     }
 
-    @Override
     public Schema snapshot(long now) {
         return null;
     }

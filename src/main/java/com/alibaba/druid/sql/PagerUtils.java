@@ -299,7 +299,14 @@ public class PagerUtils {
 
         if (query instanceof SQLSelectQueryBlock) {
             OracleSelectQueryBlock queryBlock = (OracleSelectQueryBlock) query;
-            if (queryBlock.getGroupBy() == null && select.getOrderBy() == null && offset <= 0) {
+            SQLOrderBy orderBy = select.getOrderBy();
+            if (orderBy == null && queryBlock.getOrderBy() != null) {
+                orderBy = queryBlock.getOrderBy();
+            }
+
+            if (queryBlock.getGroupBy() == null
+                    && orderBy == null && offset <= 0) {
+
                 SQLExpr where = queryBlock.getWhere();
                 if (check && where instanceof SQLBinaryOpExpr) {
                     SQLBinaryOpExpr binaryOpWhere = (SQLBinaryOpExpr) where;
@@ -374,6 +381,8 @@ public class PagerUtils {
                 if (rowCount <= count && offset <= 0) {
                     return false;
                 }
+            } else if (check && limit.getRowCount() instanceof SQLVariantRefExpr) {
+                return false;
             }
 
             limit.setRowCount(new SQLIntegerExpr(count));
@@ -664,12 +673,16 @@ public class PagerUtils {
 
 
             if (selectQuery != null) {
+                SQLOrderBy orderBy = selectQuery.getOrderBy();
+
                 SQLObject parent = selectQuery.getParent();
-                if (parent instanceof SQLSelect) {
+                if (orderBy == null && parent instanceof SQLSelect) {
                     SQLSelect select = (SQLSelect) parent;
-                    if (select.getOrderBy() == null || select.getOrderBy().getItems().size() == 0) {
-                        unorderedLimitCount++;
-                    }
+                    orderBy = select.getOrderBy();
+                }
+
+                if (orderBy == null || orderBy.getItems().size() == 0) {
+                    unorderedLimitCount++;
                 }
             }
 

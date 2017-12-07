@@ -35,6 +35,8 @@ public class MySqlSelectTest_crossjoin extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
+
+        System.out.println(stmt);
         
         SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
         
@@ -50,9 +52,9 @@ public class MySqlSelectTest_crossjoin extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 //        
         Assert.assertEquals(2, visitor.getTables().size());

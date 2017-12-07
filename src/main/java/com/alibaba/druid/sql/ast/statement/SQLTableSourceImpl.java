@@ -22,21 +22,19 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.util.FnvHash;
 
 public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTableSource {
-
     protected String        alias;
-
     protected List<SQLHint> hints;
-
     protected SQLExpr       flashback;
+    protected long          aliasHashCod64;
 
     public SQLTableSourceImpl(){
 
     }
 
     public SQLTableSourceImpl(String alias){
-
         this.alias = alias;
     }
 
@@ -46,6 +44,7 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
 
     public void setAlias(String alias) {
         this.alias = alias;
+        this.aliasHashCod64 = 0L;
     }
 
     public int getHintsSize() {
@@ -86,7 +85,6 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
         this.flashback = flashback;
     }
 
-
     public boolean containsAlias(String alias) {
         if (SQLUtils.nameEquals(this.alias, alias)) {
             return true;
@@ -95,23 +93,50 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
         return false;
     }
 
+    public long aliasHashCode64() {
+        if (aliasHashCod64 == 0
+                && alias != null) {
+            aliasHashCod64 = FnvHash.hashCode64(alias);
+        }
+        return aliasHashCod64;
+    }
+
     public SQLColumnDefinition findColumn(String columnName) {
+        if (columnName == null) {
+            return null;
+        }
+
+        long hash = FnvHash.hashCode64(alias);
+        return findColumn(hash);
+    }
+
+    public SQLColumnDefinition findColumn(long columnNameHash) {
         return null;
     }
 
     public SQLTableSource findTableSourceWithColumn(String columnName) {
+        if (columnName == null) {
+            return null;
+        }
+
+        long hash = FnvHash.hashCode64(alias);
+        return findTableSourceWithColumn(hash);
+    }
+
+    public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
         return null;
     }
 
     public SQLTableSource findTableSource(String alias) {
-        if (alias == null) {
-            return null;
-        }
+        long hash = FnvHash.hashCode64(alias);
+        return findTableSource(hash);
+    }
 
-        if (SQLUtils.nameEquals(alias, computeAlias())) {
+    public SQLTableSource findTableSource(long alias_hash) {
+        long hash = this.aliasHashCode64();
+        if (hash != 0 && hash == alias_hash) {
             return this;
         }
-
         return null;
     }
 }

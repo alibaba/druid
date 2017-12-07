@@ -42,16 +42,25 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        System.out.println(stmt);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
-//        Assert.assertEquals(1, visitor.getTables().size());
-//        Assert.assertEquals(1, visitor.getColumns().size());
-//        Assert.assertEquals(0, visitor.getConditions().size());
-//        Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+        Assert.assertEquals(2, visitor.getTables().size());
+        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getConditions().size());
+        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+
+        assertTrue(visitor.containsTable("table1"));
+        assertTrue(visitor.containsTable("table2"));
+        assertTrue(visitor.containsColumn("table1", "a"));
+        assertTrue(visitor.containsColumn("table1", "b"));
+        assertTrue(visitor.containsColumn("table2", "c"));
+        assertTrue(visitor.containsColumn("table2", "d"));
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("WITH cte1 AS (\n" +

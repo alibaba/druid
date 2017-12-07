@@ -16,8 +16,13 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class OracleRangeExpr extends OracleSQLObjectImpl implements SQLExpr {
 
@@ -29,8 +34,8 @@ public class OracleRangeExpr extends OracleSQLObjectImpl implements SQLExpr {
     }
 
     public OracleRangeExpr(SQLExpr lowBound, SQLExpr upBound){
-        this.lowBound = lowBound;
-        this.upBound = upBound;
+        setLowBound(lowBound);
+        setUpBound(upBound);
     }
 
     @Override
@@ -42,11 +47,18 @@ public class OracleRangeExpr extends OracleSQLObjectImpl implements SQLExpr {
         visitor.endVisit(this);
     }
 
+    public List<SQLObject> getChildren() {
+        return Arrays.<SQLObject>asList(this.lowBound, this.upBound);
+    }
+
     public SQLExpr getLowBound() {
         return lowBound;
     }
 
     public void setLowBound(SQLExpr lowBound) {
+        if (lowBound != null) {
+            lowBound.setParent(this);
+        }
         this.lowBound = lowBound;
     }
 
@@ -55,6 +67,9 @@ public class OracleRangeExpr extends OracleSQLObjectImpl implements SQLExpr {
     }
 
     public void setUpBound(SQLExpr upBound) {
+        if (upBound != null) {
+            upBound.setParent(this);
+        }
         this.upBound = upBound;
     }
 

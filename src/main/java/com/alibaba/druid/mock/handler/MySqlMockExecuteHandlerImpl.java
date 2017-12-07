@@ -143,7 +143,7 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
                 row[i] = ((SQLNCharExpr) expr).getText();
                 column.setColumnType(Types.NVARCHAR);
             } else if (expr instanceof SQLBooleanExpr) {
-                row[i] = ((SQLBooleanExpr) expr).getValue();
+                row[i] = ((SQLBooleanExpr) expr).getBooleanValue();
                 column.setColumnType(Types.NVARCHAR);
             } else if (expr instanceof SQLNullExpr) {
                 row[i] = null;

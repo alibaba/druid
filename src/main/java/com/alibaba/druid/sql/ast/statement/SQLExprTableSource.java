@@ -21,14 +21,15 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
-public class SQLExprTableSource extends SQLTableSourceImpl {
+public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplaceable {
 
     protected SQLExpr     expr;
     private List<SQLName> partitions;
@@ -56,6 +57,10 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
             expr.setParent(this);
         }
         this.expr = expr;
+    }
+
+    public void setExpr(String name) {
+        this.setExpr(new SQLIdentifierExpr(name));
     }
 
     public SQLName getName() {
@@ -193,25 +198,41 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     }
 
     public boolean containsAlias(String alias) {
-        if (SQLUtils.nameEquals(this.alias, alias)) {
+        long hashCode64 = FnvHash.hashCode64(alias);
+
+        return containsAlias(hashCode64);
+    }
+
+    public boolean containsAlias(long aliasHash) {
+        if (this.aliasHashCode64() == aliasHash) {
             return true;
         }
 
-        String name = null;
-        if (expr instanceof SQLIdentifierExpr) {
-            name = ((SQLIdentifierExpr) expr).getName();
-        } else if (expr instanceof SQLPropertyExpr) {
-            name = ((SQLPropertyExpr) expr).getName();
+        if (expr instanceof SQLPropertyExpr) {
+            long exprNameHash = ((SQLPropertyExpr) expr).hashCode64();
+            if (exprNameHash == aliasHash) {
+                return true;
+            }
         }
 
-        if (name != null && SQLUtils.nameEquals(name, alias)) {
-            return true;
+        if (expr instanceof SQLName) {
+            long exprNameHash = ((SQLName) expr).nameHashCode64();
+            return exprNameHash == aliasHash;
         }
 
         return false;
     }
 
     public SQLColumnDefinition findColumn(String columnName) {
+        if (columnName == null) {
+            return null;
+        }
+
+        long hash = FnvHash.hashCode64(columnName);
+        return findColumn(hash);
+    }
+
+    public SQLColumnDefinition findColumn(long columnNameHash) {
         if (schemaObject == null) {
             return null;
         }
@@ -219,20 +240,60 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
         SQLStatement stmt = schemaObject.getStatement();
         if (stmt instanceof SQLCreateTableStatement) {
             SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) stmt;
-            return createTableStmt.findColumn(columnName);
+            return createTableStmt.findColumn(columnNameHash);
         }
         return null;
     }
 
     public SQLTableSource findTableSourceWithColumn(String columnName) {
-        if (schemaObject == null) {
+        if (columnName == null) {
             return null;
         }
 
-        SQLStatement stmt = schemaObject.getStatement();
-        if (stmt instanceof SQLCreateTableStatement) {
-            SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) stmt;
-            if (createTableStmt.findColumn(columnName) != null) {
+        long hash = FnvHash.hashCode64(columnName);
+        return findTableSourceWithColumn(hash);
+    }
+
+    public SQLTableSource findTableSourceWithColumn(long columnName_hash) {
+        if (schemaObject != null) {
+            SQLStatement stmt = schemaObject.getStatement();
+            if (stmt instanceof SQLCreateTableStatement) {
+                SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) stmt;
+                if (createTableStmt.findColumn(columnName_hash) != null) {
+                    return this;
+                }
+            }
+        }
+
+        if (expr instanceof SQLIdentifierExpr) {
+            SQLTableSource tableSource = ((SQLIdentifierExpr) expr).getResolvedTableSource();
+            if (tableSource != null) {
+                return tableSource.findTableSourceWithColumn(columnName_hash);
+            }
+        }
+
+        return null;
+    }
+
+    public SQLTableSource findTableSource(long alias_hash) {
+        if (alias_hash == 0) {
+            return null;
+        }
+
+        if (aliasHashCode64() == alias_hash) {
+            return this;
+        }
+
+        if (expr instanceof SQLName) {
+            long exprNameHash = ((SQLName) expr).nameHashCode64();
+            if (exprNameHash == alias_hash) {
+                return this;
+            }
+        }
+
+        if (expr instanceof SQLPropertyExpr) {
+            long hash = ((SQLPropertyExpr) expr).hashCode64();
+            if (hash == alias_hash) {
                 return this;
             }
         }
@@ -240,19 +301,12 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
         return null;
     }
 
-    public SQLTableSource findTableSource(String alias) {
-        if (alias == null) {
-            return null;
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == this.expr) {
+            this.setExpr(target);
+            return true;
         }
-
-        if (SQLUtils.nameEquals(alias, computeAlias())) {
-            return this;
-        }
-
-        if (containsAlias(alias)) {
-            return this;
-        }
-
-        return null;
+        return false;
     }
 }

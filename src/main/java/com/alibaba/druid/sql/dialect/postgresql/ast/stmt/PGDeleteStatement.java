@@ -20,19 +20,15 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatement {
 
-    private PGWithClause  with;
-    private List<SQLName> using = new ArrayList<SQLName>(2);
     private boolean       returning;
-    private String        alias;
-    
+
     public PGDeleteStatement() {
         super (JdbcConstants.POSTGRESQL);
     }
@@ -46,29 +42,14 @@ public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatem
     }
 
     public String getAlias() {
-        return alias;
+        if (tableSource == null) {
+            return null;
+        }
+        return tableSource.getAlias();
     }
 
     public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public List<SQLName> getUsing() {
-        return using;
-    }
-
-    public void setUsing(List<SQLName> using) {
-        this.using = using;
-    }
-
-
-
-    public PGWithClause getWith() {
-        return with;
-    }
-
-    public void setWith(PGWithClause with) {
-        this.with = with;
+        this.tableSource.setAlias(alias);
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -91,16 +72,7 @@ public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatem
         PGDeleteStatement x = new PGDeleteStatement();
         cloneTo(x);
 
-        if (with != null) {
-            x.setWith(with.clone());
-        }
-        for (SQLName item : using) {
-            SQLName item2 = item.clone();
-            item2.setParent(x);
-            x.using.add(item2);
-        }
         x.returning = returning;
-        x.alias = alias;
 
         return x;
     }

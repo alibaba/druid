@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
-import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
@@ -41,7 +38,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
@@ -52,15 +48,20 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatemen
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Mode;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
-
-import java.util.Map;
 
 public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlASTVisitor {
 
+    public MySqlSchemaStatVisitor() {
+        super (JdbcConstants.MYSQL);
+    }
+
     public boolean visit(SQLSelectStatement x) {
-        setAliasMap();
-        getAliasMap().put("DUAL", null);
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
 
         return true;
     }
@@ -72,7 +73,10 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     // DUAL
     public boolean visit(MySqlDeleteStatement x) {
-        setAliasMap();
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
 
         setMode(x, Mode.Delete);
 
@@ -81,11 +85,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         x.getTableSource().accept(this);
 
         if (x.getTableSource() instanceof SQLExprTableSource) {
-            SQLName tableName = (SQLName) ((SQLExprTableSource) x.getTableSource()).getExpr();
-            String ident = tableName.toString();
-            setCurrentTable(x, ident);
-
-            TableStat stat = this.getTableStat(ident);
+            TableStat stat = this.getTableStat(x.getExprTableSource());
             stat.incrementDeleteCount();
         }
 
@@ -98,7 +98,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     public void endVisit(MySqlDeleteStatement x) {
-        setAliasMap(null);
     }
 
     @Override
@@ -108,31 +107,17 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlInsertStatement x) {
-        setMode(x, Mode.Insert);
-
-        setAliasMap();
-
-        SQLName tableName = x.getTableName();
-
-        String ident = null;
-        if (tableName instanceof SQLIdentifierExpr) {
-            ident = ((SQLIdentifierExpr) tableName).getName();
-        } else if (tableName instanceof SQLPropertyExpr) {
-            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) tableName;
-            if (propertyExpr.getOwner() instanceof SQLIdentifierExpr) {
-                ident = propertyExpr.toString();
-            }
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
         }
 
-        if (ident != null) {
-            setCurrentTable(x, ident);
+        setMode(x, Mode.Insert);
 
-            TableStat stat = getTableStat(ident);
+        TableStat stat = getTableStat(x.getTableSource());
+
+        if (stat != null) {
             stat.incrementInsertCount();
-
-            Map<String, String> aliasMap = getAliasMap();
-            putAliasMap(aliasMap, x.getAlias(), ident);
-            putAliasMap(aliasMap, ident, ident);
         }
 
         accept(x.getColumns());
@@ -179,17 +164,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     @Override
     public void endVisit(MySqlPrimaryKey x) {
 
-    }
-
-    @Override
-    public void endVisit(MySqlIntervalExpr x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlIntervalExpr x) {
-
-        return true;
     }
 
     @Override
@@ -266,46 +240,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public boolean visit(MySqlLoadXmlStatement x) {
 
         return true;
-    }
-
-    @Override
-    public void endVisit(MySqlReplaceStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlReplaceStatement x) {
-        setMode(x, Mode.Replace);
-
-        setAliasMap();
-
-        SQLName tableName = x.getTableName();
-
-        String ident = null;
-        if (tableName instanceof SQLIdentifierExpr) {
-            ident = ((SQLIdentifierExpr) tableName).getName();
-        } else if (tableName instanceof SQLPropertyExpr) {
-            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) tableName;
-            if (propertyExpr.getOwner() instanceof SQLIdentifierExpr) {
-                ident = propertyExpr.toString();
-            }
-        }
-
-        if (ident != null) {
-            setCurrentTable(x, ident);
-
-            TableStat stat = getTableStat(ident);
-            stat.incrementInsertCount();
-
-            Map<String, String> aliasMap = getAliasMap();
-            putAliasMap(aliasMap, ident, ident);
-        }
-
-        accept(x.getColumns());
-        accept(x.getValuesList());
-        accept(x.getQuery());
-
-        return false;
     }
 
     @Override
@@ -452,11 +386,19 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlExplainStatement x) {
-        if (x.getTableName() != null) {
-            String table = x.getTableName().toString();
-            getTableStat(table);
-            if (x.getColumnName() != null) {
-                addColumn(table, x.getColumnName().toString());
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
+        SQLName tableName = x.getTableName();
+        if (tableName != null) {
+            String table = tableName.toString();
+            getTableStat(tableName);
+
+            SQLName columnName = x.getColumnName();
+            if (columnName != null) {
+                addColumn(table, columnName.getSimpleName());
             }
         }
 
@@ -474,7 +416,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlUpdateStatement x) {
-        
         visit((SQLUpdateStatement) x);
         for (SQLExpr item : x.getReturning()) {
             item.accept(this);
@@ -961,10 +902,13 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     @Override
     public boolean visit(MySqlAlterTableChangeColumn x) {
         SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
-        String table = stmt.getName().toString();
 
-        String columnName = x.getColumnName().toString();
-        addColumn(table, columnName);
+        SQLName table = stmt.getName();
+        String tableName = table.toString();
+
+        SQLName column = x.getColumnName();
+        String columnName = column.toString();
+        addColumn(tableName, columnName);
         return false;
     }
 
@@ -976,10 +920,14 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     @Override
     public boolean visit(MySqlAlterTableModifyColumn x) {
         SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
-        String table = stmt.getName().toString();
 
-        String columnName = x.getNewColumnDefinition().getName().toString();
-        addColumn(table, columnName);
+        SQLName table = stmt.getName();
+        String tableName = table.toString();
+
+        SQLName column = x.getNewColumnDefinition().getName();
+        String columnName = column.toString();
+        addColumn(tableName, columnName);
+
         return false;
     }
 
@@ -989,12 +937,12 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public boolean visit(MySqlAlterTableCharacter x) {
+    public boolean visit(SQLAlterCharacter x) {
         return false;
     }
 
     @Override
-    public void endVisit(MySqlAlterTableCharacter x) {
+    public void endVisit(SQLAlterCharacter x) {
 
     }
 
@@ -1010,6 +958,11 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlCreateTableStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
         boolean val = super.visit((SQLCreateTableStatement) x);
 
         for (SQLObject option : x.getTableOptions().values()) {
@@ -1058,7 +1011,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MysqlForeignKey x) {
-        return super.visit(x);
+        return super.visit((SQLForeignKeyImpl) x);
     }
 
     @Override
@@ -1126,16 +1079,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public boolean visit(MySqlSetPasswordStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlSetPasswordStatement x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlHintStatement x) {
         return true;
     }
@@ -1178,14 +1121,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlDeclareStatement x) {
-        for (SQLDeclareItem item : x.getVarList()) {
-            item.setParent(x);
-
-            SQLName var = (SQLName) item.getName();
-            this.variants.put(var.toString(), var);
-        }
-
-        return false;
+        return true;
     }
 
     @Override
@@ -1316,6 +1252,106 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlFlushStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlEventSchedule x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlEventSchedule x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateEventStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateEventStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateAddLogFileGroupStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateAddLogFileGroupStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateServerStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateServerStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateTableSpaceStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateTableSpaceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterEventStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterEventStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterLogFileGroupStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterLogFileGroupStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterServerStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterServerStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTablespaceStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTablespaceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowDatabasePartitionStatusStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowDatabasePartitionStatusStatement x) {
 
     }
 }

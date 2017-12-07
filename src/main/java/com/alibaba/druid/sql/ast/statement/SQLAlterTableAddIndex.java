@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
@@ -38,6 +39,8 @@ public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTabl
     private String                           using;
     
     private boolean                          key = false;
+
+    protected SQLExpr                        comment;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -121,5 +124,16 @@ public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTabl
             x.getColumns().add(item);
         }
         x.setIndexType(type);
+    }
+
+    public SQLExpr getComment() {
+        return comment;
+    }
+
+    public void setComment(SQLExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
+        this.comment = comment;
     }
 }

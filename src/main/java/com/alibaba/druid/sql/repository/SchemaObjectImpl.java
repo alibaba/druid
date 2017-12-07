@@ -20,12 +20,15 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
+import com.alibaba.druid.util.FnvHash;
 
 /**
  * Created by wenshao on 08/06/2017.
  */
 public class SchemaObjectImpl implements SchemaObject {
     private final String name;
+    private final long   hashCode64;
+
     private final SchemaObjectType type;
     private SQLStatement statement;
 
@@ -39,6 +42,12 @@ public class SchemaObjectImpl implements SchemaObject {
         this.name = name;
         this.type = type;
         this.statement = statement;
+
+        this.hashCode64 = FnvHash.hashCode64(name);
+    }
+
+    public long nameHashCode64() {
+        return hashCode64;
     }
 
     public static enum Type {
@@ -50,12 +59,17 @@ public class SchemaObjectImpl implements SchemaObject {
     }
 
     public SQLColumnDefinition findColumn(String columName) {
+        long hash = FnvHash.hashCode64(columName);
+        return findColumn(hash);
+    }
+
+    public SQLColumnDefinition findColumn(long columNameHash) {
         if (statement == null) {
             return null;
         }
 
         if (statement instanceof SQLCreateTableStatement) {
-            return ((SQLCreateTableStatement) statement).findColumn(columName);
+            return ((SQLCreateTableStatement) statement).findColumn(columNameHash);
         }
 
         return null;

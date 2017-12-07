@@ -15,15 +15,21 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2Lexer;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
+import com.alibaba.druid.sql.dialect.h2.parser.H2StatementParser;
+import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsExprParser;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsLexer;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleLexer;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
@@ -42,26 +48,37 @@ import com.alibaba.druid.util.JdbcUtils;
 public class SQLParserUtils {
 
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType) {
-        boolean keepComments;
+        SQLParserFeature[] features;
         if (JdbcConstants.ODPS.equals(dbType) || JdbcConstants.MYSQL.equals(dbType)) {
-            keepComments = true;
+            features = new SQLParserFeature[] {SQLParserFeature.KeepComments};
         } else {
-            keepComments = false;
+            features = new SQLParserFeature[] {};
         }
-        return createSQLStatementParser(sql, dbType, keepComments);
+        return createSQLStatementParser(sql, dbType, features);
     }
 
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType, boolean keepComments) {
+        SQLParserFeature[] features;
+        if (keepComments) {
+            features = new SQLParserFeature[] {SQLParserFeature.KeepComments};
+        } else {
+            features = new SQLParserFeature[] {};
+        }
+
+        return createSQLStatementParser(sql, dbType, features);
+    }
+
+    public static SQLStatementParser createSQLStatementParser(String sql, String dbType, SQLParserFeature... features) {
         if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             return new OracleStatementParser(sql);
         }
 
         if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlStatementParser(sql, keepComments);
+            return new MySqlStatementParser(sql, features);
         }
 
         if (JdbcUtils.MARIADB.equals(dbType)) {
-            return new MySqlStatementParser(sql, keepComments);
+            return new MySqlStatementParser(sql, features);
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)
@@ -74,7 +91,7 @@ public class SQLParserUtils {
         }
 
         if (JdbcUtils.H2.equals(dbType)) {
-            return new MySqlStatementParser(sql);
+            return new H2StatementParser(sql);
         }
         
         if (JdbcUtils.DB2.equals(dbType)) {
@@ -87,6 +104,14 @@ public class SQLParserUtils {
 
         if (JdbcUtils.PHOENIX.equals(dbType)) {
             return new PhoenixStatementParser(sql);
+        }
+
+        if (JdbcUtils.HIVE.equals(dbType)) {
+            return new HiveStatementParser(sql);
+        }
+
+        if (JdbcUtils.ELASTIC_SEARCH.equals(dbType)) {
+            return new MySqlStatementParser(sql);
         }
 
         return new SQLStatementParser(sql, dbType);
@@ -161,4 +186,32 @@ public class SQLParserUtils {
 
         return new Lexer(sql);
     }
+
+    public static SQLSelectQueryBlock createSelectQueryBlock(String dbType) {
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            return new MySqlSelectQueryBlock();
+        }
+
+        if (JdbcConstants.ORACLE.equals(dbType)) {
+            return new OracleSelectQueryBlock();
+        }
+
+        if (JdbcConstants.DB2.equals(dbType)) {
+            return new DB2SelectQueryBlock();
+        }
+
+        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+            return new DB2SelectQueryBlock();
+        }
+
+        if (JdbcConstants.ODPS.equals(dbType)) {
+            return new DB2SelectQueryBlock();
+        }
+
+        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
+            return new DB2SelectQueryBlock();
+        }
+
+        return new SQLSelectQueryBlock();
+     }
 }

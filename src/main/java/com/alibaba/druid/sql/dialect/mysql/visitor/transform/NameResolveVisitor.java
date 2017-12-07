@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
+import com.alibaba.druid.util.FnvHash;
 
 /**
  * Created by wenshao on 26/07/2017.
@@ -30,7 +31,8 @@ public class NameResolveVisitor extends OracleASTVisitorAdapter {
     public boolean visit(SQLIdentifierExpr x) {
         SQLObject parent = x.getParent();
 
-        if (parent instanceof SQLBinaryOpExpr) {
+        if (parent instanceof SQLBinaryOpExpr
+                && x.getResolvedColumn() == null) {
             SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
             boolean isJoinCondition = binaryOpExpr.getLeft() instanceof SQLName
                     && binaryOpExpr.getRight() instanceof SQLName;
@@ -42,6 +44,15 @@ public class NameResolveVisitor extends OracleASTVisitorAdapter {
         String name = x.getName();
 
         if ("ROWNUM".equalsIgnoreCase(name)) {
+            return false;
+        }
+
+        long hash = x.nameHashCode64();
+        SQLTableSource tableSource = null;
+
+        if (hash == FnvHash.Constants.LEVEL
+                || hash == FnvHash.Constants.CONNECT_BY_ISCYCLE
+                || hash == FnvHash.Constants.SYSTIMESTAMP) {
             return false;
         }
 

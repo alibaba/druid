@@ -165,7 +165,7 @@ public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLE
     
     @Override
     public boolean visit(SQLBooleanExpr x) {
-        x.getAttributes().put(EVAL_VALUE, x.getValue());
+        x.getAttributes().put(EVAL_VALUE, x.getBooleanValue());
         return false;
     }
 }

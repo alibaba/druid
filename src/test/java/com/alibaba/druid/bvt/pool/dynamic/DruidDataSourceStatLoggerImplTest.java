@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.pool.dynamic;
 
 import java.lang.reflect.Field;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -11,13 +12,15 @@ import com.alibaba.druid.pool.DruidDataSourceStatLogger;
 import com.alibaba.druid.pool.DruidDataSourceStatLoggerImpl;
 import com.alibaba.druid.support.logging.Log;
 
-public class DruidDataSourceStatLoggerImplTest extends TestCase {
+public class DruidDataSourceStatLoggerImplTest extends PoolTestCase {
 
     private DruidDataSource dataSource;
 
     private Log             statLog;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         Field logField = DruidDataSourceStatLoggerImpl.class.getDeclaredField("LOG");
         logField.setAccessible(true);
         statLog = (Log) logField.get(null);
@@ -35,6 +38,8 @@ public class DruidDataSourceStatLoggerImplTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+
+        super.tearDown();
     }
 
     public void test_connectPropertiesChange() throws Exception {

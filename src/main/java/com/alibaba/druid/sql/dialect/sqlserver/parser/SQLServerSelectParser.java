@@ -17,17 +17,10 @@ package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.statement.SQLExprHint;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class SQLServerSelectParser extends SQLSelectParser {
 
@@ -39,10 +32,17 @@ public class SQLServerSelectParser extends SQLSelectParser {
         super(exprParser);
     }
 
+    public SQLServerSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+        super(exprParser, selectListCache);
+    }
+
     public SQLSelect select() {
         SQLSelect select = new SQLSelect();
 
-        withSubquery(select);
+        if (lexer.token() == Token.WITH) {
+            SQLWithSubqueryClause with = this.parseWith();
+            select.setWithSubQuery(with);
+        }
 
         select.setQuery(query());
         select.setOrderBy(parseOrderBy());
@@ -54,28 +54,28 @@ public class SQLServerSelectParser extends SQLSelectParser {
         if (lexer.token() == Token.FOR) {
             lexer.nextToken();
 
-            if (identifierEquals("BROWSE")) {
+            if (lexer.identifierEquals("BROWSE")) {
                 lexer.nextToken();
                 select.setForBrowse(true);
-            } else if (identifierEquals("XML")) {
+            } else if (lexer.identifierEquals("XML")) {
                 lexer.nextToken();
 
                 for (;;) {
-                    if (identifierEquals("AUTO") //
-                        || identifierEquals("TYPE") //
-                        || identifierEquals("XMLSCHEMA") //
+                    if (lexer.identifierEquals("AUTO") //
+                        || lexer.identifierEquals("TYPE") //
+                        || lexer.identifierEquals("XMLSCHEMA") //
                     ) {
                         select.getForXmlOptions().add(lexer.stringVal());
                         lexer.nextToken();
-                    } else if (identifierEquals("ELEMENTS")) {
+                    } else if (lexer.identifierEquals("ELEMENTS")) {
                         lexer.nextToken();
-                        if (identifierEquals("XSINIL")) {
+                        if (lexer.identifierEquals("XSINIL")) {
                             lexer.nextToken();
                             select.getForXmlOptions().add("ELEMENTS XSINIL");
                         } else {
                             select.getForXmlOptions().add("ELEMENTS");
                         }
-                    } else if (identifierEquals("PATH")) {
+                    } else if (lexer.identifierEquals("PATH")) {
                         SQLExpr xmlPath = this.exprParser.expr();
                         select.setXmlPath(xmlPath);
                     } else {
@@ -94,7 +94,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
             }
         }
         
-        if (identifierEquals("OFFSET")) {
+        if (lexer.identifierEquals("OFFSET")) {
             lexer.nextToken();
             SQLExpr offset = this.expr();
             

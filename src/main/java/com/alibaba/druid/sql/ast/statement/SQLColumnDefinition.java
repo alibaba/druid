@@ -19,16 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement {
+public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement, SQLObjectWithDataType, SQLReplaceable {
     protected String                          dbType;
 
     protected SQLName                         name;
@@ -94,6 +92,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
     public SQLName getName() {
         return name;
+    }
+
+    public long nameHashCode64() {
+        if (name == null) {
+            return 0;
+        }
+
+        return name.hashCode64();
     }
 
     public String getNameAsString() {
@@ -171,7 +177,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return comment;
     }
 
+    public void setComment(String comment) {
+        this.setComment(new SQLCharExpr(comment));
+    }
+
     public void setComment(SQLExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
         this.comment = comment;
     }
 
@@ -235,6 +248,21 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
     public void setStorage(SQLExpr storage) {
         this.storage = storage;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (defaultExpr == expr) {
+            setDefaultExpr(target);
+            return true;
+        }
+
+        if (name == expr) {
+            setName((SQLName) target);
+            return true;
+        }
+
+        return false;
     }
 
     public static class Identity extends SQLObjectImpl {
@@ -374,8 +402,10 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         if (this.name instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identExpr = (SQLIdentifierExpr) this.name;
             String columnName = identExpr.getName();
-            columnName = SQLUtils.normalize(columnName, dbType);
-            identExpr.setName(columnName);
+            String normalized = SQLUtils.normalize(columnName, dbType);
+            if (normalized != columnName) {
+                this.setName(normalized);
+            }
         }
     }
 
@@ -387,5 +417,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         }
 
         return false;
+    }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this, dbType);
     }
 }

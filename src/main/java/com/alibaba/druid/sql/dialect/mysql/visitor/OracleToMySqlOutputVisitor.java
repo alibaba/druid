@@ -34,10 +34,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
         super(appender, parameterized);
     }
 
-    @Override
-    public void endVisit(OraclePLSQLCommitStatement astNode) {
-
-    }
 
     @Override
     public void endVisit(OracleAnalytic x) {
@@ -107,11 +103,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     @Override
     public void endVisit(OracleUpdateStatement x) {
 
-    }
-
-    @Override
-    public boolean visit(OraclePLSQLCommitStatement astNode) {
-        return false;
     }
 
     @Override
@@ -465,16 +456,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public boolean visit(OracleExprStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleExprStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleDatetimeExpr x) {
         return false;
     }
@@ -541,16 +522,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
 
     @Override
     public void endVisit(OracleExplainStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleAlterProcedureStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterProcedureStatement x) {
 
     }
 
@@ -955,16 +926,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public boolean visit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCreateTableStatement.OIDIndex x) {
         return false;
     }
@@ -1011,6 +972,46 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
 
     @Override
     public void endVisit(OracleCreateSynonymStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleCreateTypeStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreateTypeStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OraclePipeRowStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OraclePipeRowStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleIsOfTypeExpr x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleIsOfTypeExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleRunStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleRunStatement x) {
 
     }
 }

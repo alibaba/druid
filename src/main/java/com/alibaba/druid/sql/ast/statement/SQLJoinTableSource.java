@@ -20,14 +20,12 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplaceable {
 
@@ -247,6 +245,10 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             x.setRight(right.clone());
         }
 
+        if(condition != null){
+            x.setCondition(condition);
+        }
+
         for (SQLExpr item : using) {
             SQLExpr item2 = item.clone();
             item2.setParent(x);
@@ -416,15 +418,20 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     }
 
     public SQLColumnDefinition findColumn(String columnName) {
+        long hash = FnvHash.hashCode64(columnName);
+        return findColumn(hash);
+    }
+
+    public SQLColumnDefinition findColumn(long columnNameHash) {
         if (left != null) {
-            SQLColumnDefinition column = left.findColumn(columnName);
+            SQLColumnDefinition column = left.findColumn(columnNameHash);
             if (column != null) {
                 return column;
             }
         }
 
         if (right != null) {
-            return right.findColumn(columnName);
+            return right.findColumn(columnNameHash);
         }
 
         return null;
@@ -432,15 +439,20 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
     @Override
     public SQLTableSource findTableSourceWithColumn(String columnName) {
+        long hash = FnvHash.hashCode64(columnName);
+        return findTableSourceWithColumn(hash);
+    }
+
+    public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
         if (left != null) {
-            SQLTableSource tableSource = left.findTableSourceWithColumn(columnName);
+            SQLTableSource tableSource = left.findTableSourceWithColumn(columnNameHash);
             if (tableSource != null) {
                 return tableSource;
             }
         }
 
         if (right != null) {
-            return right.findTableSourceWithColumn(columnName);
+            return right.findTableSourceWithColumn(columnNameHash);
         }
 
         return null;
@@ -451,55 +463,15 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             return false;
         }
 
-        if (left.containsAlias(alias_a) && right.containsAlias(alias_b)) {
+        if (left.containsAlias(alias_a)
+                && right.containsAlias(alias_b)) {
             return true;
         }
 
-        return right.containsAlias(alias_a) && left.containsAlias(alias_b);
+        return right.containsAlias(alias_a)
+                && left.containsAlias(alias_b);
     }
 
-    /**
-     * a, b left join c ->
-     */
-//    public boolean addCondition(SQLBinaryOpExpr condition, JoinType joinType) {
-//        if (this.left == null || this.right == null) {
-//            return false;
-//        }
-//
-//        if (!(condition.getLeft() instanceof SQLPropertyExpr
-//                && condition.getRight() instanceof SQLPropertyExpr)) {
-//            return false;
-//        }
-//
-//        SQLPropertyExpr left = (SQLPropertyExpr) condition.getLeft();
-//        SQLPropertyExpr right = (SQLPropertyExpr) condition.getRight();
-//
-//        String leftOwner = left.getOwnernName();
-//        String rightOwner = right.getOwnernName();
-//
-//        if (this.left.containsAlias(leftOwner) && this.right.containsAlias(rightOwner)) {
-//            if (this.joinType == joinType) {
-//                this.addConditionnIfAbsent(condition);
-//                return true;
-//            }
-//
-//            if (this.joinType == null || this.joinType == JoinType.COMMA) {
-//                this.joinType = joinType;
-//                this.addConditionnIfAbsent(condition);
-//                return true;
-//            }
-//
-//            if (this.joinType == JoinType.LEFT_OUTER_JOIN && joinType == JoinType.RIGHT_OUTER_JOIN) {
-//                if (this.left instanceof SQLJoinTableSource && ((SQLJoinTableSource) this.left).joinType == JoinType.COMMA) {
-//                    SQLJoinTableSource leftJoin = (SQLJoinTableSource) this.left;
-//
-//                }
-//            }
-//        }
-//
-//        return false;
-//    }
-//
     public boolean conditionContainsTable(String alias) {
         if (condition == null) {
             return false;
@@ -517,20 +489,32 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         return joined;
     }
 
-    public SQLTableSource findTableSource(String alias) {
-        if (alias == null) {
+    public SQLTableSource findTableSource(long alias_hash) {
+        if (alias_hash == 0) {
             return null;
         }
 
-        if (SQLUtils.nameEquals(alias, computeAlias())) {
+        if (aliasHashCode64() == alias_hash) {
             return this;
         }
 
-        SQLTableSource result = left.findTableSource(alias);
+        SQLTableSource result = left.findTableSource(alias_hash);
         if (result != null) {
             return result;
         }
 
-        return right.findTableSource(alias);
+        return right.findTableSource(alias_hash);
+    }
+
+    public SQLTableSource other(SQLTableSource x) {
+        if (left == x) {
+            return right;
+        }
+
+        if (right == x) {
+            return left;
+        }
+
+        return null;
     }
 }

@@ -49,7 +49,7 @@ public class OracleSelectTest50 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(20, visitor.getColumns().size());
+        Assert.assertEquals(19, visitor.getColumns().size());
 
         String text = TestUtils.outputOracle(stmt);
 

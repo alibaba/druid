@@ -18,12 +18,9 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSubPartition extends SQLObjectImpl {
-
     protected SQLName           name;
-
     protected SQLPartitionValue values;
-
-    private SQLName             tableSpace;
+    protected SQLName           tableSpace;
 
     public SQLName getName() {
         return name;

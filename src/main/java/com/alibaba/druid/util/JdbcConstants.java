@@ -68,6 +68,9 @@ public interface JdbcConstants {
     public static final String KINGBASE          = "kingbase";
     public static final String KINGBASE_DRIVER   = "com.kingbase.Driver";
 
+    public static final String GBASE             = "gbase";
+    public static final String GBASE_DRIVER      = "com.gbase.jdbc.Driver";
+
     public static final String OCEANBASE         = "oceanbase";
     public static final String OCEANBASE_DRIVER  = "com.mysql.jdbc.Driver";
 
@@ -105,4 +108,7 @@ public interface JdbcConstants {
     public static final String ALIYUN_DRDS         = "aliyun_drds";
 
     public static final String PRESTO              = "presto";
+
+    public static final String ELASTIC_SEARCH      = "elastic_search";
+    String ELASTIC_SEARCH_DRIVER                   = "com.alibaba.xdriver.elastic.jdbc.ElasticDriver";
 }

@@ -19,10 +19,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.sql.XAConnection;
 
@@ -72,5 +69,18 @@ public class PGUtils {
         }
 
         return words.contains(name_lower);
+    }
+
+    private final static long[] pseudoColumnHashCodes;
+    static {
+        long[] array = {
+                FnvHash.Constants.CURRENT_TIMESTAMP
+        };
+        Arrays.sort(array);
+        pseudoColumnHashCodes = array;
+    }
+
+    public static boolean isPseudoColumn(long hash) {
+        return Arrays.binarySearch(pseudoColumnHashCodes, hash) >= 0;
     }
 }

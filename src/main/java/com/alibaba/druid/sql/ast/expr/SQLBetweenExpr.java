@@ -16,10 +16,14 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
@@ -67,6 +71,10 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
             acceptChild(visitor, this.endExpr);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        return Arrays.<SQLObject>asList(this.testExpr, beginExpr, this.endExpr);
     }
 
     public SQLExpr getTestExpr() {

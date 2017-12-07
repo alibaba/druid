@@ -58,7 +58,7 @@ public class MySqlCreateTableTest18 extends MysqlTest {
 		statemen.accept(visitor);
 
 //		System.out.println("Tables : " + visitor.getTables());
-//		System.out.println("fields : " + visitor.getColumns());
+		System.out.println("fields : " + visitor.getColumns());
 //		System.out.println("coditions : " + visitor.getConditions());
 //		System.out.println("orderBy : " + visitor.getOrderByColumns());
 
@@ -69,6 +69,6 @@ public class MySqlCreateTableTest18 extends MysqlTest {
 		Assert.assertTrue(visitor.getTables().containsKey(
 				new TableStat.Name("t_awards")));
 
-		Assert.assertTrue(visitor.getColumns().contains(new Column("t_awards", "f_type")));
+		Assert.assertTrue(visitor.containsColumn("t_awards", "f_type"));
 	}
 }

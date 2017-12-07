@@ -16,10 +16,14 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -94,6 +98,10 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
         }
 
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        return Arrays.<SQLObject>asList(this.expr, this.subQuery);
     }
 
     @Override

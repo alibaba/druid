@@ -19,9 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 
 public class DB2StatementParser extends SQLStatementParser {
@@ -29,12 +27,16 @@ public class DB2StatementParser extends SQLStatementParser {
         super (new DB2ExprParser(sql));
     }
 
+    public DB2StatementParser(String sql, SQLParserFeature... features) {
+        super (new DB2ExprParser(sql, features));
+    }
+
     public DB2StatementParser(Lexer lexer){
         super(new DB2ExprParser(lexer));
     }
     
     public DB2SelectParser createSQLSelectParser() {
-        return new DB2SelectParser(this.exprParser);
+        return new DB2SelectParser(this.exprParser, selectListCache);
     }
     
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
@@ -47,5 +49,9 @@ public class DB2StatementParser extends SQLStatementParser {
         }
         
         return false;
+    }
+
+    public SQLCreateTableParser getSQLCreateTableParser() {
+        return new DB2CreateTableParser(this.exprParser);
     }
 }

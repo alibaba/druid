@@ -26,7 +26,7 @@ public class SQLOver extends SQLObjectImpl {
     protected SQLOrderBy          orderBy;
 
     // for db2
-    protected SQLExpr             of;
+    protected SQLName             of;
 
     protected SQLExpr             windowing;
     protected WindowingType       windowingType = WindowingType.ROWS;
@@ -71,11 +71,11 @@ public class SQLOver extends SQLObjectImpl {
         this.orderBy = orderBy;
     }
 
-    public SQLExpr getOf() {
+    public SQLName getOf() {
         return of;
     }
 
-    public void setOf(SQLExpr of) {
+    public void setOf(SQLName of) {
         if (of != null) {
             of.setParent(this);
         }

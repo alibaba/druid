@@ -44,7 +44,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
         stmt.accept(visitor);
 
         assertEquals("CREATE ALGORITHM = UNDEFINED\n" +
-                        "\tDEFINER = root\n" +
+                        "\tDEFINER = root@localhost\n" +
                         "\tSQL SECURITY = DEFINER\n" +
                         "\tVIEW view_audit_enroll\n" +
                         "AS\n" +
@@ -55,7 +55,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\t\tFROM actvty_audit\n" +
                         "\t\t\tWHERE enroll_id = a.enroll_id\n" +
                         "\t\t\t\tAND rankjurisdiction = 1\n" +
-                        "\t\t) > 0 THEN '县站已审核'\n" +
+                        "\t\t) > 0 THEN \"县站已审核\"\n" +
                         "\t\tELSE NULL\n" +
                         "\tEND AS 'countyAudit'\n" +
                         "\t, CASE \n" +
@@ -64,7 +64,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\t\tFROM actvty_audit\n" +
                         "\t\t\tWHERE enroll_id = a.enroll_id\n" +
                         "\t\t\t\tAND rankjurisdiction = 2\n" +
-                        "\t\t) > 0 THEN '市馆已审核'\n" +
+                        "\t\t) > 0 THEN \"市馆已审核\"\n" +
                         "\t\tELSE NULL\n" +
                         "\tEND AS 'cityAudit'\n" +
                         "\t, CASE \n" +
@@ -73,7 +73,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\t\tFROM actvty_audit\n" +
                         "\t\t\tWHERE enroll_id = a.enroll_id\n" +
                         "\t\t\t\tAND rankjurisdiction = 3\n" +
-                        "\t\t) > 0 THEN '省馆已审核'\n" +
+                        "\t\t) > 0 THEN \"省馆已审核\"\n" +
                         "\t\tELSE NULL\n" +
                         "\tEND AS 'provinceAudit'\n" +
                         "FROM actvty_audit a\n" +
@@ -81,7 +81,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                 SQLUtils.toMySqlString(stmt));
 
         Assert.assertEquals("create algorithm = UNDEFINED\n" +
-                        "\tdefiner = root\n" +
+                        "\tdefiner = root@localhost\n" +
                         "\tsql security = DEFINER\n" +
                         "\tview view_audit_enroll\n" +
                         "as\n" +
@@ -92,7 +92,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\t\tfrom actvty_audit\n" +
                         "\t\t\twhere enroll_id = a.enroll_id\n" +
                         "\t\t\t\tand rankjurisdiction = 1\n" +
-                        "\t\t) > 0 then '县站已审核'\n" +
+                        "\t\t) > 0 then \"县站已审核\"\n" +
                         "\t\telse null\n" +
                         "\tend as 'countyAudit'\n" +
                         "\t, case \n" +
@@ -101,7 +101,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\t\tfrom actvty_audit\n" +
                         "\t\t\twhere enroll_id = a.enroll_id\n" +
                         "\t\t\t\tand rankjurisdiction = 2\n" +
-                        "\t\t) > 0 then '市馆已审核'\n" +
+                        "\t\t) > 0 then \"市馆已审核\"\n" +
                         "\t\telse null\n" +
                         "\tend as 'cityAudit'\n" +
                         "\t, case \n" +
@@ -110,7 +110,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\t\tfrom actvty_audit\n" +
                         "\t\t\twhere enroll_id = a.enroll_id\n" +
                         "\t\t\t\tand rankjurisdiction = 3\n" +
-                        "\t\t) > 0 then '省馆已审核'\n" +
+                        "\t\t) > 0 then \"省馆已审核\"\n" +
                         "\t\telse null\n" +
                         "\tend as 'provinceAudit'\n" +
                         "from actvty_audit a\n" +
@@ -123,7 +123,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
+        Assert.assertEquals(6, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("actvty_audit")));

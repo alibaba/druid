@@ -15,7 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class MySqlSetTransactionStatement extends MySqlStatementImpl {
 
@@ -24,6 +28,17 @@ public class MySqlSetTransactionStatement extends MySqlStatementImpl {
     private String  isolationLevel;
 
     private String  accessModel;
+
+    private Boolean hasSessionBefore;
+
+
+    public Boolean getHasSessionBefore() {
+        return hasSessionBefore;
+    }
+
+    public void setHasSessionBefore(Boolean hasSessionBefore) {
+        this.hasSessionBefore = hasSessionBefore;
+    }
 
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
@@ -54,4 +69,8 @@ public class MySqlSetTransactionStatement extends MySqlStatementImpl {
         this.accessModel = accessModel;
     }
 
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>emptyList();
+    }
 }

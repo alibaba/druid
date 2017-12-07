@@ -20,11 +20,12 @@ public class SchemaStatTest3 extends TestCase {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         SQLStatement stmt = parser.parseStatementList().get(0);
         
-        SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(dbType);
-        stmt.accept(statVisitor);
+        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
+        stmt.accept(visitor);
         
-        System.out.println(statVisitor.getColumns());
+        System.out.println(visitor.getColumns());
         
-        Assert.assertEquals(0, statVisitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertTrue(visitor.containsColumn("t", "*"));
     }
 }

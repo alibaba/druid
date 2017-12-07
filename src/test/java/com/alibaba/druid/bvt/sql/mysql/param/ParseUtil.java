@@ -4,7 +4,6 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
@@ -43,7 +42,7 @@ public class ParseUtil {
         //  return DML_1_PATTERN.matcher(querySql).find() || DML_2_PATTERN.matcher(querySql).find();
         return statement instanceof SQLSelectStatement ||
                 statement instanceof SQLInsertStatement ||
-                statement instanceof MySqlReplaceStatement ||
+                statement instanceof SQLReplaceStatement ||
                 statement instanceof SQLUpdateStatement ||
                 statement instanceof SQLDeleteStatement;
     }
@@ -121,7 +120,12 @@ public class ParseUtil {
     }
 
     public static String restore(String sql, String table, String params/*JSONArray paramsArray, JSONArray destArray*/) {
-        JSONArray destArray = JSON.parseArray(table.replaceAll("''", "'"));
+        JSONArray destArray = null;
+
+        if (table != null) {
+            destArray = JSON.parseArray(table.replaceAll("''", "'"));
+        }
+
         JSONArray paramsArray = JSON.parseArray(params.replaceAll("''", "'"));
         String dbType = JdbcConstants.MYSQL;
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
@@ -142,8 +146,10 @@ public class ParseUtil {
             srcArray.add(entry.getKey().getName());
         }*/
 
-        for (int i = 0; i < srcArray.size(); i++) {
-            visitor.addTableMapping(srcArray.getString(i), destArray.getString(i));
+        if (destArray != null) {
+            for (int i = 0; i < srcArray.size(); i++) {
+                visitor.addTableMapping(srcArray.getString(i), destArray.getString(i));
+            }
         }
 
         stmt.accept(visitor);

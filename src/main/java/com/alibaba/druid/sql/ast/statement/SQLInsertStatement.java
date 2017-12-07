@@ -18,13 +18,17 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
-    private String dbType;
+    protected SQLWithSubqueryClause with;
+
+    protected String dbType;
 
     protected boolean upsert = false; // for phoenix
 
@@ -39,6 +43,10 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
         x.dbType = dbType;
         x.upsert = upsert;
         x.afterSemi = afterSemi;
+
+        if (with != null) {
+            x.setWith(with.clone());
+        }
     }
 
     public SQLInsertStatement clone() {
@@ -59,6 +67,20 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
         visitor.endVisit(this);
     }
 
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+
+        children.add(tableSource);
+        children.addAll(this.columns);
+        children.addAll(this.valuesList);
+        if (query != null) {
+            children.add(query);
+        }
+
+        return children;
+    }
+
     public boolean isUpsert() {
         return upsert;
     }
@@ -69,9 +91,9 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
     public static class ValuesClause extends SQLObjectImpl {
 
-        private final List<SQLExpr> values;
-
-        private transient String originalString;
+        private final     List<SQLExpr> values;
+        private transient String        originalString;
+        private transient int           replaceCount;
 
         public ValuesClause(){
             this(new ArrayList<SQLExpr>());
@@ -128,6 +150,14 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
         public void setOriginalString(String originalString) {
             this.originalString = originalString;
         }
+
+        public int getReplaceCount() {
+            return replaceCount;
+        }
+
+        public void incrementReplaceCount() {
+            this.replaceCount++;
+        }
     }
 
     @Override
@@ -147,5 +177,21 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     @Override
     public void setAfterSemi(boolean afterSemi) {
         this.afterSemi = afterSemi;
+    }
+
+
+    public SQLWithSubqueryClause getWith() {
+        return with;
+    }
+
+    public void setWith(SQLWithSubqueryClause with) {
+        if (with != null) {
+            with.setParent(this);
+        }
+        this.with = with;
+    }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this, dbType);
     }
 }

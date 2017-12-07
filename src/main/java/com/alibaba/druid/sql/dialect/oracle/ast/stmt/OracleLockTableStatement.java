@@ -17,8 +17,12 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OracleLockTableStatement extends OracleStatementImpl {
 
@@ -74,6 +78,17 @@ public class OracleLockTableStatement extends OracleStatementImpl {
             acceptChild(visitor, wait);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (table != null) {
+            children.add(table);
+        }
+        if (wait != null) {
+            children.add(wait);
+        }
+        return children;
     }
 
     public static enum LockMode {

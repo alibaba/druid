@@ -46,6 +46,6 @@ public class OracleSelectTest_param extends OracleTest {
         assertEquals("SELECT c1\n" +
                 "FROM t1 t\n" +
                 "WHERE t.c2 = ?\n" +
-                "\tAND t.c3 = ?", SQLUtils.toSQLString(stmt, dbType, new SQLUtils.FormatOption(true, true, true)));
+                "\tAND (t.c3 = ?)", SQLUtils.toSQLString(stmt, dbType, new SQLUtils.FormatOption(true, true, true)));
     }
 }

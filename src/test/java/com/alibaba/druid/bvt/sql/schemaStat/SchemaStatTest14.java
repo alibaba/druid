@@ -21,6 +21,8 @@ public class SchemaStatTest14 extends TestCase {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
+        System.out.println(stmt);
+
         SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(dbType);
         stmt.accept(statVisitor);
 

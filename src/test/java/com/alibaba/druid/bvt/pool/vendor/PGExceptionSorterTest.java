@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool.vendor;
 
+import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
 import org.postgresql.util.GT;
 import org.postgresql.util.PSQLException;
@@ -9,7 +10,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.vendor.PGExceptionSorter;
 
-public class PGExceptionSorterTest extends TestCase {
+public class PGExceptionSorterTest extends PoolTestCase {
 
     public void test_pg() throws Exception {
         PGExceptionSorter exSorter = new PGExceptionSorter();

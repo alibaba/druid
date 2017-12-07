@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLOrderBy extends SQLObjectImpl {
+public final class SQLOrderBy extends SQLObjectImpl {
 
     protected final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
     

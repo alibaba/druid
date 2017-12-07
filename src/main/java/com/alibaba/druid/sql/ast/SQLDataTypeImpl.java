@@ -15,26 +15,48 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
-    protected String              name;
+    private         String        name;
+    private         long          nameHashCode64;
     protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
-    private Boolean withTimeZone;
+    private         Boolean       withTimeZone;
+    private         boolean       withLocalTimeZone = false;
+    private         String        dbType;
 
-    private boolean withLocalTimeZone = false;
+    private         boolean       unsigned;
+    private         boolean       zerofill;
 
     public SQLDataTypeImpl(){
 
     }
 
     public SQLDataTypeImpl(String name){
-
         this.name = name;
+    }
+
+    public SQLDataTypeImpl(String name, int precision) {
+        this(name);
+        addArgument(new SQLIntegerExpr(precision));
+    }
+
+    public SQLDataTypeImpl(String name, SQLExpr arg) {
+        this(name);
+        addArgument(arg);
+    }
+
+    public SQLDataTypeImpl(String name, int precision, int scale) {
+        this(name);
+        addArgument(new SQLIntegerExpr(precision));
+        addArgument(new SQLIntegerExpr(scale));
     }
 
     @Override
@@ -50,8 +72,16 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
         return this.name;
     }
 
+    public long nameHashCode64() {
+        if (nameHashCode64 == 0) {
+            nameHashCode64 = FnvHash.hashCode64(name);
+        }
+        return nameHashCode64;
+    }
+
     public void setName(String name) {
         this.name = name;
+        nameHashCode64 = 0L;
     }
 
     public List<SQLExpr> getArguments() {
@@ -79,10 +109,8 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (arguments != null ? arguments.hashCode() : 0);
-        result = 31 * result + (withTimeZone != null ? withTimeZone.hashCode() : 0);
-        return result;
+        long value = nameHashCode64();
+        return (int)(value ^ (value >>> 32));
     }
 
     @Override
@@ -102,6 +130,14 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
         this.withLocalTimeZone = withLocalTimeZone;
     }
 
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
+
     public SQLDataTypeImpl clone() {
         SQLDataTypeImpl x = new SQLDataTypeImpl();
 
@@ -111,7 +147,9 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     }
 
     public void cloneTo(SQLDataTypeImpl x) {
+        x.dbType = dbType;
         x.name = name;
+        x.nameHashCode64 = nameHashCode64;
 
         for (SQLExpr arg : arguments) {
             x.addArgument(arg.clone());
@@ -119,5 +157,27 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
         x.withTimeZone = withTimeZone;
         x.withLocalTimeZone = withLocalTimeZone;
+        x.zerofill = zerofill;
+        x.unsigned = unsigned;
+    }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this, dbType);
+    }
+
+    public boolean isUnsigned() {
+        return unsigned;
+    }
+
+    public void setUnsigned(boolean unsigned) {
+        this.unsigned = unsigned;
+    }
+
+    public boolean isZerofill() {
+        return zerofill;
+    }
+
+    public void setZerofill(boolean zerofill) {
+        this.zerofill = zerofill;
     }
 }

@@ -53,7 +53,7 @@ public class SQLServerCreateTableTest_1 extends TestCase {
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
@@ -64,9 +64,9 @@ public class SQLServerCreateTableTest_1 extends TestCase {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("projects")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("projects", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("projects", "name")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("projects", "enabled")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("projects", "scope")));
+        Assert.assertTrue(visitor.containsColumn("projects", "id"));
+        Assert.assertTrue(visitor.containsColumn("projects", "name"));
+        Assert.assertTrue(visitor.containsColumn("projects", "enabled"));
+        Assert.assertTrue(visitor.containsColumn("projects", "scope"));
     }
 }

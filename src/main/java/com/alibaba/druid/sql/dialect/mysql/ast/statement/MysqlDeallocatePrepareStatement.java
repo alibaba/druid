@@ -16,7 +16,11 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class MysqlDeallocatePrepareStatement extends MySqlStatementImpl {
 	
@@ -37,4 +41,8 @@ public class MysqlDeallocatePrepareStatement extends MySqlStatementImpl {
         visitor.endVisit(this);
     }
 
+	@Override
+	public List<SQLObject> getChildren() {
+		return Collections.<SQLObject>singletonList(statementName);
+	}
 }

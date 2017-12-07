@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import javax.security.auth.callback.PasswordCallback;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -34,7 +35,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
 
-public class DataSourceTest3 extends TestCase {
+public class DataSourceTest3 extends PoolTestCase {
 
     private MockDriver      driver;
     private DruidDataSource dataSource;
@@ -68,6 +69,8 @@ public class DataSourceTest3 extends TestCase {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         JdbcStatManager.getInstance().setStatContext(null);
+
+        super.tearDown();
     }
 
     public void test_prepareStatement_error() throws Exception {

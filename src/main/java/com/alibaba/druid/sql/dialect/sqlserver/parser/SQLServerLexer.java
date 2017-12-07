@@ -21,10 +21,7 @@ import static com.alibaba.druid.sql.parser.Token.IDENTIFIER;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.druid.sql.parser.Keywords;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.NotAllowCommentException;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class SQLServerLexer extends Lexer {
 
@@ -47,6 +44,10 @@ public class SQLServerLexer extends Lexer {
         map.put("BEGIN", Token.BEGIN);
         map.put("END", Token.END);
 
+        map.put("MERGE", Token.MERGE);
+        map.put("USING", Token.USING);
+        map.put("MATCHED", Token.MATCHED);
+
         DEFAULT_SQL_SERVER_KEYWORDS = new Keywords(map);
     }
 
@@ -58,6 +59,14 @@ public class SQLServerLexer extends Lexer {
     public SQLServerLexer(String input){
         super(input);
         super.keywods = DEFAULT_SQL_SERVER_KEYWORDS;
+    }
+
+    public SQLServerLexer(String input, SQLParserFeature... features){
+        super(input);
+        super.keywods = DEFAULT_SQL_SERVER_KEYWORDS;
+        for (SQLParserFeature feature : features) {
+            config(feature, true);
+        }
     }
     
     public void scanComment() {

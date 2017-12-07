@@ -232,16 +232,6 @@ public class OdpsASTVisitorAdapter extends SQLASTVisitorAdapter implements OdpsA
     }
 
     @Override
-    public void endVisit(OdpsLateralViewTableSource x) {
-        
-    }
-    
-    @Override
-    public boolean visit(OdpsLateralViewTableSource x) {
-        return true;
-    }
-
-    @Override
     public void endVisit(OdpsValuesTableSource x) {
 
     }

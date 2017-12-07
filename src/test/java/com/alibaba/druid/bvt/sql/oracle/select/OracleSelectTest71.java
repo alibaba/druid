@@ -65,7 +65,7 @@ public class OracleSelectTest71 extends OracleTest {
 
         assertEquals(5, visitor.getTables().size());
 
-        assertEquals(26, visitor.getColumns().size());
+        assertEquals(24, visitor.getColumns().size());
 
         {
             String text = SQLUtils.toOracleString(stmt);

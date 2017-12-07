@@ -86,13 +86,15 @@ public class MySqlDeleteTest_3 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println(stmt);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(5, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
+        Assert.assertEquals(6, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
@@ -100,6 +102,7 @@ public class MySqlDeleteTest_3 extends MysqlTest {
 
         Assert.assertTrue(visitor.getColumns().contains(new Column("t1", "s11")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "s1")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "*")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("t3", "*")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("t4", "s1")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("t5", "*")));

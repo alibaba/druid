@@ -103,6 +103,6 @@ public class OracleCreateTableTest20 extends OracleTest {
 
         Assert.assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SONAR.ACTIVE_RULE_NOTES", "ID")));
+        Assert.assertTrue(visitor.containsColumn("SONAR.ACTIVE_RULE_NOTES", "ID"));
     }
 }

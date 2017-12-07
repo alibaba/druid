@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.pool.xa;
 
 import java.lang.reflect.Constructor;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 import net.sourceforge.jtds.jdbc.JtdsConnection;
 
@@ -10,7 +11,7 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.xa.JtdsXAConnection;
 import com.alibaba.druid.pool.xa.JtdsXAResource;
 
-public class JtdsXAConnectionTest extends TestCase {
+public class JtdsXAConnectionTest extends PoolTestCase {
 
     public void test_jtds() throws Exception {
         Constructor<JtdsConnection> constrcutor = JtdsConnection.class.getDeclaredConstructor();

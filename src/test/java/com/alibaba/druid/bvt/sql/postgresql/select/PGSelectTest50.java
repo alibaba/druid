@@ -77,11 +77,15 @@ public class PGSelectTest50 extends TestCase {
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        assertEquals(4, visitor.getColumns().size());
+        assertEquals(3, visitor.getColumns().size());
         assertEquals(2, visitor.getTables().size());
+
+        assertTrue(visitor.containsColumn("itsm_system_role_menu", "menu_id"));
+        assertTrue(visitor.containsColumn("itsm_system_menu", "menu_id"));
+        assertTrue(visitor.containsColumn("itsm_system_menu", "parent_id"));
     }
 }

@@ -21,7 +21,7 @@ public class DesensitizationTest_delete extends TestCase {
         System.out.println("-------------------");
         System.out.println(desens_Sql);
 
-        assertEquals("DELETE FROM T_69BFC132C09344DE\n" +
+        assertEquals("DELETE FROM T_0C9879D1E6FFA3BE\n" +
                 "WHERE last_name = ?;", desens_Sql);
     }
 }

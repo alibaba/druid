@@ -24,12 +24,11 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 
 public abstract class SQLInsertInto extends SQLObjectImpl {
-
-    protected SQLExprTableSource  tableSource;
-
-    protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
-    protected SQLSelect           query;
-    
+    protected SQLExprTableSource        tableSource;
+    protected final List<SQLExpr>       columns = new ArrayList<SQLExpr>();
+    protected transient String          columnsString;
+    protected transient long            columnsStringHash;
+    protected SQLSelect                 query;
     protected final List<ValuesClause>  valuesList = new ArrayList<ValuesClause>();
 
     public SQLInsertInto(){
@@ -138,5 +137,18 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
             valueClause.setParent(this);
         }
         valuesList.add(valueClause);
+    }
+
+    public String getColumnsString() {
+        return columnsString;
+    }
+
+    public long getColumnsStringHash() {
+        return columnsStringHash;
+    }
+
+    public void setColumnsString(String columnsString, long columnsStringHash) {
+        this.columnsString = columnsString;
+        this.columnsStringHash = columnsStringHash;
     }
 }

@@ -21,11 +21,7 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.druid.sql.parser.Keywords;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.NotAllowCommentException;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class OracleLexer extends Lexer {
 
@@ -114,6 +110,8 @@ public class OracleLexer extends Lexer {
         map.put("FETCH", Token.FETCH);
         map.put("TABLESPACE", Token.TABLESPACE);
         map.put("PARTITION", Token.PARTITION);
+        map.put("TRUE", Token.TRUE);
+        map.put("FALSE", Token.FALSE);
 
         map.put("，", Token.COMMA);
         map.put("（", Token.LPAREN);
@@ -134,14 +132,20 @@ public class OracleLexer extends Lexer {
         super.keywods = DEFAULT_ORACLE_KEYWORDS;
     }
 
-    public void scanVariable() {
-        if (ch == '@') {
-            scanChar();
-            token = Token.MONKEYS_AT;
-            return;
-        }
+    public OracleLexer(String input, SQLParserFeature... features){
+        super(input);
+        this.skipComment = true;
+        this.keepComments = true;
+        super.keywods = DEFAULT_ORACLE_KEYWORDS;
 
-        if (ch != ':' && ch != '#' && ch != '$') {
+        for (SQLParserFeature feature : features) {
+            config(feature, true);
+        }
+    }
+
+    public void scanVariable() {
+        final char c0 = ch;
+        if (c0 != ':' && c0 != '#' && c0 != '$') {
             throw new ParserException("illegal variable. " + info());
         }
 
@@ -151,25 +155,46 @@ public class OracleLexer extends Lexer {
 
         boolean quoteFlag = false;
         boolean mybatisFlag = false;
-        if (charAt(pos + 1) == '"') {
+
+        char c1 = charAt(pos + 1);
+        if (c0 == ':' && c1 == ' ') {
+            pos++;
+            bufPos = 2;
+            c1 = charAt(pos + 1);
+        }
+
+        if (c1 == '"') {
             pos++;
             bufPos++;
             quoteFlag = true;
-        } else if (charAt(pos + 1) == '{') {
+        } else if (c1 == '{') {
             pos++;
             bufPos++;
             mybatisFlag = true;
         }
 
-        for (;;) {
-            ch = charAt(++pos);
+        if (c0 == ':' && c1 >= '0' && c1 <= '9') {
+            for (; ; ) {
+                ch = charAt(++pos);
 
-            if (!isIdentifierChar(ch)) {
-                break;
+                if (ch < '0' || ch > '9') {
+                    break;
+                }
+
+                bufPos++;
+                continue;
             }
+        } else {
+            for (; ; ) {
+                ch = charAt(++pos);
 
-            bufPos++;
-            continue;
+                if (!isIdentifierChar(ch)) {
+                    break;
+                }
+
+                bufPos++;
+                continue;
+            }
         }
 
         if (quoteFlag) {
@@ -195,6 +220,18 @@ public class OracleLexer extends Lexer {
         } else {
             token = Token.VARIANT;
         }
+    }
+
+    protected void scanVariable_at() {
+        scanChar();
+
+        if (ch == '@') {
+            scanChar();
+            token = Token.MONKEYS_AT_AT;
+        } else {
+            token = Token.MONKEYS_AT;
+        }
+        return;
     }
 
     public void scanComment() {
@@ -240,7 +277,7 @@ public class OracleLexer extends Lexer {
                 stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 1);
                 token = Token.HINT;
             } else {
-                stringVal = subString(mark, bufPos);
+                stringVal = subString(mark, bufPos + 1);
                 token = Token.MULTI_LINE_COMMENT;
                 commentCount++;
                 if (keepComments) {
