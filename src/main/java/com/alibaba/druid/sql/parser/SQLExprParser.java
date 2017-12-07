@@ -1327,6 +1327,7 @@ public class SQLExprParser extends SQLParser {
                 case SCHEMA:
                 case INTERVAL:
                 case EXPLAIN:
+                case SET:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;
