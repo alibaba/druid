@@ -17,10 +17,7 @@ package com.alibaba.druid.sql.dialect.db2.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalUnit;
-import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -89,6 +86,9 @@ public class DB2ExprParser extends SQLExprParser {
                     expr = new SQLIdentifierExpr("CURRENT DATE");
                 }
             }
+        } else if (lexer.identifierEquals(FnvHash.Constants.DAY) && expr instanceof SQLIntegerExpr) {
+            lexer.nextToken();
+            expr = new SQLIntervalExpr(expr, SQLIntervalUnit.DAY);
         } else if (lexer.identifierEquals(FnvHash.Constants.TIMESTAMP)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
