@@ -655,7 +655,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.isGlobal()) {
             print0("@@global.");
-        }else if(x.isHasSessionBefore()){
+        }else if(x.isSession()){
             print0("@@session.");
         }
 
@@ -3586,83 +3586,76 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlFlushStatement x) {
         print0(ucase ? "FLUSH" : "flush");
 
-        if (x.isBinaryLogs()) {
+        if (x.isNoWriteToBinlog()) {
+            print0(ucase ? " NO_WRITE_TO_BINLOG" : " no_write_to_binlog");
+        } else if (x.isLocal()) {
+            print0(ucase ? " LOCAL" : " local");
+        }
+
+        if(x.isBinaryLogs()) {
             print0(ucase ? " BINARY LOGS" : " binary logs");
         }
-
-        if (x.isPrivileges()) {
-            print0(ucase ? " PRIVILEGES" : " privileges");
-        }
-
         if (x.isDesKeyFile()) {
             print0(ucase ? " DES_KEY_FILE" : " des_key_file");
         }
-
         if (x.isEngineLogs()) {
             print0(ucase ? " ENGINE LOGS" : " engine logs");
         }
-
         if (x.isErrorLogs()) {
             print0(ucase ? " ERROR LOGS" : " error logs");
         }
-
         if (x.isGeneralLogs()) {
             print0(ucase ? " GENERAL LOGS" : " general logs");
         }
-
         if (x.isHots()) {
             print0(ucase ? " HOSTS" : " hosts");
         }
-
         if (x.isLogs()) {
             print0(ucase ? " LOGS" : " logs");
         }
-
+        if (x.isPrivileges()) {
+            print0(ucase ? " PRIVILEGES" : " privileges");
+        }
         if (x.isOptimizerCosts()) {
             print0(ucase ? " OPTIMIZER_COSTS" : " optimizer_costs");
         }
-
         if (x.isQueryCache()) {
             print0(ucase ? " QUERY CACHE" : " query cache");
         }
-
-        if (x.isSlowLogs()) {
-            print0(ucase ? " SLOW LOGS" : " slow logs");
-        }
-
-        if (x.isStatus()) {
-            print0(ucase ? " STATUS" : " status");
-        }
-
-        if (x.isUserResources()) {
-            print0(ucase ? " USER_RESOURCES" : " user_resources");
-        }
-
         if (x.isRelayLogs()) {
             print0(ucase ? " RELAY LOGS" : " relay logs");
-
             SQLExpr channel = x.getRelayLogsForChannel();
             if (channel != null) {
                 print(' ');
                 channel.accept(this);
             }
         }
+        if (x.isSlowLogs()) {
+            print0(ucase ? " SLOW LOGS" : " slow logs");
+        }
+        if (x.isStatus()) {
+            print0(ucase ? " STATUS" : " status");
+        }
+        if (x.isUserResources()) {
+            print0(ucase ? " USER_RESOURCES" : " user_resources");
+        }
 
-        List<SQLExprTableSource> tables = x.getTables();
-        if (tables != null && tables.size() > 0) {
+        if(x.isTableOption()){
             print0(ucase ? " TABLES" : " tables");
-            if (tables.size() > 0) {
+
+            List<SQLExprTableSource> tables = x.getTables();
+            if (tables != null && tables.size() > 0) {
                 print(' ');
                 printAndAccept(tables, ", ");
             }
-        }
 
-        if (x.isWithReadLock()) {
-            print0(ucase ?  " WITH READ LOCK" : " with read lock");
-        }
+            if (x.isWithReadLock()) {
+                print0(ucase ? " WITH READ LOCK" : " with read lock");
+            }
 
-        if (x.isForExport()) {
-            print0(ucase ?  " FOR EXPORT" : " for export");
+            if (x.isForExport()) {
+                print0(ucase ? " FOR EXPORT" : " for export");
+            }
         }
         return false;
     }

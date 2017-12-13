@@ -77,6 +77,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected int replaceCount;
 
     protected boolean parameterizedMergeInList = false;
+    protected boolean parameterizedQuesUnMergeInList = false;
 
     protected boolean parameterized = false;
     protected boolean shardingSupport = false;
@@ -102,6 +103,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public SQLASTOutputVisitor(Appendable appender, boolean parameterized){
         this.appender = appender;
         this.config(VisitorFeature.OutputParameterized, parameterized);
+        this.config(VisitorFeature.OutputParameterizedQuesUnMergeInList, parameterizedQuesUnMergeInList);
     }
 
     public int getReplaceCount() {
@@ -214,6 +216,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public void setParameterizedMergeInList(boolean parameterizedMergeInList) {
         this.parameterizedMergeInList = parameterizedMergeInList;
+    }
+
+    public boolean isParameterizedQuesUnMergeInList() {
+        return isEnabled(VisitorFeature.OutputParameterizedQuesUnMergeInList);
+    }
+
+    public void setParameterizedQuesUnMergeInList(boolean parameterizedQuesUnMergeInList) {
+        config(VisitorFeature.OutputParameterizedQuesUnMergeInList, parameterizedQuesUnMergeInList);
     }
 
     public boolean isExportTables() {
@@ -1208,9 +1218,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 printExpr(x.getExpr());
 
                 if (x.isNot()) {
-                    print(ucase ? " NOT IN (?)" : " not in (?)");
+                    print(ucase ? " NOT" : " not");
                 } else {
-                    print(ucase ? " IN (?)" : " in (?)");
+                    print(ucase ? " IN" : " in");
+                }
+
+                if(!isParameterizedQuesUnMergeInList() || targetList.size() == 1) {
+                    print(" (?)");
+                } else {
+                    print(" (");
+                    for (int i = 0; i < targetList.size(); i++) {
+                        if(i != 0) {
+                            print(",");
+                        }
+                        print(" ?");
+                    }
+                    print(")");
                 }
 
                 if (changed) {
@@ -5794,6 +5817,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         super.setFeatures(features);
         this.ucase = isEnabled(VisitorFeature.OutputUCase);
         this.parameterized = isEnabled(VisitorFeature.OutputParameterized);
+        this.parameterizedQuesUnMergeInList = isEnabled(VisitorFeature.OutputParameterizedQuesUnMergeInList);
     }
 
     /////////////// for oracle

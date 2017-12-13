@@ -30,7 +30,7 @@ public class SQLVariantRefExpr extends SQLExprImpl {
 
     private boolean global = false;
 
-    private boolean hasSessionBefore = false;
+    private boolean session = false;
 
     private int     index  = -1;
 
@@ -43,10 +43,10 @@ public class SQLVariantRefExpr extends SQLExprImpl {
         this.global = global;
     }
 
-    public SQLVariantRefExpr(String name, boolean global,boolean hasSessionBefore){
+    public SQLVariantRefExpr(String name, boolean global,boolean session){
         this.name = name;
         this.global = global;
-        this.hasSessionBefore = hasSessionBefore;
+        this.session = session;
     }
 
     public SQLVariantRefExpr(){
@@ -74,12 +74,12 @@ public class SQLVariantRefExpr extends SQLExprImpl {
     }
 
 
-    public boolean isHasSessionBefore() {
-        return hasSessionBefore;
+    public boolean isSession() {
+        return session;
     }
 
-    public void setHasSessionBefore(boolean hasSessionBefore) {
-        this.hasSessionBefore = hasSessionBefore;
+    public void setSession(boolean session) {
+        this.session = session;
     }
 
     @Override

@@ -935,16 +935,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         for (;;) {
-            if (lexer.token() == Token.WITH) {
-                lexer.nextToken();
-                acceptIdentifier("READ");
-                accept(Token.LOCK);
-                stmt.setWithReadLock(true);
-            } else if (lexer.token() == Token.FOR) {
-                lexer.nextToken();
-                acceptIdentifier("EXPORT");
-                stmt.setForExport(true);
-            } else if (lexer.identifierEquals("BINARY") || lexer.token() == Token.BINARY) {
+            if (lexer.token() == Token.BINARY || lexer.identifierEquals("BINARY")) {
                 lexer.nextToken();
                 acceptIdentifier("LOGS");
                 stmt.setBinaryLogs(true);
@@ -992,28 +983,61 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 acceptIdentifier("LOGS");
                 stmt.setSlowLogs(true);
-            } else if (lexer.identifierEquals("STATUS")) {
+            } else if (lexer.identifierEquals(STATUS)) {
                 lexer.nextToken();
                 stmt.setStatus(true);
-            } else if (lexer.identifierEquals("USER_RESOURCES")) {
+            } else  if (lexer.identifierEquals("USER_RESOURCES")) {
                 lexer.nextToken();
                 stmt.setUserResources(true);
-            } else if (lexer.identifierEquals(FnvHash.Constants.TABLES)) {
+            } else if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
-                for (;;) {
-                    SQLName name = this.exprParser.name();
-                    stmt.addTable(name);
+                continue;
+            } else {
+                break;
+            }
+        }
 
-                    if (lexer.token() == Token.COMMA) {
-                        lexer.nextToken();
-                        continue;
+        if (lexer.identifierEquals("TABLES")) {
+            lexer.nextToken();
+
+            stmt.setTableOption(true);
+
+            if (lexer.token() == Token.WITH) {
+                lexer.nextToken();
+                acceptIdentifier("READ");
+                accept(Token.LOCK);
+                stmt.setWithReadLock(true);
+            }
+            for(;;) {
+                if (lexer.token() == Token.IDENTIFIER) {
+                    for (; ; ) {
+                        SQLName name = this.exprParser.name();
+                        stmt.addTable(name);
+
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
                     }
                     break;
                 }
                 break;
-            } else {
-                break;
             }
+
+            if (stmt.getTables().size() != 0) {
+                if (lexer.token() == Token.FOR) {
+                    lexer.nextToken();
+                    acceptIdentifier("EXPORT");
+                    stmt.setForExport(true);
+                } else if (lexer.token() == Token.WITH) {
+                    lexer.nextToken();
+                    acceptIdentifier("READ");
+                    accept(Token.LOCK);
+                    stmt.setWithReadLock(true);
+                }
+            }
+
         }
 
         return stmt;
@@ -2609,20 +2633,20 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         Boolean global = null;
-        Boolean sessionBefore = null;
+        Boolean session = null;
         if (lexer.identifierEquals(GLOBAL)) {
             global = Boolean.TRUE;
             lexer.nextToken();
         } else if (lexer.identifierEquals(SESSION)) {
             global = Boolean.FALSE;
-            sessionBefore = Boolean.TRUE;
+            session = Boolean.TRUE;
             lexer.nextToken();
         }
 
         if (lexer.identifierEquals("TRANSACTION")) {
             MySqlSetTransactionStatement stmt = new MySqlSetTransactionStatement();
             stmt.setGlobal(global);
-            stmt.setHasSessionBefore(sessionBefore);
+            stmt.setSession(session);
 
             lexer.nextToken();
             if (lexer.identifierEquals("ISOLATION")) {
@@ -2722,14 +2746,14 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             parseAssignItems(stmt.getItems(), stmt);
 
-            if (global != null && global.booleanValue()) {
+            if (global != null && global) {
                 SQLVariantRefExpr varRef = (SQLVariantRefExpr) stmt.getItems().get(0).getTarget();
                 varRef.setGlobal(true);
             }
 
-            if(sessionBefore != null && sessionBefore.booleanValue()){
+            if(session != null && session){
                 SQLVariantRefExpr varRef = (SQLVariantRefExpr) stmt.getItems().get(0).getTarget();
-                varRef.setHasSessionBefore(true);
+                varRef.setSession(true);
             }
 
             if (lexer.token() == Token.HINT) {
