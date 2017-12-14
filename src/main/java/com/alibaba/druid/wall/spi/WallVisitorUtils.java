@@ -939,7 +939,9 @@ public class WallVisitorUtils {
                             filterValues.add(((SQLValuableExpr) expr).getValue());
                         }
                         boolean validate = updateCheckHandler.check(tableName, checkColumn, setValue, filterValues);
-                        visitor.addViolation(new IllegalSQLObjectViolation(ErrorCode.UPDATE_CHECK_FAIL, "update check failed.", visitor.toSQL(x)));
+                        if (!validate) {
+                            visitor.addViolation(new IllegalSQLObjectViolation(ErrorCode.UPDATE_CHECK_FAIL, "update check failed.", visitor.toSQL(x)));
+                        }
                     } else {
                         visitor.addWallUpdateCheckItem(new WallUpdateCheckItem(tableName, checkColumn, valueExpr, filterValueExprList));
                     }
