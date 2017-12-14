@@ -31,10 +31,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -50,9 +48,6 @@ import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 
 public abstract class WallProvider {
 
@@ -691,16 +686,8 @@ public abstract class WallProvider {
                             Set<String> updateCheckColumns = config.getUpdateCheckTable(tableName);
                             if (updateCheckColumns != null && updateCheckColumns.size() > 0) {
                                 updateCheckHandlerEnable = true;
+                                break;
                             }
-                            for(SQLUpdateSetItem item : ((SQLUpdateStatement) stmt).getItems()){
-                                SQLExpr column = item.getColumn();
-                                BeanWrapper beanWrapper = new BeanWrapperImpl(column);
-                                Object name = beanWrapper.getPropertyValue("name");
-                                if(name != null && updateCheckColumns.contains(name.toString().toLowerCase())){
-                                    updateCheckHandler.check(tableName, name.toString().toLowerCase(), item.)
-                                }
-                            }
-
                         }
                     }
                 }
@@ -718,9 +705,6 @@ public abstract class WallProvider {
             if ((!updateCheckHandlerEnable) && sql.length() < MAX_SQL_LENGTH) {
                 sqlStat = addWhiteSql(sql, tableStat, context.getFunctionStats(), syntaxError);
             }
-        }
-        if(sqlStat == null && updateCheckHandlerEnable){
-            sqlStat = new WallSqlStat(tableStat, context.getFunctionStats(), syntaxError);
         }
 
         Map<String, WallSqlTableStat> tableStats = null;
