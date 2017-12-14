@@ -706,9 +706,11 @@ public abstract class WallProvider {
                 sqlStat = addWhiteSql(sql, tableStat, context.getFunctionStats(), syntaxError);
             }
         }
+        
         if(sqlStat == null && updateCheckHandlerEnable){
-            sqlStat = new WallSqlStat(tableStat, context.getFunctionStats(), syntaxError);
+            sqlStat = new WallSqlStat(tableStat, context.getFunctionStats(), violations, syntaxError);
         }
+
         Map<String, WallSqlTableStat> tableStats = null;
         Map<String, WallSqlFunctionStat> functionStats = null;
         if (context != null) {
