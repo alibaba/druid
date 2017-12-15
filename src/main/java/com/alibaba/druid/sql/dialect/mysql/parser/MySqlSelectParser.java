@@ -229,7 +229,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                 accept(Token.RPAREN);
 
                 SQLSelectQuery query = queryRest(select.getQuery());
-                if (query instanceof SQLUnionQuery) {
+                if (query instanceof SQLUnionQuery && select.getWithSubQuery() == null) {
                     select.getQuery().setBracket(true);
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                 } else {
