@@ -323,6 +323,10 @@ public class MySqlSelectParser extends SQLSelectParser {
             }
         }
 
+        while (lexer.token() == Token.HINT) {
+            this.exprParser.parseHints(update.getHints());
+        }
+
         SQLSelectParser selectParser = this.exprParser.createSelectParser();
         SQLTableSource updateTableSource = selectParser.parseTableSource();
         update.setTableSource(updateTableSource);

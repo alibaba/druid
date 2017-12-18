@@ -2818,7 +2818,13 @@ public class SQLExprParser extends SQLParser {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void parseHints(List hints) {
         if (lexer.token == Token.HINT) {
-            hints.add(new SQLCommentHint(lexer.stringVal()));
+            SQLCommentHint hint = new SQLCommentHint(lexer.stringVal());
+
+            if (lexer.commentCount > 0) {
+                hint.addBeforeComment(lexer.comments);
+            }
+
+            hints.add(hint);
             lexer.nextToken();
         }
     }

@@ -66,7 +66,7 @@ public class OracleSelectTest104 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT /*+ cursor_sharing_exact dynamic_sampling(0) no_sql_tune no_monitoring optimizer_features_enable(default) */ SUM(C1)\n" +
+            assertEquals("SELECT /* DS_SVC */ /*+ cursor_sharing_exact dynamic_sampling(0) no_sql_tune no_monitoring optimizer_features_enable(default) */ SUM(C1)\n" +
                     "FROM (\n" +
                     "\tSELECT /*+ qb_name(\"innerQuery\")  */ 1 AS C1\n" +
                     "\tFROM SYS.\"X$KZSPR\" \"X$KZSPR\"\n" +

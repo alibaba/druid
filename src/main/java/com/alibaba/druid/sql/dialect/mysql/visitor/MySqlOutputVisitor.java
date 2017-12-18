@@ -1594,6 +1594,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? "IGNORE " : "ignore ");
         }
 
+
+        if (x.getHints() != null && x.getHints().size() > 0) {
+            printAndAccept(x.getHints(), " ");
+            print0(" ");
+        }
+
         if (x.isCommitOnSuccess()) {
             print0(ucase ? "COMMIT_ON_SUCCESS " : "commit_on_success ");
         }
