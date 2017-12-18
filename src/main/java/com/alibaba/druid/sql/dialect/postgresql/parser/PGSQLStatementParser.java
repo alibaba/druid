@@ -110,7 +110,11 @@ public class PGSQLStatementParser extends SQLStatementParser {
             SQLName tableName = this.exprParser.name();
             stmt.setTableName(tableName);
 
-            if (lexer.token() == Token.IDENTIFIER) {
+            if (lexer.token() == Token.AS) {
+                lexer.nextToken();
+                stmt.setAlias(lexer.stringVal());
+                lexer.nextToken();
+            } else if (lexer.token() == Token.IDENTIFIER) {
                 stmt.setAlias(lexer.stringVal());
                 lexer.nextToken();
             }

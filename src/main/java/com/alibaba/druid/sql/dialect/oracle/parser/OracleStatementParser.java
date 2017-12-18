@@ -2446,8 +2446,6 @@ public class OracleStatementParser extends SQLStatementParser {
                         break;
                     }
                 }
-
-                break;
             } else if (lexer.identifierEquals("GLOBAL")) {
                 lexer.nextToken();
                 stmt.setGlobal(true);

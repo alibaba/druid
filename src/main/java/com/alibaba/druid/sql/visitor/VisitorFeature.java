@@ -23,6 +23,7 @@ public enum  VisitorFeature {
     OutputUseInsertValueClauseOriginalString,
     OutputSkipSelectListCacheString,
     OutputSkipInsertColumnsString,
+    OutputParameterizedQuesUnMergeInList
     ;
 
     private VisitorFeature(){

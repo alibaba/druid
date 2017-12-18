@@ -29,15 +29,15 @@ public class MySqlSetTransactionStatement extends MySqlStatementImpl {
 
     private String  accessModel;
 
-    private Boolean hasSessionBefore;
+    private Boolean session;
 
 
-    public Boolean getHasSessionBefore() {
-        return hasSessionBefore;
+    public Boolean getSession() {
+        return session;
     }
 
-    public void setHasSessionBefore(Boolean hasSessionBefore) {
-        this.hasSessionBefore = hasSessionBefore;
+    public void setSession(Boolean session) {
+        this.session = session;
     }
 
     public void accept0(MySqlASTVisitor visitor) {

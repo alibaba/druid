@@ -61,9 +61,18 @@ public class ParameterizedOutputVisitorUtils {
         return parameterize(sql, dbType, null, outParameters);
     }
 
+
+    private static void configVisitorFeatures(ParameterizedVisitor visitor, VisitorFeature ...features) {
+        if(features != null) {
+            for (int i = 0; i < features.length; i++) {
+                visitor.config(features[i], true);
+            }
+        }
+    }
+
     public static String parameterize(String sql
             , String dbType
-            , SQLSelectListCache selectListCache, List<Object> outParameters) {
+            , SQLSelectListCache selectListCache, List<Object> outParameters, VisitorFeature ...visitorFeatures) {
 
         final SQLParserFeature[] features = outParameters == null
                 ? defaultFeatures2
@@ -85,6 +94,7 @@ public class ParameterizedOutputVisitorUtils {
         if (outParameters != null) {
             visitor.setOutputParameters(outParameters);
         }
+        configVisitorFeatures(visitor, visitorFeatures);
 
         for (int i = 0; i < statementList.size(); i++) {
             SQLStatement stmt = statementList.get(i);
@@ -133,13 +143,13 @@ public class ParameterizedOutputVisitorUtils {
     public static long parameterizeHash(String sql
             , String dbType
             , List<Object> outParameters) {
-        return parameterizeHash(sql, dbType, null, outParameters);
+        return parameterizeHash(sql, dbType, null, outParameters, null);
     }
 
     public static long parameterizeHash(String sql
             , String dbType
             , SQLSelectListCache selectListCache
-            , List<Object> outParameters) {
+            , List<Object> outParameters, VisitorFeature ...visitorFeatures) {
 
         final SQLParserFeature[] features = outParameters == null
                 ? defaultFeatures2
@@ -162,6 +172,7 @@ public class ParameterizedOutputVisitorUtils {
         if (outParameters != null) {
             visitor.setOutputParameters(outParameters);
         }
+        configVisitorFeatures(visitor, visitorFeatures);
 
         if (stmtSize == 1) {
             SQLStatement stmt = statementList.get(0);

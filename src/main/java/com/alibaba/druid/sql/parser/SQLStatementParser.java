@@ -2233,7 +2233,7 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.identifierEquals(FnvHash.Constants.DEFINER)) {
             lexer.nextToken();
             accept(Token.EQ);
-            SQLName definer = this.exprParser.name();
+            SQLName definer = ((MySqlExprParser) this.exprParser).userName();
             stmt.setDefiner(definer);
 
             if (lexer.token() == Token.LPAREN) {

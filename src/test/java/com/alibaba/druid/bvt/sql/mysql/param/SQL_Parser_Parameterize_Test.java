@@ -16,6 +16,7 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
@@ -39,5 +40,24 @@ public class SQL_Parser_Parameterize_Test extends TestCase {
         assertEquals(101, outParameters.get(0));
         assertEquals(102, outParameters.get(1));
         assertEquals("wenshao", outParameters.get(2));
+    }
+
+    public void test_parameterized_2() throws Exception {
+        final String dbType = JdbcConstants.MYSQL;
+
+        List<Object> outParameters = new ArrayList<Object>();
+        String sql = "select * from t where id = 101 or id in (1,2,3,4)";
+        String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType, null, outParameters, VisitorFeature.OutputParameterizedQuesUnMergeInList);
+        assertEquals("SELECT *\n" +
+                     "FROM t\n" +
+                     "WHERE id = ?\n" +
+                     "\tOR id IN ( ?, ?, ?, ?)", psql);
+
+        assertEquals(5, outParameters.size());
+        assertEquals(101, outParameters.get(0));
+        assertEquals(1, outParameters.get(1));
+        assertEquals(2, outParameters.get(2));
+        assertEquals(3, outParameters.get(3));
+        assertEquals(4, outParameters.get(4));
     }
 }
