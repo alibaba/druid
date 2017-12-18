@@ -48,4 +48,13 @@ public class MySqlHintStatementTest extends TestCase {
                 + "\n"
                 + "\n/*!40101 SET character_set_client = @saved_cs_client */;", rs);
     }
+    public void test_1() throws Exception {
+        String sql = "update "
+                     + "/*MS-MRCHISHUB-MH-MESSAGE-UPDATE*/ "
+                     + "/*+ INDEX(mh_message primary) */ "
+                     + "mh_message set gmt_modified = now(),status= '099' where id = 1244918;";
+        String rs = SQLUtils.formatMySql(sql);
+        assertEquals("UPDATE /*MS-MRCHISHUB-MH-MESSAGE-UPDATE*/ /*+ INDEX(mh_message primary) */ mh_message\n"
+                     + "SET gmt_modified = now(), status = '099'\n" + "WHERE id = 1244918;", rs);
+    }
 }

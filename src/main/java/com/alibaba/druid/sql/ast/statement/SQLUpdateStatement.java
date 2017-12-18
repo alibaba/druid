@@ -36,13 +36,15 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
     protected SQLTableSource               tableSource;
     protected List<SQLExpr>                returning;
 
+    protected List<SQLHint>                hints;
+
     // for mysql
     protected SQLOrderBy orderBy;
 
     public SQLUpdateStatement(){
 
     }
-    
+
     public SQLUpdateStatement(String dbType){
         super (dbType);
     }
@@ -90,7 +92,7 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
     public List<SQLUpdateSetItem> getItems() {
         return items;
     }
-    
+
     public void addItem(SQLUpdateSetItem item) {
         this.items.add(item);
         item.setParent(this);
@@ -115,6 +117,25 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         this.from = from;
     }
 
+    public int getHintsSize() {
+        if (hints == null) {
+            return 0;
+        }
+
+        return hints.size();
+    }
+
+    public List<SQLHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLHint>(2);
+        }
+        return hints;
+    }
+
+    public void setHints(List<SQLHint> hints) {
+        this.hints = hints;
+    }
+
     @Override
     public void output(StringBuffer buf) {
         SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(buf, dbType);
@@ -129,6 +150,7 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
             acceptChild(visitor, items);
             acceptChild(visitor, where);
             acceptChild(visitor, orderBy);
+            acceptChild(visitor, hints);
         }
         visitor.endVisit(this);
     }
@@ -259,5 +281,35 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         }
 
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLUpdateStatement that = (SQLUpdateStatement) o;
+
+        if (with != null ? !with.equals(that.with) : that.with != null) return false;
+        if (items != null ? !items.equals(that.items) : that.items != null) return false;
+        if (where != null ? !where.equals(that.where) : that.where != null) return false;
+        if (from != null ? !from.equals(that.from) : that.from != null) return false;
+        if (hints != null ? !hints.equals(that.hints) : that.hints != null) return false;
+        if (tableSource != null ? !tableSource.equals(that.tableSource) : that.tableSource != null) return false;
+        if (returning != null ? !returning.equals(that.returning) : that.returning != null) return false;
+        return orderBy != null ? orderBy.equals(that.orderBy) : that.orderBy == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = with != null ? with.hashCode() : 0;
+        result = 31 * result + (items != null ? items.hashCode() : 0);
+        result = 31 * result + (where != null ? where.hashCode() : 0);
+        result = 31 * result + (from != null ? from.hashCode() : 0);
+        result = 31 * result + (tableSource != null ? tableSource.hashCode() : 0);
+        result = 31 * result + (returning != null ? returning.hashCode() : 0);
+        result = 31 * result + (orderBy != null ? orderBy.hashCode() : 0);
+        result = 31 * result + (hints != null ? hints.hashCode() : 0);
+        return result;
     }
 }

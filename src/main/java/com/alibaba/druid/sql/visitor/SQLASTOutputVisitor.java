@@ -3257,6 +3257,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLCommentHint x) {
+        if (x.hasBeforeComment()) {
+            printlnComment(x.getBeforeCommentsDirect());
+            print0(" ");
+        }
+
         print0("/*");
         print0(x.getText());
         print0("*/");
