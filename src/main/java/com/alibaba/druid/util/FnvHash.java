@@ -625,5 +625,9 @@ public final class FnvHash {
         long INHERITS = fnv1a_64_lower("INHERITS");
         long DELIMITED = fnv1a_64_lower("DELIMITED");
         long TABLES = fnv1a_64_lower("TABLES");
+        long PARALLEL = fnv1a_64_lower("PARALLEL");
+        long BUILD = fnv1a_64_lower("BUILD");
+        long NOCACHE = fnv1a_64_lower("NOCACHE");
+        long NOPARALLEL = fnv1a_64_lower("NOPARALLEL");
     }
 }

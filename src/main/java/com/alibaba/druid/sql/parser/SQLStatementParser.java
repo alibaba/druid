@@ -2141,6 +2141,11 @@ public class SQLStatementParser extends SQLParser {
         SQLCreateMaterializedViewStatement stmt = new SQLCreateMaterializedViewStatement();
         stmt.setName(this.exprParser.name());
 
+        if (lexer.token == Token.PARTITION) {
+            SQLPartitionBy partitionBy = this.exprParser.parsePartitionBy();
+            stmt.setPartitionBy(partitionBy);
+        }
+
         for (;;) {
             if (exprParser instanceof OracleExprParser) {
                 ((OracleExprParser) exprParser).parseSegmentAttributes(stmt);
@@ -2172,23 +2177,33 @@ public class SQLStatementParser extends SQLParser {
                         break;
                     }
                 }
-            } else if (lexer.identifierEquals("BUILD")) {
+            } else if (lexer.identifierEquals(FnvHash.Constants.BUILD)) {
                 lexer.nextToken();
 
                 if (lexer.identifierEquals("IMMEDIATE") || lexer.token == Token.IMMEDIATE) {
                     lexer.nextToken();
                     stmt.setBuildImmediate(true);
                 } else {
-                    acceptIdentifier("DEFERRED");
+                    accept(Token.DEFERRED);
                     stmt.setBuildDeferred(true);
                 }
-            } else if (lexer.identifierEquals("PARALLEL")) {
+            } else if (lexer.identifierEquals(FnvHash.Constants.PARALLEL)) {
                 lexer.nextToken();
                 stmt.setParallel(true);
                 if (lexer.token == Token.LITERAL_INT) {
                     stmt.setParallelValue(lexer.integerValue().intValue());
                     lexer.nextToken();
                 }
+            } else if (lexer.identifierEquals(FnvHash.Constants.NOCACHE) || lexer.token == Token.NOCACHE) {
+                lexer.nextToken();
+                stmt.setCache(false);
+            } else if (lexer.identifierEquals(FnvHash.Constants.NOPARALLEL)) {
+                lexer.nextToken();
+                stmt.setParallel(false);
+            } else if (lexer.token == Token.WITH) {
+                lexer.nextToken();
+                acceptIdentifier("ROWID");
+                stmt.setWithRowId(true);
             } else {
                 break;
             }
@@ -2207,6 +2222,7 @@ public class SQLStatementParser extends SQLParser {
 
         return stmt;
     }
+
 
     public SQLStatement parseCreateDbLink() {
         throw new ParserException("TODO " + lexer.token);

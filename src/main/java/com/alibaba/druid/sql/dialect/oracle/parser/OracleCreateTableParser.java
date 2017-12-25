@@ -203,7 +203,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                     stmt.setPartitioning(partitionByHash);
                     continue;
                 } else if (lexer.identifierEquals("LIST")) {
-                    SQLPartitionByList partitionByList = partitionByList();
+                    SQLPartitionByList partitionByList = this.getExprParser().partitionByList();
                     this.getExprParser().partitionClauseRest(partitionByList);
                     stmt.setPartitioning(partitionByList);
                     continue;
@@ -327,19 +327,6 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             throw new ParserException("TODO " + lexer.info());
         }
         stmt.setOrganization(organization);
-    }
-
-    protected SQLPartitionByList partitionByList() {
-        acceptIdentifier("LIST");
-        SQLPartitionByList partitionByList = new SQLPartitionByList();
-
-        accept(Token.LPAREN);
-        partitionByList.addColumn(this.exprParser.expr());
-        accept(Token.RPAREN);
-
-        this.getExprParser().parsePartitionByRest(partitionByList);
-
-        return partitionByList;
     }
 
     protected void parseCreateTableSupplementalLogingProps(SQLCreateTableStatement stmt) {

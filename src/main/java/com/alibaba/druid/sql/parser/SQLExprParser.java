@@ -3085,6 +3085,14 @@ public class SQLExprParser extends SQLParser {
 
         return expr;
     }
+
+    protected SQLPartition parsePartition() {
+        throw new ParserException("TODO");
+    }
+
+    protected SQLPartitionBy parsePartitionBy() {
+        throw new ParserException("TODO");
+    }
     
     public SQLPartitionValue parsePartitionValues() {
         if (lexer.token != Token.VALUES) {

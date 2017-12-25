@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -56,6 +57,7 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
     private Integer pctthreshold;
 
     private Boolean logging;
+    private Boolean cache;
 
     protected SQLName tablespace;
     protected SQLObject storage;
@@ -64,6 +66,10 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
     private Integer parallelValue;
 
     private Boolean enableQueryRewrite;
+
+    private SQLPartitionBy partitionBy;
+
+    private boolean withRowId;
 
     public SQLName getName() {
         return name;
@@ -285,11 +291,39 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
         this.enableQueryRewrite = enableQueryRewrite;
     }
 
+    public Boolean getCache() {
+        return cache;
+    }
+
+    public void setCache(Boolean cache) {
+        this.cache = cache;
+    }
+
+    public SQLPartitionBy getPartitionBy() {
+        return partitionBy;
+    }
+
+    public void setPartitionBy(SQLPartitionBy x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.partitionBy = x;
+    }
+
+    public boolean isWithRowId() {
+        return withRowId;
+    }
+
+    public void setWithRowId(boolean withRowId) {
+        this.withRowId = withRowId;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, columns);
+            acceptChild(visitor, partitionBy);
             acceptChild(visitor, query);
         }
         visitor.endVisit(this);

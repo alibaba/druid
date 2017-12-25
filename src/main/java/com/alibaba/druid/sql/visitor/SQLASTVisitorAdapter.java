@@ -1914,6 +1914,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     }
 
+    @Override
+    public boolean visit(SQLDropMaterializedViewStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropMaterializedViewStatement x) {
+
+    }
+
     public final boolean isEnabled(VisitorFeature feature) {
         return VisitorFeature.isEnabled(this.features, feature);
     }

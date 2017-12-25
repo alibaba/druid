@@ -811,6 +811,10 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLStructDataType x);
     void endVisit(SQLStructDataType x);
+
     boolean visit(SQLStructDataType.Field x);
     void endVisit(SQLStructDataType.Field x);
+
+    boolean visit(SQLDropMaterializedViewStatement x);
+    void endVisit(SQLDropMaterializedViewStatement x);
 }

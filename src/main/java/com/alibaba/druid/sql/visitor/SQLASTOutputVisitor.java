@@ -2300,6 +2300,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public boolean visit(SQLDropMaterializedViewStatement x) {
+        print0(ucase ? "DROP VIEW " : "drop view ");
+
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+
+        x.getName().accept(this);
+
+        return false;
+    }
+
     public boolean visit(SQLDropEventStatement x) {
         print0(ucase ? "DROP EVENT " : "drop event ");
 
@@ -5684,8 +5696,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLCreateMaterializedViewStatement x) {
         print0(ucase ? "CREATE MATERIALIZED VIEW " : "create materialized view ");
         x.getName().accept(this);
+
+        SQLPartitionBy partitionBy = x.getPartitionBy();
+        if (partitionBy != null) {
+            println();
+            partitionBy.accept(this);
+        }
+
         this.printOracleSegmentAttributes(x);
         println();
+
+        Boolean cache = x.getCache();
+        if (cache != null) {
+            print(cache ? "CACHE" : "NOCACHE");
+            println();
+        }
 
         Boolean parallel = x.getParallel();
         if (parallel != null) {

@@ -1632,6 +1632,57 @@ public class OracleExprParser extends SQLExprParser {
         }
     }
 
+    protected SQLPartitionBy parsePartitionBy() {
+        lexer.nextToken();
+
+        accept(Token.BY);
+
+        SQLPartitionBy partitionBy;
+
+        if (lexer.identifierEquals("RANGE")) {
+            return this.partitionByRange();
+        } else if (lexer.identifierEquals("HASH")) {
+            SQLPartitionByHash partitionByHash = this.partitionByHash();
+            this.partitionClauseRest(partitionByHash);
+
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                for (;;) {
+                    SQLPartition partition = this.parsePartition();
+                    partitionByHash.addPartition(partition);
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    } else if (lexer.token() == Token.RPAREN) {
+                        lexer.nextToken();
+                        break;
+                    }
+                    throw new ParserException("TODO : " + lexer.info());
+                }
+            }
+            return partitionByHash;
+        } else if (lexer.identifierEquals("LIST")) {
+            SQLPartitionByList partitionByList = partitionByList();
+            this.partitionClauseRest(partitionByList);
+            return partitionByList;
+        } else {
+            throw new ParserException("TODO : " + lexer.info());
+        }
+    }
+
+    protected SQLPartitionByList partitionByList() {
+        acceptIdentifier("LIST");
+        SQLPartitionByList partitionByList = new SQLPartitionByList();
+
+        accept(Token.LPAREN);
+        partitionByList.addColumn(this.expr());
+        accept(Token.RPAREN);
+
+        this.parsePartitionByRest(partitionByList);
+
+        return partitionByList;
+    }
+
     protected SQLPartitionByRange partitionByRange() {
         acceptIdentifier("RANGE");
         accept(Token.LPAREN);

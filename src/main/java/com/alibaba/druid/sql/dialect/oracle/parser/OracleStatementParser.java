@@ -606,6 +606,15 @@ public class OracleStatementParser extends SQLStatementParser {
                     continue;
                 }
 
+                if (lexer.identifierEquals(FnvHash.Constants.MATERIALIZED)) {
+                    lexer.reset(savePoint);
+
+                    SQLStatement stmt = parseDropMaterializedView();
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
+
                 throw new ParserException("TODO : " + lexer.info());
             }
 
@@ -706,6 +715,21 @@ public class OracleStatementParser extends SQLStatementParser {
         stmt.setDbType(dbType);
 
         acceptIdentifier("TYPE");
+
+        stmt.setName(this.exprParser.name());
+        return stmt;
+    }
+
+    public SQLStatement parseDropMaterializedView() {
+        if (lexer.token() == Token.DROP) {
+            lexer.nextToken();
+        }
+        SQLDropMaterializedViewStatement stmt = new SQLDropMaterializedViewStatement();
+        stmt.setDbType(dbType);
+
+        acceptIdentifier("MATERIALIZED");
+
+        accept(Token.VIEW);
 
         stmt.setName(this.exprParser.name());
         return stmt;
