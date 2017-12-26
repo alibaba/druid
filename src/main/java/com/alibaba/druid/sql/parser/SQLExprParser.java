@@ -1064,6 +1064,12 @@ public class SQLExprParser extends SQLParser {
             exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
         }
 
+        if (hash_lower == FnvHash.Constants.EXIST
+                && methodInvokeExpr.getParameters().size() == 1
+                && methodInvokeExpr.getParameters().get(0) instanceof SQLQueryExpr) {
+            throw new ParserException("exists syntax error.");
+        }
+
         if (lexer.token == Token.FROM) {
             lexer.nextToken();
             SQLExpr from = this.expr();

@@ -629,5 +629,6 @@ public final class FnvHash {
         long BUILD = fnv1a_64_lower("BUILD");
         long NOCACHE = fnv1a_64_lower("NOCACHE");
         long NOPARALLEL = fnv1a_64_lower("NOPARALLEL");
+        long EXIST = fnv1a_64_lower("EXIST");
     }
 }
