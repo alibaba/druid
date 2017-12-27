@@ -1314,9 +1314,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printInteger(SQLIntegerExpr x, boolean parameterized) {
-        long val = x.getNumber().longValue();
+        String val = x.getNumber().toString();
 
-        if (val == 1) {
+        if ("1".equals(val)) {
             if (JdbcConstants.ORACLE.equals(dbType)) {
                 SQLObject parent = x.getParent();
                 if (parent instanceof SQLBinaryOpExpr) {
