@@ -20,13 +20,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
+public class SQLBetweenExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
 
     private static final long serialVersionUID = 1L;
     public SQLExpr            testExpr;
@@ -170,5 +167,25 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
 
     public SQLDataType computeDataType() {
         return SQLBooleanExpr.DEFAULT_DATA_TYPE;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == testExpr) {
+            setTestExpr(target);
+            return true;
+        }
+
+        if (expr == beginExpr) {
+            setBeginExpr(target);
+            return true;
+        }
+
+        if (expr == endExpr) {
+            setEndExpr(target);
+            return true;
+        }
+
+        return false;
     }
 }
