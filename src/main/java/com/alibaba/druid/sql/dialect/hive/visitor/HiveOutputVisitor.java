@@ -17,11 +17,13 @@ package com.alibaba.druid.sql.dialect.hive.visitor;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
+import java.util.Map;
 
 public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVisitor {
     public HiveOutputVisitor(Appendable appender) {
@@ -140,6 +142,20 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             println();
             print0(ucase ? "STORE AS " : "store as ");
             printExpr(storedAs);
+        }
+
+        Map<String, SQLObject> tableOptions = x.getTableOptions();
+        if (tableOptions.size() > 0) {
+            println();
+            print0(ucase ? "TBLPROPERTIES (" : "tblproperties (");
+            int i = 0;
+            for (Map.Entry<String, SQLObject> option : tableOptions.entrySet()) {
+                print0(option.getKey());
+                print0(" = ");
+                option.getValue().accept(this);
+                ++i;
+            }
+            print(')');
         }
 
         SQLSelect select = x.getSelect();

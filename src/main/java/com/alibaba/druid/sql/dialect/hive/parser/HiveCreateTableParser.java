@@ -216,6 +216,26 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             stmt.setStoredAs(name);
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+
+            for (;;) {
+                String name = lexer.stringVal();
+                lexer.nextToken();
+                accept(Token.EQ);
+                SQLExpr value = this.exprParser.primary();
+                stmt.getTableOptions().put(name, value);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+
+            accept(Token.RPAREN);
+        }
+
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
             SQLSelect select = this.createSQLSelectParser().select();

@@ -630,5 +630,7 @@ public final class FnvHash {
         long NOCACHE = fnv1a_64_lower("NOCACHE");
         long NOPARALLEL = fnv1a_64_lower("NOPARALLEL");
         long EXIST = fnv1a_64_lower("EXIST");
+
+        long TBLPROPERTIES = fnv1a_64_lower("TBLPROPERTIES");
     }
 }

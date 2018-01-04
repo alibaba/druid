@@ -2437,4 +2437,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLExternalRecordFormat x) {
         return false;
     }
+
+    public boolean visit(SQLCreateDatabaseStatement x) {
+        return false;
+    }
 }
