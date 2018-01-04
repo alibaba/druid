@@ -1105,6 +1105,10 @@ public class Lexer {
                     case 'Z':
                         putChar((char) 0x1A); // ctrl + Z
                         break;
+                    case '%':
+                        putChar('\\');
+                        putChar(ch);
+                        break;
                     default:
                         putChar(ch);
                         break;
