@@ -3651,6 +3651,17 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
             } else if (lexer.identifierEquals("RENAME")) {
                 lexer.nextToken();
+                
+                if (lexer.token() == Token.INDEX) {
+                    lexer.nextToken();
+                    SQLName name = this.exprParser.name();
+                    accept(Token.TO);
+                    SQLName to = this.exprParser.name();
+                    SQLAlterTableRenameIndex item = new SQLAlterTableRenameIndex(name, to);
+                    stmt.addItem(item);
+                    continue;
+                }
+
                 if (lexer.token() == Token.TO || lexer.token() == Token.AS) {
                     lexer.nextToken();
                 }

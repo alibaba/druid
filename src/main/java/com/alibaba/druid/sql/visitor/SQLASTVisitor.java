@@ -817,4 +817,7 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLDropMaterializedViewStatement x);
     void endVisit(SQLDropMaterializedViewStatement x);
+
+    boolean visit(SQLAlterTableRenameIndex x);
+    void endVisit(SQLAlterTableRenameIndex x);
 }

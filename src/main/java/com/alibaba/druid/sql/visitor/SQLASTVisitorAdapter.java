@@ -1924,6 +1924,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     }
 
+    @Override
+    public boolean visit(SQLAlterTableRenameIndex x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableRenameIndex x) {
+
+    }
+
     public final boolean isEnabled(VisitorFeature feature) {
         return VisitorFeature.isEnabled(this.features, feature);
     }

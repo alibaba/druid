@@ -6130,4 +6130,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print('>');
         return false;
     }
+
+    public boolean visit(SQLAlterTableRenameIndex x) {
+        print0(ucase ? "RENAME INDEX " : "rename index ");
+        x.getName().accept(this);
+        print0(ucase ? " TO " : " to ");
+        x.getTo().accept(this);
+        return false;
+    }
 }
