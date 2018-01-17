@@ -39,7 +39,7 @@ public class MySqlCreateTriggerTest4 extends MysqlTest {
                 "\tON test.t2\n" +
                 "\tFOR EACH ROW\n" +
                 "INSERT INTO log_table\n" +
-                "VALUES (concat(\"inserted into table test.t2 values: (1c, _) = (\", CAST(NEW.col1 AS char(100)), \", \", convert(new.`_`, char(100)), \")\"));", stmt.toString());
+                "VALUES (concat('inserted into table test.t2 values: (1c, _) = (', CAST(NEW.col1 AS char(100)), ', ', convert(new.`_`, char(100)), ')'));", stmt.toString());
     }
 
 

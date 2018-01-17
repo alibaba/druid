@@ -705,7 +705,13 @@ public class MySqlExprParser extends SQLExprParser {
 
         accept(Token.LPAREN);
         for (;;) {
-            primaryKey.addColumn(this.expr());
+            SQLExpr expr;
+            if (lexer.token() == Token.LITERAL_ALIAS) {
+                expr = this.name();
+            } else {
+                expr = this.expr();
+            }
+            primaryKey.addColumn(expr);
             if (!(lexer.token() == (Token.COMMA))) {
                 break;
             } else {
@@ -964,5 +970,10 @@ public class MySqlExprParser extends SQLExprParser {
             accept(Token.RPAREN);
         }
         return partitionDef;
+    }
+
+    protected SQLExpr parseAliasExpr(String alias) {
+        String chars = alias.substring(1, alias.length() - 1);
+        return new SQLCharExpr(chars);
     }
 }

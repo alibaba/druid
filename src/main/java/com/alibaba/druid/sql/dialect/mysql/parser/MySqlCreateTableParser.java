@@ -821,7 +821,13 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
             accept(Token.LPAREN);
             for (;;) {
-                SQLExpr expr = this.exprParser.expr();
+                SQLExpr expr;
+                if (lexer.token() == Token.LITERAL_ALIAS) {
+                    expr = this.exprParser.name();
+                    expr = this.exprParser.primaryRest(expr);
+                } else {
+                    expr = this.exprParser.expr();
+                }
                 if (lexer.token() == Token.ASC) {
                     lexer.nextToken();
                     expr = new MySqlOrderingExpr(expr, SQLOrderingSpecification.ASC);

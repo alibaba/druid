@@ -53,7 +53,7 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT totalNumber\n" +
-                            "\t, concat(\"\", ?, round(memberNumber, 0), \"\") AS totalDisplay\n" +
+                            "\t, concat('', ?, round(memberNumber, 0), '') AS totalDisplay\n" +
                             "FROM (\n" +
                             "\tSELECT COUNT(1) AS totalNumber, SUM(memberNumber) AS memberNumber\n" +
                             "\tFROM (\n" +
@@ -76,7 +76,7 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select totalNumber\n" +
-                            "\t, concat(\"\", ?, round(memberNumber, 0), \"\") as totalDisplay\n" +
+                            "\t, concat('', ?, round(memberNumber, 0), '') as totalDisplay\n" +
                             "from (\n" +
                             "\tselect count(1) as totalNumber, sum(memberNumber) as memberNumber\n" +
                             "\tfrom (\n" +
@@ -100,7 +100,7 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
             assertEquals("SELECT totalNumber\n" +
-                            "\t, concat(\"\", ?, round(memberNumber, ?), \"\") AS totalDisplay\n" +
+                            "\t, concat(?, ?, round(memberNumber, ?), ?) AS totalDisplay\n" +
                             "FROM (\n" +
                             "\tSELECT COUNT(1) AS totalNumber, SUM(memberNumber) AS memberNumber\n" +
                             "\tFROM (\n" +

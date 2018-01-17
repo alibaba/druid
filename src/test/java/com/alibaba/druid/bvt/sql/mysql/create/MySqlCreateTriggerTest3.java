@@ -43,7 +43,7 @@ public class MySqlCreateTriggerTest3 extends MysqlTest {
                 "\tFOR EACH ROW\n" +
                 "BEGIN\n" +
                 "\tINSERT INTO log_table\n" +
-                "\tVALUES (\"delete row from test.t1\");\n" +
+                "\tVALUES ('delete row from test.t1');\n" +
                 "\tINSERT INTO t4\n" +
                 "\tVALUES (old.col1, old.col1 + 5, old.col1 + 7);\n" +
                 "END;", stmt.toString());

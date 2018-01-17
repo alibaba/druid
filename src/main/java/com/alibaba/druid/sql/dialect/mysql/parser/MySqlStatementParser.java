@@ -3651,7 +3651,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
             } else if (lexer.identifierEquals("RENAME")) {
                 lexer.nextToken();
-                
+
                 if (lexer.token() == Token.INDEX) {
                     lexer.nextToken();
                     SQLName name = this.exprParser.name();
