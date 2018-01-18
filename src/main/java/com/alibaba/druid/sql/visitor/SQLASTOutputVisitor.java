@@ -1526,6 +1526,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (expr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
             needQuote = binaryOpExpr.getOperator().isLogical();
+        } else if (expr instanceof SQLInListExpr || expr instanceof SQLNotExpr) {
+            needQuote = true;
         }
 
         if (needQuote) {
