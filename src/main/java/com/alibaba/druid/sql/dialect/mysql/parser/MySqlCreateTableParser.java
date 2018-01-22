@@ -442,7 +442,13 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 accept(Token.EQ);
                 stmt.getTableOptions().put("TYPE", this.exprParser.expr());
+                continue;
+            }
+
+            if (lexer.identifierEquals("ENCRYPTION")) {
                 lexer.nextToken();
+                accept(Token.EQ);
+                stmt.getTableOptions().put("ENCRYPTION", this.exprParser.expr());
                 continue;
             }
 
