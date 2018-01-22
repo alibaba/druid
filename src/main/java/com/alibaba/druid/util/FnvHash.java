@@ -632,5 +632,6 @@ public final class FnvHash {
         long EXIST = fnv1a_64_lower("EXIST");
 
         long TBLPROPERTIES = fnv1a_64_lower("TBLPROPERTIES");
+        long FULLTEXT = fnv1a_64_lower("FULLTEXT");
     }
 }

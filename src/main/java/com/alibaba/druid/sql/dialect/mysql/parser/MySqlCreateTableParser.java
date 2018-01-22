@@ -41,10 +41,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLCreateTableParser;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 public class MySqlCreateTableParser extends SQLCreateTableParser {
@@ -109,6 +106,21 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 stmt.setSelect(query);
             } else {
                 for (;;) {
+                    if (lexer.identifierEquals(FnvHash.Constants.FULLTEXT)) {
+                        Lexer.SavePoint mark = lexer.mark();
+                        lexer.nextToken();
+                        if (lexer.token() == Token.KEY) {
+                            MySqlKey fulltextKey = (MySqlKey) parseConstraint();
+                            fulltextKey.setIndexType("FULLTEXT");
+                            stmt.getTableElementList().add(fulltextKey);
+                            if (lexer.token() == Token.RPAREN) {
+                                break;
+                            }
+                        } else {
+                            lexer.reset(mark);
+                        }
+                    }
+
                     SQLColumnDefinition column = null;
                     if (lexer.token() == Token.IDENTIFIER //
                         || lexer.token() == Token.LITERAL_CHARS) {
