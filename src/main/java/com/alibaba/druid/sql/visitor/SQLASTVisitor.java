@@ -820,4 +820,7 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLAlterTableRenameIndex x);
     void endVisit(SQLAlterTableRenameIndex x);
+
+    boolean visit(SQLAlterSequenceStatement x);
+    void endVisit(SQLAlterSequenceStatement x);
 }

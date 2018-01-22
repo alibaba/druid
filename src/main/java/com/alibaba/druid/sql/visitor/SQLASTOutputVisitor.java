@@ -5438,6 +5438,86 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    @Override
+    public boolean visit(SQLAlterSequenceStatement x) {
+        print0(ucase ? "ALTER SEQUENCE " : "alter sequence ");
+        x.getName().accept(this);
+
+        if (x.getStartWith() != null) {
+            print0(ucase ? " START WITH " : " start with ");
+            x.getStartWith().accept(this);
+        }
+
+        if (x.getIncrementBy() != null) {
+            print0(ucase ? " INCREMENT BY " : " increment by ");
+            x.getIncrementBy().accept(this);
+        }
+
+        if (x.getMaxValue() != null) {
+            print0(ucase ? " MAXVALUE " : " maxvalue ");
+            x.getMaxValue().accept(this);
+        }
+
+        if (x.isNoMaxValue()) {
+            if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                print0(ucase ? " NO MAXVALUE" : " no maxvalue");
+            } else {
+                print0(ucase ? " NOMAXVALUE" : " nomaxvalue");
+            }
+        }
+
+        if (x.getMinValue() != null) {
+            print0(ucase ? " MINVALUE " : " minvalue ");
+            x.getMinValue().accept(this);
+        }
+
+        if (x.isNoMinValue()) {
+            if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                print0(ucase ? " NO MINVALUE" : " no minvalue");
+            } else {
+                print0(ucase ? " NOMINVALUE" : " nominvalue");
+            }
+        }
+
+        if (x.getCycle() != null) {
+            if (x.getCycle().booleanValue()) {
+                print0(ucase ? " CYCLE" : " cycle");
+            } else {
+                if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                    print0(ucase ? " NO CYCLE" : " no cycle");
+                } else {
+                    print0(ucase ? " NOCYCLE" : " nocycle");
+                }
+            }
+        }
+
+        Boolean cache = x.getCache();
+        if (cache != null) {
+            if (cache.booleanValue()) {
+                print0(ucase ? " CACHE" : " cache");
+
+                SQLExpr cacheValue = x.getCacheValue();
+                if (cacheValue != null) {
+                    print(' ');
+                    cacheValue.accept(this);
+                }
+            } else {
+                print0(ucase ? " NOCACHE" : " nocache");
+            }
+        }
+
+        Boolean order = x.getOrder();
+        if (order != null) {
+            if (order.booleanValue()) {
+                print0(ucase ? " ORDER" : " order");
+            } else {
+                print0(ucase ? " NOORDER" : " noorder");
+            }
+        }
+
+        return false;
+    }
+
     public boolean visit(SQLDateExpr x) {
         SQLExpr literal = x.getLiteral();
         print0(ucase ? "DATE " : "date ");

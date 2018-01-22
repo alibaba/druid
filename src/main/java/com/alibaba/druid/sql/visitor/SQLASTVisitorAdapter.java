@@ -1934,6 +1934,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     }
 
+    @Override
+    public boolean visit(SQLAlterSequenceStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterSequenceStatement x) {
+
+    }
+
     public final boolean isEnabled(VisitorFeature feature) {
         return VisitorFeature.isEnabled(this.features, feature);
     }
