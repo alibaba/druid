@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLAlterTableDiscardPartition extends SQLObjectImpl implements SQLAlterTableItem {
 
     private final List<SQLName> partitions = new ArrayList<SQLName>(4);
+    private boolean tablespace;
 
     public List<SQLName> getPartitions() {
         return partitions;
@@ -43,5 +44,13 @@ public class SQLAlterTableDiscardPartition extends SQLObjectImpl implements SQLA
             acceptChild(visitor, partitions);
         }
         visitor.endVisit(this);
+    }
+
+    public boolean isTablespace() {
+        return tablespace;
+    }
+
+    public void setTablespace(boolean tablespace) {
+        this.tablespace = tablespace;
     }
 }

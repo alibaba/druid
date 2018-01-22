@@ -3712,6 +3712,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                         this.exprParser.names(item.getPartitions(), item);
                     }
 
+                    if (lexer.token() == Token.TABLESPACE) {
+                        lexer.nextToken();
+                        item.setTablespace(true);
+                    }
+
                     stmt.addItem(item);
                 } else {
                     accept(Token.TABLESPACE);

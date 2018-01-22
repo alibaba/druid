@@ -5188,6 +5188,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLAlterTableDiscardPartition x) {
         print0(ucase ? "DISCARD PARTITION " : "discard partition ");
         printPartitions(x.getPartitions());
+
+        if (x.isTablespace()) {
+            print0(ucase ? " TABLESPACE" : " tablespace");
+        }
+        
         return false;
     }
     
