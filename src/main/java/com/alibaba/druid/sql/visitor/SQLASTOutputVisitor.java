@@ -5192,7 +5192,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isTablespace()) {
             print0(ucase ? " TABLESPACE" : " tablespace");
         }
-        
+
         return false;
     }
     
@@ -6223,6 +6223,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         x.getName().accept(this);
         print0(ucase ? " TO " : " to ");
         x.getTo().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableExchangePartition x) {
+        print0(ucase ? "EXCHANGE PARTITION " : "exchange partition ");
+        x.getPartition().accept(this);
+        print0(ucase ? " WITH TABLE " : " with table ");
+        x.getTable().accept(this);
+
+        Boolean validation = x.getValidation();
+        if (validation != null) {
+            if (validation) {
+                print0(ucase ? " WITH VALIDATION" : " with validation");
+            } else {
+                print0(ucase ? " WITHOUT VALIDATION" : " without validation");
+            }
+        }
+
         return false;
     }
 }

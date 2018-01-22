@@ -3806,7 +3806,31 @@ public class MySqlStatementParser extends SQLStatementParser {
                 accept(Token.RPAREN);
                 stmt.addItem(item);
             } else if (lexer.identifierEquals("EXCHANGE")) {
-                throw new ParserException("TODO " + lexer.info());
+                lexer.nextToken();
+                accept(Token.PARTITION);
+
+                SQLAlterTableExchangePartition item = new SQLAlterTableExchangePartition();
+
+                SQLName partition = this.exprParser.name();
+                item.setPartition(partition);
+
+                accept(Token.WITH);
+                accept(Token.TABLE);
+                SQLName table = this.exprParser.name();
+                item.setTable(table);
+
+                if (lexer.token() == Token.WITH) {
+                    lexer.nextToken();
+                    acceptIdentifier("VALIDATION");
+                    item.setValidation(true);
+                } else if (lexer.identifierEquals(FnvHash.Constants.WITHOUT)) {
+                    lexer.nextToken();
+                    acceptIdentifier("VALIDATION");
+                    item.setValidation(false);
+                }
+
+
+                stmt.addItem(item);
             } else if (lexer.token() == Token.OPTIMIZE) {
                 lexer.nextToken();
 

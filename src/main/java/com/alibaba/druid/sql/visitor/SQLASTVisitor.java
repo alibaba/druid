@@ -823,4 +823,7 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLAlterSequenceStatement x);
     void endVisit(SQLAlterSequenceStatement x);
+
+    boolean visit(SQLAlterTableExchangePartition x);
+    void endVisit(SQLAlterTableExchangePartition x);
 }

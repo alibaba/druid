@@ -2441,4 +2441,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLCreateDatabaseStatement x) {
         return false;
     }
+
+    @Override
+    public boolean visit(SQLAlterTableExchangePartition x) {
+        SQLExprTableSource table = x.getTable();
+        if (table != null) {
+            table.accept(this);
+        }
+        return false;
+    }
 }

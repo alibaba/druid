@@ -1944,6 +1944,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     }
 
+    @Override
+    public boolean visit(SQLAlterTableExchangePartition x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableExchangePartition x) {
+
+    }
+
     public final boolean isEnabled(VisitorFeature feature) {
         return VisitorFeature.isEnabled(this.features, feature);
     }
