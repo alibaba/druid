@@ -155,6 +155,16 @@ spring.datasource.druid.filter.wall.config.drop-table-allow=false
 
 要想使自定义 Filter 配置生效需要将对应 Filter 的 ```enabled``` 设置为 ```true``` ，Druid Spring Boot Starter 默认会启用 StatFilter，你也可以将其 ```enabled``` 设置为 ```false``` 来禁用它。
 
+## Spring Boot Actuator Endpoints
+
+可以使用下面配置类启用 endpoint 默认访问地址：`/druid-endpoint`，可以使用 `endpoints.druid.path=` 自定义终端地址
+
+```endpoints.druid.enabled=true```
+
+默认需要安全认证才可以访问，可以用下面两种方式之一来禁用安全认证，详情见 Spring Boot 官方文档
+
+```endpoints.druid.sensitive=false```  或 ```management.security.enabled=false```
+
 ## IDE 提示支持
 ![](https://raw.githubusercontent.com/lihengming/java-codes/master/shared-resources/github-images/druid-spring-boot-starter-ide-hint.jpg)
 

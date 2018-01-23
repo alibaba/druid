@@ -24,6 +24,7 @@ import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallFilter;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -49,9 +50,7 @@ class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean
         if (super.getUrl() == null) {
             super.setUrl(basicProperties.determineUrl());
         }
-        if (super.getDriverClassName() == null) {
-            super.setDriverClassName(basicProperties.determineDriverClassName());
-        }
+
     }
 
     @Autowired(required = false)
