@@ -73,6 +73,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         this.dbType = dbType;
     }
 
+    public SchemaRepository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(SchemaRepository repository) {
+        this.repository = repository;
+    }
+
     public SchemaStatVisitor(List<Object> parameters){
         this((String) null, parameters);
     }
