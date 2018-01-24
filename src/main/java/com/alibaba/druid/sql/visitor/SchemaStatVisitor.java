@@ -929,6 +929,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLSelectQueryBlock x) {
         if (x.getFrom() == null) {
+            for (SQLSelectItem selectItem : x.getSelectList()) {
+                statExpr(
+                        selectItem.getExpr());
+            }
             return false;
         }
 
