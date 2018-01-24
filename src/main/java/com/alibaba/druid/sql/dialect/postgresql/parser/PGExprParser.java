@@ -88,13 +88,21 @@ public class PGExprParser extends SQLExprParser {
 
     public SQLExpr primary() {
         if (lexer.token() == Token.ARRAY) {
-            SQLArrayExpr array = new SQLArrayExpr();
-            array.setExpr(new SQLIdentifierExpr(lexer.stringVal()));
+            String ident = lexer.stringVal();
             lexer.nextToken();
-            accept(Token.LBRACKET);
-            this.exprList(array.getValues(), array);
-            accept(Token.RBRACKET);
-            return primaryRest(array);
+
+            if (lexer.token() == Token.LPAREN) {
+                SQLIdentifierExpr array = new SQLIdentifierExpr(ident);
+                return this.methodRest(array, true);
+            } else {
+                SQLArrayExpr array = new SQLArrayExpr();
+                array.setExpr(new SQLIdentifierExpr(ident));
+                accept(Token.LBRACKET);
+                this.exprList(array.getValues(), array);
+                accept(Token.RBRACKET);
+                return primaryRest(array);
+            }
+
         } else if (lexer.token() == Token.POUND) {
             lexer.nextToken();
             if (lexer.token() == Token.LBRACE) {
