@@ -29,6 +29,7 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class MSSQLValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
+    public static final int DEFAULT_VALIDATION_QUERY_TIMEOUT = 1;
     private static final long serialVersionUID = 1L;
 
     public MSSQLValidConnectionChecker(){
@@ -44,6 +45,9 @@ public class MSSQLValidConnectionChecker extends ValidConnectionCheckerAdapter i
 
         try {
             stmt = c.createStatement();
+            if (validationQueryTimeout < 0) {
+                validationQueryTimeout = DEFAULT_VALIDATION_QUERY_TIMEOUT;
+            }
             stmt.setQueryTimeout(validationQueryTimeout);
             stmt.execute(validateQuery);
             return true;
