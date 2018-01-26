@@ -1406,6 +1406,11 @@ public class SQLStatementParser extends SQLParser {
             SQLAlterTableDropIndex item = new SQLAlterTableDropIndex();
             item.setIndexName(indexName);
             stmt.addItem(item);
+        } else if (lexer.token() == Token.PRIMARY) {
+            lexer.nextToken();
+            accept(Token.KEY);
+            SQLAlterTableDropPrimaryKey item = new SQLAlterTableDropPrimaryKey();
+            stmt.addItem(item);
         } else {
             throw new ParserException("TODO " + lexer.info());
         }
