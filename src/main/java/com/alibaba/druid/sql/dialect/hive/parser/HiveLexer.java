@@ -36,6 +36,8 @@ public class HiveLexer extends Lexer {
         map.put("CONTINUE", Token.CONTINUE);
         map.put("MERGE", Token.MERGE);
         map.put("USING", Token.USING);
+        map.put("TRUE", Token.TRUE);
+        map.put("FALSE", Token.FALSE);
 
         map.put("ROW", Token.ROW);
         map.put("LIMIT", Token.LIMIT);
