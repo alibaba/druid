@@ -697,6 +697,7 @@ public class SQLSelectParser extends SQLParser {
             } else {
                 SQLExpr expr = this.expr();
                 rightTableSource = new SQLExprTableSource(expr);
+                primaryTableSourceRest(rightTableSource);
             }
 
             if (lexer.token == Token.USING
