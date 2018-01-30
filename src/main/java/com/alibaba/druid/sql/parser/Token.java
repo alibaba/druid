@@ -66,8 +66,8 @@ public enum Token {
     
     EXPLAIN("EXPLAIN"), 
     FOR("FOR"), 
-    IF("IF"), 
-   
+    IF("IF"),
+    SORT("SORT"),
    
    
     ALL("ALL"), 

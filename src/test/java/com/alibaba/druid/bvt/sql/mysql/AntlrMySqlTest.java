@@ -25,6 +25,7 @@ public class AntlrMySqlTest extends TestCase {
         for (File file : dir.listFiles()) {
             System.out.println(file);
             String sql = FileUtils.readFileToString(file);
+
             List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
             for (SQLStatement stmt : stmtList) {
                 stmt.toString();

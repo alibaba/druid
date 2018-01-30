@@ -34,7 +34,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsGrantStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
@@ -254,7 +254,7 @@ public class OdpsStatementParser extends SQLStatementParser {
         }
 
         for (;;) {
-            OdpsInsert insert = parseOdpsInsert();
+            HiveInsert insert = parseHiveInsert();
             stmt.addItem(insert);
 
             if (lexer.token() != Token.INSERT) {
@@ -267,54 +267,6 @@ public class OdpsStatementParser extends SQLStatementParser {
 
     public SQLSelectParser createSQLSelectParser() {
         return new OdpsSelectParser(this.exprParser, selectListCache);
-    }
-
-    public OdpsInsert parseOdpsInsert() {
-        OdpsInsert insert = new OdpsInsert();
-
-        if (lexer.isKeepComments() && lexer.hasComment()) {
-            insert.addBeforeComment(lexer.readAndResetComments());
-        }
-
-        SQLSelectParser selectParser = createSQLSelectParser();
-
-        accept(Token.INSERT);
-
-        if (lexer.token() == Token.INTO) {
-            lexer.nextToken();
-        } else {
-            accept(Token.OVERWRITE);
-            insert.setOverwrite(true);
-        }
-
-        accept(Token.TABLE);
-        insert.setTableSource(this.exprParser.name());
-
-        if (lexer.token() == Token.PARTITION) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            for (;;) {
-                SQLAssignItem ptExpr = new SQLAssignItem();
-                ptExpr.setTarget(this.exprParser.name());
-                if (lexer.token() == Token.EQ) {
-                    lexer.nextToken();
-                    SQLExpr ptValue = this.exprParser.expr();
-                    ptExpr.setValue(ptValue);
-                }
-                insert.addPartition(ptExpr);
-                if (!(lexer.token() == (Token.COMMA))) {
-                    break;
-                } else {
-                    lexer.nextToken();
-                }
-            }
-            accept(Token.RPAREN);
-        }
-
-        SQLSelect query = selectParser.select();
-        insert.setQuery(query);
-
-        return insert;
     }
 
     public SQLStatement parseShow() {

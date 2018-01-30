@@ -15,7 +15,107 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.JdbcConstants;
 
-public class HiveSchemaStatVisitor extends SchemaStatVisitor {
+public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTVisitor {
+
+    public HiveSchemaStatVisitor() {
+        super (JdbcConstants.HIVE);
+    }
+
+    @Override
+    public boolean visit(HiveCreateTableStatement x) {
+        return super.visit((SQLCreateTableStatement) x);
+    }
+
+    @Override
+    public void endVisit(HiveCreateTableStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(HiveInsert x) {
+        setMode(x, TableStat.Mode.Insert);
+
+        SQLExprTableSource tableSource = x.getTableSource();
+        SQLExpr tableName = tableSource.getExpr();
+
+        if (tableName instanceof SQLName) {
+            TableStat stat = getTableStat((SQLName) tableName);
+            stat.incrementInsertCount();
+
+        }
+
+        for (SQLAssignItem partition : x.getPartitions()) {
+            partition.accept(this);
+        }
+
+        accept(x.getQuery());
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(HiveInsert x) {
+
+    }
+
+    @Override
+    public void endVisit(HiveMultiInsertStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(HiveMultiInsertStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+        return true;
+    }
+
+
+    @Override
+    public void endVisit(HiveInsertStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(HiveInsertStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
+        setMode(x, TableStat.Mode.Insert);
+
+        SQLExprTableSource tableSource = x.getTableSource();
+        SQLExpr tableName = tableSource.getExpr();
+
+        if (tableName instanceof SQLName) {
+            TableStat stat = getTableStat((SQLName) tableName);
+            stat.incrementInsertCount();
+
+        }
+
+        for (SQLAssignItem partition : x.getPartitions()) {
+            partition.accept(this);
+        }
+
+        accept(x.getQuery());
+
+        return false;
+    }
+
 }

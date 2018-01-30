@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
-import com.alibaba.druid.sql.ast.statement.SQLLateralViewTableSource;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -29,9 +29,9 @@ public interface OdpsASTVisitor extends SQLASTVisitor {
 
     boolean visit(OdpsInsertStatement x);
     
-    void endVisit(OdpsInsert x);
+    void endVisit(HiveInsert x);
     
-    boolean visit(OdpsInsert x);
+    boolean visit(HiveInsert x);
     
     void endVisit(OdpsUDTFSQLSelectItem x);
     

@@ -18,10 +18,16 @@ package com.alibaba.druid.sql.dialect.hive.parser;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class HiveStatementParser extends SQLStatementParser {
     public HiveStatementParser(String sql) {
@@ -75,5 +81,61 @@ public class HiveStatementParser extends SQLStatementParser {
 
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new HiveCreateTableParser(this.exprParser);
+    }
+
+    public SQLStatement parseInsert() {
+        if (lexer.token() == Token.FROM) {
+            lexer.nextToken();
+
+            HiveMultiInsertStatement stmt = new HiveMultiInsertStatement();
+
+            if (lexer.token() == Token.IDENTIFIER) {
+                SQLName tableName = this.exprParser.name();
+                SQLExprTableSource from = new SQLExprTableSource(tableName);
+                stmt.setFrom(from);
+
+                if (lexer.token() == Token.IDENTIFIER) {
+                    from.setAlias(lexer.stringVal());
+                    lexer.nextToken();
+                }
+            } else {
+                accept(Token.LPAREN);
+
+                SQLSelectParser selectParser = createSQLSelectParser();
+                SQLSelect select = selectParser.select();
+
+                accept(Token.RPAREN);
+
+                String alias = lexer.stringVal();
+                accept(Token.IDENTIFIER);
+
+                SQLSubqueryTableSource from = new SQLSubqueryTableSource(select, alias);
+
+                stmt.setFrom(from);
+            }
+
+            for (;;) {
+                HiveInsert insert = parseHiveInsert();
+                stmt.addItem(insert);
+
+                if (lexer.token() != Token.INSERT) {
+                    break;
+                }
+            }
+
+            return stmt;
+        }
+
+        return parseHiveInsertStmt();
+    }
+
+    public boolean parseStatementListDialect(List<SQLStatement> statementList) {
+        if (lexer.token() == Token.FROM) {
+            SQLStatement stmt = this.parseInsert();
+            statementList.add(stmt);
+            return true;
+        }
+
+        return false;
     }
 }

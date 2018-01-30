@@ -15,10 +15,22 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface HiveASTVisitor extends SQLASTVisitor {
     boolean visit(HiveCreateTableStatement x);
     void endVisit(HiveCreateTableStatement x);
+
+    boolean visit(HiveMultiInsertStatement x);
+    void endVisit(HiveMultiInsertStatement x);
+
+    boolean visit(HiveInsertStatement x);
+    void endVisit(HiveInsertStatement x);
+
+    boolean visit(HiveInsert x);
+    void endVisit(HiveInsert x);
 }

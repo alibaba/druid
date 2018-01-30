@@ -19,6 +19,9 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -187,5 +190,141 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         }
 
         return false;
+    }
+
+
+    @Override
+    public void endVisit(HiveMultiInsertStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(HiveMultiInsertStatement x) {
+        SQLTableSource from = x.getFrom();
+        if (x.getFrom() != null) {
+            if (from instanceof SQLSubqueryTableSource) {
+                SQLSelect select = ((SQLSubqueryTableSource) from).getSelect();
+                print0(ucase ? "FROM (" : "from (");
+                this.indentCount++;
+                println();
+                select.accept(this);
+                this.indentCount--;
+                println();
+                print0(") ");
+                print0(x.getFrom().getAlias());
+            } else {
+                print0(ucase ? "FROM " : "from ");
+                from.accept(this);
+            }
+            println();
+        }
+
+        for (int i = 0; i < x.getItems().size(); ++i) {
+            HiveInsert insert = x.getItems().get(i);
+            if (i != 0) {
+                println();
+            }
+            insert.accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(HiveInsertStatement x) {
+
+    }
+
+    public boolean visit(HiveInsertStatement x) {
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+        if (x.isOverwrite()) {
+            print0(ucase ? "INSERT OVERWRITE TABLE " : "insert overwrite table ");
+        } else {
+            print0(ucase ? "INSERT INTO TABLE " : "insert into table ");
+        }
+        x.getTableSource().accept(this);
+
+        int partitions = x.getPartitions().size();
+        if (partitions > 0) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            for (int i = 0; i < partitions; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                }
+
+                SQLAssignItem assign = x.getPartitions().get(i);
+                assign.getTarget().accept(this);
+
+                if (assign.getValue() != null) {
+                    print('=');
+                    assign.getValue().accept(this);
+                }
+            }
+            print(')');
+        }
+        println();
+
+        SQLSelect select = x.getQuery();
+        List<SQLInsertStatement.ValuesClause> valuesList = x.getValuesList();
+        if (select != null) {
+            select.accept(this);
+        } else if (!valuesList.isEmpty()) {
+            print0(ucase ? "VALUES " : "values ");
+            printAndAccept(valuesList, ", ");
+        }
+
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(HiveInsert x) {
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+        if (x.isOverwrite()) {
+            print0(ucase ? "INSERT OVERWRITE TABLE " : "insert overwrite table ");
+        } else {
+            print0(ucase ? "INSERT INTO TABLE " : "insert into table ");
+        }
+        x.getTableSource().accept(this);
+
+        int partitions = x.getPartitions().size();
+        if (partitions > 0) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            for (int i = 0; i < partitions; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                }
+
+                SQLAssignItem assign = x.getPartitions().get(i);
+                assign.getTarget().accept(this);
+
+                if (assign.getValue() != null) {
+                    print('=');
+                    assign.getValue().accept(this);
+                }
+            }
+            print(')');
+        }
+        println();
+
+        SQLSelect select = x.getQuery();
+        List<SQLInsertStatement.ValuesClause> valuesList = x.getValuesList();
+        if (select != null) {
+            select.accept(this);
+        } else if (!valuesList.isEmpty()) {
+            print0(ucase ? "VALUES " : "values ");
+            printAndAccept(valuesList, ", ");
+        }
+
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(HiveInsert x) {
+
     }
 }

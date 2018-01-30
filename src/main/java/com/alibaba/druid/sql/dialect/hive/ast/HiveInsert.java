@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.odps.ast;
+package com.alibaba.druid.sql.dialect.hive.ast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OdpsInsert extends SQLObjectImpl {
+public class HiveInsert extends SQLInsertInto {
 
     private boolean              overwrite  = false;
     private List<SQLAssignItem>  partitions = new ArrayList<SQLAssignItem>();
-    protected SQLExprTableSource tableSource;
 
-    private SQLSelect            query;
+    public HiveInsert() {
+
+    }
 
     public boolean isOverwrite() {
         return overwrite;
@@ -55,6 +57,21 @@ public class OdpsInsert extends SQLObjectImpl {
 
     public void setPartitions(List<SQLAssignItem> partitions) {
         this.partitions = partitions;
+    }
+
+    public void cloneTo(HiveInsert x) {
+        cloneTo(x);
+        x.overwrite = overwrite;
+        for (SQLAssignItem item : partitions) {
+            x.addPartition(item.clone());
+        }
+    }
+
+    @Override
+    public SQLInsertInto clone() {
+        HiveInsert x = new HiveInsert();
+        cloneTo(x);
+        return x;
     }
 
     public SQLExprTableSource getTableSource() {
@@ -85,7 +102,11 @@ public class OdpsInsert extends SQLObjectImpl {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OdpsASTVisitor) visitor);
+        if (visitor instanceof HiveASTVisitor) {
+            accept0((HiveASTVisitor) visitor);
+        } else {
+            accept0((OdpsASTVisitor) visitor);
+        }
     }
 
     protected void accept0(OdpsASTVisitor visitor) {
@@ -97,4 +118,12 @@ public class OdpsInsert extends SQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    protected void accept0(HiveASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, tableSource);
+            acceptChild(visitor, partitions);
+            acceptChild(visitor, query);
+        }
+        visitor.endVisit(this);
+    }
 }

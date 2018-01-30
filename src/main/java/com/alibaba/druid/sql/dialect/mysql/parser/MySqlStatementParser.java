@@ -4239,8 +4239,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         } else if (lexer.identifierEquals(FnvHash.Constants.CHARACTER)) {
             SQLAlterCharacter item = alterTableCharacter();
             stmt.setCharacter(item);
-        } else {
-            throw new ParserException("TODO " + lexer.info());
         }
 
         return stmt;

@@ -263,6 +263,8 @@ public class SchemaRepository {
             resolveVisitor = new SchemaResolveVisitorFactory.DB2ResolveVisitor(this, optionsValue);
         } else if (JdbcConstants.ODPS.equals(dbType)) {
             resolveVisitor = new SchemaResolveVisitorFactory.OdpsResolveVisitor(this, optionsValue);
+        } else if (JdbcConstants.HIVE.equals(dbType)) {
+            resolveVisitor = new SchemaResolveVisitorFactory.HiveResolveVisitor(this, optionsValue);
         } else if (JdbcConstants.POSTGRESQL.equals(dbType)) {
             resolveVisitor = new SchemaResolveVisitorFactory.PGResolveVisitor(this, optionsValue);
         } else if (JdbcConstants.SQL_SERVER.equals(dbType)) {

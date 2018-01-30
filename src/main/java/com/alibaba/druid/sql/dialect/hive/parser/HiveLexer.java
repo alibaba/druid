@@ -35,13 +35,18 @@ public class HiveLexer extends Lexer {
         map.put("CONCAT", Token.CONCAT);
         map.put("CONTINUE", Token.CONTINUE);
         map.put("MERGE", Token.MERGE);
+        map.put("MATCHED", Token.MATCHED);
         map.put("USING", Token.USING);
-        map.put("TRUE", Token.TRUE);
-        map.put("FALSE", Token.FALSE);
 
         map.put("ROW", Token.ROW);
         map.put("LIMIT", Token.LIMIT);
         map.put("PARTITIONED", Token.PARTITIONED);
+        map.put("PARTITION", Token.PARTITION);
+        map.put("OVERWRITE", Token.OVERWRITE);
+        map.put("SORT", Token.SORT);
+        map.put("IF", Token.IF);
+        map.put("TRUE", Token.TRUE);
+        map.put("FALSE", Token.FALSE);
 
         DEFAULT_HIVE_KEYWORDS = new Keywords(map);
     }

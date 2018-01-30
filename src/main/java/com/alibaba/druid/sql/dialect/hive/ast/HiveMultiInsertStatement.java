@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.odps.ast;
+package com.alibaba.druid.sql.dialect.hive.ast;
+
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
-import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
-
-public class OdpsInsertStatement extends SQLStatementImpl {
+public class HiveMultiInsertStatement extends SQLStatementImpl {
 
     private SQLTableSource from;
 
     private List<HiveInsert>       items = new ArrayList<HiveInsert>();
     
-    public OdpsInsertStatement() {
-        super (JdbcConstants.ODPS);
+    public HiveMultiInsertStatement() {
+        dbType = JdbcConstants.HIVE;
     }
 
     public void setFrom(SQLTableSource from) {
@@ -56,10 +55,15 @@ public class OdpsInsertStatement extends SQLStatementImpl {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OdpsASTVisitor) visitor);
+        if (visitor instanceof HiveASTVisitor) {
+            accept0((HiveASTVisitor) visitor);
+        } else {
+            acceptChild(visitor, from);
+            acceptChild(visitor, items);
+        }
     }
-    
-    protected void accept0(OdpsASTVisitor visitor) {
+
+    public void accept0(HiveASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, from);
             acceptChild(visitor, items);
