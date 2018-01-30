@@ -466,6 +466,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.KYLIN_DRIVER;
         } else if (rawUrl.startsWith("jdbc:elastic:")) {
             return JdbcConstants.ELASTIC_SEARCH_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
+            return JdbcConstants.CLICKHOUSE_DRIVER;
         } else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
@@ -555,6 +557,8 @@ public final class JdbcUtils implements JdbcConstants {
             return PHOENIX;
         } else if (rawUrl.startsWith("jdbc:elastic:")) {
             return ELASTIC_SEARCH;
+        } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
+            return CLICKHOUSE;
         } else {
             return null;
         }
