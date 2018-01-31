@@ -633,4 +633,12 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         printExpr(x.getSequence());
         return false;
     }
+
+    @Override
+    public boolean visit(SQLAlterTableAddColumn x) {
+        boolean odps = isOdps();
+        print0(ucase ? "ADD " : "add ");
+        printAndAccept(x.getColumns(), ", ");
+        return false;
+    }
 }

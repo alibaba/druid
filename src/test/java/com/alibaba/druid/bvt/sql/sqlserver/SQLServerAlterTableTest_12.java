@@ -15,21 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.sqlserver;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class SQLServerAlterTableTest_3 extends TestCase {
+public class SQLServerAlterTableTest_12 extends TestCase {
 
     public void test_alter_first() throws Exception {
-        String sql = "ALTER TABLE extensions ADD [core] bit";
+        String sql = "ALTER TABLE kpiTarget ADD deleted tinyint DEFAULT 0";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
@@ -42,10 +40,16 @@ public class SQLServerAlterTableTest_3 extends TestCase {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
-        Assert.assertEquals("ALTER TABLE extensions" //
-                            + "\n\tADD [core] bit", output);
-
+        {
+            String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
+            Assert.assertEquals("ALTER TABLE kpiTarget\n" +
+                    "\tADD deleted tinyint DEFAULT 0", output);
+        }
+        {
+            String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("alter table kpiTarget\n" +
+                    "\tadd deleted tinyint default 0", output);
+        }
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
     }
