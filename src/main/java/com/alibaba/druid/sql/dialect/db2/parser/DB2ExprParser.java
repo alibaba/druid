@@ -107,6 +107,15 @@ public class DB2ExprParser extends SQLExprParser {
                     expr = new SQLIdentifierExpr("CURRENT TIME");
                 }
             }
+        } else if (lexer.token() == Token.SCHEMA) {
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+                if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
+                    lexer.nextToken();
+
+                    expr = new SQLIdentifierExpr("CURRENT SCHEMA");
+                }
+            }
         } else if (lexer.identifierEquals(FnvHash.Constants.MONTHS)) {
             SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.MONTH);
             lexer.nextToken();
