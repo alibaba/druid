@@ -2675,7 +2675,7 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
             accept(Token.NULL);
             option = SQLForeignKeyImpl.Option.SET_NULL;
-        } else if (lexer.token() == Token.ON || lexer.identifierEquals(FnvHash.Constants.ON)) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.NO)) {
             lexer.nextToken();
             if (lexer.identifierEquals(FnvHash.Constants.ACTION)) {
                 option = SQLForeignKeyImpl.Option.NO_ACTION;
