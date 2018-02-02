@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
@@ -25,9 +26,16 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlPartitionByKey extends SQLPartitionBy implements MySqlObject {
+    private short algorithm = 2;
 
-    private List<SQLName> columns = new ArrayList<SQLName>();
+    public short getAlgorithm() {
+        return algorithm;
+    }
 
+    public void setAlgorithm(short algorithm) {
+        this.algorithm = algorithm;
+    }
+    
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {
@@ -48,15 +56,19 @@ public class MySqlPartitionByKey extends SQLPartitionBy implements MySqlObject {
         visitor.endVisit(this);
     }
 
-    public List<SQLName> getColumns() {
-        return columns;
-    }
-    
-    public void addColumn(SQLName column) {
-        if (column != null) {
-            column.setParent(this);
+    public void cloneTo(MySqlPartitionByKey x) {
+        super.cloneTo(x);
+        for (SQLExpr column : columns) {
+            SQLExpr c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
         }
-        this.columns.add(column);
+	x.setAlgorithm(algorithm);
     }
 
+    public MySqlPartitionByKey clone() {
+        MySqlPartitionByKey x = new MySqlPartitionByKey();
+        cloneTo(x);
+        return x;
+    }
 }

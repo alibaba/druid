@@ -16,7 +16,12 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class SQLDefaultExpr extends SQLExprImpl implements SQLLiteralExpr {
 
@@ -38,5 +43,13 @@ public class SQLDefaultExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     public String toString() {
         return "DEFAULT";
+    }
+
+    public SQLDefaultExpr clone() {
+        return new SQLDefaultExpr();
+    }
+
+    public List<SQLObject> getChildren() {
+        return Collections.emptyList();
     }
 }

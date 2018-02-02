@@ -186,8 +186,7 @@ public class OracleCreateTableTest49 extends OracleTest {
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
                         ")\n" +
-                        "PARTITION BY RANGE (\"GMT_CREATE\")\n" +
-                        "(\n" +
+                        "PARTITION BY RANGE (\"GMT_CREATE\") (\n" +
                         "\tPARTITION \"P2008\" VALUES LESS THAN (TO_DATE(' 2009-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))\n" +
                         "\t\tPCTFREE 10\n" +
                         "\t\tPCTUSED 40\n" +
@@ -255,6 +254,6 @@ public class OracleCreateTableTest49 extends OracleTest {
 
         Assert.assertEquals(44, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "ID")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "ID"));
     }
 }

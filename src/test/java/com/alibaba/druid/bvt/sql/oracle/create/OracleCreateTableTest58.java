@@ -95,8 +95,7 @@ public class OracleCreateTableTest58 extends OracleTest {
                         "STORAGE (\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
                         ")\n" +
-                        "PARTITION BY RANGE (\"ID\")\n" +
-                        "(\n" +
+                        "PARTITION BY RANGE (\"ID\") (\n" +
                         "\tPARTITION \"P1\" VALUES LESS THAN (2000000000)\n" +
                         "\t\tPCTFREE 10\n" +
                         "\t\tPCTUSED 40\n" +
@@ -147,6 +146,6 @@ public class OracleCreateTableTest58 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "ID")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "ID"));
     }
 }

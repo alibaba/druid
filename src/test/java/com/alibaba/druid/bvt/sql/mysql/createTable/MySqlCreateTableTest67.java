@@ -47,8 +47,7 @@ public class MySqlCreateTableTest67 extends MysqlTest {
                     "\ta INT NOT NULL,\n" +
                     "\tPRIMARY KEY (a)\n" +
                     ") ENGINE = InnoDB TABLESPACE ts1\n" +
-                    "PARTITION BY RANGE (a) PARTITIONS 3\n" +
-                    "(\n" +
+                    "PARTITION BY RANGE (a) PARTITIONS 3 (\n" +
                     "\tPARTITION P1 VALUES LESS THAN (2),\n" +
                     "\tPARTITION P2 VALUES LESS THAN (4)\n" +
                     "\t\tTABLESPACE ts2,\n" +
@@ -62,8 +61,7 @@ public class MySqlCreateTableTest67 extends MysqlTest {
                     "\ta INT not null,\n" +
                     "\tprimary key (a)\n" +
                     ") engine = InnoDB tablespace ts1\n" +
-                    "partition by range (a) partitions 3\n" +
-                    "(\n" +
+                    "partition by range (a) partitions 3 (\n" +
                     "\tpartition P1 values less than (2),\n" +
                     "\tpartition P2 values less than (4)\n" +
                     "\t\ttablespace ts2,\n" +

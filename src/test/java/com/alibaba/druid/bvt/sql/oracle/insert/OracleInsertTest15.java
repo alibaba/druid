@@ -59,7 +59,10 @@ public class OracleInsertTest15 extends OracleTest {
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees@remote")));
+        Assert.assertTrue(visitor
+                .getTables()
+                .containsKey(
+                        new TableStat.Name("employees@remote")));
 
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }

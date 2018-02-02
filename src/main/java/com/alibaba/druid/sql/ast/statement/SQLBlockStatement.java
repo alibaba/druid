@@ -25,12 +25,15 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLBlockStatement extends SQLStatementImpl {
     private String             labelName;
-
-    private String endLabel;
-
+    private String             endLabel;
     private List<SQLParameter> parameters    = new ArrayList<SQLParameter>();
-
     private List<SQLStatement> statementList = new ArrayList<SQLStatement>();
+    public SQLStatement        exception;
+    private boolean            endOfCommit;
+
+    public SQLBlockStatement() {
+
+    }
 
     public List<SQLStatement> getStatementList() {
         return statementList;
@@ -47,8 +50,6 @@ public class SQLBlockStatement extends SQLStatementImpl {
     public void setLabelName(String labelName) {
         this.labelName = labelName;
     }
-
-    public SQLStatement exception;
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -73,6 +74,9 @@ public class SQLBlockStatement extends SQLStatementImpl {
     }
 
     public void setException(SQLStatement exception) {
+        if (exception != null) {
+            exception.setParent(this);
+        }
         this.exception = exception;
     }
 
@@ -82,5 +86,47 @@ public class SQLBlockStatement extends SQLStatementImpl {
 
     public void setEndLabel(String endLabel) {
         this.endLabel = endLabel;
+    }
+
+    public SQLBlockStatement clone() {
+        SQLBlockStatement x = new SQLBlockStatement();
+        x.labelName = labelName;
+        x.endLabel = endLabel;
+
+        for (SQLParameter p : parameters) {
+            SQLParameter p2 = p.clone();
+            p2.setParent(x);
+            x.parameters.add(p2);
+        }
+
+        for (SQLStatement stmt : statementList) {
+            SQLStatement stmt2 = stmt.clone();
+            stmt2.setParent(x);
+            x.statementList.add(stmt2);
+        }
+
+        if (exception != null) {
+            x.setException(exception.clone());
+        }
+
+        return x;
+    }
+
+    public SQLParameter findParameter(long hash) {
+        for (SQLParameter param : this.parameters) {
+            if (param.getName().nameHashCode64() == hash) {
+                return param;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean isEndOfCommit() {
+        return endOfCommit;
+    }
+
+    public void setEndOfCommit(boolean value) {
+        this.endOfCommit = value;
     }
 }

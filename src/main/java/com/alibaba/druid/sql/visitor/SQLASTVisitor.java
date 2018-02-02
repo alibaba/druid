@@ -64,9 +64,9 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLSelectStatement selectStatement);
 
-    void postVisit(SQLObject astNode);
+    void postVisit(SQLObject x);
 
-    void preVisit(SQLObject astNode);
+    void preVisit(SQLObject x);
 
     boolean visit(SQLAllColumnExpr x);
 
@@ -727,9 +727,103 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLCommitStatement x);
 
-
     boolean visit(SQLFlashbackExpr x);
 
     void endVisit(SQLFlashbackExpr x);
-    //
+
+    boolean visit(SQLCreateMaterializedViewStatement x);
+
+    void endVisit(SQLCreateMaterializedViewStatement x);
+
+    boolean visit(SQLBinaryOpExprGroup x);
+
+    void endVisit(SQLBinaryOpExprGroup x);
+
+    boolean visit(SQLScriptCommitStatement x);
+
+    void endVisit(SQLScriptCommitStatement x);
+
+    boolean visit(SQLReplaceStatement x);
+
+    void endVisit(SQLReplaceStatement x);
+
+    boolean visit(SQLCreateUserStatement x);
+
+    void endVisit(SQLCreateUserStatement x);
+
+    boolean visit(SQLAlterFunctionStatement x);
+
+    void endVisit(SQLAlterFunctionStatement x);
+
+    boolean visit(SQLAlterTypeStatement x);
+
+    void endVisit(SQLAlterTypeStatement x);
+
+    boolean visit(SQLIntervalExpr x);
+
+    void endVisit(SQLIntervalExpr x);
+
+    boolean visit(SQLLateralViewTableSource x);
+
+    void endVisit(SQLLateralViewTableSource x);
+
+    boolean visit(SQLShowErrorsStatement x);
+    void endVisit(SQLShowErrorsStatement x);
+
+    boolean visit(SQLAlterCharacter x);
+    void endVisit(SQLAlterCharacter x);
+
+    boolean visit(SQLExprStatement x);
+    void endVisit(SQLExprStatement x);
+
+    boolean visit(SQLAlterProcedureStatement x);
+    void endVisit(SQLAlterProcedureStatement x);
+
+    boolean visit(SQLAlterViewStatement x);
+    void endVisit(SQLAlterViewStatement x);
+
+    boolean visit(SQLDropEventStatement x);
+    void endVisit(SQLDropEventStatement x);
+
+    boolean visit(SQLDropLogFileGroupStatement x);
+    void endVisit(SQLDropLogFileGroupStatement x);
+
+    boolean visit(SQLDropServerStatement x);
+    void endVisit(SQLDropServerStatement x);
+
+    boolean visit(SQLDropSynonymStatement x);
+    void endVisit(SQLDropSynonymStatement x);
+
+    boolean visit(SQLRecordDataType x);
+    void endVisit(SQLRecordDataType x);
+
+    boolean visit(SQLDropTypeStatement x);
+    void endVisit(SQLDropTypeStatement x);
+
+    boolean visit(SQLExternalRecordFormat x);
+    void endVisit(SQLExternalRecordFormat x);
+
+    boolean visit(SQLArrayDataType x);
+    void endVisit(SQLArrayDataType x);
+
+    boolean visit(SQLMapDataType x);
+    void endVisit(SQLMapDataType x);
+
+    boolean visit(SQLStructDataType x);
+    void endVisit(SQLStructDataType x);
+
+    boolean visit(SQLStructDataType.Field x);
+    void endVisit(SQLStructDataType.Field x);
+
+    boolean visit(SQLDropMaterializedViewStatement x);
+    void endVisit(SQLDropMaterializedViewStatement x);
+
+    boolean visit(SQLAlterTableRenameIndex x);
+    void endVisit(SQLAlterTableRenameIndex x);
+
+    boolean visit(SQLAlterSequenceStatement x);
+    void endVisit(SQLAlterSequenceStatement x);
+
+    boolean visit(SQLAlterTableExchangePartition x);
+    void endVisit(SQLAlterTableExchangePartition x);
 }

@@ -125,7 +125,7 @@ public class MySqlCreateTableTest54 extends MysqlTest {
                                     + "\n\tPRIMARY KEY (`id`),"
                                     + "\n\tKEY `canvas_id` (`canvas_id`),"
                                     + "\n\tKEY `sid_ty_time` (`sellerId`, `node_type`, `start_time`),"
-                                    + "\n\tCONSTRAINT `t_activity_node_ibfk_1` FOREIGN KEY (`canvas_id`) REFERENCES `t_activity_canvas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE"
+                                    + "\n\tCONSTRAINT `t_activity_node_ibfk_1` FOREIGN KEY (`canvas_id`) REFERENCES `t_activity_canvas` (`id`) ON DELETE CASCADE"
                                     + "\n) ENGINE = InnoDB CHARSET = utf8", output);
         }
         {
@@ -157,7 +157,7 @@ public class MySqlCreateTableTest54 extends MysqlTest {
                                     + "\n\tprimary key (`id`),"
                                     + "\n\tkey `canvas_id` (`canvas_id`),"
                                     + "\n\tkey `sid_ty_time` (`sellerId`, `node_type`, `start_time`),"
-                                    + "\n\tconstraint `t_activity_node_ibfk_1` foreign key (`canvas_id`) references `t_activity_canvas` (`id`) on delete cascade on update cascade"
+                                    + "\n\tconstraint `t_activity_node_ibfk_1` foreign key (`canvas_id`) references `t_activity_canvas` (`id`) on delete cascade"
                                     + "\n) engine = InnoDB charset = utf8", output);
         }
     }

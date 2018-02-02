@@ -60,7 +60,7 @@ public class MySqlCreateTableTest5 extends MysqlTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("test", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("test", "dspcode")));
+        Assert.assertTrue(visitor.containsColumn("test", "id"));
+        Assert.assertTrue(visitor.containsColumn("test", "dspcode"));
     }
 }

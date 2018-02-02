@@ -21,7 +21,7 @@ public class DesensitizationTest extends TestCase {
         System.out.println(desens_Sql);
 
         assertEquals("SELECT id, name\n" +
-                "FROM T_771DB81F525E1E75\n" +
+                "FROM T_6635BB1415F4C1B5\n" +
                 "WHERE id = ?", desens_Sql);
     }
 
@@ -38,7 +38,7 @@ public class DesensitizationTest extends TestCase {
         System.out.println(desens_Sql);
 
         assertEquals("SELECT id, name\n" +
-                "FROM T_771DB81F525E1E75\n" +
+                "FROM T_6635BB1415F4C1B5\n" +
                 "WHERE id = ?", desens_Sql);
     }
 }

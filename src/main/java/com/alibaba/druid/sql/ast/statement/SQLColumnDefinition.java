@@ -19,15 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
-public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement {
+public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement, SQLObjectWithDataType, SQLReplaceable {
+    protected String                          dbType;
 
     protected SQLName                         name;
     protected SQLDataType                     dataType;
@@ -94,8 +94,28 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return name;
     }
 
+    public long nameHashCode64() {
+        if (name == null) {
+            return 0;
+        }
+
+        return name.hashCode64();
+    }
+
+    public String getNameAsString() {
+        if (name == null) {
+            return null;
+        }
+
+        return name.toString();
+    }
+
     public void setName(SQLName name) {
         this.name = name;
+    }
+
+    public void setName(String name) {
+        this.setName(new SQLIdentifierExpr(name));
     }
 
     public SQLDataType getDataType() {
@@ -103,6 +123,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setDataType(SQLDataType dataType) {
+        if (dataType != null) {
+            dataType.setParent(this);
+        }
         this.dataType = dataType;
     }
 
@@ -154,7 +177,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return comment;
     }
 
+    public void setComment(String comment) {
+        this.setComment(new SQLCharExpr(comment));
+    }
+
     public void setComment(SQLExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
         this.comment = comment;
     }
 
@@ -220,6 +250,21 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         this.storage = storage;
     }
 
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (defaultExpr == expr) {
+            setDefaultExpr(target);
+            return true;
+        }
+
+        if (name == expr) {
+            setName((SQLName) target);
+            return true;
+        }
+
+        return false;
+    }
+
     public static class Identity extends SQLObjectImpl {
 
         private Integer seed;
@@ -261,6 +306,13 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             visitor.endVisit(this);
         }
 
+        public Identity clone () {
+            Identity x = new Identity();
+            x.seed = seed;
+            x.increment = increment;
+            x.notForReplication = notForReplication;
+            return x;
+        }
     }
 
     public String computeAlias() {
@@ -273,5 +325,101 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         }
 
         return SQLUtils.normalize(alias);
+    }
+
+    public SQLColumnDefinition clone() {
+        SQLColumnDefinition x = new SQLColumnDefinition();
+        x.setDbType(dbType);
+
+        if(name != null) {
+            x.setName(name.clone());
+        }
+
+        if (dataType != null) {
+            x.setDataType(dataType.clone());
+        }
+
+        if (defaultExpr != null) {
+            x.setDefaultExpr(defaultExpr.clone());
+        }
+
+        for (SQLColumnConstraint item : constraints) {
+            SQLColumnConstraint itemCloned = item.clone();
+            itemCloned.setParent(x);
+            x.constraints.add(itemCloned);
+        }
+
+        if (comment != null) {
+            x.setComment(comment.clone());
+        }
+
+        x.enable = enable;
+        x.validate = validate;
+        x.rely = rely;
+
+        x.autoIncrement = autoIncrement;
+
+        if (onUpdate != null) {
+            x.setOnUpdate(onUpdate.clone());
+        }
+
+        if (storage != null) {
+            x.setStorage(storage.clone());
+        }
+
+        if (charsetExpr != null) {
+            x.setCharsetExpr(charsetExpr.clone());
+        }
+
+        if (asExpr != null) {
+            x.setAsExpr(asExpr.clone());
+        }
+
+        x.sorted = sorted;
+        x.virtual = virtual;
+
+        if (identity != null) {
+            x.setIdentity(identity.clone());
+        }
+
+        return x;
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
+
+    public void simplify() {
+        enable = null;
+        validate = null;
+        rely = null;
+
+
+        if (this.name instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) this.name;
+            String columnName = identExpr.getName();
+            String normalized = SQLUtils.normalize(columnName, dbType);
+            if (normalized != columnName) {
+                this.setName(normalized);
+            }
+        }
+    }
+
+    public boolean containsNotNullConstaint() {
+        for (SQLColumnConstraint constraint : this.constraints) {
+            if (constraint instanceof SQLNotNullConstraint) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this, dbType);
     }
 }

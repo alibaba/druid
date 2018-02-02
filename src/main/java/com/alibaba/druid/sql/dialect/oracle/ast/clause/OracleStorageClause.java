@@ -34,6 +34,43 @@ public class OracleStorageClause extends OracleSQLObjectImpl {
     private FlashCacheType flashCache;
     private FlashCacheType cellFlashCache;
 
+    public OracleStorageClause clone() {
+        OracleStorageClause x = new OracleStorageClause();
+        if (initial != null) {
+            x.setInitial(initial.clone());
+        }
+        if (next != null) {
+            x.setNext(next.clone());
+        }
+        if (minExtents != null) {
+            x.setMinExtents(minExtents.clone());
+        }
+        if (maxExtents != null) {
+            x.setMinExtents(maxExtents.clone());
+        }
+        if (maxSize != null) {
+            x.setMaxSize(maxSize.clone());
+        }
+        if (pctIncrease != null) {
+            x.setPctIncrease(pctIncrease.clone());
+        }
+        if (freeLists != null) {
+            x.setFreeLists(freeLists.clone());
+        }
+        if (freeListGroups != null) {
+            x.setFreeListGroups(freeListGroups.clone());
+        }
+        if (bufferPool != null) {
+            x.setBufferPool(bufferPool.clone());
+        }
+        if (objno != null) {
+            x.setObjno(objno.clone());
+        }
+        x.flashCache = flashCache;
+        x.cellFlashCache = cellFlashCache;
+        return x;
+    }
+
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {

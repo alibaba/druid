@@ -17,16 +17,24 @@ package com.alibaba.druid.sql.dialect.sqlserver.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.util.FnvHash;
+
+import java.util.Collections;
+import java.util.List;
 
 public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements SQLServerExpr, SQLName {
 
     private String server;
     private String database;
     private String schema;
+
+    protected long schemaHashCode64;
+    protected long hashCode64;
 
     public SQLServerObjectReferenceExpr(){
 
@@ -113,9 +121,42 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
 
     public SQLServerObjectReferenceExpr clone() {
         SQLServerObjectReferenceExpr x = new SQLServerObjectReferenceExpr();
-        x.server = server;
-        x.database = database;
-        x.schema = schema;
+
+        x.server           = server;
+        x.database         = database;
+        x.schema           = schema;
+
+        x.schemaHashCode64 = schemaHashCode64;
+        x.hashCode64       = hashCode64;
+
         return x;
+    }
+
+    public long nameHashCode64() {
+        if (schemaHashCode64 == 0
+                && schema != null) {
+            schemaHashCode64 = FnvHash.hashCode64(schema);
+        }
+        return schemaHashCode64;
+    }
+
+    @Override
+    public long hashCode64() {
+        if (hashCode64 == 0) {
+            if (server == null) {
+                hashCode64 = new SQLPropertyExpr(
+                        new SQLPropertyExpr(server, database)
+                        , schema)
+                        .hashCode64();
+            } else {
+                hashCode64 = new SQLPropertyExpr(database, schema)
+                        .hashCode64();
+            }
+        }
+        return hashCode64;
+    }
+
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>emptyList();
     }
 }

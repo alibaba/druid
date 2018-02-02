@@ -16,11 +16,23 @@
 package com.alibaba.druid.sql.dialect.postgresql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class PGInetExpr extends PGExprImpl {
 
     private SQLExpr value;
+
+    public PGInetExpr clone() {
+        PGInetExpr x = new PGInetExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
+    }
 
     public SQLExpr getValue() {
         return value;
@@ -36,6 +48,10 @@ public class PGInetExpr extends PGExprImpl {
             acceptChild(visitor, value);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(value);
     }
 
     @Override

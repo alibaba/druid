@@ -40,6 +40,7 @@ import java.util.Calendar;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.OracleUtils;
 
 /**
@@ -194,7 +195,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
                     currentFetchSize = defaultFetchSize;
                 }
             } catch (Exception e) {
-                this.conn.handleException(e);
+                this.conn.handleException(e, null);
             }
         }
 
@@ -235,6 +236,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
 
             return poolableResultSet;
         } catch (Throwable t) {
+            errorCheck(t);
+
             throw checkException(t);
         } finally {
             conn.afterExecute();
@@ -252,6 +255,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         try {
             return stmt.executeUpdate();
         } catch (Throwable t) {
+            errorCheck(t);
+
             throw checkException(t);
         } finally {
             conn.afterExecute();
@@ -492,6 +497,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         try {
             return stmt.execute();
         } catch (Throwable t) {
+            errorCheck(t);
+
             throw checkException(t);
         } finally {
             conn.afterExecute();
@@ -558,6 +565,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         try {
             return stmt.executeBatch();
         } catch (Throwable t) {
+            errorCheck(t);
+
             throw checkException(t);
         } finally {
             conn.afterExecute();
@@ -622,6 +631,10 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
         checkOpen();
+
+        if (!conn.holder.isUnderlyingAutoCommit()) {
+            conn.createTransactionInfo();
+        }
 
         try {
             return stmt.getMetaData();
@@ -688,6 +701,10 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     @Override
     public ParameterMetaData getParameterMetaData() throws SQLException {
         checkOpen();
+
+        if (!conn.holder.isUnderlyingAutoCommit()) {
+            conn.createTransactionInfo();
+        }
 
         try {
             return stmt.getParameterMetaData();

@@ -49,9 +49,9 @@ public class SQLServerInsertTest7 extends TestCase {
 
         SQLServerInsertStatement insertStmt = (SQLServerInsertStatement) stmt;
 
-        Assert.assertEquals(0, insertStmt.getValuesList().size());
-        Assert.assertEquals(10, insertStmt.getColumns().size());
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(0, insertStmt.getValuesList().size());
+        assertEquals(10, insertStmt.getColumns().size());
+        assertEquals(1, statementList.size());
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
@@ -59,8 +59,11 @@ public class SQLServerInsertTest7 extends TestCase {
         String formatSql = "INSERT INTO MMS_SETTLEMENT_COM\n" +
                 "\t(handler, handleTime, MID, MERCHANTNAME, TOTALAMT\n" +
                 "\t, ACTUALAMT, paymentMoney, STATUS, SERIAL_NUM, REMARKS)\n" +
-                "SELECT 'admin', getdate(), MID, MERCHANTNAME, SUM(CONVERT(DECIMAL(18, 2), isnull(TOTALAMT, 0))) AS TOTALAMT\n" +
-                "\t, SUM(CONVERT(DECIMAL(18, 2), isnull(ACTUALAMT, 0))) AS ACTUALAMT, SUM(CONVERT(DECIMAL(18, 2), isnull(paymentMoney, 0))) AS paymentMoney, 2, 126\n" +
+                "SELECT 'admin', getdate(), MID, MERCHANTNAME\n" +
+                "\t, SUM(CONVERT(DECIMAL(18, 2), isnull(TOTALAMT, 0))) AS TOTALAMT\n" +
+                "\t, SUM(CONVERT(DECIMAL(18, 2), isnull(ACTUALAMT, 0))) AS ACTUALAMT\n" +
+                "\t, SUM(CONVERT(DECIMAL(18, 2), isnull(paymentMoney, 0))) AS paymentMoney\n" +
+                "\t, 2, 126\n" +
                 "\t, (\n" +
                 "\t\tSELECT REMARKS + ''\n" +
                 "\t\tFROM MMS_SETTLEMENT_COM\n" +
@@ -70,7 +73,7 @@ public class SQLServerInsertTest7 extends TestCase {
                 "FROM MMS_SETTLEMENT_COM A\n" +
                 "WHERE ID IN (304, 305, 306, 297, 108, 184)\n" +
                 "GROUP BY MID, MERCHANTNAME";
-        Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
+        assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 
 

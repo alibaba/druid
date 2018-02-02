@@ -21,18 +21,25 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
+public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements OracleSQLObject {
 
     private List<SQLCommentHint>       hints;
 
     private ModelClause                modelClause;
 
-    private List<SQLExpr>              forUpdateOf;
+
     private boolean                    skipLocked  = false;
 
     public OracleSelectQueryBlock clone() {
@@ -66,7 +73,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
     }
 
     public OracleSelectQueryBlock(){
-
+        dbType = JdbcConstants.ORACLE;
     }
 
     public ModelClause getModelClause() {
@@ -92,21 +99,6 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
         return hints.size();
     }
 
-    public List<SQLExpr> getForUpdateOf() {
-        if (forUpdateOf == null) {
-            forUpdateOf = new ArrayList<SQLExpr>(1);
-        }
-        return forUpdateOf;
-    }
-
-    public int getForUpdateOfSize() {
-        if (forUpdateOf == null) {
-            return 0;
-        }
-
-        return forUpdateOf.size();
-    }
-
     public boolean isSkipLocked() {
         return skipLocked;
     }
@@ -125,7 +117,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
         super.accept0(visitor);
     }
 
-    protected void accept0(OracleASTVisitor visitor) {
+    public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.hints);
             acceptChild(visitor, this.selectList);
@@ -146,5 +138,26 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
     
     public String toString() {
         return SQLUtils.toOracleString(this);
+    }
+
+    public void limit(int rowCount, int offset) {
+        if (offset <= 0) {
+            SQLExpr rowCountExpr = new SQLIntegerExpr(rowCount);
+            SQLExpr newCondition = SQLUtils.buildCondition(SQLBinaryOperator.BooleanAnd, rowCountExpr, false,
+                    where);
+            setWhere(newCondition);
+        } else {
+            throw new UnsupportedOperationException("not support offset");
+        }
+    }
+
+    public void setFrom(String tableName) {
+        SQLExprTableSource from;
+        if (tableName == null || tableName.length() == 0) {
+            from = null;
+        } else {
+            from = new OracleSelectTableReference(new SQLIdentifierExpr(tableName));
+        }
+        this.setFrom(from);
     }
 }

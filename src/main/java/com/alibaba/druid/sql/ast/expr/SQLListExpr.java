@@ -16,10 +16,12 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLListExpr extends SQLExprImpl {
@@ -75,4 +77,17 @@ public class SQLListExpr extends SQLExprImpl {
         return true;
     }
 
+    public SQLListExpr clone() {
+        SQLListExpr x = new SQLListExpr();
+        for (SQLExpr item : items) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        return x;
+    }
+
+    public List getChildren() {
+        return this.items;
+    }
 }

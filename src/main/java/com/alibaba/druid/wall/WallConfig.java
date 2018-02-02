@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.wall;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import static com.alibaba.druid.util.Utils.getBoolean;
@@ -128,6 +128,9 @@ public class WallConfig implements WallConfigMBean {
     private int                 insertValuesCheckSize       = 3;
 
     private int                 selectLimit                 = -1;
+
+    protected Map<String, Set<String>> updateCheckColumns = new HashMap<String, Set<String>>();
+    protected WallUpdateCheckHandler   updateCheckHandler;
 
     public WallConfig(){
         this.configFromProperties(System.getProperties());
@@ -274,6 +277,7 @@ public class WallConfig implements WallConfigMBean {
     }
 
     public WallConfig(String dir){
+        this();
         this.dir = dir;
         this.init();
     }
@@ -852,5 +856,65 @@ public class WallConfig implements WallConfigMBean {
                 this.setSelectLimit(propertyValue);
             }
         }
+        {
+            String propertyValue = properties.getProperty("druid.wall.updateCheckColumns");
+            if (propertyValue != null) {
+                String[] items = propertyValue.split(",");
+                for (String item : items) {
+                    addUpdateCheckCoumns(item);
+                }
+            }
+        }
+        {
+            Boolean propertyValue = getBoolean(properties, "druid.wall.updateWhereNoneCheck");
+            if (propertyValue != null) {
+                this.setUpdateWhereNoneCheck(propertyValue);
+            }
+        }
+        {
+            Boolean propertyValue = getBoolean(properties, "druid.wall.deleteWhereNoneCheck");
+            if (propertyValue != null) {
+                this.setDeleteWhereNoneCheck(propertyValue);
+            }
+        }
+    }
+
+    public void addUpdateCheckCoumns(String columnInfo) {
+        String[] items = columnInfo.split("\\.");
+        if (items.length != 2) {
+            return;
+        }
+        String table = SQLUtils.normalize(items[0]).toLowerCase();
+        String column = SQLUtils.normalize(items[1]).toLowerCase();
+        Set<String> columns = this.updateCheckColumns.get(table);
+        if (columns == null) {
+            columns = new LinkedHashSet<String>();
+            updateCheckColumns.put(table, columns);
+        }
+        columns.add(column);
+    }
+
+    public boolean isUpdateCheckTable(String tableName) {
+        if (updateCheckColumns.isEmpty()) {
+            return false;
+        }
+        String tableNameLower = SQLUtils.normalize(tableName).toLowerCase();
+        return updateCheckColumns.containsKey(tableNameLower);
+    }
+
+    public Set<String> getUpdateCheckTable(String tableName) {
+        if (updateCheckColumns.isEmpty()) {
+            return null;
+        }
+        String tableNameLower = SQLUtils.normalize(tableName).toLowerCase();
+        return updateCheckColumns.get(tableNameLower);
+    }
+
+    public WallUpdateCheckHandler getUpdateCheckHandler() {
+        return updateCheckHandler;
+    }
+
+    public void setUpdateCheckHandler(WallUpdateCheckHandler updateCheckHandler) {
+        this.updateCheckHandler = updateCheckHandler;
     }
 }

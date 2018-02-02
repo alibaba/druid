@@ -58,13 +58,13 @@ public class OracleCreateTableTest9 extends OracleTest {
 
         Assert.assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR", "ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
-                                                                             "dmltype$$")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
-                                                                             "snapid")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
-                                                                             "change_vector$$")));
+        Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR", "ID"));
+        Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
+                                                                             "dmltype$$"));
+        Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
+                                                                             "snapid"));
+        Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
+                                                                             "change_vector$$"));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

@@ -30,15 +30,16 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class PGSelectParser extends SQLSelectParser {
 
     public PGSelectParser(SQLExprParser exprParser){
         super(exprParser);
+    }
+
+    public PGSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+        super(exprParser, selectListCache);
     }
 
     public PGSelectParser(String sql){
@@ -197,7 +198,7 @@ public class PGSelectParser extends SQLSelectParser {
             } else if (lexer.token() == Token.NEXT) {
                 fetch.setOption(PGSelectQueryBlock.FetchClause.Option.NEXT);
             } else {
-                throw new ParserException("expect 'FIRST' or 'NEXT'");
+                throw new ParserException("expect 'FIRST' or 'NEXT'. " + lexer.info());
             }
 
             SQLExpr count = expr();
@@ -206,13 +207,13 @@ public class PGSelectParser extends SQLSelectParser {
             if (lexer.token() == Token.ROW || lexer.token() == Token.ROWS) {
                 lexer.nextToken();
             } else {
-                throw new ParserException("expect 'ROW' or 'ROWS'");
+                throw new ParserException("expect 'ROW' or 'ROWS'. " + lexer.info());
             }
 
             if (lexer.token() == Token.ONLY) {
                 lexer.nextToken();
             } else {
-                throw new ParserException("expect 'ONLY'");
+                throw new ParserException("expect 'ONLY'. " + lexer.info());
             }
 
             queryBlock.setFetch(fetch);
@@ -230,7 +231,7 @@ public class PGSelectParser extends SQLSelectParser {
                 forClause.setOption(PGSelectQueryBlock.ForClause.Option.SHARE);
                 lexer.nextToken();
             } else {
-                throw new ParserException("expect 'FIRST' or 'NEXT'");
+                throw new ParserException("expect 'FIRST' or 'NEXT'. " + lexer.info());
             }
 
             if (lexer.token() == Token.OF) {

@@ -16,15 +16,15 @@
 package com.alibaba.druid.sql.dialect.db2.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.DB2Object;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Object {
-
-
-
     private Isolation isolation;
 
     private boolean   forReadOnly;
@@ -53,6 +53,10 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
         visitor.endVisit(this);
     }
 
+    public DB2SelectQueryBlock() {
+        dbType = JdbcConstants.DB2;
+    }
+
     public Isolation getIsolation() {
         return isolation;
     }
@@ -79,5 +83,18 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
 
     public static enum Isolation {
         RR, RS, CS, UR
+    }
+
+    public void limit(int rowCount, int offset) {
+        if (offset <= 0) {
+            setFirst(new SQLIntegerExpr(rowCount));
+        } else {
+            throw new UnsupportedOperationException("not support offset");
+        }
+    }
+
+    public void output(StringBuffer buf) {
+        DB2OutputVisitor visitor = new DB2OutputVisitor(buf);
+        this.accept(visitor);
     }
 }

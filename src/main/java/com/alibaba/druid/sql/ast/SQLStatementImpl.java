@@ -18,11 +18,12 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.List;
+
 public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLStatement {
-
-    private String dbType;
-
-    private boolean afterSemi;
+    protected String               dbType;
+    protected boolean              afterSemi;
+    protected List<SQLCommentHint> headHints;
 
     public SQLStatementImpl(){
 
@@ -49,11 +50,27 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
         throw new UnsupportedOperationException(this.getClass().getName());
     }
 
+    public List<SQLObject> getChildren() {
+        throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
     public boolean isAfterSemi() {
         return afterSemi;
     }
 
     public void setAfterSemi(boolean afterSemi) {
         this.afterSemi = afterSemi;
+    }
+
+    public SQLStatement clone() {
+        throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
+    public List<SQLCommentHint> getHeadHintsDirect() {
+        return headHints;
+    }
+
+    public void setHeadHints(List<SQLCommentHint> headHints) {
+        this.headHints = headHints;
     }
 }

@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
@@ -98,16 +97,6 @@ public class SQLServerASTVisitorAdapter extends SQLASTVisitorAdapter implements 
 
     @Override
     public void endVisit(SQLServerSetTransactionIsolationLevelStatement x) {
-        
-    }
-
-    @Override
-    public boolean visit(SQLServerSetStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerSetStatement x) {
         
     }
 

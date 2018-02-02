@@ -27,4 +27,10 @@ public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey {
         }
         visitor.endVisit(this);
     }
+
+    public SQLPrimaryKeyImpl clone() {
+        SQLPrimaryKeyImpl x = new SQLPrimaryKeyImpl();
+        cloneTo(x);
+        return x;
+    }
 }

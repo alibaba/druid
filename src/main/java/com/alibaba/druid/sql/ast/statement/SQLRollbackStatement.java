@@ -17,8 +17,12 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLRollbackStatement extends SQLStatementImpl {
 
@@ -45,6 +49,18 @@ public class SQLRollbackStatement extends SQLStatementImpl {
             acceptChild(visitor, force);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (to != null) {
+            children.add(to);
+        }
+        if (force != null) {
+            children.add(force);
+        }
+        return children;
     }
 
     public SQLName getTo() {

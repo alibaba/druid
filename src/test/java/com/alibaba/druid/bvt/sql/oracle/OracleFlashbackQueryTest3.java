@@ -32,17 +32,18 @@ public class OracleFlashbackQueryTest3 extends TestCase {
 
         String expect = "SELECT DECODE(GROUPING(department_name), 1, 'All Departments', department_name) AS department\n" +
                 "\t, DECODE(GROUPING(job_id), 1, 'All Jobs', job_id) AS job\n" +
-                "\t, COUNT(*) AS \"Total Empl\", AVG(salary) * 12 AS \"Average Sal\"\n" +
+                "\t, COUNT(*) AS \"Total Empl\"\n" +
+                "\t, AVG(salary) * 12 AS \"Average Sal\"\n" +
                 "FROM employees e, departments d\n" +
                 "WHERE d.department_id = e.department_id\n" +
-                "GROUP BY ROLLUP(department_name, job_id);";
+                "GROUP BY ROLLUP (department_name, job_id);";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expect, text);
+        assertEquals(expect, text);
 
         System.out.println(text);
     }

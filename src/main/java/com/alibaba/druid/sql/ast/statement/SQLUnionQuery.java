@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
@@ -29,7 +31,8 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
     private SQLUnionOperator operator = SQLUnionOperator.UNION;
     private SQLOrderBy       orderBy;
 
-    private SQLLimit limit;
+    private SQLLimit         limit;
+    private String           dbType;
 
     public SQLUnionOperator getOperator() {
         return operator;
@@ -41,6 +44,12 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
 
     public SQLUnionQuery(){
 
+    }
+
+    public SQLUnionQuery(SQLSelectQuery left, SQLUnionOperator operator, SQLSelectQuery right){
+        this.setLeft(left);
+        this.operator = operator;
+        this.setRight(right);
     }
 
     public SQLSelectQuery getLeft() {
@@ -105,5 +114,55 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
 
     public void setBracket(boolean bracket) {
         this.bracket = bracket;
+    }
+
+    public SQLUnionQuery clone() {
+        SQLUnionQuery x = new SQLUnionQuery();
+
+        x.bracket = bracket;
+        if (left != null) {
+            x.setLeft(left.clone());
+        }
+        if (right != null) {
+            x.setRight(right.clone());
+        }
+        x.operator = operator;
+
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
+
+        x.dbType = dbType;
+
+        return x;
+    }
+
+    public SQLSelectQueryBlock getFirstQueryBlock() {
+        if (left instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) left;
+        }
+
+        if (left instanceof SQLUnionQuery) {
+            return ((SQLUnionQuery) left).getFirstQueryBlock();
+        }
+
+        return null;
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
+
+    public void output(StringBuffer buf) {
+        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(buf, dbType);
+        this.accept(visitor);
     }
 }

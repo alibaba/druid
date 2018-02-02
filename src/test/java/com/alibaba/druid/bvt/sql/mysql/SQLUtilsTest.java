@@ -18,11 +18,20 @@ public class SQLUtilsTest extends TestCase {
                             "\nFROM t" + //
                             "\nWHERE id = 'abc'", formattedSql);
     }
+
+    public void test_format_0() throws Exception {
+        String sql = "select \"%\"'温'\"%\" FROM dual;";
+        String formattedSql = SQLUtils.formatMySql(sql);
+        Assert.assertEquals("SELECT '%温%'\n" +
+                "FROM dual;", formattedSql);
+    }
     
     public void test_format_1() throws Exception {
         String sql = "select * from t where tname LIKE \"%\"'温'\"%\"";
         String formattedSql = SQLUtils.formatMySql(sql);
-        Assert.assertEquals("SELECT *\nFROM t\nWHERE tname LIKE CONCAT('%', '温', '%')", formattedSql);
+        Assert.assertEquals("SELECT *\n" +
+                "FROM t\n" +
+                "WHERE tname LIKE '%温%'", formattedSql);
     }
     
     public void test_format_2() throws Exception {

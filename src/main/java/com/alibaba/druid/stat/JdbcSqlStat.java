@@ -592,7 +592,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlSt
     
     public long getSqlHash() {
         if (sqlHash == 0) {
-            sqlHash = Utils.murmurhash2_64(sql);
+            sqlHash = Utils.fnv_64(sql);
         }
         return sqlHash;
     }

@@ -44,7 +44,7 @@ public class SQLServerAlterTableTest_7 extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("ALTER TABLE dbo.doc_exa"//
-                            + "\n\tADD (column_b VARCHAR(20) NULL);", output);
+                            + "\n\tADD column_b VARCHAR(20) NULL;", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());

@@ -113,7 +113,7 @@ public class Demo3 extends TestCase {
                     String ident = identExpr.getName();
 
                     if (ident.equals("user")) {
-                        identExpr.setName(tableName);
+                        tableSource.setExpr(new SQLIdentifierExpr(tableName));
                     }
                 } else if (expr instanceof SQLPropertyExpr) {
                     SQLPropertyExpr proExpr = (SQLPropertyExpr) expr;

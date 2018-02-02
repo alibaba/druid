@@ -16,10 +16,12 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -30,6 +32,20 @@ public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
     private SQLExpr        against;
 
     private SearchModifier searchModifier;
+
+    public MySqlMatchAgainstExpr clone() {
+        MySqlMatchAgainstExpr x = new MySqlMatchAgainstExpr();
+        for (SQLExpr column : columns) {
+            SQLExpr column2 = column.clone();
+            column2.setParent(x);
+            x.columns.add(column2);
+        }
+        if (against != null) {
+            x.setAgainst(against.clone());
+        }
+        x.searchModifier = searchModifier;
+        return x;
+    }
 
     public List<SQLExpr> getColumns() {
         return columns;
@@ -44,6 +60,9 @@ public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
     }
 
     public void setAgainst(SQLExpr against) {
+        if (against != null) {
+            against.setParent(this);
+        }
         this.against = against;
     }
 
@@ -82,6 +101,14 @@ public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
             acceptChild(visitor, this.against);
         }
         mysqlVisitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.addAll(this.columns);
+        children.add(this.against);
+        return children;
     }
 
     @Override

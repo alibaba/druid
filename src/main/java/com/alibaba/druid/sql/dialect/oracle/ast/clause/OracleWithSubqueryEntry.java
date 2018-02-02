@@ -30,6 +30,9 @@ public class OracleWithSubqueryEntry extends Entry implements OracleSQLObject {
     }
 
     public void setCycleClause(CycleClause cycleClause) {
+        if (cycleClause != null) {
+            cycleClause.setParent(this);
+        }
         this.cycleClause = cycleClause;
     }
 
@@ -38,13 +41,15 @@ public class OracleWithSubqueryEntry extends Entry implements OracleSQLObject {
     }
 
     public void setSearchClause(SearchClause searchClause) {
+        if (searchClause != null) {
+            searchClause.setParent(this);
+        }
         this.searchClause = searchClause;
     }
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, name);
             acceptChild(visitor, columns);
             acceptChild(visitor, subQuery);
             acceptChild(visitor, searchClause);
@@ -58,4 +63,21 @@ public class OracleWithSubqueryEntry extends Entry implements OracleSQLObject {
         this.accept0((OracleASTVisitor) visitor);
     }
 
+    public void cloneTo(OracleWithSubqueryEntry x) {
+        super.cloneTo(x);
+
+        if (searchClause != null) {
+            setSearchClause(searchClause.clone());
+        }
+
+        if (cycleClause != null) {
+            setCycleClause(cycleClause.clone());
+        }
+    }
+
+    public OracleWithSubqueryEntry clone() {
+        OracleWithSubqueryEntry x = new OracleWithSubqueryEntry();
+        cloneTo(x);
+        return x;
+    }
 }

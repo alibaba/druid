@@ -19,16 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class SQLPartitionBy extends SQLObjectImpl {
-
     protected SQLSubPartitionBy  subPartitionBy;
-
     protected SQLExpr            partitionsCount;
-
     protected boolean            linear;
-
     protected List<SQLPartition> partitions = new ArrayList<SQLPartition>();
-
     protected List<SQLName>      storeIn    = new ArrayList<SQLName>();
+    protected List<SQLExpr>      columns    = new ArrayList<SQLExpr>();
 
     public List<SQLPartition> getPartitions() {
         return partitions;
@@ -74,4 +70,37 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
     public List<SQLName> getStoreIn() {
         return storeIn;
     }
+
+    public List<SQLExpr> getColumns() {
+        return columns;
+    }
+
+    public void addColumn(SQLExpr column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
+    }
+
+    public void cloneTo(SQLPartitionBy x) {
+        if (subPartitionBy != null) {
+            x.setSubPartitionBy(subPartitionBy.clone());
+        }
+        if (partitionsCount != null) {
+            x.setPartitionsCount(partitionsCount.clone());
+        }
+        x.linear = linear;
+        for (SQLPartition p : partitions) {
+            SQLPartition p2 = p.clone();
+            p2.setParent(x);
+            x.partitions.add(p2);
+        }
+        for (SQLName name : storeIn) {
+            SQLName name2 = name.clone();
+            name2.setParent(x);
+            x.storeIn.add(name2);
+        }
+    }
+
+    public abstract SQLPartitionBy clone();
 }

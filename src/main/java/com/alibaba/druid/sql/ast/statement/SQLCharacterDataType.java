@@ -15,8 +15,11 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.List;
@@ -36,6 +39,10 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
 
     public SQLCharacterDataType(String name){
         super(name);
+    }
+
+    public SQLCharacterDataType(String name, int precision){
+        super(name, precision);
     }
 
     public String getCharSetName() {
@@ -78,6 +85,17 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
         this.hints = hints;
     }
 
+    public int getLength() {
+        if (this.arguments.size() == 1) {
+            SQLExpr arg = this.arguments.get(0);
+            if (arg instanceof SQLIntegerExpr) {
+                return ((SQLIntegerExpr) arg).getNumber().intValue();
+            }
+        }
+
+        return -1;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -85,5 +103,24 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
         }
 
         visitor.endVisit(this);
+    }
+
+
+    public SQLCharacterDataType clone() {
+        SQLCharacterDataType x = new SQLCharacterDataType(getName());
+
+        super.cloneTo(x);
+
+        x.charSetName = charSetName;
+        x.collate = collate;
+        x.charType = charType;
+        x.hasBinary = hasBinary;
+
+        return x;
+    }
+
+    @Override
+    public String toString() {
+        return SQLUtils.toSQLString(this);
     }
 }

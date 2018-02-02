@@ -60,4 +60,18 @@ public class SQLErrorLoggingClause extends SQLObjectImpl {
         this.limit = limit;
     }
 
+    public SQLErrorLoggingClause clone() {
+        SQLErrorLoggingClause x = new SQLErrorLoggingClause();
+        if (into != null) {
+            x.setInto(into.clone());
+        }
+        if (simpleExpression != null) {
+            x.setSimpleExpression(simpleExpression.clone());
+        }
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
+        return x;
+    }
+
 }

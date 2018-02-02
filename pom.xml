@@ -1,16 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-<!--
-        <parent>
-                <groupId>com.alibaba</groupId>
-                <artifactId>parent-pom</artifactId>
-                <version>1.0.0</version>
-        </parent>
- -->
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.1.7-preview_9</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -21,6 +14,7 @@
 	<properties>
 		<spring.version>4.2.5.RELEASE</spring.version>
 		<junit.version>4.12</junit.version>
+		<jmh.version>1.19</jmh.version>
 
 		<gpg.skip>true</gpg.skip>
 		<javadoc.skip>true</javadoc.skip>
@@ -286,6 +280,7 @@
 					<version>1.6.0</version>
 					<scope>system</scope>
 					<systemPath>${java.home}/../Classes/jconsole.jar</systemPath>
+					<optional>true</optional>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -305,6 +300,7 @@
 					<version>1.8.0</version>
 					<scope>system</scope>
 					<systemPath>${java.home}/../lib/jconsole.jar</systemPath>
+					<optional>true</optional>
 				</dependency>
 
 				<dependency>
@@ -313,6 +309,7 @@
 					<version>1.8.0</version>
 					<scope>system</scope>
 					<systemPath>${java.home}/../lib/tools.jar</systemPath>
+					<optional>true</optional>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -463,11 +460,10 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.39</version>
+			<version>5.1.45</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -477,9 +473,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>postgresql</groupId>
+			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.1-901-1.jdbc4</version>
+			<version>42.1.4</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -545,6 +541,25 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.calcite</groupId>
+			<artifactId>calcite-core</artifactId>
+			<version>1.14.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>22.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>2.5.3</version>
+			<scope>provided</scope>
+		</dependency>
+
 
 		<!--
 			test dependences
@@ -667,11 +682,53 @@
 			<version>4.1.1</version>
 			<scope>test</scope>
 		</dependency>
+
+
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>19.0</version>
+			<groupId>org.apache.calcite</groupId>
+			<artifactId>calcite-druid</artifactId>
+			<version>1.13.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.calcite</groupId>
+			<artifactId>calcite-example-csv</artifactId>
+			<version>1.13.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-dbutils</groupId>
+			<artifactId>commons-dbutils</artifactId>
+			<version>1.6</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.36</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4</artifactId>
+			<version>4.7</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-core</artifactId>
+			<version>${jmh.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-generator-annprocess</artifactId>
+			<version>${jmh.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 </project>

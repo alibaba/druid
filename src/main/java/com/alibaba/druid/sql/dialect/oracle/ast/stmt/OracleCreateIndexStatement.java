@@ -15,20 +15,23 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleCreateIndexStatement extends SQLCreateIndexStatement implements OracleDDLStatement, OracleSegmentAttributes {
+import java.util.ArrayList;
+import java.util.List;
+
+public class OracleCreateIndexStatement extends SQLCreateIndexStatement implements OracleDDLStatement, OracleSegmentAttributes, SQLCreateStatement {
 
     private boolean online            = false;
 
     private boolean indexOnlyTopLevel = false;
+    private boolean cluster           = false;
 
     private boolean noParallel;
 
@@ -47,6 +50,7 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     private Integer pctthreshold;
 
     private Boolean logging;
+    private Boolean sort;
 
     protected SQLName tablespace;
     protected SQLObject storage;
@@ -82,6 +86,21 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     public void setIndexOnlyTopLevel(boolean indexOnlyTopLevel) {
         this.indexOnlyTopLevel = indexOnlyTopLevel;
     }
+
+    public Boolean getSort() {
+        return sort;
+    }
+
+    public void setSort(Boolean sort) {
+        this.sort = sort;
+    }
+
+    private boolean local;
+    private List<SQLName> localStoreIn = new ArrayList<SQLName>();
+    private List<SQLPartition> localPartitions = new ArrayList<SQLPartition>();
+
+    private boolean global;
+    private List<SQLPartitionBy> globalPartitions = new ArrayList<SQLPartitionBy>();
 
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);
@@ -122,6 +141,14 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
 
     public void setOnline(boolean online) {
         this.online = online;
+    }
+
+    public boolean isCluster() {
+        return cluster;
+    }
+
+    public void setCluster(boolean cluster) {
+        this.cluster = cluster;
     }
 
     //////////////
@@ -233,4 +260,31 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
         this.compressForOltp = compressForOltp;
     }
 
+    public List<SQLPartition> getLocalPartitions() {
+        return localPartitions;
+    }
+
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
+    }
+
+    public List<SQLName> getLocalStoreIn() {
+        return localStoreIn;
+    }
+
+    public List<SQLPartitionBy> getGlobalPartitions() {
+        return globalPartitions;
+    }
+
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        this.global = global;
+    }
 }

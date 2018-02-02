@@ -146,4 +146,28 @@ public abstract class OracleSegmentAttributesImpl extends SQLObjectImpl implemen
     public void setCompressForOltp(boolean compressForOltp) {
         this.compressForOltp = compressForOltp;
     }
+
+    public void cloneTo(OracleSegmentAttributesImpl x) {
+        x.pctfree = pctfree;
+        x.pctused = pctused;
+        x.initrans = initrans;
+
+        x.maxtrans = maxtrans;
+        x.pctincrease = pctincrease;
+        x.freeLists = freeLists;
+        x.compress = compress;
+        x.compressLevel = compressLevel;
+        x.compressForOltp = compressForOltp;
+        x.pctthreshold = pctthreshold;
+
+        x.logging = logging;
+
+        if (tablespace != null) {
+            x.setTablespace(tablespace.clone());
+        }
+
+        if (storage != null) {
+            x.setStorage(storage.clone());
+        }
+    }
 }

@@ -18,8 +18,12 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTableItem {
@@ -35,6 +39,8 @@ public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTabl
     private String                           using;
     
     private boolean                          key = false;
+
+    protected SQLExpr                        comment;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -94,5 +100,40 @@ public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTabl
 
     public void setKey(boolean key) {
         this.key = key;
+    }
+
+    public void cloneTo(MySqlTableIndex x) {
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        for (SQLSelectOrderByItem item : items) {
+            SQLSelectOrderByItem item2 = item.clone();
+            item2.setParent(x);
+            x.getColumns().add(item);
+        }
+        x.setIndexType(type);
+    }
+
+    public void cloneTo(MySqlKey x) {
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        for (SQLSelectOrderByItem item : items) {
+            SQLSelectOrderByItem item2 = item.clone();
+            item2.setParent(x);
+            x.getColumns().add(item);
+        }
+        x.setIndexType(type);
+    }
+
+    public SQLExpr getComment() {
+        return comment;
+    }
+
+    public void setComment(SQLExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
+        this.comment = comment;
     }
 }

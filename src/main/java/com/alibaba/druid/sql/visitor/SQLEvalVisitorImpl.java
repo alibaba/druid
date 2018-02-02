@@ -148,7 +148,7 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
     
     @Override
     public boolean visit(SQLBooleanExpr x) {
-        x.getAttributes().put(EVAL_VALUE, x.getValue());
+        x.getAttributes().put(EVAL_VALUE, x.getBooleanValue());
         return false;
     }
 

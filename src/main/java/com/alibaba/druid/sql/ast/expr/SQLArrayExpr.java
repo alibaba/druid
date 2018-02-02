@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLArrayExpr extends SQLExprImpl {
@@ -27,6 +28,19 @@ public class SQLArrayExpr extends SQLExprImpl {
     private SQLExpr       expr;
 
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
+
+    public SQLArrayExpr clone() {
+        SQLArrayExpr x = new SQLArrayExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        for (SQLExpr value : values) {
+            SQLExpr value2 = value.clone();
+            value2.setParent(x);
+            x.values.add(value2);
+        }
+        return x;
+    }
 
     public SQLExpr getExpr() {
         return expr;
@@ -51,6 +65,13 @@ public class SQLArrayExpr extends SQLExprImpl {
             acceptChild(visitor, values);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.add(this.expr);
+        children.addAll(this.values);
+        return children;
     }
 
     @Override

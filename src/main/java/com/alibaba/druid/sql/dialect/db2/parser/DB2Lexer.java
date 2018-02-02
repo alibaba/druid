@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
 
@@ -50,5 +51,13 @@ public class DB2Lexer extends Lexer {
     public DB2Lexer(String input){
         super(input);
         super.keywods = DEFAULT_DB2_KEYWORDS;
+    }
+
+    public DB2Lexer(String input, SQLParserFeature... features){
+        super(input);
+        super.keywods = DEFAULT_DB2_KEYWORDS;
+        for (SQLParserFeature feature : features) {
+            config(feature, true);
+        }
     }
 }

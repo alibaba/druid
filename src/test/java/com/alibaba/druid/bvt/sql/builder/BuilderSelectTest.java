@@ -22,11 +22,11 @@ public class BuilderSelectTest extends TestCase {
 
         String sql = builder.toString();
         System.out.println(sql);
-        Assert.assertEquals("SELECT f1, f2, f3 AS F3, COUNT(*) AS cnt" //
-                            + "\nFROM mytable"//
-                            + "\nWHERE f1 > 0"//
-                            + "\nGROUP BY f1"//
-                            + "\nHAVING COUNT(*) > 1"//
-                            + "\nORDER BY f1, f2 DESC", sql);
+        Assert.assertEquals("SELECT f1, f2, f3 AS F3, COUNT(*) AS cnt\n" +
+                "FROM mytable\n" +
+                "WHERE f1 > 0\n" +
+                "GROUP BY f1\n" +
+                "HAVING COUNT(*) > 1\n" +
+                "ORDER BY f1, f2 DESC", sql);
     }
 }

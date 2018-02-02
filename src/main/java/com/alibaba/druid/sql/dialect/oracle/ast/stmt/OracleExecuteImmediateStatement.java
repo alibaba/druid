@@ -48,6 +48,34 @@ public class OracleExecuteImmediateStatement extends OracleStatementImpl {
         visitor.endVisit(this);
     }
 
+    public OracleExecuteImmediateStatement clone() {
+        OracleExecuteImmediateStatement x = new OracleExecuteImmediateStatement();
+
+        if (dynamicSql != null) {
+            x.setDynamicSql(dynamicSql.clone());
+        }
+
+        for (SQLArgument arg : arguments) {
+            SQLArgument a2 = arg.clone();
+            a2.setParent(x);
+            x.arguments.add(a2);
+        }
+
+        for (SQLExpr e : into) {
+            SQLExpr e2 = e.clone();
+            e2.setParent(x);
+            x.into.add(e2);
+        }
+
+        for (SQLExpr e : returnInto) {
+            SQLExpr e2 = e.clone();
+            e2.setParent(x);
+            x.returnInto.add(e2);
+        }
+
+        return x;
+    }
+
     public SQLExpr getDynamicSql() {
         return dynamicSql;
     }

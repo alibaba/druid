@@ -21,11 +21,12 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-public class MockExecuteTest extends TestCase {
+public class MockExecuteTest extends PoolTestCase {
 
     public void test_0() throws Exception {
         Connection conn = DriverManager.getConnection("jdbc:mock:");

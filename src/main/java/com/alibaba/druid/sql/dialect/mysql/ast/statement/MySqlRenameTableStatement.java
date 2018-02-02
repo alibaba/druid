@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
@@ -46,22 +47,22 @@ public class MySqlRenameTableStatement extends MySqlStatementImpl {
 
     public static class Item extends MySqlObjectImpl {
 
-        private SQLExpr name;
-        private SQLExpr to;
+        private SQLName name;
+        private SQLName to;
 
-        public SQLExpr getName() {
+        public SQLName getName() {
             return name;
         }
 
-        public void setName(SQLExpr name) {
+        public void setName(SQLName name) {
             this.name = name;
         }
 
-        public SQLExpr getTo() {
+        public SQLName getTo() {
             return to;
         }
 
-        public void setTo(SQLExpr to) {
+        public void setTo(SQLName to) {
             this.to = to;
         }
 

@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.SQLLimit;
@@ -24,16 +25,18 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlStatement {
-
-    private SQLOrderBy          orderBy;
     private SQLLimit limit;
 
-    private boolean             lowPriority     = false;
-    private boolean             ignore          = false;
-    private boolean             commitOnSuccess = false;
-    private boolean             rollBackOnFail  = false;
-    private boolean             queryOnPk       = false;
+    private boolean             lowPriority        = false;
+    private boolean             ignore             = false;
+    private boolean             commitOnSuccess    = false;
+    private boolean             rollBackOnFail     = false;
+    private boolean             queryOnPk          = false;
     private SQLExpr             targetAffectRow;
+
+    // for petadata
+    private boolean             forceAllPartitions = false;
+    private SQLName             forcePartition;
 
     public MySqlUpdateStatement(){
         super(JdbcConstants.MYSQL);
@@ -121,12 +124,22 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
         this.targetAffectRow = targetAffectRow;
     }
 
-    public SQLOrderBy getOrderBy() {
-        return orderBy;
+    public boolean isForceAllPartitions() {
+        return forceAllPartitions;
     }
 
-    public void setOrderBy(SQLOrderBy orderBy) {
-        this.orderBy = orderBy;
+    public void setForceAllPartitions(boolean forceAllPartitions) {
+        this.forceAllPartitions = forceAllPartitions;
     }
 
+    public SQLName getForcePartition() {
+        return forcePartition;
+    }
+
+    public void setForcePartition(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.forcePartition = x;
+    }
 }

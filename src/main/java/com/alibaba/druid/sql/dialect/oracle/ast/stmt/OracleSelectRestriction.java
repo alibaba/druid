@@ -47,6 +47,14 @@ public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
 
             visitor.endVisit(this);
         }
+
+        public CheckOption clone() {
+            CheckOption x = new CheckOption();
+            if (constraint != null) {
+                x.setConstraint(constraint.clone());
+            }
+            return x;
+        }
     }
 
     public static class ReadOnly extends OracleSelectRestriction {
@@ -60,5 +68,12 @@ public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
 
             visitor.endVisit(this);
         }
+
+        public ReadOnly clone() {
+            ReadOnly x = new ReadOnly();
+            return x;
+        }
     }
+
+
 }

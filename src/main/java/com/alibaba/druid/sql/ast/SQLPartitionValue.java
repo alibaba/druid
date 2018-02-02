@@ -58,4 +58,16 @@ public class SQLPartitionValue extends SQLObjectImpl {
         }
         visitor.endVisit(this);
     }
+
+    public SQLPartitionValue clone() {
+        SQLPartitionValue x = new SQLPartitionValue(operator);
+
+        for (SQLExpr item : items) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+
+        return x;
+    }
 }

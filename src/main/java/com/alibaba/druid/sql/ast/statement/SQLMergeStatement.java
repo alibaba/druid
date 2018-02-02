@@ -50,11 +50,7 @@ public class SQLMergeStatement extends SQLStatementImpl {
     }
 
     public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
+        return into.getAlias();
     }
 
     public SQLTableSource getInto() {
@@ -171,8 +167,8 @@ public class SQLMergeStatement extends SQLStatementImpl {
         public void accept0(SQLASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, columns);
-                acceptChild(visitor, columns);
-                acceptChild(visitor, columns);
+                acceptChild(visitor, values);
+                acceptChild(visitor, where);
             }
             visitor.endVisit(this);
         }

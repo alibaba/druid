@@ -1,0 +1,1 @@
+SELECT  TO_CHAR("date", 'YYYY-MM') || '-01' as "month" FROM employes

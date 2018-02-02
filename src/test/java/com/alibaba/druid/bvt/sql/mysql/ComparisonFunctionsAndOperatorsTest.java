@@ -59,7 +59,8 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 <=> 1, NULL <=> NULL, 1 <=> NULL;", text);
+        Assert.assertEquals("SELECT 1 <=> 1, NULL <=> NULL\n" +
+                "\t, 1 <=> NULL;", text);
     }
 
     public void test_3() throws Exception {
@@ -70,7 +71,8 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 = 1, NULL = NULL, 1 = NULL;", text);
+        Assert.assertEquals("SELECT 1 = 1, NULL = NULL\n" +
+                "\t, 1 = NULL;", text);
     }
 
     public void test_4() throws Exception {
@@ -136,7 +138,8 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        assertEquals("SELECT 1 IS true, 0 IS false, NULL IS UNKNOWN", text);
+        assertEquals("SELECT 1 IS true, 0 IS false\n" +
+                "\t, NULL IS UNKNOWN", text);
     }
 
     public void test_10() throws Exception {
@@ -147,7 +150,8 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 IS NOT UNKNOWN, 0 IS NOT UNKNOWN, NULL IS NOT UNKNOWN", text);
+        Assert.assertEquals("SELECT 1 IS NOT UNKNOWN, 0 IS NOT UNKNOWN\n" +
+                "\t, NULL IS NOT UNKNOWN", text);
     }
 
     public void test_11() throws Exception {
@@ -158,7 +162,8 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 IS NULL, 0 IS NULL, NULL IS NULL", text);
+        Assert.assertEquals("SELECT 1 IS NULL, 0 IS NULL\n" +
+                "\t, NULL IS NULL", text);
     }
 
     public void test_12() throws Exception {

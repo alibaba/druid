@@ -83,4 +83,22 @@ public class OracleUnique extends SQLUnique implements OracleConstraint, OracleS
         this.initially = initially;
     }
 
+    public void cloneTo(OracleUnique x) {
+        super.cloneTo(x);
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (exceptionsInto != null) {
+            x.setExceptionsInto(exceptionsInto.clone());
+        }
+        x.initially = initially;
+        x.deferrable = deferrable;
+    }
+
+    public OracleUnique clone() {
+        OracleUnique x = new OracleUnique();
+        cloneTo(x);
+        return x;
+    }
+
 }

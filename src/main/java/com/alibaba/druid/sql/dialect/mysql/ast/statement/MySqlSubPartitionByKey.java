@@ -27,6 +27,15 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class MySqlSubPartitionByKey extends SQLSubPartitionBy implements MySqlObject {
 
     private List<SQLName> columns = new ArrayList<SQLName>();
+    private short algorithm = 2;
+
+    public short getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(short algorithm) {
+        this.algorithm = algorithm;
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -57,4 +66,19 @@ public class MySqlSubPartitionByKey extends SQLSubPartitionBy implements MySqlOb
         this.columns.add(column);
     }
 
+    public void cloneTo(MySqlSubPartitionByKey x) {
+        super.cloneTo(x);
+        for (SQLName column : columns) {
+            SQLName c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
+	x.setAlgorithm(algorithm);
+    }
+
+    public MySqlSubPartitionByKey clone() {
+        MySqlSubPartitionByKey x = new MySqlSubPartitionByKey();
+        cloneTo(x);
+        return x;
+    }
 }

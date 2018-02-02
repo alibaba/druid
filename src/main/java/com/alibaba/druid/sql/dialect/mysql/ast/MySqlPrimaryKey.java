@@ -17,11 +17,12 @@ package com.alibaba.druid.sql.dialect.mysql.ast;
 
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlPrimaryKey extends MySqlKey implements SQLPrimaryKey {
 
     public MySqlPrimaryKey(){
-
+        dbType = JdbcConstants.MYSQL;
     }
 
     protected void accept0(MySqlASTVisitor visitor) {
@@ -30,5 +31,11 @@ public class MySqlPrimaryKey extends MySqlKey implements SQLPrimaryKey {
             acceptChild(visitor, this.getColumns());
         }
         visitor.endVisit(this);
+    }
+
+    public MySqlPrimaryKey clone() {
+        MySqlPrimaryKey x = new MySqlPrimaryKey();
+        cloneTo(x);
+        return x;
     }
 }

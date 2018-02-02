@@ -59,9 +59,9 @@ public class MySqlCreateTableTest11 extends MysqlTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tmall_campaign")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("tmall_campaign", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("tmall_campaign", "campaign_name")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("tmall_campaign", "create_date")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("tmall_campaign", "delete_flag")));
+        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "id"));
+        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "campaign_name"));
+        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "create_date"));
+        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "delete_flag"));
     }
 }

@@ -17,23 +17,30 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
+import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.Utils;
 
 public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    private SQLExpr           left;
-    private SQLExpr           right;
-    private SQLBinaryOperator operator;
-    private String            dbType;
+    private static final long   serialVersionUID = 1L;
+    protected SQLExpr           left;
+    protected SQLExpr           right;
+    protected SQLBinaryOperator operator;
+    protected String            dbType;
+
+    private boolean             bracket  = false;
+
+    // only for parameterized output
+    protected transient List<SQLObject> mergedList;
 
     public SQLBinaryOpExpr(){
 
@@ -48,9 +55,26 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
     }
     
     public SQLBinaryOpExpr(SQLExpr left, SQLBinaryOperator operator, SQLExpr right, String dbType){
-        setLeft(left);
+        if (left != null) {
+            left.setParent(this);
+        }
+        this.left = left;
+
         setRight(right);
         this.operator = operator;
+
+        if (dbType == null) {
+            if (left instanceof SQLBinaryOpExpr) {
+                dbType = ((SQLBinaryOpExpr) left).dbType;
+            }
+        }
+
+        if (dbType == null) {
+            if (right instanceof SQLBinaryOpExpr) {
+                dbType = ((SQLBinaryOpExpr) right).dbType;
+            }
+        }
+
         this.dbType = dbType;
     }
 
@@ -99,6 +123,14 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         this.operator = operator;
     }
 
+    public boolean isBracket() {
+        return bracket;
+    }
+
+    public void setBracket(boolean bracket) {
+        this.bracket = bracket;
+    }
+
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.left);
@@ -106,6 +138,11 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        return Arrays.asList(this.left, this.right);
     }
 
     @Override
@@ -130,24 +167,16 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
             return false;
         }
         SQLBinaryOpExpr other = (SQLBinaryOpExpr) obj;
-        if (left == null) {
-            if (other.left != null) {
-                return false;
-            }
-        } else if (!left.equals(other.left)) {
-            return false;
-        }
-        if (operator != other.operator) {
-            return false;
-        }
-        if (right == null) {
-            if (other.right != null) {
-                return false;
-            }
-        } else if (!right.equals(other.right)) {
-            return false;
-        }
-        return true;
+
+        return operator == other.operator
+                && SQLExprUtils.equals(left, other.left)
+                &&  SQLExprUtils.equals(right, other.right);
+    }
+
+    public boolean equals(SQLBinaryOpExpr other) {
+        return operator == other.operator
+                && SQLExprUtils.equals(left, other.left)
+                &&  SQLExprUtils.equals(right, other.right);
     }
 
 
@@ -170,11 +199,28 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
     }
 
     public SQLBinaryOpExpr clone() {
-        return new SQLBinaryOpExpr(left, operator, right, dbType);
+        SQLBinaryOpExpr x = new SQLBinaryOpExpr();
+
+        if (left != null) {
+            x.setLeft(left.clone());
+        }
+        if (right != null) {
+            x.setRight(right.clone());
+        }
+        x.operator = operator;
+        x.dbType = dbType;
+        x.bracket = bracket;
+
+        return x;
     }
 
     public String toString() {
         return SQLUtils.toSQLString(this, getDbType());
+    }
+
+    public void output(StringBuffer buf) {
+        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(buf, dbType);
+        this.accept(visitor);
     }
 
     public static SQLExpr combine(List<? extends SQLExpr> items, SQLBinaryOperator op) {
@@ -381,5 +427,224 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         }
 
         return false;
+    }
+
+    public SQLExpr other(SQLExpr x) {
+        if (x == left) {
+            return right;
+        }
+
+        if (x == right) {
+            return left;
+        }
+
+        return null;
+    }
+
+    public boolean contains(SQLExpr item) {
+        if (item instanceof SQLBinaryOpExpr) {
+            if (this.equalsIgoreOrder((SQLBinaryOpExpr) item)) {
+                return true;
+            }
+
+            return left.equals(item) || right.equals(item);
+        }
+
+        return false;
+    }
+
+    public SQLDataType computeDataType() {
+        if (operator != null && operator.isRelational()) {
+            return SQLBooleanExpr.DEFAULT_DATA_TYPE;
+        }
+
+        SQLDataType leftDataType = null, rightDataType = null;
+        if (left != null) {
+            leftDataType = left.computeDataType();
+        }
+        if (right != null) {
+            rightDataType = right.computeDataType();
+        }
+
+        if (operator == SQLBinaryOperator.Concat) {
+            if (leftDataType != null) {
+                return leftDataType;
+            }
+            if (rightDataType != null) {
+                return rightDataType;
+            }
+            return SQLCharExpr.DEFAULT_DATA_TYPE;
+        }
+
+        return null;
+    }
+
+    public boolean conditionContainsTable(String alias) {
+        if (left == null || right == null) {
+            return false;
+        }
+
+        if (left instanceof SQLPropertyExpr) {
+            if (((SQLPropertyExpr) left).matchOwner(alias)) {
+                return true;
+            }
+        } else if (left instanceof SQLBinaryOpExpr) {
+            if (((SQLBinaryOpExpr) left).conditionContainsTable(alias)) {
+                return true;
+            }
+        }
+
+        if (right instanceof SQLPropertyExpr) {
+            if (((SQLPropertyExpr) right).matchOwner(alias)) {
+                return true;
+            }
+        } else if (right instanceof SQLBinaryOpExpr) {
+            return ((SQLBinaryOpExpr) right).conditionContainsTable(alias);
+        }
+
+        return false;
+    }
+
+    public boolean conditionContainsColumn(String column) {
+        if (left == null || right == null) {
+            return false;
+        }
+
+        if (left instanceof SQLIdentifierExpr) {
+            if (((SQLIdentifierExpr) left).nameEquals(column)) {
+                return true;
+            }
+        } else if (right instanceof SQLIdentifierExpr) {
+            if (((SQLIdentifierExpr) right).nameEquals(column)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * only for parameterized output
+     * @param v
+     * @param x
+     * @return
+     */
+    public static SQLBinaryOpExpr merge(ParameterizedVisitor v, SQLBinaryOpExpr x) {
+        SQLObject parent = x.parent;
+
+        for (;;) {
+            if (x.right instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr rightBinary = (SQLBinaryOpExpr) x.right;
+                if (x.left instanceof SQLBinaryOpExpr) {
+                    SQLBinaryOpExpr leftBinaryExpr = (SQLBinaryOpExpr) x.left;
+                    if (SQLExprUtils.equals(leftBinaryExpr.right, rightBinary)) {
+                        x = leftBinaryExpr;
+                        v.incrementReplaceCunt();
+                        continue;
+                    }
+                }
+                SQLExpr mergedRight = merge(v, rightBinary);
+                if (mergedRight != x.right) {
+                    x = new SQLBinaryOpExpr(x.left, x.operator, mergedRight);
+                    v.incrementReplaceCunt();
+                }
+
+                x.setParent(parent);
+            }
+
+            break;
+        }
+
+        if (x.left instanceof SQLBinaryOpExpr) {
+            SQLExpr mergedLeft = merge(v, (SQLBinaryOpExpr) x.left);
+            if (mergedLeft != x.left) {
+                SQLBinaryOpExpr tmp = new SQLBinaryOpExpr(mergedLeft, x.operator, x.right);
+                tmp.setParent(parent);
+                x = tmp;
+                v.incrementReplaceCunt();
+            }
+        }
+
+        // ID = ? OR ID = ? => ID = ?
+        if (x.operator == SQLBinaryOperator.BooleanOr) {
+            if ((x.left instanceof SQLBinaryOpExpr) && (x.right instanceof SQLBinaryOpExpr)) {
+                SQLBinaryOpExpr leftBinary = (SQLBinaryOpExpr) x.left;
+                SQLBinaryOpExpr rightBinary = (SQLBinaryOpExpr) x.right;
+
+                if (mergeEqual(leftBinary, rightBinary)) {
+                    v.incrementReplaceCunt();
+                    leftBinary.setParent(x.parent);
+                    leftBinary.addMergedItem(rightBinary);
+                    return leftBinary;
+                }
+
+                if (SQLExprUtils.isLiteralExpr(leftBinary.left) //
+                        && leftBinary.operator == SQLBinaryOperator.BooleanOr) {
+                    if (mergeEqual(leftBinary.right, x.right)) {
+                        v.incrementReplaceCunt();
+                        leftBinary.addMergedItem(rightBinary);
+                        return leftBinary;
+                    }
+                }
+            }
+        }
+
+        return x;
+    }
+
+    /**
+     * only for parameterized output
+     * @param item
+     * @return
+     */
+    private void addMergedItem(SQLBinaryOpExpr item) {
+        if (mergedList == null) {
+            mergedList = new ArrayList<SQLObject>();
+        }
+        mergedList.add(item);
+    }
+
+    /**
+     * only for parameterized output
+     * @return
+     */
+    public List<SQLObject> getMergedList() {
+        return mergedList;
+    }
+
+    /**
+     * only for parameterized output
+     * @param a
+     * @param b
+     * @return
+     */
+    private static boolean mergeEqual(SQLExpr a, SQLExpr b) {
+        if (!(a instanceof SQLBinaryOpExpr)) {
+            return false;
+        }
+        if (!(b instanceof SQLBinaryOpExpr)) {
+            return false;
+        }
+
+        SQLBinaryOpExpr binaryA = (SQLBinaryOpExpr) a;
+        SQLBinaryOpExpr binaryB = (SQLBinaryOpExpr) b;
+
+        if (binaryA.getOperator() != SQLBinaryOperator.Equality) {
+            return false;
+        }
+
+        if (binaryB.getOperator() != SQLBinaryOperator.Equality) {
+            return false;
+        }
+
+        if (!(binaryA.getRight() instanceof SQLLiteralExpr || binaryA.getRight() instanceof SQLVariantRefExpr)) {
+            return false;
+        }
+
+        if (!(binaryB.getRight() instanceof SQLLiteralExpr || binaryB.getRight() instanceof SQLVariantRefExpr)) {
+            return false;
+        }
+
+        return binaryA.getLeft().toString().equals(binaryB.getLeft().toString());
     }
 }

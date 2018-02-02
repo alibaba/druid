@@ -18,11 +18,9 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
-import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
@@ -35,8 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement, OracleSegmentAttributes {
-
-    private SQLName                 tablespace;
 
     private boolean                 inMemoryMetadata;
 
@@ -54,16 +50,11 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private Integer                 maxtrans;
     private Integer                 pctincrease;
 
-    private Boolean                 logging;
-    private Boolean                 compress;
+
     private Integer                 compressLevel;
     private boolean                 compressForOltp;
-    private boolean                 onCommit;
-    private boolean                 preserveRows;
 
     private Boolean                 cache;
-
-    private SQLPartitionBy          partitioning;
 
     private DeferredSegmentCreation deferredSegmentCreation;
 
@@ -76,6 +67,30 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     private SQLName                 of;
     private OIDIndex                oidIndex;
+    private boolean                 monitoring;
+
+
+    public void simplify() {
+        tablespace = null;
+        storage = null;
+        lobStorage = null;
+
+        pctfree = null;
+        pctused = null;
+        initrans = null;
+        maxtrans = null;
+        pctincrease = null;
+
+        logging = null;
+        compress = null;
+        compressLevel = null;
+        compressForOltp = false;
+
+        onCommitPreserveRows = false;
+        onCommitDeleteRows = false;
+
+        super.simplify();
+    }
     
     public OracleCreateTableStatement() {
         super (JdbcConstants.ORACLE);
@@ -97,14 +112,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.deferredSegmentCreation = deferredSegmentCreation;
     }
 
-    public SQLPartitionBy getPartitioning() {
-        return partitioning;
-    }
-
-    public void setPartitioning(SQLPartitionBy partitioning) {
-        this.partitioning = partitioning;
-    }
-
     public Boolean getCache() {
         return cache;
     }
@@ -113,36 +120,12 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.cache = cache;
     }
 
-    public boolean isOnCommit() {
-        return onCommit;
+    public boolean isOnCommitDeleteRows() {
+        return onCommitDeleteRows;
     }
 
-    public void setOnCommit(boolean onCommit) {
-        this.onCommit = onCommit;
-    }
-
-    public boolean isPreserveRows() {
-        return preserveRows;
-    }
-
-    public void setPreserveRows(boolean preserveRows) {
-        this.preserveRows = preserveRows;
-    }
-
-    public Boolean getLogging() {
-        return logging;
-    }
-
-    public void setLogging(Boolean logging) {
-        this.logging = logging;
-    }
-
-    public Boolean getCompress() {
-        return compress;
-    }
-
-    public void setCompress(Boolean compress) {
-        this.compress = compress;
+    public void setOnCommitDeleteRows(boolean onCommitDeleteRows) {
+        this.onCommitDeleteRows = onCommitDeleteRows;
     }
 
     public Integer getCompressLevel() {
@@ -217,14 +200,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.inMemoryMetadata = inMemoryMetadata;
     }
 
-    public SQLName getTablespace() {
-        return tablespace;
-    }
-
-    public void setTablespace(SQLName tablespace) {
-        this.tablespace = tablespace;
-    }
-
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);
     }
@@ -260,6 +235,14 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             oidIndex.setParent(this);
         }
         this.oidIndex = oidIndex;
+    }
+
+    public boolean isMonitoring() {
+        return monitoring;
+    }
+
+    public void setMonitoring(boolean monitoring) {
+        this.monitoring = monitoring;
     }
 
     public boolean isCompressForOltp() {
@@ -325,7 +308,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
         private SQLName externalType;
         private SQLExpr externalDirectory;
-        private OracleExternalRecordFormat externalDirectoryRecordFormat;
+        private SQLExternalRecordFormat externalDirectoryRecordFormat;
         private List<SQLExpr> externalDirectoryLocation = new ArrayList<SQLExpr>();
         private SQLExpr externalRejectLimit;
 
@@ -365,11 +348,11 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             this.externalDirectory = externalDirectory;
         }
 
-        public OracleExternalRecordFormat getExternalDirectoryRecordFormat() {
+        public SQLExternalRecordFormat getExternalDirectoryRecordFormat() {
             return externalDirectoryRecordFormat;
         }
 
-        public void setExternalDirectoryRecordFormat(OracleExternalRecordFormat recordFormat) {
+        public void setExternalDirectoryRecordFormat(SQLExternalRecordFormat recordFormat) {
             if (recordFormat != null) {
                 recordFormat.setParent(this);
             }
@@ -389,42 +372,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
         public List<SQLExpr> getExternalDirectoryLocation() {
             return externalDirectoryLocation;
-        }
-    }
-
-    public static class OracleExternalRecordFormat extends OracleSQLObjectImpl {
-        private SQLExpr delimitedBy;
-        private SQLExpr terminatedBy;
-
-        @Override
-        public void accept0(OracleASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, delimitedBy);
-                acceptChild(visitor, terminatedBy);
-            }
-            visitor.endVisit(this);
-        }
-
-        public SQLExpr getDelimitedBy() {
-            return delimitedBy;
-        }
-
-        public void setDelimitedBy(SQLExpr delimitedBy) {
-            if (delimitedBy != null) {
-                delimitedBy.setParent(this);
-            }
-            this.delimitedBy = delimitedBy;
-        }
-
-        public SQLExpr getTerminatedBy() {
-            return terminatedBy;
-        }
-
-        public void setTerminatedBy(SQLExpr terminatedBy) {
-            if (terminatedBy != null) {
-                terminatedBy.setParent(this);
-            }
-            this.terminatedBy = terminatedBy;
         }
     }
 
@@ -456,4 +403,5 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             this.name = name;
         }
     }
+
 }

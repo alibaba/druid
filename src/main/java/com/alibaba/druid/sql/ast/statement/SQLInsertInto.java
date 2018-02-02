@@ -24,17 +24,37 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 
 public abstract class SQLInsertInto extends SQLObjectImpl {
-
-    protected SQLExprTableSource  tableSource;
-
-    protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
-    protected SQLSelect           query;
-    
+    protected SQLExprTableSource        tableSource;
+    protected final List<SQLExpr>       columns = new ArrayList<SQLExpr>();
+    protected transient String          columnsString;
+    protected transient long            columnsStringHash;
+    protected SQLSelect                 query;
     protected final List<ValuesClause>  valuesList = new ArrayList<ValuesClause>();
 
     public SQLInsertInto(){
 
     }
+
+    public void cloneTo(SQLInsertInto x) {
+        if (tableSource != null) {
+            x.setTableSource(tableSource.clone());
+        }
+        for (SQLExpr column : columns) {
+            SQLExpr column2 = column.clone();
+            column2.setParent(x);
+            x.columns.add(column2);
+        }
+        if (query != null) {
+            x.setQuery(query.clone());
+        }
+        for (ValuesClause v : valuesList) {
+            ValuesClause v2 = v.clone();
+            v2.setParent(x);
+            x.valuesList.add(v2);
+        }
+    }
+
+    public abstract SQLInsertInto clone();
 
     public String getAlias() {
         return tableSource.getAlias();
@@ -71,7 +91,14 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
         return query;
     }
 
+    public void setQuery(SQLSelectQuery query) {
+        this.setQuery(new SQLSelect(query));
+    }
+
     public void setQuery(SQLSelect query) {
+        if (query != null) {
+            query.setParent(this);
+        }
         this.query = query;
     }
 
@@ -110,5 +137,18 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
             valueClause.setParent(this);
         }
         valuesList.add(valueClause);
+    }
+
+    public String getColumnsString() {
+        return columnsString;
+    }
+
+    public long getColumnsStringHash() {
+        return columnsStringHash;
+    }
+
+    public void setColumnsString(String columnsString, long columnsStringHash) {
+        this.columnsString = columnsString;
+        this.columnsStringHash = columnsStringHash;
     }
 }

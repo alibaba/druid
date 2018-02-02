@@ -16,7 +16,9 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableRename extends SQLObjectImpl implements SQLAlterTableItem {
@@ -31,8 +33,26 @@ public class SQLAlterTableRename extends SQLObjectImpl implements SQLAlterTableI
         this.setTo(to);
     }
 
+    public SQLAlterTableRename(String to) {
+        this.setTo(to);
+    }
+
     public SQLExprTableSource getTo() {
         return to;
+    }
+
+    public SQLName getToName() {
+        if (to == null) {
+            return null;
+        }
+
+        SQLExpr expr = to.expr;
+
+        if (expr instanceof SQLName) {
+            return (SQLName) expr;
+        }
+
+        return null;
     }
 
     public void setTo(SQLExprTableSource to) {
@@ -40,6 +60,10 @@ public class SQLAlterTableRename extends SQLObjectImpl implements SQLAlterTableI
             to.setParent(this);
         }
         this.to = to;
+    }
+
+    public void setTo(String to) {
+        this.setTo(new SQLIdentifierExpr(to));
     }
 
     public void setTo(SQLExpr to) {

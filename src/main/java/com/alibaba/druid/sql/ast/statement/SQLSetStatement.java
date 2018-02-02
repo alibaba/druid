@@ -18,16 +18,14 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSetStatement extends SQLStatementImpl {
+    private Option option;
 
     private List<SQLAssignItem> items = new ArrayList<SQLAssignItem>();
     
@@ -46,7 +44,9 @@ public class SQLSetStatement extends SQLStatementImpl {
 
     public SQLSetStatement(SQLExpr target, SQLExpr value, String dbType){
         super (dbType);
-        this.items.add(new SQLAssignItem(target, value));
+        SQLAssignItem item = new SQLAssignItem(target, value);
+        item.setParent(this);
+        this.items.add(item);
     }
 
     public static SQLSetStatement plus(SQLName target) {
@@ -70,6 +70,20 @@ public class SQLSetStatement extends SQLStatementImpl {
         this.hints = hints;
     }
 
+    public Option getOption() {
+        return option;
+    }
+
+    public void setOption(Option option) {
+        this.option = option;
+    }
+
+    public void set(SQLExpr target, SQLExpr value) {
+        SQLAssignItem assignItem = new SQLAssignItem(target, value);
+        assignItem.setParent(this);
+        this.items.add(assignItem);
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -90,5 +104,34 @@ public class SQLSetStatement extends SQLStatementImpl {
             SQLAssignItem item = items.get(i);
             item.output(buf);
         }
+    }
+
+    public SQLSetStatement clone() {
+        SQLSetStatement x = new SQLSetStatement();
+        for (SQLAssignItem item : items) {
+            SQLAssignItem item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        if (hints != null) {
+            for (SQLCommentHint hint : hints) {
+                SQLCommentHint h2 = hint.clone();
+                h2.setParent(x);
+                x.hints.add(h2);
+            }
+        }
+        return x;
+    }
+
+    public List getChildren() {
+        return this.items;
+    }
+
+    public static enum Option {
+        IDENTITY_INSERT,
+        PASSWORD, // mysql
+        GLOBAL,
+        SESSION,
+        LOCAL
     }
 }

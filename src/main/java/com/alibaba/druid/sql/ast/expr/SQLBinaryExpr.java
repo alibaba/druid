@@ -16,11 +16,19 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.Utils;
 
-public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr {
+import java.math.BigInteger;
+import java.util.Collections;
+import java.util.List;
 
-    private String value;
+public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
+
+    private String text;
+
+    private transient Number val;
 
     public SQLBinaryExpr(){
 
@@ -28,15 +36,46 @@ public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     public SQLBinaryExpr(String value){
         super();
-        this.value = value;
+        this.text = value;
     }
 
-    public String getValue() {
-        return value;
+    public String getText() {
+        return text;
+    }
+
+    public Number getValue() {
+        if (text == null) {
+            return null;
+        }
+
+        if (val == null) {
+            long[] words = new long[text.length() / 64 + 1];
+            for (int i = text.length() - 1; i >= 0; --i) {
+                char ch = text.charAt(i);
+                if (ch == '1') {
+                    int wordIndex = i >> 6;
+                    words[wordIndex] |= (1L << (text.length() - 1 - i));
+                }
+            }
+
+            if (words.length == 1) {
+                val = words[0];
+            } else {
+                byte[] bytes = new byte[words.length * 8];
+
+                for (int i = 0; i < words.length; ++i) {
+                    Utils.putLong(bytes, (words.length - 1 - i) * 8, words[i]);
+                }
+
+                val = new BigInteger(bytes);
+            }
+        }
+
+        return val;
     }
 
     public void setValue(String value) {
-        this.value = value;
+        this.text = value;
     }
 
     public void accept0(SQLASTVisitor visitor) {
@@ -47,7 +86,7 @@ public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     public void output(StringBuffer buf) {
         buf.append("b'");
-        buf.append(value);
+        buf.append(text);
         buf.append('\'');
     }
 
@@ -55,8 +94,17 @@ public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        result = prime * result + ((text == null) ? 0 : text.hashCode());
         return result;
+    }
+
+    public SQLBinaryExpr clone() {
+        return new SQLBinaryExpr(text);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -71,11 +119,11 @@ public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr {
             return false;
         }
         SQLBinaryExpr other = (SQLBinaryExpr) obj;
-        if (value == null) {
-            if (other.value != null) {
+        if (text == null) {
+            if (other.text != null) {
                 return false;
             }
-        } else if (!value.equals(other.value)) {
+        } else if (!text.equals(other.text)) {
             return false;
         }
         return true;

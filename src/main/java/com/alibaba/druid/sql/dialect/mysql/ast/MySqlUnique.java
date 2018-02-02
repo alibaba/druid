@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlUnique extends MySqlKey implements SQLPrimaryKey {
+public class MySqlUnique extends MySqlKey {
 
     public MySqlUnique(){
 
@@ -28,8 +28,13 @@ public class MySqlUnique extends MySqlKey implements SQLPrimaryKey {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.getName());
             acceptChild(visitor, this.getColumns());
-            acceptChild(visitor, this.getIndexName());
         }
         visitor.endVisit(this);
+    }
+
+    public MySqlUnique clone() {
+        MySqlUnique x = new MySqlUnique();
+        cloneTo(x);
+        return x;
     }
 }

@@ -31,10 +31,7 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
     private SQLExprTableSource like;
 
-    protected SQLExpr comment;
-
-    protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
-
+    protected SQLExpr storedBy;
     protected SQLExpr lifecycle;
 
     public OdpsCreateTableStatement(){
@@ -51,25 +48,6 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
     public void setLike(SQLExprTableSource like) {
         this.like = like;
-    }
-
-    public SQLExpr getComment() {
-        return comment;
-    }
-
-    public void setComment(SQLExpr comment) {
-        this.comment = comment;
-    }
-
-    public List<SQLColumnDefinition> getPartitionColumns() {
-        return partitionColumns;
-    }
-    
-    public void addPartitionColumn(SQLColumnDefinition column) {
-        if (column != null) {
-            column.setParent(this);
-        }
-        this.partitionColumns.add(column);
     }
 
     public SQLExpr getLifecycle() {
@@ -90,10 +68,23 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
             this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, partitionColumns);
+            this.acceptChild(visitor, clusteredBy);
+            this.acceptChild(visitor, sortedBy);
+            this.acceptChild(visitor, storedBy);
             this.acceptChild(visitor, lifecycle);
             this.acceptChild(visitor, select);
         }
         visitor.endVisit(this);
     }
 
+    public SQLExpr getStoredBy() {
+        return storedBy;
+    }
+
+    public void setStoredBy(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedBy = x;
+    }
 }

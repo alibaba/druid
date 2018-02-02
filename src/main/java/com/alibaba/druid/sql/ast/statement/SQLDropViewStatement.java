@@ -19,10 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLDropViewStatement extends SQLStatementImpl implements SQLDropStatement {
 
     protected List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>();
 
@@ -101,4 +102,8 @@ public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStat
         this.ifExists = ifExists;
     }
 
+    @Override
+    public List getChildren() {
+        return tableSources;
+    }
 }

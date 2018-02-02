@@ -28,6 +28,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleLobStorageClause extends OracleSegmentAttributesImpl implements OracleSQLObject {
 
+    private SQLName             segementName;
+
     private final List<SQLName> items      = new ArrayList<SQLName>();
 
     private boolean             secureFile = false;
@@ -56,6 +58,7 @@ public class OracleLobStorageClause extends OracleSegmentAttributesImpl implemen
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, segementName);
             acceptChild(visitor, items);
             acceptChild(visitor, tablespace);
         }
@@ -158,5 +161,13 @@ public class OracleLobStorageClause extends OracleSegmentAttributesImpl implemen
             pctversion.setParent(this);
         }
         this.pctversion = pctversion;
+    }
+
+    public SQLName getSegementName() {
+        return segementName;
+    }
+
+    public void setSegementName(SQLName segementName) {
+        this.segementName = segementName;
     }
 }

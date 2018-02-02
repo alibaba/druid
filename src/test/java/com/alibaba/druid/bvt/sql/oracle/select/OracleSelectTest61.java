@@ -55,7 +55,7 @@ public class OracleSelectTest61 extends OracleTest {
 
             Assert.assertEquals("SELECT column_expression\n" +
                     "FROM sys.ALL_IND_EXPRESSIONS\n" +
-                    "WHERE column_position = :cp", text);
+                    "WHERE column_position = : cp", text);
         }
 
         {
@@ -63,7 +63,7 @@ public class OracleSelectTest61 extends OracleTest {
 
             Assert.assertEquals("select column_expression\n" +
                     "from sys.ALL_IND_EXPRESSIONS\n" +
-                    "where column_position = :cp", text);
+                    "where column_position = : cp", text);
         }
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

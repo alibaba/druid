@@ -27,4 +27,9 @@ public class MySqlForceIndexHint extends MySqlIndexHintImpl {
         visitor.endVisit(this);
     }
 
+    public MySqlForceIndexHint clone() {
+        MySqlForceIndexHint x = new MySqlForceIndexHint();
+        cloneTo(x);
+        return x;
+    }
 }

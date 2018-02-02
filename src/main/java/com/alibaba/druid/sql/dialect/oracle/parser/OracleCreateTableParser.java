@@ -15,20 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartition;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.SQLPartitionByHash;
 import com.alibaba.druid.sql.ast.SQLPartitionByList;
 import com.alibaba.druid.sql.ast.SQLPartitionByRange;
-import com.alibaba.druid.sql.ast.SQLSubPartition;
-import com.alibaba.druid.sql.ast.SQLSubPartitionBy;
-import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
-import com.alibaba.druid.sql.ast.SQLSubPartitionByList;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
@@ -53,14 +47,14 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         return new OracleCreateTableStatement();
     }
 
-    public OracleCreateTableStatement parseCrateTable(boolean acceptCreate) {
-        OracleCreateTableStatement stmt = (OracleCreateTableStatement) super.parseCrateTable(acceptCreate);
+    public OracleCreateTableStatement parseCreateTable(boolean acceptCreate) {
+        OracleCreateTableStatement stmt = (OracleCreateTableStatement) super.parseCreateTable(acceptCreate);
 
         if (lexer.token() == Token.OF) {
             lexer.nextToken();
             stmt.setOf(this.exprParser.name());
 
-            if (identifierEquals("OIDINDEX")) {
+            if (lexer.identifierEquals("OIDINDEX")) {
                 lexer.nextToken();
 
                 OracleCreateTableStatement.OIDIndex oidIndex = new OracleCreateTableStatement.OIDIndex();
@@ -79,17 +73,21 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         for (;;) {
             this.getExprParser().parseSegmentAttributes(stmt);
 
-            if (identifierEquals("IN_MEMORY_METADATA")) {
+            if (lexer.identifierEquals("IN_MEMORY_METADATA")) {
                 lexer.nextToken();
                 stmt.setInMemoryMetadata(true);
                 continue;
-            } else if (identifierEquals("CURSOR_SPECIFIC_SEGMENT")) {
+            } else if (lexer.identifierEquals("CURSOR_SPECIFIC_SEGMENT")) {
                 lexer.nextToken();
                 stmt.setCursorSpecificSegment(true);
                 continue;
-            } else if (identifierEquals("NOPARALLEL")) {
+            } else if (lexer.identifierEquals("NOPARALLEL")) {
                 lexer.nextToken();
                 stmt.setParallel(false);
+                continue;
+            } else if (lexer.identifierEquals("PARALLEL")) {
+                lexer.nextToken();
+                stmt.setParallel(true);
                 continue;
             } else if (lexer.token() == Token.CACHE) {
                 lexer.nextToken();
@@ -124,21 +122,25 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             } else if (lexer.token() == Token.ON) {
                 lexer.nextToken();
                 accept(Token.COMMIT);
-                stmt.setOnCommit(true);
+
+                if (lexer.identifierEquals("PRESERVE")) {
+                    lexer.nextToken();
+                    acceptIdentifier("ROWS");
+                    stmt.setOnCommitPreserveRows(true);
+                } else {
+                    accept(Token.DELETE);
+                    acceptIdentifier("ROWS");
+                    stmt.setOnCommitDeleteRows(true);
+                }
                 continue;
-            } else if (identifierEquals("PRESERVE")) {
-                lexer.nextToken();
-                acceptIdentifier("ROWS");
-                stmt.setPreserveRows(true);
-                continue;
-            } else if (identifierEquals("STORAGE")) {
+            } else if (lexer.identifierEquals("STORAGE")) {
                 OracleStorageClause storage = ((OracleExprParser) this.exprParser).parseStorage();
                 stmt.setStorage(storage);
                 continue;
-            } else if (identifierEquals("ORGANIZATION")) {
+            } else if (lexer.identifierEquals("ORGANIZATION")) {
                 parseOrganization(stmt);
                 continue;
-            } else if (identifierEquals("CLUSTER")) {
+            } else if (lexer.identifierEquals("CLUSTER")) {
                 lexer.nextToken();
                 SQLName cluster = this.exprParser.name();
                 stmt.setCluster(cluster);
@@ -150,6 +152,10 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
 //                OracleStorageClause storage = ((OracleExprParser) this.exprParser).parseStorage();
 //                stmt.setStorage(storage);
 //                continue;
+            } else if (lexer.identifierEquals("MONITORING")) {
+                lexer.nextToken();
+                stmt.setMonitoring(true);
+                continue;
             } else if (lexer.token() == Token.LOB) {
                 OracleLobStorageClause lobStorage = ((OracleExprParser) this.exprParser).parseLobStorage();
                 stmt.setLobStorage(lobStorage);
@@ -170,14 +176,14 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
 
                 accept(Token.BY);
 
-                if (identifierEquals("RANGE")) {
-                    SQLPartitionByRange partitionByRange = partitionByRange();
-                    partitionClauseRest(partitionByRange);
+                if (lexer.identifierEquals("RANGE")) {
+                    SQLPartitionByRange partitionByRange = this.getExprParser().partitionByRange();
+                    this.getExprParser().partitionClauseRest(partitionByRange);
                     stmt.setPartitioning(partitionByRange);
                     continue;
-                } else if (identifierEquals("HASH")) {
-                    SQLPartitionByHash partitionByHash = partitionByHash();
-                    partitionClauseRest(partitionByHash);
+                } else if (lexer.identifierEquals("HASH")) {
+                    SQLPartitionByHash partitionByHash = this.getExprParser().partitionByHash();
+                    this.getExprParser().partitionClauseRest(partitionByHash);
 
                     if (lexer.token() == Token.LPAREN) {
                         lexer.nextToken();
@@ -191,18 +197,18 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                                 lexer.nextToken();
                                 break;
                             }
-                            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                            throw new ParserException("TODO : " + lexer.info());
                         }
                     }
                     stmt.setPartitioning(partitionByHash);
                     continue;
-                } else if (identifierEquals("LIST")) {
-                    SQLPartitionByList partitionByList = partitionByList();
-                    partitionClauseRest(partitionByList);
+                } else if (lexer.identifierEquals("LIST")) {
+                    SQLPartitionByList partitionByList = this.getExprParser().partitionByList();
+                    this.getExprParser().partitionClauseRest(partitionByList);
                     stmt.setPartitioning(partitionByList);
                     continue;
                 } else {
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO : " + lexer.info());
                 }
             }
             break;
@@ -227,7 +233,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             this.getExprParser().parseSegmentAttributes(organization);
 
             // index_org_table_clause http://docs.oracle.com/cd/B19306_01/server.102/b14200/statements_7002.htm#i2129638
-            if (identifierEquals("PCTTHRESHOLD")) {
+            if (lexer.identifierEquals("PCTTHRESHOLD")) {
                 lexer.nextToken();
 
                 if (lexer.token() == Token.LITERAL_INT) {
@@ -235,16 +241,16 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                     organization.setPctthreshold(pctthreshold);
                 }
             }
-        } else if (identifierEquals("HEAP")) {
+        } else if (lexer.identifierEquals("HEAP")) {
             lexer.nextToken();
             organization.setType("HEAP");
             this.getExprParser().parseSegmentAttributes(organization);
-        } else if (identifierEquals("EXTERNAL")) {
+        } else if (lexer.identifierEquals("EXTERNAL")) {
             lexer.nextToken();
             organization.setType("EXTERNAL");
             accept(Token.LPAREN);
 
-            if (identifierEquals("TYPE")) {
+            if (lexer.identifierEquals("TYPE")) {
                 lexer.nextToken();
                 organization.setExternalType(this.exprParser.name());
             }
@@ -254,24 +260,24 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
 
             organization.setExternalDirectory(this.exprParser.expr());
 
-            if (identifierEquals("ACCESS")) {
+            if (lexer.identifierEquals("ACCESS")) {
                 lexer.nextToken();
                 acceptIdentifier("PARAMETERS");
 
                 if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
 
-                    OracleCreateTableStatement.OracleExternalRecordFormat recordFormat = new OracleCreateTableStatement.OracleExternalRecordFormat();
+                    SQLExternalRecordFormat recordFormat = new SQLExternalRecordFormat();
 
-                    if (identifierEquals("RECORDS")) {
+                    if (lexer.identifierEquals("RECORDS")) {
                         lexer.nextToken();
 
 
-                        if (identifierEquals("DELIMITED")) {
+                        if (lexer.identifierEquals("DELIMITED")) {
                             lexer.nextToken();
                             accept(Token.BY);
 
-                            if (identifierEquals("NEWLINE")) {
+                            if (lexer.identifierEquals("NEWLINE")) {
                                 lexer.nextToken();
                                 recordFormat.setDelimitedBy(new SQLIdentifierExpr("NEWLINE"));
                             } else {
@@ -282,10 +288,10 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                         }
                     }
 
-                    if (identifierEquals("FIELDS")) {
+                    if (lexer.identifierEquals("FIELDS")) {
                         lexer.nextToken();
 
-                        if (identifierEquals("TERMINATED")) {
+                        if (lexer.identifierEquals("TERMINATED")) {
                             lexer.nextToken();
                             accept(Token.BY);
                             recordFormat.setTerminatedBy(this.exprParser.primary());
@@ -323,171 +329,6 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         stmt.setOrganization(organization);
     }
 
-    protected SQLPartitionByList partitionByList() {
-        acceptIdentifier("LIST");
-        SQLPartitionByList partitionByList = new SQLPartitionByList();
-
-        accept(Token.LPAREN);
-        partitionByList.setExpr(this.exprParser.expr());
-        accept(Token.RPAREN);
-
-        parsePartitionByRest(partitionByList);
-
-        return partitionByList;
-    }
-
-    protected SQLPartitionByHash partitionByHash() {
-        acceptIdentifier("HASH");
-        SQLPartitionByHash partitionByHash = new SQLPartitionByHash();
-
-        if (lexer.token() == Token.KEY) {
-            lexer.nextToken();
-            partitionByHash.setKey(true);
-        }
-
-        accept(Token.LPAREN);
-        partitionByHash.setExpr(this.exprParser.expr());
-        accept(Token.RPAREN);
-        return partitionByHash;
-    }
-
-    protected SQLPartitionByRange partitionByRange() {
-        acceptIdentifier("RANGE");
-        accept(Token.LPAREN);
-        SQLPartitionByRange clause = new SQLPartitionByRange();
-        for (;;) {
-            SQLName column = this.exprParser.name();
-            clause.addColumn(column);
-
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-
-            break;
-        }
-        accept(Token.RPAREN);
-
-        if (lexer.token() == Token.INTERVAL) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            clause.setInterval(this.exprParser.expr());
-            accept(Token.RPAREN);
-        }
-
-        parsePartitionByRest(clause);
-
-        return clause;
-    }
-
-    protected void parsePartitionByRest(SQLPartitionBy clause) {
-        if (lexer.token() == Token.STORE) {
-            lexer.nextToken();
-            accept(Token.IN);
-            accept(Token.LPAREN);
-            for (;;) {
-                SQLName tablespace = this.exprParser.name();
-                clause.getStoreIn().add(tablespace);
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-
-                break;
-            }
-            accept(Token.RPAREN);
-        }
-
-        if (identifierEquals("SUBPARTITION")) {
-            SQLSubPartitionBy subPartitionBy = subPartitionBy();
-            clause.setSubPartitionBy(subPartitionBy);
-        }
-
-
-        accept(Token.LPAREN);
-
-        for (;;) {
-            SQLPartition partition = this.getExprParser().parsePartition();
-
-            clause.addPartition(partition);
-
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-
-            break;
-        }
-
-        accept(Token.RPAREN);
-    }
-
-    protected void partitionClauseRest(SQLPartitionBy clause) {
-        if (identifierEquals("PARTITIONS")) {
-            lexer.nextToken();
-
-            SQLIntegerExpr countExpr = this.exprParser.integerExpr();
-            clause.setPartitionsCount(countExpr);
-        }
-
-        if (lexer.token() == Token.STORE) {
-            lexer.nextToken();
-            accept(Token.IN);
-            accept(Token.LPAREN);
-            this.exprParser.names(clause.getStoreIn(), clause);
-            accept(Token.RPAREN);
-        }
-    }
-
-    protected SQLSubPartitionBy subPartitionBy() {
-        lexer.nextToken();
-        accept(Token.BY);
-
-        if (identifierEquals("HASH")) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-
-            SQLSubPartitionByHash byHash = new SQLSubPartitionByHash();
-            SQLExpr expr = this.exprParser.expr();
-            byHash.setExpr(expr);
-            accept(Token.RPAREN);
-
-            return byHash;
-        } else if (identifierEquals("LIST")) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-
-            SQLSubPartitionByList byList = new SQLSubPartitionByList();
-            SQLName column = this.exprParser.name();
-            byList.setColumn(column);
-            accept(Token.RPAREN);
-
-            if (identifierEquals("SUBPARTITION")) {
-                lexer.nextToken();
-                acceptIdentifier("TEMPLATE");
-                accept(Token.LPAREN);
-                
-                for (;;) {
-                    SQLSubPartition subPartition = this.getExprParser().parseSubPartition();
-                    subPartition.setParent(byList);
-                    byList.getSubPartitionTemplate().add(subPartition);
-                    
-                    if (lexer.token() == Token.COMMA) {
-                        lexer.nextToken();
-                        continue;
-                    }
-                    break;
-                }
-                accept(Token.RPAREN);
-            }
-
-            return byList;
-        }
-
-        throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
-    }
-
     protected void parseCreateTableSupplementalLogingProps(SQLCreateTableStatement stmt) {
         acceptIdentifier("SUPPLEMENTAL");
         acceptIdentifier("LOG");
@@ -502,7 +343,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             for (;;) {
                 SQLName column = this.exprParser.name();
 
-                if (identifierEquals("NO")) {
+                if (lexer.identifierEquals("NO")) {
                     lexer.nextToken();
                     acceptIdentifier("LOG");
                     column.putAttribute("NO LOG", Boolean.TRUE);
@@ -523,7 +364,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             }
             accept(Token.RPAREN);
 
-            if (identifierEquals("ALWAYS")) {
+            if (lexer.identifierEquals("ALWAYS")) {
                 lexer.nextToken();
                 logGrp.setAlways(true);
             }

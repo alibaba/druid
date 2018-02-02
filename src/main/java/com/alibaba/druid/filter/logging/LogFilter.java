@@ -765,9 +765,11 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             		}
             		String dbType = statement.getConnectionProxy().getDirectDataSource().getDbType();
             		String formattedSql = SQLUtils.format(sql, dbType, parameters, this.statementSqlFormatOption);
-			statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
-                              + "} execute error. " + formattedSql, error);
-            	}else{
+			        statementLogError("{conn-" + statement.getConnectionProxy().getId()
+                                + ", " + stmtId(statement)
+                                + "} execute error. " + formattedSql
+                            , error);
+            	} else{
             		statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
                               + "} execute error. " + sql, error);
             	}

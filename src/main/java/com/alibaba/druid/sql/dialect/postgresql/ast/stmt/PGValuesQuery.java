@@ -49,4 +49,17 @@ public class PGValuesQuery extends PGSQLObjectImpl implements SQLSelectQuery {
     public void setBracket(boolean bracket) {
         this.bracket = bracket;
     }
+
+    public PGValuesQuery clone() {
+        PGValuesQuery x = new PGValuesQuery();
+        x.bracket = bracket;
+
+        for (int i = 0; i < values.size(); ++i) {
+            SQLExpr value = values.get(i).clone();
+            value.setParent(x);
+            x.values.add(value);
+        }
+
+        return x;
+    }
 }

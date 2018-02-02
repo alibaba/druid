@@ -15,9 +15,15 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class OracleAnalytic extends SQLOver implements OracleExpr {
 
@@ -41,6 +47,19 @@ public class OracleAnalytic extends SQLOver implements OracleExpr {
         visitor.endVisit(this);
     }
 
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.addAll(this.partitionBy);
+        if (this.orderBy != null) {
+            children.add(orderBy);
+        }
+        if (this.windowing != null) {
+            children.add(windowing);
+        }
+        return children;
+    }
+
     public OracleAnalyticWindowing getWindowing() {
         return this.windowing;
     }
@@ -59,5 +78,9 @@ public class OracleAnalytic extends SQLOver implements OracleExpr {
 
     public void setWindowing(OracleAnalyticWindowing windowing) {
         this.windowing = windowing;
+    }
+
+    public SQLDataType computeDataType() {
+        return null;
     }
 }

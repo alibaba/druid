@@ -44,14 +44,15 @@ public class OracleSubqueryFactoringTest2 extends TestCase {
                 "\t\tFROM employees\n" +
                 "\t\tWHERE manager_id IS NULL\n" +
                 "\t\tUNION ALL\n" +
-                "\t\tSELECT e.employee_id, e.last_name, e.manager_id, r.reportLevel + 1 AS reportLevel, e.salary\n" +
-                "\t\t\t, e.job_id\n" +
+                "\t\tSELECT e.employee_id, e.last_name, e.manager_id, r.reportLevel + 1 AS reportLevel\n" +
+                "\t\t\t, e.salary, e.job_id\n" +
                 "\t\tFROM org_chart r, employees e\n" +
                 "\t\tWHERE r.eid = e.manager_id\n" +
                 "\t)\n" +
                 "\tSEARCH DEPTH FIRST BY emp_last SET order1\n" +
                 "\tCYCLE hire_date SET is_cycle TO 'Y' DEFAULT 'N'\n" +
-                "SELECT lpad(' ', 2 * reportLevel) || emp_last AS emp_name, eid, mgr_id, salary, job_id\n" +
+                "SELECT lpad(' ', 2 * reportLevel) || emp_last AS emp_name\n" +
+                "\t, eid, mgr_id, salary, job_id\n" +
                 "FROM org_chart\n" +
                 "ORDER BY order1;";
 

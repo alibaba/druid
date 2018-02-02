@@ -18,15 +18,15 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private boolean     orReplace   = false;
     private boolean     force       = false;
@@ -40,9 +40,12 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
 
     protected SQLExprTableSource tableSource;
 
-    protected final List<Column> columns = new ArrayList<Column>();
+    protected final List<SQLTableElement> columns = new ArrayList<SQLTableElement>();
 
-    private Level with;
+    private boolean withCheckOption;
+    private boolean withCascaded;
+    private boolean withLocal;
+    private boolean withReadOnly;
 
     private SQLLiteralExpr comment;
 
@@ -52,6 +55,33 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
 
     public SQLCreateViewStatement(String dbType){
         super(dbType);
+    }
+
+    public String computeName() {
+        if (tableSource == null) {
+            return null;
+        }
+
+        SQLExpr expr = tableSource.getExpr();
+        if (expr instanceof SQLName) {
+            String name = ((SQLName) expr).getSimpleName();
+            return SQLUtils.normalize(name);
+        }
+
+        return null;
+    }
+
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
+        }
+
+        return null;
     }
 
     public boolean isOrReplace() {
@@ -74,6 +104,10 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         this.setTableSource(new SQLExprTableSource(name));
     }
 
+    public void setName(String name) {
+        this.setName(new SQLIdentifierExpr(name));
+    }
+
     public SQLExprTableSource getTableSource() {
         return tableSource;
     }
@@ -85,12 +119,36 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         this.tableSource = tableSource;
     }
 
-    public Level getWith() {
-        return with;
+    public boolean isWithCheckOption() {
+        return withCheckOption;
     }
 
-    public void setWith(Level with) {
-        this.with = with;
+    public void setWithCheckOption(boolean withCheckOption) {
+        this.withCheckOption = withCheckOption;
+    }
+
+    public boolean isWithCascaded() {
+        return withCascaded;
+    }
+
+    public void setWithCascaded(boolean withCascaded) {
+        this.withCascaded = withCascaded;
+    }
+
+    public boolean isWithLocal() {
+        return withLocal;
+    }
+
+    public void setWithLocal(boolean withLocal) {
+        this.withLocal = withLocal;
+    }
+
+    public boolean isWithReadOnly() {
+        return withReadOnly;
+    }
+
+    public void setWithReadOnly(boolean withReadOnly) {
+        this.withReadOnly = withReadOnly;
     }
 
     public SQLSelect getSubQuery() {
@@ -98,14 +156,17 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     }
 
     public void setSubQuery(SQLSelect subQuery) {
+        if (subQuery != null) {
+            subQuery.setParent(this);
+        }
         this.subQuery = subQuery;
     }
 
-    public List<Column> getColumns() {
+    public List<SQLTableElement> getColumns() {
         return columns;
     }
     
-    public void addColumn(Column column) {
+    public void addColumn(SQLTableElement column) {
         if (column != null) {
             column.setParent(this);
         }
@@ -177,6 +238,21 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         visitor.endVisit(this);
     }
 
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (tableSource != null) {
+            children.add(tableSource);
+        }
+        children.addAll(this.columns);
+        if (comment != null) {
+            children.add(comment);
+        }
+        if (subQuery != null) {
+            children.add(subQuery);
+        }
+        return children;
+    }
+
     public static enum Level {
                               CASCADED, LOCAL
     }
@@ -215,5 +291,41 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
                 acceptChild(visitor, comment);
             }
         }
+    }
+
+
+    public SQLCreateViewStatement clone() {
+        SQLCreateViewStatement x = new SQLCreateViewStatement();
+
+        x.orReplace = orReplace;
+        x.force = force;
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+        x.ifNotExists = ifNotExists;
+
+        x.algorithm = algorithm;
+        if (definer != null) {
+            x.setDefiner(definer.clone());
+        }
+        x.sqlSecurity = sqlSecurity;
+        if (tableSource != null) {
+            x.setTableSource(tableSource.clone());
+        }
+        for (SQLTableElement column : columns) {
+            SQLTableElement column2 = column.clone();
+            column2.setParent(x);
+            x.columns.add(column2);
+        }
+        x.withCheckOption = withCheckOption;
+        x.withCascaded = withCascaded;
+        x.withLocal = withLocal;
+        x.withReadOnly = withReadOnly;
+
+        if (comment != null) {
+            x.setComment(comment.clone());
+        }
+
+        return x;
     }
 }

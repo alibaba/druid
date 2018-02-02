@@ -63,9 +63,9 @@ public class OracleCreateTableTest8 extends OracleTest {
 
         Assert.assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_NEW_CLUSTER_YZS_0210", "PRODUCT_ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_NEW_CLUSTER_YZS_0210", "NEW_CLUSTER_ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_NEW_CLUSTER_YZS_0210", "STATUS")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+        Assert.assertTrue(visitor.containsColumn("PRODUCT_NEW_CLUSTER_YZS_0210", "PRODUCT_ID"));
+        Assert.assertTrue(visitor.containsColumn("PRODUCT_NEW_CLUSTER_YZS_0210", "NEW_CLUSTER_ID"));
+        Assert.assertTrue(visitor.containsColumn("PRODUCT_NEW_CLUSTER_YZS_0210", "STATUS"));
+        // Assert.assertTrue(visitor.containsColumn("pivot_table", "order_mode")));
     }
 }

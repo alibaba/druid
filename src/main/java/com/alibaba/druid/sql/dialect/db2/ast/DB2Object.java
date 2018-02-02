@@ -17,8 +17,14 @@ package com.alibaba.druid.sql.dialect.db2.ast;
 
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 
 public interface DB2Object extends SQLObject {
     void accept0(DB2ASTVisitor visitor);
+
+    interface Constants {
+        long CURRENT_DATE = FnvHash.fnv1a_64_lower("CURRENT DATE");
+        long CURRENT_TIME = FnvHash.fnv1a_64_lower("CURRENT TIME");
+    }
 }

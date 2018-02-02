@@ -299,7 +299,14 @@ public class PagerUtils {
 
         if (query instanceof SQLSelectQueryBlock) {
             OracleSelectQueryBlock queryBlock = (OracleSelectQueryBlock) query;
-            if (queryBlock.getGroupBy() == null && select.getOrderBy() == null && offset <= 0) {
+            SQLOrderBy orderBy = select.getOrderBy();
+            if (orderBy == null && queryBlock.getOrderBy() != null) {
+                orderBy = queryBlock.getOrderBy();
+            }
+
+            if (queryBlock.getGroupBy() == null
+                    && orderBy == null && offset <= 0) {
+
                 SQLExpr where = queryBlock.getWhere();
                 if (check && where instanceof SQLBinaryOpExpr) {
                     SQLBinaryOpExpr binaryOpWhere = (SQLBinaryOpExpr) where;
@@ -374,6 +381,8 @@ public class PagerUtils {
                 if (rowCount <= count && offset <= 0) {
                     return false;
                 }
+            } else if (check && limit.getRowCount() instanceof SQLVariantRefExpr) {
+                return false;
             }
 
             limit.setRowCount(new SQLIntegerExpr(count));
@@ -403,21 +412,26 @@ public class PagerUtils {
             SQLSelectItem countItem = createCountItem(dbType);
 
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+            List<SQLSelectItem> selectList = queryBlock.getSelectList();
 
-            if (queryBlock.getGroupBy() != null && queryBlock.getGroupBy().getItems().size() > 0) {
+            if (queryBlock.getGroupBy() != null
+                    && queryBlock.getGroupBy().getItems().size() > 0) {
                 return createCountUseSubQuery(select, dbType);
             }
             
             int option = queryBlock.getDistionOption();
-            if (option == SQLSetQuantifier.DISTINCT && queryBlock.getSelectList().size() == 1) {
-                SQLSelectItem firstItem = queryBlock.getSelectList().get(0);
-                SQLAggregateExpr exp = new SQLAggregateExpr("COUNT", SQLAggregateOption.DISTINCT);
-                exp.addArgument(firstItem.getExpr());
-                firstItem.setExpr(exp);
+            if (option == SQLSetQuantifier.DISTINCT
+                    && selectList.size() >= 1) {
+                SQLAggregateExpr countExpr = new SQLAggregateExpr("COUNT", SQLAggregateOption.DISTINCT);
+                for (int i = 0; i < selectList.size(); ++i) {
+                    countExpr.addArgument(selectList.get(i).getExpr());
+                }
+                selectList.clear();
                 queryBlock.setDistionOption(0);
+                queryBlock.addSelectItem(countExpr);
             } else {
-                queryBlock.getSelectList().clear();
-                queryBlock.getSelectList().add(countItem);
+                selectList.clear();
+                selectList.add(countItem);
             }
             return SQLUtils.toSQLString(select, dbType);
         } else if (query instanceof SQLUnionQuery) {
@@ -438,13 +452,15 @@ public class PagerUtils {
         countSelectQuery.setFrom(fromSubquery);
 
         SQLSelect countSelect = new SQLSelect(countSelectQuery);
-        SQLSelectStatement countStmt = new SQLSelectStatement(countSelect);
+        SQLSelectStatement countStmt = new SQLSelectStatement(countSelect, dbType);
 
         return SQLUtils.toSQLString(countStmt, dbType);
     }
 
     private static SQLSelectQueryBlock createQueryBlock(String dbType) {
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcConstants.MYSQL.equals(dbType)
+                || JdbcConstants.MARIADB.equals(dbType)
+                || JdbcConstants.ALIYUN_ADS.equals(dbType)) {
             return new MySqlSelectQueryBlock();
         }
 
@@ -487,16 +503,8 @@ public class PagerUtils {
     private static void clearOrderBy(SQLSelectQuery query) {
         if (query instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
-            if (queryBlock instanceof MySqlSelectQueryBlock) {
-                MySqlSelectQueryBlock mysqlQueryBlock = (MySqlSelectQueryBlock) queryBlock;
-                if (mysqlQueryBlock.getOrderBy() != null) {
-                    mysqlQueryBlock.setOrderBy(null);
-                }
-            } else if (queryBlock instanceof PGSelectQueryBlock) {
-                PGSelectQueryBlock pgQueryBlock = (PGSelectQueryBlock) queryBlock;
-                if (pgQueryBlock.getOrderBy() != null) {
-                    pgQueryBlock.setOrderBy(null);
-                }
+            if (queryBlock.getOrderBy() != null) {
+                queryBlock.setOrderBy(null);
             }
             return;
         }
@@ -665,12 +673,16 @@ public class PagerUtils {
 
 
             if (selectQuery != null) {
+                SQLOrderBy orderBy = selectQuery.getOrderBy();
+
                 SQLObject parent = selectQuery.getParent();
-                if (parent instanceof SQLSelect) {
+                if (orderBy == null && parent instanceof SQLSelect) {
                     SQLSelect select = (SQLSelect) parent;
-                    if (select.getOrderBy() == null || select.getOrderBy().getItems().size() == 0) {
-                        unorderedLimitCount++;
-                    }
+                    orderBy = select.getOrderBy();
+                }
+
+                if (orderBy == null || orderBy.getItems().size() == 0) {
+                    unorderedLimitCount++;
                 }
             }
 

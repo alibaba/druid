@@ -35,7 +35,7 @@ public class MySqlParameterizedOutputVisitorTest_34 extends TestCase {
         List<Object> parameters = new ArrayList<Object>();
         visitor.setParameterized(true);
         visitor.setParameterizedMergeInList(true);
-        visitor.setParameters(parameters);
+        visitor.setOutputParameters(parameters);
         visitor.setExportTables(true);
         /*visitor.setPrettyFormat(false);*/
 
@@ -52,7 +52,7 @@ public class MySqlParameterizedOutputVisitorTest_34 extends TestCase {
         StringBuilder buf = new StringBuilder();
         SQLASTOutputVisitor visitor1 = SQLUtils.createOutputVisitor(buf, dbType);
         visitor1.addTableMapping("udata", "udata_0888");
-        visitor1.setParameters(visitor.getParameters());
+        visitor1.setInputParameters(visitor.getParameters());
         pstmt.accept(visitor1);
 
         assertEquals("SELECT *\n" +

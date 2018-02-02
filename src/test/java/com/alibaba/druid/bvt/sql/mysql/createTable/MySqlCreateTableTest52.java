@@ -64,6 +64,6 @@ public class MySqlCreateTableTest52 extends MysqlTest {
     +"\n\t`create_time` datetime NOT NULL COMMENT '授权时间',"//
     +"\n\t`invalid_time` datetime NOT NULL COMMENT '授权失效时间',"//
     +"\n\tPRIMARY KEY (`auth_id`)"
-    +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin COMMENT = 'INS_EBAY_AUTH'", output);
+    +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin COMMENT 'INS_EBAY_AUTH'", output);
     }
 }

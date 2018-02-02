@@ -16,12 +16,25 @@
 package com.alibaba.druid.sql.dialect.postgresql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class PGExtractExpr extends PGExprImpl {
 
     private PGDateField field;
     private SQLExpr     source;
+
+    public PGExtractExpr clone() {
+        PGExtractExpr x = new PGExtractExpr();
+        x.field = field;
+        if (source != null) {
+            x.setSource(source.clone());
+        }
+        return x;
+    }
 
     public PGDateField getField() {
         return field;
@@ -36,6 +49,9 @@ public class PGExtractExpr extends PGExprImpl {
     }
 
     public void setSource(SQLExpr source) {
+        if (source != null) {
+            source.setParent(this);
+        }
         this.source = source;
     }
 
@@ -45,6 +61,10 @@ public class PGExtractExpr extends PGExprImpl {
             acceptChild(visitor, source);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(source);
     }
 
     @Override

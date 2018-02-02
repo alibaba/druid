@@ -16,13 +16,21 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLStatement {
+import java.util.ArrayList;
+import java.util.List;
 
-    private SQLExpr            indexName;
+public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDropStatement {
+
+    private SQLName            indexName;
     private SQLExprTableSource tableName;
+
+    private SQLExpr            algorithm;
+    private SQLExpr            lockOption;
     
     public SQLDropIndexStatement() {
         
@@ -32,11 +40,11 @@ public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLSta
         super (dbType);
     }
 
-    public SQLExpr getIndexName() {
+    public SQLName getIndexName() {
         return indexName;
     }
 
-    public void setIndexName(SQLExpr indexName) {
+    public void setIndexName(SQLName indexName) {
         this.indexName = indexName;
     }
 
@@ -44,7 +52,7 @@ public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLSta
         return tableName;
     }
 
-    public void setTableName(SQLExpr tableName) {
+    public void setTableName(SQLName tableName) {
         this.setTableName(new SQLExprTableSource(tableName));
     }
 
@@ -52,12 +60,48 @@ public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLSta
         this.tableName = tableName;
     }
 
+    public SQLExpr getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.algorithm = x;
+    }
+
+    public SQLExpr getLockOption() {
+        return lockOption;
+    }
+
+    public void setLockOption(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.lockOption = x;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, indexName);
             acceptChild(visitor, tableName);
+            acceptChild(visitor, algorithm);
+            acceptChild(visitor, lockOption);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (indexName != null) {
+            children.add(indexName);
+        }
+        if (tableName != null) {
+            children.add(tableName);
+        }
+        return children;
     }
 }

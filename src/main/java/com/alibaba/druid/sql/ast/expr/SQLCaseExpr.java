@@ -17,12 +17,12 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
@@ -76,6 +76,19 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
             acceptChild(visitor, this.elseExpr);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (valueExpr != null) {
+            children.add(this.valueExpr);
+        }
+        children.addAll(this.items);
+        if (elseExpr != null) {
+            children.add(this.elseExpr);
+        }
+        return children;
     }
 
     @Override
@@ -175,6 +188,10 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
             return x;
         }
 
+        public void output(StringBuffer buf) {
+            new SQLASTOutputVisitor(buf).visit(this);
+        }
+
         @Override
         public boolean replace(SQLExpr expr, SQLExpr target) {
             if (valueExpr == expr) {
@@ -254,5 +271,27 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
         }
 
         return x;
+    }
+
+    public SQLDataType computeDataType() {
+        for (Item item : items) {
+            SQLExpr expr = item.getValueExpr();
+            if (expr != null) {
+                SQLDataType dataType = expr.computeDataType();
+                if (dataType != null) {
+                    return dataType;
+                }
+            }
+        }
+
+        if(elseExpr != null) {
+            return elseExpr.computeDataType();
+        }
+
+        return null;
+    }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this, null);
     }
 }

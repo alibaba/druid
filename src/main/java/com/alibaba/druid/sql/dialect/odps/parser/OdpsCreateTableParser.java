@@ -15,15 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.odps.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
 
 public class OdpsCreateTableParser extends SQLCreateTableParser {
 
@@ -35,7 +38,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCrateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
         OdpsCreateTableStatement stmt = new OdpsCreateTableStatement();
         
         if (acceptCreate) {
@@ -44,7 +47,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         
         accept(Token.TABLE);
 
-        if (lexer.token() == Token.IF || identifierEquals("IF")) {
+        if (lexer.token() == Token.IF || lexer.identifierEquals("IF")) {
             lexer.nextToken();
             accept(Token.NOT);
             accept(Token.EXISTS);
@@ -54,7 +57,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
         stmt.setName(this.exprParser.name());
         
-        if (identifierEquals("LIFECYCLE")) {
+        if (lexer.identifierEquals("LIFECYCLE")) {
             lexer.nextToken();
             stmt.setLifecycle(this.exprParser.expr());
         }
@@ -79,7 +82,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             
             for (;;) {
                 if (lexer.token() != Token.IDENTIFIER) {
-                    throw new ParserException("expect identifier");
+                    throw new ParserException("expect identifier. " + lexer.info());
                 }
                 
                 SQLColumnDefinition column = this.exprParser.parseColumn();
@@ -114,7 +117,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             
             for (;;) {
                 if (lexer.token() != Token.IDENTIFIER) {
-                    throw new ParserException("expect identifier");
+                    throw new ParserException("expect identifier. " + lexer.info());
                 }
                 
                 SQLColumnDefinition column = this.exprParser.parseColumn();
@@ -124,7 +127,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     column.addAfterComment(lexer.readAndResetComments());
                 }
                 
-                if (!(lexer.token() == (Token.COMMA))) {
+                if (lexer.token() != Token.COMMA) {
                     break;
                 } else {
                     lexer.nextToken();
@@ -136,10 +139,58 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             
             accept(Token.RPAREN);
         }
+
+        if (lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
+            lexer.nextToken();
+            accept(Token.BY);
+            accept(Token.LPAREN);
+            this.exprParser.names(stmt.getClusteredBy());
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
+            lexer.nextToken();
+            accept(Token.BY);
+            accept(Token.LPAREN);
+            for (; ; ) {
+                SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+                stmt.addSortedByItem(item);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            accept(Token.RPAREN);
+        }
+
+        if (stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) {
+            accept(Token.INTO);
+            if (lexer.token() == Token.LITERAL_INT) {
+                stmt.setBuckets(lexer.integerValue().intValue());
+                lexer.nextToken();
+            } else {
+                throw new ParserException("into buckets must be integer. " + lexer.info());
+            }
+            acceptIdentifier("BUCKETS");
+        }
         
-        if (identifierEquals("LIFECYCLE")) {
+        if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
             lexer.nextToken();
             stmt.setLifecycle(this.exprParser.expr());
+        }
+
+        while (lexer.identifierEquals(FnvHash.Constants.STORED)) {
+            lexer.nextToken();
+            if (lexer.token() == Token.AS) {
+                lexer.nextToken();
+                SQLName storedAs = this.exprParser.name();
+                stmt.setStoredAs(storedAs);
+            } else {
+                accept(Token.BY);
+                SQLExpr storedBy = this.exprParser.expr();
+                stmt.setStoredBy(storedBy);
+            }
         }
         
         return stmt;

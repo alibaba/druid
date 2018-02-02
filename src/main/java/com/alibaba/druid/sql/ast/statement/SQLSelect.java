@@ -20,7 +20,10 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLSelect extends SQLObjectImpl {
 
@@ -93,11 +96,15 @@ public class SQLSelect extends SQLObjectImpl {
     }
 
     public void setOrderBy(SQLOrderBy orderBy) {
+        if (orderBy != null) {
+            orderBy.setParent(this);
+        }
         this.orderBy = orderBy;
     }
 
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, this.withSubQuery);
             acceptChild(visitor, this.query);
             acceptChild(visitor, this.restriction);
             acceptChild(visitor, this.orderBy);
@@ -137,11 +144,43 @@ public class SQLSelect extends SQLObjectImpl {
         return true;
     }
 
+    public void output(StringBuffer buf) {
+        String dbType = null;
+
+        SQLObject parent = this.getParent();
+        if (parent instanceof SQLStatement) {
+            dbType = ((SQLStatement) parent).getDbType();
+        }
+
+        if (dbType == null && parent instanceof OracleSQLObject) {
+            dbType = JdbcConstants.ORACLE;
+        }
+
+        if (dbType == null && query instanceof SQLSelectQueryBlock) {
+            dbType = ((SQLSelectQueryBlock) query).dbType;
+        }
+
+        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(buf, dbType);
+        this.accept(visitor);
+    }
+
     public String toString() {
         SQLObject parent = this.getParent();
         if (parent instanceof SQLStatement) {
             String dbType = ((SQLStatement) parent).getDbType();
             
+            if (dbType != null) {
+                return SQLUtils.toSQLString(this, dbType);
+            }
+        }
+
+        if (parent instanceof OracleSQLObject) {
+            return SQLUtils.toSQLString(this, JdbcConstants.ORACLE);
+        }
+
+        if (query instanceof SQLSelectQueryBlock) {
+            String dbType = ((SQLSelectQueryBlock) query).dbType;
+
             if (dbType != null) {
                 return SQLUtils.toSQLString(this, dbType);
             }
@@ -154,7 +193,10 @@ public class SQLSelect extends SQLObjectImpl {
         SQLSelect x = new SQLSelect();
 
         x.withSubQuery = this.withSubQuery;
-        x.query = this.query;
+        if (query != null) {
+            x.setQuery(query.clone());
+        }
+
         if (orderBy != null) {
             x.setOrderBy(this.orderBy.clone());
         }
@@ -268,4 +310,15 @@ public class SQLSelect extends SQLObjectImpl {
         this.xmlPath = xmlPath;
     }
 
+    public SQLSelectQueryBlock getFirstQueryBlock() {
+        if (query instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) query;
+        }
+
+        if (query instanceof SQLUnionQuery) {
+            return ((SQLUnionQuery) query).getFirstQueryBlock();
+        }
+
+        return null;
+    }
 }

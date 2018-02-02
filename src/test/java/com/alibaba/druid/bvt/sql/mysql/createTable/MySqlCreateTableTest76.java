@@ -80,7 +80,7 @@ public class MySqlCreateTableTest76 extends MysqlTest {
                     "\tKEY `k_rid_aid_tid` (`receiver_id`, `app_id`, `type_id`, `expiration_date`),\n" +
                     "\tKEY `k_rid_stat_popup` (`receiver_id`, `status`, `popup`, `expiration_date`),\n" +
                     "\tKEY `k_tid` (`tag_id`)\n" +
-                    ") ENGINE = InnoDB AUTO_INCREMENT = 167279613030 CHARSET = gbk COMMENT = '消息实体表'", output);
+                    ") ENGINE = InnoDB AUTO_INCREMENT = 167279613030 CHARSET = gbk COMMENT '消息实体表'", output);
         }
         
         {
@@ -104,7 +104,7 @@ public class MySqlCreateTableTest76 extends MysqlTest {
                     "\tkey `k_rid_aid_tid` (`receiver_id`, `app_id`, `type_id`, `expiration_date`),\n" +
                     "\tkey `k_rid_stat_popup` (`receiver_id`, `status`, `popup`, `expiration_date`),\n" +
                     "\tkey `k_tid` (`tag_id`)\n" +
-                    ") engine = InnoDB auto_increment = 167279613030 charset = gbk comment = '消息实体表'", output);
+                    ") engine = InnoDB auto_increment = 167279613030 charset = gbk comment '消息实体表'", output);
         }
     }
 }

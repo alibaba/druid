@@ -48,4 +48,6 @@ public interface OracleConstraint extends OracleSQLObject, SQLConstraint, SQLTab
     public static enum Initially {
         DEFERRED, IMMEDIATE
     }
+
+    OracleConstraint clone();
 }

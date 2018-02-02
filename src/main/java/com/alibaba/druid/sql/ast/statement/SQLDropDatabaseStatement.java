@@ -16,10 +16,14 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropDatabaseStatement extends SQLStatementImpl implements SQLDDLStatement {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SQLDropDatabaseStatement extends SQLStatementImpl implements SQLDropStatement {
 
     private SQLExpr database;
     private boolean ifExists;
@@ -57,6 +61,15 @@ public class SQLDropDatabaseStatement extends SQLStatementImpl implements SQLDDL
 
     public void setIfExists(boolean ifExists) {
         this.ifExists = ifExists;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (database != null) {
+            children.add(database);
+        }
+        return children;
     }
 
 }

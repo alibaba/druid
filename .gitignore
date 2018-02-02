@@ -5,7 +5,8 @@
 /.DS_Store
 /1
 /derby.log
-
+/src/test/resources/pool_config
+/src/test/java/com/alibaba/druid/local_test
 # IntelliJ Idea
 .idea/
 out/

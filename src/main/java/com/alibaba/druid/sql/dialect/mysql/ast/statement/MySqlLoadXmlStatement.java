@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
@@ -142,5 +143,24 @@ public class MySqlLoadXmlStatement extends MySqlStatementImpl {
             acceptChild(visitor, setList);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (fileName != null) {
+            children.add(fileName);
+        }
+        if (tableName != null) {
+            children.add(tableName);
+        }
+        if (rowsIdentifiedBy != null) {
+            children.add(rowsIdentifiedBy);
+        }
+        if (ignoreLinesNumber != null) {
+            children.add(ignoreLinesNumber);
+        }
+        children.addAll(this.setList);
+        return children;
     }
 }

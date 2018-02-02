@@ -17,7 +17,11 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class SQLCurrentOfCursorExpr extends SQLExprImpl {
 
@@ -31,11 +35,22 @@ public class SQLCurrentOfCursorExpr extends SQLExprImpl {
         this.cursorName = cursorName;
     }
 
+    public SQLCurrentOfCursorExpr clone() {
+        SQLCurrentOfCursorExpr x = new SQLCurrentOfCursorExpr();
+        if (cursorName != null) {
+            x.setCursorName(cursorName.clone());
+        }
+        return x;
+    }
+
     public SQLName getCursorName() {
         return cursorName;
     }
 
     public void setCursorName(SQLName cursorName) {
+        if (cursorName != null) {
+            cursorName.setParent(this);
+        }
         this.cursorName = cursorName;
     }
 
@@ -52,6 +67,11 @@ public class SQLCurrentOfCursorExpr extends SQLExprImpl {
         }
         visitor.endVisit(this);
     }
+
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.cursorName);
+    }
+
 
     @Override
     public int hashCode() {

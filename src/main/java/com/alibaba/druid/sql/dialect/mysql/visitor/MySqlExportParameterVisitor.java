@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlFlushStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
@@ -127,5 +128,15 @@ public class MySqlExportParameterVisitor extends MySqlOutputVisitor implements E
          }
         ExportParameterVisitorUtils.exportParameter(this.parameters, x);
         return true;
+    }
+
+    @Override
+    public boolean visit(MySqlFlushStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlFlushStatement x) {
+
     }
 }

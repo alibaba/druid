@@ -15,13 +15,15 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /**
  * Created by wenshao on 16/9/25.
  */
-public class SQLLimit extends SQLObjectImpl {
+public final class SQLLimit extends SQLObjectImpl {
 
     public SQLLimit() {
 
@@ -50,8 +52,16 @@ public class SQLLimit extends SQLObjectImpl {
         this.rowCount = rowCount;
     }
 
+    public void setRowCount(int rowCount) {
+        this.setRowCount(new SQLIntegerExpr(rowCount));
+    }
+
     public SQLExpr getOffset() {
         return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.setOffset(new SQLIntegerExpr(offset));
     }
 
     public void setOffset(SQLExpr offset) {

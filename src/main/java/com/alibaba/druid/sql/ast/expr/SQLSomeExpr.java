@@ -15,11 +15,19 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLSomeExpr extends SQLExprImpl {
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+public final class SQLSomeExpr extends SQLExprImpl {
 
     public SQLSelect subQuery;
 
@@ -28,8 +36,15 @@ public class SQLSomeExpr extends SQLExprImpl {
     }
 
     public SQLSomeExpr(SQLSelect select){
+        this.setSubQuery(select);
+    }
 
-        this.subQuery = select;
+    public SQLSomeExpr clone() {
+        SQLSomeExpr x = new SQLSomeExpr();
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+        return x;
     }
 
     public SQLSelect getSubQuery() {
@@ -37,6 +52,9 @@ public class SQLSomeExpr extends SQLExprImpl {
     }
 
     public void setSubQuery(SQLSelect subQuery) {
+        if (subQuery != null) {
+            subQuery.setParent(this);
+        }
         this.subQuery = subQuery;
     }
 
@@ -81,5 +99,28 @@ public class SQLSomeExpr extends SQLExprImpl {
             return false;
         }
         return true;
+    }
+
+    public SQLDataType computeDataType() {
+        if (subQuery == null) {
+            return null;
+        }
+
+        SQLSelectQueryBlock queryBlock = subQuery.getFirstQueryBlock();
+        if (queryBlock == null) {
+            return null;
+        }
+
+        List<SQLSelectItem> selectList = queryBlock.getSelectList();
+        if (selectList.size() == 1) {
+            return selectList.get(0).computeDataType();
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.subQuery);
     }
 }

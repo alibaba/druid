@@ -65,6 +65,8 @@ public class MySqlCreateProcedureTest8 extends MysqlTest {
 //    	print(statementList);
         assertEquals(1, statementList.size());
 
+		System.out.println(stmt);
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
 
