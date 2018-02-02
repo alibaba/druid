@@ -3007,4 +3007,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         return false;
     }
+
+    @Override
+    public boolean visit(SQLAlterTableAddColumn x) {
+        boolean odps = isOdps();
+        print0(ucase ? "ADD COLUMN " : "add column ");
+        printAndAccept(x.getColumns(), ", ");
+        return false;
+    }
 }
