@@ -26,5 +26,6 @@ public interface DB2Object extends SQLObject {
     interface Constants {
         long CURRENT_DATE = FnvHash.fnv1a_64_lower("CURRENT DATE");
         long CURRENT_TIME = FnvHash.fnv1a_64_lower("CURRENT TIME");
+        long CURRENT_SCHEMA = FnvHash.fnv1a_64_lower("CURRENT SCHEMA");
     }
 }

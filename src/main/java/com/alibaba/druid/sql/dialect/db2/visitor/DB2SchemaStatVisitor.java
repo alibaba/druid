@@ -60,6 +60,8 @@ public class DB2SchemaStatVisitor extends SchemaStatVisitor implements DB2ASTVis
     }
 
     protected boolean isPseudoColumn(long hash64) {
-        return hash64 == DB2Object.Constants.CURRENT_DATE || hash64 == DB2Object.Constants.CURRENT_TIME;
+        return hash64 == DB2Object.Constants.CURRENT_DATE
+                || hash64 == DB2Object.Constants.CURRENT_TIME
+                || hash64 == DB2Object.Constants.CURRENT_SCHEMA;
     }
 }
