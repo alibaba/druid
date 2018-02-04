@@ -323,6 +323,10 @@ public class TableStat {
             return values;
         }
 
+        public void addValue(Object value) {
+            this.values.add(value);
+        }
+
         @Override
         public int hashCode() {
             final int prime = 31;

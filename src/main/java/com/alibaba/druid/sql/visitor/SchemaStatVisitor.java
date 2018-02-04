@@ -641,11 +641,18 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             if (valueColumn != null) {
                 continue;
             }
-            Object value = SQLEvalVisitorUtils.eval(dbType, item, parameters, false);
-            if (value == SQLEvalVisitor.EVAL_VALUE_NULL) {
-                value = null;
+
+            Object value;
+            if (item instanceof SQLMethodInvokeExpr) {
+                value = item.toString();
+            } else {
+                value = SQLEvalVisitorUtils.eval(dbType, item, parameters, false);
+                if (value == SQLEvalVisitor.EVAL_VALUE_NULL) {
+                    value = null;
+                }
             }
-            condition.getValues().add(value);
+
+            condition.addValue(value);
         }
     }
 
