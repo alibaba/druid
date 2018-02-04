@@ -88,21 +88,41 @@ public final class ExportParameterVisitorUtils {
         if (param instanceof SQLCharExpr) {
             value = ((SQLCharExpr) param).getText();
             replace = true;
-        }
-
-        if (param instanceof SQLBooleanExpr) {
+        } else if (param instanceof SQLBooleanExpr) {
             value = ((SQLBooleanExpr) param).getBooleanValue();
             replace = true;
-        }
-
-        if (param instanceof SQLNumericLiteralExpr) {
+        } else if (param instanceof SQLNumericLiteralExpr) {
             value = ((SQLNumericLiteralExpr) param).getNumber();
             replace = true;
-        }
-
-        if (param instanceof SQLHexExpr) {
+        } else if (param instanceof SQLHexExpr) {
             value = ((SQLHexExpr) param).toBytes();
             replace = true;
+        } else if (param instanceof SQLListExpr) {
+            SQLListExpr list = ((SQLListExpr) param);
+
+            List<Object> listValues = new ArrayList<Object>();
+            for (int i = 0; i < list.getItems().size(); i++) {
+                SQLExpr listItem = list.getItems().get(i);
+
+                if (listItem instanceof SQLCharExpr) {
+                    Object listValue = ((SQLCharExpr) listItem).getText();
+                    listValues.add(listValue);
+                } else if (listItem instanceof SQLBooleanExpr) {
+                    Object listValue = ((SQLBooleanExpr) listItem).getBooleanValue();
+                    listValues.add(listValue);
+                } else if (listItem instanceof SQLNumericLiteralExpr) {
+                    Object listValue = ((SQLNumericLiteralExpr) listItem).getNumber();
+                    listValues.add(listValue);
+                } else if (param instanceof SQLHexExpr) {
+                    Object listValue = ((SQLHexExpr) listItem).toBytes();
+                    listValues.add(listValue);
+                }
+            }
+
+            if (listValues.size() == list.getItems().size()) {
+                value = listValues;
+                replace = true;
+            }
         }
 
         if (replace) {

@@ -1204,6 +1204,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             boolean allLiteral = true;
             for (SQLExpr item : targetList) {
                 if (!(item instanceof SQLLiteralExpr || item instanceof SQLVariantRefExpr)) {
+                    if (item instanceof SQLListExpr) {
+                        SQLListExpr list = (SQLListExpr) item;
+                        for (SQLExpr listItem : list.getItems()) {
+                            if (!(listItem instanceof SQLLiteralExpr || listItem instanceof SQLVariantRefExpr)) {
+                                allLiteral = false;
+                                break;
+                            }
+                        }
+                        if (allLiteral) {
+                            break;
+                        }
+                        continue;
+                    }
                     allLiteral = false;
                     break;
                 }
