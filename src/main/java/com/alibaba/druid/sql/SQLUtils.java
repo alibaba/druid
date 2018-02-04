@@ -833,6 +833,9 @@ public class SQLUtils {
             char x0 = name.charAt(name.length() - 1);
             if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
                 String normalizeName = name.substring(1, name.length() - 1);
+                if (c0 == '`') {
+                    normalizeName = normalizeName.replaceAll("`\\.`", ".");
+                }
 
                 if (JdbcConstants.ORACLE.equals(dbType)) {
                     if (OracleUtils.isKeyword(normalizeName)) {
