@@ -105,7 +105,7 @@ public class PagerUtils {
         if (JdbcConstants.MYSQL.equals(dbType) || //
             JdbcConstants.MARIADB.equals(dbType) || //
             JdbcConstants.H2.equals(dbType)) {
-            return limitMySqlQueryBlock((MySqlSelectQueryBlock) queryBlock, dbType, offset, count, check);
+            return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
         }
 
         if (JdbcConstants.POSTGRESQL.equals(dbType)) {
@@ -369,7 +369,7 @@ public class PagerUtils {
         return true;
     }
 
-    private static boolean limitMySqlQueryBlock(MySqlSelectQueryBlock queryBlock, String dbType, int offset, int count, boolean check) {
+    private static boolean limitMySqlQueryBlock(SQLSelectQueryBlock queryBlock, String dbType, int offset, int count, boolean check) {
         SQLLimit limit = queryBlock.getLimit();
         if (limit != null) {
             if (offset > 0) {
