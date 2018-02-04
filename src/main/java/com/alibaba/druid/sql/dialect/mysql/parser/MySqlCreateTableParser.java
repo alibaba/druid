@@ -172,7 +172,21 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                         stmt.getTableElementList().add(idx);
                     } else if (lexer.token() == (Token.KEY)) {
-                        stmt.getTableElementList().add(parseConstraint());
+                        Lexer.SavePoint savePoint = lexer.mark();
+                        lexer.nextToken();
+
+                        boolean isColumn = false;
+                        if (lexer.identifierEquals(FnvHash.Constants.VARCHAR)) {
+                            isColumn = true;
+                        }
+                        lexer.reset(savePoint);
+
+                        if (isColumn) {
+                            column = this.exprParser.parseColumn();
+                            stmt.getTableElementList().add(column);
+                        } else {
+                            stmt.getTableElementList().add(parseConstraint());
+                        }
                     } else if (lexer.token() == (Token.PRIMARY)) {
                         SQLTableConstraint pk = parseConstraint();
                         pk.setParent(stmt);
