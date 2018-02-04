@@ -652,6 +652,18 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public void endVisit(PGConnectToStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(PGConnectToStatement x) {
+        print0(ucase ? "CONNECT TO " : "connect to ");
+        x.getTarget().accept(this);
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLSetStatement x) {
         print0(ucase ? "SET " : "set ");
 
