@@ -1975,7 +1975,7 @@ public class SQLExprParser extends SQLParser {
 
                     for (;;) {
                         lexer.nextToken();
-                        SQLExpr more = relational();
+                        SQLExpr more = and();
                         group.add(more);
                         if (lexer.token == Token.OR) {
                             if (lexer.isKeepComments() && lexer.hasComment()) {
