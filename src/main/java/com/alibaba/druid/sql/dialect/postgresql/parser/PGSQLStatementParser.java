@@ -292,8 +292,27 @@ public class PGSQLStatementParser extends SQLStatementParser {
             statementList.add(parseWith());
             return true;
         default:
-            return false;
+            break;
         }
+
+        if (lexer.identifierEquals(FnvHash.Constants.CONNECT)) {
+            SQLStatement stmt = parseConnectTo();
+            statementList.add(stmt);
+            return true;
+        }
+
+        return false;
+    }
+
+    public SQLStatement parseConnectTo() {
+        acceptIdentifier("CONNECT");
+        accept(Token.TO);
+
+        PGConnectToStatement stmt = new PGConnectToStatement();
+        SQLName target = this.exprParser.name();
+        stmt.setTarget(target);
+
+        return stmt;
     }
 
     public PGSelectStatement parseSelect() {
