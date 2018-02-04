@@ -62,6 +62,8 @@ public class MySqlExceptionSorter implements ExceptionSorter {
                 // Access denied
             case 1142: // ER_TABLEACCESS_DENIED_ERROR
             case 1227: // ER_SPECIFIC_ACCESS_DENIED_ERROR
+
+            case 1290: // ER_OPTION_PREVENTS_STATEMENT
                 return true;
             default:
                 break;
