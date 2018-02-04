@@ -21,14 +21,13 @@ public class OracleJoinResolveTest_2_join extends TestCase {
     }
 
     public void test_for_issue() throws Exception {
-
-        String sql = "select a.* from t_user a inner join t_group b where a.uid = id";
-        assertEquals("SELECT a.uid, a.gid, a.name, b.id, a.name\n" +
+        assertEquals("SELECT a.uid, a.gid, a.name, b.id, b.name\n" +
                         "FROM t_user a\n" +
                         "\tINNER JOIN t_group b\n" +
                         "WHERE a.uid = b.id"
                 , repository.resolve("select * from t_user a inner join t_group b where a.uid = id"));
 
+        String sql = "select a.* from t_user a inner join t_group b where a.uid = id";
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SchemaStatVisitor schemaStatVisitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         schemaStatVisitor.setRepository(repository);

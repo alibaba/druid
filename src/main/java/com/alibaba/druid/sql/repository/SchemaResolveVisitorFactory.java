@@ -2218,18 +2218,30 @@ class SchemaResolveVisitorFactory {
                 return;
             }
 
+            String alias = from.getAlias();
+
             SchemaObject table = repository.findTable((SQLExprTableSource) from);
             if (table != null) {
                 SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) table.getStatement();
                 for (SQLTableElement e : createTableStmt.getTableElementList()) {
                     if (e instanceof SQLColumnDefinition) {
                         SQLColumnDefinition column = (SQLColumnDefinition) e;
-                        SQLIdentifierExpr name = (SQLIdentifierExpr) column.getName().clone();
-                        name.setResolvedColumn(column);
-                        columns.add(new SQLSelectItem(name));
+
+                        if (alias != null) {
+                            SQLPropertyExpr name = new SQLPropertyExpr(alias, column.getName().getSimpleName());
+                            name.setResolvedColumn(column);
+                            columns.add(new SQLSelectItem(name));
+                        } else {
+                            SQLIdentifierExpr name = (SQLIdentifierExpr) column.getName().clone();
+                            name.setResolvedColumn(column);
+                            columns.add(new SQLSelectItem(name));
+                        }
+
+
                     }
                 }
             }
+            return;
         }
 
         if (from instanceof SQLJoinTableSource) {
