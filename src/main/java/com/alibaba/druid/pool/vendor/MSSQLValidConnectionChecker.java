@@ -44,7 +44,9 @@ public class MSSQLValidConnectionChecker extends ValidConnectionCheckerAdapter i
 
         try {
             stmt = c.createStatement();
-            stmt.setQueryTimeout(validationQueryTimeout);
+            if (validationQueryTimeout > 0) {
+                stmt.setQueryTimeout(validationQueryTimeout);
+            }
             stmt.execute(validateQuery);
             return true;
         } catch (SQLException e) {
