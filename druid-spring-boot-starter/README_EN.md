@@ -153,7 +153,7 @@ Druid Spring Boot Starter will enable StatFilter by default, and you can also se
 
 ```endpoints.druid.enabled=true```
 
-default endpoint address is : `/druid-endpoint`, can be used `endpoints.druid.path=` to customize it. 
+default endpoint address is : `/actuator/druid`, can be used `endpoints.druid.path=` to customize it. 
 
 
 

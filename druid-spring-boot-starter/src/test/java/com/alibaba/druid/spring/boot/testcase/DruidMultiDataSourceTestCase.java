@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.spring.boot.testcase;
 
+import java.sql.SQLException;
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.demo.DemoApplication;
 import org.junit.Test;
@@ -41,7 +43,9 @@ public class DruidMultiDataSourceTestCase {
     private DruidDataSource dataSourceTwo;
 
     @Test
-    public void testDataSourceOne() {
+    public void testDataSourceOne() throws SQLException {
+        dataSourceOne.init();
+
         assertThat(dataSourceOne.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
         assertThat(dataSourceOne.getUsername()).isEqualTo("sa");
         assertThat(dataSourceOne.getPassword()).isEqualTo("sa");
@@ -53,7 +57,9 @@ public class DruidMultiDataSourceTestCase {
         assertThat(dataSourceOne.getMaxWait()).isEqualTo(10000);
     }
     @Test
-    public void testDataSourceTwo() {
+    public void testDataSourceTwo() throws SQLException {
+        dataSourceTwo.init();
+
         assertThat(dataSourceTwo.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
         assertThat(dataSourceTwo.getUsername()).isEqualTo("sa");
         assertThat(dataSourceTwo.getPassword()).isEqualTo("sa");
