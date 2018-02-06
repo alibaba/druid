@@ -157,7 +157,7 @@ spring.datasource.druid.filter.wall.config.drop-table-allow=false
 
 ## Spring Boot Actuator Endpoints
 
-可以使用下面配置类启用 endpoint 默认访问地址：`/druid-endpoint`，可以使用 `endpoints.druid.path=` 自定义终端地址
+可以使用下面配置类启用 endpoint 默认访问地址：`/actuator/druid`，可以使用 `endpoints.druid.path=` 自定义终端地址
 
 ```endpoints.druid.enabled=true```
 

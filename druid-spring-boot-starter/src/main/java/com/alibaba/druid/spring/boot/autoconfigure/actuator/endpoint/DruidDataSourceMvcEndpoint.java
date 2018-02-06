@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class DruidDataSourceMvcEndpoint extends AbstractMvcEndpoint {
 
     public DruidDataSourceMvcEndpoint() {
-        super("/druid-endpoint", true);
+        super("/actuator/druid", true);
     }
 
     @ResponseBody
