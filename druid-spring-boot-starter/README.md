@@ -12,12 +12,12 @@ Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Drui
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.7</version>
+       <version>1.1.6</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.7'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.6'
     
     ```
 2. 添加配置
@@ -154,16 +154,6 @@ spring.datasource.druid.filter.wall.config.drop-table-allow=false
 - CommonsLogFilter
 
 要想使自定义 Filter 配置生效需要将对应 Filter 的 ```enabled``` 设置为 ```true``` ，Druid Spring Boot Starter 默认会启用 StatFilter，你也可以将其 ```enabled``` 设置为 ```false``` 来禁用它。
-
-## Spring Boot Actuator Endpoints
-
-可以使用下面配置类启用 endpoint 默认访问地址：`/actuator/druid`，可以使用 `endpoints.druid.path=` 自定义终端地址
-
-```endpoints.druid.enabled=true```
-
-默认需要安全认证才可以访问，可以用下面两种方式之一来禁用安全认证，详情见 Spring Boot 官方文档
-
-```endpoints.druid.sensitive=false```  或 ```management.security.enabled=false```
 
 ## IDE 提示支持
 ![](https://raw.githubusercontent.com/lihengming/java-codes/master/shared-resources/github-images/druid-spring-boot-starter-ide-hint.jpg)
