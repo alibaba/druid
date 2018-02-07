@@ -323,6 +323,12 @@ public class SQLExprParser extends SQLParser {
                     SQLDateExpr dateExpr = new SQLDateExpr();
                     dateExpr.setLiteral(literal);
                     sqlExpr = dateExpr;
+                } else if (hash_lower == FnvHash.Constants.TIMESTAMP
+                        && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)
+                        && !JdbcConstants.ORACLE.equals(dbType)) {
+                    SQLTimestampExpr dateExpr = new SQLTimestampExpr(lexer.stringVal());
+                    lexer.nextToken();
+                    sqlExpr = dateExpr;
                 } else if (JdbcConstants.MYSQL.equalsIgnoreCase(dbType) && ident.startsWith("0x") && (ident.length() % 2) == 0) {
                     sqlExpr = new SQLHexExpr(ident.substring(2));
                 } else {

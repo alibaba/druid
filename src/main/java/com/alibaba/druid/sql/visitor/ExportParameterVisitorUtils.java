@@ -97,6 +97,9 @@ public final class ExportParameterVisitorUtils {
         } else if (param instanceof SQLHexExpr) {
             value = ((SQLHexExpr) param).toBytes();
             replace = true;
+        } else if (param instanceof SQLTimestampExpr || param instanceof SQLDateExpr) {
+            value = ((SQLTimestampExpr) param).getValue();
+            replace = true;
         } else if (param instanceof SQLListExpr) {
             SQLListExpr list = ((SQLListExpr) param);
 

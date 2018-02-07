@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.visitor;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
@@ -286,5 +287,19 @@ public class ParameterizedOutputVisitorUtils {
         }
 
         return new SQLASTOutputVisitor(out, true);
+    }
+
+    public static String restore(String sql, String dbType, List<Object> parameters) {
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+
+        StringBuilder out = new StringBuilder();
+        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(out, dbType);
+        visitor.setInputParameters(parameters);
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
+
+        return out.toString();
     }
 }

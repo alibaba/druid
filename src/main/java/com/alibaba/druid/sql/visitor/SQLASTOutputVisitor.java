@@ -4278,6 +4278,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLTimestampExpr x) {
+        if (this.parameterized) {
+            print('?');
+            incrementReplaceCunt();
+
+            if(this.parameters != null){
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
+        }
+
         print0(ucase ? "TIMESTAMP " : "timestamp ");
 
         if (x.isWithTimeZone()) {
@@ -5537,6 +5547,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLDateExpr x) {
+        if (this.parameterized) {
+            print('?');
+            incrementReplaceCunt();
+
+            if(this.parameters != null){
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
+        }
+
         SQLExpr literal = x.getLiteral();
         print0(ucase ? "DATE " : "date ");
         printExpr(literal);

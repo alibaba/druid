@@ -35,6 +35,11 @@ public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr {
         
     }
 
+    public SQLTimestampExpr(String literal){
+        this.literal = literal;
+    }
+
+
     public SQLTimestampExpr clone() {
         SQLTimestampExpr x = new SQLTimestampExpr();
         x.literal = literal;
