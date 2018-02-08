@@ -13,12 +13,13 @@ import javax.sql.DataSource;
 @Profile("multi-datasource")
 public class MultiDataSourceConfigurer {
     @Primary
-    @Bean
+    @Bean(initMethod = "init")
     @ConfigurationProperties("spring.datasource.druid.one")
     public DataSource dataSourceOne(){
         return DruidDataSourceBuilder.create().build();
     }
-    @Bean
+
+    @Bean(initMethod = "init")
     @ConfigurationProperties("spring.datasource.druid.two")
     public DataSource dataSourceTwo(){
         return DruidDataSourceBuilder.create().build();

@@ -1,4 +1,5 @@
 # Druid Spring Boot Starter
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/)
 
 ## 中文 | [English](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README_EN.md)  
 Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Druid数据库连接池和监控。
@@ -11,12 +12,12 @@ Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Drui
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.6</version>
+       <version>1.1.8</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.6'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.8'
     
     ```
 2. 添加配置
@@ -111,6 +112,8 @@ spring.datasource.druid.two.max-active=20
 spring.datasource.druid.two.max-wait=20000
 ...
 ```
+注意：Spring Boot 2.X 不支持继承的方式，多数据源的话每个数据源要分开配置哦
+
 2. 创建数据源
 ```java
 @Primary

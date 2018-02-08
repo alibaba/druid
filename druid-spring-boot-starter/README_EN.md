@@ -1,4 +1,5 @@
 # Druid Spring Boot Starter
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/)
 
 ## English | [中文](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README.md)
 Spring Boot with Druid support, help you simplify Druid config in Spring Boot.
@@ -11,12 +12,12 @@ Spring Boot with Druid support, help you simplify Druid config in Spring Boot.
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.6</version>
+       <version>1.1.8</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.6'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.8'
     ```
 2. Add configuration properties.
     ```xml
@@ -105,6 +106,7 @@ spring.datasource.druid.two.max-active=20
 spring.datasource.druid.two.max-wait=20000
 ...
 ```
+Warning: Spring Boot 2.X not support extents, please configure one by one. 
 2. Create DruidDataSource
 ```java
 @Primary

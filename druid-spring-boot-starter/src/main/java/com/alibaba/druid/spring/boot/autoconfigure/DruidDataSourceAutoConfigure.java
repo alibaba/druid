@@ -18,7 +18,6 @@ package com.alibaba.druid.spring.boot.autoconfigure;
 import javax.sql.DataSource;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.spring.boot.autoconfigure.actuator.ActuatorConfiguration;
 import com.alibaba.druid.spring.boot.autoconfigure.properties.DruidStatProperties;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidSpringAopConfiguration;
@@ -46,13 +45,12 @@ import org.springframework.context.annotation.Import;
 @Import({DruidSpringAopConfiguration.class,
     DruidStatViewServletConfiguration.class,
     DruidWebStatFilterConfiguration.class,
-    DruidFilterConfiguration.class,
-    ActuatorConfiguration.class})
+    DruidFilterConfiguration.class})
 public class DruidDataSourceAutoConfigure {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DruidDataSourceAutoConfigure.class);
 
-    @Bean
+    @Bean(initMethod = "init")
     @ConditionalOnMissingBean
     public DataSource dataSource() {
         LOGGER.info("Init DruidDataSource");
