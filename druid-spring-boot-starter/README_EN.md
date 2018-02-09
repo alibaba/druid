@@ -107,6 +107,7 @@ spring.datasource.druid.two.max-wait=20000
 ...
 ```
 Warning: Spring Boot 2.X not support extents, please configure one by one. 
+
 2. Create DruidDataSource
 ```java
 @Primary

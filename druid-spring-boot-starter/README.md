@@ -112,7 +112,7 @@ spring.datasource.druid.two.max-active=20
 spring.datasource.druid.two.max-wait=20000
 ...
 ```
-注意：Spring Boot 2.X 不支持继承的方式，多数据源的话每个数据源要分开配置哦
+*强烈注意*：Spring Boot 2.X 版本不再支持配置继承，多数据源的话每个数据源都需要单独配置，否则配置不会生效
 
 2. 创建数据源
 ```java
