@@ -27,6 +27,6 @@ public class DruidFilterTestCase {
     @Test
     public void test() {
         List<Filter> filters = dataSource.getProxyFilters();
-        assertThat(filters.size()).isEqualTo(4);
+        assertThat(filters.size()).isEqualTo(3);
     }
 }

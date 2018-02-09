@@ -12,12 +12,12 @@ Spring Boot with Druid support, help you simplify Druid config in Spring Boot.
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.7</version>
+       <version>1.1.8</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.7'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.8'
     ```
 2. Add configuration properties.
     ```xml
@@ -106,6 +106,8 @@ spring.datasource.druid.two.max-active=20
 spring.datasource.druid.two.max-wait=20000
 ...
 ```
+Warning: Spring Boot 2.X not support extents, please configure one by one. 
+
 2. Create DruidDataSource
 ```java
 @Primary
@@ -148,14 +150,6 @@ Currently, configuration support is provided for the following filters. Please r
 - CommonsLogFilter
 
 Druid Spring Boot Starter will enable StatFilter by default, and you can also set its enabled to false.，make the Filter configuration take effect and need to set enabled to true.
-
-## Spring Boot Actuator Endpoints
-
-```endpoints.druid.enabled=true```
-
-default endpoint address is : `/actuator/druid`, can be used `endpoints.druid.path=` to customize it. 
-
-
 
 ## IDE Hints
 ![](https://raw.githubusercontent.com/lihengming/java-codes/master/shared-resources/github-images/druid-spring-boot-starter-ide-hint.jpg)

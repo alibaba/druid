@@ -44,7 +44,6 @@ public class DruidMultiDataSourceTestCase {
 
     @Test
     public void testDataSourceOne() throws SQLException {
-        dataSourceOne.init();
 
         assertThat(dataSourceOne.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
         assertThat(dataSourceOne.getUsername()).isEqualTo("sa");
@@ -58,7 +57,6 @@ public class DruidMultiDataSourceTestCase {
     }
     @Test
     public void testDataSourceTwo() throws SQLException {
-        dataSourceTwo.init();
 
         assertThat(dataSourceTwo.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
         assertThat(dataSourceTwo.getUsername()).isEqualTo("sa");
