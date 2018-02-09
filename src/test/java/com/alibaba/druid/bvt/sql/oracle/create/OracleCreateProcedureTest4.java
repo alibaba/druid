@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -189,7 +189,7 @@ public class OracleCreateProcedureTest4 extends OracleTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("fact_brand_provider")));
 
-        assertEquals(22, visitor.getColumns().size());
+        assertEquals(23, visitor.getColumns().size());
         assertEquals(6, visitor.getConditions().size());
         assertEquals(4, visitor.getRelationships().size());
 

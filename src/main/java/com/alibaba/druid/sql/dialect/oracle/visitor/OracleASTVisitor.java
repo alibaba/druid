@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -210,10 +210,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleAlterSessionStatement x);
 
-    boolean visit(OracleExprStatement x);
-
-    void endVisit(OracleExprStatement x);
-
     boolean visit(OracleDatetimeExpr x);
 
     void endVisit(OracleDatetimeExpr x);
@@ -241,10 +237,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleExplainStatement x);
 
     void endVisit(OracleExplainStatement x);
-
-    boolean visit(OracleAlterProcedureStatement x);
-
-    void endVisit(OracleAlterProcedureStatement x);
 
     boolean visit(OracleAlterTableDropPartition x);
 
@@ -406,10 +398,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleCreateTableStatement.Organization x);
 
-    boolean visit(OracleCreateTableStatement.OracleExternalRecordFormat x);
-
-    void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x);
-
     boolean visit(OracleCreateTableStatement.OIDIndex x);
 
     void endVisit(OracleCreateTableStatement.OIDIndex x);
@@ -437,4 +425,12 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OraclePipeRowStatement x);
 
     void endVisit(OraclePipeRowStatement x);
+
+    boolean visit(OracleIsOfTypeExpr x);
+
+    void endVisit(OracleIsOfTypeExpr x);
+
+    boolean visit(OracleRunStatement x);
+
+    void endVisit(OracleRunStatement x);
 }

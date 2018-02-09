@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -220,7 +220,7 @@ public class TableStat {
         }
 
         public String toString() {
-            return this.name;
+            return SQLUtils.normalize(this.name);
         }
     }
 
@@ -321,6 +321,10 @@ public class TableStat {
 
         public List<Object> getValues() {
             return values;
+        }
+
+        public void addValue(Object value) {
+            this.values.add(value);
         }
 
         @Override
@@ -545,10 +549,10 @@ public class TableStat {
 
         public String toString() {
             if (table != null) {
-                return table + "." + name;
+                return SQLUtils.normalize(table) + "." + SQLUtils.normalize(name);
             }
 
-            return name;
+            return SQLUtils.normalize(name);
         }
 
         public boolean equals(Object obj) {

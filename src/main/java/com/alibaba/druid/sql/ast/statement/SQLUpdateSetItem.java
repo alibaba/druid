@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,11 @@ public class SQLUpdateSetItem extends SQLObjectImpl implements SQLReplaceable {
         return column;
     }
 
-    public void setColumn(SQLExpr column) {
-        this.column = column;
+    public void setColumn(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.column = x;
     }
 
     public SQLExpr getValue() {

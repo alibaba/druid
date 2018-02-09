@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import oracle.sql.SQLUtil;
 
 public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     protected SQLWithSubqueryClause with;
@@ -92,9 +91,9 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
     public static class ValuesClause extends SQLObjectImpl {
 
-        private final List<SQLExpr> values;
-
-        private transient String originalString;
+        private final     List<SQLExpr> values;
+        private transient String        originalString;
+        private transient int           replaceCount;
 
         public ValuesClause(){
             this(new ArrayList<SQLExpr>());
@@ -150,6 +149,14 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
         public void setOriginalString(String originalString) {
             this.originalString = originalString;
+        }
+
+        public int getReplaceCount() {
+            return replaceCount;
+        }
+
+        public void incrementReplaceCount() {
+            this.replaceCount++;
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,7 @@ package com.alibaba.druid.sql.dialect.db2.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -87,15 +86,60 @@ public class DB2ExprParser extends SQLExprParser {
                     expr = new SQLIdentifierExpr("CURRENT DATE");
                 }
             }
+        } else if (lexer.identifierEquals(FnvHash.Constants.DAY) && expr instanceof SQLIntegerExpr) {
+            lexer.nextToken();
+            expr = new SQLIntervalExpr(expr, SQLIntervalUnit.DAY);
         } else if (lexer.identifierEquals(FnvHash.Constants.TIMESTAMP)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
                     lexer.nextToken();
 
-                    expr = new SQLIdentifierExpr("CURRENT DATE");
+                    expr = new SQLIdentifierExpr("CURRENT TIMESTAMP");
                 }
             }
+        } else if (lexer.identifierEquals(FnvHash.Constants.TIME)) {
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+                if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
+                    lexer.nextToken();
+
+                    expr = new SQLIdentifierExpr("CURRENT TIME");
+                }
+            }
+        } else if (lexer.token() == Token.SCHEMA) {
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+                if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
+                    lexer.nextToken();
+
+                    expr = new SQLIdentifierExpr("CURRENT SCHEMA");
+                }
+            }
+        } else if (lexer.identifierEquals(FnvHash.Constants.MONTHS)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.MONTH);
+            lexer.nextToken();
+            expr = intervalExpr;
+        } else if (lexer.identifierEquals(FnvHash.Constants.YEARS)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.YEAR);
+            lexer.nextToken();
+            expr = intervalExpr;
+        } else if (lexer.identifierEquals(FnvHash.Constants.DAYS)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.DAY);
+            lexer.nextToken();
+            expr = intervalExpr;
+        } else if (lexer.identifierEquals(FnvHash.Constants.HOURS)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.HOUR);
+            lexer.nextToken();
+            expr = intervalExpr;
+        } else if (lexer.identifierEquals(FnvHash.Constants.MINUTES)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.MINUTE);
+            lexer.nextToken();
+            expr = intervalExpr;
+        } else if (lexer.identifierEquals(FnvHash.Constants.SECONDS)) {
+            SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.SECOND);
+            lexer.nextToken();
+            expr = intervalExpr;
         }
 
         return super.primaryRest(expr);

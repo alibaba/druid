@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -766,4 +766,64 @@ public interface SQLASTVisitor {
     boolean visit(SQLLateralViewTableSource x);
 
     void endVisit(SQLLateralViewTableSource x);
+
+    boolean visit(SQLShowErrorsStatement x);
+    void endVisit(SQLShowErrorsStatement x);
+
+    boolean visit(SQLAlterCharacter x);
+    void endVisit(SQLAlterCharacter x);
+
+    boolean visit(SQLExprStatement x);
+    void endVisit(SQLExprStatement x);
+
+    boolean visit(SQLAlterProcedureStatement x);
+    void endVisit(SQLAlterProcedureStatement x);
+
+    boolean visit(SQLAlterViewStatement x);
+    void endVisit(SQLAlterViewStatement x);
+
+    boolean visit(SQLDropEventStatement x);
+    void endVisit(SQLDropEventStatement x);
+
+    boolean visit(SQLDropLogFileGroupStatement x);
+    void endVisit(SQLDropLogFileGroupStatement x);
+
+    boolean visit(SQLDropServerStatement x);
+    void endVisit(SQLDropServerStatement x);
+
+    boolean visit(SQLDropSynonymStatement x);
+    void endVisit(SQLDropSynonymStatement x);
+
+    boolean visit(SQLRecordDataType x);
+    void endVisit(SQLRecordDataType x);
+
+    boolean visit(SQLDropTypeStatement x);
+    void endVisit(SQLDropTypeStatement x);
+
+    boolean visit(SQLExternalRecordFormat x);
+    void endVisit(SQLExternalRecordFormat x);
+
+    boolean visit(SQLArrayDataType x);
+    void endVisit(SQLArrayDataType x);
+
+    boolean visit(SQLMapDataType x);
+    void endVisit(SQLMapDataType x);
+
+    boolean visit(SQLStructDataType x);
+    void endVisit(SQLStructDataType x);
+
+    boolean visit(SQLStructDataType.Field x);
+    void endVisit(SQLStructDataType.Field x);
+
+    boolean visit(SQLDropMaterializedViewStatement x);
+    void endVisit(SQLDropMaterializedViewStatement x);
+
+    boolean visit(SQLAlterTableRenameIndex x);
+    void endVisit(SQLAlterTableRenameIndex x);
+
+    boolean visit(SQLAlterSequenceStatement x);
+    void endVisit(SQLAlterSequenceStatement x);
+
+    boolean visit(SQLAlterTableExchangePartition x);
+    void endVisit(SQLAlterTableExchangePartition x);
 }

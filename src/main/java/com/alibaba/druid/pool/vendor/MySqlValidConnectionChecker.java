@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 package com.alibaba.druid.pool.vendor;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
@@ -101,7 +103,15 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
                     validationQueryTimeout = DEFAULT_VALIDATION_QUERY_TIMEOUT;
                 }
 
-                ping.invoke(conn, true, validationQueryTimeout * 1000);
+                try {
+                    ping.invoke(conn, true, validationQueryTimeout * 1000);
+                } catch (InvocationTargetException e) {
+                    Throwable cause = e.getCause();
+                    if (cause instanceof SQLException) {
+                        throw (SQLException) cause;
+                    }
+                    throw e;
+                }
                 return true;
             }
         }

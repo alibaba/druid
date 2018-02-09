@@ -1,0 +1,1 @@
+select exception from exception

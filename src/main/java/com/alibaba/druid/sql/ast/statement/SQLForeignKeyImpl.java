@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,5 +122,48 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
         SQLForeignKeyImpl x = new SQLForeignKeyImpl();
         cloneTo(x);
         return x;
+    }
+
+    public static enum Match {
+        FULL("FULL"), PARTIAL("PARTIAL"), SIMPLE("SIMPLE");
+
+        public final String name;
+        public final String name_lcase;
+
+        Match(String name){
+            this.name = name;
+            this.name_lcase = name.toLowerCase();
+        }
+    }
+
+    public static enum On {
+        DELETE("DELETE"), //
+        UPDATE("UPDATE");
+
+        public final String name;
+        public final String name_lcase;
+
+        On(String name){
+            this.name = name;
+            this.name_lcase = name.toLowerCase();
+        }
+    }
+
+    public static enum Option {
+
+        RESTRICT("RESTRICT"), CASCADE("CASCADE"), SET_NULL("SET NULL"), NO_ACTION("NO ACTION");
+
+        public final String name;
+        public final String name_lcase;
+
+        Option(String name){
+            this.name = name;
+            this.name_lcase = name.toLowerCase();
+        }
+
+        public String getText() {
+            return name;
+        }
+
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ public class SQLAlterDatabaseStatement extends SQLStatementImpl implements SQLAl
     private SQLName name;
 
     private boolean upgradeDataDirectoryName;
+
+    private SQLAlterCharacter character;
     
     public SQLAlterDatabaseStatement() {
         
@@ -46,6 +48,17 @@ public class SQLAlterDatabaseStatement extends SQLStatementImpl implements SQLAl
             name.setParent(this);
         }
         this.name = name;
+    }
+
+    public SQLAlterCharacter getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(SQLAlterCharacter character) {
+        if (character != null) {
+            character.setParent(this);
+        }
+        this.character = character;
     }
 
     public boolean isUpgradeDataDirectoryName() {

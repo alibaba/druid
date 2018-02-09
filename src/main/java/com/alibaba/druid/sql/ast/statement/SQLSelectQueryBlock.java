@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected List<SQLSelectOrderByItem> sortBy;
 
     protected String                     cachedSelectList; // optimized for SelectListCache
+    protected long                       cachedSelectListHash; // optimized for SelectListCache
 
     protected String                     dbType;
 
@@ -666,8 +667,13 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         return cachedSelectList;
     }
 
-    public void setCachedSelectList(String cachedSelectList) {
+    public void setCachedSelectList(String cachedSelectList, long cachedSelectListHash) {
         this.cachedSelectList = cachedSelectList;
+        this.cachedSelectListHash = cachedSelectListHash;
+    }
+
+    public long getCachedSelectListHash() {
+        return cachedSelectListHash;
     }
 
     public String getDbType() {

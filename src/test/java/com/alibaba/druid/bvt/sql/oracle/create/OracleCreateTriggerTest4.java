@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ public class OracleCreateTriggerTest4 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "TRIGGER AUTH.TRG_HR_STRUCTURE_AFTINST AFTER INSERT ON hr_structure FOR EACH ROW\n" +
+        "TRIGGER RRP.TRG_HR_AK_AFTINST AFTER INSERT ON hr_structure FOR EACH ROW\n" +
                 "DECLARE\n" +
                 "BEGIN\n" +
                 "  INSERT INTO hr_structure_temp\n" +
@@ -49,7 +49,7 @@ public class OracleCreateTriggerTest4 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TRIGGER AUTH.TRG_HR_STRUCTURE_AFTINST\n" +
+        Assert.assertEquals("CREATE TRIGGER RRP.TRG_HR_AK_AFTINST\n" +
                         "\tAFTER INSERT\n" +
                         "\tON hr_structure\n" +
                         "\tFOR EACH ROW\n" +

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,17 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SQLVariantRefExpr extends SQLExprImpl {
 
     private String  name;
 
     private boolean global = false;
+
+    private boolean session = false;
 
     private int     index  = -1;
 
@@ -37,6 +41,12 @@ public class SQLVariantRefExpr extends SQLExprImpl {
     public SQLVariantRefExpr(String name, boolean global){
         this.name = name;
         this.global = global;
+    }
+
+    public SQLVariantRefExpr(String name, boolean global,boolean session){
+        this.name = name;
+        this.global = global;
+        this.session = session;
     }
 
     public SQLVariantRefExpr(){
@@ -61,6 +71,15 @@ public class SQLVariantRefExpr extends SQLExprImpl {
 
     public void output(StringBuffer buf) {
         buf.append(this.name);
+    }
+
+
+    public boolean isSession() {
+        return session;
+    }
+
+    public void setSession(boolean session) {
+        this.session = session;
     }
 
     @Override
@@ -111,6 +130,21 @@ public class SQLVariantRefExpr extends SQLExprImpl {
     public SQLVariantRefExpr clone() {
         SQLVariantRefExpr var =  new SQLVariantRefExpr(name, global);
         var.index = index;
+
+        if (attributes != null) {
+            var.attributes = new HashMap<String, Object>(attributes.size());
+            for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+                String k = entry.getKey();
+                Object v = entry.getValue();
+
+                if (v instanceof SQLObject) {
+                    var.attributes.put(k, ((SQLObject) v).clone());
+                } else {
+                    var.attributes.put(k, v);
+                }
+            }
+        }
+
         return var;
     }
 

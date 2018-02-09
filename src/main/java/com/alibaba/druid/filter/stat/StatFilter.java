@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -473,9 +473,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 String slowParameters = buildSlowParameters(statement);
                 sqlStat.setLastSlowParameters(slowParameters);
 
+                String lastExecSql = statement.getLastExecuteSql();
                 if (logSlowSql) {
-                    LOG.error("slow sql " + millis + " millis. " + statement.getLastExecuteSql() + "" + slowParameters);
+                    LOG.error("slow sql " + millis + " millis. " + lastExecSql + "" + slowParameters);
                 }
+
+                handleSlowSql(statement);
             }
         }
 
@@ -483,6 +486,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         StatFilterContext.getInstance().executeAfter(sql, nanos, null);
 
         Profiler.release(nanos);
+    }
+
+    protected void handleSlowSql(StatementProxy statementProxy) {
+
     }
 
     @Override
@@ -513,7 +520,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Profiler.release(nanos);
     }
 
-    private String buildSlowParameters(StatementProxy statement) {
+    protected String buildSlowParameters(StatementProxy statement) {
         JSONWriter out = new JSONWriter();
 
         out.writeArrayStart();

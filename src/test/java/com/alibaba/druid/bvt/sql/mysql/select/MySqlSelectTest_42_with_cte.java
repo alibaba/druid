@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
                             "\t\tSELECT c, d\n" +
                             "\t\tFROM table2\n" +
                             "\t)\n" +
-                            "SELECT cte1.b, cte2.d\n" +
+                            "SELECT b, d\n" +
                             "FROM cte1\n" +
                             "\tJOIN cte2\n" +
                             "WHERE cte1.a = cte2.c;", //
@@ -87,7 +87,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
                             "\t\tselect c, d\n" +
                             "\t\tfrom table2\n" +
                             "\t)\n" +
-                            "select cte1.b, cte2.d\n" +
+                            "select b, d\n" +
                             "from cte1\n" +
                             "\tjoin cte2\n" +
                             "where cte1.a = cte2.c;", //
@@ -104,7 +104,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
                             "\t\tSELECT c, d\n" +
                             "\t\tFROM table2\n" +
                             "\t)\n" +
-                            "SELECT cte1.b, cte2.d\n" +
+                            "SELECT b, d\n" +
                             "FROM cte1\n" +
                             "\tJOIN cte2\n" +
                             "WHERE cte1.a = cte2.c;", //

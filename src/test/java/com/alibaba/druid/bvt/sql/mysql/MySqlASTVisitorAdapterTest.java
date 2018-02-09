@@ -15,7 +15,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
+import com.alibaba.druid.sql.ast.statement.SQLAlterCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
@@ -161,7 +161,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlUnlockTablesStatement().accept(adapter);
         new MySqlForceIndexHint().accept(adapter);
         new MySqlAlterTableChangeColumn().accept(adapter);
-        new MySqlAlterTableCharacter().accept(adapter);
+        new SQLAlterCharacter().accept(adapter);
         new MySqlAlterTableOption().accept(adapter);
         new MySqlCreateTableStatement().accept(adapter);
         new MySqlCharExpr().accept(adapter);

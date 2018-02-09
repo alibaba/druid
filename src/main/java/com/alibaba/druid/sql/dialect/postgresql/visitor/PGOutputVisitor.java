@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
@@ -38,14 +40,10 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.StringUtils;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -308,6 +306,42 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             }
         }
 
+        List<SQLExpr> onConflictTarget = x.getOnConflictTarget();
+        List<SQLUpdateSetItem> onConflictUpdateSetItems = x.getOnConflictUpdateSetItems();
+        boolean onConflictDoNothing = x.isOnConflictDoNothing();
+
+        if (onConflictDoNothing
+                || (onConflictTarget != null && onConflictTarget.size() > 0)
+                || (onConflictUpdateSetItems != null && onConflictUpdateSetItems.size() > 0)) {
+            println();
+            print0(ucase ? "ON CONFLICT" : "on conflict");
+
+            if ((onConflictTarget != null && onConflictTarget.size() > 0)) {
+                print0(" (");
+                printAndAccept(onConflictTarget, ", ");
+                print(')');
+            }
+
+            SQLName onConflictConstraint = x.getOnConflictConstraint();
+            if (onConflictConstraint != null) {
+                print0(ucase ? " ON CONSTRAINT " : " on constraint ");
+                printExpr(onConflictConstraint);
+            }
+
+            SQLExpr onConflictWhere = x.getOnConflictWhere();
+            if (onConflictWhere != null) {
+                print0(ucase ? " WHERE " : " where ");
+                printExpr(onConflictWhere);
+            }
+
+            if (onConflictDoNothing) {
+                print0(ucase ? " DO NOTHING" : " do nothing");
+            } else if ((onConflictUpdateSetItems != null && onConflictUpdateSetItems.size() > 0)) {
+                print0(ucase ? " UPDATE SET " : " update set ");
+                printAndAccept(onConflictUpdateSetItems, ", ");
+            }
+        }
+
         if (x.getReturning() != null) {
             println();
             print0(ucase ? "RETURNING " : "returning ");
@@ -420,17 +454,32 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(PGTypeCastExpr x) {
         SQLExpr expr = x.getExpr();
+        SQLDataType dataType = x.getDataType();
+
+        if (dataType.nameHashCode64() == FnvHash.Constants.VARBIT) {
+            dataType.accept(this);
+            print(' ');
+            printExpr(expr);
+            return false;
+        }
+
         if (expr != null) {
             if (expr instanceof SQLBinaryOpExpr) {
                 print('(');
                 expr.accept(this);
                 print(')');
+            } else if (expr instanceof PGTypeCastExpr && dataType.getArguments().size() == 0) {
+                dataType.accept(this);
+                print('(');
+                visit((PGTypeCastExpr) expr);
+                print(')');
+                return false;
             } else {
                 expr.accept(this);
             }
         }
         print0("::");
-        x.getDataType().accept(this);
+        dataType.accept(this);
         return false;
     }
 
@@ -603,6 +652,18 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public void endVisit(PGConnectToStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(PGConnectToStatement x) {
+        print0(ucase ? "CONNECT TO " : "connect to ");
+        x.getTarget().accept(this);
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLSetStatement x) {
         print0(ucase ? "SET " : "set ");
 
@@ -622,13 +683,19 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             SQLExpr target = item.getTarget();
             target.accept(this);
 
-            if (target instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) target).getName().equalsIgnoreCase("TIME ZONE")) {
+            SQLExpr value = item.getValue();
+
+            if (target instanceof SQLIdentifierExpr
+                    && ((SQLIdentifierExpr) target).getName().equalsIgnoreCase("TIME ZONE")) {
                 print(' ');
             } else {
-                print0(" TO ");
+                if (value instanceof SQLPropertyExpr
+                        && ((SQLPropertyExpr) value).getOwner() instanceof SQLVariantRefExpr) {
+                    print0(" := ");
+                } else {
+                    print0(" TO ");
+                }
             }
-
-            SQLExpr value = item.getValue();
 
             if (value instanceof SQLListExpr) {
                 SQLListExpr listExpr = (SQLListExpr) value;
@@ -771,16 +838,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public void endVisit(OracleExplainStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleAlterProcedureStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterProcedureStatement x) {
 
     }
 
@@ -1082,7 +1139,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         if (x.getPrecision() != null) {
             print('(');
-            print(x.getPrecision().intValue());
+            printExpr(x.getPrecision());
             if (x.getFactionalSecondsPrecision() != null) {
                 print0(", ");
                 print(x.getFactionalSecondsPrecision().intValue());
@@ -1095,7 +1152,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(x.getToType().name());
             if (x.getToFactionalSecondsPrecision() != null) {
                 print('(');
-                print(x.getToFactionalSecondsPrecision().intValue());
+                printExpr(x.getToFactionalSecondsPrecision());
                 print(')');
             }
         }
@@ -1653,17 +1710,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     }
 
-    @Override
-    public boolean visit(OracleExprStatement x) {
-        x.getExpr().accept(this);
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleExprStatement x) {
-
-    }
-
     public boolean visit(OracleRangeExpr x) {
         x.getLowBound().accept(this);
         print0("..");
@@ -1757,7 +1803,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             if (count != 0) {
                 print0(", ");
             }
-            print0(ucase ? "FOREIGHN KEY" : "foreighn key");
+            print0(ucase ? "FOREIGN KEY" : "foreign key");
             count++;
         }
 
@@ -1856,28 +1902,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
-    public boolean visit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-        if (x.getDelimitedBy() != null) {
-            println();
-            print0(ucase ? "RECORDS DELIMITED BY " : "records delimited by ");
-            x.getDelimitedBy().accept(this);
-        }
-
-        if (x.getTerminatedBy() != null) {
-            println();
-            print0(ucase ? "FIELDS TERMINATED BY " : "fields terminated by ");
-            x.getTerminatedBy().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCreateTableStatement.OIDIndex x) {
         print0(ucase ? "OIDINDEX" : "oidindex");
 
@@ -1920,15 +1944,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         this.indentCount++;
 
-        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+        List<SQLStatement> statements = x.getStatements();
+        for (int i = 0, size = statements.size(); i < size; ++i) {
             println();
-            SQLStatement item = x.getStatements().get(i);
-            item.accept(this);
+            SQLStatement stmt = statements.get(i);
+            stmt.accept(this);
         }
 
         this.indentCount--;
 
-        if (x.isBody()) {
+        if (x.isBody() || statements.size() > 0) {
             println();
             print0(ucase ? "END " : "end ");
             x.getName().accept(this);
@@ -2026,20 +2051,101 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(ucase ? "CREATE TYPE " : "create type ");
         }
 
+        if (x.isBody()) {
+            print0(ucase ? "BODY " : "body ");
+        }
+
         x.getName().accept(this);
+
+        SQLName under = x.getUnder();
+        if (under != null) {
+            print0(ucase ? " UNDER " : " under ");
+            under.accept(this);
+        }
+
+        SQLName authId = x.getAuthId();
+        if (authId != null) {
+            print0(ucase ? " AUTHID " : " authid ");
+            authId.accept(this);
+        }
 
         if (x.isForce()) {
             print0(ucase ? "FORCE " : "force ");
         }
 
-        print0(" AS OBJECT (");
-        indentCount++;
-        println();
-        printlnAndAccept(x.getParameters(), ", ");
+        List<SQLParameter> parameters = x.getParameters();
+        SQLDataType tableOf = x.getTableOf();
 
-        indentCount--;
-        println();
-        print0(")");
+        if (x.isObject()) {
+            print0(" AS OBJECT");
+        }
+
+        if (parameters.size() > 0) {
+            if (x.isParen()) {
+                print(" (");
+            } else {
+                print0(ucase ? " IS" : " is");
+            }
+            indentCount++;
+            println();
+
+            for (int i = 0; i < parameters.size(); ++i) {
+                SQLParameter param = parameters.get(i);
+                param.accept(this);
+
+                SQLDataType dataType = param.getDataType();
+
+                if (i < parameters.size() - 1) {
+                    if (dataType instanceof OracleFunctionDataType
+                            && ((OracleFunctionDataType) dataType).getBlock() != null) {
+                        // skip
+                        println();
+                    } else  if (dataType instanceof OracleProcedureDataType
+                            && ((OracleProcedureDataType) dataType).getBlock() != null) {
+                        // skip
+                        println();
+                    } else {
+                        println(", ");
+                    }
+                }
+            }
+
+            indentCount--;
+            println();
+
+            if (x.isParen()) {
+                print0(")");
+            } else {
+                print0("END");
+            }
+        } else if (tableOf != null) {
+            print0(ucase ? " AS TABLE OF " : " as table of ");
+            tableOf.accept(this);
+        } else if (x.getVarraySizeLimit() != null) {
+            print0(ucase ? " VARRAY (" : " varray (");
+            x.getVarraySizeLimit().accept(this);
+            print0(ucase ? ") OF " : ") of ");
+            x.getVarrayDataType().accept(this);
+        }
+
+        Boolean isFinal = x.getFinal();
+        if (isFinal != null) {
+            if (isFinal.booleanValue()) {
+                print0(ucase ? " FINAL" : " final");
+            } else {
+                print0(ucase ? " NOT FINAL" : " not final");
+            }
+        }
+
+        Boolean instantiable = x.getInstantiable();
+        if (instantiable != null) {
+            if (instantiable.booleanValue()) {
+                print0(ucase ? " INSTANTIABLE" : " instantiable");
+            } else {
+                print0(ucase ? " NOT INSTANTIABLE" : " not instantiable");
+            }
+        }
+
         return false;
     }
 
@@ -2159,6 +2265,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             println();
             x.getSelect().accept(this);
         }
+
         return false;
     }
 
@@ -2768,6 +2875,156 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print0(x.getType().name().toUpperCase());
         print(' ');
         x.getExpr().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(OracleIsOfTypeExpr x) {
+        printExpr(x.getExpr());
+        print0(ucase ? " IS OF TYPE (" : " is of type (");
+
+        List<SQLExpr> types = x.getTypes();
+        for (int i = 0, size = types.size(); i < size; ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            SQLExpr type = types.get(i);
+            if (Boolean.TRUE == type.getAttribute("ONLY")) {
+                print0(ucase ? "ONLY " : "only ");
+            }
+            type.accept(this);
+        }
+
+        print(')');
+        return false;
+    }
+
+    public void endVisit(OracleIsOfTypeExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleRunStatement x) {
+        print0("@@");
+        printExpr(x.getExpr());
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleRunStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLIfStatement.Else x) {
+        print0(ucase ? "ELSE" : "else");
+        this.indentCount++;
+        println();
+
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            if (i != 0) {
+                println();
+            }
+            SQLStatement item = x.getStatements().get(i);
+            item.accept(this);
+        }
+
+        this.indentCount--;
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLIfStatement.ElseIf x) {
+        print0(ucase ? "ELSE IF " : "else if ");
+        x.getCondition().accept(this);
+        print0(ucase ? " THEN" : " then");
+        this.indentCount++;
+
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            println();
+            SQLStatement item = x.getStatements().get(i);
+            item.accept(this);
+        }
+
+        this.indentCount--;
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLIfStatement x) {
+        print0(ucase ? "IF " : "if ");
+        int lines = this.lines;
+        this.indentCount++;
+        x.getCondition().accept(this);
+        this.indentCount--;
+
+        if (lines != this.lines) {
+            println();
+        } else {
+            print(' ');
+        }
+        print0(ucase ? "THEN" : "then");
+
+        this.indentCount++;
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            println();
+            SQLStatement item = x.getStatements().get(i);
+            item.accept(this);
+        }
+        this.indentCount--;
+
+        for (SQLIfStatement.ElseIf elseIf : x.getElseIfList()) {
+            println();
+            elseIf.accept(this);
+        }
+
+        if (x.getElseItem() != null) {
+            println();
+            x.getElseItem().accept(this);
+        }
+        println();
+        print0(ucase ? "END IF" : "end if");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateIndexStatement x) {
+        print0(ucase ? "CREATE " : "create ");
+        if (x.getType() != null) {
+            print0(x.getType());
+            print(' ');
+        }
+
+        print0(ucase ? "INDEX " : "index ");
+
+        x.getName().accept(this);
+
+        if (x.getUsing() != null) {
+            print0(ucase ? " USING " : " using ");
+            ;
+            print0(x.getUsing());
+        }
+
+        print0(ucase ? " ON " : " on ");
+        x.getTable().accept(this);
+        print0(" (");
+        printAndAccept(x.getItems(), ", ");
+        print(')');
+
+        SQLExpr comment = x.getComment();
+        if (comment != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            comment.accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableAddColumn x) {
+        boolean odps = isOdps();
+        print0(ucase ? "ADD COLUMN " : "add column ");
+        printAndAccept(x.getColumns(), ", ");
         return false;
     }
 }

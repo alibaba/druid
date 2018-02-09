@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public SchemaStatVisitor(String dbType){
         this(new SchemaRepository(dbType), new ArrayList<Object>());
         this.dbType = dbType;
+    }
+
+    public SchemaRepository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(SchemaRepository repository) {
+        this.repository = repository;
     }
 
     public SchemaStatVisitor(List<Object> parameters){
@@ -509,6 +517,22 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return aggregateFunctions;
     }
 
+    public boolean visit(SQLBetweenExpr x) {
+        SQLObject parent = x.getParent();
+
+        SQLExpr test = x.getTestExpr();
+        SQLExpr begin = x.getBeginExpr();
+        SQLExpr end = x.getEndExpr();
+
+        statExpr(test);
+        statExpr(begin);
+        statExpr(end);
+
+        handleCondition(test, "BETWEEN", begin, end);
+
+        return false;
+    }
+
     public boolean visit(SQLBinaryOpExpr x) {
         SQLObject parent = x.getParent();
 
@@ -538,7 +562,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
                 handleRelationship(left, x.getOperator().name, right);
                 break;
-            case BooleanOr:{
+            case BooleanOr: {
                 List<SQLExpr> list = SQLBinaryOpExpr.split(x, op);
 
                 for (SQLExpr item : list) {
@@ -551,6 +575,15 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
                 return false;
             }
+            case Modulus:
+                if (right instanceof SQLIdentifierExpr) {
+                    long hashCode64 = ((SQLIdentifierExpr) right).hashCode64();
+                    if (hashCode64 == FnvHash.Constants.ISOPEN) {
+                        left.accept(this);
+                        return false;
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -608,11 +641,18 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             if (valueColumn != null) {
                 continue;
             }
-            Object value = SQLEvalVisitorUtils.eval(dbType, item, parameters, false);
-            if (value == SQLEvalVisitor.EVAL_VALUE_NULL) {
-                value = null;
+
+            Object value;
+            if (item instanceof SQLMethodInvokeExpr) {
+                value = item.toString();
+            } else {
+                value = SQLEvalVisitorUtils.eval(dbType, item, parameters, false);
+                if (value == SQLEvalVisitor.EVAL_VALUE_NULL) {
+                    value = null;
+                }
             }
-            condition.getValues().add(value);
+
+            condition.addValue(value);
         }
     }
 
@@ -896,6 +936,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLSelectQueryBlock x) {
         if (x.getFrom() == null) {
+            for (SQLSelectItem selectItem : x.getSelectList()) {
+                statExpr(
+                        selectItem.getExpr());
+            }
             return false;
         }
 
@@ -1834,6 +1878,16 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
+    public boolean visit(SQLAlterViewStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
+        x.getSubQuery().accept(this);
+        return false;
+    }
+
     @Override
     public boolean visit(SQLAlterTableDropForeignKey x) {
         return false;
@@ -2372,8 +2426,47 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLAlterFunctionStatement x) {
         return false;
     }
+    public boolean visit(SQLDropSynonymStatement x) {
+        return false;
+    }
 
     public boolean visit(SQLAlterTypeStatement x) {
+        return false;
+    }
+    public boolean visit(SQLAlterProcedureStatement x) {
+        return false;
+    }
+
+    public boolean visit(SQLExprStatement x) {
+        SQLExpr expr = x.getExpr();
+
+        if (expr instanceof SQLName) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLDropTypeStatement x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLExternalRecordFormat x) {
+        return false;
+    }
+
+    public boolean visit(SQLCreateDatabaseStatement x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableExchangePartition x) {
+        SQLExprTableSource table = x.getTable();
+        if (table != null) {
+            table.accept(this);
+        }
         return false;
     }
 }

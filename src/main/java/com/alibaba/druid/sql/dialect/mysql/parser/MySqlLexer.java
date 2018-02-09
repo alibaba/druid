@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlLexer extends Lexer {
     public static SymbolTable quoteTable = new SymbolTable(8192);
@@ -62,6 +63,10 @@ public class MySqlLexer extends Lexer {
         map.put("CONDITION", Token.CONDITION);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
+    }
+
+    {
+        dbType = JdbcConstants.MYSQL;
     }
 
     public MySqlLexer(char[] input, int inputLength, boolean skipComment){

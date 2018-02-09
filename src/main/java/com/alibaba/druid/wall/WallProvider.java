@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
@@ -460,7 +462,7 @@ public abstract class WallProvider {
 
         String mergedSql;
         try {
-            mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+            mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType, (List<Object>) null);
         } catch (Exception ex) {
             // skip
             return null;
@@ -669,17 +671,44 @@ public abstract class WallProvider {
             violations.addAll(visitor.getViolations());
         }
 
+        Map<String, WallSqlTableStat> tableStat = context.getTableStats();
+
+        boolean updateCheckHandlerEnable = false;
+        {
+            WallUpdateCheckHandler updateCheckHandler = config.getUpdateCheckHandler();
+            if (updateCheckHandler != null) {
+                for (SQLStatement stmt : statementList) {
+                    if (stmt instanceof SQLUpdateStatement) {
+                        SQLUpdateStatement updateStmt = (SQLUpdateStatement) stmt;
+                        SQLName table = updateStmt.getTableName();
+                        if (table != null) {
+                            String tableName = table.getSimpleName();
+                            Set<String> updateCheckColumns = config.getUpdateCheckTable(tableName);
+                            if (updateCheckColumns != null && updateCheckColumns.size() > 0) {
+                                updateCheckHandlerEnable = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         WallSqlStat sqlStat = null;
         if (violations.size() > 0) {
             violationCount.incrementAndGet();
 
-            if (sql.length() < MAX_SQL_LENGTH) {
-                sqlStat = addBlackSql(sql, context.getTableStats(), context.getFunctionStats(), violations, syntaxError);
+            if ((!updateCheckHandlerEnable) && sql.length() < MAX_SQL_LENGTH) {
+                sqlStat = addBlackSql(sql, tableStat, context.getFunctionStats(), violations, syntaxError);
             }
         } else {
-            if (sql.length() < MAX_SQL_LENGTH) {
-                sqlStat = addWhiteSql(sql, context.getTableStats(), context.getFunctionStats(), syntaxError);
+            if ((!updateCheckHandlerEnable) && sql.length() < MAX_SQL_LENGTH) {
+                sqlStat = addWhiteSql(sql, tableStat, context.getFunctionStats(), syntaxError);
             }
+        }
+        
+        if(sqlStat == null && updateCheckHandlerEnable){
+            sqlStat = new WallSqlStat(tableStat, context.getFunctionStats(), violations, syntaxError);
         }
 
         Map<String, WallSqlTableStat> tableStats = null;
@@ -712,6 +741,10 @@ public abstract class WallProvider {
     }
 
     private WallCheckResult checkWhiteAndBlackList(String sql) {
+        if (config.getUpdateCheckHandler() != null) {
+            return null;
+        }
+
         // check black list
         if (blackListEnable) {
             WallSqlStat sqlStat = getBlackSql(sql);

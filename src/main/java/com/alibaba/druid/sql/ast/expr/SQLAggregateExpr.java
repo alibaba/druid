@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
     protected SQLKeep             keep;
     protected SQLOver             over;
     protected SQLOrderBy          withinGroup;
-    protected boolean             ignoreNulls      = false;
+    protected Boolean             ignoreNulls      = false;
 
     public SQLAggregateExpr(String methodName){
         this.methodName = methodName;
@@ -117,6 +117,10 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
     }
     
     public boolean isIgnoreNulls() {
+        return this.ignoreNulls != null && this.ignoreNulls;
+    }
+
+    public Boolean getIgnoreNulls() {
         return this.ignoreNulls;
     }
 
@@ -248,7 +252,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
             }
         }
 
-        if (hash == FnvHash.Constants.WM_CONAT
+        if (hash == FnvHash.Constants.WM_CONCAT
                 || hash == FnvHash.Constants.GROUP_CONCAT) {
             return SQLCharExpr.DEFAULT_DATA_TYPE;
         }

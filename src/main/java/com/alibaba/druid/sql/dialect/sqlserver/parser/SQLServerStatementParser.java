@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -494,6 +494,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             SQLStartTransactionStatement startTrans = new SQLStartTransactionStatement();
+            startTrans.setDbType(dbType);
 
             if (lexer.token() == Token.IDENTIFIER) {
                 SQLName name = this.exprParser.name();

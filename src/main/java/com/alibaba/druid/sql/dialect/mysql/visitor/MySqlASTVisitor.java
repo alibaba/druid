@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
@@ -34,7 +36,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
@@ -351,10 +352,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlAlterTableChangeColumn x);
 
-    boolean visit(MySqlAlterTableCharacter x);
-
-    void endVisit(MySqlAlterTableCharacter x);
-
     boolean visit(MySqlAlterTableOption x);
 
     void endVisit(MySqlAlterTableOption x);
@@ -466,5 +463,35 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlFlushStatement x);
 
     void endVisit(MySqlFlushStatement x);
+
+    boolean visit(MySqlEventSchedule x);
+    void endVisit(MySqlEventSchedule x);
+
+    boolean visit(MySqlCreateEventStatement x);
+    void endVisit(MySqlCreateEventStatement x);
+
+    boolean visit(MySqlCreateAddLogFileGroupStatement x);
+    void endVisit(MySqlCreateAddLogFileGroupStatement x);
+
+    boolean visit(MySqlCreateServerStatement x);
+    void endVisit(MySqlCreateServerStatement x);
+
+    boolean visit(MySqlCreateTableSpaceStatement x);
+    void endVisit(MySqlCreateTableSpaceStatement x);
+
+    boolean visit(MySqlAlterEventStatement x);
+    void endVisit(MySqlAlterEventStatement x);
+
+    boolean visit(MySqlAlterLogFileGroupStatement x);
+    void endVisit(MySqlAlterLogFileGroupStatement x);
+
+    boolean visit(MySqlAlterServerStatement x);
+    void endVisit(MySqlAlterServerStatement x);
+
+    boolean visit(MySqlAlterTablespaceStatement x);
+    void endVisit(MySqlAlterTablespaceStatement x);
+
+    boolean visit(MySqlShowDatabasePartitionStatusStatement x);
+    void endVisit(MySqlShowDatabasePartitionStatusStatement x);
 
 } //

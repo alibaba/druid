@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
@@ -938,12 +937,12 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public boolean visit(MySqlAlterTableCharacter x) {
+    public boolean visit(SQLAlterCharacter x) {
         return false;
     }
 
     @Override
-    public void endVisit(MySqlAlterTableCharacter x) {
+    public void endVisit(SQLAlterCharacter x) {
 
     }
 
@@ -1253,6 +1252,106 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlFlushStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlEventSchedule x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlEventSchedule x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateEventStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateEventStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateAddLogFileGroupStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateAddLogFileGroupStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateServerStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateServerStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCreateTableSpaceStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateTableSpaceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterEventStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterEventStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterLogFileGroupStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterLogFileGroupStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterServerStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterServerStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTablespaceStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTablespaceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowDatabasePartitionStatusStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowDatabasePartitionStatusStatement x) {
 
     }
 }

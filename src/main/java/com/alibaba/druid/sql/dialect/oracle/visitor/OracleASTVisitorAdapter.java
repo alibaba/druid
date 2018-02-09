@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -523,16 +523,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OracleExprStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleExprStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleDatetimeExpr x) {
         return true;
     }
@@ -599,16 +589,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleExplainStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleAlterProcedureStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleAlterProcedureStatement x) {
 
     }
 
@@ -1010,13 +990,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     }
 
-    public boolean visit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-        return true;
-    }
-
-    public void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-
-    }
     public boolean visit(OracleCreateTableStatement.OIDIndex x) {
         return true;
     }
@@ -1081,6 +1054,26 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OraclePipeRowStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleIsOfTypeExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleIsOfTypeExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleRunStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleRunStatement x) {
 
     }
 }

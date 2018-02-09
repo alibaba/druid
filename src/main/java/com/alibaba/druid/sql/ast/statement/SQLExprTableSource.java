@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
@@ -28,7 +29,7 @@ import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-public class SQLExprTableSource extends SQLTableSourceImpl {
+public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplaceable {
 
     protected SQLExpr     expr;
     private List<SQLName> partitions;
@@ -298,5 +299,14 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
         }
 
         return null;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == this.expr) {
+            this.setExpr(target);
+            return true;
+        }
+        return false;
     }
 }

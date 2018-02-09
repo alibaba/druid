@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,12 +44,13 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     // for mysql
 
     private String             comment;
-
     private boolean            deterministic  = false;
     private boolean            parallelEnable;
     private boolean            aggregate;
     private SQLName            using;
     private boolean            pipelined;
+    private boolean            resultCache;
+    private String             wrappedSource;
 
     public SQLCreateFunctionStatement clone() {
         SQLCreateFunctionStatement x = new SQLCreateFunctionStatement();
@@ -247,5 +248,21 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
 
     public void setPipelined(boolean pipelined) {
         this.pipelined = pipelined;
+    }
+
+    public boolean isResultCache() {
+        return resultCache;
+    }
+
+    public void setResultCache(boolean resultCache) {
+        this.resultCache = resultCache;
+    }
+
+    public String getWrappedSource() {
+        return wrappedSource;
+    }
+
+    public void setWrappedSource(String wrappedSource) {
+        this.wrappedSource = wrappedSource;
     }
 }

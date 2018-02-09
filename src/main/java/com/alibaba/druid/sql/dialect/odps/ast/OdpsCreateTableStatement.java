@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,13 +31,7 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
     private SQLExprTableSource like;
 
-    protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
-
-    protected final List<SQLName> clusteredBy = new ArrayList<SQLName>();
-    protected final List<SQLName> sortedBy = new ArrayList<SQLName>();
-
-    protected int buckets;
-
+    protected SQLExpr storedBy;
     protected SQLExpr lifecycle;
 
     public OdpsCreateTableStatement(){
@@ -54,17 +48,6 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
     public void setLike(SQLExprTableSource like) {
         this.like = like;
-    }
-
-    public List<SQLColumnDefinition> getPartitionColumns() {
-        return partitionColumns;
-    }
-    
-    public void addPartitionColumn(SQLColumnDefinition column) {
-        if (column != null) {
-            column.setParent(this);
-        }
-        this.partitionColumns.add(column);
     }
 
     public SQLExpr getLifecycle() {
@@ -87,25 +70,21 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
             this.acceptChild(visitor, partitionColumns);
             this.acceptChild(visitor, clusteredBy);
             this.acceptChild(visitor, sortedBy);
+            this.acceptChild(visitor, storedBy);
             this.acceptChild(visitor, lifecycle);
             this.acceptChild(visitor, select);
         }
         visitor.endVisit(this);
     }
 
-    public List<SQLName> getClusteredBy() {
-        return clusteredBy;
+    public SQLExpr getStoredBy() {
+        return storedBy;
     }
 
-    public List<SQLName> getSortedBy() {
-        return sortedBy;
-    }
-
-    public int getBuckets() {
-        return buckets;
-    }
-
-    public void setBuckets(int buckets) {
-        this.buckets = buckets;
+    public void setStoredBy(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedBy = x;
     }
 }

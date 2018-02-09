@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -254,6 +254,9 @@ public class SQLUtils {
             SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, FORMAT_DEFAULT_FEATURES);
             List<SQLStatement> statementList = parser.parseStatementList();
             return toSQLString(statementList, dbType, parameters, option);
+        } catch (ClassCastException ex) {
+            LOG.warn("format error, dbType : " + dbType, ex);
+            return sql;
         } catch (ParserException ex) {
             LOG.warn("format error", ex);
             return sql;
@@ -830,6 +833,9 @@ public class SQLUtils {
             char x0 = name.charAt(name.length() - 1);
             if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
                 String normalizeName = name.substring(1, name.length() - 1);
+                if (c0 == '`') {
+                    normalizeName = normalizeName.replaceAll("`\\.`", ".");
+                }
 
                 if (JdbcConstants.ORACLE.equals(dbType)) {
                     if (OracleUtils.isKeyword(normalizeName)) {
@@ -839,7 +845,8 @@ public class SQLUtils {
                     if (MySqlUtils.isKeyword(normalizeName)) {
                         return name;
                     }
-                } else if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                } else if (JdbcConstants.POSTGRESQL.equals(dbType)
+                        || JdbcConstants.ENTERPRISEDB.equals(dbType)) {
                     if (PGUtils.isKeyword(normalizeName)) {
                         return name;
                     }

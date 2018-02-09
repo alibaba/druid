@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -12,11 +13,12 @@ import com.alibaba.druid.filter.stat.MergeStatFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 
-public class UnwrapTest_filter extends TestCase {
+public class UnwrapTest_filter extends PoolTestCase {
 
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        super.setUp();
 
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -31,6 +33,8 @@ public class UnwrapTest_filter extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+
+        super.tearDown();
     }
 
     public void test_unwrap() throws Exception {

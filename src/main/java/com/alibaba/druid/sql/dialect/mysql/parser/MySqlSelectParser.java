@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,6 +160,13 @@ public class MySqlSelectParser extends SQLSelectParser {
             }
 
             parseSelectList(queryBlock);
+
+            if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
+                lexer.nextToken();
+                accept(Token.PARTITION);
+                SQLName partition = this.exprParser.name();
+                queryBlock.setForcePartition(partition);
+            }
             
             parseInto(queryBlock);
         }
@@ -222,7 +229,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                 accept(Token.RPAREN);
 
                 SQLSelectQuery query = queryRest(select.getQuery());
-                if (query instanceof SQLUnionQuery) {
+                if (query instanceof SQLUnionQuery && select.getWithSubQuery() == null) {
                     select.getQuery().setBracket(true);
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                 } else {
@@ -297,7 +304,31 @@ public class MySqlSelectParser extends SQLSelectParser {
             update.setTargetAffectRow(targetAffectRow);
         }
 
-        SQLTableSource updateTableSource = this.exprParser.createSelectParser().parseTableSource();
+        if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
+            lexer.nextToken();
+
+            if (lexer.token() == Token.ALL) {
+                lexer.nextToken();
+                acceptIdentifier("PARTITIONS");
+                update.setForceAllPartitions(true);
+            } else if (lexer.identifierEquals(FnvHash.Constants.PARTITIONS)){
+                lexer.nextToken();
+                update.setForceAllPartitions(true);
+            } else if (lexer.token() == Token.PARTITION) {
+                lexer.nextToken();
+                SQLName partition = this.exprParser.name();
+                update.setForcePartition(partition);
+            } else {
+                throw new ParserException("TODO. " + lexer.info());
+            }
+        }
+
+        while (lexer.token() == Token.HINT) {
+            this.exprParser.parseHints(update.getHints());
+        }
+
+        SQLSelectParser selectParser = this.exprParser.createSelectParser();
+        SQLTableSource updateTableSource = selectParser.parseTableSource();
         update.setTableSource(updateTableSource);
 
         accept(Token.SET);
@@ -397,26 +428,7 @@ public class MySqlSelectParser extends SQLSelectParser {
     }
 
     protected SQLTableSource primaryTableSourceRest(SQLTableSource tableSource) {
-        if (lexer.token() == Token.USE) {
-            lexer.nextToken();
-            MySqlUseIndexHint hint = new MySqlUseIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
-
-        if (lexer.identifierEquals("IGNORE")) {
-            lexer.nextToken();
-            MySqlIgnoreIndexHint hint = new MySqlIgnoreIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
-
-        if (lexer.identifierEquals("FORCE")) {
-            lexer.nextToken();
-            MySqlForceIndexHint hint = new MySqlForceIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
+        parseIndexHintList(tableSource);
 
         if (lexer.token() == Token.PARTITION) {
             lexer.nextToken();
@@ -433,26 +445,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             return tableSource;
         }
 
-        if (lexer.token() == Token.USE) {
-            lexer.nextToken();
-            MySqlUseIndexHint hint = new MySqlUseIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.IGNORE)) {
-            lexer.nextToken();
-            MySqlIgnoreIndexHint hint = new MySqlIgnoreIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
-            lexer.nextToken();
-            MySqlForceIndexHint hint = new MySqlForceIndexHint();
-            parseIndexHint(hint);
-            tableSource.getHints().add(hint);
-        }
+        parseIndexHintList(tableSource);
         
         if (lexer.token() == Token.PARTITION) {
             lexer.nextToken();
@@ -462,6 +455,32 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
 
         return super.parseTableSourceRest(tableSource);
+    }
+
+    private void parseIndexHintList(SQLTableSource tableSource) {
+	if (lexer.token() == Token.USE) {
+            lexer.nextToken();
+            MySqlUseIndexHint hint = new MySqlUseIndexHint();
+            parseIndexHint(hint);
+            tableSource.getHints().add(hint);
+	    parseIndexHintList(tableSource);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.IGNORE)) {
+            lexer.nextToken();
+            MySqlIgnoreIndexHint hint = new MySqlIgnoreIndexHint();
+            parseIndexHint(hint);
+            tableSource.getHints().add(hint);
+	    parseIndexHintList(tableSource);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
+            lexer.nextToken();
+            MySqlForceIndexHint hint = new MySqlForceIndexHint();
+            parseIndexHint(hint);
+            tableSource.getHints().add(hint);
+	    parseIndexHintList(tableSource);
+        }
     }
 
     private void parseIndexHint(MySqlIndexHintImpl hint) {

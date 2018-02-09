@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ public class OracleSelectTest64_with_recursive extends OracleTest {
                     "\t\tWHERE parent_id IS NULL\n" +
                     "\t\tUNION ALL\n" +
                     "\t\t-- Recursive member.\n" +
-                    "\t\tSELECT t2.id, t2.parent_id, t1.lvl + 1\n" +
+                    "\t\tSELECT t2.id, t2.parent_id, lvl + 1\n" +
                     "\t\tFROM tab1 t2, t1\n" +
                     "\t\tWHERE t2.parent_id = t1.id\n" +
                     "\t)\n" +
@@ -103,7 +103,7 @@ public class OracleSelectTest64_with_recursive extends OracleTest {
                     "\t\twhere parent_id is null\n" +
                     "\t\tunion all\n" +
                     "\t\t-- Recursive member.\n" +
-                    "\t\tselect t2.id, t2.parent_id, t1.lvl + 1\n" +
+                    "\t\tselect t2.id, t2.parent_id, lvl + 1\n" +
                     "\t\tfrom tab1 t2, t1\n" +
                     "\t\twhere t2.parent_id = t1.id\n" +
                     "\t)\n" +

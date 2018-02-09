@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,43 +41,34 @@ import com.alibaba.druid.util.Utils;
  * @author wenshao [szujobs@hotmail.com]
  */
 public final class DruidConnectionHolder {
-
-    private final static Log                    LOG                      = LogFactory.getLog(DruidConnectionHolder.class);
+    private final static Log                      LOG                      = LogFactory.getLog(DruidConnectionHolder.class);
+    public static boolean                         holdabilityUnsupported   = false;
 
     protected final DruidAbstractDataSource       dataSource;
-    private final long                          connectionId;
-    private final Connection                    conn;
-    private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
-    private final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
-    protected final long                        connectTimeMillis;
-    protected transient long                    lastActiveTimeMillis;
-    private long                                useCount                 = 0;
-    private long                                keepAliveCheckCount      = 0;
-
-    private long                                lastNotEmptyWaitNanos;
-
-    private final long                          createNanoSpan;
-
-    private PreparedStatementPool               statementPool;
-
-    protected final List<Statement>             statementTrace           = new ArrayList<Statement>(2);
-
-    private final boolean                       defaultReadOnly;
-    private final int                           defaultHoldability;
-    private final int                           defaultTransactionIsolation;
-
-    private final boolean                       defaultAutoCommit;
-
-    private boolean                             underlyingReadOnly;
-    private int                                 underlyingHoldability;
-    private int                                 underlyingTransactionIsolation;
-    private boolean                             underlyingAutoCommit;
-    private boolean                             discard                  = false;
-
-    protected final Map<String, Object>         variables;
-    protected final Map<String, Object>         globleVariables;
-
-    public static boolean                       holdabilityUnsupported   = false;
+    protected final long                          connectionId;
+    protected final Connection                    conn;
+    protected final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
+    protected final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
+    protected final long                          connectTimeMillis;
+    protected volatile long                       lastActiveTimeMillis;
+    protected volatile long                       lastValidTimeMillis;
+    private long                                  useCount                 = 0;
+    private long                                  keepAliveCheckCount      = 0;
+    private long                                  lastNotEmptyWaitNanos;
+    private final long                            createNanoSpan;
+    protected PreparedStatementPool               statementPool;
+    protected final List<Statement>               statementTrace           = new ArrayList<Statement>(2);
+    protected final boolean                       defaultReadOnly;
+    protected final int                           defaultHoldability;
+    protected final int                           defaultTransactionIsolation;
+    protected final boolean                       defaultAutoCommit;
+    protected boolean                             underlyingReadOnly;
+    protected int                                 underlyingHoldability;
+    protected int                                 underlyingTransactionIsolation;
+    protected boolean                             underlyingAutoCommit;
+    protected boolean                             discard                  = false;
+    protected final Map<String, Object>           variables;
+    protected final Map<String, Object>           globleVariables;
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo)
                                                                                                           throws SQLException{
@@ -118,6 +109,7 @@ public final class DruidConnectionHolder {
             if (JdbcConstants.SYBASE.equals(dataSource.dbType) //
                 || JdbcConstants.DB2.equals(dataSource.dbType) //
                 || JdbcConstants.HIVE.equals(dataSource.dbType) //
+                || JdbcConstants.ODPS.equals(dataSource.dbType) //
             ) {
                 initUnderlyHoldability = false;
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.alibaba.druid.bvt.pool.basic;
 import java.util.Arrays;
 import java.util.Properties;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -26,7 +27,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
-public class TestDataSourceBasic2 extends TestCase {
+public class TestDataSourceBasic2 extends PoolTestCase {
 
     public void test_0() throws Exception {
         DruidDataSourceStatManager.clear();
@@ -57,7 +58,7 @@ public class TestDataSourceBasic2 extends TestCase {
         dataSource.setConnectionInitSqls(Arrays.<Object> asList("SELECT 1", null, ""));
         assertEquals(1, dataSource.getConnectionInitSqls().size());
 
-        assertEquals(30 * 1000, dataSource.getTimeBetweenConnectErrorMillis());
+        assertEquals(500, dataSource.getTimeBetweenConnectErrorMillis());
         assertEquals(234, dataSource.getMaxOpenPreparedStatements());
         assertEquals(300, dataSource.getRemoveAbandonedTimeout());
         dataSource.setRemoveAbandonedTimeout(400);
@@ -126,6 +127,8 @@ public class TestDataSourceBasic2 extends TestCase {
         for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             dataSource.close();
         }
+
+        super.tearDown();
     }
 
 }

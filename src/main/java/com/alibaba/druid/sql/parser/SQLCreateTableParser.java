@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@ package com.alibaba.druid.sql.parser;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLCreateTableParser extends SQLDDLParser {
@@ -77,6 +79,14 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
         accept(Token.TABLE);
 
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+
+            createTable.setIfNotExiists(true);
+        }
+
         createTable.setName(this.exprParser.name());
 
         if (lexer.token == Token.LPAREN) {
@@ -119,18 +129,9 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 break;
             }
 
-            // while
-            // (this.tokenList.current().equals(OracleToken.ConstraintToken)) {
-            // parseConstaint(table.getConstraints());
-            //
-            // if (this.tokenList.current().equals(OracleToken.CommaToken))
-            // ;
-            // lexer.nextToken();
-            // }
-
             accept(Token.RPAREN);
 
-            if (lexer.identifierEquals("INHERITS")) {
+            if (lexer.identifierEquals(FnvHash.Constants.INHERITS)) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 SQLName inherits = this.exprParser.name();
@@ -143,6 +144,29 @@ public class SQLCreateTableParser extends SQLDDLParser {
             lexer.nextToken();
             SQLSelect select = this.createSQLSelectParser().select();
             createTable.setSelect(select);
+        }
+
+        if (lexer.token == Token.WITH && JdbcConstants.POSTGRESQL.equals(dbType)) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+
+            for (;;) {
+                String name = lexer.stringVal();
+                lexer.nextToken();
+                accept(Token.EQ);
+                SQLExpr value = this.exprParser.expr();
+                value.setParent(createTable);
+
+                createTable.getTableOptions().put(name, value);
+
+                if (lexer.token == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+
+                break;
+            }
+            accept(Token.RPAREN);
         }
 
         return createTable;

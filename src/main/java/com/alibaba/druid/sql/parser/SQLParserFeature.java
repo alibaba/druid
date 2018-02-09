@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,14 @@ package com.alibaba.druid.sql.parser;
 
 public enum SQLParserFeature {
     KeepInsertValueClauseOriginalString,
+    KeepSelectListOriginalString, // for improved sql parameterized performance
+    UseInsertColumnsCache,
     EnableSQLBinaryOpExprGroup,
     OptimizedForParameterized,
+    OptimizedForForParameterizedSkipValue,
     KeepComments,
-    SkipComments
+    SkipComments,
+    StrictForWall
     ;
 
     private SQLParserFeature(){

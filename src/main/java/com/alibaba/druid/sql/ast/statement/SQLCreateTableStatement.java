@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,29 +25,48 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSynonymStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.ListDG;
 import com.alibaba.druid.util.lang.Consumer;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
 
-    protected boolean               ifNotExiists = false;
-    protected Type                  type;
-    protected SQLExprTableSource    tableSource;
+    protected boolean                          ifNotExiists = false;
+    protected Type                             type;
+    protected SQLExprTableSource               tableSource;
 
-    protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
+    protected List<SQLTableElement>            tableElementList = new ArrayList<SQLTableElement>();
 
     // for postgresql
-    private SQLExprTableSource      inherits;
+    protected SQLExprTableSource               inherits;
 
-    protected SQLSelect             select;
+    protected SQLSelect                        select;
 
-    protected SQLExpr               comment;
+    protected SQLExpr                          comment;
 
-    protected SQLExprTableSource     like;
+    protected SQLExprTableSource               like;
 
+    protected Boolean                          compress;
+    protected Boolean                          logging;
 
+    protected SQLName                          tablespace;
+    protected SQLPartitionBy                   partitioning;
+    protected SQLName                          storedAs;
+
+    protected boolean                          onCommitPreserveRows;
+    protected boolean                          onCommitDeleteRows;
+
+    // for hive & odps
+    protected SQLExternalRecordFormat          rowFormat;
+    protected final List<SQLColumnDefinition>  partitionColumns = new ArrayList<SQLColumnDefinition>(2);
+    protected final List<SQLName>              clusteredBy = new ArrayList<SQLName>();
+    protected final List<SQLSelectOrderByItem> sortedBy = new ArrayList<SQLSelectOrderByItem>();
+    protected int                              buckets;
+
+    protected Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
 
     public SQLCreateTableStatement(){
 
@@ -174,6 +193,49 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             like.setParent(this);
         }
         this.like = like;
+    }
+
+    public Boolean getCompress() {
+        return compress;
+    }
+
+    public void setCompress(Boolean compress) {
+        this.compress = compress;
+    }
+
+    public Boolean getLogging() {
+        return logging;
+    }
+
+    public void setLogging(Boolean logging) {
+        this.logging = logging;
+    }
+
+    public SQLName getTablespace() {
+        return tablespace;
+    }
+
+    public void setTablespace(SQLName tablespace) {
+        if (tablespace != null) {
+            tablespace.setParent(this);
+        }
+        this.tablespace = tablespace;
+    }
+
+    public SQLPartitionBy getPartitioning() {
+        return partitioning;
+    }
+
+    public void setPartitioning(SQLPartitionBy partitioning) {
+        if (partitioning != null) {
+            partitioning.setParent(this);
+        }
+
+        this.partitioning = partitioning;
+    }
+
+    public Map<String, SQLObject> getTableOptions() {
+        return tableOptions;
     }
 
     @Override
@@ -514,6 +576,18 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             }
         }
 
+        for (SQLStatement stmt : stmtList) {
+            if (stmt instanceof OracleCreateSynonymStatement) {
+                OracleCreateSynonymStatement createSynonym = (OracleCreateSynonymStatement) stmt;
+                SQLName object = createSynonym.getObject();
+                String refTableName = object.getSimpleName();
+                SQLCreateTableStatement refTable = tables.get(refTableName);
+                if (refTable != null) {
+                    edges.add(new ListDG.Edge(stmt, refTable));
+                }
+            }
+        }
+
         ListDG dg = new ListDG(stmtList, edges);
 
         SQLStatement[] tops = new SQLStatement[stmtList.size()];
@@ -741,6 +815,22 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return true;
     }
 
+    public boolean renameColumn(String colummName, String newColumnName) {
+        if (colummName == null || newColumnName == null || newColumnName.length() == 0) {
+            return false;
+        }
+
+        int columnIndex = columnIndexOf(new SQLIdentifierExpr(colummName));
+        if (columnIndex == -1) {
+            return false;
+        }
+
+        SQLColumnDefinition column = (SQLColumnDefinition) tableElementList.get(columnIndex);
+        column.setName(new SQLIdentifierExpr(newColumnName));
+
+        return true;
+    }
+
     private boolean apply(SQLAlterTableRename item) {
         SQLName name = item.getToName();
         if (name == null) {
@@ -933,6 +1023,27 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         if (comment != null) {
             x.setComment(comment.clone());
         }
+
+        x.onCommitPreserveRows = onCommitPreserveRows;
+        x.onCommitDeleteRows = onCommitDeleteRows;
+
+        if (tableOptions != null) {
+            for (Map.Entry<String, SQLObject> entry : tableOptions.entrySet()) {
+                SQLObject entryVal = entry.getValue().clone();
+                x.tableOptions.put(entry.getKey(), entryVal);
+            }
+        }
+    }
+
+    public SQLName getStoredAs() {
+        return storedAs;
+    }
+
+    public void setStoredAs(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedAs = x;
     }
 
     public SQLCreateTableStatement clone() {
@@ -945,4 +1056,54 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return SQLUtils.toSQLString(this, dbType);
     }
 
+    public boolean isOnCommitPreserveRows() {
+        return onCommitPreserveRows;
+    }
+
+    public void setOnCommitPreserveRows(boolean onCommitPreserveRows) {
+        this.onCommitPreserveRows = onCommitPreserveRows;
+    }
+
+    public List<SQLName> getClusteredBy() {
+        return clusteredBy;
+    }
+
+    public List<SQLSelectOrderByItem> getSortedBy() {
+        return sortedBy;
+    }
+
+    public void addSortedByItem(SQLSelectOrderByItem item) {
+        item.setParent(this);
+        this.sortedBy.add(item);
+    }
+
+    public int getBuckets() {
+        return buckets;
+    }
+
+    public void setBuckets(int buckets) {
+        this.buckets = buckets;
+    }
+
+    public List<SQLColumnDefinition> getPartitionColumns() {
+        return partitionColumns;
+    }
+
+    public void addPartitionColumn(SQLColumnDefinition column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.partitionColumns.add(column);
+    }
+
+    public SQLExternalRecordFormat getRowFormat() {
+        return rowFormat;
+    }
+
+    public void setRowFormat(SQLExternalRecordFormat x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.rowFormat = x;
+    }
 }

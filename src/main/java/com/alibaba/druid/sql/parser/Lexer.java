@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class Lexer {
     protected static SymbolTable symbols_l2 = new SymbolTable(512);
 
     protected int          features       = 0; //SQLParserFeature.of(SQLParserFeature.EnableSQLBinaryOpExprGroup);
-    protected final String text;
+    public    final String text;
     protected int          pos;
     protected int          mark;
 
@@ -209,6 +209,11 @@ public class Lexer {
 
     public void reset() {
         this.reset(this.savePoint);
+    }
+
+    public void reset(int pos) {
+        this.pos = pos;
+        this.ch = charAt(pos);
     }
 
     public Lexer(String input, boolean skipComment){
@@ -550,7 +555,7 @@ public class Lexer {
                     return;
                 }
 
-                if (ch == 'N') {
+                if (ch == 'N' || ch == 'n') {
                     if (charAt(pos + 1) == '\'') {
                         ++pos;
                         ch = '\'';
@@ -732,6 +737,14 @@ public class Lexer {
                         return;
                     }
 
+                    if (ch == '\\' && charAt(pos + 1) == 'N'
+                            && JdbcConstants.MYSQL.equals(dbType)) {
+                        scanChar();
+                        scanChar();
+                        token = Token.NULL;
+                        return;
+                    }
+
                     // QS_TODO ?
                     if (isEOF()) { // JLS
                         token = EOF;
@@ -866,7 +879,40 @@ public class Lexer {
                     scanChar();
                     token = Token.LT_SUB_GT;
                 } else {
-                    token = Token.LT;
+                    if (ch == ' ') {
+                        char c1 = charAt(pos + 1);
+                        if (c1 == '=') {
+                            scanChar();
+                            scanChar();
+                            if (ch == '>') {
+                                token = Token.LTEQGT;
+                                scanChar();
+                            } else {
+                                token = Token.LTEQ;
+                            }
+                        } else if (c1 == '>') {
+                            scanChar();
+                            scanChar();
+                            token = Token.LTGT;
+                        } else if (c1 == '<') {
+                            scanChar();
+                            scanChar();
+                            token = Token.LTLT;
+                        } else if (c1 == '@') {
+                            scanChar();
+                            scanChar();
+                            token = Token.LT_MONKEYS_AT;
+                        } else if (c1 == '-' && charAt(pos + 2) == '>') {
+                            scanChar();
+                            scanChar();
+                            scanChar();
+                            token = Token.LT_SUB_GT;
+                        } else {
+                            token = Token.LT;
+                        }
+                    } else {
+                        token = Token.LT;
+                    }
                 }
                 break;
             case '!':
@@ -1058,6 +1104,10 @@ public class Lexer {
                         break;
                     case 'Z':
                         putChar((char) 0x1A); // ctrl + Z
+                        break;
+                    case '%':
+                        putChar('\\');
+                        putChar(ch);
                         break;
                     default:
                         putChar(ch);

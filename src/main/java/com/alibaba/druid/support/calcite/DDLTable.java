@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,12 @@ package com.alibaba.druid.support.calcite;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import org.apache.calcite.config.CalciteConnectionConfig;
 import org.apache.calcite.rel.type.*;
 import org.apache.calcite.schema.Schema;
 import org.apache.calcite.schema.Statistic;
 import org.apache.calcite.schema.Table;
-import org.apache.calcite.sql.SqlCollation;
-import org.apache.calcite.sql.SqlIdentifier;
-import org.apache.calcite.sql.SqlIntervalQualifier;
+import org.apache.calcite.sql.*;
 import org.apache.calcite.sql.type.SqlTypeName;
 
 import java.nio.charset.Charset;
@@ -68,6 +67,16 @@ public class DDLTable implements Table, RelDataType {
     @Override
     public Schema.TableType getJdbcTableType() {
         return Schema.TableType.TABLE;
+    }
+
+    @Override
+    public boolean isRolledUp(String column) {
+        return false;
+    }
+
+    @Override
+    public boolean rolledUpColumnValidInsideAgg(String column, SqlCall call, SqlNode parent, CalciteConnectionConfig config) {
+        return false;
     }
 
 

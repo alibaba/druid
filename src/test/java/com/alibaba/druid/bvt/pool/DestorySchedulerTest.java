@@ -4,18 +4,21 @@ import java.sql.Connection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
-public class DestorySchedulerTest extends TestCase {
+public class DestorySchedulerTest extends PoolTestCase {
 
     private DruidDataSource          dataSource;
     private ScheduledExecutorService destroyScheduler;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         destroyScheduler = Executors.newScheduledThreadPool(1);
 
         dataSource = new DruidDataSource();
@@ -28,6 +31,8 @@ public class DestorySchedulerTest extends TestCase {
     protected void tearDown() throws Exception {
         dataSource.close();
         destroyScheduler.shutdown();
+
+        super.tearDown();
     }
 
     public void test_connectAndClose() throws Exception {

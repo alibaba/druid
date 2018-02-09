@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,13 +88,21 @@ public class PGExprParser extends SQLExprParser {
 
     public SQLExpr primary() {
         if (lexer.token() == Token.ARRAY) {
-            SQLArrayExpr array = new SQLArrayExpr();
-            array.setExpr(new SQLIdentifierExpr(lexer.stringVal()));
+            String ident = lexer.stringVal();
             lexer.nextToken();
-            accept(Token.LBRACKET);
-            this.exprList(array.getValues(), array);
-            accept(Token.RBRACKET);
-            return primaryRest(array);
+
+            if (lexer.token() == Token.LPAREN) {
+                SQLIdentifierExpr array = new SQLIdentifierExpr(ident);
+                return this.methodRest(array, true);
+            } else {
+                SQLArrayExpr array = new SQLArrayExpr();
+                array.setExpr(new SQLIdentifierExpr(ident));
+                accept(Token.LBRACKET);
+                this.exprList(array.getValues(), array);
+                accept(Token.RBRACKET);
+                return primaryRest(array);
+            }
+
         } else if (lexer.token() == Token.POUND) {
             lexer.nextToken();
             if (lexer.token() == Token.LBRACE) {

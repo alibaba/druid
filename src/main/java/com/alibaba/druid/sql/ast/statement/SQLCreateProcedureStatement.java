@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,8 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
     private boolean            noSql;
     private boolean            readSqlData;
     private boolean            modifiesSqlData;
+
+    private String             wrappedSource;
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -175,5 +177,13 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
         }
 
         return null;
+    }
+
+    public String getWrappedSource() {
+        return wrappedSource;
+    }
+
+    public void setWrappedSource(String wrappedSource) {
+        this.wrappedSource = wrappedSource;
     }
 }

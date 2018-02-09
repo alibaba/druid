@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,10 +41,11 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
-import oracle.sql.SQLUtil;
 
 import static com.alibaba.druid.util.Utils.getBoolean;
 
@@ -64,7 +65,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected List<Object> parameters;
     protected List<Object> inputParameters;
-    protected Set<String> tables;
+    protected Set<String>  tables;
+    protected String       table; // for improved
 
     protected boolean exportTables = false;
 
@@ -75,6 +77,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected int replaceCount;
 
     protected boolean parameterizedMergeInList = false;
+    protected boolean parameterizedQuesUnMergeInList = false;
 
     protected boolean parameterized = false;
     protected boolean shardingSupport = false;
@@ -100,6 +103,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public SQLASTOutputVisitor(Appendable appender, boolean parameterized){
         this.appender = appender;
         this.config(VisitorFeature.OutputParameterized, parameterized);
+        this.config(VisitorFeature.OutputParameterizedQuesUnMergeInList, parameterizedQuesUnMergeInList);
     }
 
     public int getReplaceCount() {
@@ -147,6 +151,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public Set<String> getTables() {
+        if (this.table != null && this.tables == null) {
+            return Collections.singleton(this.table);
+        }
         return this.tables;
     }
 
@@ -161,6 +168,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public void setInputParameters(List<Object> parameters) {
         this.inputParameters = parameters;
+    }
+
+    /**
+     *
+     * @since 1.1.5
+     */
+    public void setOutputParameters(List<Object> parameters) {
+        this.parameters = parameters;
     }
 
     public int getIndentCount() {
@@ -201,6 +216,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public void setParameterizedMergeInList(boolean parameterizedMergeInList) {
         this.parameterizedMergeInList = parameterizedMergeInList;
+    }
+
+    public boolean isParameterizedQuesUnMergeInList() {
+        return isEnabled(VisitorFeature.OutputParameterizedQuesUnMergeInList);
+    }
+
+    public void setParameterizedQuesUnMergeInList(boolean parameterizedQuesUnMergeInList) {
+        config(VisitorFeature.OutputParameterizedQuesUnMergeInList, parameterizedQuesUnMergeInList);
     }
 
     public boolean isExportTables() {
@@ -469,7 +492,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     SQLExpr left = binaryItem.getLeft();
                     SQLExpr right = binaryItem.getRight();
 
-                    if (right instanceof SQLLiteralExpr) {
+                    if (right instanceof SQLLiteralExpr && !(right instanceof SQLNullExpr)) {
                         if (left instanceof SQLLiteralExpr) {
                             if (literalItems == null) {
                                 literalItems = new ArrayList<SQLBinaryOpExpr>();
@@ -632,6 +655,44 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         List<SQLExpr> groupList = new ArrayList<SQLExpr>();
         SQLExpr left = x.getLeft();
         SQLExpr right = x.getRight();
+
+        if (inputParameters != null
+                && operator != SQLBinaryOperator.Equality) {
+            int varIndex = -1;
+            if (right instanceof SQLVariantRefExpr) {
+                varIndex = ((SQLVariantRefExpr) right).getIndex();
+            }
+
+            Object param = null;
+            if (varIndex >= 0 && varIndex < inputParameters.size()) {
+                param = inputParameters.get(varIndex);
+            }
+
+            if (param instanceof Collection) {
+                Collection values  = (Collection) param;
+
+                if (values.size() > 0) {
+                    print('(');
+                    int valIndex = 0;
+                    for (Object value : values) {
+                        if (valIndex++ != 0) {
+                            print0(ucase ? " OR " : " or ");
+                        }
+                        printExpr(left);
+                        print(' ');
+                        if (operator == SQLBinaryOperator.Is) {
+                            print('=');
+                        } else {
+                            printOperator(operator);
+                        }
+                        print(' ');
+                        printParameter(value);
+                    }
+                    print(')');
+                    return false;
+                }
+            }
+        }
 
         if (operator.isRelational()
                 && left instanceof SQLIntegerExpr
@@ -1143,6 +1204,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             boolean allLiteral = true;
             for (SQLExpr item : targetList) {
                 if (!(item instanceof SQLLiteralExpr || item instanceof SQLVariantRefExpr)) {
+                    if (item instanceof SQLListExpr) {
+                        SQLListExpr list = (SQLListExpr) item;
+                        for (SQLExpr listItem : list.getItems()) {
+                            if (!(listItem instanceof SQLLiteralExpr || listItem instanceof SQLVariantRefExpr)) {
+                                allLiteral = false;
+                                break;
+                            }
+                        }
+                        if (allLiteral) {
+                            break;
+                        }
+                        continue;
+                    }
                     allLiteral = false;
                     break;
                 }
@@ -1157,9 +1231,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 printExpr(x.getExpr());
 
                 if (x.isNot()) {
-                    print(ucase ? " NOT IN (?)" : " not in (?)");
+                    print(ucase ? " NOT" : " not");
                 } else {
-                    print(ucase ? " IN (?)" : " in (?)");
+                    print(ucase ? " IN" : " in");
+                }
+
+                if(!isParameterizedQuesUnMergeInList() || targetList.size() == 1) {
+                    print(" (?)");
+                } else {
+                    print(" (");
+                    for (int i = 0; i < targetList.size(); i++) {
+                        if(i != 0) {
+                            print(",");
+                        }
+                        print(" ?");
+                    }
+                    print(")");
                 }
 
                 if (changed) {
@@ -1452,6 +1539,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (expr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
             needQuote = binaryOpExpr.getOperator().isLogical();
+        } else if (expr instanceof SQLInListExpr || expr instanceof SQLNotExpr) {
+            needQuote = true;
         }
 
         if (needQuote) {
@@ -1538,7 +1627,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else {
             if (owner instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr ownerIdent = (SQLIdentifierExpr) owner;
-                printName(ownerIdent, ownerIdent.getName());
+                printName(ownerIdent
+                        , ownerIdent.getName()
+                        , this.shardingSupport && this.parameterized);
             } else {
                 printExpr(owner);
             }
@@ -1589,8 +1680,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit(subQuery);
             print(')');
             println();
-        } else if (parent instanceof SQLStatement
-                && !(parent instanceof OracleForStatement)) {
+        } else if ((parent instanceof SQLStatement
+                && !(parent instanceof OracleForStatement))
+                || parent instanceof OracleSelectPivot.Item) {
             this.indentCount++;
 
             println();
@@ -1821,6 +1913,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (expr instanceof SQLIdentifierExpr) {
             print0(((SQLIdentifierExpr) expr).getName());
+        } else if (expr instanceof SQLPropertyExpr) {
+            visit((SQLPropertyExpr) expr);
         } else {
             printExpr(expr);
         }
@@ -1893,7 +1987,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void addTable(String table) {
         if (tables == null) {
-            tables = new LinkedHashSet<String>();
+            if (this.table == null) {
+                this.table = table;
+                return;
+            } else {
+                tables = new LinkedHashSet<String>();
+                tables.add(this.table);
+            }
         }
         this.tables.add(table);
     }
@@ -2215,6 +2315,29 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public boolean visit(SQLDropMaterializedViewStatement x) {
+        print0(ucase ? "DROP VIEW " : "drop view ");
+
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+
+        x.getName().accept(this);
+
+        return false;
+    }
+
+    public boolean visit(SQLDropEventStatement x) {
+        print0(ucase ? "DROP EVENT " : "drop event ");
+
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+
+        printExpr(x.getName());
+        return false;
+    }
+
     public boolean visit(SQLColumnDefinition x) {
         boolean parameterized = this.parameterized;
         this.parameterized = false;
@@ -2286,10 +2409,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLDeleteStatement x) {
         SQLTableSource from = x.getFrom();
+        String alias = x.getAlias();
 
         if (from == null) {
             print0(ucase ? "DELETE FROM " : "delete from ");
             printTableSourceExpr(x.getTableName());
+
+            if (alias != null) {
+                print(' ');
+                print0(alias);
+            }
         } else {
             print0(ucase ? "DELETE " : "delete ");
             printTableSourceExpr(x.getTableName());
@@ -2324,7 +2453,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getTableSource().accept(this);
 
-        printInsertColumns(x.getColumns());
+        String columnsString = x.getColumnsString();
+        if (columnsString != null) {
+            print0(columnsString);
+        } else {
+            printInsertColumns(x.getColumns());
+        }
 
         if (!x.getValuesList().isEmpty()) {
             println();
@@ -2340,7 +2474,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-    protected void printInsertColumns(List<SQLExpr> columns) {
+    public void printInsertColumns(List<SQLExpr> columns) {
         final int size = columns.size();
         if (size > 0) {
             if (size > 5) {
@@ -2414,25 +2548,57 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void printTableElements(List<SQLTableElement> tableElementList) {
         int size = tableElementList.size();
-        if (size > 0) {
-            print0(" (");
-            this.indentCount++;
-            println();
-            for (int i = 0; i < size; ++i) {
-                if (i != 0) {
-                    print0(",");
-                    println();
-                }
-                tableElementList.get(i).accept(this);
-            }
-            this.indentCount--;
-            println();
-            print(')');
+        if (size == 0) {
+            return;
         }
+
+        print0(" (");
+
+        this.indentCount++;
+        println();
+        for (int i = 0; i < size; ++i) {
+            SQLTableElement element = tableElementList.get(i);
+            element.accept(this);
+
+            if (i != size - 1) {
+                print(',');
+            }
+            if (this.isPrettyFormat() && element.hasAfterComment()) {
+                print(' ');
+                printlnComment(element.getAfterCommentsDirect());
+            }
+
+            if (i != size - 1) {
+                println();
+            }
+        }
+        this.indentCount--;
+        println();
+        print(')');
     }
 
     public boolean visit(SQLCreateTableStatement x) {
         printCreateTable(x, true);
+
+        Map<String, SQLObject> options = x.getTableOptions();
+        if (options.size() > 0) {
+            println();
+            print0(ucase ? "WITH (" : "with (");
+            int i = 0;
+            for (Map.Entry<String, SQLObject> option : x.getTableOptions().entrySet()) {
+                if (i > 0) {
+                    print0(", ");
+                }
+                String key = option.getKey();
+                print0(key);
+
+                print0(" = ");
+
+                option.getValue().accept(this);
+                ++i;
+            }
+            print(')');
+        }
 
         return false;
     }
@@ -2448,6 +2614,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         print0(ucase ? "TABLE " : "table ");
 
+        if (x.isIfNotExiists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
         printTableSourceExpr(x.getName());
 
         printTableElements(x.getTableElementList());
@@ -2457,6 +2627,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " INHERITS (" : " inherits (");
             inherits.accept(this);
             print(')');
+        }
+
+        SQLName storedAs = x.getStoredAs();
+        if (storedAs != null) {
+            print0(ucase ? " STORE AS " : " store as ");
+            printExpr(storedAs);
         }
 
         SQLSelect select = x.getSelect();
@@ -2747,6 +2923,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? joinType.name : joinType.name_lcase);
     }
 
+    static String[] variantValuesCache = new String[64];
+    static {
+        for (int len = 0; len < variantValuesCache.length; ++len) {
+            StringBuffer buf = new StringBuffer();
+            buf.append('(');
+            for (int i = 0; i < len; ++i) {
+                if (i != 0) {
+                    if (i % 5 == 0) {
+                        buf.append("\n\t\t");
+                    }
+                    buf.append(", ");
+                }
+                buf.append('?');
+            }
+            buf.append(')');
+            variantValuesCache[len] = buf.toString();
+        }
+    }
+
     @Override
     public boolean visit(ValuesClause x) {
         if ((!this.parameterized)
@@ -2756,10 +2951,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return false;
         }
 
+        int xReplaceCount = x.getReplaceCount();
+        final List<SQLExpr> values = x.getValues();
+
+        this.replaceCount += xReplaceCount;
+
+        if (xReplaceCount == values.size() && xReplaceCount < variantValuesCache.length) {
+            String variantValues = variantValuesCache[xReplaceCount];
+            print0(variantValues);
+            return false;
+        }
+
         print('(');
         this.indentCount++;
 
-        final List<SQLExpr> values = x.getValues();
+
         for (int i = 0, size = values.size(); i < size; ++i) {
             if (i != 0) {
                 if (i % 5 == 0) {
@@ -2983,6 +3189,70 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " ON " : " on ");
             table.accept(this);
         }
+
+        SQLExpr algorithm = x.getAlgorithm();
+        if (algorithm != null) {
+            print0(ucase ? " ALGORITHM " : " algorithm ");
+            algorithm.accept(this);
+        }
+
+        SQLExpr lockOption = x.getLockOption();
+        if (lockOption != null) {
+            print0(ucase ? " LOCK " : " lock ");
+            lockOption.accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropLogFileGroupStatement x) {
+        print0(ucase ? "DROP LOGFILE GROUP " : "drop logfile group ");
+        x.getName().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropServerStatement x) {
+        print0(ucase ? "DROP SERVER " : "drop server ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+        x.getName().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropTypeStatement x) {
+        print0(ucase ? "DROP TYPE " : "drop type ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+        x.getName().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropSynonymStatement x) {
+        if (x.isPublic()) {
+            print0(ucase ? "DROP PUBLIC SYNONYM " : "drop public synonym ");
+        } else {
+            print0(ucase ? "DROP SYNONYM " : "drop synonym ");
+        }
+
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+
+        x.getName().accept(this);
+
+        if (x.isForce()) {
+            print0(ucase ? " FORCE" : " force");
+        }
+
         return false;
     }
 
@@ -3014,6 +3284,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLCommentHint x) {
+        if (x.hasBeforeComment()) {
+            printlnComment(x.getBeforeCommentsDirect());
+            print0(" ");
+        }
+
         print0("/*");
         print0(x.getText());
         print0("*/");
@@ -3036,6 +3311,78 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.getCollate() != null) {
             print0(ucase ? " COLLATE " : " collate ");
             print0(x.getCollate());
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterViewStatement x) {
+        print0(ucase ? "ALTER " : "atler ");
+
+        this.indentCount++;
+        String algorithm = x.getAlgorithm();
+        if (algorithm != null && algorithm.length() > 0) {
+            print0(ucase ? "ALGORITHM = " : "algorithm = ");
+            print0(algorithm);
+            println();
+        }
+
+        SQLName definer = x.getDefiner();
+        if (definer != null) {
+            print0(ucase ? "DEFINER = " : "definer = ");
+            definer.accept(this);
+            println();
+        }
+
+        String sqlSecurity = x.getSqlSecurity();
+        if (sqlSecurity != null && sqlSecurity.length() > 0) {
+            print0(ucase ? "SQL SECURITY = " : "sql security = ");
+            print0(sqlSecurity);
+            println();
+        }
+
+        this.indentCount--;
+
+        print0(ucase ? "VIEW " : "view ");
+
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
+        x.getTableSource().accept(this);
+
+        if (x.getColumns().size() > 0) {
+            print0(" (");
+            this.indentCount++;
+            println();
+            for (int i = 0; i < x.getColumns().size(); ++i) {
+                if (i != 0) {
+                    print0(", ");
+                    println();
+                }
+                x.getColumns().get(i).accept(this);
+            }
+            this.indentCount--;
+            println();
+            print(')');
+        }
+
+        if (x.getComment() != null) {
+            println();
+            print0(ucase ? "COMMENT " : "comment ");
+            x.getComment().accept(this);
+        }
+
+        println();
+        print0(ucase ? "AS" : "as");
+        println();
+
+        x.getSubQuery().accept(this);
+
+        if (x.isWithCheckOption()) {
+            println();
+            print0(ucase ? "WITH CHECK OPTION" : "with check option");
         }
 
         return false;
@@ -3447,6 +3794,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(x.getUsing());
         }
 
+        SQLExpr comment = x.getComment();
+        if (comment != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            comment.accept(this);
+        }
+
         return false;
     }
 
@@ -3497,6 +3850,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(" (");
         printAndAccept(x.getColumns(), ", ");
         print(')');
+
+        SQLForeignKeyImpl.Match match = x.getReferenceMatch();
+        if (match != null) {
+            print0(ucase ? " MATCH " : " match ");
+            print0(ucase ? match.name : match.name_lcase);
+        }
+
+        if (x.getOnDelete() != null) {
+            print0(ucase ? " ON DELETE " : " on delete ");
+            print0(ucase ? x.getOnDelete().name : x.getOnDelete().name_lcase);
+        }
+
+        if (x.getOnUpdate() != null) {
+            print0(ucase ? " ON UPDATE " : " on update ");
+            print0(ucase ? x.getOnUpdate().name : x.getOnUpdate().name_lcase);
+        }
+
         return false;
     }
 
@@ -3731,6 +4101,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getName().accept(this);
 
+        SQLExpr engine = x.getEngine();
+        if (engine != null) {
+            print0(ucase ? " ENGINE " : " engine ");
+            engine.accept(this);
+        }
+
         return false;
     }
 
@@ -3787,6 +4163,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.getUsing() != null) {
             print0(ucase ? " USING " : " using ");
             print0(x.getUsing());
+        }
+
+        SQLExpr comment = x.getComment();
+        if (comment != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            printExpr(comment);
         }
         return false;
     }
@@ -3896,6 +4278,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLTimestampExpr x) {
+        if (this.parameterized) {
+            print('?');
+            incrementReplaceCunt();
+
+            if(this.parameters != null){
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
+        }
+
         print0(ucase ? "TIMESTAMP " : "timestamp ");
 
         if (x.isWithTimeZone()) {
@@ -4267,6 +4659,35 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         SQLStatement block = x.getBlock();
         if (block != null) {
+            println();
+            print0(ucase ? "IS" : "is");
+            println();
+            block.accept(this);
+        }
+
+        return false;
+    }
+
+    public boolean visit(OracleProcedureDataType x) {
+        if (x.isStatic()) {
+            print0(ucase ? "STATIC " : "static ");
+        }
+
+        print0(ucase ? "PROCEDURE " : "procedure ");
+
+        print0(x.getName());
+
+        if (x.getParameters().size() > 0) {
+            print(" (");
+            printAndAccept(x.getParameters(), ", ");
+            print(")");
+        }
+
+        SQLStatement block = x.getBlock();
+        if (block != null) {
+            println();
+            print0(ucase ? "IS" : "is");
+            println();
             block.accept(this);
         }
 
@@ -4287,14 +4708,30 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             this.indentCount--;
 
         } else {
+            if (x.isMap()) {
+                print0(ucase ? "MAP MEMBER " : "map member ");
+            } else if (x.isOrder()) {
+                print0(ucase ? "ORDER MEMBER " : "order member ");
+            } else if (x.isMember()) {
+                print0(ucase ? "MEMBER " : "member ");
+            }
             SQLDataType dataType = x.getDataType();
 
-            if (JdbcConstants.ORACLE.equals(dbType)) {
+            if (JdbcConstants.ORACLE.equals(dbType)
+                    || dataType instanceof OracleFunctionDataType
+                    || dataType instanceof OracleProcedureDataType) {
                 if (dataType instanceof OracleFunctionDataType) {
                     OracleFunctionDataType functionDataType = (OracleFunctionDataType) dataType;
                     visit(functionDataType);
                     return false;
                 }
+
+                if (dataType instanceof OracleProcedureDataType) {
+                    OracleProcedureDataType procedureDataType = (OracleProcedureDataType) dataType;
+                    visit(procedureDataType);
+                    return false;
+                }
+
                 String dataTypeName = dataType.getName();
                 boolean printType = (dataTypeName.startsWith("TABLE OF") && x.getDefaultValue() == null)
                         || dataTypeName.equalsIgnoreCase("REF CURSOR")
@@ -4359,7 +4796,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLDeclareItem x) {
+        SQLDataType dataType = x.getDataType();
+
+        if (dataType instanceof SQLRecordDataType) {
+            print0(ucase ? "TYPE " : "type ");
+        }
+
         x.getName().accept(this);
+
 
         if (x.getType() == SQLDeclareItem.Type.TABLE) {
             print0(ucase ? " TABLE" : " table");
@@ -4383,9 +4827,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else if (x.getType() == SQLDeclareItem.Type.CURSOR) {
             print0(ucase ? " CURSOR" : " cursor");
         } else {
-            if (x.getDataType() != null) {
-                print(' ');
-                x.getDataType().accept(this);
+
+            if (dataType != null) {
+                if (dataType instanceof SQLRecordDataType) {
+                    print0(ucase ? " IS " : " is ");
+                } else {
+                    print(' ');
+                }
+                dataType.accept(this);
             }
             if (x.getValue() != null) {
                 if (JdbcConstants.MYSQL.equals(getDbType())) {
@@ -4516,9 +4965,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLPartitionByRange x) {
         print0(ucase ? "PARTITION BY RANGE" : "partition by range");
-        if (x.getExpr() != null) {
+        if (x.getColumns().size() == 1) {
             print0(" (");
-            x.getExpr().accept(this);
+            x.getColumns().get(0).accept(this);
             print(')');
         } else {
             if (JdbcConstants.MYSQL.equals(getDbType())) {
@@ -4558,9 +5007,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLPartitionByList x) {
         print0(ucase ? "PARTITION BY LIST " : "partition by list ");
-        if (x.getExpr() != null) {
+        if (x.getColumns().size() == 1) {
             print('(');
-            x.getExpr().accept(this);
+            x.getColumns().get(0).accept(this);
             print0(")");
         } else {
             print0(ucase ? "COLUMNS (" : "columns (");
@@ -4587,7 +5036,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         print('(');
-        x.getExpr().accept(this);
+        printAndAccept(x.getColumns(), ", ");
         print(')');
 
         printPartitionsCountAndSubPartitions(x);
@@ -4723,6 +5172,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isUpgradeDataDirectoryName()) {
             print0(ucase ? " UPGRADE DATA DIRECTORY NAME" : " upgrade data directory name");
         }
+
+        SQLAlterCharacter character = x.getCharacter();
+        if (character != null) {
+            print(' ');
+            character.accept(this);
+        }
         return false;
     }
 
@@ -4756,6 +5211,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLAlterTableDiscardPartition x) {
         print0(ucase ? "DISCARD PARTITION " : "discard partition ");
         printPartitions(x.getPartitions());
+
+        if (x.isTablespace()) {
+            print0(ucase ? " TABLESPACE" : " tablespace");
+        }
+
         return false;
     }
     
@@ -4947,7 +5407,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (x.isNoMaxValue()) {
-            print0(ucase ? " NOMAXVALUE" : " nomaxvalue");
+            if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                print0(ucase ? " NO MAXVALUE" : " no maxvalue");
+            } else {
+                print0(ucase ? " NOMAXVALUE" : " nomaxvalue");
+            }
         }
 
         if (x.getMinValue() != null) {
@@ -4956,14 +5420,102 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (x.isNoMinValue()) {
-            print0(ucase ? " NOMINVALUE" : " nominvalue");
+            if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                print0(ucase ? " NO MINVALUE" : " no minvalue");
+            } else {
+                print0(ucase ? " NOMINVALUE" : " nominvalue");
+            }
         }
 
         if (x.getCycle() != null) {
             if (x.getCycle().booleanValue()) {
                 print0(ucase ? " CYCLE" : " cycle");
             } else {
-                print0(ucase ? " NOCYCLE" : " nocycle");
+                if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                    print0(ucase ? " NO CYCLE" : " no cycle");
+                } else {
+                    print0(ucase ? " NOCYCLE" : " nocycle");
+                }
+            }
+        }
+
+        Boolean cache = x.getCache();
+        if (cache != null) {
+            if (cache.booleanValue()) {
+                print0(ucase ? " CACHE" : " cache");
+
+                SQLExpr cacheValue = x.getCacheValue();
+                if (cacheValue != null) {
+                    print(' ');
+                    cacheValue.accept(this);
+                }
+            } else {
+                print0(ucase ? " NOCACHE" : " nocache");
+            }
+        }
+
+        Boolean order = x.getOrder();
+        if (order != null) {
+            if (order.booleanValue()) {
+                print0(ucase ? " ORDER" : " order");
+            } else {
+                print0(ucase ? " NOORDER" : " noorder");
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterSequenceStatement x) {
+        print0(ucase ? "ALTER SEQUENCE " : "alter sequence ");
+        x.getName().accept(this);
+
+        if (x.getStartWith() != null) {
+            print0(ucase ? " START WITH " : " start with ");
+            x.getStartWith().accept(this);
+        }
+
+        if (x.getIncrementBy() != null) {
+            print0(ucase ? " INCREMENT BY " : " increment by ");
+            x.getIncrementBy().accept(this);
+        }
+
+        if (x.getMaxValue() != null) {
+            print0(ucase ? " MAXVALUE " : " maxvalue ");
+            x.getMaxValue().accept(this);
+        }
+
+        if (x.isNoMaxValue()) {
+            if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                print0(ucase ? " NO MAXVALUE" : " no maxvalue");
+            } else {
+                print0(ucase ? " NOMAXVALUE" : " nomaxvalue");
+            }
+        }
+
+        if (x.getMinValue() != null) {
+            print0(ucase ? " MINVALUE " : " minvalue ");
+            x.getMinValue().accept(this);
+        }
+
+        if (x.isNoMinValue()) {
+            if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                print0(ucase ? " NO MINVALUE" : " no minvalue");
+            } else {
+                print0(ucase ? " NOMINVALUE" : " nominvalue");
+            }
+        }
+
+        if (x.getCycle() != null) {
+            if (x.getCycle().booleanValue()) {
+                print0(ucase ? " CYCLE" : " cycle");
+            } else {
+                if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                    print0(ucase ? " NO CYCLE" : " no cycle");
+                } else {
+                    print0(ucase ? " NOCYCLE" : " nocycle");
+                }
             }
         }
 
@@ -4995,9 +5547,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLDateExpr x) {
-        print0(ucase ? "DATE '" : "date '");
-        print0(x.getLiteral());
-        print('\'');
+        if (this.parameterized) {
+            print('?');
+            incrementReplaceCunt();
+
+            if(this.parameters != null){
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
+        }
+
+        SQLExpr literal = x.getLiteral();
+        print0(ucase ? "DATE " : "date ");
+        printExpr(literal);
+
         return false;
     }
 
@@ -5253,8 +5816,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLCreateMaterializedViewStatement x) {
         print0(ucase ? "CREATE MATERIALIZED VIEW " : "create materialized view ");
         x.getName().accept(this);
+
+        SQLPartitionBy partitionBy = x.getPartitionBy();
+        if (partitionBy != null) {
+            println();
+            partitionBy.accept(this);
+        }
+
         this.printOracleSegmentAttributes(x);
         println();
+
+        Boolean cache = x.getCache();
+        if (cache != null) {
+            print(cache ? "CACHE" : "NOCACHE");
+            println();
+        }
 
         Boolean parallel = x.getParallel();
         if (parallel != null) {
@@ -5391,6 +5967,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         super.setFeatures(features);
         this.ucase = isEnabled(VisitorFeature.OutputUCase);
         this.parameterized = isEnabled(VisitorFeature.OutputParameterized);
+        this.parameterizedQuesUnMergeInList = isEnabled(VisitorFeature.OutputParameterizedQuesUnMergeInList);
     }
 
     /////////////// for oracle
@@ -5435,6 +6012,269 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? " AS " : " as ");
         printAndAccept(x.getColumns(), ", ");
         this.indentCount--;
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLShowErrorsStatement x) {
+        print0(ucase ? "SHOW ERRORS" : "show errors");
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLAlterCharacter x) {
+        print0(ucase ? "CHARACTER SET = " : "character set = ");
+        x.getCharacterSet().accept(this);
+
+        if (x.getCollate() != null) {
+            print0(ucase ? ", COLLATE = " : ", collate = ");
+            x.getCollate().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLRecordDataType x) {
+        print0(ucase ? "RECORD (" : "record (");
+        indentCount++;
+        println();
+        List<SQLColumnDefinition> columns = x.getColumns();
+        for (int i = 0; i < columns.size(); i++) {
+            if (i != 0) {
+                println();
+            }
+            columns.get(i).accept(this);
+            if (i != columns.size() - 1) {
+                print0(", ");
+            }
+        }
+        indentCount--;
+        println();
+        print(')');
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLExprStatement x) {
+        x.getExpr().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLBlockStatement x) {
+        if (x.getParameters().size() != 0) {
+            this.indentCount++;
+            if (x.getParent() instanceof SQLCreateProcedureStatement) {
+                SQLCreateProcedureStatement procedureStatement = (SQLCreateProcedureStatement) x.getParent();
+                if (procedureStatement.isCreate()) {
+                    printIndent();
+                }
+            }
+            if (!(x.getParent() instanceof SQLCreateProcedureStatement
+                    || x.getParent() instanceof SQLCreateFunctionStatement
+                    || x.getParent() instanceof OracleFunctionDataType
+                    || x.getParent() instanceof OracleProcedureDataType)
+                    ) {
+                print0(ucase ? "DECLARE" : "declare");
+                println();
+            }
+
+            for (int i = 0, size = x.getParameters().size(); i < size; ++i) {
+                if (i != 0) {
+                    println();
+                }
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+                print(';');
+            }
+
+            this.indentCount--;
+            println();
+        }
+        print0(ucase ? "BEGIN" : "begin");
+        this.indentCount++;
+
+        for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
+            println();
+            SQLStatement stmt = x.getStatementList().get(i);
+            stmt.accept(this);
+        }
+        this.indentCount--;
+
+        SQLStatement exception = x.getException();
+        if (exception != null) {
+            println();
+            exception.accept(this);
+        }
+
+        println();
+        print0(ucase ? "END;" : "end;");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateProcedureStatement x) {
+        boolean create = x.isCreate();
+        if (!create) {
+            print0(ucase ? "PROCEDURE " : "procedure ");
+        } else if (x.isOrReplace()) {
+            print0(ucase ? "CREATE OR REPLACE PROCEDURE " : "create or replace procedure ");
+        } else {
+            print0(ucase ? "CREATE PROCEDURE " : "create procedure ");
+        }
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+
+        if (paramSize > 0) {
+            print0(" (");
+            this.indentCount++;
+            println();
+
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                    println();
+                }
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+            }
+
+            this.indentCount--;
+            println();
+            print(')');
+        }
+
+        SQLName authid = x.getAuthid();
+        if (authid != null) {
+            print(ucase ? " AUTHID " : " authid ");
+            authid.accept(this);
+        }
+
+        SQLStatement block = x.getBlock();
+        String wrappedSource = x.getWrappedSource();
+        if (wrappedSource != null) {
+            print0(ucase ? " WRAPPED " : " wrapped ");
+            print0(wrappedSource);
+        } else {
+            if (block != null && !create) {
+                println();
+                print("IS");
+                println();
+            } else {
+                println();
+                if (block instanceof SQLBlockStatement) {
+                    SQLBlockStatement blockStatement = (SQLBlockStatement) block;
+                    if (blockStatement.getParameters().size() > 0 || authid != null) {
+                        println(ucase ? "AS" : "as");
+                    } else {
+                        println(ucase ? "IS" : "is");
+                    }
+                }
+            }
+
+            String javaCallSpec = x.getJavaCallSpec();
+            if (javaCallSpec != null) {
+                print0(ucase ? "LANGUAGE JAVA NAME '" : "language java name '");
+                print0(javaCallSpec);
+                print('\'');
+                return false;
+            }
+        }
+
+        boolean afterSemi = false;
+        if (block != null) {
+            block.accept(this);
+
+            if (block instanceof SQLBlockStatement
+                    && ((SQLBlockStatement) block).getStatementList().size() > 0) {
+                afterSemi = ((SQLBlockStatement) block).getStatementList().get(0).isAfterSemi();
+            }
+        }
+
+        if ((!afterSemi) && x.getParent() instanceof OracleCreatePackageStatement) {
+            print(';');
+        }
+        return false;
+    }
+
+    public boolean visit(SQLExternalRecordFormat x) {
+        if (x.getDelimitedBy() != null) {
+            println();
+            print0(ucase ? "RECORDS DELIMITED BY " : "records delimited by ");
+            x.getDelimitedBy().accept(this);
+        }
+
+        if (x.getTerminatedBy() != null) {
+            println();
+            print0(ucase ? "FIELDS TERMINATED BY " : "fields terminated by ");
+            x.getTerminatedBy().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLArrayDataType x) {
+        print0(ucase ? "ARRAY<" : "array<");
+        x.getComponentType().accept(this);
+        print('>');
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLMapDataType x) {
+        print0(ucase ? "MAP<" : "map<");
+        x.getKeyType().accept(this);
+        print0(", ");
+        x.getValueType().accept(this);
+        print('>');
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLStructDataType x) {
+        print0(ucase ? "STRUCT<" : "struct<");
+        printAndAccept(x.getFields(), ", ");
+        print('>');
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLStructDataType.Field x) {
+        x.getName().accept(this);
+        print(':');
+        x.getDataType().accept(this);
+        print('>');
+        return false;
+    }
+
+    public boolean visit(SQLAlterTableRenameIndex x) {
+        print0(ucase ? "RENAME INDEX " : "rename index ");
+        x.getName().accept(this);
+        print0(ucase ? " TO " : " to ");
+        x.getTo().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableExchangePartition x) {
+        print0(ucase ? "EXCHANGE PARTITION " : "exchange partition ");
+        x.getPartition().accept(this);
+        print0(ucase ? " WITH TABLE " : " with table ");
+        x.getTable().accept(this);
+
+        Boolean validation = x.getValidation();
+        if (validation != null) {
+            if (validation) {
+                print0(ucase ? " WITH VALIDATION" : " with validation");
+            } else {
+                print0(ucase ? " WITHOUT VALIDATION" : " without validation");
+            }
+        }
+
         return false;
     }
 }

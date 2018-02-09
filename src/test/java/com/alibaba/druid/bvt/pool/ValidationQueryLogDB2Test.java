@@ -3,6 +3,7 @@ package com.alibaba.druid.bvt.pool;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 
+import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -11,11 +12,13 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class ValidationQueryLogDB2Test extends TestCase {
+public class ValidationQueryLogDB2Test extends PoolTestCase {
 
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDbType(JdbcConstants.DB2);
@@ -29,6 +32,8 @@ public class ValidationQueryLogDB2Test extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+
+        super.tearDown();
     }
 
     public void test_oracle() throws Exception {

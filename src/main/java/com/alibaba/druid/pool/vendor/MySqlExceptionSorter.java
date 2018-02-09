@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,8 @@ public class MySqlExceptionSorter implements ExceptionSorter {
                 // Access denied
             case 1142: // ER_TABLEACCESS_DENIED_ERROR
             case 1227: // ER_SPECIFIC_ACCESS_DENIED_ERROR
+
+            case 1290: // ER_OPTION_PREVENTS_STATEMENT
                 return true;
             default:
                 break;

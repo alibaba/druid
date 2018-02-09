@@ -24,7 +24,7 @@ public class MySqlParameterizedOutputVisitorTest_17 extends TestCase {
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
         assertEquals("REPLACE INTO mytable (`user_id`, `c_level`, `l_level`, `t_level`, `v_level`, `tag`)\n" +
                 "VALUES (?, ?, ?, ?, ?\n" +
-                "\t, ?)", psql);
+                "\t\t, ?)", psql);
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();

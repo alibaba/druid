@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -193,13 +193,13 @@ public class Keywords {
         }
     }
 
-    public Token getKeyword(long hash) {
-        int index = Arrays.binarySearch(hashArray, hash);
-        if (index < 0) {
-            return null;
-        }
-        return tokens[index];
+public Token getKeyword(long hash) {
+    int index = Arrays.binarySearch(hashArray, hash);
+    if (index < 0) {
+        return null;
     }
+    return tokens[index];
+}
 
     public Token getKeyword(String key) {
         long k = Utils.fnv_64_lower(key);

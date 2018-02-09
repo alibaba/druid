@@ -120,7 +120,12 @@ public class ParseUtil {
     }
 
     public static String restore(String sql, String table, String params/*JSONArray paramsArray, JSONArray destArray*/) {
-        JSONArray destArray = JSON.parseArray(table.replaceAll("''", "'"));
+        JSONArray destArray = null;
+
+        if (table != null) {
+            destArray = JSON.parseArray(table.replaceAll("''", "'"));
+        }
+
         JSONArray paramsArray = JSON.parseArray(params.replaceAll("''", "'"));
         String dbType = JdbcConstants.MYSQL;
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
@@ -141,8 +146,10 @@ public class ParseUtil {
             srcArray.add(entry.getKey().getName());
         }*/
 
-        for (int i = 0; i < srcArray.size(); i++) {
-            visitor.addTableMapping(srcArray.getString(i), destArray.getString(i));
+        if (destArray != null) {
+            for (int i = 0; i < srcArray.size(); i++) {
+                visitor.addTableMapping(srcArray.getString(i), destArray.getString(i));
+            }
         }
 
         stmt.accept(visitor);

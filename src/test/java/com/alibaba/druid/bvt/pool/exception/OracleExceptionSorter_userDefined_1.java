@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.pool.exception;
 
 import java.sql.SQLException;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -12,7 +13,7 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class OracleExceptionSorter_userDefined_1 extends TestCase {
+public class OracleExceptionSorter_userDefined_1 extends PoolTestCase {
 
     private DruidDataSource dataSource;
 
@@ -32,6 +33,8 @@ public class OracleExceptionSorter_userDefined_1 extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
+
+        super.tearDown();
     }
 
     public void test_userDefinedErrorCodes() throws Exception {

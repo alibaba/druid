@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -846,10 +846,6 @@ public class WallVisitorUtils {
             return;
         }
 
-        String tableName = x.getTableName().getSimpleName();
-        Set<String> updateCheckColumns = config.getUpdateCheckTable(tableName);
-        boolean isUpdateCheckTable = updateCheckColumns != null && !updateCheckColumns.isEmpty();
-
         SQLExpr where = x.getWhere();
         if (where == null) {
             WallContext context = WallContext.current();
@@ -877,6 +873,15 @@ public class WallVisitorUtils {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "update alway true condition not allow", x);
                 }
             }
+
+            SQLName table = x.getTableName();
+            if (table == null) {
+                return;
+            }
+
+            String tableName = table.getSimpleName();
+            Set<String> updateCheckColumns = config.getUpdateCheckTable(tableName);
+            boolean isUpdateCheckTable = updateCheckColumns != null && !updateCheckColumns.isEmpty();
 
             WallUpdateCheckHandler updateCheckHandler = config.getUpdateCheckHandler();
             if (isUpdateCheckTable && updateCheckHandler != null) {
@@ -934,7 +939,9 @@ public class WallVisitorUtils {
                             filterValues.add(((SQLValuableExpr) expr).getValue());
                         }
                         boolean validate = updateCheckHandler.check(tableName, checkColumn, setValue, filterValues);
-                        visitor.addViolation(new IllegalSQLObjectViolation(ErrorCode.UPDATE_CHECK_FAIL, "update check failed.", visitor.toSQL(x)));
+                        if (!validate) {
+                            visitor.addViolation(new IllegalSQLObjectViolation(ErrorCode.UPDATE_CHECK_FAIL, "update check failed.", visitor.toSQL(x)));
+                        }
                     } else {
                         visitor.addWallUpdateCheckItem(new WallUpdateCheckItem(tableName, checkColumn, valueExpr, filterValueExprList));
                     }

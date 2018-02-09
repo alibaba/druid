@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,7 @@ public class Oracle_pl_param_inout_0 extends OracleTest {
 							"\tp IN OUT NOCOPY hr.person_typ, \n" +
 							"\tnew_job VARCHAR2\n" +
 							")\n" +
+							"IS\n" +
 							"BEGIN\n" +
 							"\tp.change_job(new_job);\n" +
 							"END;", //
@@ -78,6 +79,7 @@ public class Oracle_pl_param_inout_0 extends OracleTest {
 							"\tp in out nocopy hr.person_typ, \n" +
 							"\tnew_job VARCHAR2\n" +
 							")\n" +
+							"is\n" +
 							"begin\n" +
 							"\tp.change_job(new_job);\n" +
 							"end;", //

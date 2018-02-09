@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -29,10 +30,10 @@ public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, O
 
     private SQLExpr            value;
     private OracleIntervalType type;
-    private Integer            precision;
+    private SQLExpr            precision;
     private Integer            factionalSecondsPrecision;
     private OracleIntervalType toType;
-    private Integer            toFactionalSecondsPrecision;
+    private SQLExpr            toFactionalSecondsPrecision;
 
     public OracleIntervalExpr(){
 
@@ -72,11 +73,18 @@ public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, O
         this.type = type;
     }
 
-    public Integer getPrecision() {
+    public SQLExpr getPrecision() {
         return this.precision;
     }
 
     public void setPrecision(Integer precision) {
+        this.setPrecision(new SQLIntegerExpr(precision));
+    }
+
+    public void setPrecision(SQLExpr precision) {
+        if (precision != null) {
+            precision.setParent(this);
+        }
         this.precision = precision;
     }
 
@@ -96,12 +104,15 @@ public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, O
         this.toType = toType;
     }
 
-    public Integer getToFactionalSecondsPrecision() {
+    public SQLExpr getToFactionalSecondsPrecision() {
         return this.toFactionalSecondsPrecision;
     }
 
-    public void setToFactionalSecondsPrecision(Integer toFactionalSecondsPrecision) {
-        this.toFactionalSecondsPrecision = toFactionalSecondsPrecision;
+    public void setToFactionalSecondsPrecision(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.toFactionalSecondsPrecision = x;
     }
 
     @Override

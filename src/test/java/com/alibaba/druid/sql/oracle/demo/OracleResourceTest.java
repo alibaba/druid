@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,23 +35,23 @@ import java.util.List;
 public class OracleResourceTest extends OracleTest {
 
     public void test_0() throws Exception {
-        File file = new File("/Users/wenshao/Downloads/eoa_tmp_sqltext_1.csv");
+        File file = new File("/Users/wenshao/Downloads/unknownSql(2).txt");
 
         String sql = FileUtils.readFileToString(file);
 
         OracleStatementParser parser = new OracleStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
+        List<SQLStatement> stmtList = parser.parseStatementList();
 
         // Assert.assertEquals(1, statementList.size());
 
         System.out.println(sql);
 
-        print(statementList);
+        print(stmtList);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
 
-        for (int i = 0, size = statementList.size(); i < size; ++i) {
-            SQLStatement statement = statementList.get(i);
+        for (int i = 0, size = stmtList.size(); i < size; ++i) {
+            SQLStatement statement = stmtList.get(i);
             statement.accept(visitor);
         }
 

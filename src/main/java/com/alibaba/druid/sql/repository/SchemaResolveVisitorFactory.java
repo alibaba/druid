@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,11 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.db2.ast.DB2Object;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
@@ -230,8 +233,6 @@ class SchemaResolveVisitorFactory {
         }
     }
 
-
-
     static class DB2ResolveVisitor extends DB2ASTVisitorAdapter implements SchemaResolveVisitor {
         private SchemaRepository repository;
         private int options;
@@ -283,6 +284,11 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLIdentifierExpr x) {
+            long hash64 = x.hashCode64();
+            if (hash64 == DB2Object.Constants.CURRENT_DATE || hash64 == DB2Object.Constants.CURRENT_TIME) {
+                return false;
+            }
+
             resolve(this, x);
             return true;
         }
@@ -760,7 +766,190 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
-        public boolean visit(OdpsInsert x) {
+        public boolean visit(HiveInsert x) {
+            Context ctx = createContext(x);
+
+            SQLExprTableSource tableSource = x.getTableSource();
+            if (tableSource != null) {
+                ctx.setTableSource(x.getTableSource());
+                visit(tableSource);
+            }
+
+            for (SQLAssignItem item : x.getPartitions()) {
+                item.accept(this);
+            }
+
+            SQLSelect select = x.getQuery();
+            if (select != null) {
+                visit(select);
+            }
+
+            popContext();
+            return false;
+        }
+
+        public boolean visit(SQLInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLMergeStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateProcedureStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLBlockStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLParameter x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLDeclareItem x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLOver x) {
+            resolve(this, x);
+            return false;
+        }
+
+        @Override
+        public boolean isEnabled(Option option) {
+            return (options & option.mask) != 0;
+        }
+
+        @Override
+        public Context getContext() {
+            return context;
+        }
+
+        public Context createContext(SQLObject object) {
+            return this.context = new Context(object, context);
+        }
+
+        @Override
+        public void popContext() {
+            if (context != null) {
+                context = context.parent;
+            }
+        }
+
+        public SchemaRepository getRepository() {
+            return repository;
+        }
+    }
+
+    static class HiveResolveVisitor extends HiveASTVisitorAdapter implements SchemaResolveVisitor {
+        private int options;
+        private SchemaRepository repository;
+        private Context context;
+
+        public HiveResolveVisitor(SchemaRepository repository, int options) {
+            this.repository = repository;
+            this.options = options;
+        }
+
+        public boolean visit(SQLForeignKeyImpl x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLSelectStatement x) {
+            resolve(this, x.getSelect());
+            return false;
+        }
+
+        public boolean visit(SQLExprTableSource x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLSelectQueryBlock x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(OdpsSelectQueryBlock x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLSelectItem x) {
+            SQLExpr expr = x.getExpr();
+            if (expr instanceof SQLIdentifierExpr) {
+                resolve(this, (SQLIdentifierExpr) expr);
+                return false;
+            }
+
+            if (expr instanceof SQLPropertyExpr) {
+                resolve(this, (SQLPropertyExpr) expr);
+                return false;
+            }
+
+            return true;
+        }
+
+        public boolean visit(SQLIdentifierExpr x) {
+            resolve(this, x);
+            return true;
+        }
+
+        public boolean visit(SQLPropertyExpr x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLAllColumnExpr x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateTableStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(OdpsCreateTableStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLUpdateStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLDeleteStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLSelect x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLWithSubqueryClause x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(HiveInsert x) {
             Context ctx = createContext(x);
 
             SQLExprTableSource tableSource = x.getTableSource();
@@ -1684,7 +1873,7 @@ class SchemaResolveVisitorFactory {
 
             if (ctxTable instanceof SQLJoinTableSource) {
                 String alias = tableSource.computeAlias();
-                if (alias == null) {
+                if (alias == null || tableSource instanceof SQLWithSubqueryClause.Entry) {
                     return;
                 }
 
@@ -2029,18 +2218,36 @@ class SchemaResolveVisitorFactory {
                 return;
             }
 
+            String alias = from.getAlias();
+
             SchemaObject table = repository.findTable((SQLExprTableSource) from);
             if (table != null) {
                 SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) table.getStatement();
                 for (SQLTableElement e : createTableStmt.getTableElementList()) {
                     if (e instanceof SQLColumnDefinition) {
                         SQLColumnDefinition column = (SQLColumnDefinition) e;
-                        SQLIdentifierExpr name = (SQLIdentifierExpr) column.getName().clone();
-                        name.setResolvedColumn(column);
-                        columns.add(new SQLSelectItem(name));
+
+                        if (alias != null) {
+                            SQLPropertyExpr name = new SQLPropertyExpr(alias, column.getName().getSimpleName());
+                            name.setResolvedColumn(column);
+                            columns.add(new SQLSelectItem(name));
+                        } else {
+                            SQLIdentifierExpr name = (SQLIdentifierExpr) column.getName().clone();
+                            name.setResolvedColumn(column);
+                            columns.add(new SQLSelectItem(name));
+                        }
+
+
                     }
                 }
             }
+            return;
+        }
+
+        if (from instanceof SQLJoinTableSource) {
+            SQLJoinTableSource join = (SQLJoinTableSource) from;
+            extractColumns(visitor, join.getLeft(), columns);
+            extractColumns(visitor, join.getRight(), columns);
         }
     }
 

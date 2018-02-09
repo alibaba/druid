@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,11 +50,11 @@ public class SQLAnyExpr extends SQLExprImpl {
         return this.subQuery;
     }
 
-    public void setSubQuery(SQLSelect subQuery) {
-        if (subQuery != null) {
-            subQuery.setParent(this);
+    public void setSubQuery(SQLSelect x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.subQuery = subQuery;
+        this.subQuery = x;
     }
 
     public void output(StringBuffer buf) {

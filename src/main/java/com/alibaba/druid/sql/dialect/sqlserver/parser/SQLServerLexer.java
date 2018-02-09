@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,10 @@ public class SQLServerLexer extends Lexer {
         map.put("ELSE", Token.ELSE);
         map.put("BEGIN", Token.BEGIN);
         map.put("END", Token.END);
+
+        map.put("MERGE", Token.MERGE);
+        map.put("USING", Token.USING);
+        map.put("MATCHED", Token.MATCHED);
 
         DEFAULT_SQL_SERVER_KEYWORDS = new Keywords(map);
     }

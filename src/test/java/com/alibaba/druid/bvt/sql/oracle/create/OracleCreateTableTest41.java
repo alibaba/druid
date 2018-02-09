@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,7 +99,7 @@ public class OracleCreateTableTest41 extends OracleTest {
                         "\tSUPPLEMENTAL LOG GROUP \"GGS_16346\" (\"NUM\") ALWAYS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (PRIMARY KEY) COLUMNS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (UNIQUE INDEX) COLUMNS,\n" +
-                        "\tSUPPLEMENTAL LOG DATA (FOREIGHN KEY) COLUMNS,\n" +
+                        "\tSUPPLEMENTAL LOG DATA (FOREIGN KEY) COLUMNS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (ALL) COLUMNS,\n" +
                         "\tSUPPLEMENTAL LOG GROUP \"ALLINS_POLNO\" (\"NUM\") ALWAYS\n" +
                         ")\n" +

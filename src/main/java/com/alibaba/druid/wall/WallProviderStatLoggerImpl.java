@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 
 public class WallProviderStatLoggerImpl extends WallProviderStatLoggerAdapter implements WallProviderStatLogger {
 
-    private static Log LOG    = LogFactory.getLog(DruidDataSourceStatLoggerImpl.class);
+    private static Log LOG    = LogFactory.getLog(WallProviderStatLoggerImpl.class);
 
     private Log        logger = LOG;
 

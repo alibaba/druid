@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,16 @@ public class SQLServerExprParser extends SQLExprParser {
     public final static long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "ROW_NUMBER", "STDDEV", "SUM" };
+        String[] strings = {
+                "AVG",
+                "COUNT",
+                "FIRST_VALUE",
+                "MAX",
+                "MIN",
+                "ROW_NUMBER",
+                "STDDEV",
+                "SUM"
+        };
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
