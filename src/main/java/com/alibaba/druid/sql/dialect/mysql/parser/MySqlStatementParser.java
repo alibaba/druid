@@ -3664,13 +3664,22 @@ public class MySqlStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.TO || lexer.token() == Token.AS) {
                     lexer.nextToken();
                 }
-                MySqlRenameTableStatement renameStmt = new MySqlRenameTableStatement();
-                MySqlRenameTableStatement.Item item = new MySqlRenameTableStatement.Item();
-                item.setName((SQLName) stmt.getTableSource().getExpr());
-                item.setTo(this.exprParser.name());
-                renameStmt.addItem(item);
 
-                return renameStmt;
+                if (stmt.getItems().size() > 0) {
+                    SQLAlterTableRename item = new SQLAlterTableRename();
+                    SQLName to = this.exprParser.name();
+                    item.setTo(to);
+                    stmt.addItem(item);
+                } else {
+                    MySqlRenameTableStatement renameStmt = new MySqlRenameTableStatement();
+                    MySqlRenameTableStatement.Item item = new MySqlRenameTableStatement.Item();
+                    item.setName((SQLName) stmt.getTableSource().getExpr());
+                    item.setTo(this.exprParser.name());
+                    // SQLAlterTableRename
+                    renameStmt.addItem(item);
+
+                    return renameStmt;
+                }
             } else if (lexer.token() == Token.ORDER) {
                 throw new ParserException("TODO " + lexer.info());
             } else if (lexer.identifierEquals("CONVERT")) {

@@ -55,5 +55,4 @@ public class MySqlInsertTest_25_time extends MysqlTest {
 
 
     }
-
 }
