@@ -11,7 +11,7 @@
     <url>https://github.com/alibaba/druid</url>
 
     <properties>
-        <druid.version>1.1.7</druid.version>
+        <druid.version>1.1.8</druid.version>
         <spring-boot.version>2.0.0.RC1</spring-boot.version>
     </properties>
 
@@ -154,7 +154,7 @@
                     <docencoding>UTF-8</docencoding>
                 </configuration>
             </plugin>
-            <!--<plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <executions>
@@ -166,7 +166,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
     <distributionManagement>
