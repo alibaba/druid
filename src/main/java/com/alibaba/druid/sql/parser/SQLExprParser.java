@@ -2789,7 +2789,13 @@ public class SQLExprParser extends SQLParser {
             item.setValue(new SQLIdentifierExpr("ON"));
             return item;
         } else {
-            accept(Token.EQ);
+            if (lexer.token == Token.EQ) {
+                lexer.nextToken();
+            } else if (JdbcConstants.DB2.equals(dbType)) {
+                // skip
+            } else {
+                accept(Token.EQ);
+            }
         }
 
         if (lexer.token == Token.ON) {

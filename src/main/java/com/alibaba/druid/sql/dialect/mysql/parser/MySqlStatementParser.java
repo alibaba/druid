@@ -3679,7 +3679,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     renameStmt.addItem(item);
 
                     return renameStmt;
-                }
+                }   
             } else if (lexer.token() == Token.ORDER) {
                 throw new ParserException("TODO " + lexer.info());
             } else if (lexer.identifierEquals("CONVERT")) {

@@ -634,5 +634,6 @@ public final class FnvHash {
         long TBLPROPERTIES = fnv1a_64_lower("TBLPROPERTIES");
         long FULLTEXT = fnv1a_64_lower("FULLTEXT");
         long NO = fnv1a_64_lower("NO");
+        long PATH = fnv1a_64_lower("PATH");
     }
 }

@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.Arrays;
 
@@ -46,6 +47,7 @@ public class DB2ExprParser extends SQLExprParser {
     public DB2ExprParser(String sql){
         this(new DB2Lexer(sql));
         this.lexer.nextToken();
+        this.dbType = JdbcConstants.DB2;
     }
 
     public DB2ExprParser(String sql, SQLParserFeature... features){
@@ -57,6 +59,7 @@ public class DB2ExprParser extends SQLExprParser {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
+        this.dbType = JdbcConstants.DB2;
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
@@ -114,6 +117,15 @@ public class DB2ExprParser extends SQLExprParser {
                     lexer.nextToken();
 
                     expr = new SQLIdentifierExpr("CURRENT SCHEMA");
+                }
+            }
+        } else if (lexer.identifierEquals(FnvHash.Constants.PATH)) {
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+                if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
+                    lexer.nextToken();
+
+                    expr = new SQLIdentifierExpr("CURRENT PATH");
                 }
             }
         } else if (lexer.identifierEquals(FnvHash.Constants.MONTHS)) {
