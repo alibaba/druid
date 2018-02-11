@@ -18,6 +18,8 @@ package com.alibaba.druid.sql.visitor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.NClob;
@@ -1327,9 +1329,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printInteger(SQLIntegerExpr x, boolean parameterized) {
-        String val = x.getNumber().toString();
+        Number number = x.getNumber();
 
-        if ("1".equals(val)) {
+        if (number.equals(Integer.valueOf(1))) {
             if (JdbcConstants.ORACLE.equals(dbType)) {
                 SQLObject parent = x.getParent();
                 if (parent instanceof SQLBinaryOpExpr) {
@@ -1357,7 +1359,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        print(val);
+        if (number instanceof BigDecimal || number instanceof BigInteger) {
+            print(number.toString());
+        } else {
+            print(number.longValue());
+        }
     }
 
     public boolean visit(SQLMethodInvokeExpr x) {
