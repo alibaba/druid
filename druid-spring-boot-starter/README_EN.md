@@ -78,7 +78,6 @@ spring.datasource.druid.stat-view-servlet.deny=
 
 # With Spring monitoring properties, detail see Druid Wiki
 spring.datasource.druid.aop-patterns= # Spring monitoring AOP point, such as x.y.z.service.*, multiple separated by comma.
-# If 'spring.datasource.druid.aop-patterns' to be the agent class does not define interface need set 'spring.aop.proxy-target-class = true' .
 ```
 The Druid Spring Boot Starter is not limited to support for the above configuration properties, and the configurable properties that provide the ```setter``` method in [``` DruidDataSource```](https://github.com/alibaba/druid/blob/master/src/main/java/com/alibaba/druid/pool/DruidDataSource.java) will be supported. You can refer to the WIKI document or configure it via the IDE input prompt. The format of the configuration file You can choose ```.properties``` or``` .yml```, the effect is the same, in the configuration of more cases recommend the use of ```.yml```.
 
