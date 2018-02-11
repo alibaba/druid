@@ -893,6 +893,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     this.emptySignal();
                 }
             }
+
         } catch (SQLException e) {
             LOG.error("{dataSource-" + this.getID() + "} init error", e);
             throw e;
@@ -904,8 +905,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } catch (Error e){
             LOG.error("{dataSource-" + this.getID() + "} init error", e);
             throw e;
-        }
-        finally {
+
+        } finally {
             inited = true;
             lock.unlock();
 
