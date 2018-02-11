@@ -280,19 +280,18 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         switch (lexer.token()) {
-        case START: {
-            lexer.nextToken();
-            acceptIdentifier("TRANSACTION");
-            PGStartTransactionStatement stmt = new PGStartTransactionStatement();
-            statementList.add(stmt);
-            lexer.nextToken();
-            return true;
-        }
-        case WITH:
-            statementList.add(parseWith());
-            return true;
-        default:
-            break;
+            case BEGIN:
+            case START: {
+                PGStartTransactionStatement stmt = parseBegin();
+                statementList.add(stmt);
+                return true;
+            }
+
+            case WITH:
+                statementList.add(parseWith());
+                return true;
+            default:
+                break;
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.CONNECT)) {
@@ -302,6 +301,18 @@ public class PGSQLStatementParser extends SQLStatementParser {
         }
 
         return false;
+    }
+
+    protected PGStartTransactionStatement parseBegin() {
+        PGStartTransactionStatement stmt = new PGStartTransactionStatement();
+        if (lexer.token() == Token.START) {
+            lexer.nextToken();
+            acceptIdentifier("TRANSACTION");
+        } else {
+            accept(Token.BEGIN);
+        }
+
+        return stmt;
     }
 
     public SQLStatement parseConnectTo() {
