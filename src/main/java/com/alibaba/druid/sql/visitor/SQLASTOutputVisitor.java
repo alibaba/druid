@@ -4049,7 +4049,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLRevokeStatement x) {
-        print0(ucase ? "ROVOKE " : "rovoke ");
+        print0(ucase ? "REVOKE " : "revoke ");
         printAndAccept(x.getPrivileges(), ", ");
 
         if (x.getOn() != null) {
