@@ -600,8 +600,10 @@ public class SQLStatementParser extends SQLParser {
             stmt.setExpr(expr);
         }
 
-        accept(Token.SEMI);
-        stmt.setAfterSemi(true);
+        if (lexer.token == Token.SEMI) {
+            lexer.nextToken();
+            stmt.setAfterSemi(true);
+        }
 
         return stmt;
     }

@@ -2435,6 +2435,16 @@ public class SQLExprParser extends SQLParser {
             }
             charType.setCharSetName(lexer.stringVal());
             lexer.nextToken();
+        } else  if (lexer.identifierEquals(FnvHash.Constants.CHARSET)) {
+            lexer.nextToken();
+
+            if (lexer.token != Token.IDENTIFIER
+                    && lexer.token != Token.LITERAL_CHARS
+                    && lexer.token != Token.BINARY) {
+                throw new ParserException(lexer.info());
+            }
+            charType.setCharSetName(lexer.stringVal());
+            lexer.nextToken();
         }
 
         if (lexer.token == Token.BINARY) {

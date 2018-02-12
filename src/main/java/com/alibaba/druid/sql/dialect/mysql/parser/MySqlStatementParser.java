@@ -318,6 +318,9 @@ public class MySqlStatementParser extends SQLStatementParser {
             } else if (lexer.token() == Token.VIEW) {
                 lexer.reset(markBp, markChar, Token.CREATE);
                 return parseCreateView();
+            } else if (lexer.token() == Token.FUNCTION) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+                return parseCreateFunction();
             } else {
                 lexer.reset(markBp, markChar, Token.CREATE);
                 return parseCreateProcedure();
@@ -4282,20 +4285,21 @@ public class MySqlStatementParser extends SQLStatementParser {
         SQLCreateFunctionStatement stmt = new SQLCreateFunctionStatement();
         stmt.setDbType(dbType);
 
-        if (lexer.token() != Token.FUNCTION) {
-            if (lexer.identifierEquals("DEFINER")) {
+        if (lexer.token() == Token.CREATE) {
+            lexer.nextToken();
+
+            if (lexer.token() == Token.OR) {
                 lexer.nextToken();
-                accept(Token.EQ);
-                SQLName definer = this.exprParser.name();
-                stmt.setDefiner(definer);
-            } else {
-                accept(Token.CREATE);
-                if (lexer.token() == Token.OR) {
-                    lexer.nextToken();
-                    accept(Token.REPLACE);
-                    stmt.setOrReplace(true);
-                }
+                accept(Token.REPLACE);
+                stmt.setOrReplace(true);
             }
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.DEFINER)) {
+            lexer.nextToken();
+            accept(Token.EQ);
+            SQLName definer = this.getExprParser().userName();
+            stmt.setDefiner(definer);
         }
 
         accept(Token.FUNCTION);
