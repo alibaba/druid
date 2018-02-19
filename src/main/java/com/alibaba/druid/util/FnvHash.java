@@ -633,7 +633,10 @@ public final class FnvHash {
 
         long TBLPROPERTIES = fnv1a_64_lower("TBLPROPERTIES");
         long FULLTEXT = fnv1a_64_lower("FULLTEXT");
+        long SPATIAL = fnv1a_64_lower("SPATIAL");
         long NO = fnv1a_64_lower("NO");
         long PATH = fnv1a_64_lower("PATH");
+        long COMPRESSION = fnv1a_64_lower("COMPRESSION");
+        long KEY_BLOCK_SIZE = fnv1a_64_lower("KEY_BLOCK_SIZE");
     }
 }

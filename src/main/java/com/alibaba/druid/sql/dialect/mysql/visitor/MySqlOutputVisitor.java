@@ -399,8 +399,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlTableIndex x) {
         String indexType = x.getIndexType();
 
+        boolean indexTypePrinted = false;
         if ("FULLTEXT".equalsIgnoreCase(indexType)) {
             print0(ucase ? "FULLTEXT " : "fulltext ");
+            indexTypePrinted = true;
+        } else if ("SPATIAL".equalsIgnoreCase(indexType)) {
+            print0(ucase ? "SPATIAL " : "spatial ");
+            indexTypePrinted = true;
         }
 
         print0(ucase ? "INDEX" : "index");
@@ -409,7 +414,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getName().accept(this);
         }
 
-        if (indexType != null && !"FULLTEXT".equalsIgnoreCase(indexType)) {
+        if (indexType != null && !indexTypePrinted) {
             print0(ucase ? " USING " : " using ");
             print0(indexType);
         }
@@ -2720,13 +2725,18 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getIndexType() != null) {
             print0(ucase ? " USING " : " using ");
-            ;
             print0(x.getIndexType());
         }
 
         print0(" (");
         printAndAccept(x.getColumns(), ", ");
         print(')');
+
+        SQLExpr keyBlockSize = x.getKeyBlockSize();
+        if (keyBlockSize != null) {
+            print0(ucase ? " KEY_BLOCK_SIZE = " : " key_block_size = ");
+            keyBlockSize.accept(this);
+        }
 
         SQLExpr comment = x.getComment();
         if (comment != null) {

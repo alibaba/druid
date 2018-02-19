@@ -115,6 +115,57 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                             stmt.getTableElementList().add(fulltextKey);
                             if (lexer.token() == Token.RPAREN) {
                                 break;
+                            } else if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                        } else {
+                            lexer.reset(mark);
+                        }
+                    } else if (lexer.identifierEquals(FnvHash.Constants.SPATIAL)) {
+                        Lexer.SavePoint mark = lexer.mark();
+                        lexer.nextToken();
+                        if (lexer.token() == Token.INDEX) {
+                            lexer.nextToken();
+                            MySqlTableIndex idx = new MySqlTableIndex();
+                            idx.setIndexType("SPATIAL");
+
+                            if (lexer.token() == Token.IDENTIFIER) {
+                                if (!"USING".equalsIgnoreCase(lexer.stringVal())) {
+                                    idx.setName(this.exprParser.name());
+                                }
+                            }
+
+                            if (lexer.identifierEquals("USING")) {
+                                lexer.nextToken();
+                                idx.setIndexType(lexer.stringVal());
+                                lexer.nextToken();
+                            }
+
+                            accept(Token.LPAREN);
+                            for (;;) {
+                                idx.addColumn(this.exprParser.parseSelectOrderByItem());
+                                if (!(lexer.token() == (Token.COMMA))) {
+                                    break;
+                                } else {
+                                    lexer.nextToken();
+                                }
+                            }
+                            accept(Token.RPAREN);
+
+                            if (lexer.identifierEquals("USING")) {
+                                lexer.nextToken();
+                                idx.setIndexType(lexer.stringVal());
+                                lexer.nextToken();
+                            }
+
+                            stmt.getTableElementList().add(idx);
+
+                            if (lexer.token() == Token.RPAREN) {
+                                break;
+                            } else if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
                             }
                         } else {
                             lexer.reset(mark);
@@ -461,8 +512,19 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
             if (lexer.identifierEquals("ENCRYPTION")) {
                 lexer.nextToken();
-                accept(Token.EQ);
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
                 stmt.getTableOptions().put("ENCRYPTION", this.exprParser.expr());
+                continue;
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.COMPRESSION)) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                stmt.getTableOptions().put("COMPRESSION", this.exprParser.expr());
                 continue;
             }
 

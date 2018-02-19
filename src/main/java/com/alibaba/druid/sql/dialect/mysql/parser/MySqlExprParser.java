@@ -795,6 +795,15 @@ public class MySqlExprParser extends SQLExprParser {
             lexer.nextToken();
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.KEY_BLOCK_SIZE)) {
+            lexer.nextToken();
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+            }
+            SQLExpr value = this.primary();
+            unique.setKeyBlockSize(value);
+        }
+
         return unique;
     }
 
