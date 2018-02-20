@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.sqlserver.createtable;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -29,17 +23,23 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisito
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class SQLServerCreateTableTest_5 extends TestCase {
+import java.util.List;
+
+public class SQLServerCreateTableTest_9 extends TestCase {
 
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE dbo.AO_563AEE_ACTOR_ENTITY (" //
-                     + "    FULL_NAME VARCHAR(255),"//
-                     + "    ID INTEGER IDENTITY(1,1) NOT NULL,"//
-                     + "    PROFILE_PAGE_URI VARCHAR(767),"//
-                     + "    PROFILE_PICTURE_URI VARCHAR(767),"//
-                     + "    USERNAME VARCHAR(255),"//
-                     + ")";
+        String sql = "CREATE TABLE [dbo].[users2](\n" +
+                "\t[id] [bigint] IDENTITY(1,1) NOT NULL,\n" +
+                "\t[email] [varchar](255) NOT NULL,\n" +
+                "\t[name] [varchar](255) NOT NULL,\n" +
+                "PRIMARY KEY CLUSTERED \n" +
+                "(\n" +
+                "\t[id] ASC\n" +
+                ")\n" +
+                ")";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -48,13 +48,12 @@ public class SQLServerCreateTableTest_5 extends TestCase {
         Assert.assertEquals(1, statementList.size());
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
-        Assert.assertEquals("CREATE TABLE dbo.AO_563AEE_ACTOR_ENTITY (" //
-                            + "\n\tFULL_NAME VARCHAR(255),"//
-                            + "\n\tID INTEGER DEFAULT NULL IDENTITY (1, 1),"//
-                            + "\n\tPROFILE_PAGE_URI VARCHAR(767),"//
-                            + "\n\tPROFILE_PICTURE_URI VARCHAR(767),"//
-                            + "\n\tUSERNAME VARCHAR(255)"//
-                            + "\n)", output);
+        Assert.assertEquals("CREATE TABLE [dbo].[users2] (\n" +
+                "\t[id] [bigint] DEFAULT NULL IDENTITY (1, 1),\n" +
+                "\t[email] [varchar](255) NOT NULL,\n" +
+                "\t[name] [varchar](255) NOT NULL,\n" +
+                "\tPRIMARY KEY CLUSTERED ([id] ASC)\n" +
+                ")", output);
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
@@ -65,13 +64,12 @@ public class SQLServerCreateTableTest_5 extends TestCase {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("dbo.AO_563AEE_ACTOR_ENTITY")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("dbo.users2")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("dbo.AO_563AEE_ACTOR_ENTITY", "FULL_NAME")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("dbo.AO_563AEE_ACTOR_ENTITY", "ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("dbo.AO_563AEE_ACTOR_ENTITY", "USERNAME")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("dbo.users2", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("dbo.users2", "email")));
     }
 }
