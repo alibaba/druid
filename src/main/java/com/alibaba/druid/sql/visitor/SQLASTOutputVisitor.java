@@ -3829,9 +3829,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x.getName().accept(this);
             print(' ');
         }
-        print0(ucase ? "PRIMARY KEY (" : "primary key (");
+
+        print0(ucase ? "PRIMARY KEY " : "primary key ");
+
+        if (x.isClustered()) {
+            print0(ucase ? "CLUSTERED " : "clustered ");
+        }
+
+        print('(');
         printAndAccept(x.getColumns(), ", ");
         print(')');
+        
         return false;
     }
 

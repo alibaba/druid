@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey {
+    protected boolean clustered         = false; // sql server
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -32,5 +33,18 @@ public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey {
         SQLPrimaryKeyImpl x = new SQLPrimaryKeyImpl();
         cloneTo(x);
         return x;
+    }
+
+    public void cloneTo(SQLPrimaryKeyImpl x) {
+        super.cloneTo(x);
+        x.clustered = clustered;
+    }
+
+    public boolean isClustered() {
+        return clustered;
+    }
+
+    public void setClustered(boolean clustered) {
+        this.clustered = clustered;
     }
 }

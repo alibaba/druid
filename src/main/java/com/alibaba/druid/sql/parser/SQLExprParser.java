@@ -2741,6 +2741,12 @@ public class SQLExprParser extends SQLParser {
         accept(Token.KEY);
 
         SQLPrimaryKeyImpl pk = new SQLPrimaryKeyImpl();
+
+        if (lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
+            lexer.nextToken();
+            pk.setClustered(true);
+        }
+
         accept(Token.LPAREN);
         orderBy(pk.getColumns(), pk);
         accept(Token.RPAREN);
