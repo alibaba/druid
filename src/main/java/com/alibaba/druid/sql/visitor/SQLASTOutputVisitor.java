@@ -3811,11 +3811,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLUnique x) {
-        if (x.getName() != null) {
+        SQLName name = x.getName();
+        if (name != null) {
             print0(ucase ? "CONSTRAINT " : "constraint ");
-            x.getName().accept(this);
+            name.accept(this);
             print(' ');
         }
+
         print0(ucase ? "UNIQUE (" : "unique (");
         printAndAccept(x.getColumns(), ", ");
         print(')');
@@ -3824,9 +3826,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLPrimaryKeyImpl x) {
-        if (x.getName() != null) {
+        SQLName name = x.getName();
+        if (name != null) {
             print0(ucase ? "CONSTRAINT " : "constraint ");
-            x.getName().accept(this);
+            name.accept(this);
             print(' ');
         }
 
@@ -3839,7 +3842,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print('(');
         printAndAccept(x.getColumns(), ", ");
         print(')');
-        
+
         return false;
     }
 
@@ -3854,11 +3857,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLColumnReference x) {
-        if (x.getName() != null) {
+        SQLName name = x.getName();
+        if (name != null) {
             print0(ucase ? "CONSTRAINT " : "constraint ");
-            x.getName().accept(this);
+            name.accept(this);
             print(' ');
         }
+
         print0(ucase ? "REFERENCES " : "references ");
         x.getTable().accept(this);
         print0(" (");

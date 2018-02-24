@@ -3449,7 +3449,9 @@ public class MySqlStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.COLUMN) {
                     lexer.nextToken();
                     parseAlterTableAddColumn(stmt);
-                } else if (lexer.token() == Token.INDEX || lexer.identifierEquals("FULLTEXT")) {
+                } else if (lexer.token() == Token.INDEX
+                        || lexer.identifierEquals(FnvHash.Constants.FULLTEXT)
+                        || lexer.identifierEquals(FnvHash.Constants.SPATIAL)) {
                     SQLAlterTableAddIndex item = parseAlterTableAddIndex();
                     item.setParent(stmt);
                     stmt.addItem(item);
@@ -3539,10 +3541,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                     }
 
                     stmt.addItem(item);
-                } else if (lexer.identifierEquals(FULLTEXT)) {
-                    throw new ParserException("TODO " + lexer.info());
-                } else if (lexer.identifierEquals(SPATIAL)) {
-                    throw new ParserException("TODO " + lexer.info());
                 } else {
                     parseAlterTableAddColumn(stmt);
                 }
