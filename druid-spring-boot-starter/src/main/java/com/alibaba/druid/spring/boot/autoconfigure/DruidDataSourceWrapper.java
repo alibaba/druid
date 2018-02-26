@@ -50,6 +50,9 @@ class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean
         if (super.getUrl() == null) {
             super.setUrl(basicProperties.determineUrl());
         }
+        if(super.getDriverClassName() == null){
+            super.setDriverClassName(basicProperties.getDriverClassName());
+        }
 
     }
 
