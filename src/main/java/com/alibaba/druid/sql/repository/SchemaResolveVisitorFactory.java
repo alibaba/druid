@@ -1693,6 +1693,17 @@ class SchemaResolveVisitorFactory {
         }
 
         if (table != null) {
+            if (from != null && table instanceof SQLExprTableSource) {
+                SQLExpr tableExpr = ((SQLExprTableSource) table).getExpr();
+                if (tableExpr instanceof SQLPropertyExpr
+                        && ((SQLPropertyExpr) tableExpr).getName().equals("*")) {
+                    String alias = ((SQLPropertyExpr) tableExpr).getOwnernName();
+                    SQLTableSource refTableSource = from.findTableSource(alias);
+                    if (refTableSource != null) {
+                        ((SQLPropertyExpr) tableExpr).setResolvedTableSource(refTableSource);
+                    }
+                }
+            }
             table.accept(visitor);
             ctx.setTableSource(table);
         }

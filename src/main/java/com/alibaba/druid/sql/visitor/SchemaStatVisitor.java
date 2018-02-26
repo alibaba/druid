@@ -1764,13 +1764,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return true;
     }
 
-    public void endVisit(SQLDeleteStatement x) {
-
-    }
-
-    public void endVisit(SQLUpdateStatement x) {
-    }
-
     public boolean visit(SQLCreateTableStatement x) {
         if (repository != null
                 && x.getParent() == null) {

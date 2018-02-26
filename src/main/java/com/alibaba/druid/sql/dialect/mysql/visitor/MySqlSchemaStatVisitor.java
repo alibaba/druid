@@ -78,14 +78,21 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
             repository.resolve(x);
         }
 
-        setMode(x, Mode.Delete);
+        SQLTableSource from = x.getFrom();
+        if (from != null) {
+            from.accept(this);
+        }
 
-        accept(x.getFrom());
-        accept(x.getUsing());
-        x.getTableSource().accept(this);
+        SQLTableSource using = x.getUsing();
+        if (using != null) {
+            using.accept(this);
+        }
 
-        if (x.getTableSource() instanceof SQLExprTableSource) {
-            TableStat stat = this.getTableStat(x.getExprTableSource());
+        SQLTableSource tableSource = x.getTableSource();
+        tableSource.accept(this);
+
+        if (tableSource instanceof SQLExprTableSource) {
+            TableStat stat = this.getTableStat((SQLExprTableSource) tableSource);
             stat.incrementDeleteCount();
         }
 
