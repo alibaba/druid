@@ -135,15 +135,8 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     @Override
     public boolean acceptsURL(String url) throws SQLException {
-        if (url == null) {
-            return false;
-        }
 
-        if (url.startsWith(acceptPrefix)) {
-            return true;
-        }
-
-        return false;
+        return url != null && url.startsWith(acceptPrefix);
     }
 
     @Override

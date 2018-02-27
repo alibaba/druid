@@ -216,11 +216,8 @@ public class MockDriver implements Driver, MockDriverMBean {
 
     @Override
     public boolean acceptsURL(String url) throws SQLException {
-        if (url == null) {
-            return false;
-        }
+        return url != null && (url.startsWith(prefix) || url.startsWith(mockPrefix));
 
-        return url.startsWith(prefix) || url.startsWith(mockPrefix);
     }
 
     @Override

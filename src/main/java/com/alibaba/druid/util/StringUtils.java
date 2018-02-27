@@ -127,11 +127,8 @@ public class StringUtils {
     }
 
     public static boolean isEmpty(CharSequence value) {
-        if (value == null || value.length() == 0) {
-            return true;
-        }
+        return value == null || value.length() == 0;
 
-        return false;
     }
     
     public static int lowerHashCode(String text) {

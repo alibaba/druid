@@ -668,11 +668,8 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
     }
 
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        if (iface == PreparedStatementProxy.class) {
-            return true;
-        }
+        return iface == PreparedStatementProxy.class || super.isWrapperFor(iface);
 
-        return super.isWrapperFor(iface);
     }
 
     private JdbcParameter createParemeter(int x) {
