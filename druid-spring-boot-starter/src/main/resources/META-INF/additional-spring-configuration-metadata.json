@@ -109,6 +109,9 @@
           "value": "oceanbase"
         },
         {
+          "value": "xugu"
+        },
+        {
           "value": "odps"
         },
         {
@@ -170,6 +173,9 @@
         },
         {
           "value": "oceanbase"
+        },
+         {
+          "value": "xugu"
         },
         {
           "value": "odps"

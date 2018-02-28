@@ -20,4 +20,12 @@ public class JdbcUtilsTest2 extends TestCase {
     public void test_kingbase() throws Exception {
         assertEquals(JdbcConstants.KINGBASE_DRIVER, JdbcUtils.getDriverClassName("jdbc:kingbase:"));
     }
+
+    public void test_xugu_dbtype() throws Exception {
+        assertEquals(JdbcConstants.XUGU, JdbcUtils.getDbType("jdbc:xugu://127.0.0.1:5138/TEST", "com.xugu.cloudjdbc.Driver"));
+    }
+
+    public void test_xugu_driver() throws Exception {
+        assertEquals(JdbcConstants.XUGU_DRIVER, JdbcUtils.getDriverClassName("jdbc:xugu:"));
+    }
 }
