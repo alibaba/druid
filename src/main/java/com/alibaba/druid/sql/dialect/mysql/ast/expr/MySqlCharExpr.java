@@ -83,4 +83,11 @@ public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
         output(buf);
         return buf.toString();
     }
+    
+    public MySqlCharExpr clone() {
+    	MySqlCharExpr x = new MySqlCharExpr(text);
+        x.setCharset(charset);
+        x.setCollate(collate);
+        return x;
+    }
 }
