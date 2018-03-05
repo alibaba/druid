@@ -85,4 +85,6 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     int fill() throws SQLException;
     
     int fill(int toCount) throws SQLException;
+
+    boolean isUseGlobalDataSourceStat();
 }

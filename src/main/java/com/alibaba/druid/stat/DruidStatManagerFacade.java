@@ -145,9 +145,21 @@ public final class DruidStatManagerFacade {
         Set<Object> dataSources = getDruidDataSourceInstances();
 
         if (dataSourceId == null) {
+            JdbcDataSourceStat globalStat = JdbcDataSourceStat.getGlobal();
+
             List<Map<String, Object>> sqlList = new ArrayList<Map<String, Object>>();
 
+            DruidDataSource globalStatDataSource = null;
             for (Object datasource : dataSources) {
+                if (datasource instanceof DruidDataSource) {
+                    if (((DruidDataSource) datasource).getDataSourceStat() == globalStat) {
+                        if (globalStatDataSource == null) {
+                            globalStatDataSource = (DruidDataSource) datasource;
+                        } else {
+                            continue;
+                        }
+                    }
+                }
                 sqlList.addAll(getSqlStatDataList(datasource));
             }
 
