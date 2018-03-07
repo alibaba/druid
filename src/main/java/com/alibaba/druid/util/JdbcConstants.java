@@ -71,6 +71,9 @@ public interface JdbcConstants {
     String GBASE                      = "gbase";
     String GBASE_DRIVER               = "com.gbase.jdbc.Driver";
 
+    String XUGU                       = "xugu";
+    String XUGU_DRIVER                = "com.xugu.cloudjdbc.Driver";
+
     String OCEANBASE                  = "oceanbase";
     String OCEANBASE_DRIVER           = "com.mysql.jdbc.Driver";
     String INFORMIX                   = "informix";
