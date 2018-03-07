@@ -4200,4 +4200,16 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
         }
     }
+
+    @Override
+    public void endVisit(MySqlChecksumTableStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlChecksumTableStatement x) {
+        print0(ucase ? "CHECKSUM TABLE " : "checksum table ");
+        printAndAccept(x.getTables(), "，");
+        return false;
+    }
 } //

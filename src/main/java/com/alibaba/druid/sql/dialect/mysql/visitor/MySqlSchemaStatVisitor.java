@@ -1361,4 +1361,14 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public void endVisit(MySqlShowDatabasePartitionStatusStatement x) {
 
     }
+
+    @Override
+    public boolean visit(MySqlChecksumTableStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlChecksumTableStatement x) {
+
+    }
 }

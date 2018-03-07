@@ -1228,4 +1228,14 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
 
     }
 
+    @Override
+    public boolean visit(MySqlChecksumTableStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlChecksumTableStatement x) {
+
+    }
+
 } //

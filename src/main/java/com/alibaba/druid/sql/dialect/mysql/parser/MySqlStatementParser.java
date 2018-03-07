@@ -851,6 +851,11 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.CHECKSUM)) {
+            statementList.add(this.parseChecksum());
+            return true;
+        }
+
         if (lexer.token() == Token.HINT) {
             List<SQLCommentHint> hints = this.exprParser.parseHints();
 
@@ -4662,6 +4667,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                 continue;
             }
 
+            if (lexer.identifierEquals(FnvHash.Constants.CHECKSUM)) {
+                statementList.add(this.parseChecksum());
+                continue;
+            }
+
             if (lexer.token() == Token.IDENTIFIER) {
                 String label = lexer.stringVal();
                 char ch = lexer.current();
@@ -4691,6 +4701,30 @@ public class MySqlStatementParser extends SQLStatementParser {
             throw new ParserException("TODO, " + lexer.info());
         }
 
+    }
+
+
+    public MySqlChecksumTableStatement parseChecksum() {
+        MySqlChecksumTableStatement stmt = new MySqlChecksumTableStatement();
+        if (lexer.identifierEquals(FnvHash.Constants.CHECKSUM)) {
+            lexer.nextToken();
+        } else {
+            throw new ParserException("TODO " + lexer.info());
+        }
+
+        for (;;) {
+            SQLExprTableSource table = (SQLExprTableSource) this.createSQLSelectParser().parseTableSource();
+            stmt.addTable(table);
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
+        }
+
+        return stmt;
     }
 
     /**
