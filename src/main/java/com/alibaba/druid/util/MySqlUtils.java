@@ -348,7 +348,7 @@ public class MySqlUtils {
     public static long getLastPacketReceivedTimeMs(Connection conn) throws SQLException {
         if (class_connectionImpl == null && !class_connectionImpl_Error) {
             try {
-                class_connectionImpl = Utils.loadClass("com.mysql.jdbc.ConnectionImpl");
+                class_connectionImpl = Utils.loadClass("com.mysql.jdbc.MySQLConnection");
             } catch (Throwable error){
                 class_connectionImpl_Error = true;
             }
