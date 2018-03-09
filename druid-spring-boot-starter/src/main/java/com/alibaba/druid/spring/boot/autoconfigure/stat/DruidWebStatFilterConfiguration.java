@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnProperty(name = "spring.datasource.druid.web-stat-filter.enabled", havingValue = "true", matchIfMissing = true)
 public class DruidWebStatFilterConfiguration {
     @Bean
-    public FilterRegistrationBean filterRegistrationBean(DruidStatProperties properties) {
+    public FilterRegistrationBean webStatFilter(DruidStatProperties properties) {
         DruidStatProperties.WebStatFilter config = properties.getWebStatFilter();
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
         WebStatFilter filter = new WebStatFilter();
