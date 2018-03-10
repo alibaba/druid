@@ -15,21 +15,15 @@
  */
 package com.alibaba.druid.spring.boot.testcase;
 
+import javax.annotation.Resource;
+
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 import com.alibaba.druid.spring.boot.demo.DemoApplication;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.EnvironmentTestUtils;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
