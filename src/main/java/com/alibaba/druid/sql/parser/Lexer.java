@@ -1102,6 +1102,12 @@ public class Lexer {
                     case '\\':
                         putChar('\\');
                         break;
+                    case '_':
+                        if(JdbcConstants.MYSQL.equals(dbType)) {
+                            putChar('\\');
+                        }
+                        putChar('_');
+                        break;
                     case 'Z':
                         putChar((char) 0x1A); // ctrl + Z
                         break;
