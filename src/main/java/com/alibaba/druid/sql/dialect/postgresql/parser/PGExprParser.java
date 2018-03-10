@@ -117,6 +117,27 @@ public class PGExprParser extends SQLExprParser {
                 SQLUnaryExpr expr = new SQLUnaryExpr(SQLUnaryOperator.Pound, value);
                 return primaryRest(expr);
             }
+        } else if (lexer.token() == Token.VALUES) {
+            lexer.nextToken();
+
+            SQLValuesExpr values = new SQLValuesExpr();
+            for (;;) {
+                accept(Token.LPAREN);
+                SQLListExpr listExpr = new SQLListExpr();
+                exprList(listExpr.getItems(), listExpr);
+                accept(Token.RPAREN);
+
+                listExpr.setParent(values);
+
+                values.getValues().add(listExpr);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            return values;
         }
         
         return super.primary();

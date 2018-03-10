@@ -6300,4 +6300,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         return false;
     }
+
+    @Override
+    public boolean visit(SQLValuesExpr x) {
+        print0(ucase ? "VALUES (" : "values (");
+        printAndAccept(x.getValues(), ", ");
+        return false;
+    }
 }
