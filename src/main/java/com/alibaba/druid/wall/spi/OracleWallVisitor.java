@@ -354,4 +354,9 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     public List<WallUpdateCheckItem> getUpdateCheckItems() {
         return updateCheckItems;
     }
+
+    public boolean visit(SQLJoinTableSource x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
 }

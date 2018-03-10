@@ -2644,4 +2644,11 @@ public class WallVisitorUtils {
             addViolation(visitor, ErrorCode.EVIL_HINTS, "hint not allow", x);
         }
     }
+
+    public static void check(WallVisitor visitor, SQLJoinTableSource x) {
+        SQLExpr condition = x.getCondition();
+        if (condition instanceof SQLName) {
+            addViolation(visitor, ErrorCode.INVALID_JOIN_CONDITION, "invalid join condition", x);
+        }
+    }
 }

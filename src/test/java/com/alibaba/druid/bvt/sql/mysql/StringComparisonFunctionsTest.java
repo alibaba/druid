@@ -92,7 +92,7 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'David!' LIKE 'David_';", text);
+        Assert.assertEquals("SELECT 'David!' LIKE 'David\\\\_';", text);
     }
 
     public void test_6() throws Exception {
