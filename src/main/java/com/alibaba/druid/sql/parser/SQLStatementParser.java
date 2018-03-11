@@ -686,7 +686,14 @@ public class SQLStatementParser extends SQLParser {
                 lexer.nextToken(); // sql server
             }
 
-            SQLExpr expr = this.exprParser.expr();
+            SQLExpr expr;
+            if (lexer.token == Token.DOT) {
+                expr = new SQLAllColumnExpr();
+                lexer.nextToken();
+            } else {
+                expr = this.exprParser.expr();
+            }
+            
             if (stmt.getObjectType() == SQLObjectType.TABLE || stmt.getObjectType() == null) {
                 stmt.setOn(new SQLExprTableSource(expr));
             } else {
@@ -842,6 +849,8 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                     accept(Token.TABLE);
                     privilege = "CREATE TEMPORARY TABLE";
+                } else if (lexer.token == Token.ON) {
+                    privilege = "CREATE";
                 } else {
                     throw new ParserException("TODO : " + lexer.token + " " + lexer.stringVal());
                 }
