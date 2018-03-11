@@ -350,10 +350,20 @@ public class MySqlExprParser extends SQLExprParser {
         lexer.nextToken();
 
         if (lexer.token() == Token.IDENTIFIED) {
+            Lexer.SavePoint mark = lexer.mark();
+
             lexer.nextToken();
-            accept(Token.BY);
-            userName.setIdentifiedBy(lexer.stringVal());
-            lexer.nextToken();
+            if (lexer.token() == Token.BY) {
+                lexer.nextToken();
+                if (lexer.identifierEquals(FnvHash.Constants.PASSWORD)) {
+                    lexer.reset(mark);
+                } else {
+                    userName.setIdentifiedBy(lexer.stringVal());
+                    lexer.nextToken();
+                }
+            } else {
+                lexer.reset(mark);
+            }
         }
 
         return userName;

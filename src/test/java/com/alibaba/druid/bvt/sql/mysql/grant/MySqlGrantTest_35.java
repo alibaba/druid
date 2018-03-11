@@ -122,7 +122,7 @@ public class MySqlGrantTest_35 extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("GRANT ALL ON * TO hello@'%' IDENTIFIED BY helloPassword WITH MAX_QUERIES_PER_HOUR 90;", //
+        assertEquals("GRANT ALL ON * TO hello@'%' IDENTIFIED BY 'helloPassword' WITH MAX_QUERIES_PER_HOUR 90;", //
                 output);
 
         assertEquals(0, visitor.getTables().size());

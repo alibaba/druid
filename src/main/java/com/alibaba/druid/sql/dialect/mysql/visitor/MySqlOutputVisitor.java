@@ -2056,8 +2056,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         String identifiedBy = x.getIdentifiedBy();
         if (identifiedBy != null) {
-            print0(ucase ? " IDENTIFIED BY " : " identified by ");
+            print0(ucase ? " IDENTIFIED BY '" : " identified by '");
             print0(identifiedBy);
+            print('\'');
         }
 
         return false;
