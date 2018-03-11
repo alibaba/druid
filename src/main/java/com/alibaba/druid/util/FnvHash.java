@@ -639,5 +639,6 @@ public final class FnvHash {
         long COMPRESSION = fnv1a_64_lower("COMPRESSION");
         long KEY_BLOCK_SIZE = fnv1a_64_lower("KEY_BLOCK_SIZE");
         long CHECKSUM = fnv1a_64_lower("CHECKSUM");
+        long ROUTINE = fnv1a_64_lower("ROUTINE");
     }
 }

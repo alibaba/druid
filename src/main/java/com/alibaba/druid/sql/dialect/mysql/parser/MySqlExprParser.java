@@ -348,6 +348,14 @@ public class MySqlExprParser extends SQLExprParser {
             userName.setHost(lexer.stringVal());
         }
         lexer.nextToken();
+
+        if (lexer.token() == Token.IDENTIFIED) {
+            lexer.nextToken();
+            accept(Token.BY);
+            userName.setIdentifiedBy(lexer.stringVal());
+            lexer.nextToken();
+        }
+
         return userName;
     }
 
@@ -696,6 +704,14 @@ public class MySqlExprParser extends SQLExprParser {
                 userName.setHost(lexer.stringVal());
             }
             lexer.nextToken();
+
+            if (lexer.token() == Token.IDENTIFIED) {
+                lexer.nextToken();
+                accept(Token.BY);
+                userName.setIdentifiedBy(lexer.stringVal());
+                lexer.nextToken();
+            }
+
             return userName;
         }
         return super.nameRest(name);

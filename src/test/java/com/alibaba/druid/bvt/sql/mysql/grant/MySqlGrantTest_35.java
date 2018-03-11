@@ -31,7 +31,6 @@ public class MySqlGrantTest_35 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-//        print(statementList);
 
         assertEquals(1, statementList.size());
 
@@ -42,18 +41,92 @@ public class MySqlGrantTest_35 extends MysqlTest {
         assertEquals("GRANT CREATE ON * TO hello@'%';", //
                             output);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
+    }
 
-//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
-//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
-        
-//        assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
+    public void test_1() throws Exception {
+        String sql = "GRANT ALTER ON . TO hello@'%'; ";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+
+        assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        String output = SQLUtils.toMySqlString(stmt);
+        assertEquals("GRANT ALTER ON * TO hello@'%';", //
+                output);
+
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
+    }
+
+    public void test_2() throws Exception {
+        String sql = "GRANT CREATE TEMPORARY TABLE ON . TO hello@'%';";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+
+        assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        String output = SQLUtils.toMySqlString(stmt);
+        assertEquals("GRANT CREATE TEMPORARY TABLE ON * TO hello@'%';", //
+                output);
+
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
+    }
+
+    public void test_3() throws Exception {
+        String sql = "GRANT ALTER ROUTINE ON . TO hello@'%';";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+
+        assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        String output = SQLUtils.toMySqlString(stmt);
+        assertEquals("GRANT ALTER ROUTINE ON * TO hello@'%';", //
+                output);
+
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
+    }
+
+    public void test_4() throws Exception {
+        String sql = "grant all on . to hello@'%' identified by 'helloPassword' with grant option MAX_QUERIES_PER_HOUR 90;";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+
+        assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        String output = SQLUtils.toMySqlString(stmt);
+        assertEquals("GRANT ALL ON * TO hello@'%' IDENTIFIED BY helloPassword WITH MAX_QUERIES_PER_HOUR 90;", //
+                output);
+
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
     }
 }

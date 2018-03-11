@@ -2047,10 +2047,19 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlUserName x) {
         print0(x.getUserName());
-        if (x.getHost() != null) {
+
+        String host = x.getHost();
+        if (host != null) {
             print('@');
-            print0(x.getHost());
+            print0(host);
         }
+
+        String identifiedBy = x.getIdentifiedBy();
+        if (identifiedBy != null) {
+            print0(ucase ? " IDENTIFIED BY " : " identified by ");
+            print0(identifiedBy);
+        }
+
         return false;
     }
 

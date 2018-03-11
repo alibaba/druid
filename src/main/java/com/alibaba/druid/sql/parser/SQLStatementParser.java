@@ -693,7 +693,7 @@ public class SQLStatementParser extends SQLParser {
             } else {
                 expr = this.exprParser.expr();
             }
-            
+
             if (stmt.getObjectType() == SQLObjectType.TABLE || stmt.getObjectType() == null) {
                 stmt.setOn(new SQLExprTableSource(expr));
             } else {
@@ -708,6 +708,11 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token == Token.WITH) {
             lexer.nextToken();
+
+            if (lexer.token == Token.GRANT) {
+                lexer.nextToken();
+                acceptIdentifier("OPTION");
+            }
 
             for (;;) {
                 if (lexer.identifierEquals("MAX_QUERIES_PER_HOUR")) {
@@ -862,6 +867,9 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.token == Token.SESSION) {
                     privilege = "ALTER SESSION";
                     lexer.nextToken();
+                } else if (lexer.identifierEquals(FnvHash.Constants.ROUTINE)) {
+                    privilege = "ALTER ROUTINE";
+                    lexer.nextToken();
                 } else if (lexer.token == Token.ANY) {
                     lexer.nextToken();
 
@@ -875,6 +883,8 @@ public class SQLStatementParser extends SQLParser {
                     } else {
                         throw new ParserException("TODO : " + lexer.token + " " + lexer.stringVal());
                     }
+                } else if (lexer.token == Token.ON) {
+                    privilege = "ALTER";
                 } else {
                     throw new ParserException("TODO : " + lexer.token + " " + lexer.stringVal());
                 }
