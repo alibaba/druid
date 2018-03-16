@@ -228,14 +228,13 @@ public class MySqlExprParser extends SQLExprParser {
                     return primaryRest(expr);
                 }
             } else if (expr instanceof SQLCharExpr) {
-                SQLMethodInvokeExpr concat = new SQLMethodInvokeExpr("CONCAT");
-                concat.addParameter(expr);
+                String text2 = ((SQLCharExpr) expr).getText();
                 do {
                     String chars = lexer.stringVal();
-                    concat.addParameter(new SQLCharExpr(chars));
+                    text2 += chars;
                     lexer.nextToken();
                 } while (lexer.token() == Token.LITERAL_CHARS || lexer.token() == Token.LITERAL_ALIAS);
-                expr = concat;
+                expr = new SQLCharExpr(text2);
             }
         } else if (lexer.token() == Token.IDENTIFIER) {
             if (expr instanceof SQLHexExpr) {

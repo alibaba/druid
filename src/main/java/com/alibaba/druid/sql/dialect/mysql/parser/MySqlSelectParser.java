@@ -101,7 +101,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
 
         if (lexer.token() == Token.SELECT) {
-            lexer.nextToken();
+            lexer.nextTokenValue();
 
             if (lexer.token() == Token.HINT) {
                 this.exprParser.parseHints(queryBlock.getHints());

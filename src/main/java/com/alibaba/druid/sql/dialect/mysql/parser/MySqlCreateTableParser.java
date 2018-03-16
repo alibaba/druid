@@ -89,7 +89,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         stmt.setName(this.exprParser.name());
 
         if (lexer.token() == Token.LIKE) {
-            lexer.nextToken();
+            lexer.nextTokenValue();
             SQLName name = this.exprParser.name();
             stmt.setLike(name);
         }
@@ -98,7 +98,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
 
             if (lexer.token() == Token.LIKE) {
-                lexer.nextToken();
+                lexer.nextTokenValue();
                 SQLName name = this.exprParser.name();
                 stmt.setLike(name);
             } else if (lexer.token() == Token.SELECT) {

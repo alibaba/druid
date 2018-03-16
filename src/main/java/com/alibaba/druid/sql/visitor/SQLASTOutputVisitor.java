@@ -55,7 +55,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public static Boolean defaultPrintStatementAfterSemi;
 
     static {
-        defaultPrintStatementAfterSemi = getBoolean(System.getProperties(), "druid.sql.output.printStatementAfterSemi"); // compatible for early versions
+        try {
+            defaultPrintStatementAfterSemi = getBoolean(System.getProperties(), "druid.sql.output.printStatementAfterSemi"); // compatible for early versions
+        } catch (Throwable ex) {
+            // skip
+        }
     }
 
     protected final Appendable appender;
@@ -1233,7 +1237,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 printExpr(x.getExpr());
 
                 if (x.isNot()) {
-                    print(ucase ? " NOT" : " not");
+                    print(ucase ? " NOT IN" : " not in");
                 } else {
                     print(ucase ? " IN" : " in");
                 }

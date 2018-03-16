@@ -3228,7 +3228,7 @@ public class SQLStatementParser extends SQLParser {
                         } else {
                             expr = new SQLIntegerExpr(lexer.integerValue());
                         }
-                        lexer.nextTokenComma();
+                        lexer.nextTokenCommaValue();
 
                         if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
                             expr = this.exprParser.exprRest(expr);
@@ -3240,7 +3240,7 @@ public class SQLStatementParser extends SQLParser {
                         } else {
                             expr = new SQLCharExpr(lexer.stringVal());
                         }
-                        lexer.nextTokenComma();
+                        lexer.nextTokenCommaValue();
                         if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
                             expr = this.exprParser.exprRest(expr);
                         }
@@ -3251,7 +3251,7 @@ public class SQLStatementParser extends SQLParser {
                         } else {
                             expr = new SQLNCharExpr(lexer.stringVal());
                         }
-                        lexer.nextTokenComma();
+                        lexer.nextTokenCommaValue();
                         if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
                             expr = this.exprParser.exprRest(expr);
                         }
@@ -3262,7 +3262,7 @@ public class SQLStatementParser extends SQLParser {
                         } else {
                             expr = new SQLNullExpr();
                         }
-                        lexer.nextTokenComma();
+                        lexer.nextTokenCommaValue();
                         if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
                             expr = this.exprParser.exprRest(expr);
                         }
@@ -3287,7 +3287,7 @@ public class SQLStatementParser extends SQLParser {
 
                         valueExprList.add(expr);
                         if (lexer.token() == Token.COMMA) {
-                            lexer.nextToken();
+                            lexer.nextTokenValue();
                             continue;
                         } else {
                             break;

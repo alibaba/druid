@@ -347,36 +347,27 @@ public class SQLExprParser extends SQLParser {
                 break;
             case LITERAL_CHARS: {
                 sqlExpr = new SQLCharExpr(lexer.stringVal());
-                lexer.nextToken();
 
                 if (JdbcConstants.MYSQL.equals(dbType)) {
-                    SQLMethodInvokeExpr concat = null;
+                    lexer.nextTokenValue();
+
                     for (; ; ) {
                         if (lexer.token == Token.LITERAL_ALIAS) {
-                            if (concat == null) {
-                                concat = new SQLMethodInvokeExpr("CONCAT");
-                                concat.addParameter(sqlExpr);
-                                sqlExpr = concat;
-                            }
-                            String alias = lexer.stringVal();
-                            lexer.nextToken();
-                            SQLCharExpr concat_right = new SQLCharExpr(alias.substring(1, alias.length() - 1));
-                            concat.addParameter(concat_right);
+                            String concat = ((SQLCharExpr) sqlExpr).getText();
+                            concat += lexer.stringVal();
+                            lexer.nextTokenValue();
+                            sqlExpr = new SQLCharExpr(concat);
                         } else if (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.LITERAL_NCHARS) {
-                            if (concat == null) {
-                                concat = new SQLMethodInvokeExpr("CONCAT");
-                                concat.addParameter(sqlExpr);
-                                sqlExpr = concat;
-                            }
-
-                            String chars = lexer.stringVal();
-                            lexer.nextToken();
-                            SQLCharExpr concat_right = new SQLCharExpr(chars);
-                            concat.addParameter(concat_right);
+                            String concat = ((SQLCharExpr) sqlExpr).getText();
+                            concat += lexer.stringVal();
+                            lexer.nextTokenValue();
+                            sqlExpr = new SQLCharExpr(concat);
                         } else {
                             break;
                         }
                     }
+                } else {
+                    lexer.nextToken();
                 }
                 break;
             } case LITERAL_NCHARS:
@@ -2091,7 +2082,7 @@ public class SQLExprParser extends SQLParser {
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.LessThanOrGreater, rightExp, getDbType());
         } else if (token == Token.LIKE) {
-            lexer.nextToken();
+            lexer.nextTokenValue();
             rightExp = bitOr();
 
             // rightExp = relationalRest(rightExp);
@@ -2232,7 +2223,7 @@ public class SQLExprParser extends SQLParser {
 
     public SQLExpr notRationalRest(SQLExpr expr) {
         if (lexer.token == (Token.LIKE)) {
-            lexer.nextToken();
+            lexer.nextTokenValue();
             SQLExpr rightExp = equality();
 
             rightExp = relationalRest(rightExp);
