@@ -57,12 +57,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
@@ -899,6 +894,15 @@ public class WallVisitorUtils {
                     List<SQLExpr> conditions;
                     if (where instanceof SQLBinaryOpExpr) {
                         conditions = SQLBinaryOpExpr.split((SQLBinaryOpExpr) where, SQLBinaryOperator.BooleanAnd);
+                    } else if (where instanceof SQLBinaryOpExprGroup) {
+                        conditions = new ArrayList<SQLExpr>();
+                        for (SQLExpr each : ((SQLBinaryOpExprGroup) where).getItems()) {
+                            if (each instanceof SQLBinaryOpExpr) {
+                                conditions.addAll(SQLBinaryOpExpr.split((SQLBinaryOpExpr) each, SQLBinaryOperator.BooleanAnd));
+                            } else if (each instanceof SQLInListExpr) {
+                                conditions.add(each);
+                            }
+                        }
                     } else {
                         conditions = new ArrayList<SQLExpr>();
                         conditions.add(where);
@@ -917,6 +921,14 @@ public class WallVisitorUtils {
                                     filterValueExprList.add(left);
                                 } else if (right instanceof SQLValuableExpr || right instanceof SQLVariantRefExpr) {
                                     filterValueExprList.add(right);
+                                }
+                            }
+                        } else if (condition instanceof SQLInListExpr) {
+                            SQLInListExpr listExpr = (SQLInListExpr) condition;
+                            if (listExpr.getExpr() instanceof SQLIdentifierExpr) {
+                                SQLIdentifierExpr nameExpr = (SQLIdentifierExpr) listExpr.getExpr();
+                                if (nameExpr.getName().equals(checkColumn)) {
+                                    filterValueExprList.addAll(((SQLInListExpr) condition).getTargetList());
                                 }
                             }
                         }
@@ -938,6 +950,7 @@ public class WallVisitorUtils {
                         for (SQLExpr expr : filterValueExprList) {
                             filterValues.add(((SQLValuableExpr) expr).getValue());
                         }
+                        filterValues = new ArrayList(new HashSet(filterValues));
                         boolean validate = updateCheckHandler.check(tableName, checkColumn, setValue, filterValues);
                         if (!validate) {
                             visitor.addViolation(new IllegalSQLObjectViolation(ErrorCode.UPDATE_CHECK_FAIL, "update check failed.", visitor.toSQL(x)));
