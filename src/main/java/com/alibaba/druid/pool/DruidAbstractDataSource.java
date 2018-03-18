@@ -1134,7 +1134,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         if (JdbcConstants.ORACLE_DRIVER2.equalsIgnoreCase(driverClass)) {
-            LOG.error("oracle.jdbc.driver.OracleDriver is deprecated.");
+            driverClass = "oracle.jdbc.OracleDriver";
+            LOG.warn("oracle.jdbc.driver.OracleDriver is deprecated.Having use oracle.jdbc.OracleDriver.");
         }
 
         if (inited) {
