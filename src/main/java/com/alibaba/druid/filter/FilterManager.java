@@ -52,7 +52,7 @@ public class FilterManager {
     }
 
     public static final String getFilter(String alias) {
-        return aliasMap.get(alias);
+        return aliasMap.get(alias) != null ? aliasMap.get(alias) : alias;
     }
 
     public static Properties loadFilterConfig() throws IOException {
