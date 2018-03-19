@@ -2946,9 +2946,13 @@ public class SQLExprParser extends SQLParser {
             lexer.nextTokenComma();
 
             if (hash_lower == FnvHash.Constants.CONNECT_BY_ROOT) {
-                connectByRoot = true;
-                expr = new SQLIdentifierExpr(lexer.stringVal());
-                lexer.nextToken();
+                connectByRoot = lexer.token != Token.LPAREN;
+                if (connectByRoot) {
+                    expr = new SQLIdentifierExpr(lexer.stringVal());
+                    lexer.nextToken();
+                } else {
+                    expr = new SQLIdentifierExpr(ident);
+                }
             } else if (FnvHash.Constants.DATE == hash_lower
                     && lexer.token == Token.LITERAL_CHARS
                     && (JdbcConstants.ORACLE.equals(getDbType())
