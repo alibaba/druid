@@ -2721,7 +2721,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
 
         SQLSelectQuery right = x.getRight();
-        boolean needParen = x.getOrderBy() != null && !right.isBracket();
+        SQLOrderBy orderBy = x.getOrderBy();
+        boolean needParen = orderBy != null && !right.isBracket();
 
         if (needParen) {
             print('(');
@@ -2731,9 +2732,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             right.accept(this);
         }
 
-        if (x.getOrderBy() != null) {
+        if (orderBy != null) {
             println();
-            x.getOrderBy().accept(this);
+            orderBy.accept(this);
+        }
+
+        SQLLimit limit = x.getLimit();
+        if (limit != null) {
+            println();
+            limit.accept(this);
         }
 
         if (bracket) {
