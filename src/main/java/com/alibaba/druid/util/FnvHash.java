@@ -640,5 +640,6 @@ public final class FnvHash {
         long KEY_BLOCK_SIZE = fnv1a_64_lower("KEY_BLOCK_SIZE");
         long CHECKSUM = fnv1a_64_lower("CHECKSUM");
         long ROUTINE = fnv1a_64_lower("ROUTINE");
+        long DATE_FORMAT = fnv1a_64_lower("DATE_FORMAT");
     }
 }
