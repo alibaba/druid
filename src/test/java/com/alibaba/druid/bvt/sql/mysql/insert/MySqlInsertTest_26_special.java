@@ -56,4 +56,31 @@ public class MySqlInsertTest_26_special extends MysqlTest {
 
     }
 
+    public void test_insert_special_1() throws Exception {
+        String sql = "INSERT INTO SUNTEST(ID,NAME) VALUES(1, \"Y\\\"'\")";
+
+        {
+            List<Object> outParameters = new ArrayList<Object>();
+            String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, outParameters);
+            assertEquals("INSERT INTO SUNTEST(ID, NAME)\n" +
+                    "VALUES (?, ?)", psql);
+
+            assertEquals(2, outParameters.size());
+
+            String rsql = ParameterizedOutputVisitorUtils.restore(psql, JdbcConstants.MYSQL, outParameters);
+            assertEquals("INSERT INTO SUNTEST (ID, NAME)\n" +
+                    "VALUES (1, 'Y\"''')", rsql);
+        }
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+
+        MySqlInsertStatement insertStmt = (MySqlInsertStatement) stmt;
+
+        assertEquals("INSERT INTO SUNTEST (ID, NAME)\n" +
+                "VALUES (1, 'Y\"''')", SQLUtils.toMySqlString(insertStmt));
+
+
+    }
 }
