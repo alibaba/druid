@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class IllegalSQLIndexFilter extends FilterEventAdapter {
 
-    private static Map<String, List<IndexInfo>> indexInfoMap = new ConcurrentHashMap<>();
+    private static Map<String, List<IndexInfo>> indexInfoMap = new ConcurrentHashMap<String, List<IndexInfo>>();
 
     private String dbType;
 
@@ -72,7 +72,7 @@ public class IllegalSQLIndexFilter extends FilterEventAdapter {
                     }
                 }
 
-                List<String> tableIndexValid = new ArrayList<>();
+                List<String> tableIndexValid = new ArrayList<String>();
                 //索引最左原则，得到查询条件中的第一个字段
                 for (TableStat.Condition condition: conditions) {
                     String tableInfo = condition.getColumn().getTable();
@@ -120,7 +120,7 @@ public class IllegalSQLIndexFilter extends FilterEventAdapter {
                 conn = statement.getConnectionProxy();
                 DatabaseMetaData metadata = conn.getMetaData();
                 rs = metadata.getIndexInfo(dbName, dbName, tableName, false, true);
-                indexInfos = new ArrayList<>();
+                indexInfos = new ArrayList<IndexInfo>();
                 while (rs.next()) {
                     //索引中的列序列号等于1，才有效
                     if (StringUtils.equals(rs.getString(8), "1")) {
@@ -139,6 +139,14 @@ public class IllegalSQLIndexFilter extends FilterEventAdapter {
         return indexInfos;
     }
 
+    public static Map<String, List<IndexInfo>> getIndexInfoMap() {
+        return indexInfoMap;
+    }
+
+    public static void setIndexInfoMap(Map<String, List<IndexInfo>> indexInfoMap) {
+        IllegalSQLIndexFilter.indexInfoMap = indexInfoMap;
+    }
+
     public String getDbType() {
         return dbType;
     }
@@ -147,7 +155,7 @@ public class IllegalSQLIndexFilter extends FilterEventAdapter {
         this.dbType = dbType;
     }
 
-    private class IndexInfo {
+    public static class IndexInfo {
 
         private String dbName;
 
