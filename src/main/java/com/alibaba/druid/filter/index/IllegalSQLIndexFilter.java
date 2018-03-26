@@ -26,6 +26,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author willenfoo
  * 由于开发人员水平参差不齐，即使订了开发规范很多人也不遵守
  * SQL是影响系统最重要的因素，所以拦截掉垃圾SQL语句
+ *
+ * 拦截SQL类型的场景
+ * 1.查询left jion 超过3张表
+ * 2.在字段上使用函数
+ * 3.where条件为空
+ * 4.where条件使用了 !=
+ * 5.where条件使用了 not 关键字
+ * 6.where条件没有索引索引，最左原则
  */
 public class IllegalSQLIndexFilter extends FilterEventAdapter {
 

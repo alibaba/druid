@@ -29,6 +29,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * * 拦截SQL类型的场景
+ * 1.查询left jion 超过3张表
+ * 2.在字段上使用函数
+ * 3.where条件为空
+ * 4.where条件使用了 !=
+ * 5.where条件使用了 not 关键字
+ * 6.where条件没有索引索引，最左原则
+ *
+ * 测试不拦截的SQL，正常通过就可以了
+ */
 public class IllegalSQLIndexFilterExecuteTest extends TestCase {
 
     private DruidDataSource dataSource;
