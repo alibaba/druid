@@ -160,7 +160,8 @@ public class Keywords {
         map.put("FETCH", Token.FETCH);
         map.put("OUT", Token.OUT);
         map.put("INOUT", Token.INOUT);
-        
+        map.put("LIMIT", Token.LIMIT);
+
         DEFAULT_KEYWORDS = new Keywords(map);
 
         Map<String, Token> sqlitemap = new HashMap<String, Token>();

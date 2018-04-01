@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
@@ -75,9 +76,9 @@ public class MySqlSelectParser extends SQLSelectParser {
         queryBlock.setFrom(parseTableSource());
     }
 
-  
+
     @Override
-    public SQLSelectQuery query() {
+    public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
@@ -85,10 +86,11 @@ public class MySqlSelectParser extends SQLSelectParser {
             select.setBracket(true);
             accept(Token.RPAREN);
 
-            return queryRest(select);
+            return queryRest(select, acceptUnion);
         }
 
         MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
+        queryBlock.setParent(parent);
 
         if (lexer.hasComment() && lexer.isKeepComments()) {
             queryBlock.addBeforeComment(lexer.readAndResetComments());
@@ -103,8 +105,12 @@ public class MySqlSelectParser extends SQLSelectParser {
         if (lexer.token() == Token.SELECT) {
             lexer.nextTokenValue();
 
-            if (lexer.token() == Token.HINT) {
-                this.exprParser.parseHints(queryBlock.getHints());
+            for(;;) {
+                if (lexer.token() == Token.HINT) {
+                    this.exprParser.parseHints(queryBlock.getHints());
+                } else {
+                    break;
+                }
             }
 
             Token token = lexer.token();
@@ -167,7 +173,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                 SQLName partition = this.exprParser.name();
                 queryBlock.setForcePartition(partition);
             }
-            
+
             parseInto(queryBlock);
         }
 
@@ -197,7 +203,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             accept(Token.UPDATE);
 
             queryBlock.setForUpdate(true);
-            
+
             if (lexer.identifierEquals(FnvHash.Constants.NO_WAIT) || lexer.identifierEquals(FnvHash.Constants.NOWAIT)) {
                 lexer.nextToken();
                 queryBlock.setNoWait(true);
@@ -216,7 +222,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             queryBlock.setLockInShareMode(true);
         }
 
-        return queryRest(queryBlock);
+        return queryRest(queryBlock, acceptUnion);
     }
     
     public SQLTableSource parseTableSource() {

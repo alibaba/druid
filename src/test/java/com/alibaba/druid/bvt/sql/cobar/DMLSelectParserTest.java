@@ -39,7 +39,8 @@ public class DMLSelectParserTest extends TestCase {
                 "UNION ALL\n" +
                 "(SELECT id\n" +
                 "FROM t3)\n" +
-                "ORDER BY d DESC", output);
+                "ORDER BY d DESC\n" +
+                "LIMIT ?, 1", output);
     }
 
     public void test_union_1() throws Exception {

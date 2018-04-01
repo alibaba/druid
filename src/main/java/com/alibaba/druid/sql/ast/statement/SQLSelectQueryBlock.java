@@ -56,6 +56,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected String                     cachedSelectList; // optimized for SelectListCache
     protected long                       cachedSelectListHash; // optimized for SelectListCache
 
+    protected List<SQLCommentHint>       hints;
     protected String                     dbType;
 
     public SQLSelectQueryBlock(){
@@ -322,6 +323,16 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         return sortBy;
     }
 
+    public void addSortBy(SQLSelectOrderByItem item) {
+        if (sortBy == null) {
+            sortBy = new ArrayList<SQLSelectOrderByItem>();
+        }
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.sortBy.add(item);
+    }
+
 	@Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -333,6 +344,8 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             acceptChild(visitor, this.connectBy);
             acceptChild(visitor, this.groupBy);
             acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.distributeBy);
+            acceptChild(visitor, this.sortBy);
             acceptChild(visitor, this.waitTime);
             acceptChild(visitor, this.limit);
         }
@@ -674,6 +687,29 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
 
     public long getCachedSelectListHash() {
         return cachedSelectListHash;
+    }
+
+    public List<SQLCommentHint> getHintsDirect() {
+        return hints;
+    }
+
+    public List<SQLCommentHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLCommentHint>(2);
+        }
+        return hints;
+    }
+
+    public void setHints(List<SQLCommentHint> hints) {
+        this.hints = hints;
+    }
+
+    public int getHintsSize() {
+        if (hints == null) {
+            return 0;
+        }
+
+        return hints.size();
     }
 
     public String getDbType() {

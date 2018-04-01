@@ -2708,21 +2708,106 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLUnionQuery x) {
         SQLUnionOperator operator = x.getOperator();
+        SQLSelectQuery left = x.getLeft();
+        SQLSelectQuery right = x.getRight();
 
         boolean bracket = x.isBracket() && !(x.getParent() instanceof SQLUnionQueryTableSource);
+
+        SQLOrderBy orderBy = x.getOrderBy();
+        if ((!bracket)
+                && left instanceof SQLUnionQuery
+                && ((SQLUnionQuery) left).getOperator() == operator
+                && !right.isBracket()
+                && orderBy == null) {
+
+            SQLUnionQuery leftUnion = (SQLUnionQuery) left;
+
+            List<SQLSelectQuery> rights = new ArrayList<SQLSelectQuery>();
+            rights.add(right);
+
+            for (;;) {
+                SQLSelectQuery leftLeft = leftUnion.getLeft();
+                SQLSelectQuery leftRight = leftUnion.getRight();
+
+                if ((!leftUnion.isBracket())
+                        && leftUnion.getOrderBy() == null
+                        && (!leftLeft.isBracket())
+                        && (!leftRight.isBracket())
+                        && leftLeft instanceof SQLUnionQuery
+                        && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
+                    rights.add(leftRight);
+                    leftUnion = (SQLUnionQuery) leftLeft;
+                    continue;
+                } else {
+                    rights.add(leftRight);
+                    rights.add(leftLeft);
+                }
+                break;
+            }
+
+            for (int i = rights.size() - 1; i >= 0; i--) {
+                SQLSelectQuery item = rights.get(i);
+                item.accept(this);
+
+                if (i > 0) {
+                    println();
+                    print0(ucase ? operator.name : operator.name_lcase);
+                    println();
+                }
+            }
+            return false;
+        }
 
         if (bracket) {
             print('(');
         }
-        x.getLeft().accept(this);
+
+        if (left != null) {
+            for (;;) {
+                if (left.getClass() == SQLUnionQuery.class) {
+                    SQLUnionQuery leftUnion = (SQLUnionQuery) left;
+                    SQLSelectQuery leftLeft = leftUnion.getLeft();
+                    SQLSelectQuery leftRigt = leftUnion.getRight();
+                    if ((!leftUnion.isBracket())
+                            && leftUnion.getRight() instanceof SQLSelectQueryBlock
+                            && leftUnion.getLeft() != null
+                            && leftUnion.getOrderBy() == null)
+                    {
+                        if (leftLeft.getClass() == SQLUnionQuery.class) {
+                            visit((SQLUnionQuery) leftLeft);
+                        } else {
+                            printQuery(leftLeft);
+                        }
+                        println();
+                        print0(ucase ? leftUnion.getOperator().name : leftUnion.getOperator().name_lcase);
+                        println();
+                        leftRigt.accept(this);
+                    } else {
+                        visit(leftUnion);
+                    }
+                } else {
+                    left.accept(this);
+                }
+                break;
+            }
+        }
+
+        if (right == null) {
+            return false;
+        }
 
         println();
         print0(ucase ? operator.name : operator.name_lcase);
         println();
 
-        SQLSelectQuery right = x.getRight();
-        SQLOrderBy orderBy = x.getOrderBy();
-        boolean needParen = orderBy != null && !right.isBracket();
+        boolean needParen = false;
+        if (orderBy != null
+                && (!right.isBracket()) && right instanceof SQLSelectQueryBlock) {
+            SQLSelectQueryBlock rightQuery = (SQLSelectQueryBlock) right;
+            if (rightQuery.getOrderBy() != null || rightQuery.getLimit() != null) {
+                needParen = true;
+            }
+        }
 
         if (needParen) {
             print('(');
@@ -6316,6 +6401,29 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLValuesExpr x) {
         print0(ucase ? "VALUES (" : "values (");
         printAndAccept(x.getValues(), ", ");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLValuesTableSource x) {
+        List<SQLName> columns = x.getColumns();
+
+        if (columns.size() > 0) {
+            print('(');
+        }
+        print0(ucase ? "VALUES " : "values ");
+        printAndAccept(x.getValues(), ", ");
+
+        if (columns.size() > 0) {
+            print(") ");
+        }
+
+        print0(ucase ? "AS " : "as ");
+        print0(x.getAlias());
+        print0(" (");
+        printAndAccept(columns, ", ");
+        print(')');
+
         return false;
     }
 }
