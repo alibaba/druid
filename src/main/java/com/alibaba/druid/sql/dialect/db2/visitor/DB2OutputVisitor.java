@@ -125,6 +125,7 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
         SQLPartitionBy partitionBy = x.getPartitioning();
         if (partitionBy != null) {
             println();
+            print0(ucase ? "PARTITION BY " : "partition by ");
             partitionBy.accept(this);
         }
 

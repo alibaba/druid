@@ -5083,7 +5083,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLPartitionByRange x) {
-        print0(ucase ? "PARTITION BY RANGE" : "partition by range");
+        print0(ucase ? "RANGE" : "range");
         if (x.getColumns().size() == 1) {
             print0(" (");
             x.getColumns().get(0).accept(this);
@@ -5125,7 +5125,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLPartitionByList x) {
-        print0(ucase ? "PARTITION BY LIST " : "partition by list ");
+        print0(ucase ? "LIST " : "list ");
         if (x.getColumns().size() == 1) {
             print('(');
             x.getColumns().get(0).accept(this);
@@ -5145,9 +5145,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLPartitionByHash x) {
         if (x.isLinear()) {
-            print0(ucase ? "PARTITION BY LINEAR HASH " : "partition by linear hash ");
+            print0(ucase ? "LINEAR HASH " : "linear hash ");
         } else {
-            print0(ucase ? "PARTITION BY HASH " : "partition by hash ");
+            print0(ucase ? "HASH " : "hash ");
         }
 
         if (x.isKey()) {
@@ -5939,6 +5939,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLPartitionBy partitionBy = x.getPartitionBy();
         if (partitionBy != null) {
             println();
+            print0(ucase ? "PARTITION BY " : "partition by ");
             partitionBy.accept(this);
         }
 

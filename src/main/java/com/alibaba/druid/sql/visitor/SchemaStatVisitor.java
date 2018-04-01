@@ -1158,11 +1158,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 }
             }
         } else if (tableSource instanceof SQLWithSubqueryClause.Entry
-                || tableSource instanceof SQLSubqueryTableSource) {
-            return false;
-        } else if (tableSource instanceof SQLUnionQueryTableSource) {
-            return false;
-        } else if (tableSource instanceof SQLLateralViewTableSource) {
+                || tableSource instanceof SQLSubqueryTableSource
+                || tableSource instanceof SQLUnionQueryTableSource
+                || tableSource instanceof SQLLateralViewTableSource
+                || tableSource instanceof SQLValuesTableSource) {
             return false;
         } else {
             if (x.getResolvedProcudure() != null) {

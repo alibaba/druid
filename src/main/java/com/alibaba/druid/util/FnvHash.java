@@ -641,5 +641,8 @@ public final class FnvHash {
         long CHECKSUM = fnv1a_64_lower("CHECKSUM");
         long ROUTINE = fnv1a_64_lower("ROUTINE");
         long DATE_FORMAT = fnv1a_64_lower("DATE_FORMAT");
+        long DBPARTITION = fnv1a_64_lower("DBPARTITION");
+        long TBPARTITION = fnv1a_64_lower("TBPARTITION");
+        long TBPARTITIONS = fnv1a_64_lower("TBPARTITIONS");
     }
 }
