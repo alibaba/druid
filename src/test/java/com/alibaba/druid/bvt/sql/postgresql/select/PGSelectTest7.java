@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class PGSelectTest7 extends PGTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(20, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getTables().size());
     }
 }

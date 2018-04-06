@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,6 @@ public class OracleCreateIndexTest12 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals("CREATE BITMAP INDEX product_bm_ix ON hash_products(list_price)\n" +
-                        "TABLESPACE tbs_1\n" +
                         "TABLESPACE tbs_1\n" +
                         "LOCAL (\n" +
                         "\tPARTITION ix_p1\n" +

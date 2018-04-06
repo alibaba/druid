@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,12 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-public class MockExecuteTest extends TestCase {
+public class MockExecuteTest extends PoolTestCase {
 
     public void test_0() throws Exception {
         Connection conn = DriverManager.getConnection("jdbc:mock:");

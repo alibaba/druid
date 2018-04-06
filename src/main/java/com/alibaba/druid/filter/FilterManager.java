@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,17 @@ public class FilterManager {
     }
 
     public static final String getFilter(String alias) {
-        return aliasMap.get(alias);
+        if (alias == null) {
+            return null;
+        }
+
+        String filter = aliasMap.get(alias);
+
+        if (filter == null && alias.length() < 128) {
+            filter = alias;
+        }
+
+        return filter;
     }
 
     public static Properties loadFilterConfig() throws IOException {
@@ -112,9 +122,14 @@ public class FilterManager {
 
                 try {
                     filter = (Filter) filterClass.newInstance();
+                } catch (ClassCastException e) {
+                    LOG.error("load filter error.", e);
+                    continue;
                 } catch (InstantiationException e) {
                     throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
                 } catch (IllegalAccessException e) {
+                    throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
+                } catch (RuntimeException e) {
                     throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
                 }
 

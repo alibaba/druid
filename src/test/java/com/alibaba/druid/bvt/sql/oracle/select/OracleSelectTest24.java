@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public class OracleSelectTest24 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "select /*+ no_parallel_index(t, \"HT_TASK_TRADE_HIS_GOR_IND \") dbms_stats cursor_sharing_exact use_weak_name_resl dynamic_sampling(0) no_monitoring no_expand index_ffs(t, \"HT_TASK_TRADE_HIS_GOR_IND \") */ count(*) as nrw,count(distinct sys_op_lbid(196675,'L',t.rowid)) as nlb,count(distinct hextoraw(sys_op_descend( \"GMT_MODIFIED \")||sys_op_descend( \"OWNER \")||sys_op_descend( \"RECORD_TYPE \"))) as ndk,sys_op_countchg(substrb(t.rowid,1,15),1) as clf from  \"ESCROW \". \"HT_TASK_TRADE_HISTORY \" sample block ( 34.6426417370,1)  t where  \"GMT_MODIFIED \" is not null or  \"OWNER \" is not null or  \"RECORD_TYPE \" is not null"; //
+        "select /*+ no_parallel_index(t, \"HT_TASK_TRADE_HIS_GOR_IND \") dbms_stats cursor_sharing_exact use_weak_name_resl dynamic_sampling(0) no_monitoring no_expand index_ffs(t, \"HT_TASK_TRADE_HIS_GOR_IND \") */ count(*) as nrw,count(distinct sys_op_lbid(196675,'L',t.rowid)) as nlb,count(distinct hextoraw(sys_op_descend( \"GMT_MODIFIED \")||sys_op_descend( \"OWNER \")||sys_op_descend( \"RECORD_TYPE \"))) as ndk,sys_op_countchg(substrb(t.rowid,1,15),1) as clf from  \"ESCROW\". \"HT_TASK_TRADE_HISTORY\" sample block ( 34.6426417370,1)  t where  \"GMT_MODIFIED \" is not null or  \"OWNER \" is not null or  \"RECORD_TYPE \" is not null"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -54,7 +54,7 @@ public class OracleSelectTest24 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.HT_TASK_TRADE_HISTORY")));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(5, visitor.getColumns().size());
 
 //         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW.HT_TASK_TRADE_HISTORY", "*")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));

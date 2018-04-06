@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,22 +36,7 @@ import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -139,12 +124,19 @@ public class SQLEvalVisitorUtils {
     public static Object eval(String dbType, SQLObject sqlObject, List<Object> parameters, boolean throwError) {
         SQLEvalVisitor visitor = createEvalVisitor(dbType);
         visitor.setParameters(parameters);
-        sqlObject.accept(visitor);
 
-        Object value = getValue(sqlObject);
-        if (value == null) {
-            if (throwError && !sqlObject.getAttributes().containsKey(EVAL_VALUE)) {
-                throw new DruidRuntimeException("eval error : " + SQLUtils.toSQLString(sqlObject, dbType));
+        Object value;
+        if (sqlObject instanceof SQLValuableExpr) {
+            value = ((SQLValuableExpr) sqlObject).getValue();
+        } else {
+            sqlObject.accept(visitor);
+
+            value = getValue(sqlObject);
+
+            if (value == null) {
+                if (throwError && !sqlObject.getAttributes().containsKey(EVAL_VALUE)) {
+                    throw new DruidRuntimeException("eval error : " + SQLUtils.toSQLString(sqlObject, dbType));
+                }
             }
         }
 
@@ -589,14 +581,14 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLBinaryExpr x) {
-        String text = x.getValue();
+        String text = x.getText();
 
         long[] words = new long[text.length() / 64 + 1];
-        for (int i = 0; i < text.length(); ++i) {
+        for (int i = text.length()-1; i >= 0 ; --i) {
             char ch = text.charAt(i);
             if (ch == '1') {
                 int wordIndex = i >> 6;
-                words[wordIndex] |= (1L << i);
+                words[wordIndex] |= (1L << (text.length() - 1 - i));
             }
         }
 
@@ -608,7 +600,7 @@ public class SQLEvalVisitorUtils {
             byte[] bytes = new byte[words.length * 8];
 
             for (int i = 0; i < words.length; ++i) {
-                Utils.putLong(bytes, i * 8, words[i]);
+                Utils.putLong(bytes, (words.length-1-i) * 8, words[i]);
             }
 
             val = new BigInteger(bytes);

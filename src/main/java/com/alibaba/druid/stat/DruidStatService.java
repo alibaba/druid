@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -243,7 +243,7 @@ public final class DruidStatService implements DruidStatServiceMBean {
         orderBy = orderBy == null ? DEFAULT_ORDERBY : orderBy;
         orderType = orderType == null ? DEFAULT_ORDER_TYPE : orderType;
 
-        if (! ORDER_TYPE_DESC.equals(orderType)) {
+        if (!ORDER_TYPE_DESC.equals(orderType)) {
             orderType = ORDER_TYPE_ASC;
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,6 +102,6 @@ public class OracleCreateTableTest43 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "DNAME")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "DNAME"));
     }
 }

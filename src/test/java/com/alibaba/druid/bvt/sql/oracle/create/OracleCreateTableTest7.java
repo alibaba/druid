@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,10 +55,10 @@ public class OracleCreateTableTest7 extends OracleTest {
 
         Assert.assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ALIBABA1949.SYS_JOURNAL_209051", "C0")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ALIBABA1949.SYS_JOURNAL_209051", "opcode")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ALIBABA1949.SYS_JOURNAL_209051", "partno")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ALIBABA1949.SYS_JOURNAL_209051", "rid")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+        Assert.assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "C0"));
+        Assert.assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "opcode"));
+        Assert.assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "partno"));
+        Assert.assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "rid"));
+        // Assert.assertTrue(visitor.containsColumn("pivot_table", "order_mode")));
     }
 }

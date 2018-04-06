@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.odps.parser;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -24,26 +24,42 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OdpsExprParser extends SQLExprParser {
+import java.util.Arrays;
 
-    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", //
-            "COUNT", //
-            "LAG",
-            "LEAD",
-            "MAX", //
-            "MIN", //
-            "STDDEV", //
-            "SUM", //
-            "ROW_NUMBER",
-            "WM_CONCAT"//
-                                                     };
+public class OdpsExprParser extends SQLExprParser {
+    public final static String[] AGGREGATE_FUNCTIONS;
+
+    public final static long[] AGGREGATE_FUNCTIONS_CODES;
+
+    static {
+        String[] strings = { "AVG", //
+                "COUNT", //
+                "LAG",
+                "LEAD",
+                "MAX", //
+                "MIN", //
+                "STDDEV", //
+                "SUM", //
+                "ROW_NUMBER",
+                "WM_CONCAT"//
+        };
+        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
+        for (String str : strings) {
+            long hash = FnvHash.fnv1a_64_lower(str);
+            int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
+            AGGREGATE_FUNCTIONS[index] = str;
+        }
+    }
 
     public OdpsExprParser(Lexer lexer){
         super(lexer, JdbcConstants.ODPS);
 
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
     public OdpsExprParser(String sql){
@@ -137,27 +153,9 @@ public class OdpsExprParser extends SQLExprParser {
         return super.primaryRest(expr);
     }
     
-    public SQLExpr equalityRest(SQLExpr expr) {
-        if (lexer.token() == Token.EQEQ) {
-            SQLExpr rightExp;
-            lexer.nextToken();
-            try {
-                rightExp = bitOr();
-            } catch (EOFParserException e) {
-                throw new ParserException("EOF, " + expr + "=", e);
-            }
-            rightExp = equalityRest(rightExp);
-
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, getDbType());
-            
-            return expr;
-        }
-        
-        return super.equalityRest(expr);
-    }
 
     public SQLExpr relationalRest(SQLExpr expr) {
-        if (identifierEquals("REGEXP")) {
+        if (lexer.identifierEquals("REGEXP")) {
             lexer.nextToken();
             SQLExpr rightExp = equality();
 
@@ -168,6 +166,55 @@ public class OdpsExprParser extends SQLExprParser {
 
         return super.relationalRest(expr);
     }
+
+    public SQLDataType parseDataType() {
+        if (lexer.identifierEquals(FnvHash.Constants.ARRAY)) {
+            lexer.nextToken();
+            accept(Token.LT);
+            SQLDataType itemType = parseDataType();
+            accept(Token.GT);
+
+            return new SQLArrayDataType(itemType, dbType);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.MAP)) {
+            lexer.nextToken();
+            accept(Token.LT);
+
+            SQLDataType keyType = parseDataType();
+            accept(Token.COMMA);
+            SQLDataType valueType = parseDataType();
+            accept(Token.GT);
+
+            return new SQLMapDataType(keyType, valueType, dbType);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.STRUCT)) {
+            lexer.nextToken();
+
+            SQLStructDataType struct = new SQLStructDataType(dbType);
+            accept(Token.LT);
+            for (;;) {
+                SQLName name = this.name();
+                accept(Token.COLON);
+                SQLDataType dataType = this.parseDataType();
+                struct.addField(name, dataType);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            accept(Token.GT);
+            return struct;
+//            throw new ParserException("TODO : " + lexer.info());
+        }
+
+
+        return super.parseDataType();
+    }
+
 
     @Override
     public OdpsSelectParser createSelectParser() {

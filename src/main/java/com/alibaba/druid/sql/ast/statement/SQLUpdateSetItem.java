@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,14 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLUpdateSetItem extends SQLObjectImpl {
+public class SQLUpdateSetItem extends SQLObjectImpl implements SQLReplaceable {
 
     private SQLExpr column;
     private SQLExpr value;
@@ -32,8 +36,11 @@ public class SQLUpdateSetItem extends SQLObjectImpl {
         return column;
     }
 
-    public void setColumn(SQLExpr column) {
-        this.column = column;
+    public void setColumn(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.column = x;
     }
 
     public SQLExpr getValue() {
@@ -41,6 +48,9 @@ public class SQLUpdateSetItem extends SQLObjectImpl {
     }
 
     public void setValue(SQLExpr value) {
+        if (value != null) {
+            value.setParent(this);
+        }
         this.value = value;
     }
 
@@ -60,4 +70,34 @@ public class SQLUpdateSetItem extends SQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public boolean columnMatch(String column) {
+        if (this.column instanceof SQLIdentifierExpr) {
+            return ((SQLIdentifierExpr) this.column).nameEquals(column);
+        } else if (this.column instanceof SQLPropertyExpr) {
+            ((SQLPropertyExpr) this.column).nameEquals(column);
+        }
+        return false;
+    }
+
+    public boolean columnMatch(long columnHash) {
+        if (this.column instanceof SQLName) {
+            return ((SQLName) this.column).nameHashCode64() == columnHash;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == this.column) {
+            this.column = target;
+            return true;
+        }
+
+        if (expr == this.value) {
+            this.value = target;
+            return true;
+        }
+        return false;
+    }
 }

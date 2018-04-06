@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropUserStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLDropUserStatement extends SQLStatementImpl implements SQLDropStatement {
 
     private List<SQLExpr> users = new ArrayList<SQLExpr>(2);
     
@@ -50,5 +51,10 @@ public class SQLDropUserStatement extends SQLStatementImpl implements SQLDDLStat
             acceptChild(visitor, users);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        return users;
     }
 }

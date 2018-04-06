@@ -2,57 +2,67 @@
   "properties": [
     {
       "name": "spring.datasource.druid.connection-properties",
-      "type": "java.lang.String"
+      "type": "java.lang.String",
+      "sourceType": "com.alibaba.druid.pool.DruidDataSource"
     },
     {
       "name": "spring.datasource.druid.filters",
-      "type": "java.lang.String"
+      "type": "java.lang.String",
+      "sourceType": "com.alibaba.druid.pool.DruidDataSource"
     },
     {
       "name": "spring.datasource.druid.filter.stat.enabled",
       "type": "java.lang.Boolean",
+      "sourceType": "com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration",
       "description": "Enable StatFilter.",
       "defaultValue": true
     },
     {
       "name": "spring.datasource.druid.filter.config.enabled",
       "type": "java.lang.Boolean",
+      "sourceType": "com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration",
       "description": "Enable ConfigFilter.",
       "defaultValue": false
     },
     {
       "name": "spring.datasource.druid.filter.encoding.enabled",
       "type": "java.lang.Boolean",
+      "sourceType": "com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration",
       "description": "Enable EncodingConvertFilter.",
       "defaultValue": false
     },
     {
       "name": "spring.datasource.druid.filter.slf4j.enabled",
       "type": "java.lang.Boolean",
+      "sourceType": "com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration",
       "description": "Enable Slf4jLogFilter.",
       "defaultValue": false
     },
     {
       "name": "spring.datasource.druid.filter.log4j.enabled",
       "type": "java.lang.Boolean",
+      "sourceType": "com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration",
       "description": "Enable Log4jFilter.",
       "defaultValue": false
     },
     {
       "name": "spring.datasource.druid.filter.log4j2.enabled",
       "type": "java.lang.Boolean",
+      "sourceType": "com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration",
       "description": "Enable Log4j2Filter.",
       "defaultValue": false
     },
     {
       "name": "spring.datasource.druid.filter.commons-log.enabled",
       "type": "java.lang.Boolean",
+      "sourceType": "com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration",
       "description": "Enable CommonsLogFilter.",
       "defaultValue": false
     },
     {
       "name": "spring.datasource.druid.filter.wall.enabled",
       "type": "java.lang.Boolean",
+      "sourceType": "com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration",
       "description": "Enable WallFilter.",
       "defaultValue": false
     }
@@ -97,6 +107,9 @@
         },
         {
           "value": "oceanbase"
+        },
+        {
+          "value": "xugu"
         },
         {
           "value": "odps"
@@ -160,6 +173,9 @@
         },
         {
           "value": "oceanbase"
+        },
+         {
+          "value": "xugu"
         },
         {
           "value": "odps"

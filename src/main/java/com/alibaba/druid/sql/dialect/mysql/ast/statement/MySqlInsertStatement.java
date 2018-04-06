@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlInsertStatement extends SQLInsertStatement {
 
@@ -33,6 +34,10 @@ public class MySqlInsertStatement extends SQLInsertStatement {
     private boolean             rollbackOnFail     = false;
 
     private final List<SQLExpr> duplicateKeyUpdate = new ArrayList<SQLExpr>();
+
+    public MySqlInsertStatement() {
+        dbType = JdbcConstants.MYSQL;
+    }
 
     public void cloneTo(MySqlInsertStatement x) {
         super.cloneTo(x);

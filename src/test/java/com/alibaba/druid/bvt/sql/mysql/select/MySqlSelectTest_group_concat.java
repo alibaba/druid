@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,12 +49,19 @@ public class MySqlSelectTest_group_concat extends MysqlTest {
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
         Assert.assertNotNull(queryBlock.getOrderBy());
 
-//        print(statementList);
+        System.out.println(stmt);
 
         Assert.assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
+
+
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(4, visitor.getColumns().size());

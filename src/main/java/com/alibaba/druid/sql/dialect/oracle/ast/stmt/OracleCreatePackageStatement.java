@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import org.apache.ibatis.jdbc.SQL;
@@ -27,7 +28,7 @@ import java.util.List;
 /**
  * Created by wenshao on 23/05/2017.
  */
-public class OracleCreatePackageStatement extends OracleStatementImpl {
+public class OracleCreatePackageStatement extends OracleStatementImpl implements SQLCreateStatement {
     private boolean            orReplace;
     private SQLName name;
 
@@ -46,6 +47,24 @@ public class OracleCreatePackageStatement extends OracleStatementImpl {
             acceptChild(visitor, statements);
         }
         visitor.endVisit(this);
+    }
+
+    public OracleCreatePackageStatement clone() {
+        OracleCreatePackageStatement x = new OracleCreatePackageStatement();
+
+        x.orReplace = orReplace;
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        x.body = body;
+
+        for (SQLStatement stmt : statements) {
+            SQLStatement s2 = stmt.clone();
+            s2.setParent(x);
+            x.statements.add(s2);
+        }
+
+        return x;
     }
 
     public boolean isOrReplace() {

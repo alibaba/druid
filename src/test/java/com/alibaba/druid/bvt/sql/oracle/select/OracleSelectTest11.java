@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public class OracleSelectTest11 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("IMAGE_REPOSITORY")));
 
-        Assert.assertEquals(8, visitor.getColumns().size());
+        Assert.assertEquals(17, visitor.getColumns().size());
 
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("IMAGE_REPOSITORY", "rowid")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("IMAGE_REPOSITORY", "COMPANY_ID")));

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,8 @@ public class OracleCreateTableTest6 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SYS.SYS_TEMP_0FD9D66FD_93E068F3", "C0")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SYS.SYS_TEMP_0FD9D66FD_93E068F3", "C1")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+         Assert.assertTrue(visitor.containsColumn("SYS.SYS_TEMP_0FD9D66FD_93E068F3", "C0"));
+         Assert.assertTrue(visitor.containsColumn("SYS.SYS_TEMP_0FD9D66FD_93E068F3", "C1"));
+        // Assert.assertTrue(visitor.containsColumn("pivot_table", "order_mode")));
     }
 }

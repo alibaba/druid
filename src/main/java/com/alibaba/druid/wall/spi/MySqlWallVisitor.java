@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -34,20 +32,13 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.wall.Violation;
-import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallContext;
-import com.alibaba.druid.wall.WallProvider;
-import com.alibaba.druid.wall.WallSqlTableStat;
-import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.*;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
@@ -59,6 +50,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     private final List<Violation> violations      = new ArrayList<Violation>();
     private boolean               sqlModified     = false;
     private boolean               sqlEndOfComment = false;
+    private List<WallUpdateCheckItem> updateCheckItems;
 
     public MySqlWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
@@ -407,11 +399,6 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     @Override
-    public boolean visit(MySqlReplaceStatement x) {
-        return true;
-    }
-
-    @Override
     public boolean visit(SQLCallStatement x) {
         return false;
     }
@@ -449,5 +436,20 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public void setSqlEndOfComment(boolean sqlEndOfComment) {
         this.sqlEndOfComment = sqlEndOfComment;
     }
-    
+
+    public void addWallUpdateCheckItem(WallUpdateCheckItem item) {
+        if (updateCheckItems == null) {
+            updateCheckItems = new ArrayList<WallUpdateCheckItem>();
+        }
+        updateCheckItems.add(item);
+    }
+
+    public List<WallUpdateCheckItem> getUpdateCheckItems() {
+        return updateCheckItems;
+    }
+
+    public boolean visit(SQLJoinTableSource x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
 }

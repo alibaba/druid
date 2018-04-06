@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,20 +40,22 @@ public class PGSelectTest extends PGTest {
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 //        print(statementList);
+
+        System.out.println(stmt);
 
         Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 //
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
 
-        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
         
         String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.POSTGRESQL);
         System.out.println(mergedSql);
@@ -64,20 +66,20 @@ public class PGSelectTest extends PGTest {
         
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 //        print(statementList);
         
         Assert.assertEquals(1, statementList.size());
         
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
         
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
         
         
-        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
         
         String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.POSTGRESQL);
         System.out.println(mergedSql);
@@ -88,20 +90,20 @@ public class PGSelectTest extends PGTest {
         
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 //        print(statementList);
         
         Assert.assertEquals(1, statementList.size());
         
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
         
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
         
         
-        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
         
         String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.POSTGRESQL);
         System.out.println(mergedSql);
@@ -125,7 +127,7 @@ public class PGSelectTest extends PGTest {
 //        System.out.println("coditions : " + visitor.getConditions());
         
         
-        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
         
         String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.POSTGRESQL);
         System.out.println(mergedSql);

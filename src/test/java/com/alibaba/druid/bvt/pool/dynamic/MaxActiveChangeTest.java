@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.alibaba.druid.bvt.pool.dynamic;
 
 import java.sql.Connection;
 
+import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -24,11 +25,13 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.GetConnectionTimeoutException;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class MaxActiveChangeTest extends TestCase {
+public class MaxActiveChangeTest extends PoolTestCase {
 
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
@@ -41,6 +44,8 @@ public class MaxActiveChangeTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+
+        super.tearDown();
     }
 
     public void test_maxActive() throws Exception {

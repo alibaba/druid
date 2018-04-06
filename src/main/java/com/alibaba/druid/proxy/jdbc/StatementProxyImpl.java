@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,23 +34,17 @@ import com.alibaba.druid.stat.JdbcSqlStat;
  */
 public class StatementProxyImpl extends WrapperProxyImpl implements StatementProxy {
 
-    private final ConnectionProxy  connection;
-    protected Statement        statement;
-
-    protected String               lastExecuteSql;
-    protected long                 lastExecuteStartNano;
-    protected long                 lastExecuteTimeNano;
-
-    protected JdbcSqlStat          sqlStat;
-    protected boolean              firstResultSet;
-
-    protected ArrayList<String>    batchSqlList;
-
-    protected StatementExecuteType lastExecuteType;
-
-    protected Integer     updateCount = null;
-
-    private FilterChainImpl        filterChain = null;
+    private final ConnectionProxy      connection;
+    protected     Statement            statement;
+    protected     String               lastExecuteSql;
+    protected     long                 lastExecuteStartNano;
+    protected     long                 lastExecuteTimeNano;
+    protected     JdbcSqlStat          sqlStat;
+    protected     boolean              firstResultSet;
+    protected     ArrayList<String>    batchSqlList;
+    protected     StatementExecuteType lastExecuteType;
+    protected     Integer              updateCount;
+    private       FilterChainImpl      filterChain;
 
     public StatementProxyImpl(ConnectionProxy connection, Statement statement, long id){
         super(statement, id);

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,6 @@ public class OracleSelectTest_param extends OracleTest {
         assertEquals("SELECT c1\n" +
                 "FROM t1 t\n" +
                 "WHERE t.c2 = ?\n" +
-                "\tAND t.c3 = ?", SQLUtils.toSQLString(stmt, dbType, new SQLUtils.FormatOption(true, true, true)));
+                "\tAND (t.c3 = ?)", SQLUtils.toSQLString(stmt, dbType, new SQLUtils.FormatOption(true, true, true)));
     }
 }

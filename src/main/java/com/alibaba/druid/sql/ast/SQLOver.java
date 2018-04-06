@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public class SQLOver extends SQLObjectImpl {
     protected SQLOrderBy          orderBy;
 
     // for db2
-    protected SQLExpr             of;
+    protected SQLName             of;
 
     protected SQLExpr             windowing;
     protected WindowingType       windowingType = WindowingType.ROWS;
@@ -71,11 +71,11 @@ public class SQLOver extends SQLObjectImpl {
         this.orderBy = orderBy;
     }
 
-    public SQLExpr getOf() {
+    public SQLName getOf() {
         return of;
     }
 
-    public void setOf(SQLExpr of) {
+    public void setOf(SQLName of) {
         if (of != null) {
             of.setParent(this);
         }

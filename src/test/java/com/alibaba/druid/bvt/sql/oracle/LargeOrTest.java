@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExprGroup;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -33,11 +35,11 @@ public class LargeOrTest extends TestCase {
             buf.append(" OR ID = ?");
         }
         String sql = buf.toString();
-        OracleStatementParser parser = new OracleStatementParser(sql);
+        OracleStatementParser parser = new OracleStatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
         SQLSelectQueryBlock select = (SQLSelectQueryBlock) stmt.getSelect().getQuery();
-        SQLBinaryOpExpr where = (SQLBinaryOpExpr) select.getWhere();
-        SQLBinaryOpExpr last = (SQLBinaryOpExpr) where.getRight();
+        SQLBinaryOpExprGroup where = (SQLBinaryOpExprGroup) select.getWhere();
+        SQLBinaryOpExpr last = (SQLBinaryOpExpr) where.getItems().get(0);
         Assert.assertEquals(SQLBinaryOperator.Equality, last.getOperator());
     }
 
@@ -48,11 +50,11 @@ public class LargeOrTest extends TestCase {
             buf.append(" AND ID = ?");
         }
         String sql = buf.toString();
-        OracleStatementParser parser = new OracleStatementParser(sql);
+        OracleStatementParser parser = new OracleStatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
         SQLSelectQueryBlock select = (SQLSelectQueryBlock) stmt.getSelect().getQuery();
-        SQLBinaryOpExpr where = (SQLBinaryOpExpr) select.getWhere();
-        SQLBinaryOpExpr last = (SQLBinaryOpExpr) where.getRight();
+        SQLBinaryOpExprGroup where = (SQLBinaryOpExprGroup) select.getWhere();
+        SQLBinaryOpExpr last = (SQLBinaryOpExpr) where.getItems().get(0);
         Assert.assertEquals(SQLBinaryOperator.Equality, last.getOperator());
     }
 }

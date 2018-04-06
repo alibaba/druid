@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -765,9 +765,11 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             		}
             		String dbType = statement.getConnectionProxy().getDirectDataSource().getDbType();
             		String formattedSql = SQLUtils.format(sql, dbType, parameters, this.statementSqlFormatOption);
-			statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
-                              + "} execute error. " + formattedSql, error);
-            	}else{
+			        statementLogError("{conn-" + statement.getConnectionProxy().getId()
+                                + ", " + stmtId(statement)
+                                + "} execute error. " + formattedSql
+                            , error);
+            	} else{
             		statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
                               + "} execute error. " + sql, error);
             	}

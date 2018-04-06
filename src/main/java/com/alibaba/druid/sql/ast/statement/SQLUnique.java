@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,8 +97,10 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
             if (column instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) column;
                 String columnName = identExpr.getName();
-                columnName = SQLUtils.normalize(columnName, dbType);
-                identExpr.setName(columnName);
+                String normalized = SQLUtils.normalize(columnName, dbType);
+                if (normalized != columnName) {
+                    item.setExpr(new SQLIdentifierExpr(columnName));
+                }
             }
         }
     }

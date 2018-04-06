@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 
-public class PoolPreparedStatementsChangeTest extends TestCase {
+public class PoolPreparedStatementsChangeTest extends PoolTestCase {
 
     private DruidDataSource dataSource;
 
     private Log             dataSourceLog;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         Field logField = DruidDataSource.class.getDeclaredField("LOG");
         logField.setAccessible(true);
         dataSourceLog = (Log) logField.get(null);
@@ -49,6 +52,8 @@ public class PoolPreparedStatementsChangeTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+
+        super.tearDown();
     }
 
     public void test_connectPropertiesChange() throws Exception {

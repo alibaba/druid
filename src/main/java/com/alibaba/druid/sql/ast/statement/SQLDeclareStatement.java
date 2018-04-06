@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ public class SQLDeclareStatement extends SQLStatementImpl {
 
     }
 
-    public SQLDeclareStatement(SQLExpr name, SQLDataType dataType) {
+    public SQLDeclareStatement(SQLName name, SQLDataType dataType) {
         this.addItem(new SQLDeclareItem(name, dataType));
     }
 
-    public SQLDeclareStatement(SQLExpr name, SQLDataType dataType, SQLExpr value) {
+    public SQLDeclareStatement(SQLName name, SQLDataType dataType, SQLExpr value) {
         this.addItem(new SQLDeclareItem(name, dataType, value));
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -268,7 +268,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT PI() + 0E-18", text);
+        Assert.assertEquals("SELECT PI() + 0.000000000000000000", text);
     }
 
     public void test_22() throws Exception {
@@ -323,7 +323,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ROUND(2.5), ROUND(2.5)", text);
+        Assert.assertEquals("SELECT ROUND(2.5), ROUND(25E-1)", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

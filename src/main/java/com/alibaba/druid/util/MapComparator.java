@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,13 +61,20 @@ public class MapComparator<K extends Object, V extends Object> implements Compar
         if (key instanceof String) {
             String keyStr = (String) key;
 
-            if (keyStr.matches(".+\\[[0-9]+\\]")) {
-                Object value = map.get(keyStr.substring(0, keyStr.indexOf('[')));
+            int bracketIndex = keyStr.indexOf('[');
+            if (bracketIndex > 0) {
+                Object value = map.get(keyStr.substring(0, bracketIndex));
                 if (value == null) {
                     return null;
                 }
 
-                Integer index = StringUtils.subStringToInteger(keyStr, "[", "]");
+                int p2 = keyStr.indexOf(']', bracketIndex);
+                if (p2 == -1) {
+                    return null;
+                }
+
+                String indexText = keyStr.substring(bracketIndex + 1, p2);
+                int index = Integer.parseInt(indexText);
                 if (value.getClass().isArray() && Array.getLength(value) >= index) {
                     return Array.get(value, index);
                 }
@@ -90,6 +97,10 @@ public class MapComparator<K extends Object, V extends Object> implements Compar
         }
         if (v2 == null) {
             return 1;
+        }
+
+        if (v1 instanceof Long) {
+            return (int) (((Long) v1).longValue() - ((Number) v2).longValue());
         }
 
         if (v1 instanceof Number) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,11 @@ public class OracleBlockTest11 extends OracleTest {
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        print(statementList);
+
+		for (SQLStatement stmt : statementList) {
+			System.out.println(stmt);
+			System.out.println();
+		}
 
         Assert.assertEquals(3, statementList.size());
 
@@ -80,6 +84,9 @@ public class OracleBlockTest11 extends OracleTest {
         Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        Assert.assertTrue(visitor.containsColumn("employees", "*"));
+        Assert.assertTrue(visitor.containsColumn("emp", "employee_id"));
+		Assert.assertTrue(visitor.containsColumn("emp", "*"));
+		Assert.assertTrue(visitor.containsColumn("emp", "salary"));
     }
 }

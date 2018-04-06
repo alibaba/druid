@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,9 +59,9 @@ public class MySqlCreateTableTest11 extends MysqlTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tmall_campaign")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("tmall_campaign", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("tmall_campaign", "campaign_name")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("tmall_campaign", "create_date")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("tmall_campaign", "delete_flag")));
+        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "id"));
+        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "campaign_name"));
+        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "create_date"));
+        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "delete_flag"));
     }
 }

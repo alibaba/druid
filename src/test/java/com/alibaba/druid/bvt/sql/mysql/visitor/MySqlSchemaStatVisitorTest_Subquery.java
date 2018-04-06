@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,14 +42,13 @@ public class MySqlSchemaStatVisitorTest_Subquery extends TestCase {
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
-        System.out.println("alias : " + visitor.getAliasMap());
         System.out.println("conditions : " + visitor.getConditions());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("users"));
         Assert.assertEquals(22, visitor.getConditions().get(0).getValues().get(0));
 
-        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
         Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
 

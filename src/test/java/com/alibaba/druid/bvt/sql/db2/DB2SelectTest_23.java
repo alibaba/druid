@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,21 +46,21 @@ public class DB2SelectTest_23 extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("dual")));
+        Assert.assertFalse(visitor.getTables().containsKey(new TableStat.Name("dual")));
 
 //         Assert.assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT CURRENT DATE, CURRENT DATE\n" +
+        Assert.assertEquals("SELECT CURRENT DATE, CURRENT TIMESTAMP\n" +
                         "FROM dual", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         
-        Assert.assertEquals("select CURRENT DATE, CURRENT DATE\n" +
+        Assert.assertEquals("select CURRENT DATE, CURRENT TIMESTAMP\n" +
                         "from dual", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }

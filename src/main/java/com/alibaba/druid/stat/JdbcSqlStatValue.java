@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -628,7 +628,7 @@ public class JdbcSqlStatValue {
     }
 
     public Map<String, Object> getData() throws JMException {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<String, Object>(48);
 
         // 0 - 4
         map.put("ID", id);

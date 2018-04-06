@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,8 @@ public class MySqlCreateProcedureTest8 extends MysqlTest {
 		System.out.println(SQLUtils.toSQLString(stmt, JdbcConstants.MYSQL));
 //    	print(statementList);
         assertEquals(1, statementList.size());
+
+		System.out.println(stmt);
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);

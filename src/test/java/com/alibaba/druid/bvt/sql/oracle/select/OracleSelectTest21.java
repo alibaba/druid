@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class OracleSelectTest21 extends OracleTest {
         Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "WAIT_CLASS")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "EVENT_ID")));
         
-        Assert.assertEquals(9, visitor.getColumns().size());
+        Assert.assertEquals(8, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,10 +59,10 @@ public class PGSelectTest21 extends PGTest {
 //        print(statementList);
         
         assertTrue(statemen instanceof PGSelectStatement);
-        assertTrue(((PGSelectStatement)statemen).getWith().getWithQuery().size()==1);
+        assertEquals(1, ((PGSelectStatement)statemen).getSelect().getWithSubQuery().getEntries().size());
         StringBuffer sb = new StringBuffer();
-        ((PGSelectStatement)statemen).getWith().getWithQuery().get(0).getName().output(sb);
-        assertTrue("a".equals(sb.toString()));
-        assertTrue(((PGSelectStatement)statemen).getWith().getWithQuery().get(0).getColumns().size()==2);
+        String alias = ((PGSelectStatement)statemen).getSelect().getWithSubQuery().getEntries().get(0).getAlias();
+        assertEquals("a", alias);
+        assertEquals(2, ((PGSelectStatement)statemen).getSelect().getWithSubQuery().getEntries().get(0).getColumns().size());
     }
 }

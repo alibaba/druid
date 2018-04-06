@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,10 +36,10 @@ public class MySqlWallTest_comment extends TestCase {
 
         provider.getConfig().setCommentAllow(true);
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
         "SELECT * FROM T WHERE FID = ? #AND 1"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 
     public void test_false() throws Exception {
@@ -47,23 +47,24 @@ public class MySqlWallTest_comment extends TestCase {
 
         provider.getConfig().setCommentAllow(false);
 
-        Assert.assertTrue(provider.checkValid("/* this is comment */ SELECT id FROM t "));
-        Assert.assertTrue(provider.checkValid("-- this is comment \n SELECT * FROM t"));
-        Assert.assertTrue(provider.checkValid("#this is comment \n SELECT * FROM t"));
+        assertTrue(provider.checkValid("/* this is comment */ SELECT id FROM t "));
+        assertTrue(provider.checkValid("-- this is comment \n SELECT * FROM t"));
+        assertTrue(provider.checkValid("#this is comment \n SELECT * FROM t"));
         
-        Assert.assertFalse(provider.checkValid("/*!40101fff*/ select * from t"));
+        assertTrue(provider.checkValid("/*!40101fff*/ select * from t"));
+        assertFalse(provider.checkValid("select * from t/*!40101fff*/"));
 
-        Assert.assertTrue(provider.checkValid("SELECT * FROM t where a=1 #this is comment \n and b=1"));
-        Assert.assertTrue(provider.checkValid("SELECT * FROM t where a=1 -- this is comment \n and c=1"));
-        Assert.assertTrue(provider.checkValid("SELECT * FROM t where a=1 /* this is comment */ and d=1"));
+        assertTrue(provider.checkValid("SELECT * FROM t where a=1 #this is comment \n and b=1"));
+        assertTrue(provider.checkValid("SELECT * FROM t where a=1 -- this is comment \n and c=1"));
+        assertTrue(provider.checkValid("SELECT * FROM t where a=1 /* this is comment */ and d=1"));
 
-        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 #and c=1 \n and e=1"));
-        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 -- AND c=1 \n and f=1"));
-        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 /* and c=1 */ and g=1"));
+        assertFalse(provider.checkValid("SELECT * FROM t where a=1 #and c=1 \n and e=1"));
+        assertFalse(provider.checkValid("SELECT * FROM t where a=1 -- AND c=1 \n and f=1"));
+        assertFalse(provider.checkValid("SELECT * FROM t where a=1 /* and c=1 */ and g=1"));
 
-        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 #and c=1 "));
-        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 -- and c=1"));
-        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 /* and c=1 */"));
+        assertFalse(provider.checkValid("SELECT * FROM t where a=1 #and c=1 "));
+        assertFalse(provider.checkValid("SELECT * FROM t where a=1 -- and c=1"));
+        assertFalse(provider.checkValid("SELECT * FROM t where a=1 /* and c=1 */"));
     }
 
 }

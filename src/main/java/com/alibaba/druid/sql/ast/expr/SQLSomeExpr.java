@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,17 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-public class SQLSomeExpr extends SQLExprImpl {
+public final class SQLSomeExpr extends SQLExprImpl {
 
     public SQLSelect subQuery;
 
@@ -114,5 +117,10 @@ public class SQLSomeExpr extends SQLExprImpl {
         }
 
         return null;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.subQuery);
     }
 }

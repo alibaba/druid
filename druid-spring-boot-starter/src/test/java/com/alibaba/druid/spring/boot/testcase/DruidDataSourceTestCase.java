@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,84 +15,50 @@
  */
 package com.alibaba.druid.spring.boot.testcase;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
-import org.junit.Test;
-import org.springframework.boot.test.util.EnvironmentTestUtils;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import javax.annotation.Resource;
 
-import javax.sql.DataSource;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.spring.boot.demo.DemoApplication;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author lihengming [89921218@qq.com]
  */
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = DemoApplication.class)
 public class DruidDataSourceTestCase {
-    private static final String PREFIX = "spring.datasource.druid.";
 
-    private final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-
+    @Resource
+    private DruidDataSource dataSource;
 
     @Test
     public void testDataSourceExists() throws Exception {
-        this.context.register(DruidDataSourceConfiguration.class);
-        this.context.refresh();
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "url=jdbc:h2:file:./demo-db");
-        assertThat(this.context.getBean(DataSource.class)).isNotNull();
-        assertThat(this.context.getBean(DruidDataSource.class)).isNotNull();
+        assertThat(dataSource).isNotNull();
     }
 
     @Test
     public void testDataSourcePropertiesOverridden() throws Exception {
-        this.context.register(DruidDataSourceConfiguration.class);
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "url=jdbc:h2:file:./demo-db");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "initial-size=2");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-active=30");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "min-idle=2");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-wait=1234");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "pool-prepared-statements=true");
-        //EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-open-prepared-statements=5");//Duplicated with following
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-pool-prepared-statement-per-connection-size=5");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "validation-query=select 'x'");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "validation-query-timeout=1");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "test-on-borrow=true");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "test-while-idle=true");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "test-on-return=true");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "time-between-eviction-runs-millis=10000");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "min-evictable-idle-time-millis=12345");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "connection-properties=druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "async-close-connection-enable=true");
-
-        this.context.refresh();
-        DruidDataSource ds = this.context.getBean(DruidDataSource.class);
-
-        assertThat(ds.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
-        assertThat(ds.getInitialSize()).isEqualTo(2);
-        assertThat(ds.getMaxActive()).isEqualTo(30);
-        assertThat(ds.getMinIdle()).isEqualTo(2);
-        assertThat(ds.getMaxWait()).isEqualTo(1234);
-        assertThat(ds.isPoolPreparedStatements()).isTrue();
-        //assertThat(ds.getMaxOpenPreparedStatements()).isEqualTo(5); //Duplicated with following
-        assertThat(ds.getMaxPoolPreparedStatementPerConnectionSize()).isEqualTo(5);
-        assertThat(ds.getValidationQuery()).isEqualTo("select 'x'");
-        assertThat(ds.getValidationQueryTimeout()).isEqualTo(1);
-        assertThat(ds.isTestWhileIdle()).isTrue();
-        assertThat(ds.isTestOnBorrow()).isTrue();
-        assertThat(ds.isTestOnReturn()).isTrue();
-        assertThat(ds.getTimeBetweenEvictionRunsMillis()).isEqualTo(10000);
-        assertThat(ds.getMinEvictableIdleTimeMillis()).isEqualTo(12345);
-        assertThat(ds.getConnectProperties().size()).isEqualTo(2);
-        assertThat(ds.isAsyncCloseConnectionEnable()).isEqualTo(true);
-    }
-
-
-    @Configuration
-    @Import(DruidDataSourceAutoConfigure.class)
-    protected static class DruidDataSourceConfiguration {
-
-
+        assertThat(dataSource.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
+        assertThat(dataSource.getInitialSize()).isEqualTo(2);
+        assertThat(dataSource.getMaxActive()).isEqualTo(30);
+        assertThat(dataSource.getMinIdle()).isEqualTo(2);
+        assertThat(dataSource.getMaxWait()).isEqualTo(1234);
+        assertThat(dataSource.isPoolPreparedStatements()).isTrue();
+        //assertThat(dataSource.getMaxOpenPreparedStatements()).isEqualTo(5); //Duplicated with following
+        assertThat(dataSource.getMaxPoolPreparedStatementPerConnectionSize()).isEqualTo(5);
+        assertThat(dataSource.getValidationQuery()).isEqualTo("select 1");
+        assertThat(dataSource.getValidationQueryTimeout()).isEqualTo(1);
+        assertThat(dataSource.isTestWhileIdle()).isTrue();
+        assertThat(dataSource.isTestOnBorrow()).isTrue();
+        assertThat(dataSource.isTestOnReturn()).isTrue();
+        assertThat(dataSource.getTimeBetweenEvictionRunsMillis()).isEqualTo(10000);
+        assertThat(dataSource.getMinEvictableIdleTimeMillis()).isEqualTo(30001);
+        assertThat(dataSource.isAsyncCloseConnectionEnable()).isEqualTo(true);
     }
 }

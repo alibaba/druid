@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
+public class SQLBetweenExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
 
     private static final long serialVersionUID = 1L;
     public SQLExpr            testExpr;
@@ -67,6 +68,10 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
             acceptChild(visitor, this.endExpr);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        return Arrays.<SQLObject>asList(this.testExpr, beginExpr, this.endExpr);
     }
 
     public SQLExpr getTestExpr() {
@@ -162,5 +167,25 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
 
     public SQLDataType computeDataType() {
         return SQLBooleanExpr.DEFAULT_DATA_TYPE;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == testExpr) {
+            setTestExpr(target);
+            return true;
+        }
+
+        if (expr == beginExpr) {
+            setBeginExpr(target);
+            return true;
+        }
+
+        if (expr == endExpr) {
+            setEndExpr(target);
+            return true;
+        }
+
+        return false;
     }
 }

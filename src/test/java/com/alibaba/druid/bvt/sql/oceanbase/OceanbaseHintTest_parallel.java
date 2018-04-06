@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,10 +50,11 @@ public class OceanbaseHintTest_parallel extends MysqlTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
+        Assert.assertTrue(visitor.containsTable("t1"));
+        Assert.assertTrue(visitor.containsColumn("t1", "*"));
 
     }
 }

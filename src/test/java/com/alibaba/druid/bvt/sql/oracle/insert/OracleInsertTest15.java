@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,10 @@ public class OracleInsertTest15 extends OracleTest {
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees@remote")));
+        Assert.assertTrue(visitor
+                .getTables()
+                .containsKey(
+                        new TableStat.Name("employees@remote")));
 
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }

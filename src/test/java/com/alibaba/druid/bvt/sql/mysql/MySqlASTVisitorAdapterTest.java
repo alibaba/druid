@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
+import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
@@ -9,12 +10,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
+import com.alibaba.druid.sql.ast.statement.SQLAlterCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
@@ -32,7 +33,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
@@ -94,7 +94,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlTableIndex().accept(adapter);
         new MySqlKey().accept(adapter);
         new MySqlPrimaryKey().accept(adapter);
-        new MySqlIntervalExpr().accept(adapter);
+        new SQLIntervalExpr().accept(adapter);
         new SQLBinaryExpr().accept(adapter);
         new MySqlPrepareStatement().accept(adapter);
         new MySqlExecuteStatement().accept(adapter);
@@ -102,7 +102,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlDeleteStatement().accept(adapter);
         new MySqlInsertStatement().accept(adapter);
         new MySqlLoadXmlStatement().accept(adapter);
-        new MySqlReplaceStatement().accept(adapter);
+        new SQLReplaceStatement().accept(adapter);
         new SQLStartTransactionStatement().accept(adapter);
         new MySqlShowColumnsStatement().accept(adapter);
         new MySqlShowDatabasesStatement().accept(adapter);
@@ -161,7 +161,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlUnlockTablesStatement().accept(adapter);
         new MySqlForceIndexHint().accept(adapter);
         new MySqlAlterTableChangeColumn().accept(adapter);
-        new MySqlAlterTableCharacter().accept(adapter);
+        new SQLAlterCharacter().accept(adapter);
         new MySqlAlterTableOption().accept(adapter);
         new MySqlCreateTableStatement().accept(adapter);
         new MySqlCharExpr().accept(adapter);

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -182,6 +182,9 @@ public class OdpsLexer extends Lexer {
     }
 
     public void scanIdentifier() {
+        hash_lower = 0;
+        hash = 0;
+
         final char first = ch;
         
         if (first == '`') {
@@ -359,11 +362,11 @@ public class OdpsLexer extends Lexer {
         super.scanVariable();
     }
 
+    protected void scanVariable_at() {
+        scanVariable();
+    }
+
     protected final void scanString() {
         scanString2();
-    }
-    
-    protected final void scanAlias() {
-        scanAlias2();
     }
 }

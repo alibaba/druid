@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 public interface SQLTableSource extends SQLObject {
 
     String getAlias();
+    long aliasHashCode64();
 
     void setAlias(String alias);
     
@@ -38,5 +39,11 @@ public interface SQLTableSource extends SQLObject {
     void setFlashback(SQLExpr flashback);
 
     SQLColumnDefinition findColumn(String columnName);
+    SQLColumnDefinition findColumn(long columnNameHash);
+
     SQLTableSource findTableSourceWithColumn(String columnName);
+    SQLTableSource findTableSourceWithColumn(long columnName_hash);
+
+    SQLTableSource findTableSource(String alias);
+    SQLTableSource findTableSource(long alias_hash);
 }

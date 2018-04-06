@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,9 @@ public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLS
     }
 
     public void setTop(SQLServerTop top) {
+        if (top != null) {
+            top.setParent(this);
+        }
         this.top = top;
     }
 
@@ -46,6 +49,9 @@ public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLS
     }
 
     public void setOutput(SQLServerOutput output) {
+        if (output != null) {
+            output.setParent(this);
+        }
         this.output = output;
     }
 

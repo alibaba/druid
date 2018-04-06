@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,15 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
+
 /**
  * 
  * MySql cursor close statement
@@ -25,21 +32,34 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLCloseStatement extends SQLStatementImpl{
 	
 	//cursor name
-	private String cursorName; 
+	private SQLName cursorName;
 	
-	public String getCursorName() {
+	public SQLName getCursorName() {
 		return cursorName;
 	}
-	
+
 	public void setCursorName(String cursorName) {
+		setCursorName(new SQLIdentifierExpr(cursorName));
+	}
+	
+	public void setCursorName(SQLName cursorName) {
+		if (cursorName != null) {
+			cursorName.setParent(this);
+		}
 		this.cursorName = cursorName;
 	}
 
 	@Override
 	protected void accept0(SQLASTVisitor visitor) {
-		visitor.visit(this);
+		if (visitor.visit(this)) {
+			acceptChild(visitor, cursorName);
+		}
 	    visitor.endVisit(this);
 		
 	}
 
+	@Override
+	public List<SQLObject> getChildren() {
+		return Collections.<SQLObject>emptyList();
+	}
 }

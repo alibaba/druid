@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,8 +66,8 @@ public enum Token {
     
     EXPLAIN("EXPLAIN"), 
     FOR("FOR"), 
-    IF("IF"), 
-   
+    IF("IF"),
+    SORT("SORT"),
    
    
     ALL("ALL"), 
@@ -125,10 +125,13 @@ public enum Token {
     KILL("KILL"),
     IDENTIFIED("IDENTIFIED"),
     PASSWORD("PASSWORD"),
+    ALGORITHM("ALGORITHM"),
     DUAL("DUAL"),
     BINARY("BINARY"),
     SHOW("SHOW"),
     REPLACE("REPLACE"),
+
+    BITS,
 
     // MySql procedure add by zz
     WHILE("WHILE"),
@@ -256,7 +259,7 @@ public enum Token {
     LITERAL_HEX,
     LITERAL_CHARS,
     LITERAL_NCHARS,
-    
+
     LITERAL_ALIAS,
     LINE_COMMENT,
     MULTI_LINE_COMMENT,
@@ -315,7 +318,8 @@ public enum Token {
     COLON(":"), 
     COLONCOLON("::"), 
     COLONEQ(":="), 
-    EQEQ("=="), 
+    EQEQ("=="),
+    EQGT("=>"),
     LTEQ("<="), 
     LTEQGT("<=>"), 
     LTGT("<>"), 

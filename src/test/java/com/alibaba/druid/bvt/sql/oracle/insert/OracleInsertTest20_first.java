@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,13 +75,13 @@ public class OracleInsertTest20_first extends OracleTest {
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("relationships : " + visitor.getRelationships());
 
         assertEquals(6, visitor.getTables().size());
-        assertEquals(8, visitor.getColumns().size());
+        assertEquals(7, visitor.getColumns().size());
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("orders")));
 

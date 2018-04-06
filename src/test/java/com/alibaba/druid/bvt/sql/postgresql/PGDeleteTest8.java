@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,26 +40,25 @@ public class PGDeleteTest8 extends PGTest {
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-//        print(statementList);
+        SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        System.out.println(stmt);
+
+        assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("parts")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("included_parts")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("parts")));
 
-        Assert.assertTrue(visitor.getColumns().size() == 3);
+        assertEquals(2, visitor.getColumns().size() );
         
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("parts", "sub_part")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("included_parts", "sub_part")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("parts", "part")));
+        assertTrue(visitor.containsColumn("parts", "sub_part"));
+        assertTrue(visitor.containsColumn("parts", "sub_part"));
     }
 
     

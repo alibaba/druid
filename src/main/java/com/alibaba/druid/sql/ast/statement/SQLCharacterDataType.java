@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,10 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
 
     public SQLCharacterDataType(String name){
         super(name);
+    }
+
+    public SQLCharacterDataType(String name, int precision){
+        super(name, precision);
     }
 
     public String getCharSetName() {
@@ -103,7 +107,7 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
 
 
     public SQLCharacterDataType clone() {
-        SQLCharacterDataType x = new SQLCharacterDataType(name);
+        SQLCharacterDataType x = new SQLCharacterDataType(getName());
 
         super.cloneTo(x);
 

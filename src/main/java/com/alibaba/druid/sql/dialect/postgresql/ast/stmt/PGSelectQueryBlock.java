@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObject;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObject{
 
-    private PGWithClause  with;
     private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
     private WindowClause  window;
 
@@ -43,6 +41,10 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
         TEMPORARY, TEMP, UNLOGGED
     }
 
+    public PGSelectQueryBlock() {
+        dbType = JdbcConstants.POSTGRESQL;
+    }
+
     public IntoOption getIntoOption() {
         return intoOption;
     }
@@ -53,13 +55,16 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((PGASTVisitor) visitor);
+        if (visitor instanceof PGASTVisitor) {
+            accept0((PGASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
     @Override
     public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.with);
             acceptChild(visitor, this.distinctOn);
             acceptChild(visitor, this.selectList);
             acceptChild(visitor, this.into);
@@ -97,14 +102,6 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
 
     public void setWindow(WindowClause window) {
         this.window = window;
-    }
-
-    public PGWithClause getWith() {
-        return with;
-    }
-
-    public void setWith(PGWithClause with) {
-        this.with = with;
     }
 
     public SQLOrderBy getOrderBy() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,6 @@ public class MySqlSelectTest_update extends MysqlTest {
 
         Assert.assertEquals(1, statementList.size());
         
-        String output = SQLUtils.toMySqlString(stmt);
-        
         String expected = "SELECT current_no"
                 + "\nFROM UPDATE wlb_waybill_branch_rule"
                 + "\nSET current_no = current_no + ?, gmt_modified = now()"
@@ -52,13 +50,13 @@ public class MySqlSelectTest_update extends MysqlTest {
                 + "\nORDER BY current_no DESC"
                 + "\nLIMIT 10";
 
-        Assert.assertEquals(expected, output);
+        Assert.assertEquals(expected, stmt.toString());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
@@ -66,5 +64,11 @@ public class MySqlSelectTest_update extends MysqlTest {
         Assert.assertEquals(5, visitor.getColumns().size());
         Assert.assertEquals(4, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
+
+        Assert.assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "current_no"));
+        Assert.assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "gmt_modified"));
+        Assert.assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "id"));
+        Assert.assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "status"));
+        Assert.assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "end_no"));
     }
 }

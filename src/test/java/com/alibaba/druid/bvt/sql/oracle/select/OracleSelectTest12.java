@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,13 +37,13 @@ public class OracleSelectTest12 extends OracleTest {
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -51,14 +51,16 @@ public class OracleSelectTest12 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("BUSINESS_ORDER")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("BUSINESS_ORDER")));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        assertEquals(5, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+        assertTrue(visitor.containsColumn("BUSINESS_ORDER", "parent_id"));
+        assertTrue(visitor.containsColumn("BUSINESS_ORDER", "SELLER_SEQ"));
+        assertTrue(visitor.containsColumn("BUSINESS_ORDER", "order_from"));
+        assertTrue(visitor.containsColumn("BUSINESS_ORDER", "status"));
+        assertTrue(visitor.containsColumn("business_order", "ID"));
     }
 }

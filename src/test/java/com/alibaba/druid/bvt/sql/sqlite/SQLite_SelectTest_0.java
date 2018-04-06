@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,16 +35,16 @@ public class SQLite_SelectTest_0 extends MysqlTest {
         String sql = "select first_name, last_name from mytable limit 3, 4";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.SQLITE);
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
         

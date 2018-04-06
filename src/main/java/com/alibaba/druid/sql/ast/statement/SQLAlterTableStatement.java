@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLAlterStatement {
 
     private SQLExprTableSource      tableSource;
     private List<SQLAlterTableItem> items                   = new ArrayList<SQLAlterTableItem>();
@@ -132,6 +132,13 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
         return (SQLName) getTableSource().getExpr();
     }
 
+    public long nameHashCode64() {
+        if (getTableSource() == null) {
+            return 0L;
+        }
+        return ((SQLName) getTableSource().getExpr()).nameHashCode64();
+    }
+
     public void setName(SQLName name) {
         this.setTableSource(new SQLExprTableSource(name));
     }
@@ -147,6 +154,16 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
             acceptChild(visitor, getItems());
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (tableSource != null) {
+            children.add(tableSource);
+        }
+        children.addAll(this.items);
+        return children;
     }
 
     public String getTableName() {

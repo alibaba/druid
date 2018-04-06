@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
@@ -189,6 +190,36 @@ public class MySqlLoadDataInFileStatement extends MySqlStatementImpl {
             acceptChild(visitor, setList);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (fileName != null) {
+            children.add(fileName);
+        }
+        if (tableName != null) {
+            children.add(tableName);
+        }
+        if (columnsTerminatedBy != null) {
+            children.add(columnsTerminatedBy);
+        }
+        if (columnsEnclosedBy != null) {
+            children.add(columnsEnclosedBy);
+        }
+        if (columnsEscaped != null) {
+            children.add(columnsEscaped);
+        }
+        if (linesStartingBy != null) {
+            children.add(linesStartingBy);
+        }
+        if (linesTerminatedBy != null) {
+            children.add(linesTerminatedBy);
+        }
+        if (ignoreLinesNumber != null) {
+            children.add(ignoreLinesNumber);
+        }
+        return children;
     }
 
     

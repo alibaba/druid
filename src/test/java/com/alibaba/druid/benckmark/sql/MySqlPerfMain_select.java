@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,14 @@ public class MySqlPerfMain_select {
         System.out.println(arguments);
 
         String sql = "SELECT ID, NAME, AGE FROM USER WHERE ID = ?";
+//        String sql = "SELECT student_name, " //
+//                + "GROUP_CONCAT(DISTINCT test_score " //
+//                + "    ORDER BY test_score DESC SEPARATOR ' ') " //
+//                + "FROM student " //
+//                + "GROUP BY student_name";
 
         for (int i = 0; i < 10; ++i) {
-            perfMySql(sql);
+            perfMySql(sql); // 831 810
         }
     }
 

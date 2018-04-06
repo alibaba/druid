@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,8 @@ public class OracleCreateIndexTest6 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("CREATE INDEX ord_customer_ix_demo ON orders(order_mode) NOSORT\n" +
-                "NOLOGGING;", SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("CREATE INDEX ord_customer_ix_demo ON orders(order_mode)\n" +
+                "NOLOGGING NOSORT;", SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 

@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool.property;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -8,7 +9,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 
-public class PropertyTest_filters extends TestCase {
+public class PropertyTest_filters extends PoolTestCase {
     private DruidDataSource dataSource;
 
     public void test_stat() {
@@ -29,5 +30,7 @@ public class PropertyTest_filters extends TestCase {
     protected void tearDown() throws Exception {
         System.clearProperty("druid.filters");
         JdbcUtils.close(dataSource);
+
+        super.tearDown();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,10 +66,11 @@ public class OracleCreateProcedureTest2 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("accounts")));
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+         Assert.assertTrue(visitor.containsColumn("accounts", "balance"));
+         Assert.assertTrue(visitor.containsColumn("accounts", "account_id"));
     }
 }

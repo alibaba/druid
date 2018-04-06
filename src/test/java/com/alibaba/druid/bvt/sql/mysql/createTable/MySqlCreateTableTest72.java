@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,8 @@ public class MySqlCreateTableTest72 extends MysqlTest {
             Assert.assertEquals("CREATE TABLE \"MessageInstance\" ("
                     + "\n\t\"id\" int(11) NOT NULL AUTO_INCREMENT,"
                     + "\n\t\"messageId\" int(11) NOT NULL,"
-                    + "\n\tPRIMARY KEY ('id'),"
-                    + "\n\tKEY \"ix_messageId\" ('messageId')"
+                    + "\n\tPRIMARY KEY (\"id\"),"
+                    + "\n\tKEY \"ix_messageId\" (\"messageId\")"
                     + "\n)", output);
         }
         
@@ -61,8 +61,8 @@ public class MySqlCreateTableTest72 extends MysqlTest {
             Assert.assertEquals("create table \"MessageInstance\" ("
                     + "\n\t\"id\" int(11) not null auto_increment,"
                     + "\n\t\"messageId\" int(11) not null,"
-                    + "\n\tprimary key ('id'),"
-                    + "\n\tkey \"ix_messageId\" ('messageId')"
+                    + "\n\tprimary key (\"id\"),"
+                    + "\n\tkey \"ix_messageId\" (\"messageId\")"
                     + "\n)", output);
         }
     }

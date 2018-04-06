@@ -8,7 +8,7 @@ import java.lang.reflect.Constructor;
 import java.sql.Connection;
 
 public class MySqlUtilsTest extends TestCase {
-    public void test_() throws Exception {
+    public void test_xa() throws Exception {
         Driver driver = new Driver();
         int majorVersion = driver.getMajorVersion();
 
@@ -19,7 +19,15 @@ public class MySqlUtilsTest extends TestCase {
             Connection conn = (Connection) constructor.newInstance();
             MySqlUtils.createXAConnection(driver, conn);
         } else if (majorVersion == 6) {
-
+            Class<?> clazz_ConnectionImpl = Class.forName("com.mysql.cj.jdbc.ConnectionImpl");
+            Constructor<?> constructor = clazz_ConnectionImpl.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            Connection conn = (Connection) constructor.newInstance();
+            try {
+                MySqlUtils.createXAConnection(driver, conn);
+            } catch (NullPointerException ex) {
+                //skip
+            }
         }
     }
 }

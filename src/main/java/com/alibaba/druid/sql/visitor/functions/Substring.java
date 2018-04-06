@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,12 +30,19 @@ public class Substring implements Function {
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         List<SQLExpr> params = x.getParameters();
         int paramSize = params.size();
-        if (paramSize != 2 && paramSize != 3) {
-            return SQLEvalVisitor.EVAL_ERROR;
-        }
 
         SQLExpr param0 = params.get(0);
-        SQLExpr param1 = params.get(1);
+
+        SQLExpr param1;
+        if (paramSize == 1 && x.getFrom() != null) {
+            param1 = x.getFrom();
+            paramSize = 2;
+        } else if (paramSize != 2 && paramSize != 3) {
+            return SQLEvalVisitor.EVAL_ERROR;
+        } else {
+            param1 = params.get(1);
+        }
+
         param0.accept(visitor);
         param1.accept(visitor);
 
@@ -48,8 +55,7 @@ public class Substring implements Function {
         String str = param0Value.toString();
         int index = ((Number) param1Value).intValue();
 
-        if (paramSize == 2) {
-
+        if (paramSize == 2 && x.getFor() == null) {
             if (index <= 0) {
                 int lastIndex = str.length() + index;
                 return str.substring(lastIndex);
@@ -58,7 +64,10 @@ public class Substring implements Function {
             return str.substring(index - 1);
         }
 
-        SQLExpr param2 = params.get(2);
+        SQLExpr param2 = x.getFor();
+        if (param2 == null && params.size() > 2) {
+            param2 = params.get(2);
+        }
         param2.accept(visitor);
         Object param2Value = param2.getAttributes().get(EVAL_VALUE);
         if (param2Value == null) {

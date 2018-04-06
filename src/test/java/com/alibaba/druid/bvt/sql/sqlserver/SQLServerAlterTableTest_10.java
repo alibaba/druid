@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class SQLServerAlterTableTest_10 extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("ALTER TABLE dbo.doc_exc"
-                + "\n\tADD (column_b VARCHAR(20) NULL CONSTRAINT exb_unique UNIQUE);", output);
+                + "\n\tADD column_b VARCHAR(20) NULL CONSTRAINT exb_unique UNIQUE;", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());

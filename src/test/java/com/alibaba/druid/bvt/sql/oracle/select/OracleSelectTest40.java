@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public class OracleSelectTest40 extends OracleTest {
         String sql = //
         "WITH a AS (" + //
                 "   SELECT to_char(csl.create_time,'yyyyMMdd') create_time, cwl.client_key ck, csl.src_id src_id " + //
-                "   FROM xxxx csl, xxxx cwl " + //
+                "   FROM t0 csl, t1 cwl " + //
                 "   WHERE 1 =1 AND csl.src_id = cwl.src_id AND csl.curr_url = cwl.curr_url " + //
                 "       AND to_char(csl.create_time,'yyyyMMdd') BETWEEN ? " + //
                 "       AND ? AND cwl.day = to_char(csl.create_time,'yyyyMMdd') " + //
@@ -38,7 +38,7 @@ public class OracleSelectTest40 extends OracleTest {
                 ", b AS (" + //
                 "   SELECT itn.buyerpaytime, itn.esc_orderid, itn.oldck, " + //
                 "       MAX(con.PAYED_AMOUNT) gmv, MAX(con.buyer_onlyid) buyer " + //
-                "   FROM xxxx itn, xxxx don, xxxx con " + //
+                "   FROM t01 itn, t02 don, t03 con " + //
                 "   WHERE don.esc_orderid = itn.esc_orderid " + //
                 "       AND con.esc_orderid = itn.esc_orderid " + //
                 "       AND don.order_status IN (4,5,6,7,8) AND itn.buyerpaytime BETWEEN ? AND ? " + //
@@ -52,7 +52,8 @@ public class OracleSelectTest40 extends OracleTest {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
+
+        System.out.println(stmt);
 
         Assert.assertEquals(1, statementList.size());
         
@@ -65,9 +66,9 @@ public class OracleSelectTest40 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        Assert.assertEquals(6, visitor.getTables().size());
 
-        Assert.assertEquals(15, visitor.getColumns().size());
+        Assert.assertEquals(18, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

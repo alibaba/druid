@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,13 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGDateField;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGIntervalExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
@@ -39,14 +31,37 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.Arrays;
 
 public class PGExprParser extends SQLExprParser {
 
-    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER" };
+    public final static String[] AGGREGATE_FUNCTIONS;
+
+    public final static long[] AGGREGATE_FUNCTIONS_CODES;
+
+    static {
+        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER" };
+        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
+        for (String str : strings) {
+            long hash = FnvHash.fnv1a_64_lower(str);
+            int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
+            AGGREGATE_FUNCTIONS[index] = str;
+        }
+    }
 
     public PGExprParser(String sql){
+        this(new PGLexer(sql));
+        this.lexer.nextToken();
+        this.dbType = JdbcConstants.POSTGRESQL;
+    }
+
+    public PGExprParser(String sql, SQLParserFeature... features){
         this(new PGLexer(sql));
         this.lexer.nextToken();
         this.dbType = JdbcConstants.POSTGRESQL;
@@ -55,6 +70,7 @@ public class PGExprParser extends SQLExprParser {
     public PGExprParser(Lexer lexer){
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
         this.dbType = JdbcConstants.POSTGRESQL;
     }
     
@@ -72,13 +88,21 @@ public class PGExprParser extends SQLExprParser {
 
     public SQLExpr primary() {
         if (lexer.token() == Token.ARRAY) {
-            SQLArrayExpr array = new SQLArrayExpr();
-            array.setExpr(new SQLIdentifierExpr(lexer.stringVal()));
+            String ident = lexer.stringVal();
             lexer.nextToken();
-            accept(Token.LBRACKET);
-            this.exprList(array.getValues(), array);
-            accept(Token.RBRACKET);
-            return primaryRest(array);
+
+            if (lexer.token() == Token.LPAREN) {
+                SQLIdentifierExpr array = new SQLIdentifierExpr(ident);
+                return this.methodRest(array, true);
+            } else {
+                SQLArrayExpr array = new SQLArrayExpr();
+                array.setExpr(new SQLIdentifierExpr(ident));
+                accept(Token.LBRACKET);
+                this.exprList(array.getValues(), array);
+                accept(Token.RBRACKET);
+                return primaryRest(array);
+            }
+
         } else if (lexer.token() == Token.POUND) {
             lexer.nextToken();
             if (lexer.token() == Token.LBRACE) {
@@ -93,6 +117,27 @@ public class PGExprParser extends SQLExprParser {
                 SQLUnaryExpr expr = new SQLUnaryExpr(SQLUnaryOperator.Pound, value);
                 return primaryRest(expr);
             }
+        } else if (lexer.token() == Token.VALUES) {
+            lexer.nextToken();
+
+            SQLValuesExpr values = new SQLValuesExpr();
+            for (;;) {
+                accept(Token.LPAREN);
+                SQLListExpr listExpr = new SQLListExpr();
+                exprList(listExpr.getItems(), listExpr);
+                accept(Token.RPAREN);
+
+                listExpr.setParent(values);
+
+                values.getValues().add(listExpr);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            return values;
         }
         
         return super.primary();
@@ -101,7 +146,7 @@ public class PGExprParser extends SQLExprParser {
     @Override
     protected SQLExpr parseInterval() {
         accept(Token.INTERVAL);
-        PGIntervalExpr intervalExpr=new PGIntervalExpr();
+        SQLIntervalExpr intervalExpr = new SQLIntervalExpr();
         if (lexer.token() != Token.LITERAL_CHARS) {
             return new SQLIdentifierExpr("INTERVAL");
         }
@@ -138,16 +183,17 @@ public class PGExprParser extends SQLExprParser {
             if (lexer.token() == Token.COMMA) {
                 return super.primaryRest(expr);
             }
-            
+
             if ("TIMESTAMP".equalsIgnoreCase(ident)) {
                 if (lexer.token() != Token.LITERAL_ALIAS //
                         && lexer.token() != Token.LITERAL_CHARS //
                         && lexer.token() != Token.WITH) {
-                    return new SQLIdentifierExpr("TIMESTAMP");
+                    return super.primaryRest(
+                            new SQLIdentifierExpr(ident));
                 }
 
                 SQLTimestampExpr timestamp = new SQLTimestampExpr();
-                
+
                 if (lexer.token() == Token.WITH) {
                     lexer.nextToken();
                     acceptIdentifier("TIME");
@@ -159,7 +205,7 @@ public class PGExprParser extends SQLExprParser {
                 timestamp.setLiteral(literal);
                 accept(Token.LITERAL_CHARS);
 
-                if (identifierEquals("AT")) {
+                if (lexer.identifierEquals("AT")) {
                     lexer.nextToken();
                     acceptIdentifier("TIME");
                     acceptIdentifier("ZONE");
@@ -169,8 +215,35 @@ public class PGExprParser extends SQLExprParser {
                     accept(Token.LITERAL_CHARS);
                 }
 
-                
-                return primaryRest(timestamp);     
+
+                return primaryRest(timestamp);
+            } else  if ("TIMESTAMPTZ".equalsIgnoreCase(ident)) {
+                if (lexer.token() != Token.LITERAL_ALIAS //
+                        && lexer.token() != Token.LITERAL_CHARS //
+                        && lexer.token() != Token.WITH) {
+                    return super.primaryRest(
+                            new SQLIdentifierExpr(ident));
+                }
+
+                SQLTimestampExpr timestamp = new SQLTimestampExpr();
+                timestamp.setWithTimeZone(true);
+
+                String literal = lexer.stringVal();
+                timestamp.setLiteral(literal);
+                accept(Token.LITERAL_CHARS);
+
+                if (lexer.identifierEquals("AT")) {
+                    lexer.nextToken();
+                    acceptIdentifier("TIME");
+                    acceptIdentifier("ZONE");
+
+                    String timezone = lexer.stringVal();
+                    timestamp.setTimeZone(timezone);
+                    accept(Token.LITERAL_CHARS);
+                }
+
+
+                return primaryRest(timestamp);
             } else if ("EXTRACT".equalsIgnoreCase(ident)) {
                 accept(Token.LPAREN);
                 

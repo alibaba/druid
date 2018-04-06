@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
 import java.util.List;
 
@@ -49,14 +50,16 @@ public class MySqlCreateProcedureTest14 extends MysqlTest {
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         assertEquals(1, visitor.getTables().size());
-        assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
+
+        assertTrue(visitor.containsColumn("mysql.user", "*"));
     }
 
     

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuableExpr{
     public static final SQLDataType DEFAULT_DATA_TYPE = new SQLDataTypeImpl("bigint");
@@ -93,4 +96,5 @@ public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuable
     public SQLDataType computeDataType() {
         return DEFAULT_DATA_TYPE;
     }
+
 }

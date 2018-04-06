@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,9 +145,21 @@ public final class DruidStatManagerFacade {
         Set<Object> dataSources = getDruidDataSourceInstances();
 
         if (dataSourceId == null) {
+            JdbcDataSourceStat globalStat = JdbcDataSourceStat.getGlobal();
+
             List<Map<String, Object>> sqlList = new ArrayList<Map<String, Object>>();
 
+            DruidDataSource globalStatDataSource = null;
             for (Object datasource : dataSources) {
+                if (datasource instanceof DruidDataSource) {
+                    if (((DruidDataSource) datasource).getDataSourceStat() == globalStat) {
+                        if (globalStatDataSource == null) {
+                            globalStatDataSource = (DruidDataSource) datasource;
+                        } else {
+                            continue;
+                        }
+                    }
+                }
                 sqlList.addAll(getSqlStatDataList(datasource));
             }
 

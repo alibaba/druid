@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,9 +66,11 @@ public class OracleBlockTest2 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("wl_ship_order")));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(3, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_ship_order", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_ship_order", "forwarder_service")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_ship_order", "status")));
     }
 }

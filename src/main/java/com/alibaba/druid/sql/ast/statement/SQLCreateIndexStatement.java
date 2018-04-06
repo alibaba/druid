@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,13 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private SQLName                    name;
 
@@ -37,6 +38,8 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
     
     // for mysql
     private String                     using;
+
+    private SQLExpr                    comment;
 
     public SQLCreateIndexStatement(){
 
@@ -109,11 +112,26 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, getName());
-            acceptChild(visitor, getTable());
-            acceptChild(visitor, getItems());
+            acceptChild(visitor, name);
+            acceptChild(visitor, table);
+            acceptChild(visitor, items);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (name != null) {
+            children.add(name);
+        }
+
+        if (table != null) {
+            children.add(table);
+        }
+
+        children.addAll(this.items);
+        return children;
     }
 
     public String getSchema() {
@@ -152,6 +170,20 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
         }
         x.type = type;
         x.using = using;
+        if (comment != null) {
+            x.setComment(comment.clone());
+        }
         return x;
+    }
+
+    public SQLExpr getComment() {
+        return comment;
+    }
+
+    public void setComment(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.comment = x;
     }
 }

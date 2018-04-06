@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class MySqlCreateTableTest14 extends MysqlTest {
                 + "\n\tPRIMARY KEY (`ID`),"
                 + "\n\tKEY `quizId` USING BTREE (`QuizID`),"
                 + "\n\tKEY `optionId` USING BTREE (`OptionID`)"
-                + "\n) ENGINE = InnoDB CHARSET = gbk COMMENT = ''", //
+                + "\n) ENGINE = InnoDB CHARSET = gbk COMMENT ''", //
                             SQLUtils.toMySqlString(stmt));
         Assert.assertEquals("create table `OptionList` ("
                 + "\n\t`ID` int(11) not null auto_increment,"
@@ -64,7 +64,7 @@ public class MySqlCreateTableTest14 extends MysqlTest {
                 + "\n\tprimary key (`ID`),"
                 + "\n\tkey `quizId` using BTREE (`QuizID`),"
                 + "\n\tkey `optionId` using BTREE (`OptionID`)"
-                + "\n) engine = InnoDB charset = gbk comment = ''", //
+                + "\n) engine = InnoDB charset = gbk comment ''", //
                             SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());
@@ -83,7 +83,7 @@ public class MySqlCreateTableTest14 extends MysqlTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("OptionList")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("OptionList", "ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("OptionList", "OptionCount")));
+        Assert.assertTrue(visitor.containsColumn("OptionList", "ID"));
+        Assert.assertTrue(visitor.containsColumn("OptionList", "OptionCount"));
     }
 }

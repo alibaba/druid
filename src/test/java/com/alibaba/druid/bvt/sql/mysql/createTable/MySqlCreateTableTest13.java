@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public class MySqlCreateTableTest13 extends MysqlTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("xx_video")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("xx_video", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("xx_video", "video_url")));
+        Assert.assertTrue(visitor.containsColumn("xx_video", "id"));
+        Assert.assertTrue(visitor.containsColumn("xx_video", "video_url"));
     }
 }

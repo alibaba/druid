@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,9 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
-import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
@@ -35,8 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement, OracleSegmentAttributes {
-
-    private SQLName                 tablespace;
 
     private boolean                 inMemoryMetadata;
 
@@ -54,17 +50,11 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private Integer                 maxtrans;
     private Integer                 pctincrease;
 
-    private Boolean                 logging;
-    private Boolean                 compress;
+
     private Integer                 compressLevel;
     private boolean                 compressForOltp;
 
-    private boolean                 onCommitPreserveRows;
-    private boolean                 onCommitDeleteRows;
-
     private Boolean                 cache;
-
-    private SQLPartitionBy          partitioning;
 
     private DeferredSegmentCreation deferredSegmentCreation;
 
@@ -122,14 +112,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.deferredSegmentCreation = deferredSegmentCreation;
     }
 
-    public SQLPartitionBy getPartitioning() {
-        return partitioning;
-    }
-
-    public void setPartitioning(SQLPartitionBy partitioning) {
-        this.partitioning = partitioning;
-    }
-
     public Boolean getCache() {
         return cache;
     }
@@ -138,36 +120,12 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.cache = cache;
     }
 
-    public boolean isOnCommitPreserveRows() {
-        return onCommitPreserveRows;
-    }
-
-    public void setOnCommitPreserveRows(boolean onCommitPreserveRows) {
-        this.onCommitPreserveRows = onCommitPreserveRows;
-    }
-
     public boolean isOnCommitDeleteRows() {
         return onCommitDeleteRows;
     }
 
     public void setOnCommitDeleteRows(boolean onCommitDeleteRows) {
         this.onCommitDeleteRows = onCommitDeleteRows;
-    }
-
-    public Boolean getLogging() {
-        return logging;
-    }
-
-    public void setLogging(Boolean logging) {
-        this.logging = logging;
-    }
-
-    public Boolean getCompress() {
-        return compress;
-    }
-
-    public void setCompress(Boolean compress) {
-        this.compress = compress;
     }
 
     public Integer getCompressLevel() {
@@ -240,14 +198,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     public void setInMemoryMetadata(boolean inMemoryMetadata) {
         this.inMemoryMetadata = inMemoryMetadata;
-    }
-
-    public SQLName getTablespace() {
-        return tablespace;
-    }
-
-    public void setTablespace(SQLName tablespace) {
-        this.tablespace = tablespace;
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -358,7 +308,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
         private SQLName externalType;
         private SQLExpr externalDirectory;
-        private OracleExternalRecordFormat externalDirectoryRecordFormat;
+        private SQLExternalRecordFormat externalDirectoryRecordFormat;
         private List<SQLExpr> externalDirectoryLocation = new ArrayList<SQLExpr>();
         private SQLExpr externalRejectLimit;
 
@@ -398,11 +348,11 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             this.externalDirectory = externalDirectory;
         }
 
-        public OracleExternalRecordFormat getExternalDirectoryRecordFormat() {
+        public SQLExternalRecordFormat getExternalDirectoryRecordFormat() {
             return externalDirectoryRecordFormat;
         }
 
-        public void setExternalDirectoryRecordFormat(OracleExternalRecordFormat recordFormat) {
+        public void setExternalDirectoryRecordFormat(SQLExternalRecordFormat recordFormat) {
             if (recordFormat != null) {
                 recordFormat.setParent(this);
             }
@@ -422,42 +372,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
         public List<SQLExpr> getExternalDirectoryLocation() {
             return externalDirectoryLocation;
-        }
-    }
-
-    public static class OracleExternalRecordFormat extends OracleSQLObjectImpl {
-        private SQLExpr delimitedBy;
-        private SQLExpr terminatedBy;
-
-        @Override
-        public void accept0(OracleASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, delimitedBy);
-                acceptChild(visitor, terminatedBy);
-            }
-            visitor.endVisit(this);
-        }
-
-        public SQLExpr getDelimitedBy() {
-            return delimitedBy;
-        }
-
-        public void setDelimitedBy(SQLExpr delimitedBy) {
-            if (delimitedBy != null) {
-                delimitedBy.setParent(this);
-            }
-            this.delimitedBy = delimitedBy;
-        }
-
-        public SQLExpr getTerminatedBy() {
-            return terminatedBy;
-        }
-
-        public void setTerminatedBy(SQLExpr terminatedBy) {
-            if (terminatedBy != null) {
-                terminatedBy.setParent(this);
-            }
-            this.terminatedBy = terminatedBy;
         }
     }
 

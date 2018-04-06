@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
@@ -29,7 +31,8 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
     private SQLUnionOperator operator = SQLUnionOperator.UNION;
     private SQLOrderBy       orderBy;
 
-    private SQLLimit limit;
+    private SQLLimit         limit;
+    private String           dbType;
 
     public SQLUnionOperator getOperator() {
         return operator;
@@ -133,6 +136,8 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
             x.setLimit(limit.clone());
         }
 
+        x.dbType = dbType;
+
         return x;
     }
 
@@ -146,5 +151,18 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
         }
 
         return null;
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
+
+    public void output(StringBuffer buf) {
+        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(buf, dbType);
+        this.accept(visitor);
     }
 }

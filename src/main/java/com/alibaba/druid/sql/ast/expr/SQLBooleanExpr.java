@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,17 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLiteralExpr {
-    public static final SQLDataType DEFAULT_DATA_TYPE = new SQLCharacterDataType("boolean");
+import java.util.Collections;
+import java.util.List;
+
+public final class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLiteralExpr, SQLValuableExpr {
+    public static final SQLDataType DEFAULT_DATA_TYPE = new SQLDataTypeImpl(SQLDataType.Constants.BOOLEAN);
 
     private boolean value;
 
@@ -34,7 +38,11 @@ public class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLiteralEx
         this.value = value;
     }
 
-    public boolean getValue() {
+    public boolean getBooleanValue() {
+        return value;
+    }
+
+    public Boolean getValue() {
         return value;
     }
 
@@ -86,5 +94,14 @@ public class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLiteralEx
 
     public SQLBooleanExpr clone() {
         return new SQLBooleanExpr(value);
+    }
+
+    @Override
+    public List getChildren() {
+        return Collections.emptyList();
+    }
+
+    public static enum Type {
+        ON_OFF
     }
 }

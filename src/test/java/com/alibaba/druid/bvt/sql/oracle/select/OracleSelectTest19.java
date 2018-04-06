@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,10 +61,10 @@ public class OracleSelectTest19 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.dba_data_files")));
 
-        Assert.assertEquals(18, visitor.getColumns().size());
+        Assert.assertEquals(17, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+         Assert.assertTrue(visitor.containsColumn("sys.dba_data_files", "file_name"));
+         Assert.assertTrue(visitor.containsColumn("v$datafile", "status"));
+         Assert.assertTrue(visitor.containsColumn("sys.dba_data_files", "tablespace_name"));
     }
 }

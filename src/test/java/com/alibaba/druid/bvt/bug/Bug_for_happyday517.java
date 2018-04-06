@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -28,13 +29,15 @@ import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
-public class Bug_for_happyday517 extends TestCase {
+public class Bug_for_happyday517 extends PoolTestCase {
 
     private DruidDataSource dataSource;
     private MockDriver      driver;
     private int originalDataSourceCount = 0;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         originalDataSourceCount = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
         
         driver = new MockDriver();
@@ -47,6 +50,8 @@ public class Bug_for_happyday517 extends TestCase {
     protected void tearDown() throws Exception {
         dataSource.close();
         Assert.assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+
+        super.tearDown();
     }
 
     public void test_for_happyday517_0() throws Exception {

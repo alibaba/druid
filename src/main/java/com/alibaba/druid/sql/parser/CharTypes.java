@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,6 +61,7 @@ public class CharTypes {
         return c != '　' && c != '，';
     }
 
+    private final static String[] stringCache = new String[256];
     private final static boolean[] identifierFlags = new boolean[256];
     static {
         for (char c = 0; c < identifierFlags.length; ++c) {
@@ -76,13 +77,27 @@ public class CharTypes {
         identifierFlags['_'] = true;
         identifierFlags['$'] = true;
         identifierFlags['#'] = true;
+
+        for (int i = 0; i < identifierFlags.length; i++) {
+            if (identifierFlags[i]) {
+                char ch = (char) i;
+                stringCache[i] = Character.toString(ch);
+            }
+        }
     }
 
     public static boolean isIdentifierChar(char c) {
         if (c <= identifierFlags.length) {
             return identifierFlags[c];
         }
-        return c != '　' && c != '，';
+        return c != '　' && c != '，' && c != '）';
+    }
+
+    public static String valueOf(char ch) {
+        if (ch < stringCache.length) {
+            return stringCache[ch];
+        }
+        return null;
     }
 
     private final static boolean[] whitespaceFlags = new boolean[256];

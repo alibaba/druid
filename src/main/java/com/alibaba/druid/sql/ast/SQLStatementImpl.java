@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,12 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.List;
+
 public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLStatement {
-
-    protected String dbType;
-
-    private boolean afterSemi;
+    protected String               dbType;
+    protected boolean              afterSemi;
+    protected List<SQLCommentHint> headHints;
 
     public SQLStatementImpl(){
 
@@ -49,6 +50,10 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
         throw new UnsupportedOperationException(this.getClass().getName());
     }
 
+    public List<SQLObject> getChildren() {
+        throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
     public boolean isAfterSemi() {
         return afterSemi;
     }
@@ -59,5 +64,13 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
 
     public SQLStatement clone() {
         throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
+    public List<SQLCommentHint> getHeadHintsDirect() {
+        return headHints;
+    }
+
+    public void setHeadHints(List<SQLCommentHint> headHints) {
+        this.headHints = headHints;
     }
 }

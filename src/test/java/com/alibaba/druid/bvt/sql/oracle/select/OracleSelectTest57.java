@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,12 +52,12 @@ public class OracleSelectTest57 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
 
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            Assert.assertEquals("SELECT TRIM(EUCD) AS \"value\", NTLANG1 AS \"text\""
+            Assert.assertEquals("SELECT TRIM(BOTH FROM EUCD) AS \"value\", NTLANG1 AS \"text\""
                     + "\nFROM T_HT_WREM_ENUMLANG_D"
                     + "\nWHERE TYPE = ?"
                     + "\nORDER BY \"value\" ASC", text);
@@ -66,7 +66,7 @@ public class OracleSelectTest57 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-            Assert.assertEquals("select TRIM(EUCD) as \"value\", NTLANG1 as \"text\""
+            Assert.assertEquals("select TRIM(BOTH from EUCD) as \"value\", NTLANG1 as \"text\""
                     + "\nfrom T_HT_WREM_ENUMLANG_D"
                     + "\nwhere TYPE = ?"
                     + "\norder by \"value\" asc", text);

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,14 +40,14 @@ public class MySqlCreateTableTest60 extends MysqlTest {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE t10 ("
                     + "\n\tpk int PRIMARY KEY AUTO_INCREMENT,"
-                    + "\n\tf1 varchar(65500) CHARSET latin1 "
+                    + "\n\tf1 varchar(65500) CHARACTER SET latin1"
                     + "\n)", output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table t10 ("
                     + "\n\tpk int primary key auto_increment,"
-                    + "\n\tf1 varchar(65500) charset latin1 "
+                    + "\n\tf1 varchar(65500) character set latin1"
                     + "\n)", output);
         }
     }

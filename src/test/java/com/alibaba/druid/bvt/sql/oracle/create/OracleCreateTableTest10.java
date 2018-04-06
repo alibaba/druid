@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class OracleCreateTableTest10 extends OracleTest {
 
         Assert.assertEquals(21, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SYS.WRI$_OPTSTAT_HISTHEAD_HISTORY", "OBJ#")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+        Assert.assertTrue(visitor.containsColumn("SYS.WRI$_OPTSTAT_HISTHEAD_HISTORY", "OBJ#"));
+        // Assert.assertTrue(visitor.containsColumn("pivot_table", "order_mode"));
     }
 }

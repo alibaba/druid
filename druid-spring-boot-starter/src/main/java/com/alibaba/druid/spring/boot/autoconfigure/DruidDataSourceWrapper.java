@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,11 @@ import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallFilter;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.env.Environment;
 
 /**
  * @author lihengming [89921218@qq.com]
@@ -35,23 +36,24 @@ import org.springframework.core.env.Environment;
 @ConfigurationProperties("spring.datasource.druid")
 class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean {
     @Autowired
-    private Environment env;
+    private DataSourceProperties basicProperties;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         //if not found prefix 'spring.datasource.druid' jdbc properties ,'spring.datasource' prefix jdbc properties will be used.
         if (super.getUsername() == null) {
-            super.setUsername(env.getProperty("spring.datasource.username"));
+            super.setUsername(basicProperties.determineUsername());
         }
         if (super.getPassword() == null) {
-            super.setPassword(env.getProperty("spring.datasource.password"));
+            super.setPassword(basicProperties.determinePassword());
         }
         if (super.getUrl() == null) {
-            super.setUrl(env.getProperty("spring.datasource.url"));
+            super.setUrl(basicProperties.determineUrl());
         }
-        if (super.getDriverClassName() == null) {
-            super.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        if(super.getDriverClassName() == null){
+            super.setDriverClassName(basicProperties.getDriverClassName());
         }
+
     }
 
     @Autowired(required = false)

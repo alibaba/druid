@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
 import java.util.List;
 
@@ -64,14 +66,19 @@ public class MySqlCreateProcedureTest12 extends MysqlTest {
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         assertEquals(3, visitor.getTables().size());
-        assertEquals(6, visitor.getColumns().size());
+        assertEquals(4, visitor.getColumns().size());
         assertEquals(2, visitor.getConditions().size());
+
+        Assert.assertTrue(visitor.containsColumn("_result", "node"));
+        Assert.assertTrue(visitor.containsColumn("nodes", "parent"));
+        Assert.assertTrue(visitor.containsColumn("nodes", "child"));
+        Assert.assertTrue(visitor.containsColumn("_tmp", "node"));
     }
 
     

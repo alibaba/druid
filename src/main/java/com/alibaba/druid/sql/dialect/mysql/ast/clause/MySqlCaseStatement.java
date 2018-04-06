@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
@@ -33,7 +34,7 @@ public class MySqlCaseStatement extends MySqlStatementImpl{
 	//case expr
 	private SQLExpr            		  condition;
 	//when statement list
-	private List<MySqlWhenStatement> whenList=new ArrayList<MySqlCaseStatement.MySqlWhenStatement>();
+	private List<MySqlWhenStatement> whenList = new ArrayList<MySqlCaseStatement.MySqlWhenStatement>();
 	//else statement
 	private SQLIfStatement.Else        elseItem;
 	
@@ -76,7 +77,19 @@ public class MySqlCaseStatement extends MySqlStatementImpl{
         }
         visitor.endVisit(this);
 	}
-	
+
+	@Override
+	public List<SQLObject> getChildren() {
+		List<SQLObject> children = new ArrayList<SQLObject>();
+		children.addAll(children);
+		children.addAll(whenList);
+		children.addAll(whenList);
+		if (elseItem != null) {
+			children.add(elseItem);
+		}
+		return children;
+	}
+
 	/**
 	 * case when statement
 	 * @author zz

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,16 +168,16 @@ public class DruidStatServiceTest extends TestCase {
         stmt.close();
         conn.close();
 
-        String result = DruidStatService.getInstance().service("/datasource.json");
-        Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
-        List<Map<String, Object>> dataSourceList = (List<Map<String, Object>>) resultMap.get("Content");
-        Map<String, Object> dataSourceStat = dataSourceList.get(0);
-//        assertThat(dataSourceStat, is(not(nullValue())));
-        int id = (Integer) dataSourceStat.get("Identity");
-
-        String resultId = DruidStatService.getInstance().service("/datasource-" + id + ".json");
-        Map<String, Object> resultIdMap = (Map<String, Object>) JSONUtils.parse(resultId);
-        Map<String, Object> dataSourceIdStat = (Map<String, Object>) resultIdMap.get("Content");
+//        String result = DruidStatService.getInstance().service("/datasource.json");
+//        Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
+//        List<Map<String, Object>> dataSourceList = (List<Map<String, Object>>) resultMap.get("Content");
+//        Map<String, Object> dataSourceStat = dataSourceList.get(0);
+////        assertThat(dataSourceStat, is(not(nullValue())));
+//        int id = (Integer) dataSourceStat.get("Identity");
+//
+//        String resultId = DruidStatService.getInstance().service("/datasource-" + id + ".json");
+//        Map<String, Object> resultIdMap = (Map<String, Object>) JSONUtils.parse(resultId);
+//        Map<String, Object> dataSourceIdStat = (Map<String, Object>) resultIdMap.get("Content");
 //        assertThat((Integer) dataSourceIdStat.get("PoolingCount"), equalTo(1));
     }
 
@@ -218,33 +218,33 @@ public class DruidStatServiceTest extends TestCase {
         conn.close();
     }
 
-    public void test_statService_getActiveConnectionStackTraceId() throws Exception {
-        String sql = "select 1";
-        dataSource.setRemoveAbandoned(true);
-        dataSource.setRemoveAbandonedTimeout(Integer.MAX_VALUE);
-        Connection conn = dataSource.getConnection();
-
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery();
-        rs.next();
-        rs.close();
-        // get data source.
-        String dsResult = DruidStatService.getInstance().service("/datasource.json");
-        Map<String, Object> dsResultMap = (Map<String, Object>) JSONUtils.parse(dsResult);
-        List<Map<String, Object>> dataSourceList = (List<Map<String, Object>>) dsResultMap.get("Content");
-        Map<String, Object> dataSourceStat = dataSourceList.get(0);
-        assertThat(dataSourceStat, is(not(nullValue())));
-        // get data source id.
-        int id = (Integer) dataSourceStat.get("Identity");
-
-        String result = DruidStatService.getInstance().service("/activeConnectionStackTrace-" + id + ".json");
-        Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
-        List<String> contentList = (List<String>) resultMap.get("Content");
-
-        assertThat(contentList.get(0), is(not(nullValue())));
-        stmt.close();
-        conn.close();
-    }
+//    public void test_statService_getActiveConnectionStackTraceId() throws Exception {
+//        String sql = "select 1";
+//        dataSource.setRemoveAbandoned(true);
+//        dataSource.setRemoveAbandonedTimeout(Integer.MAX_VALUE);
+//        Connection conn = dataSource.getConnection();
+//
+//        PreparedStatement stmt = conn.prepareStatement(sql);
+//        ResultSet rs = stmt.executeQuery();
+//        rs.next();
+//        rs.close();
+//        // get data source.
+//        String dsResult = DruidStatService.getInstance().service("/datasource.json");
+//        Map<String, Object> dsResultMap = (Map<String, Object>) JSONUtils.parse(dsResult);
+//        List<Map<String, Object>> dataSourceList = (List<Map<String, Object>>) dsResultMap.get("Content");
+//        Map<String, Object> dataSourceStat = dataSourceList.get(0);
+//        assertThat(dataSourceStat, is(not(nullValue())));
+//        // get data source id.
+//        int id = (Integer) dataSourceStat.get("Identity");
+//
+//        String result = DruidStatService.getInstance().service("/activeConnectionStackTrace-" + id + ".json");
+//        Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
+//        List<String> contentList = (List<String>) resultMap.get("Content");
+//
+//        assertThat(contentList.get(0), is(not(nullValue())));
+//        stmt.close();
+//        conn.close();
+//    }
 
     public void test_statService_returnJSONActiveConnectionStackTrace() throws Exception {
         String result = DruidStatService.getInstance().service("/activeConnectionStackTrace-1.json");

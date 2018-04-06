@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,14 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSetStatement extends SQLStatementImpl {
+    private Option option;
 
     private List<SQLAssignItem> items = new ArrayList<SQLAssignItem>();
     
@@ -72,6 +70,20 @@ public class SQLSetStatement extends SQLStatementImpl {
         this.hints = hints;
     }
 
+    public Option getOption() {
+        return option;
+    }
+
+    public void setOption(Option option) {
+        this.option = option;
+    }
+
+    public void set(SQLExpr target, SQLExpr value) {
+        SQLAssignItem assignItem = new SQLAssignItem(target, value);
+        assignItem.setParent(this);
+        this.items.add(assignItem);
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -109,5 +121,17 @@ public class SQLSetStatement extends SQLStatementImpl {
             }
         }
         return x;
+    }
+
+    public List getChildren() {
+        return this.items;
+    }
+
+    public static enum Option {
+        IDENTITY_INSERT,
+        PASSWORD, // mysql
+        GLOBAL,
+        SESSION,
+        LOCAL
     }
 }

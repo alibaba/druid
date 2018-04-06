@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class OceanbaseSelectTest extends MysqlTest {
 
         assertEquals(1, visitor.getTables().size());
         assertEquals(3, visitor.getColumns().size());
-        assertEquals(0, visitor.getConditions().size());
+        assertEquals(3, visitor.getConditions().size());
 
         // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
 

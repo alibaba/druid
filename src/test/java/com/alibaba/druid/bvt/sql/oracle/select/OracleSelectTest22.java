@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,11 +51,8 @@ public class OracleSelectTest22 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.HT_TASK_TRADE_HISTORY")));
 
-        Assert.assertEquals(14, visitor.getColumns().size());
+        Assert.assertEquals(15, visitor.getColumns().size());
 
-//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW", "HT_TASK_TRADE_HISTORY.ID")));
-//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW", "HT_TASK_TRADE_HISTORY.GMT_MODIFIED")));
-//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW", "HT_TASK_TRADE_HISTORY.GMT_CREATE")));
-//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW", "ESCROW.HT_TASK_TRADE_HISTORY.TRADE_ID")));
+         Assert.assertTrue(visitor.containsColumn("ESCROW.HT_TASK_TRADE_HISTORY", "*"));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,15 +38,15 @@ public class DB2MergeTest extends DB2Test {
         DB2StatementParser parser = new DB2StatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
 
+        System.out.println(stmt);
         Assert.assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
@@ -54,8 +54,8 @@ public class DB2MergeTest extends DB2Test {
         Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sales")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("product")));
+        Assert.assertTrue(visitor.containsTable("sales"));
+        Assert.assertTrue(visitor.containsTable("product"));
 
 //         Assert.assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));

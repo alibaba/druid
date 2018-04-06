@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,25 +25,19 @@ import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class MySqlResourceWallTest extends TestCase {
 
     private String[] items;
 
-    protected void setUp() throws Exception {
-//        File file = new File("/home/wenshao/error_sql");
-        File file = new File("/home/wenshao/scan_result");
-        FileInputStream is = new FileInputStream(file);
-        String text = Utils.read(is);
-        is.close();
-        items = text.split("\\|\\n\\|");
-    }
 
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         provider.getConfig().setConditionDoubleConstAllow(true);
-        
+
         provider.getConfig().setUseAllow(true);
         provider.getConfig().setStrictSyntaxCheck(false);
         provider.getConfig().setMultiStatementAllow(true);
@@ -74,6 +68,60 @@ public class MySqlResourceWallTest extends TestCase {
 //        String sql = "SELECT name, '******' password, createTime from user where name like 'admin' AND (CASE WHEN (7885=7885) THEN 1 ELSE 0 END)";
 
 //        Assert.assertFalse(provider.checkValid(sql));
+    }
+
+
+
+    @Test
+    public void test_lock_table() throws Exception {
+        WallProvider provider = new MySqlWallProvider();
+        provider.getConfig().setNoneBaseStatementAllow(true);
+
+        String sql = "lock tables etstsun write";
+        WallCheckResult result = provider.check(sql);
+        if (result.getViolations().size() > 0) {
+            Violation violation = result.getViolations().get(0);
+            System.out.println("error () : " + violation.getMessage());
+        }
+        Assert.assertTrue(provider.checkValid(sql));
+
+
+        sql = "lock tables etstsun LOW_PRIORITY write";
+        result = provider.check(sql);
+        if (result.getViolations().size() > 0) {
+            Violation violation = result.getViolations().get(0);
+            System.out.println("error () : " + violation.getMessage());
+        }
+        Assert.assertTrue(provider.checkValid(sql));
+
+
+        sql = "UNLOCK TABLES";
+        result = provider.check(sql);
+        if (result.getViolations().size() > 0) {
+            Violation violation = result.getViolations().get(0);
+            System.out.println("error () : " + violation.getMessage());
+        }
+        Assert.assertTrue(provider.checkValid(sql));
+
+
+        sql = "lock table dsdfsdf read";
+        result = provider.check(sql);
+        if (result.getViolations().size() > 0) {
+            Violation violation = result.getViolations().get(0);
+            System.out.println("error () : " + violation.getMessage());
+        }
+        Assert.assertTrue(provider.checkValid(sql));
+
+
+        sql = "lock table dsdfsdf read local";
+        result = provider.check(sql);
+        if (result.getViolations().size() > 0) {
+            Violation violation = result.getViolations().get(0);
+            System.out.println("error () : " + violation.getMessage());
+        }
+        Assert.assertTrue(provider.checkValid(sql));
+
+
     }
 
 }

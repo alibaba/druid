@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,16 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropTableSpaceStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLDropTableSpaceStatement extends SQLStatementImpl implements SQLDropStatement {
 
     private SQLName name;
     private boolean ifExists;
+    private SQLExpr engine;
     
     public SQLDropTableSpaceStatement() {
         
@@ -44,11 +46,22 @@ public class SQLDropTableSpaceStatement extends SQLStatementImpl implements SQLD
         return name;
     }
 
-    public void setName(SQLName name) {
-        if (name != null) {
-            name.setParent(this);
+    public void setName(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.name = name;
+        this.name = x;
+    }
+
+    public SQLExpr getEngine() {
+        return engine;
+    }
+
+    public void setEngine(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.engine = x;
     }
 
     public boolean isIfExists() {

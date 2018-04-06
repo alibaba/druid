@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -452,6 +452,10 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.DM_DRIVER;
         } else if (rawUrl.startsWith("jdbc:kingbase:")) {
             return JdbcConstants.KINGBASE_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:gbase:")) {
+            return JdbcConstants.GBASE_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:xugu:")) {
+            return JdbcConstants.XUGU_DRIVER;
         } else if (rawUrl.startsWith("jdbc:hive:")) {
             return JdbcConstants.HIVE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:hive2:")) {
@@ -462,6 +466,10 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.PHOENIX_DRIVER;
         } else if (rawUrl.startsWith("jdbc:kylin:")) {
             return JdbcConstants.KYLIN_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:elastic:")) {
+            return JdbcConstants.ELASTIC_SEARCH_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
+            return JdbcConstants.CLICKHOUSE_DRIVER;
         } else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
@@ -539,6 +547,10 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.DM;
         } else if (rawUrl.startsWith("jdbc:kingbase:")) {
             return JdbcConstants.KINGBASE;
+        } else if (rawUrl.startsWith("jdbc:gbase:")) {
+            return JdbcConstants.GBASE;
+        } else if (rawUrl.startsWith("jdbc:xugu:")) {
+            return JdbcConstants.XUGU;
         } else if (rawUrl.startsWith("jdbc:log4jdbc:")) {
             return LOG4JDBC;
         } else if (rawUrl.startsWith("jdbc:hive:")) {
@@ -547,6 +559,10 @@ public final class JdbcUtils implements JdbcConstants {
             return HIVE;
         } else if (rawUrl.startsWith("jdbc:phoenix:")) {
             return PHOENIX;
+        } else if (rawUrl.startsWith("jdbc:elastic:")) {
+            return ELASTIC_SEARCH;
+        } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
+            return CLICKHOUSE;
         } else {
             return null;
         }
@@ -793,6 +809,9 @@ public final class JdbcUtils implements JdbcConstants {
             return OracleUtils.showTables(conn);
         }
 
+        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+            return PGUtils.showTables(conn);
+        }
         throw new SQLException("show tables dbType not support for " + dbType);
     }
 
@@ -810,5 +829,11 @@ public final class JdbcUtils implements JdbcConstants {
         }
 
         throw new SQLException("getCreateTableScript dbType not support for " + dbType);
+    }
+
+    public static boolean isMySqlDriver(String driverClassName) {
+        return driverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
+                || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)
+                || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_REPLICATE);
     }
 }

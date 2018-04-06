@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLAlterTableDiscardPartition extends SQLObjectImpl implements SQLAlterTableItem {
 
     private final List<SQLName> partitions = new ArrayList<SQLName>(4);
+    private boolean tablespace;
 
     public List<SQLName> getPartitions() {
         return partitions;
@@ -43,5 +44,13 @@ public class SQLAlterTableDiscardPartition extends SQLObjectImpl implements SQLA
             acceptChild(visitor, partitions);
         }
         visitor.endVisit(this);
+    }
+
+    public boolean isTablespace() {
+        return tablespace;
+    }
+
+    public void setTablespace(boolean tablespace) {
+        this.tablespace = tablespace;
     }
 }

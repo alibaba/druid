@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleDeleteStatement extends SQLDeleteStatement {
 
-    private boolean               only      = false;
+
 
     private final List<SQLHint>   hints     = new ArrayList<SQLHint>();
     private OracleReturningClause returning = null;
@@ -63,12 +63,20 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
         visitor.endVisit(this);
     }
 
-    public boolean isOnly() {
-        return this.only;
-    }
+    public OracleDeleteStatement clone() {
+        OracleDeleteStatement x = new OracleDeleteStatement();
+        cloneTo(x);
 
-    public void setOnly(boolean only) {
-        this.only = only;
+        for (SQLHint hint : hints) {
+            SQLHint hint2 = hint.clone();
+            hint2.setParent(x);
+            x.hints.add(hint2);
+        }
+        if (returning != null) {
+            x.setReturning(returning.clone());
+        }
+
+        return x;
     }
 
 }

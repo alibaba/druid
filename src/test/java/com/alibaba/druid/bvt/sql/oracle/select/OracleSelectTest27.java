@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,12 +36,13 @@ public class OracleSelectTest27 extends OracleTest {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
+
+        System.out.println(stmt.toString());
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -55,10 +56,10 @@ public class OracleSelectTest27 extends OracleTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("search.retl_table_config_search")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.col$")));
 
-        Assert.assertEquals(19, visitor.getColumns().size());
+        Assert.assertEquals(17, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+         Assert.assertTrue(visitor.containsColumn("search.retl_table_config_search", "tid"));
+         Assert.assertTrue(visitor.containsColumn("dba_objects", "owner"));
+         Assert.assertTrue(visitor.containsColumn("search.retl_table_config_search", "TSCHEMA"));
     }
 }

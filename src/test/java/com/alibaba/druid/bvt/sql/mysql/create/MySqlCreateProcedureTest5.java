@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,15 +46,17 @@ public class MySqlCreateProcedureTest5 extends MysqlTest {
 	
     	MySqlStatementParser parser=new MySqlStatementParser(sql);
     	List<SQLStatement> statementList = parser.parseStatementList();
-    	SQLStatement statemen = statementList.get(0);
+    	SQLStatement stmt = statementList.get(0);
 //    	print(statementList);
         assertEquals(1, statementList.size());
 
-        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-        statemen.accept(visitor);
+        System.out.println(stmt);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
@@ -64,8 +66,8 @@ public class MySqlCreateProcedureTest5 extends MysqlTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
         
-        assertTrue(visitor.getColumns().contains(new Column("test", "id")));
-//        assertTrue(visitor.getColumns().contains(new Column("test", "age")));
+        assertTrue(visitor.containsColumn("test", "id"));
+//        assertTrue(visitor.containsColumn("test", "age")));
     }
     
 }

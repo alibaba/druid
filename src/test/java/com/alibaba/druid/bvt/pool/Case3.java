@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
-public class Case3 extends TestCase {
+public class Case3 extends PoolTestCase {
 
     // public void test_0() throws Exception {
     // DruidDataSource dataSource = new DruidDataSource();
@@ -55,13 +56,6 @@ public class Case3 extends TestCase {
     //
     // dataSource.close();
     // }
-    protected void setUp() throws Exception {
-        DruidDataSourceStatManager.clear();
-    }
-
-    protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-    }
 
     public void test_2() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();

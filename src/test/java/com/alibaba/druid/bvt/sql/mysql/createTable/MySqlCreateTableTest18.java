@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public class MySqlCreateTableTest18 extends MysqlTest {
 		statemen.accept(visitor);
 
 //		System.out.println("Tables : " + visitor.getTables());
-//		System.out.println("fields : " + visitor.getColumns());
+		System.out.println("fields : " + visitor.getColumns());
 //		System.out.println("coditions : " + visitor.getConditions());
 //		System.out.println("orderBy : " + visitor.getOrderByColumns());
 
@@ -69,6 +69,6 @@ public class MySqlCreateTableTest18 extends MysqlTest {
 		Assert.assertTrue(visitor.getTables().containsKey(
 				new TableStat.Name("t_awards")));
 
-		Assert.assertTrue(visitor.getColumns().contains(new Column("t_awards", "f_type")));
+		Assert.assertTrue(visitor.containsColumn("t_awards", "f_type"));
 	}
 }

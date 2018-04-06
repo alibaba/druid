@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
@@ -42,12 +46,36 @@ public class OdpsASTVisitorAdapter extends SQLASTVisitorAdapter implements OdpsA
     }
 
     @Override
-    public void endVisit(OdpsInsert x) {
+    public void endVisit(HiveInsert x) {
         
     }
 
+    public boolean visit(HiveCreateTableStatement x) {
+        return false;
+    }
+
+    public void endVisit(HiveCreateTableStatement x) {
+
+    }
+
+    public boolean visit(HiveMultiInsertStatement x) {
+        return false;
+    }
+
+    public void endVisit(HiveMultiInsertStatement x) {
+
+    }
+
+    public boolean visit(HiveInsertStatement x) {
+        return false;
+    }
+
+    public void endVisit(HiveInsertStatement x) {
+
+    }
+
     @Override
-    public boolean visit(OdpsInsert x) {
+    public boolean visit(HiveInsert x) {
         return true;
     }
 
@@ -228,16 +256,6 @@ public class OdpsASTVisitorAdapter extends SQLASTVisitorAdapter implements OdpsA
 
     @Override
     public boolean visit(OdpsGrantStmt x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OdpsLateralViewTableSource x) {
-        
-    }
-    
-    @Override
-    public boolean visit(OdpsLateralViewTableSource x) {
         return true;
     }
 

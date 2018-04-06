@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,13 +38,13 @@ public class OracleSelectTest9 extends OracleTest {
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());

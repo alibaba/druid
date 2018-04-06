@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public class OracleCreateTableTest42 extends OracleTest {
                         "\tSUPPLEMENTAL LOG GROUP \"GGS_15754\" (\"GROUP_NAME\", \"GROUP_KEY\", \"LOG_CMPLT_CSN\", \"LOG_CMPLT_XIDS_SEQ\") ALWAYS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (PRIMARY KEY) COLUMNS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (UNIQUE INDEX) COLUMNS,\n" +
-                        "\tSUPPLEMENTAL LOG DATA (FOREIGHN KEY) COLUMNS\n" +
+                        "\tSUPPLEMENTAL LOG DATA (FOREIGN KEY) COLUMNS\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
                         "PCTUSED 40\n" +
@@ -97,6 +97,6 @@ public class OracleCreateTableTest42 extends OracleTest {
 
         Assert.assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "GROUP_NAME")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "GROUP_NAME"));
     }
 }

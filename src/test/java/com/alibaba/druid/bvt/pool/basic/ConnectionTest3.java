@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -30,7 +31,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
 
-public class ConnectionTest3 extends TestCase {
+public class ConnectionTest3 extends PoolTestCase {
 
     private MockDriver      driver;
     private DruidDataSource dataSource;
@@ -64,6 +65,8 @@ public class ConnectionTest3 extends TestCase {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         JdbcStatManager.getInstance().setStatContext(null);
+
+        super.tearDown();
     }
 
     public void test_basic() throws Exception {

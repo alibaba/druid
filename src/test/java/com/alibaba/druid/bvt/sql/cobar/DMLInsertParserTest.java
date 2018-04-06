@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public class DMLInsertParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("INSERT LOW_PRIORITY INTO t1\nVALUES (0.12, 1, 2)," + //
+        Assert.assertEquals("INSERT LOW_PRIORITY INTO t1\nVALUES (12e-2, 1, 2)," + //
                             "\n\t(?)," + //
                             "\n\t(DEFAULT)", output);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,13 @@ public class DruidDriverTest extends TestCase {
     }
 
     public void test_getRawDriverClassName() throws Exception {
-        Assert.assertEquals("com.mysql.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:mysql:"));
+        String className = JdbcUtils.getDriverClassName("jdbc:mysql:");
+        if (className.equals("com.mysql.jdbc.Driver")) {
+            assertEquals("com.mysql.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:mysql:"));
+        } else {
+            assertEquals("com.mysql.cj.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:mysql:"));
+        }
+
         Assert.assertEquals("oracle.jdbc.OracleDriver", JdbcUtils.getDriverClassName("jdbc:oracle:"));
         Assert.assertEquals("com.microsoft.jdbc.sqlserver.SQLServerDriver",
                             JdbcUtils.getDriverClassName("jdbc:microsoft:"));

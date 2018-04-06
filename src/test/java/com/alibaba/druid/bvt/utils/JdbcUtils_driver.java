@@ -46,4 +46,19 @@ public class JdbcUtils_driver extends TestCase {
         String dbType = JdbcUtils.getDbType(jdbcUrl, "net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
         assertEquals("not support log4jdbc mysql, url like jdbc:log4jdbc:derby:...", JdbcConstants.DERBY, dbType);
     }
+
+    public void test_log4jdbc_es() throws Exception {
+        assertEquals(JdbcConstants.ELASTIC_SEARCH
+                , JdbcUtils.getDbType("jdbc:elastic://100.69.202.4:9300/tcbuyer?cluster.name=refund_cluster", null));
+    }
+
+    public void test_log4jdbc_es_1() throws Exception {
+        assertEquals(JdbcConstants.ELASTIC_SEARCH
+                , JdbcUtils.getDbType("jdbc:elastic://100.69.202.4:9300/tcbuyer?cluster.name=refund_cluster", "com.alibaba.xdriver.elastic.jdbc.ElasticDriver"));
+    }
+
+    public void test_log4jdbc_es_driver() throws Exception {
+        assertEquals(JdbcConstants.ELASTIC_SEARCH_DRIVER
+                , JdbcUtils.getDriverClassName("jdbc:elastic://100.69.202.4:9300/tcbuyer?cluster.name=refund_cluster"));
+    }
 }

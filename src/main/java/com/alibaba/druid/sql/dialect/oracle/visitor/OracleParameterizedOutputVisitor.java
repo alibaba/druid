@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,46 +22,39 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
-import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
-import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
-import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
+import com.alibaba.druid.sql.visitor.*;
 
 public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implements ParameterizedVisitor {
 
     public OracleParameterizedOutputVisitor(){
         this(new StringBuilder());
-        this.parameterized = true;
+        this.config(VisitorFeature.OutputParameterized, true);
     }
 
     public OracleParameterizedOutputVisitor(Appendable appender){
         super(appender);
-        this.parameterized = true;
+        this.config(VisitorFeature.OutputParameterized, true);
     }
 
     public OracleParameterizedOutputVisitor(Appendable appender, boolean printPostSemi){
         super(appender, printPostSemi);
-        this.parameterized = true;
+        this.config(VisitorFeature.OutputParameterized, true);
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        x = ParameterizedOutputVisitorUtils.merge(this, x);
+        x = SQLBinaryOpExpr.merge(this, x);
 
         return super.visit(x);
     }
 
-    public boolean visit(SQLNumberExpr x) {
-        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return super.visit(x);
-        }
-
-        print('?');
-        incrementReplaceCunt();
-        
-        if(this instanceof ExportParameterVisitor || this.parameters != null){
-            ExportParameterVisitorUtils.exportParameter((this).getParameters(), x);
-        }
-        return false;
-    }
+//    public boolean visit(SQLNumberExpr x) {
+//        print('?');
+//        incrementReplaceCunt();
+//
+//        if(this instanceof ExportParameterVisitor || this.parameters != null){
+//            ExportParameterVisitorUtils.exportParameter((this).getParameters(), x);
+//        }
+//        return false;
+//    }
 
 }

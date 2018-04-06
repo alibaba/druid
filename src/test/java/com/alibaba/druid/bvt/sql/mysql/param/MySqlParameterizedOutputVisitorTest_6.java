@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class MySqlParameterizedOutputVisitorTest_6 extends TestCase {
 
     public void test_1() throws Exception {
         String sql = "SET GLOBAL sort_buffer_size=1000000, SESSION sort_buffer_size=1000000;";
-        String paramSql = "SET @@global.sort_buffer_size = ?, sort_buffer_size = ?;";
+        String paramSql = "SET @@global.sort_buffer_size = ?, @@session.sort_buffer_size = ?;";
         Assert.assertEquals(paramSql, ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
 }

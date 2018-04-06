@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,24 +18,28 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateTriggerStatement extends SQLStatementImpl {
+public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private SQLName                  name;
-
-    private boolean                  orReplace     = false;
-
+    private boolean                  orReplace      = false;
     private TriggerType              triggerType;
-    private final List<TriggerEvent> triggerEvents = new ArrayList<TriggerEvent>();
 
-    private SQLName                  on;
+    private SQLName                  definer;
 
-    private boolean                  forEachRow    = false;
+    private boolean                  update;
+    private boolean                  delete;
+    private boolean                  insert;
 
+    private SQLExprTableSource       on;
+
+    private boolean                  forEachRow     = false;
+
+    private List<SQLName>            updateOfColumns = new ArrayList<SQLName>();
+
+    private SQLExpr                  when;
     private SQLStatement             body;
     
     public SQLCreateTriggerStatement() {
@@ -49,17 +53,45 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl {
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
+            acceptChild(visitor, updateOfColumns);
             acceptChild(visitor, on);
+            acceptChild(visitor, when);
             acceptChild(visitor, body);
         }
         visitor.endVisit(this);
     }
 
-    public SQLName getOn() {
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (name != null) {
+            children.add(name);
+        }
+        children.addAll(updateOfColumns);
+        if (on != null) {
+            children.add(on);
+        }
+        if (when != null) {
+            children.add(when);
+        }
+        if (body != null) {
+            children.add(body);
+        }
+        return children;
+    }
+
+    public SQLExprTableSource getOn() {
         return on;
     }
 
     public void setOn(SQLName on) {
+        this.setOn(new SQLExprTableSource(on));
+    }
+
+    public void setOn(SQLExprTableSource on) {
+        if (on != null) {
+            on.setParent(this);
+        }
         this.on = on;
     }
 
@@ -102,7 +134,7 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl {
     }
 
     public List<TriggerEvent> getTriggerEvents() {
-        return triggerEvents;
+        return null;
     }
 
     public boolean isForEachRow() {
@@ -111,6 +143,56 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl {
 
     public void setForEachRow(boolean forEachRow) {
         this.forEachRow = forEachRow;
+    }
+
+    public List<SQLName> getUpdateOfColumns() {
+        return updateOfColumns;
+    }
+
+    public SQLExpr getWhen() {
+        return when;
+    }
+
+    public void setWhen(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.when = x;
+    }
+
+    public boolean isUpdate() {
+        return update;
+    }
+
+    public void setUpdate(boolean update) {
+        this.update = update;
+    }
+
+    public boolean isDelete() {
+        return delete;
+    }
+
+    public void setDelete(boolean delete) {
+        this.delete = delete;
+    }
+
+    public boolean isInsert() {
+        return insert;
+    }
+
+    public void setInsert(boolean insert) {
+        this.insert = insert;
+    }
+
+    public SQLName getDefiner() {
+        return definer;
+    }
+
+    public void setDefiner(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.definer = x;
     }
 
     public static enum TriggerType {

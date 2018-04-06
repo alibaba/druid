@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class MySqlSetTransactionStatement extends MySqlStatementImpl {
 
@@ -24,6 +28,17 @@ public class MySqlSetTransactionStatement extends MySqlStatementImpl {
     private String  isolationLevel;
 
     private String  accessModel;
+
+    private Boolean session;
+
+
+    public Boolean getSession() {
+        return session;
+    }
+
+    public void setSession(Boolean session) {
+        this.session = session;
+    }
 
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
@@ -54,4 +69,8 @@ public class MySqlSetTransactionStatement extends MySqlStatementImpl {
         this.accessModel = accessModel;
     }
 
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>emptyList();
+    }
 }

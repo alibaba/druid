@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -165,7 +165,7 @@ public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLE
     
     @Override
     public boolean visit(SQLBooleanExpr x) {
-        x.getAttributes().put(EVAL_VALUE, x.getValue());
+        x.getAttributes().put(EVAL_VALUE, x.getBooleanValue());
         return false;
     }
 }

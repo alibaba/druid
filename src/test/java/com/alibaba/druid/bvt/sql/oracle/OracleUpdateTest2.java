@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,28 +44,30 @@ public class OracleUpdateTest2 extends OracleTest {
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("wrh$_tempfile")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("x$kcctf")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("wrh$_tempfile")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("x$kcctf")));
 
-        Assert.assertEquals(4, visitor.getTables().size());
-        Assert.assertEquals(18, visitor.getColumns().size());
+        assertEquals(4, visitor.getTables().size());
+        assertEquals(15, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("table1", "column")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("table2", "expr")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("table2", "column")));
+        assertTrue(visitor.containsColumn("wrh$_tempfile", "snap_id"));
+        assertTrue(visitor.containsColumn("wrh$_tempfile", "filename"));
+        assertTrue(visitor.containsColumn("wrh$_tempfile", "tsname"));
+        assertTrue(visitor.containsColumn("ts$", "name"));
+        assertTrue(visitor.containsColumn("v$tempfile", "ts#"));
     }
 
 }

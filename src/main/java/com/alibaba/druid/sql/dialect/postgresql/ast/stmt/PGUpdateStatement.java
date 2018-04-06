@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -29,8 +24,6 @@ import com.alibaba.druid.util.JdbcConstants;
 public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatement {
 
     private boolean        only      = false;
-
-    private PGWithClause   with;
 
     public PGUpdateStatement(){
         super (JdbcConstants.POSTGRESQL);
@@ -44,16 +37,13 @@ public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatem
         this.only = only;
     }
 
-    public PGWithClause getWith() {
-        return with;
-    }
-
-    public void setWith(PGWithClause with) {
-        this.with = with;
-    }
-
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((PGASTVisitor) visitor);
+        if (visitor instanceof PGASTVisitor) {
+            accept0((PGASTVisitor) visitor);
+            return;
+        }
+
+        super.accept0(visitor);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class MySqlCreateTableTest71 extends MysqlTest {
                     + "\n\tgmt_create datetime NOT NULL COMMENT '创建时间',"
                     + "\n\tgmt_modified datetime NOT NULL COMMENT '修改时间',"
                     + "\n\tPRIMARY KEY (id)"
-                    + "\n) COMMENT = 're'", output);
+                    + "\n) COMMENT 're'", output);
         }
         
         {
@@ -61,7 +61,7 @@ public class MySqlCreateTableTest71 extends MysqlTest {
                     + "\n\tgmt_create datetime not null comment '创建时间',"
                     + "\n\tgmt_modified datetime not null comment '修改时间',"
                     + "\n\tprimary key (id)"
-                    + "\n) comment = 're'", output);
+                    + "\n) comment 're'", output);
         }
     }
 }

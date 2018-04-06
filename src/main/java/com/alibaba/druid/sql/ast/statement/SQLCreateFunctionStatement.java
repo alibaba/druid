@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by wenshao on 23/05/2017.
  */
-public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLCreateStatement, SQLObjectWithDataType {
     private SQLName definer;
 
     private boolean            create     = true;
@@ -44,8 +44,13 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLD
     // for mysql
 
     private String             comment;
-
     private boolean            deterministic  = false;
+    private boolean            parallelEnable;
+    private boolean            aggregate;
+    private SQLName            using;
+    private boolean            pipelined;
+    private boolean            resultCache;
+    private String             wrappedSource;
 
     public SQLCreateFunctionStatement clone() {
         SQLCreateFunctionStatement x = new SQLCreateFunctionStatement();
@@ -75,6 +80,7 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLD
         }
         x.comment = comment;
         x.deterministic = deterministic;
+        x.pipelined = pipelined;
 
         return x;
     }
@@ -85,6 +91,7 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLD
             acceptChild(visitor, definer);
             acceptChild(visitor, name);
             acceptChild(visitor, parameters);
+            acceptChild(visitor, returnDataType);
             acceptChild(visitor, block);
         }
         visitor.endVisit(this);
@@ -198,5 +205,64 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLD
         }
 
         return null;
+    }
+
+    @Override
+    public SQLDataType getDataType() {
+        return returnDataType;
+    }
+
+    @Override
+    public void setDataType(SQLDataType dataType) {
+        this.setReturnDataType(dataType);
+    }
+
+
+    public boolean isParallelEnable() {
+        return parallelEnable;
+    }
+
+    public void setParallelEnable(boolean parallel_enable) {
+        this.parallelEnable = parallel_enable;
+    }
+
+    public boolean isAggregate() {
+        return aggregate;
+    }
+
+    public void setAggregate(boolean aggregate) {
+        this.aggregate = aggregate;
+    }
+
+    public SQLName getUsing() {
+        return using;
+    }
+
+    public void setUsing(SQLName using) {
+        this.using = using;
+    }
+
+    public boolean isPipelined() {
+        return pipelined;
+    }
+
+    public void setPipelined(boolean pipelined) {
+        this.pipelined = pipelined;
+    }
+
+    public boolean isResultCache() {
+        return resultCache;
+    }
+
+    public void setResultCache(boolean resultCache) {
+        this.resultCache = resultCache;
+    }
+
+    public String getWrappedSource() {
+        return wrappedSource;
+    }
+
+    public void setWrappedSource(String wrappedSource) {
+        this.wrappedSource = wrappedSource;
     }
 }

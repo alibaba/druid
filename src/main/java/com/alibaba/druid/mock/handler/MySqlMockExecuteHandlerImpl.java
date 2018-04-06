@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,7 +143,7 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
                 row[i] = ((SQLNCharExpr) expr).getText();
                 column.setColumnType(Types.NVARCHAR);
             } else if (expr instanceof SQLBooleanExpr) {
-                row[i] = ((SQLBooleanExpr) expr).getValue();
+                row[i] = ((SQLBooleanExpr) expr).getBooleanValue();
                 column.setColumnType(Types.NVARCHAR);
             } else if (expr instanceof SQLNullExpr) {
                 row[i] = null;

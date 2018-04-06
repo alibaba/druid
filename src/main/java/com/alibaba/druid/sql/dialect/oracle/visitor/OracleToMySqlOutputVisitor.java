@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
+import com.alibaba.druid.util.FnvHash;
 
 public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
 
@@ -151,8 +152,8 @@ public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
 
     static boolean isRowNumber(SQLExpr expr) {
         if (expr instanceof SQLIdentifierExpr) {
-            String lownerName = ((SQLIdentifierExpr) expr).getLowerName();
-            return "rownum".equals(lownerName);
+            return ((SQLIdentifierExpr) expr)
+                    .hashCode64() == FnvHash.Constants.ROWNUM;
         }
 
         return false;

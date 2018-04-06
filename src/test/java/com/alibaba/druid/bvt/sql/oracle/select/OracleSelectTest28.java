@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ public class OracleSelectTest28 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "SELECT /*+ ORDERED USE_NL ( \"A1 \") USE_NL ( \"A2 \") USE_NL ( \"A3 \") */  \"A3 \". \"AP_PAY_TIME \", \"A2 \". \"ORDER_ID \", \"A3 \". \"AP_PAY_AMT \", \"A1 \". \"COUNTRY \" FROM  \"ESCROW \". \"TRADE_PAY \"  \"A3 \", \"ESCROW \". \"ESCROW_TRADE \"  \"A2 \", \"ESCROW \". \"BUSINESS_ORDER \"  \"A1 \" WHERE  \"A3 \". \"TRADE_ID \"= \"A2 \". \"ID \" AND  \"A1 \". \"ID \"(+)=TO_NUMBER( \"A2 \". \"OUT_ORDER_ID \") AND  \"A2 \". \"ORDER_FROM \"='wholesale_order' AND  \"A3 \". \"AP_PAY_TIME \">=:1-.003819444444444444444444444444444444444444 AND  \"A3 \". \"AP_PAY_TIME \">=TRUNC(:2)";
+        "SELECT /*+ ORDERED USE_NL ( \"A1 \") USE_NL ( \"A2 \") USE_NL ( \"A3 \") */  \"A3 \". \"AP_PAY_TIME \", \"A2 \". \"ORDER_ID \", \"A3 \". \"AP_PAY_AMT \", \"A1 \". \"COUNTRY \" FROM  \"ESCROW\". \"TRADE_PAY\"  \"A3 \", \"ESCROW\". \"ESCROW_TRADE\"  \"A2 \", \"ESCROW\". \"BUSINESS_ORDER\"  \"A1 \" WHERE  \"A3 \". \"TRADE_ID \"= \"A2 \". \"ID \" AND  \"A1 \". \"ID \"(+)=TO_NUMBER( \"A2 \". \"OUT_ORDER_ID \") AND  \"A2 \". \"ORDER_FROM \"='wholesale_order' AND  \"A3 \". \"AP_PAY_TIME \">=:1-.003819444444444444444444444444444444444444 AND  \"A3 \". \"AP_PAY_TIME \">=TRUNC(:2)";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,20 @@ package com.alibaba.druid.bvt.pool;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 
+import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 
-public class ConfigErrorTest2 extends TestCase {
+public class ConfigErrorTest2 extends PoolTestCase {
 
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:wrap-jdbc:jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
@@ -38,6 +41,8 @@ public class ConfigErrorTest2 extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+
+        super.tearDown();
     }
 
     public void test_connect() throws Exception {

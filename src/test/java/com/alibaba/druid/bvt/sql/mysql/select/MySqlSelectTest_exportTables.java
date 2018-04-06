@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,33 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
         assertEquals(1, visitor.getTables().size());
         assertTrue(visitor.getTables().contains("my_table"));
     }
-    
-    
+
+    public void test_1() throws Exception {
+        String sql = "SELECT * FROM table1 INNER JOIN table2 ON table1.id = table2.id;";
+
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+//        print(statementList);
+
+        assertEquals(1, statementList.size());
+
+        StringBuffer out = new StringBuffer();
+        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(out, JdbcConstants.MYSQL);
+        visitor.setExportTables(true);
+
+        stmt.accept(visitor);
+
+
+        assertEquals("SELECT *\n" +
+                        "FROM table1\n" +
+                        "\tINNER JOIN table2 ON table1.id = table2.id;", //
+                out.toString());
+
+        assertNotNull(visitor.getTables());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals("[table1, table2]", visitor.getTables().toString());
+    }
     
 }

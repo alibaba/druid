@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallTest11 extends TestCase {
 
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        assertTrue(WallUtils.isValidateMySql(//
         "SELECT *, MATCH(question_content_fulltext) " + //
                 "AGAINST('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE) AS score " + //
                 "FROM aws_question " + //

@@ -24,7 +24,7 @@ public class DesensitizationTest_createTable extends TestCase {
         System.out.println("-------------------");
         System.out.println(desens_Sql);
 
-        assertEquals("CREATE TABLE T_69BFC132C09344DE (\n" +
+        assertEquals("CREATE TABLE T_0C9879D1E6FFA3BE (\n" +
                 "\tcustomer_id number(10) NOT NULL,\n" +
                 "\tcustomer_name varchar2(50) NOT NULL,\n" +
                 "\tcity varchar2(50)\n" +

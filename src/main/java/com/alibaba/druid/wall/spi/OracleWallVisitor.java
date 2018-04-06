@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.wall.Violation;
-import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallProvider;
-import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.*;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
@@ -52,6 +49,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     private final List<Violation> violations      = new ArrayList<Violation>();
     private boolean               sqlModified     = false;
     private boolean               sqlEndOfComment = false;
+    private List<WallUpdateCheckItem> updateCheckItems;
 
     public OracleWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
@@ -344,5 +342,21 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     @Override
     public void setSqlEndOfComment(boolean sqlEndOfComment) {
         this.sqlEndOfComment = sqlEndOfComment;
+    }
+
+    public void addWallUpdateCheckItem(WallUpdateCheckItem item) {
+        if (updateCheckItems == null) {
+            updateCheckItems = new ArrayList<WallUpdateCheckItem>();
+        }
+        updateCheckItems.add(item);
+    }
+
+    public List<WallUpdateCheckItem> getUpdateCheckItems() {
+        return updateCheckItems;
+    }
+
+    public boolean visit(SQLJoinTableSource x) {
+        WallVisitorUtils.check(this, x);
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -9,7 +10,7 @@ import junit.framework.TestCase;
 
 import java.sql.SQLException;
 
-public class DruidConnectionHolderTest extends TestCase {
+public class DruidConnectionHolderTest extends PoolTestCase {
 
     Driver driver;
     private DruidDataSource dataSource;
@@ -17,6 +18,8 @@ public class DruidConnectionHolderTest extends TestCase {
     private Class exceptionClass;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         driver = new Driver();
 
         if (driver.getMajorVersion() == 5) {
@@ -48,6 +51,8 @@ public class DruidConnectionHolderTest extends TestCase {
         if (dataSource != null) {
             dataSource.close();
         }
+
+        super.tearDown();
     }
 
     public void test_mysqlSyntaxError() throws Exception {

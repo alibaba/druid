@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class MysqlDeallocatePrepareStatement extends MySqlStatementImpl {
 	
@@ -37,4 +41,8 @@ public class MysqlDeallocatePrepareStatement extends MySqlStatementImpl {
         visitor.endVisit(this);
     }
 
+	@Override
+	public List<SQLObject> getChildren() {
+		return Collections.<SQLObject>singletonList(statementName);
+	}
 }

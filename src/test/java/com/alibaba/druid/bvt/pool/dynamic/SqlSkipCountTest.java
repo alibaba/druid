@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -12,13 +13,15 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceStatValue;
 import com.alibaba.druid.support.logging.Log;
 
-public class SqlSkipCountTest extends TestCase {
+public class SqlSkipCountTest extends PoolTestCase {
 
     private DruidDataSource dataSource;
 
     private Log             dataSourceLog;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         Field logField = DruidDataSource.class.getDeclaredField("LOG");
         logField.setAccessible(true);
         dataSourceLog = (Log) logField.get(null);
@@ -36,6 +39,8 @@ public class SqlSkipCountTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+
+        super.tearDown();
     }
 
     public void test_connectPropertiesChange() throws Exception {

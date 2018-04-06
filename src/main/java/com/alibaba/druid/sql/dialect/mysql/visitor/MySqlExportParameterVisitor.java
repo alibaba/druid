@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlFlushStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
@@ -127,5 +128,15 @@ public class MySqlExportParameterVisitor extends MySqlOutputVisitor implements E
          }
         ExportParameterVisitorUtils.exportParameter(this.parameters, x);
         return true;
+    }
+
+    @Override
+    public boolean visit(MySqlFlushStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlFlushStatement x) {
+
     }
 }

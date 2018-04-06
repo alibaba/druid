@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,9 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 
 public abstract class SQLSubPartitionBy extends SQLObjectImpl {
 
-    protected SQLExpr                 subPartitionsCount;
-    protected boolean                 linear;
-
-    protected List<SQLAssignItem>     options              = new ArrayList<SQLAssignItem>();
-
+    protected SQLExpr               subPartitionsCount;
+    protected boolean               linear;
+    protected List<SQLAssignItem>   options              = new ArrayList<SQLAssignItem>();
     protected List<SQLSubPartition> subPartitionTemplate = new ArrayList<SQLSubPartition>();
 
     public SQLExpr getSubPartitionsCount() {

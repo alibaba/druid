@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,9 +72,9 @@ public class OracleSelectTest41 extends OracleTest {
 
         Assert.assertEquals(4, visitor.getTables().size());
 
-        Assert.assertEquals(9, visitor.getColumns().size());
+        Assert.assertEquals(8, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
+         assertTrue(visitor.containsColumn("AA", "USERID"));
 
         // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }

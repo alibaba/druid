@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateProcedureStatement extends SQLStatementImpl {
+public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private SQLName            definer;
 
@@ -45,6 +45,8 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
     private boolean            noSql;
     private boolean            readSqlData;
     private boolean            modifiesSqlData;
+
+    private String             wrappedSource;
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -165,5 +167,23 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
 
     public void setModifiesSqlData(boolean modifiesSqlData) {
         this.modifiesSqlData = modifiesSqlData;
+    }
+
+    public SQLParameter findParameter(long hash) {
+        for (SQLParameter param : this.parameters) {
+            if (param.getName().nameHashCode64() == hash) {
+                return param;
+            }
+        }
+
+        return null;
+    }
+
+    public String getWrappedSource() {
+        return wrappedSource;
+    }
+
+    public void setWrappedSource(String wrappedSource) {
+        this.wrappedSource = wrappedSource;
     }
 }

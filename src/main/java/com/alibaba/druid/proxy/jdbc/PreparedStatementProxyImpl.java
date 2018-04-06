@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,12 +46,11 @@ import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
  * @author wenshao [szujobs@hotmail.com]
  */
 public class PreparedStatementProxyImpl extends StatementProxyImpl implements PreparedStatementProxy {
-
-    private PreparedStatement statement;
-    protected final String            sql;
-    private JdbcParameter[]           parameters;
-    private int                       parametersSize = 0;
-    private Map<Integer, JdbcParameter> paramMap       = null;
+    private         PreparedStatement           statement;
+    protected final String                      sql;
+    private         JdbcParameter[]             parameters;
+    private         int                         parametersSize;
+    private         Map<Integer, JdbcParameter> paramMap;
 
     public PreparedStatementProxyImpl(ConnectionProxy connection, PreparedStatement statement, String sql, long id){
         super(connection, statement, id);
@@ -101,7 +100,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         this.statement = statement;
     }
 
-    void setParameter(int jdbcIndex, JdbcParameter parameter) {
+    public void setParameter(int jdbcIndex, JdbcParameter parameter) {
         int index = jdbcIndex - 1;
 
         if (jdbcIndex > parametersSize) {

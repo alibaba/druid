@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,8 +97,10 @@ public class OracleCreateViewTest4 extends OracleTest {
 
         Assert.assertEquals(3, visitor.getTables().size());
 
-        Assert.assertEquals(9, visitor.getColumns().size());
+        Assert.assertEquals(12, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sys.V_$SESSION", "SID")));
+        Assert.assertTrue(visitor.containsColumn("sys.V_$SESSION", "username"));
+        Assert.assertTrue(visitor.containsColumn("sys.V_$SESSION", "SID"));
+        Assert.assertTrue(visitor.containsColumn("sys.V_$SESSION", "row_wait_obj#"));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,14 @@ public class SQLColumnReference extends SQLConstraintImpl implements SQLColumnCo
 
     private SQLName       table;
     private List<SQLName> columns = new ArrayList<SQLName>();
+
+    private SQLForeignKeyImpl.Match referenceMatch;
+    protected SQLForeignKeyImpl.Option onUpdate;
+    protected SQLForeignKeyImpl.Option onDelete;
+
+    public SQLColumnReference() {
+
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -65,7 +73,34 @@ public class SQLColumnReference extends SQLConstraintImpl implements SQLColumnCo
             x.columns.add(columnCloned);
         }
 
+        x.referenceMatch = referenceMatch;
+        x.onUpdate = onUpdate;
+        x.onDelete = onDelete;
+
         return x;
     }
 
+    public SQLForeignKeyImpl.Match getReferenceMatch() {
+        return referenceMatch;
+    }
+
+    public void setReferenceMatch(SQLForeignKeyImpl.Match referenceMatch) {
+        this.referenceMatch = referenceMatch;
+    }
+
+    public SQLForeignKeyImpl.Option getOnUpdate() {
+        return onUpdate;
+    }
+
+    public void setOnUpdate(SQLForeignKeyImpl.Option onUpdate) {
+        this.onUpdate = onUpdate;
+    }
+
+    public SQLForeignKeyImpl.Option getOnDelete() {
+        return onDelete;
+    }
+
+    public void setOnDelete(SQLForeignKeyImpl.Option onDelete) {
+        this.onDelete = onDelete;
+    }
 }

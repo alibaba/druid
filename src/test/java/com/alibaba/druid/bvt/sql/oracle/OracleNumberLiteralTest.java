@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class OracleNumberLiteralTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT 7, 255, 0.5, 6.34, 0.025\n\t, 6.34F, 0.5D, -1.0D\nFROM DUAL", text);
+        Assert.assertEquals("SELECT 7, 255, 0.5, 6.34, 25e-03\n\t, 6.34F, 0.5D, -1.0D\nFROM DUAL", text);
 
         System.out.println(text);
     }

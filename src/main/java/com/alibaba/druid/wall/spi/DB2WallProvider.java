@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ExportParameterVisitor;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -39,7 +40,7 @@ public class DB2WallProvider extends WallProvider {
 
     @Override
     public SQLStatementParser createParser(String sql) {
-        return new DB2StatementParser(sql);
+        return new DB2StatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup);
     }
 
     @Override

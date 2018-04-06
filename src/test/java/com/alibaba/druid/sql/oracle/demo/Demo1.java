@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,7 +123,7 @@ public class Demo1 extends TestCase {
                 String tableName = identExpr.getName();
                 
                 if (tableName.equals("user")) {
-                    identExpr.setName(this.tableName);
+                    x.setExpr(this.tableName);
                 }
             } else if (expr instanceof SQLPropertyExpr) {
                 SQLPropertyExpr proExpr = (SQLPropertyExpr) expr;
@@ -144,7 +144,7 @@ public class Demo1 extends TestCase {
                 String tableName = identExpr.getName();
                 
                 if (tableName.equals("user")) {
-                    identExpr.setName(this.tableName);
+                    x.setExpr(this.tableName);
                 }
             } else if (expr instanceof SQLPropertyExpr) {
                 SQLPropertyExpr proExpr = (SQLPropertyExpr) expr;

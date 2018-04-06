@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class MySqlOutFileExpr extends MySqlObjectImpl implements SQLExpr {
 
@@ -48,6 +51,11 @@ public class MySqlOutFileExpr extends MySqlObjectImpl implements SQLExpr {
             acceptChild(visitor, file);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        return Collections.singletonList(file);
     }
 
     public SQLExpr getFile() {

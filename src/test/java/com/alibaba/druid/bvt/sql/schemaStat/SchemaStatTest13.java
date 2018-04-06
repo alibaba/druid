@@ -21,18 +21,17 @@ public class SchemaStatTest13 extends TestCase {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
+        System.out.println(stmt);
+
         SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(dbType);
         stmt.accept(statVisitor);
 
         Set<TableStat.Relationship> relationships = statVisitor.getRelationships();
-        for (TableStat.Relationship relationship : relationships) {
-            System.out.println(relationship); // table1.id = table2.id
-        }
 
-//        System.out.println(statVisitor.getColumns());
-//        System.out.println(statVisitor.getGroupByColumns()); // group by
+        System.out.println("columns : " + statVisitor.getColumns());
+        System.out.println("groups : " + statVisitor.getGroupByColumns()); // group by
         System.out.println("relationships : " + statVisitor.getRelationships()); // group by
-        System.out.println(statVisitor.getConditions());
+        System.out.println("conditions : " + statVisitor.getConditions());
         assertEquals(2, relationships.size());
 
         Assert.assertEquals(5, statVisitor.getColumns().size());

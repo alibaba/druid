@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
@@ -30,6 +31,8 @@ public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTable
     private String  indexType;
 
     private boolean hasConstaint;
+
+    private SQLExpr keyBlockSize;
 
     public MySqlKey(){
         dbType = JdbcConstants.MYSQL;
@@ -71,11 +74,25 @@ public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTable
         super.cloneTo(x);
         x.indexType = indexType;
         x.hasConstaint = hasConstaint;
+        if (keyBlockSize != null) {
+            this.setKeyBlockSize(keyBlockSize.clone());
+        }
     }
 
     public MySqlKey clone() {
         MySqlKey x = new MySqlKey();
         cloneTo(x);
         return x;
+    }
+
+    public SQLExpr getKeyBlockSize() {
+        return keyBlockSize;
+    }
+
+    public void setKeyBlockSize(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.keyBlockSize = x;
     }
 }

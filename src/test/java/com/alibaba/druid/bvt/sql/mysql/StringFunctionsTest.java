@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,7 +139,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        assertEquals("SELECT CONCAT('My', 'S', 'QL')", text);
+        assertEquals("SELECT 'MySQL'", text);
     }
 
     public void test_10() throws Exception {
@@ -526,7 +526,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        assertEquals("SELECT SUBSTRING('Sakila', -4, 2)", text);
+        assertEquals("SELECT SUBSTRING('Sakila' FROM -4 FOR 2)", text);
     }
 
     public void test_45() throws Exception {
@@ -537,7 +537,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        assertEquals("SELECT SUBSTRING('foobarbar', 4)", text);
+        assertEquals("SELECT SUBSTRING('foobarbar' FROM 4)", text);
     }
 
     public void test_46() throws Exception {

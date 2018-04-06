@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,34 @@ public class OracleExecuteImmediateStatement extends OracleStatementImpl {
 //            acceptChild(visitor, label);
         }
         visitor.endVisit(this);
+    }
+
+    public OracleExecuteImmediateStatement clone() {
+        OracleExecuteImmediateStatement x = new OracleExecuteImmediateStatement();
+
+        if (dynamicSql != null) {
+            x.setDynamicSql(dynamicSql.clone());
+        }
+
+        for (SQLArgument arg : arguments) {
+            SQLArgument a2 = arg.clone();
+            a2.setParent(x);
+            x.arguments.add(a2);
+        }
+
+        for (SQLExpr e : into) {
+            SQLExpr e2 = e.clone();
+            e2.setParent(x);
+            x.into.add(e2);
+        }
+
+        for (SQLExpr e : returnInto) {
+            SQLExpr e2 = e.clone();
+            e2.setParent(x);
+            x.returnInto.add(e2);
+        }
+
+        return x;
     }
 
     public SQLExpr getDynamicSql() {

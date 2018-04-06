@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import com.alibaba.druid.stat.TableStat.Column;
 public class OracleSchemaStatVisitorTest_Subquery extends TestCase {
 
     public void test_0() throws Exception {
-        String sql = "SELECT id2, name2 FROM (select id, name from users where ROWNUM < 10) a";
+        String sql = "SELECT id, name FROM (select id, name from users where ROWNUM < 10) a";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

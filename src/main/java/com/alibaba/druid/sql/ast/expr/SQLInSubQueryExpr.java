@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,17 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
@@ -83,7 +89,8 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
     }
 
     public void output(StringBuffer buf) {
-        this.subQuery.output(buf);
+        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(buf, null);
+        this.accept(visitor);
     }
 
     @Override
@@ -94,6 +101,10 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
         }
 
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        return Arrays.<SQLObject>asList(this.expr, this.subQuery);
     }
 
     @Override

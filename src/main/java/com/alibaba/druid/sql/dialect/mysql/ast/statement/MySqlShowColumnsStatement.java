@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,13 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MySqlShowColumnsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
@@ -84,5 +88,22 @@ public class MySqlShowColumnsStatement extends MySqlStatementImpl implements MyS
             acceptChild(visitor, where);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (table != null) {
+            children.add(table);
+        }
+        if (database != null) {
+            children.add(database);
+        }
+        if (like != null) {
+            children.add(like);
+        }
+        if (where != null) {
+            children.add(where);
+        }
+        return children;
     }
 }

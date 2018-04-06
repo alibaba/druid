@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,11 +50,7 @@ public class SQLMergeStatement extends SQLStatementImpl {
     }
 
     public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
+        return into.getAlias();
     }
 
     public SQLTableSource getInto() {
@@ -171,8 +167,8 @@ public class SQLMergeStatement extends SQLStatementImpl {
         public void accept0(SQLASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, columns);
-                acceptChild(visitor, columns);
-                acceptChild(visitor, columns);
+                acceptChild(visitor, values);
+                acceptChild(visitor, where);
             }
             visitor.endVisit(this);
         }

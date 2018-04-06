@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,15 +44,19 @@ public class Oracle_pl_0 extends OracleTest {
             statement.accept(visitor);
         }
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("relationships : " + visitor.getRelationships());
+		System.out.println(stmt);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("relationships : " + visitor.getRelationships());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.containsTable("employees"));
+		assertTrue(visitor.containsColumn("employees", "employee_id"));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
 
 //        Assert.assertEquals(7, visitor.getColumns().size());

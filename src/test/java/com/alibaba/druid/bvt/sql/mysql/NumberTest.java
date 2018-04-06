@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class NumberTest extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SELECT -3.20326809E+14;", text);
+        Assert.assertEquals("SELECT -32032.6809e+10;", text);
     }
 
     public void test_1() throws Exception {

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class MySqlCreateTableTest53 extends MysqlTest {
     +"\n\t`create_time` datetime NOT NULL COMMENT '授权时间',"//
     +"\n\t`invalid_time` datetime NOT NULL COMMENT '授权失效时间',"//
     +"\n\tPRIMARY KEY USING BTREE (`auth_id`)"
-    +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin COMMENT = 'INS_EBAY_AUTH'", output);
+    +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin COMMENT 'INS_EBAY_AUTH'", output);
     }
     
     @Test
@@ -109,7 +109,7 @@ public class MySqlCreateTableTest53 extends MysqlTest {
     +"\n\t`invalid_time` datetime NOT NULL COMMENT '授权失效时间',"//
     +"\n\tPRIMARY KEY USING BTREE (`auth_id`),"
     +"\n\tINDEX `ind_usr_id` USING BTREE(`usr_id`)"
-    +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin COMMENT = 'INS_EBAY_AUTH'", output);
+    +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin COMMENT 'INS_EBAY_AUTH'", output);
     }
     
     @Test
@@ -152,6 +152,6 @@ public class MySqlCreateTableTest53 extends MysqlTest {
     +"\n\t`invalid_time` datetime NOT NULL COMMENT '授权失效时间',"//
     +"\n\tPRIMARY KEY USING BTREE (`auth_id`),"
     +"\n\tKEY `ind_usr_id` USING BTREE (`usr_id`)"
-    +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin COMMENT = 'INS_EBAY_AUTH'", output);
+    +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin COMMENT 'INS_EBAY_AUTH'", output);
     }
 }
