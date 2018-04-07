@@ -644,5 +644,6 @@ public final class FnvHash {
         long DBPARTITION = fnv1a_64_lower("DBPARTITION");
         long TBPARTITION = fnv1a_64_lower("TBPARTITION");
         long TBPARTITIONS = fnv1a_64_lower("TBPARTITIONS");
+        long SOUNDS = fnv1a_64_lower("SOUNDS");
     }
 }

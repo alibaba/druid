@@ -3161,7 +3161,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                 SQLExpr sqlSecurity = this.exprParser.name();
                 stmt.setSqlSecurity(sqlSecurity);
-            } else if (lexer.identifierEquals(FnvHash.Constants.CONTAINS)) {
+            } else if (lexer.identifierEquals(FnvHash.Constants.CONTAINS) || lexer.token() == Token.CONTAINS) {
                 lexer.nextToken();
                 acceptIdentifier("SQL");
                 stmt.setContainsSql(true);
@@ -3201,7 +3201,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                 SQLExpr sqlSecurity = this.exprParser.name();
                 stmt.setSqlSecurity(sqlSecurity);
-            } else if (lexer.identifierEquals(FnvHash.Constants.CONTAINS)) {
+            } else if (lexer.identifierEquals(FnvHash.Constants.CONTAINS) || lexer.token() == Token.CONTAINS) {
                 lexer.nextToken();
                 acceptIdentifier("SQL");
                 stmt.setContainsSql(true);
@@ -4383,7 +4383,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setDeterministic(true);
                 continue;
             }
-            if (lexer.identifierEquals(FnvHash.Constants.CONTAINS)) {
+            if (lexer.identifierEquals(FnvHash.Constants.CONTAINS) || lexer.token() == Token.CONTAINS) {
                 lexer.nextToken();
                 acceptIdentifier("SQL");
                 stmt.setContainsSql(true);

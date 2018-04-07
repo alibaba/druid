@@ -152,16 +152,16 @@ public class OdpsExprParser extends SQLExprParser {
         
         return super.primaryRest(expr);
     }
-    
+
 
     public SQLExpr relationalRest(SQLExpr expr) {
         if (lexer.identifierEquals("REGEXP")) {
             lexer.nextToken();
-            SQLExpr rightExp = equality();
+            SQLExpr rightExp = bitOr();
 
             rightExp = relationalRest(rightExp);
 
-            return new SQLBinaryOpExpr(expr, SQLBinaryOperator.RegExp, rightExp, JdbcConstants.MYSQL);
+            return new SQLBinaryOpExpr(expr, SQLBinaryOperator.RegExp, rightExp, dbType);
         }
 
         return super.relationalRest(expr);

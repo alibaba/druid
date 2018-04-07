@@ -6427,4 +6427,80 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         return false;
     }
+
+    public boolean visit(SQLContainsExpr x) {
+        SQLExpr expr = x.getExpr();
+        if (expr != null) {
+            printExpr(expr);
+            print(' ');
+        }
+
+        if (x.isNot()) {
+            print0(ucase ? "NOT CONTAINS (" : " not contains (");
+        } else {
+            print0(ucase ? "CONTAINS (" : " contains (");
+        }
+
+        final List<SQLExpr> list = x.getTargetList();
+
+        boolean printLn = false;
+        if (list.size() > 5) {
+            printLn = true;
+            for (int i = 0, size = list.size(); i < size; ++i) {
+                if (!(list.get(i) instanceof SQLCharExpr)) {
+                    printLn = false;
+                    break;
+                }
+            }
+        }
+
+        if (printLn) {
+            this.indentCount++;
+            println();
+            for (int i = 0, size = list.size(); i < size; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                    println();
+                }
+                SQLExpr item = list.get(i);
+                printExpr(item);
+            }
+            this.indentCount--;
+            println();
+        } else {
+            List<SQLExpr> targetList = x.getTargetList();
+            for (int i = 0; i < targetList.size(); i++) {
+                if (i != 0) {
+                    print0(", ");
+                }
+                printExpr(targetList.get(i));
+            }
+        }
+
+        print(')');
+        return false;
+    }
+
+    public boolean visit(SQLRealExpr x) {
+        Float value = x.getValue();
+        print0(ucase ? "REAL '" : "real '");
+        print(value);
+        print('\'');
+
+        return false;
+    }
+
+    public void print(float value) {
+        if (this.appender == null) {
+            return;
+        }
+
+        if (appender instanceof StringBuilder) {
+            ((StringBuilder) appender).append(value);
+        } else if (appender instanceof StringBuffer) {
+            ((StringBuffer) appender).append(value);
+        } else {
+            print0(Float.toString(value));
+        }
+    }
 }

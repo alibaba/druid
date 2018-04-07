@@ -391,7 +391,24 @@ public class SQLSelectParser extends SQLParser {
                 long hash_lower = lexer.hash_lower();
                 lexer.nextTokenEq();
 
-                SQLExpr identExpr = new SQLIdentifierExpr(ident, hash_lower);
+                SQLExpr identExpr;
+                if (lexer.token == Token.LITERAL_CHARS) {
+                    String literal = lexer.stringVal;
+                    if (hash_lower == FnvHash.Constants.TIMESTAMP) {
+                        identExpr = new SQLTimestampExpr(literal);
+                        lexer.nextToken();
+                    } else if (hash_lower == FnvHash.Constants.DATE) {
+                        identExpr = new SQLDateExpr(literal);
+                        lexer.nextToken();
+                    } else if (hash_lower == FnvHash.Constants.REAL) {
+                        identExpr = new SQLRealExpr(Float.parseFloat(literal));
+                        lexer.nextToken();
+                    } else {
+                        identExpr = new SQLIdentifierExpr(ident, hash_lower);
+                    }
+                } else {
+                    identExpr = new SQLIdentifierExpr(ident, hash_lower);
+                }
 
                 if (lexer.token == Token.DOT) {
                     identExpr = this.exprParser.primaryRest(identExpr);
@@ -401,6 +418,7 @@ public class SQLSelectParser extends SQLParser {
                     SQLExpr rightExp;
 
                     lexer.nextToken();
+
                     try {
                         rightExp = this.exprParser.bitOr();
                     } catch (EOFParserException e) {
@@ -408,6 +426,29 @@ public class SQLSelectParser extends SQLParser {
                     }
 
                     where = new SQLBinaryOpExpr(identExpr, SQLBinaryOperator.Equality, rightExp, dbType);
+                    switch (lexer.token) {
+                        case BETWEEN:
+                        case IS:
+                        case EQ:
+                        case IN:
+                        case CONTAINS:
+                        case BANG_TILDE_STAR:
+                        case TILDE_EQ:
+                        case LT:
+                        case LTEQ:
+                        case LTEQGT:
+                        case GT:
+                        case GTEQ:
+                        case LTGT:
+                        case BANGEQ:
+                        case LIKE:
+                        case NOT:
+                            where = this.exprParser.relationalRest(where);
+                            break;
+                        default:
+                            break;
+                    }
+
                     where = this.exprParser.andRest(where);
                     where = this.exprParser.orRest(where);
                 } else {
@@ -418,17 +459,17 @@ public class SQLSelectParser extends SQLParser {
                 where = this.exprParser.expr();
             }
 //            where = this.exprParser.expr();
-            
+
             if (beforeComments != null) {
                 where.addBeforeComment(beforeComments);
             }
-            
+
             if (lexer.hasComment() && lexer.isKeepComments() //
                     && lexer.token != Token.INSERT // odps multi-insert
                     ) {
                 where.addAfterComment(lexer.readAndResetComments());
             }
-            
+
             queryBlock.setWhere(where);
         }
     }

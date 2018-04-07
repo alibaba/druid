@@ -163,7 +163,7 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
-        if (expr == expr) {
+        if (this.expr == expr) {
             setExpr(target);
             return true;
         }
