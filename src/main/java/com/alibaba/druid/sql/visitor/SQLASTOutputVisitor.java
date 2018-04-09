@@ -2363,6 +2363,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visitColumnDefault(x);
         }
 
+        if (x.isAutoIncrement()) {
+            print0(ucase ? " AUTO_INCREMENT" : " auto_increment");
+        }
+
         for (SQLColumnConstraint item : x.getConstraints()) {
             boolean newLine = item instanceof SQLForeignKeyConstraint //
                               || item instanceof SQLPrimaryKey //

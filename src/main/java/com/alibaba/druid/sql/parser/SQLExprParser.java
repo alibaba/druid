@@ -1783,7 +1783,15 @@ public class SQLExprParser extends SQLParser {
 
     public final SQLExpr additive() {
         SQLExpr expr = multiplicative();
-        return additiveRest(expr);
+
+        if (lexer.token == Token.PLUS
+                || lexer.token == Token.BARBAR
+                || lexer.token == Token.CONCAT
+                || lexer.token == Token.SUB) {
+            expr = additiveRest(expr);
+        }
+
+        return expr;
     }
 
     public SQLExpr additiveRest(SQLExpr expr) {
@@ -1795,7 +1803,7 @@ public class SQLExprParser extends SQLParser {
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Add, rightExp, dbType);
             expr = additiveRest(expr);
         } else if ((token == Token.BARBAR || token == Token.CONCAT)
-                && !JdbcConstants.MYSQL.equals(dbType)) {
+                && (isEnabled(SQLParserFeature.PipesAsConcat) || !JdbcConstants.MYSQL.equals(dbType))) {
             lexer.nextToken();
             SQLExpr rightExp = multiplicative();
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Concat, rightExp, dbType);
@@ -1836,7 +1844,10 @@ public class SQLExprParser extends SQLParser {
 
     public SQLExpr and() {
         SQLExpr expr = relational();
-        return andRest(expr);
+        if (lexer.token == Token.AND || lexer.token == Token.AMPAMP) {
+            expr = andRest(expr);
+        }
+        return expr;
     }
 
     public SQLExpr andRest(SQLExpr expr) {
@@ -1891,8 +1902,8 @@ public class SQLExprParser extends SQLParser {
                 SQLExpr rightExp = relational();
 
                 SQLBinaryOperator operator = JdbcConstants.POSTGRESQL.equals(dbType)
-                                ? SQLBinaryOperator.PG_And
-                                : SQLBinaryOperator.BooleanAnd;
+                        ? SQLBinaryOperator.PG_And
+                        : SQLBinaryOperator.BooleanAnd;
 
                 expr = new SQLBinaryOpExpr(expr, operator, rightExp, dbType);
             } else {
@@ -1905,7 +1916,10 @@ public class SQLExprParser extends SQLParser {
 
     public SQLExpr or() {
         SQLExpr expr = and();
-        return orRest(expr);
+        if (lexer.token == Token.OR || lexer.token == Token.BARBAR || lexer.token == Token.XOR) {
+            expr = orRest(expr);
+        }
+        return expr;
     }
 
     public SQLExpr orRest(SQLExpr expr) {
@@ -1943,11 +1957,15 @@ public class SQLExprParser extends SQLParser {
                 } else {
                     expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanOr, rightExp, dbType);
                 }
-            } else  if (lexer.token == Token.BARBAR && JdbcConstants.MYSQL.equals(dbType)) {
+            } else  if (lexer.token == Token.BARBAR) {
                 lexer.nextToken();
                 SQLExpr rightExp = and();
 
-                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanOr, rightExp, dbType);
+                SQLBinaryOperator op = JdbcConstants.MYSQL.equals(dbType) && !isEnabled(SQLParserFeature.PipesAsConcat)
+                        ? SQLBinaryOperator.BooleanOr
+                        : SQLBinaryOperator.Concat;
+
+                expr = new SQLBinaryOpExpr(expr, op, rightExp, dbType);
             } else if (lexer.token == Token.XOR) {
                 lexer.nextToken();
                 SQLExpr rightExp = and();
@@ -2698,6 +2716,12 @@ public class SQLExprParser extends SQLParser {
             } else {
                 column.setComment(primary());
             }
+            return parseColumnRest(column);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.AUTO_INCREMENT)) {
+            lexer.nextToken();
+            column.setAutoIncrement(true);
             return parseColumnRest(column);
         }
 
