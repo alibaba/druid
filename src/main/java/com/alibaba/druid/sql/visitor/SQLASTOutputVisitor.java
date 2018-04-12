@@ -1516,11 +1516,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         print(')');
 
-        SQLOrderBy withGroup = x.getWithinGroup();
-        if (withGroup != null) {
-            print0(ucase ? " WITHIN GROUP (" : " within group (");
-            visit(withGroup);
-            print(')');
+        if (!JdbcConstants.POSTGRESQL.equals(dbType)) {
+            SQLOrderBy withGroup = x.getWithinGroup();
+            if (withGroup != null) {
+                print0(ucase ? " WITHIN GROUP (" : " within group (");
+                visit(withGroup);
+                print(')');
+            }
         }
 
         SQLKeep keep = x.getKeep();

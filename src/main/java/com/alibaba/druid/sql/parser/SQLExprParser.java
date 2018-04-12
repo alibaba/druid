@@ -1099,13 +1099,30 @@ public class SQLExprParser extends SQLParser {
             methodInvokeExpr.setUsing(using);
         }
 
+        SQLAggregateExpr aggregateExpr = null;
+        if (lexer.token == Token.ORDER) {
+            lexer.nextToken();
+            accept(Token.BY);
+
+            aggregateExpr = new SQLAggregateExpr(methodName);
+            aggregateExpr.getArguments().addAll(methodInvokeExpr.getParameters());
+
+            SQLOrderBy orderBy = new SQLOrderBy();
+            this.orderBy(orderBy.getItems(), orderBy);
+            aggregateExpr.setWithinGroup(orderBy);
+        }
+
         accept(Token.RPAREN);
 
         if (lexer.token == Token.OVER) {
-            SQLAggregateExpr aggregateExpr = new SQLAggregateExpr(methodName);
-            aggregateExpr.getArguments().addAll(methodInvokeExpr.getParameters());
+            if (aggregateExpr == null) {
+                aggregateExpr = new SQLAggregateExpr(methodName);
+                aggregateExpr.getArguments().addAll(methodInvokeExpr.getParameters());
+            }
             over(aggregateExpr);
+        }
 
+        if (aggregateExpr != null) {
             return primaryRest(aggregateExpr);
         }
 

@@ -3029,4 +3029,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         printAndAccept(x.getColumns(), ", ");
         return false;
     }
+
+    protected void visitAggreateRest(SQLAggregateExpr x) {
+        SQLOrderBy orderBy = x.getWithinGroup();
+        if (orderBy != null) {
+            print(' ');
+            orderBy.accept(this);
+        }
+    }
 }
