@@ -10,6 +10,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * A thread to run the validation on each host:port.
+ * If some host:port is failed in the validation, we can set test flags in DruidDataSource.
+ *
+ * @author DigitalSonic
+ */
 public class HostAndPortValidatorThread implements Runnable {
     private final static Log LOG = LogFactory.getLog(HostAndPortValidatorThread.class);
     private DruidDataSource dataSource;
@@ -38,8 +44,6 @@ public class HostAndPortValidatorThread implements Runnable {
     }
 
     protected void check() {
-        Driver driver = dataSource.getRawDriver();
-        Properties info = dataSource.getConnectProperties();
         String url = dataSource.getRawJdbcUrl();
         if (url == null || (url != null &&
                 (url.indexOf("${") == -1 || url.indexOf("}") == -1))) {
@@ -49,28 +53,37 @@ public class HostAndPortValidatorThread implements Runnable {
         String placeHolder = url.substring(url.indexOf("${") + 2, url.indexOf("}"));
         List<String> values = HostAndPortHolder.getInstance().getAll(placeHolder);
         for (String v : values) {
-            Connection conn = null;
-            try {
-                String realUrl = url.replace("${" + placeHolder + "}", v);
-                conn = driver.connect(realUrl, info);
-                dataSource.validateConnection(conn);
-                HostAndPortHolder.getInstance().removeBlacklist(v);
-            } catch (SQLException e) {
-                LOG.warn("Validation FAILED for " + v, e);
-                HostAndPortHolder.getInstance().addBlacklist(v);
-                modifyFlagsIfNeeded();
-            } finally {
-                if (conn != null) {
-                    try {
-                        conn.close();
-                    } catch (SQLException e) {
-                        LOG.error("Can not close connection for HostAndPort Validation.", e);
-                    }
-                }
-            }
+            validateConnection(dataSource, placeHolder, v);
         }
         if (HostAndPortHolder.getInstance().getBlacklistSize() == 0) {
             resetFlagsIfNeeded();
+        }
+    }
+
+    private void validateConnection(DruidDataSource dataSource, String placeHolder, String target) {
+        Driver driver = dataSource.getRawDriver();
+        Properties info = dataSource.getConnectProperties();
+        String url = dataSource.getRawJdbcUrl();
+        Connection conn = null;
+
+        try {
+            LOG.debug("Validating " + target + " every " + sleepSeconds + " seconds.");
+            String realUrl = url.replace("${" + placeHolder + "}", target);
+            conn = driver.connect(realUrl, info);
+            dataSource.validateConnection(conn);
+            HostAndPortHolder.getInstance().removeBlacklist(target);
+        } catch (SQLException e) {
+            LOG.warn("Validation FAILED for " + target, e);
+            HostAndPortHolder.getInstance().addBlacklist(target);
+            modifyFlagsIfNeeded();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    LOG.error("Can not close connection for HostAndPort Validation.", e);
+                }
+            }
         }
     }
 
@@ -85,7 +98,7 @@ public class HostAndPortValidatorThread implements Runnable {
         if (!modifyTestFlags) {
             return;
         }
-        if (oldTestOnReturn || oldTestOnBorrow) {
+        if (!oldTestOnReturn || !oldTestOnBorrow) {
             dataSource.setTestOnBorrow(true);
             dataSource.setTestOnReturn(true);
         }

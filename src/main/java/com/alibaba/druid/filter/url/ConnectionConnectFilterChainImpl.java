@@ -13,6 +13,11 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * FilterChain to create new connection with placeholder in URL
+ *
+ * @author DigitalSonic
+ */
 public class ConnectionConnectFilterChainImpl extends FilterChainImpl {
     private final static Log LOG = LogFactory.getLog(ConnectionConnectFilterChainImpl.class);
 

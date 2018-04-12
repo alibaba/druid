@@ -9,8 +9,11 @@
        default-lazy-init="false">
 
     <tx:annotation-driven />
-    <bean id="url-filter" class="com.alibaba.druid.filter.url.JdbcUrlHostAndPortReplaceFilter" init-method="init">
+    <bean id="url-filter" class="com.alibaba.druid.filter.url.JdbcUrlHostAndPortReplaceFilter"
+          init-method="init" destroy-method="close">
         <property name="file" value="/com/alibaba/druid/filter/url/datasource.properties" />
+        <property name="healthCheckIntervalSeconds" value="10" />
+        <property name="modifyTestFlags" value="true" />
     </bean>
 
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"

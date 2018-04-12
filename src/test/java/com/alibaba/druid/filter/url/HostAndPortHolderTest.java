@@ -7,17 +7,32 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
+/**
+ * Test class for HostAndPortHolder
+ *
+ * @author DigitalSonic
+ */
 public class HostAndPortHolderTest {
     @Before
     public void setUp() {
-        HostAndPortHolder.loadFromProperties("/com/alibaba/druid/filter/url/datasource.properties");
+        HostAndPortHolder.loadProperties("/com/alibaba/druid/filter/url/datasource.properties");
     }
 
     @After
     public void tearDown() {
         HostAndPortHolder.getInstance().clearBlacklist();
+    }
+
+    @Test
+    public void testLoadFromFileNotExisted() {
+        int size = HostAndPortHolder.getInstance().getHolder().size();
+        HostAndPortHolder.loadProperties("FILE_NOT_FOUND");
+        assertEquals(size, HostAndPortHolder.getInstance().getHolder().size());
     }
 
     @Test

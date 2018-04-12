@@ -14,6 +14,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
+/**
+ * A singleton object to hold Host & Port information.
+ *
+ * @author DigitalSonic
+ */
 public class HostAndPortHolder {
     private static final Log LOG = LogFactory.getLog(ConnectionConnectFilterChainImpl.class);
 
@@ -30,18 +35,22 @@ public class HostAndPortHolder {
         return instance;
     }
 
-    public static void loadFromProperties(String file) {
+    public static void loadProperties(String file) {
         Properties properties = new Properties();
         if (file == null) {
             return;
         }
-        InputStream is;
+        InputStream is = null;
         try {
             LOG.debug("Trying to load " + file + " from FileSystem.");
             is = new FileInputStream(file);
         } catch(FileNotFoundException e) {
             LOG.debug("Trying to load " + file + " from Classpath.");
-            is = HostAndPortHolder.class.getResourceAsStream(file);
+            try {
+                is = HostAndPortHolder.class.getResourceAsStream(file);
+            } catch (Exception ex) {
+                LOG.warn("Can not load resource " + file, ex);
+            }
         }
         if (is != null) {
             try {

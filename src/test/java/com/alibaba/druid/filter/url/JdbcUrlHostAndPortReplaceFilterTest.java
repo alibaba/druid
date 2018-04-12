@@ -14,8 +14,14 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+/**
+ * Test class for JdbcUrlHostAndPortReplaceFilter
+ *
+ * @author DigitalSonic
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:com/alibaba/druid/filter/url/dataSource.xml")
 public class JdbcUrlHostAndPortReplaceFilterTest {
@@ -46,5 +52,4 @@ public class JdbcUrlHostAndPortReplaceFilterTest {
             c.close();
         }
     }
-
 }
