@@ -458,7 +458,35 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     // ////////////////////
 
     public boolean visit(SQLBetweenExpr x) {
-        printExpr(x.getTestExpr());
+        final SQLExpr testExpr = x.getTestExpr();
+        final SQLExpr beginExpr = x.getBeginExpr();
+        final SQLExpr endExpr = x.getEndExpr();
+
+        boolean quote = false;
+        if (testExpr instanceof SQLBinaryOpExpr) {
+            SQLBinaryOperator operator = ((SQLBinaryOpExpr) testExpr).getOperator();
+            switch (operator) {
+                case BooleanAnd:
+                case BooleanOr:
+                case BooleanXor:
+                case Assignment:
+                    quote = true;
+                    break;
+                default:
+                    quote = ((SQLBinaryOpExpr) testExpr).isBracket();
+                    break;
+            }
+        } else if (testExpr instanceof SQLNotExpr){
+            quote = true;
+        }
+
+        if (quote) {
+            print('(');
+            printExpr(testExpr);
+            print(')');
+        } else {
+            printExpr(testExpr);
+        }
 
         if (x.isNot()) {
             print0(ucase ? " NOT BETWEEN " : " not between ");
@@ -466,9 +494,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " BETWEEN " : " between ");
         }
 
-        printExpr(x.getBeginExpr());
+        printExpr(beginExpr);
         print0(ucase ? " AND " : " and ");
-        printExpr(x.getEndExpr());
+
+        printExpr(endExpr);
 
         return false;
     }

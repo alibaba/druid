@@ -180,7 +180,7 @@ public class PGExprParser extends SQLExprParser {
         if (expr.getClass() == SQLIdentifierExpr.class) {
             String ident = ((SQLIdentifierExpr)expr).getName();
 
-            if (lexer.token() == Token.COMMA) {
+            if (lexer.token() == Token.COMMA || lexer.token() == Token.RPAREN) {
                 return super.primaryRest(expr);
             }
 

@@ -450,6 +450,7 @@ public class SQLSelectParser extends SQLParser {
                     }
 
                     where = this.exprParser.andRest(where);
+                    where = this.exprParser.xorRest(where);
                     where = this.exprParser.orRest(where);
                 } else {
                     identExpr = this.exprParser.primaryRest(identExpr);
