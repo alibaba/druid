@@ -2418,6 +2418,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
+        SQLExpr generatedAlawsAs = x.getGeneratedAlawsAs();
+        if (generatedAlawsAs != null) {
+            print0(ucase ? " GENERATED ALWAYS AS " : " generated always as ");
+            printExpr(generatedAlawsAs);
+        }
+
+        SQLColumnDefinition.Identity identity = x.getIdentity();
+        if (identity != null) {
+            print(' ');
+            identity.accept(this);
+        }
+
         if (x.getEnable() != null) {
             if (x.getEnable().booleanValue()) {
                 print0(ucase ? " ENABLE" : " enable");
@@ -6522,6 +6534,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print(value);
         print('\'');
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLWindow x) {
+        x.getName().accept(this);
+        print0(ucase ? " AS " : " as ");
+        x.getOver().accept(this);
         return false;
     }
 

@@ -645,5 +645,9 @@ public final class FnvHash {
         long TBPARTITION = fnv1a_64_lower("TBPARTITION");
         long TBPARTITIONS = fnv1a_64_lower("TBPARTITIONS");
         long SOUNDS = fnv1a_64_lower("SOUNDS");
+        long WINDOW = fnv1a_64_lower("WINDOW");
+        long GENERATED = fnv1a_64_lower("GENERATED");
+        long ALWAYS = fnv1a_64_lower("ALWAYS");
+        long INCREMENT = fnv1a_64_lower("INCREMENT");
     }
 }

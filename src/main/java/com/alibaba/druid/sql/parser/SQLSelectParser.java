@@ -474,6 +474,29 @@ public class SQLSelectParser extends SQLParser {
             queryBlock.setWhere(where);
         }
     }
+
+    protected void parseWindow(SQLSelectQueryBlock queryBlock) {
+        if (!(lexer.identifierEquals(FnvHash.Constants.WINDOW) || lexer.token == Token.WINDOW)) {
+            return;
+        }
+
+        lexer.nextToken();
+
+        for (;;) {
+            SQLName name = this.exprParser.name();
+            accept(Token.AS);
+            SQLOver over = new SQLOver();
+            this.exprParser.over(over);
+            queryBlock.addWindow(new SQLWindow(name, over));
+
+            if (lexer.token == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
+        }
+    }
     
     protected void parseGroupBy(SQLSelectQueryBlock queryBlock) {
         if (lexer.token == (Token.GROUP)) {

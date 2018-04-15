@@ -41,6 +41,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected SQLOrderBy                 orderBySiblings;
 
     protected SQLSelectGroupByClause     groupBy;
+    protected List<SQLWindow>            windows;
     protected SQLOrderBy                 orderBy;
     protected boolean                    parenthesized   = false;
     protected boolean                    forUpdate       = false;
@@ -718,5 +719,19 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
 
     public void setDbType(String dbType) {
         this.dbType = dbType;
+    }
+
+    public List<SQLWindow> getWindows() {
+        return windows;
+    }
+
+    public void addWindow(SQLWindow x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        if (windows == null) {
+            windows = new ArrayList<SQLWindow>(4);
+        }
+        this.windows.add(x);
     }
 }
