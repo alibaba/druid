@@ -77,6 +77,15 @@ public class DB2SelectParser extends SQLSelectParser {
 
         parseSelectList(queryBlock);
 
+        if (lexer.token() == Token.INTO) {
+            lexer.nextToken();
+
+            SQLExpr expr = expr();
+            if (lexer.token() != Token.COMMA) {
+                queryBlock.setInto(expr);
+            }
+        }
+
         parseFrom(queryBlock);
 
         parseWhere(queryBlock);
