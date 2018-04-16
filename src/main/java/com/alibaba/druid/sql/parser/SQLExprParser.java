@@ -1203,6 +1203,11 @@ public class SQLExprParser extends SQLParser {
                 }
                 accept(Token.RPAREN);
             }
+
+            if (lexer.token == Token.OVER) {
+                over(methodInvokeExpr);
+            }
+            
             expr = methodInvokeExpr;
         } else {
             SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(name);

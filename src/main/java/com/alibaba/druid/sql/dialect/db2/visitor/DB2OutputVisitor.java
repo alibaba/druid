@@ -170,18 +170,28 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
     }
 
     public boolean visit(SQLColumnDefinition.Identity x) {
-        print0(ucase ? "GENERATED ALWAYS AS IDENTITY (" : "generated always as identity (");
+        print0(ucase ? "GENERATED ALWAYS AS IDENTITY" : "generated always as identity");
 
         final Integer seed = x.getSeed();
+        final Integer increment = x.getIncrement();
+
+        if (seed != null || increment != null) {
+            print0(" (");
+        }
+
         if (seed != null) {
             print0(ucase ? "START WITH " : "start with ");
             print(seed);
-            print0(", ");
+            if (increment != null) {
+                print0(", ");
+            }
         }
 
-        print0(ucase ? "INCREMENT BY " : "increment by ");
-        print(x.getIncrement());
-        print(')');
+        if (increment != null) {
+            print0(ucase ? "INCREMENT BY " : "increment by ");
+            print(increment);
+            print(')');
+        }
 
         return false;
     }
