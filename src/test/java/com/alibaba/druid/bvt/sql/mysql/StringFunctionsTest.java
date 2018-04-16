@@ -139,7 +139,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        assertEquals("SELECT CONCAT('My', 'S', 'QL')", text);
+        assertEquals("SELECT 'MySQL'", text);
     }
 
     public void test_10() throws Exception {

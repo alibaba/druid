@@ -15,17 +15,14 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObjectWithDataType;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType {
+public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, SQLReplaceable {
 
     protected SQLExpr     expr;
     protected SQLDataType dataType;
@@ -62,6 +59,16 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType {
             acceptChild(visitor, this.dataType);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.expr == expr) {
+            setExpr(target);
+            return true;
+        }
+
+        return false;
     }
 
     @Override

@@ -138,22 +138,7 @@ public class PGSelectParser extends SQLSelectParser {
         parseGroupBy(queryBlock);
 
         if (lexer.token() == Token.WINDOW) {
-            lexer.nextToken();
-            PGSelectQueryBlock.WindowClause window = new PGSelectQueryBlock.WindowClause();
-            window.setName(this.expr());
-            accept(Token.AS);
-
-            for (;;) {
-                SQLExpr expr = this.createExprParser().expr();
-                window.getDefinition().add(expr);
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                } else {
-                    break;
-                }
-            }
-            queryBlock.setWindow(window);
+            this.parseWindow(queryBlock);
         }
 
         queryBlock.setOrderBy(this.createExprParser().parseOrderBy());

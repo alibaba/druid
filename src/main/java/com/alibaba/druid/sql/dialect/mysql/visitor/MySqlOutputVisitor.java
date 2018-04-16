@@ -489,9 +489,31 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             comment.accept(this);
         }
 
-        if (x.getPartitioning() != null) {
+        SQLPartitionBy partitionBy = x.getPartitioning();
+        if (partitionBy != null) {
             println();
-            x.getPartitioning().accept(this);
+            print0(ucase ? "PARTITION BY " : "partition by ");
+            partitionBy.accept(this);
+        }
+
+        SQLPartitionBy dbPartitionBy = x.getDbPartitionBy();
+        if (dbPartitionBy != null) {
+            println();
+            print0(ucase ? "DBPARTITION BY " : "dbpartition by ");
+            dbPartitionBy.accept(this);
+        }
+
+        SQLPartitionBy tbPartitionsBy = x.getTablePartitionBy();
+        if (tbPartitionsBy != null) {
+            println();
+            print0(ucase ? "TBPARTITION BY " : "tbpartition by ");
+            tbPartitionsBy.accept(this);
+        }
+
+        if (x.getTbpartitions() != null) {
+            println();
+            print0(ucase ? "TBPARTITIONS " : "tbpartitions ");
+            x.getTbpartitions().accept(this);
         }
 
         if (x.getTableGroup() != null) {
@@ -1462,9 +1484,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlPartitionByKey x) {
         if (x.isLinear()) {
-            print0(ucase ? "PARTITION BY LINEAR KEY (" : "partition by linear key (");
+            print0(ucase ? "LINEAR KEY (" : "linear key (");
         } else {
-            print0(ucase ? "PARTITION BY KEY (" : "partition by key (");
+            print0(ucase ? "KEY (" : "key (");
         }
         printAndAccept(x.getColumns(), ", ");
         print(')');
@@ -2047,10 +2069,20 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlUserName x) {
         print0(x.getUserName());
-        if (x.getHost() != null) {
+
+        String host = x.getHost();
+        if (host != null) {
             print('@');
-            print0(x.getHost());
+            print0(host);
         }
+
+        String identifiedBy = x.getIdentifiedBy();
+        if (identifiedBy != null) {
+            print0(ucase ? " IDENTIFIED BY '" : " identified by '");
+            print0(identifiedBy);
+            print('\'');
+        }
+
         return false;
     }
 
@@ -4199,5 +4231,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 this.indentCount--;
             }
         }
+    }
+
+    @Override
+    public void endVisit(MySqlChecksumTableStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlChecksumTableStatement x) {
+        print0(ucase ? "CHECKSUM TABLE " : "checksum table ");
+        printAndAccept(x.getTables(), "，");
+        return false;
     }
 } //

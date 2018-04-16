@@ -686,7 +686,14 @@ public class SQLStatementParser extends SQLParser {
                 lexer.nextToken(); // sql server
             }
 
-            SQLExpr expr = this.exprParser.expr();
+            SQLExpr expr;
+            if (lexer.token == Token.DOT) {
+                expr = new SQLAllColumnExpr();
+                lexer.nextToken();
+            } else {
+                expr = this.exprParser.expr();
+            }
+
             if (stmt.getObjectType() == SQLObjectType.TABLE || stmt.getObjectType() == null) {
                 stmt.setOn(new SQLExprTableSource(expr));
             } else {
@@ -701,6 +708,11 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token == Token.WITH) {
             lexer.nextToken();
+
+            if (lexer.token == Token.GRANT) {
+                lexer.nextToken();
+                acceptIdentifier("OPTION");
+            }
 
             for (;;) {
                 if (lexer.identifierEquals("MAX_QUERIES_PER_HOUR")) {
@@ -842,6 +854,8 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                     accept(Token.TABLE);
                     privilege = "CREATE TEMPORARY TABLE";
+                } else if (lexer.token == Token.ON) {
+                    privilege = "CREATE";
                 } else {
                     throw new ParserException("TODO : " + lexer.token + " " + lexer.stringVal());
                 }
@@ -852,6 +866,9 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                 } else if (lexer.token == Token.SESSION) {
                     privilege = "ALTER SESSION";
+                    lexer.nextToken();
+                } else if (lexer.identifierEquals(FnvHash.Constants.ROUTINE)) {
+                    privilege = "ALTER ROUTINE";
                     lexer.nextToken();
                 } else if (lexer.token == Token.ANY) {
                     lexer.nextToken();
@@ -866,6 +883,8 @@ public class SQLStatementParser extends SQLParser {
                     } else {
                         throw new ParserException("TODO : " + lexer.token + " " + lexer.stringVal());
                     }
+                } else if (lexer.token == Token.ON) {
+                    privilege = "ALTER";
                 } else {
                     throw new ParserException("TODO : " + lexer.token + " " + lexer.stringVal());
                 }
@@ -3209,7 +3228,7 @@ public class SQLStatementParser extends SQLParser {
                         } else {
                             expr = new SQLIntegerExpr(lexer.integerValue());
                         }
-                        lexer.nextTokenComma();
+                        lexer.nextTokenCommaValue();
 
                         if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
                             expr = this.exprParser.exprRest(expr);
@@ -3221,7 +3240,7 @@ public class SQLStatementParser extends SQLParser {
                         } else {
                             expr = new SQLCharExpr(lexer.stringVal());
                         }
-                        lexer.nextTokenComma();
+                        lexer.nextTokenCommaValue();
                         if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
                             expr = this.exprParser.exprRest(expr);
                         }
@@ -3232,7 +3251,7 @@ public class SQLStatementParser extends SQLParser {
                         } else {
                             expr = new SQLNCharExpr(lexer.stringVal());
                         }
-                        lexer.nextTokenComma();
+                        lexer.nextTokenCommaValue();
                         if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
                             expr = this.exprParser.exprRest(expr);
                         }
@@ -3243,7 +3262,7 @@ public class SQLStatementParser extends SQLParser {
                         } else {
                             expr = new SQLNullExpr();
                         }
-                        lexer.nextTokenComma();
+                        lexer.nextTokenCommaValue();
                         if (lexer.token != Token.COMMA && lexer.token != Token.RPAREN) {
                             expr = this.exprParser.exprRest(expr);
                         }
@@ -3268,7 +3287,7 @@ public class SQLStatementParser extends SQLParser {
 
                         valueExprList.add(expr);
                         if (lexer.token() == Token.COMMA) {
-                            lexer.nextToken();
+                            lexer.nextTokenValue();
                             continue;
                         } else {
                             break;

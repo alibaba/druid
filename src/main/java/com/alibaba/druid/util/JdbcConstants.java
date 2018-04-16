@@ -25,7 +25,7 @@ public interface JdbcConstants {
 
     String DB2                        = "db2";
 
-    String DB2_DRIVER                 = "COM.ibm.db2.jdbc.app.DB2Driver";
+    String DB2_DRIVER                 = "com.ibm.db2.jcc.DB2Driver";
 
     String POSTGRESQL                 = "postgresql";
     String POSTGRESQL_DRIVER          = "org.postgresql.Driver";
@@ -70,6 +70,9 @@ public interface JdbcConstants {
 
     String GBASE                      = "gbase";
     String GBASE_DRIVER               = "com.gbase.jdbc.Driver";
+
+    String XUGU                       = "xugu";
+    String XUGU_DRIVER                = "com.xugu.cloudjdbc.Driver";
 
     String OCEANBASE                  = "oceanbase";
     String OCEANBASE_DRIVER           = "com.mysql.jdbc.Driver";

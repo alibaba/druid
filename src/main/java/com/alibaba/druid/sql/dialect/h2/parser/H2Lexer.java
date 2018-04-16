@@ -39,6 +39,7 @@ public class H2Lexer extends Lexer {
 
         map.put("ROW", Token.ROW);
         map.put("LIMIT", Token.LIMIT);
+        map.put("IF", Token.IF);
 
         DEFAULT_H2_KEYWORDS = new Keywords(map);
     }

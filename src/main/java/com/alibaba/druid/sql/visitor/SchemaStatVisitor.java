@@ -747,6 +747,19 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return new Column("UNKNOWN", column);
         }
 
+        if (expr instanceof SQLMethodInvokeExpr) {
+            SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) expr;
+            List<SQLExpr> arguments = methodInvokeExpr.getParameters();
+            long nameHash = methodInvokeExpr.methodNameHashCode64();
+            if (nameHash == FnvHash.Constants.DATE_FORMAT) {
+                if (arguments.size() == 2
+                        && arguments.get(0) instanceof SQLName
+                        && arguments.get(1) instanceof SQLCharExpr) {
+                    return getColumn(arguments.get(0));
+                }
+            }
+        }
+
         return null;
     }
 
@@ -1145,11 +1158,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 }
             }
         } else if (tableSource instanceof SQLWithSubqueryClause.Entry
-                || tableSource instanceof SQLSubqueryTableSource) {
-            return false;
-        } else if (tableSource instanceof SQLUnionQueryTableSource) {
-            return false;
-        } else if (tableSource instanceof SQLLateralViewTableSource) {
+                || tableSource instanceof SQLSubqueryTableSource
+                || tableSource instanceof SQLUnionQueryTableSource
+                || tableSource instanceof SQLLateralViewTableSource
+                || tableSource instanceof SQLValuesTableSource) {
             return false;
         } else {
             if (x.getResolvedProcudure() != null) {

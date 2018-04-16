@@ -228,14 +228,13 @@ public class MySqlExprParser extends SQLExprParser {
                     return primaryRest(expr);
                 }
             } else if (expr instanceof SQLCharExpr) {
-                SQLMethodInvokeExpr concat = new SQLMethodInvokeExpr("CONCAT");
-                concat.addParameter(expr);
+                String text2 = ((SQLCharExpr) expr).getText();
                 do {
                     String chars = lexer.stringVal();
-                    concat.addParameter(new SQLCharExpr(chars));
+                    text2 += chars;
                     lexer.nextToken();
                 } while (lexer.token() == Token.LITERAL_CHARS || lexer.token() == Token.LITERAL_ALIAS);
-                expr = concat;
+                expr = new SQLCharExpr(text2);
             }
         } else if (lexer.token() == Token.IDENTIFIER) {
             if (expr instanceof SQLHexExpr) {
@@ -348,6 +347,24 @@ public class MySqlExprParser extends SQLExprParser {
             userName.setHost(lexer.stringVal());
         }
         lexer.nextToken();
+
+        if (lexer.token() == Token.IDENTIFIED) {
+            Lexer.SavePoint mark = lexer.mark();
+
+            lexer.nextToken();
+            if (lexer.token() == Token.BY) {
+                lexer.nextToken();
+                if (lexer.identifierEquals(FnvHash.Constants.PASSWORD)) {
+                    lexer.reset(mark);
+                } else {
+                    userName.setIdentifiedBy(lexer.stringVal());
+                    lexer.nextToken();
+                }
+            } else {
+                lexer.reset(mark);
+            }
+        }
+
         return userName;
     }
 
@@ -696,6 +713,14 @@ public class MySqlExprParser extends SQLExprParser {
                 userName.setHost(lexer.stringVal());
             }
             lexer.nextToken();
+
+            if (lexer.token() == Token.IDENTIFIED) {
+                lexer.nextToken();
+                accept(Token.BY);
+                userName.setIdentifiedBy(lexer.stringVal());
+                lexer.nextToken();
+            }
+
             return userName;
         }
         return super.nameRest(name);

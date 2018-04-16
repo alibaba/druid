@@ -117,6 +117,27 @@ public class PGExprParser extends SQLExprParser {
                 SQLUnaryExpr expr = new SQLUnaryExpr(SQLUnaryOperator.Pound, value);
                 return primaryRest(expr);
             }
+        } else if (lexer.token() == Token.VALUES) {
+            lexer.nextToken();
+
+            SQLValuesExpr values = new SQLValuesExpr();
+            for (;;) {
+                accept(Token.LPAREN);
+                SQLListExpr listExpr = new SQLListExpr();
+                exprList(listExpr.getItems(), listExpr);
+                accept(Token.RPAREN);
+
+                listExpr.setParent(values);
+
+                values.getValues().add(listExpr);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            return values;
         }
         
         return super.primary();
@@ -159,19 +180,20 @@ public class PGExprParser extends SQLExprParser {
         if (expr.getClass() == SQLIdentifierExpr.class) {
             String ident = ((SQLIdentifierExpr)expr).getName();
 
-            if (lexer.token() == Token.COMMA) {
+            if (lexer.token() == Token.COMMA || lexer.token() == Token.RPAREN) {
                 return super.primaryRest(expr);
             }
-            
+
             if ("TIMESTAMP".equalsIgnoreCase(ident)) {
                 if (lexer.token() != Token.LITERAL_ALIAS //
                         && lexer.token() != Token.LITERAL_CHARS //
                         && lexer.token() != Token.WITH) {
-                    return new SQLIdentifierExpr("TIMESTAMP");
+                    return super.primaryRest(
+                            new SQLIdentifierExpr(ident));
                 }
 
                 SQLTimestampExpr timestamp = new SQLTimestampExpr();
-                
+
                 if (lexer.token() == Token.WITH) {
                     lexer.nextToken();
                     acceptIdentifier("TIME");
@@ -193,8 +215,35 @@ public class PGExprParser extends SQLExprParser {
                     accept(Token.LITERAL_CHARS);
                 }
 
-                
-                return primaryRest(timestamp);     
+
+                return primaryRest(timestamp);
+            } else  if ("TIMESTAMPTZ".equalsIgnoreCase(ident)) {
+                if (lexer.token() != Token.LITERAL_ALIAS //
+                        && lexer.token() != Token.LITERAL_CHARS //
+                        && lexer.token() != Token.WITH) {
+                    return super.primaryRest(
+                            new SQLIdentifierExpr(ident));
+                }
+
+                SQLTimestampExpr timestamp = new SQLTimestampExpr();
+                timestamp.setWithTimeZone(true);
+
+                String literal = lexer.stringVal();
+                timestamp.setLiteral(literal);
+                accept(Token.LITERAL_CHARS);
+
+                if (lexer.identifierEquals("AT")) {
+                    lexer.nextToken();
+                    acceptIdentifier("TIME");
+                    acceptIdentifier("ZONE");
+
+                    String timezone = lexer.stringVal();
+                    timestamp.setTimeZone(timezone);
+                    accept(Token.LITERAL_CHARS);
+                }
+
+
+                return primaryRest(timestamp);
             } else if ("EXTRACT".equalsIgnoreCase(ident)) {
                 accept(Token.LPAREN);
                 

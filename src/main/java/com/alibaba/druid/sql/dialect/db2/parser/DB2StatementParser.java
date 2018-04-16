@@ -17,7 +17,10 @@ package com.alibaba.druid.sql.dialect.db2.parser;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.parser.*;
 
@@ -53,5 +56,42 @@ public class DB2StatementParser extends SQLStatementParser {
 
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new DB2CreateTableParser(this.exprParser);
+    }
+
+    protected SQLAlterTableAlterColumn parseAlterColumn() {
+        if (lexer.token() == Token.COLUMN) {
+            lexer.nextToken();
+        }
+
+        SQLColumnDefinition column = this.exprParser.parseColumn();
+
+        SQLAlterTableAlterColumn alterColumn = new SQLAlterTableAlterColumn();
+        alterColumn.setColumn(column);
+
+        if (column.getDataType() == null && column.getConstraints().size() == 0) {
+            if (lexer.token() == Token.SET) {
+                lexer.nextToken();
+                if (lexer.token() == Token.NOT) {
+                    lexer.nextToken();
+                    accept(Token.NULL);
+                    alterColumn.setSetNotNull(true);
+                } else {
+                    accept(Token.DEFAULT);
+                    SQLExpr defaultValue = this.exprParser.expr();
+                    alterColumn.setSetDefault(defaultValue);
+                }
+            } else if (lexer.token() == Token.DROP) {
+                lexer.nextToken();
+                if (lexer.token() == Token.NOT) {
+                    lexer.nextToken();
+                    accept(Token.NULL);
+                    alterColumn.setDropNotNull(true);
+                } else {
+                    accept(Token.DEFAULT);
+                    alterColumn.setDropDefault(true);
+                }
+            }
+        }
+        return alterColumn;
     }
 }

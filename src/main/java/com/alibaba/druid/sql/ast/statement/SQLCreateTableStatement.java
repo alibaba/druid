@@ -1106,4 +1106,5 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
         this.rowFormat = x;
     }
+
 }

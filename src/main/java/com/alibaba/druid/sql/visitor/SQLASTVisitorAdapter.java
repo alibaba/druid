@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
     protected int features;
@@ -1953,6 +1952,54 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLAlterTableExchangePartition x) {
 
     }
+
+    @Override
+    public boolean visit(SQLValuesExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLValuesExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLValuesTableSource x) {
+        return true;
+    }
+
+    public void endVisit(SQLValuesTableSource x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLContainsExpr x) {
+        return true;
+    }
+
+    public void endVisit(SQLContainsExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLRealExpr x) {
+        return true;
+    }
+
+    public void endVisit(SQLRealExpr x) {
+
+    }
+
+
+    @Override
+    public boolean visit(SQLWindow x) {
+        return true;
+    }
+
+    public void endVisit(SQLWindow x) {
+
+    }
+
 
     public final boolean isEnabled(VisitorFeature feature) {
         return VisitorFeature.isEnabled(this.features, feature);

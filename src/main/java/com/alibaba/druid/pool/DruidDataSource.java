@@ -846,11 +846,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             SQLException connectError = null;
 
-            boolean asyncInit = this.asyncInit && createScheduler == null;
-            if (!asyncInit) {
+            if (createScheduler != null) {
+                for (int i = 0; i < initialSize; ++i) {
+                    createTaskCount++;
+                    CreateConnectionTask task = new CreateConnectionTask(true);
+                    this.createSchedulerFuture = createScheduler.submit(task);
+                }
+            } else if (!asyncInit) {
                 try {
                     // init connections
-                    for (int i = 0, size = getInitialSize(); i < size; ++i) {
+                    for (int i = 0; i < initialSize; ++i) {
                         PhysicalConnectionInfo pyConnectInfo = createPhysicalConnection();
                         DruidConnectionHolder holder = new DruidConnectionHolder(this, pyConnectInfo);
                         connections[poolingCount] = holder;
@@ -886,7 +891,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (createScheduler != null) {
                     for (int i = 0; i < minIdle; ++i) {
                         createTaskCount++;
-                        CreateConnectionTask task = new CreateConnectionTask();
+                        CreateConnectionTask task = new CreateConnectionTask(true);
                         this.createSchedulerFuture = createScheduler.submit(task);
                     }
                 } else {
@@ -2231,7 +2236,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public class CreateConnectionTask implements Runnable {
 
-        private int errorCount = 0;
+        private int errorCount   = 0;
+        private boolean initTask = false;
+
+        public CreateConnectionTask() {
+
+        }
+
+        public CreateConnectionTask(boolean initTask) {
+            this.initTask = initTask;
+        }
 
         @Override
         public void run() {
@@ -2258,7 +2272,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (emptyWait) {
                         // 必须存在线程等待，才创建连接
                         if (poolingCount >= notEmptyWaitThreadCount //
-                                && !(keepAlive && activeCount + poolingCount < minIdle)) {
+                                && !(keepAlive && activeCount + poolingCount < minIdle)
+                                && !initTask) {
                             createTaskCount--;
                             return;
                         }

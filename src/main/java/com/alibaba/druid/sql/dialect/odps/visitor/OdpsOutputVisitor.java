@@ -455,7 +455,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         print0(ucase ? "SELECT " : "select ");
 
-        List<SQLHint> hints = x.getHintsDirect();
+        List<SQLCommentHint> hints = x.getHintsDirect();
         if (hints != null) {
             printAndAccept(hints, " ");
             print(' ');

@@ -638,5 +638,16 @@ public final class FnvHash {
         long PATH = fnv1a_64_lower("PATH");
         long COMPRESSION = fnv1a_64_lower("COMPRESSION");
         long KEY_BLOCK_SIZE = fnv1a_64_lower("KEY_BLOCK_SIZE");
+        long CHECKSUM = fnv1a_64_lower("CHECKSUM");
+        long ROUTINE = fnv1a_64_lower("ROUTINE");
+        long DATE_FORMAT = fnv1a_64_lower("DATE_FORMAT");
+        long DBPARTITION = fnv1a_64_lower("DBPARTITION");
+        long TBPARTITION = fnv1a_64_lower("TBPARTITION");
+        long TBPARTITIONS = fnv1a_64_lower("TBPARTITIONS");
+        long SOUNDS = fnv1a_64_lower("SOUNDS");
+        long WINDOW = fnv1a_64_lower("WINDOW");
+        long GENERATED = fnv1a_64_lower("GENERATED");
+        long ALWAYS = fnv1a_64_lower("ALWAYS");
+        long INCREMENT = fnv1a_64_lower("INCREMENT");
     }
 }
