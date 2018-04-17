@@ -1425,6 +1425,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
+        final SQLExpr contentExpr = x.getContent();
+        if( contentExpr != null ){
+        	print(contentExpr.toString());
+        	print(' ');
+        }
 
         for (int i = 0, size = parameters.size(); i < size; ++i) {
             if (i != 0) {
@@ -1482,6 +1487,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printExpr(using);
         }
 
+        final SQLExpr asExpr = x.getAs();
+        if(  asExpr != null ){
+        	print(" as ");
+        	print(asExpr.toString());
+        }
         print(')');
         return false;
     }

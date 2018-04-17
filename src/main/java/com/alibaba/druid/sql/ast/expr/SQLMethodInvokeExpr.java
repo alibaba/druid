@@ -126,6 +126,11 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
         buf.append(this.name);
         buf.append("(");
+        
+        if(  this.content != null ){
+        	this.content.output(buf);
+        	buf.append(' ');
+        }
         for (int i = 0, size = this.parameters.size(); i < size; ++i) {
             if (i != 0) {
                 buf.append(", ");
@@ -133,17 +138,23 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
             this.parameters.get(i).output(buf);
         }
+        if( this.as != null){
+        	buf.append(' ');
+        	this.as.output(buf);
+        }
         buf.append(")");
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+        	acceptChild(visitor, this.content);
             acceptChild(visitor, this.owner);
             acceptChild(visitor, this.parameters);
             acceptChild(visitor, this.from);
             acceptChild(visitor, this.using);
             acceptChild(visitor, this._for);
+            acceptChild(visitor, this.as);
         }
 
         visitor.endVisit(this);
@@ -162,11 +173,13 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
     protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, this.content);
             acceptChild(visitor, this.owner);
             acceptChild(visitor, this.parameters);
             acceptChild(visitor, this.from);
             acceptChild(visitor, this.using);
             acceptChild(visitor, this._for);
+            acceptChild(visitor, this.as);
         }
 
         visitor.endVisit(this);
@@ -181,7 +194,10 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (owner != null ? !owner.equals(that.owner) : that.owner != null) return false;
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
         if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) return false;
+        if (as != null ? !as.equals(that.as) : that.as != null) return false;
+        
         return from != null ? from.equals(that.from) : that.from == null;
 
     }
@@ -190,8 +206,10 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (owner != null ? owner.hashCode() : 0);
+        result = 31 * result + (content != null ? content.hashCode() : 0);
         result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
         result = 31 * result + (from != null ? from.hashCode() : 0);
+        result = 31 * result + (as != null ? as.hashCode() : 0);
         return result;
     }
 
@@ -203,7 +221,10 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         if (owner != null) {
             x.setOwner(owner.clone());
         }
-
+        
+        if( content != null ){
+        	x.setContent(content);
+        }
         for (SQLExpr param : parameters) {
             x.addParameter(param.clone());
         }
@@ -215,7 +236,9 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         if (using != null) {
             x.setUsing(using.clone());
         }
-
+        if (as  != null) {
+        	x.setAs(as);
+        }
         return x;
     }
 
@@ -329,4 +352,29 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
     public void setTrimOption(String trimOption) {
         this.trimOption = trimOption;
     }
+    
+    private SQLExpr             as;
+    private SQLExpr     content;
+    
+	public SQLExpr getAs() {
+		return as;
+	}
+
+	public void setAs(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.as = x;
+     }
+
+	public SQLExpr getContent() {
+		return content;
+	}
+
+	public void setContent(SQLExpr x) {
+	    if (x != null) {
+            x.setParent(this);
+        }
+        this.content = x;
+	}
 }

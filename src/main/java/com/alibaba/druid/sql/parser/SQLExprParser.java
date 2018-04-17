@@ -1062,6 +1062,10 @@ public class SQLExprParser extends SQLParser {
         }
 
         Token token = lexer.token;
+        if( "XMLSERIALIZE".equals(methodName) && lexer.identifierEquals("CONTENT")) {
+        	  SQLExpr contentExpr = expr();
+        	  methodInvokeExpr.setContent(contentExpr);
+        }
         if (token != Token.RPAREN && token != Token.FROM) {
             exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
         }
@@ -1098,6 +1102,12 @@ public class SQLExprParser extends SQLParser {
             }
             methodInvokeExpr.setUsing(using);
         }
+         if (lexer.token == Token.AS || lexer.identifierEquals(FnvHash.Constants.AS)) {
+        	lexer.nextToken();
+            SQLExpr as;
+             as = this.primary();
+            methodInvokeExpr.setAs(as);
+         }
 
         SQLAggregateExpr aggregateExpr = null;
         if (lexer.token == Token.ORDER) {
