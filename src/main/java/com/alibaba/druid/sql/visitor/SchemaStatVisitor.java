@@ -1292,6 +1292,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
         } else if (tableSource instanceof SQLWithSubqueryClause.Entry
                 || tableSource instanceof SQLSubqueryTableSource
+                || tableSource instanceof SQLValuesTableSource
                 || tableSource instanceof SQLLateralViewTableSource) {
             return false;
         } else {
