@@ -520,45 +520,47 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             List<SQLBinaryOpExpr> literalItems = null;
 
-            for (int i = 0; i < items.size(); i++) {
-                SQLExpr item = items.get(i);
-                if (item instanceof SQLBinaryOpExpr) {
-                    SQLBinaryOpExpr binaryItem = (SQLBinaryOpExpr) item;
-                    SQLExpr left = binaryItem.getLeft();
-                    SQLExpr right = binaryItem.getRight();
+            if (operator != SQLBinaryOperator.BooleanOr || !isEnabled(VisitorFeature.OutputParameterizedQuesUnMergeOr)) {
+                for (int i = 0; i < items.size(); i++) {
+                    SQLExpr item = items.get(i);
+                    if (item instanceof SQLBinaryOpExpr) {
+                        SQLBinaryOpExpr binaryItem = (SQLBinaryOpExpr) item;
+                        SQLExpr left = binaryItem.getLeft();
+                        SQLExpr right = binaryItem.getRight();
 
-                    if (right instanceof SQLLiteralExpr && !(right instanceof SQLNullExpr)) {
-                        if (left instanceof SQLLiteralExpr) {
-                            if (literalItems == null) {
-                                literalItems = new ArrayList<SQLBinaryOpExpr>();
+                        if (right instanceof SQLLiteralExpr && !(right instanceof SQLNullExpr)) {
+                            if (left instanceof SQLLiteralExpr) {
+                                if (literalItems == null) {
+                                    literalItems = new ArrayList<SQLBinaryOpExpr>();
+                                }
+                                literalItems.add(binaryItem);
+                                continue;
                             }
-                            literalItems.add(binaryItem);
-                            continue;
+
+                            if (this.parameters != null) {
+                                ExportParameterVisitorUtils.exportParameter(parameters, right);
+                            }
+                        } else if (right instanceof SQLVariantRefExpr) {
+                            // skip
+                        } else {
+                            firstLeft = null;
+                            break;
                         }
 
-                        if (this.parameters != null) {
-                            ExportParameterVisitorUtils.exportParameter(parameters, right);
+
+                        if (firstLeft == null) {
+                            firstLeft = binaryItem.getLeft();
+                            firstOp = binaryItem.getOperator();
+                        } else {
+                            if (!SQLExprUtils.equals(firstLeft, left)) {
+                                firstLeft = null;
+                                break;
+                            }
                         }
-                    } else if (right instanceof SQLVariantRefExpr) {
-                        // skip
                     } else {
                         firstLeft = null;
                         break;
                     }
-
-
-                    if (firstLeft == null) {
-                        firstLeft = binaryItem.getLeft();
-                        firstOp = binaryItem.getOperator();
-                    } else {
-                        if (!SQLExprUtils.equals(firstLeft, left)) {
-                            firstLeft = null;
-                            break;
-                        }
-                    }
-                } else {
-                    firstLeft = null;
-                    break;
                 }
             }
 
@@ -653,7 +655,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLBinaryOpExpr x) {
         SQLBinaryOperator operator = x.getOperator();
         if (this.parameterized
-                && operator == SQLBinaryOperator.BooleanOr) {
+                && operator == SQLBinaryOperator.BooleanOr
+                && !isEnabled(VisitorFeature.OutputParameterizedQuesUnMergeOr)) {
             x = SQLBinaryOpExpr.merge(this, x);
 
             operator = x.getOperator();
