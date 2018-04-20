@@ -47,7 +47,7 @@ public class PGSelectTest1 extends PGTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 
         assertEquals(2, visitor.getColumns().size());
-        assertEquals(4, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
     }
     
     public void test_1() throws Exception {
