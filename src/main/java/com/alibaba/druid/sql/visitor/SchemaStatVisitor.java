@@ -1407,43 +1407,61 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLAllColumnExpr x) {
         SQLTableSource tableSource = x.getResolvedTableSource();
+        if (tableSource == null) {
+            return false;
+        }
 
+        statAllColumn(x, tableSource);
+
+        return false;
+    }
+
+    private void statAllColumn(SQLAllColumnExpr x, SQLTableSource tableSource) {
         if (tableSource instanceof SQLExprTableSource) {
-            SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
-            SQLName expr = exprTableSource.getName();
+            statAllColumn(x, (SQLExprTableSource) tableSource);
+            return;
+        }
 
-            SQLCreateTableStatement createStmt = null;
+        if (tableSource instanceof SQLJoinTableSource) {
+            SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
+            statAllColumn(x, join.getLeft());
+            statAllColumn(x, join.getRight());
+        }
+    }
 
-            SchemaObject tableObject = exprTableSource.getSchemaObject();
-            if (tableObject != null) {
-                SQLStatement stmt = tableObject.getStatement();
-                if (stmt instanceof SQLCreateTableStatement) {
-                    createStmt = (SQLCreateTableStatement) stmt;
-                }
-            }
+    private void statAllColumn(SQLAllColumnExpr x, SQLExprTableSource tableSource) {
+        SQLExprTableSource exprTableSource = tableSource;
+        SQLName expr = exprTableSource.getName();
 
-            if (createStmt != null
-                    && createStmt.getTableElementList().size() > 0) {
-                SQLName tableName = createStmt.getName();
-                for (SQLTableElement e : createStmt.getTableElementList()) {
-                    if (e instanceof SQLColumnDefinition) {
-                        SQLColumnDefinition columnDefinition = (SQLColumnDefinition) e;
-                        SQLName columnName = columnDefinition.getName();
-                        Column column = addColumn(tableName.toString(), columnName.toString());
-                        if (isParentSelectItem(x.getParent())) {
-                            column.setSelec(true);
-                        }
-                    }
-                }
-            } else if (expr != null) {
-                Column column = addColumn(expr.toString(), "*");
-                if (isParentSelectItem(x.getParent())) {
-                    column.setSelec(true);
-                }
+        SQLCreateTableStatement createStmt = null;
+
+        SchemaObject tableObject = exprTableSource.getSchemaObject();
+        if (tableObject != null) {
+            SQLStatement stmt = tableObject.getStatement();
+            if (stmt instanceof SQLCreateTableStatement) {
+                createStmt = (SQLCreateTableStatement) stmt;
             }
         }
 
-        return false;
+        if (createStmt != null
+                && createStmt.getTableElementList().size() > 0) {
+            SQLName tableName = createStmt.getName();
+            for (SQLTableElement e : createStmt.getTableElementList()) {
+                if (e instanceof SQLColumnDefinition) {
+                    SQLColumnDefinition columnDefinition = (SQLColumnDefinition) e;
+                    SQLName columnName = columnDefinition.getName();
+                    Column column = addColumn(tableName.toString(), columnName.toString());
+                    if (isParentSelectItem(x.getParent())) {
+                        column.setSelec(true);
+                    }
+                }
+            }
+        } else if (expr != null) {
+            Column column = addColumn(expr.toString(), "*");
+            if (isParentSelectItem(x.getParent())) {
+                column.setSelec(true);
+            }
+        }
     }
 
     public Map<TableStat.Name, TableStat> getTables() {

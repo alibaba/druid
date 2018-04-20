@@ -2085,9 +2085,7 @@ class SchemaResolveVisitorFactory {
             SQLExpr expr = selectItem.getExpr();
             if (expr instanceof SQLAllColumnExpr) {
                 SQLAllColumnExpr allColumnExpr = (SQLAllColumnExpr) expr;
-                if (from instanceof SQLExprTableSource) {
-                    allColumnExpr.setResolvedTableSource(from);
-                }
+                allColumnExpr.setResolvedTableSource(from);
 
                 visitor.visit(allColumnExpr);
 
