@@ -104,7 +104,7 @@ public class MySqlUtils {
                 e.printStackTrace();
             }
 
-        } else if (major == 6) {
+        } else if (major == 6 || major == 8) {
             if (method_6_getValue == null && !method_6_getValue_error) {
                 try {
                     class_6_connection = Class.forName("com.mysql.cj.api.jdbc.JdbcConnection");
