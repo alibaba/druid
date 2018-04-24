@@ -1,4 +1,4 @@
-package com.alibaba.druid.sql.refactor;
+package com.alibaba.druid.bvt.sql.refactor;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;

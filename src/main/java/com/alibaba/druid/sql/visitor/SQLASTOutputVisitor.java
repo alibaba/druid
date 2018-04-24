@@ -480,12 +480,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             quote = true;
         }
 
-        if (quote) {
-            print('(');
-            printExpr(testExpr);
-            print(')');
-        } else {
-            printExpr(testExpr);
+        if (testExpr != null) {
+            if (quote) {
+                print('(');
+                printExpr(testExpr);
+                print(')');
+            } else {
+                printExpr(testExpr);
+            }
         }
 
         if (x.isNot()) {

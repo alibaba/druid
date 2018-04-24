@@ -58,7 +58,7 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
         if (visitor instanceof MySqlASTVisitor) {
             accept0((MySqlASTVisitor) visitor);
         } else {
-            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+            super.accept0(visitor);
         }
     }
 
