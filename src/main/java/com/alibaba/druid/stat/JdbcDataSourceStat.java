@@ -71,9 +71,8 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
                                                                                                                                                 1);
 
     private final AtomicLong                                    clobOpenCount           = new AtomicLong();
-
     private final AtomicLong                                    blobOpenCount           = new AtomicLong();
-    private final AtomicLong                                    keepAliveCheckCount      = new AtomicLong();
+    private final AtomicLong                                    keepAliveCheckCount     = new AtomicLong();
 
     private boolean                                             resetStatEnable         = true;
 

@@ -63,7 +63,7 @@ druid.lang = function() {
 		'PhysicalConnectCount' : ['PhysicalConnectCount', '物理连接打开次数'],
 		'PhysicalCloseCount' : ['PhysicalCloseCount', '物理关闭数量'],
 		'PhysicalConnectErrorCount' : ['PhysicalConnectErrorCount', '物理连接错误次数'],
-		'ExecuteCount' : ['ExecuteCount', '执行数'],
+		'ExecuteCount' : ['ExecuteCount (Total)', '执行数(总共)'],
 		'ErrorCount' : ['ErrorCount', '错误数'],
 		'CommitCount' : ['CommitCount', '提交数'],
 		'RollbackCount' : ['RollbackCount', '回滚数'],
