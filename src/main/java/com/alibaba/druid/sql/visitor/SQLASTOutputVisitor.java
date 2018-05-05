@@ -3817,13 +3817,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isSetNotNull()) { // postgresql
             print0(ucase ? " SET NOT NULL" : " set not null");
         }
+
         if (x.isDropNotNull()) { // postgresql
             print0(ucase ? " DROP NOT NULL" : " drop not null");
         }
+
         if (x.getSetDefault() != null) { // postgresql
             print0(ucase ? " SET DEFAULT " : " set default ");
             x.getSetDefault().accept(this);
         }
+
+        final SQLDataType dataType = x.getDataType();
+        if (dataType != null) {
+            print0(ucase ? " SET DATA TYPE " : " set data type ");
+            dataType.accept(this);
+        }
+
         if (x.isDropDefault()) { // postgresql
             print0(ucase ? " DROP DEFAULT" : " drop default");
         }
