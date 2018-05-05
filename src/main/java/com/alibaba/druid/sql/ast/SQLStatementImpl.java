@@ -45,6 +45,10 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
         return SQLUtils.toSQLString(this, dbType);
     }
 
+    public String toLowerCaseString() {
+        return SQLUtils.toSQLString(this, dbType, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         throw new UnsupportedOperationException(this.getClass().getName());

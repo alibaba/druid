@@ -996,6 +996,7 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token == Token.FETCH) {
             lexer.nextToken();
             if (lexer.token == Token.FIRST
+                    || lexer.token == Token.NEXT
                     || lexer.identifierEquals(FnvHash.Constants.NEXT)) {
                 lexer.nextToken();
             } else {
