@@ -274,6 +274,22 @@ public class SQLSelectParser extends SQLParser {
 
         parseFetchClause(queryBlock);
 
+        if (lexer.token() == Token.FOR) {
+            lexer.nextToken();
+            accept(Token.UPDATE);
+
+            queryBlock.setForUpdate(true);
+
+            if (lexer.identifierEquals(FnvHash.Constants.NO_WAIT) || lexer.identifierEquals(FnvHash.Constants.NOWAIT)) {
+                lexer.nextToken();
+                queryBlock.setNoWait(true);
+            } else if (lexer.identifierEquals(FnvHash.Constants.WAIT)) {
+                lexer.nextToken();
+                SQLExpr waitTime = this.exprParser.primary();
+                queryBlock.setWaitTime(waitTime);
+            }
+        }
+
         return queryRest(queryBlock, acceptUnion);
     }
 
