@@ -453,7 +453,7 @@ public class TableStat {
 
         public String getFullName() {
             if (fullName == null) {
-                if (table != null) {
+                if (table == null) {
                     fullName = name;
                 } else {
                     fullName = table + '.' + name;
