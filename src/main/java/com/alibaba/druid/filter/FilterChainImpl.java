@@ -92,6 +92,10 @@ public class FilterChainImpl implements FilterChain {
         return filterSize;
     }
 
+    public int getPos() {
+        return pos;
+    }
+
     public void reset() {
         pos = 0;
     }
