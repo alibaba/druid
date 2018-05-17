@@ -4101,8 +4101,18 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.addItem(dropPartition);
         } else if (lexer.token() == Token.IDENTIFIER) {
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
-            this.exprParser.names(item.getColumns());
+
+            SQLName name = this.exprParser.name();
+            item.addColumn(name);
             stmt.addItem(item);
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+            }
+
+            if (lexer.token() == Token.DROP) {
+                parseAlterDrop(stmt);
+            }
         } else {
             super.parseAlterDrop(stmt);
         }
