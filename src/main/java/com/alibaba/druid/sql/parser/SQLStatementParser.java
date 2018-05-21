@@ -278,6 +278,9 @@ public class SQLStatementParser extends SQLParser {
                     continue;
                 }
                 case COMMENT: {
+                    if(JdbcConstants.MYSQL.equals(this.dbType)){//mysql 关键字 comment 没有这个语法，oracle才有
+                        return;
+                    }
                     SQLStatement stmt = parseComment();
                     stmt.setParent(parent);
                     statementList.add(stmt);
