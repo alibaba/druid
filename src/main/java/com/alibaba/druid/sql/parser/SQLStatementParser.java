@@ -2828,6 +2828,15 @@ public class SQLStatementParser extends SQLParser {
         }
         accept(Token.RPAREN);
 
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            if (lexer.identifierEquals(FnvHash.Constants.USING)) {
+                lexer.nextToken();
+                String indexType = lexer.stringVal;
+                item.setType(indexType);
+                accept(Token.IDENTIFIER);
+            }
+        }
+
         if (lexer.token == Token.COMMENT) {
             lexer.nextToken();
             SQLExpr comment = this.exprParser.primary();
