@@ -82,7 +82,7 @@ public class SQLServerSelectTest13 extends TestCase {
 				"\t\tAND a.time_add >= ?\n" +
 				"\t\tAND a.time_add <= ?\n" +
 				") a\n" +
-				"WHERE a.ROW NOT BETWEEN ? + 1 AND ? + ?";
+				"WHERE a.ROW NOT BETWEEN (? + 1) AND ? + ?";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
