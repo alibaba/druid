@@ -2421,6 +2421,10 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
             }
 
+            if (lexer.token() == Token.LINE_COMMENT) {
+                lexer.nextToken();
+            }
+
             tableName = this.exprParser.name();
             stmt.setTableName(tableName);
 
@@ -2538,6 +2542,10 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
                 accept(Token.RPAREN);
             }
+        }
+
+        if (lexer.token() == Token.LINE_COMMENT) {
+            lexer.nextToken();
         }
 
         if (lexer.token() == Token.VALUES || lexer.identifierEquals(FnvHash.Constants.VALUE)) {

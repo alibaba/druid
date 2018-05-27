@@ -1492,7 +1492,7 @@ public class SQLExprParser extends SQLParser {
         }
 
         SQLOver.WindowingType windowingType = null;
-        if (lexer.identifierEquals(FnvHash.Constants.ROWS)) {
+        if (lexer.identifierEquals(FnvHash.Constants.ROWS) || lexer.token == Token.ROWS) {
             windowingType = SQLOver.WindowingType.ROWS;
 
         } else if (lexer.identifierEquals(FnvHash.Constants.RANGE)) {
@@ -1519,7 +1519,7 @@ public class SQLExprParser extends SQLParser {
                 accept(Token.AND);
 
                 SQLExpr betweenEnd;
-                if (lexer.identifierEquals(FnvHash.Constants.CURRENT)) {
+                if (lexer.identifierEquals(FnvHash.Constants.CURRENT) || lexer.token == Token.CURRENT) {
                     lexer.nextToken();
                     if (lexer.identifierEquals(FnvHash.Constants.ROW)) {
                         lexer.nextToken();
