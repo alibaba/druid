@@ -696,7 +696,11 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = unary;
                 break;
             case QUES:
-                lexer.nextToken();
+                if (JdbcConstants.MYSQL.equals(dbType)) {
+                    lexer.nextTokenValue();
+                } else {
+                    lexer.nextToken();
+                }
                 SQLVariantRefExpr quesVarRefExpr = new SQLVariantRefExpr("?");
                 quesVarRefExpr.setIndex(lexer.nextVarIndex());
                 sqlExpr = quesVarRefExpr;
