@@ -256,13 +256,35 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                     }
                 }
             }
-        } else if (tableSource instanceof SQLWithSubqueryClause.Entry
-                || tableSource instanceof SQLSubqueryTableSource) {
-            SQLTableSource xx = tableSource.findTableSourceWithColumn(x.nameHashCode64());
-            if (xx != null) {
-
+        } else if (tableSource instanceof SQLWithSubqueryClause.Entry) {
+            return false;
+        } else if (tableSource instanceof SQLSubqueryTableSource) {
+            SQLSelectQueryBlock queryBlock = ((SQLSubqueryTableSource) tableSource).getSelect().getQueryBlock();
+            if (queryBlock == null) {
+                return false;
             }
-            // skip
+
+            SQLSelectItem selectItem = queryBlock.findSelectItem(x.nameHashCode64());
+            if (selectItem == null) {
+                return false;
+            }
+
+            SQLExpr selectItemExpr = selectItem.getExpr();
+            SQLTableSource columnTableSource = null;
+            if (selectItemExpr instanceof SQLIdentifierExpr) {
+                columnTableSource = ((SQLIdentifierExpr) selectItemExpr).getResolvedTableSource();
+            } else if (selectItemExpr instanceof SQLPropertyExpr) {
+                columnTableSource = ((SQLPropertyExpr) selectItemExpr).getResolvedTableSource();
+            }
+
+            if (columnTableSource instanceof SQLExprTableSource && ((SQLExprTableSource) columnTableSource).getExpr() instanceof SQLName) {
+                SQLName tableExpr = (SQLName) ((SQLExprTableSource) columnTableSource).getExpr();
+                if (tableExpr instanceof SQLIdentifierExpr) {
+                    tableName = ((SQLIdentifierExpr) tableExpr).normalizedName();
+                } else if (tableExpr instanceof SQLPropertyExpr) {
+                    tableName = ((SQLPropertyExpr) tableExpr).normalizedName();
+                }
+            }
         } else {
             boolean skip = false;
             for (SQLObject parent = x.getParent();parent != null;parent = parent.getParent()) {
