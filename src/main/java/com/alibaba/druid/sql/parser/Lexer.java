@@ -474,6 +474,7 @@ public class Lexer {
             }
 
             if (c1 == '\'') {
+                bufPos = 0;
                 ++pos;
                 ch = '\'';
                 scanString();
