@@ -41,7 +41,7 @@ public class MySqlCreateTableTest112 extends MysqlTest {
         stmt.accept(v);
 
         assertEquals(4, v.getColumns().size());
-        SQLColumnDefinition column = stmt.getColumn("id");
+        SQLColumnDefinition column = stmt.findColumn("id");
         assertNotNull(column);
         assertEquals(2, column.getConstraints().size());
         assertTrue(column.isPrimaryKey());
