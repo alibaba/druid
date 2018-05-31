@@ -2515,4 +2515,23 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
         return false;
     }
+
+    public boolean visit(SQLDumpStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
+        final SQLExprTableSource into = x.getInto();
+        if (into != null) {
+            into.accept(this);
+        }
+
+        final SQLSelect select = x.getSelect();
+        if (select != null) {
+            select.accept(this);
+        }
+
+        return false;
+    }
 }

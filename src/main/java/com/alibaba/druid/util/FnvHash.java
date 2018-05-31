@@ -649,5 +649,7 @@ public final class FnvHash {
         long GENERATED = fnv1a_64_lower("GENERATED");
         long ALWAYS = fnv1a_64_lower("ALWAYS");
         long INCREMENT = fnv1a_64_lower("INCREMENT");
+
+        long OVERWRITE = fnv1a_64_lower("OVERWRITE");
     }
 }

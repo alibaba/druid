@@ -370,6 +370,13 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.identifierEquals("DUMP")) {
+                SQLStatement stmt = parseDump();
+                statementList.add(stmt);
+
+                continue;
+            }
+
             if (lexer.identifierEquals(FnvHash.Constants.COMMIT)) {
                 SQLStatement stmt = parseCommit();
 
@@ -425,6 +432,26 @@ public class SQLStatementParser extends SQLParser {
             //throw new ParserException("not supported." + lexer.info());
             printError(lexer.token);
         }
+    }
+
+    public SQLStatement parseDump() {
+        SQLDumpStatement stmt = new SQLDumpStatement();
+        acceptIdentifier("DUMP");
+        acceptIdentifier("DATA");
+
+        if (lexer.identifierEquals(FnvHash.Constants.OVERWRITE)) {
+            lexer.nextToken();
+            stmt.setOverwrite(true);
+        }
+
+        if (lexer.token == Token.INTO) {
+            lexer.nextToken();
+            stmt.setInto(this.exprParser.expr());
+        }
+
+        SQLSelect select = createSQLSelectParser().select();
+        stmt.setSelect(select);
+        return stmt;
     }
 
 
