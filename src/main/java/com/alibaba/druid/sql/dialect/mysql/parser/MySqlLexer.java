@@ -64,6 +64,7 @@ public class MySqlLexer extends Lexer {
         map.put("MOD", Token.MOD);
         map.put("CONTAINS", Token.CONTAINS);
         map.put("RLIKE", Token.RLIKE);
+        map.put("FULLTEXT", Token.FULLTEXT);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }

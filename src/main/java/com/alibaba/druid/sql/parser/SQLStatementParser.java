@@ -2804,7 +2804,7 @@ public class SQLStatementParser extends SQLParser {
     protected SQLAlterTableAddIndex parseAlterTableAddIndex() {
         SQLAlterTableAddIndex item = new SQLAlterTableAddIndex();
 
-        if (lexer.identifierEquals(FnvHash.Constants.FULLTEXT)) {
+        if (lexer.token == Token.FULLTEXT) {
             lexer.nextToken();
             item.setType("FULLTEXT");
         } else if (lexer.identifierEquals(FnvHash.Constants.SPATIAL)) {

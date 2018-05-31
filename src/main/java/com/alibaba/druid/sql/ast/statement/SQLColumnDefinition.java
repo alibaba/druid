@@ -431,6 +431,21 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return false;
     }
 
+    public boolean isPrimaryKey() {
+        for (SQLColumnConstraint constraint : constraints) {
+            if (constraint instanceof SQLColumnPrimaryKey) {
+                return true;
+            }
+        }
+
+        if (parent instanceof SQLCreateTableStatement) {
+            return ((SQLCreateTableStatement) parent)
+                    .isPrimaryColumn(nameHashCode64());
+        }
+
+        return false;
+    }
+
     public String toString() {
         return SQLUtils.toSQLString(this, dbType);
     }

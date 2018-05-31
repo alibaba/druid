@@ -1107,4 +1107,35 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.rowFormat = x;
     }
 
+    public SQLColumnDefinition getColumn(String name) {
+        if (name == null) {
+            return null;
+        }
+
+        return getColumn(
+                FnvHash.hashCode64(name)
+        );
+    }
+
+    public SQLColumnDefinition getColumn(long nameHash) {
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof SQLColumnDefinition) {
+                SQLColumnDefinition column = (SQLColumnDefinition) element;
+                if (column.nameHashCode64() == nameHash) {
+                    return column;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public boolean isPrimaryColumn(long columnNameHash) {
+        SQLPrimaryKey pk = this.findPrimaryKey();
+        if (pk == null) {
+            return false;
+        }
+
+        return pk.containsColumn(columnNameHash);
+    }
 }

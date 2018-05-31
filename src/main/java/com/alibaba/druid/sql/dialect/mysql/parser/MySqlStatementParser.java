@@ -65,7 +65,6 @@ public class MySqlStatementParser extends SQLStatementParser {
     private static final String TABLES = "TABLES";
     private static final String TEMPORARY = "TEMPORARY";
     private static final String SPATIAL = "SPATIAL";
-    private static final String FULLTEXT = "FULLTEXT";
     private static final String LOW_PRIORITY = "LOW_PRIORITY";
     private static final String CONNECTION = "CONNECTION";
     private static final String EXTENDED = "EXTENDED";
@@ -258,7 +257,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return parseCreateDatabase();
         }
 
-        if (lexer.token() == Token.UNIQUE || lexer.token() == Token.INDEX || lexer.identifierEquals(FULLTEXT)
+        if (lexer.token() == Token.UNIQUE || lexer.token() == Token.INDEX || lexer.token() == Token.FULLTEXT
                 || lexer.identifierEquals(SPATIAL)) {
             if (replace) {
                 lexer.reset(markBp, markChar, Token.CREATE);
@@ -505,8 +504,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.UNIQUE) {
             stmt.setType("UNIQUE");
             lexer.nextToken();
-        } else if (lexer.identifierEquals(FULLTEXT)) {
-            stmt.setType(FULLTEXT);
+        } else if (lexer.token() == Token.FULLTEXT) {
+            stmt.setType("FULLTEXT");
             lexer.nextToken();
         } else if (lexer.identifierEquals(SPATIAL)) {
             stmt.setType(SPATIAL);
@@ -3463,7 +3462,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     parseAlterTableAddColumn(stmt);
                 } else if (lexer.token() == Token.INDEX
-                        || lexer.identifierEquals(FnvHash.Constants.FULLTEXT)
+                        || lexer.token() == Token.FULLTEXT
                         || lexer.identifierEquals(FnvHash.Constants.SPATIAL)) {
                     SQLAlterTableAddIndex item = parseAlterTableAddIndex();
                     item.setParent(stmt);
