@@ -25,15 +25,26 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2018-03-22
  * @author willenfoo
  * 由于开发人员水平参差不齐，即使订了开发规范很多人也不遵守
- * SQL是影响系统最重要的因素，所以拦截掉垃圾SQL语句
+ * SQL是影响系统性能最重要的因素，所以拦截掉垃圾SQL语句
  *
  * 拦截SQL类型的场景
- * 1.查询left jion 超过3张表
+ *  1.必须使用到索引，包含left jion连接字段，符合索引最左原则
+ *     必须使用索引好处，
+ *     1.1 如果因为动态SQL，bug导致update的where条件没有带上，全表更新上万条数据
+ *     1.2 如果检查到使用了索引，SQL性能基本不会太差  
+ *     
+ * 2.SQL尽量单表执行，有查询left jion的语句，必须在注释里面允许该SQL运行，否则会被拦截，有left jion的语句，如果不能拆成单表执行的SQL，请leader商量在做
+ *    http://gaoxianglong.github.io/shark/
+ *    SQL尽量单表执行的好处
+ *    2.1 查询条件简单、易于开理解和维护；
+ *    2.2 扩展性极强；（可为分库分表做准备）
+ *    2.3 缓存利用率高；
+ *    
  * 2.在字段上使用函数
  * 3.where条件为空
  * 4.where条件使用了 !=
  * 5.where条件使用了 not 关键字
- * 6.where条件没有索引索引，最左原则
+ * 6.不要使用子查询
  */
 public class IllegalSQLIndexFilter extends FilterEventAdapter {
 
