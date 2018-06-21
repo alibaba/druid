@@ -340,6 +340,10 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlLockTableStatement x);
 
+    boolean visit(MySqlLockTableStatement.Item x);
+
+    void endVisit(MySqlLockTableStatement.Item x);
+
     boolean visit(MySqlUnlockTablesStatement x);
 
     void endVisit(MySqlUnlockTablesStatement x);

@@ -806,31 +806,62 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             MySqlLockTableStatement stmt = new MySqlLockTableStatement();
-            stmt.setTableSource(this.exprParser.name());
 
-            if (lexer.identifierEquals(READ)) {
-                lexer.nextToken();
-                if (lexer.identifierEquals(LOCAL)) {
+            for(;;) {
+                MySqlLockTableStatement.Item item = new MySqlLockTableStatement.Item();
+
+                SQLExprTableSource tableSource = null;
+                SQLName tableName = this.exprParser.name();
+
+
+                if (lexer.token() == Token.AS) {
                     lexer.nextToken();
-                    stmt.setLockType(LockType.READ_LOCAL);
+                    String as = lexer.stringVal();
+                    tableSource = new SQLExprTableSource(tableName, as);
+                    lexer.nextToken();
                 } else {
-                    stmt.setLockType(LockType.READ);
+                    tableSource = new SQLExprTableSource(tableName);
                 }
-            } else if (lexer.identifierEquals(WRITE)) {
-                lexer.nextToken();
-                stmt.setLockType(LockType.WRITE);
-            } else if (lexer.identifierEquals(FnvHash.Constants.LOW_PRIORITY)) {
-                lexer.nextToken();
-                acceptIdentifier(WRITE);
-                lexer.nextToken();
-                stmt.setLockType(LockType.LOW_PRIORITY_WRITE);
-            } else {
-                throw new ParserException("syntax error, expect READ or WRITE, actual " + lexer.token() + ", " + lexer.info());
+                item.setTableSource(tableSource);
+                stmt.getItems().add(item);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+
+                if (lexer.identifierEquals(READ)) {
+                    lexer.nextToken();
+                    if (lexer.identifierEquals(LOCAL)) {
+                        lexer.nextToken();
+                        item.setLockType(LockType.READ_LOCAL);
+                    } else {
+                        item.setLockType(LockType.READ);
+                    }
+                } else if (lexer.identifierEquals(WRITE)) {
+                    lexer.nextToken();
+                    item.setLockType(LockType.WRITE);
+                } else if (lexer.identifierEquals(FnvHash.Constants.LOW_PRIORITY)) {
+                    lexer.nextToken();
+                    acceptIdentifier(WRITE);
+                    lexer.nextToken();
+                    item.setLockType(LockType.LOW_PRIORITY_WRITE);
+                } else {
+                    throw new ParserException(
+                            "syntax error, expect READ or WRITE OR AS, actual " + lexer.token() + ", " + lexer.info());
+                }
+
+                if (lexer.token() == Token.HINT) {
+                    item.setHints(this.exprParser.parseHints());
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
             }
 
-            if (lexer.token() == Token.HINT) {
-                stmt.setHints(this.exprParser.parseHints());
-            }
             statementList.add(stmt);
             return true;
         }
@@ -859,25 +890,56 @@ public class MySqlStatementParser extends SQLStatementParser {
             List<SQLCommentHint> hints = this.exprParser.parseHints();
 
             boolean tddlHints = false;
+            boolean accept = false;
 
-            final Token token = lexer.token();
+
+            boolean acceptHint = false;
+            switch (lexer.token()) {
+                case SELECT:
+                case WITH:
+                case DELETE:
+                case UPDATE:
+                case INSERT:
+                case SHOW:
+                case REPLACE:
+                case TRUNCATE:
+                case DROP:
+                case ALTER:
+                case CREATE:
+                case CHECK:
+                case SET:
+                    acceptHint = true;
+                    break;
+                case IDENTIFIER:
+                    acceptHint = lexer.hash_lower() == FnvHash.Constants.DUMP
+                            || lexer.hash_lower() == FnvHash.Constants.RENAME;
+                    break;
+                default:
+                    break;
+            }
             if (hints.size() == 1
                     && statementList.size() == 0
-                    && (token == Token.SELECT || token == Token.DELETE)) {
+                    && acceptHint) {
                 SQLCommentHint hint = hints.get(0);
-                String hintText = hint.getText();
-                if (hintText.startsWith("+TDDL")) {
+                String hintText = hint.getText().toUpperCase();
+                if (hintText.startsWith("+TDDL")
+                        || hintText.startsWith("+ TDDL")
+                        || hintText.startsWith("TDDL")
+                        || hintText.startsWith("!TDDL"))
+                {
                     tddlHints = true;
+                } else if(hintText.startsWith("+")) {
+                    accept = true;
                 }
             }
 
             if (tddlHints) {
-                SQLStatementImpl stmt;
-                if (token == Token.SELECT) {
-                    stmt = (SQLSelectStatement) this.parseStatement();
-                } else {
-                    stmt = (SQLDeleteStatement) this.parseStatement();
-                }
+                SQLStatementImpl stmt = (SQLStatementImpl)this.parseStatement();
+                stmt.setHeadHints(hints);
+                statementList.add(stmt);
+                return true;
+            } else if (accept) {
+                SQLStatementImpl stmt = (SQLStatementImpl) this.parseStatement();
                 stmt.setHeadHints(hints);
                 statementList.add(stmt);
                 return true;

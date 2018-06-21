@@ -582,6 +582,7 @@ public final class FnvHash {
         long SCHEDULE = fnv1a_64_lower("SCHEDULE");
         long COMPLETION = fnv1a_64_lower("COMPLETION");
         long RENAME = fnv1a_64_lower("RENAME");
+        long DUMP = fnv1a_64_lower("DUMP");
         long AT = fnv1a_64_lower("AT");
         long LANGUAGE = fnv1a_64_lower("LANGUAGE");
         long LOGFILE = fnv1a_64_lower("LOGFILE");
