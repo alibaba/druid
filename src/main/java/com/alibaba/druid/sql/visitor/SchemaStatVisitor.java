@@ -485,6 +485,16 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
+    public boolean visit(SQLFilter x) {
+        SQLExpr filter = x.getWhere();
+
+        if (filter != null) {
+            filter.accept(this);
+        }
+
+        return false;
+    }
+
     public boolean visit(SQLOver x) {
         SQLName of = x.getOf();
         SQLOrderBy orderBy = x.getOrderBy();

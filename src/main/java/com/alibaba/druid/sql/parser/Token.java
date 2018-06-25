@@ -178,6 +178,7 @@ public enum Token {
     CURRENT("CURRENT"),
     RETURNING("RETURNING"),
     COMMENT("COMMENT"),
+    FILTER("FILTER"),
     OVER("OVER"),
     TYPE("TYPE"),
     ILIKE("ILIKE"),

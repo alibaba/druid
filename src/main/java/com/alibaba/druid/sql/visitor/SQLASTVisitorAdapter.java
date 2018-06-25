@@ -625,6 +625,15 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     @Override
+    public void endVisit(SQLFilter x) {
+    }
+
+    @Override
+    public boolean visit(SQLFilter x) {
+        return true;
+    }
+
+    @Override
     public void endVisit(SQLOver x) {
     }
 

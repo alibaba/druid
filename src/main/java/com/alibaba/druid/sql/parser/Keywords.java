@@ -133,6 +133,7 @@ public class Keywords {
         map.put("WHERE", Token.WHERE);
         map.put("XOR", Token.XOR);
 
+        map.put("FILTER", Token.FILTER);
         map.put("OVER", Token.OVER);
         map.put("TO", Token.TO);
         map.put("USE", Token.USE);
