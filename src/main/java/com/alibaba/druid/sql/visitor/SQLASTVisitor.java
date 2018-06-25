@@ -316,6 +316,10 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLCreateDatabaseStatement x);
 
+    void endVisit(SQLFilter x);
+
+    boolean visit(SQLFilter x);
+
     void endVisit(SQLOver x);
 
     boolean visit(SQLOver x);

@@ -1445,6 +1445,10 @@ public class SQLExprParser extends SQLParser {
 
         accept(Token.RPAREN);
 
+        if (JdbcConstants.POSTGRESQL.equals(dbType) && lexer.token == Token.FILTER) {
+            filter(aggregateExpr);
+        }
+
         if (lexer.token == Token.OVER) {
             over(aggregateExpr);
 
@@ -1452,6 +1456,19 @@ public class SQLExprParser extends SQLParser {
 
         return aggregateExpr;
     }
+
+    protected void filter(SQLAggregateExpr aggregateExpr) {
+        lexer.nextToken();
+        accept(Token.LPAREN);
+        accept(Token.WHERE);
+
+        SQLFilter filter = new SQLFilter();
+        filter.setWhere(parseWhere());
+
+        accept(Token.RPAREN);
+        aggregateExpr.setFilter(filter);
+    }
+
 
     protected void over(SQLAggregateExpr aggregateExpr) {
         lexer.nextToken();
@@ -3396,5 +3413,99 @@ public class SQLExprParser extends SQLParser {
         }
 
         return null;
+    }
+
+    public SQLExpr parseWhere() {
+        List<String> beforeComments = null;
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            beforeComments = lexer.readAndResetComments();
+        }
+
+        SQLExpr where;
+        if (lexer.token == Token.IDENTIFIER) {
+            String ident = lexer.stringVal();
+            long hash_lower = lexer.hash_lower();
+            lexer.nextTokenEq();
+
+            SQLExpr identExpr;
+            if (lexer.token == Token.LITERAL_CHARS) {
+                String literal = lexer.stringVal;
+                if (hash_lower == FnvHash.Constants.TIMESTAMP) {
+                    identExpr = new SQLTimestampExpr(literal);
+                    lexer.nextToken();
+                } else if (hash_lower == FnvHash.Constants.DATE) {
+                    identExpr = new SQLDateExpr(literal);
+                    lexer.nextToken();
+                } else if (hash_lower == FnvHash.Constants.REAL) {
+                    identExpr = new SQLRealExpr(Float.parseFloat(literal));
+                    lexer.nextToken();
+                } else {
+                    identExpr = new SQLIdentifierExpr(ident, hash_lower);
+                }
+            } else {
+                identExpr = new SQLIdentifierExpr(ident, hash_lower);
+            }
+
+            if (lexer.token == Token.DOT) {
+                identExpr = primaryRest(identExpr);
+            }
+
+            if (lexer.token == Token.EQ) {
+                SQLExpr rightExp;
+
+                lexer.nextToken();
+
+                try {
+                    rightExp = bitOr();
+                } catch (EOFParserException e) {
+                    throw new ParserException("EOF, " + ident + "=", e);
+                }
+
+                where = new SQLBinaryOpExpr(identExpr, SQLBinaryOperator.Equality, rightExp, dbType);
+                switch (lexer.token) {
+                    case BETWEEN:
+                    case IS:
+                    case EQ:
+                    case IN:
+                    case CONTAINS:
+                    case BANG_TILDE_STAR:
+                    case TILDE_EQ:
+                    case LT:
+                    case LTEQ:
+                    case LTEQGT:
+                    case GT:
+                    case GTEQ:
+                    case LTGT:
+                    case BANGEQ:
+                    case LIKE:
+                    case NOT:
+                        where = relationalRest(where);
+                        break;
+                    default:
+                        break;
+                }
+
+                where = andRest(where);
+                where = xorRest(where);
+                where = orRest(where);
+            } else {
+                identExpr = primaryRest(identExpr);
+                where = exprRest(identExpr);
+            }
+        } else {
+            where = expr();
+        }
+//            where = expr();
+
+        if (beforeComments != null) {
+            where.addBeforeComment(beforeComments);
+        }
+
+        if (lexer.hasComment() && lexer.isKeepComments() //
+                && lexer.token != Token.INSERT // odps multi-insert
+                ) {
+            where.addAfterComment(lexer.readAndResetComments());
+        }
+        return where;
     }
 }

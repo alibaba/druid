@@ -35,6 +35,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
     protected SQLAggregateOption  option;
     protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
     protected SQLKeep             keep;
+    protected SQLFilter           filter;
     protected SQLOver             over;
     protected SQLName             overRef;
     protected SQLOrderBy          withinGroup;
@@ -95,6 +96,17 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
         this.arguments.add(argument);
     }
 
+    public SQLFilter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(SQLFilter filter) {
+        if (filter != null) {
+            filter.setParent(this);
+        }
+        this.filter = filter;
+    }
+
     public SQLOver getOver() {
         return over;
     }
@@ -150,6 +162,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
         if (visitor.visit(this)) {
             acceptChild(visitor, this.arguments);
             acceptChild(visitor, this.keep);
+            acceptChild(visitor, this.filter);
             acceptChild(visitor, this.over);
             acceptChild(visitor, this.overRef);
             acceptChild(visitor, this.withinGroup);
@@ -164,6 +177,8 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
         children.addAll(this.arguments);
         if (keep != null) {
             children.add(this.keep);
+        }
+        if (filter != null) {            children.add(filter);
         }
         if (over != null) {
             children.add(over);
@@ -186,6 +201,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
         if (option != that.option) return false;
         if (arguments != null ? !arguments.equals(that.arguments) : that.arguments != null) return false;
         if (keep != null ? !keep.equals(that.keep) : that.keep != null) return false;
+        if (filter != null ? !filter.equals(that.filter) : that.filter != null) return false;
         if (over != null ? !over.equals(that.over) : that.over != null) return false;
         if (overRef != null ? !overRef.equals(that.overRef) : that.overRef != null) return false;
         if (withinGroup != null ? !withinGroup.equals(that.withinGroup) : that.withinGroup != null) return false;
@@ -199,6 +215,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
         result = 31 * result + (option != null ? option.hashCode() : 0);
         result = 31 * result + (arguments != null ? arguments.hashCode() : 0);
         result = 31 * result + (keep != null ? keep.hashCode() : 0);
+        result = 31 * result + (filter != null ? filter.hashCode() : 0);
         result = 31 * result + (over != null ? over.hashCode() : 0);
         result = 31 * result + (overRef != null ? overRef.hashCode() : 0);
         result = 31 * result + (withinGroup != null ? withinGroup.hashCode() : 0);
@@ -217,6 +234,10 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
 
         if (keep != null) {
             x.setKeep(keep.clone());
+        }
+
+        if (filter != null) {
+            x.setFilter(filter.clone());
         }
 
         if (over != null) {

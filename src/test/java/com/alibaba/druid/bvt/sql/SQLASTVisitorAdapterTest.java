@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.sql;
 
 import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.ast.SQLFilter;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
@@ -61,6 +62,7 @@ public class SQLASTVisitorAdapterTest extends TestCase {
         new SQLReleaseSavePointStatement ().accept(adapter);
         new SQLCreateDatabaseStatement ().accept(adapter);
         new SQLAlterTableDropIndex ().accept(adapter);
+        new SQLFilter ().accept(adapter);
         new SQLOver ().accept(adapter);
         new SQLWithSubqueryClause().accept(adapter);
         new SQLAlterTableAlterColumn ().accept(adapter);

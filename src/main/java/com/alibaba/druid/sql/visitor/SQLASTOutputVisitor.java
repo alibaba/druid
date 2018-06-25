@@ -1556,6 +1556,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit(keep);
         }
 
+        SQLFilter filter = x.getFilter();
+        if (filter != null) {
+            print(' ');
+            filter.accept(this);
+        }
+
         SQLOver over = x.getOver();
         if (over != null) {
             print(' ');
@@ -3652,6 +3658,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLAlterTableDropIndex x) {
         print0(ucase ? "DROP INDEX " : "drop index ");
         x.getIndexName().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLFilter x) {
+        print0(ucase ? "FILTER (WHERE " : "filter (where ");
+        x.getWhere().accept(this);
+        print(')');
         return false;
     }
 
