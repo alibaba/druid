@@ -81,7 +81,7 @@ public class SQLServerSelectTest14 extends TestCase {
                 "\t\tAND a.time_add >= 2\n" +
                 "\t\tAND a.time_add <= 3\n" +
                 ") a\n" +
-                "WHERE a.ROW BETWEEN 10 + 2 AND 20";
+                "WHERE a.ROW BETWEEN (10 + 2) AND 20";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

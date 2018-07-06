@@ -829,4 +829,20 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLValuesExpr x);
     void endVisit(SQLValuesExpr x);
+
+    boolean visit(SQLValuesTableSource x);
+    void endVisit(SQLValuesTableSource x);
+
+    boolean visit(SQLContainsExpr x);
+    void endVisit(SQLContainsExpr x);
+
+    boolean visit(SQLRealExpr x);
+    void endVisit(SQLRealExpr x);
+
+    boolean visit(SQLWindow x);
+    void endVisit(SQLWindow x);
+
+    boolean visit(SQLDumpStatement x);
+    void endVisit(SQLDumpStatement x);
+
 }

@@ -278,6 +278,9 @@ public class SQLStatementParser extends SQLParser {
                     continue;
                 }
                 case COMMENT: {
+                    if(JdbcConstants.MYSQL.equals(this.dbType)){//mysql 关键字 comment 没有这个语法，oracle才有
+                        return;
+                    }
                     SQLStatement stmt = parseComment();
                     stmt.setParent(parent);
                     statementList.add(stmt);
@@ -367,6 +370,13 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.identifierEquals("DUMP")) {
+                SQLStatement stmt = parseDump();
+                statementList.add(stmt);
+
+                continue;
+            }
+
             if (lexer.identifierEquals(FnvHash.Constants.COMMIT)) {
                 SQLStatement stmt = parseCommit();
 
@@ -422,6 +432,26 @@ public class SQLStatementParser extends SQLParser {
             //throw new ParserException("not supported." + lexer.info());
             printError(lexer.token);
         }
+    }
+
+    public SQLStatement parseDump() {
+        SQLDumpStatement stmt = new SQLDumpStatement();
+        acceptIdentifier("DUMP");
+        acceptIdentifier("DATA");
+
+        if (lexer.identifierEquals(FnvHash.Constants.OVERWRITE)) {
+            lexer.nextToken();
+            stmt.setOverwrite(true);
+        }
+
+        if (lexer.token == Token.INTO) {
+            lexer.nextToken();
+            stmt.setInto(this.exprParser.expr());
+        }
+
+        SQLSelect select = createSQLSelectParser().select();
+        stmt.setSelect(select);
+        return stmt;
     }
 
 
@@ -2774,7 +2804,7 @@ public class SQLStatementParser extends SQLParser {
     protected SQLAlterTableAddIndex parseAlterTableAddIndex() {
         SQLAlterTableAddIndex item = new SQLAlterTableAddIndex();
 
-        if (lexer.identifierEquals(FnvHash.Constants.FULLTEXT)) {
+        if (lexer.token == Token.FULLTEXT) {
             lexer.nextToken();
             item.setType("FULLTEXT");
         } else if (lexer.identifierEquals(FnvHash.Constants.SPATIAL)) {
@@ -2827,6 +2857,15 @@ public class SQLStatementParser extends SQLParser {
             break;
         }
         accept(Token.RPAREN);
+
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            if (lexer.identifierEquals(FnvHash.Constants.USING)) {
+                lexer.nextToken();
+                String indexType = lexer.stringVal;
+                item.setType(indexType);
+                accept(Token.IDENTIFIER);
+            }
+        }
 
         if (lexer.token == Token.COMMENT) {
             lexer.nextToken();

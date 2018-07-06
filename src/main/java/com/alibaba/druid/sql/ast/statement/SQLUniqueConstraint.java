@@ -24,4 +24,5 @@ public interface SQLUniqueConstraint extends SQLConstraint {
     List<SQLSelectOrderByItem> getColumns();
 
     boolean containsColumn(String column);
+    boolean containsColumn(long columnNameHash);
 }

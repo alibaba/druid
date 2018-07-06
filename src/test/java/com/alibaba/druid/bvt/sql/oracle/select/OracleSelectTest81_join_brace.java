@@ -83,7 +83,7 @@ public class OracleSelectTest81_join_brace extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(5, visitor.getTables().size());
-        assertEquals(14, visitor.getColumns().size());
+        assertEquals(19, visitor.getColumns().size());
         assertEquals(15, visitor.getConditions().size());
         assertEquals(4, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());

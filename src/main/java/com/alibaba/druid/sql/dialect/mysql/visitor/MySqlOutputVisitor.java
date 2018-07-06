@@ -318,6 +318,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? " SORTED" : " sorted");
         }
 
+        if (x.isVirtual()) {
+            print0(ucase ? " VIRTUAL" : " virtual");
+        }
+
         this.parameterized = parameterized;
         return false;
     }
@@ -489,9 +493,31 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             comment.accept(this);
         }
 
-        if (x.getPartitioning() != null) {
+        SQLPartitionBy partitionBy = x.getPartitioning();
+        if (partitionBy != null) {
             println();
-            x.getPartitioning().accept(this);
+            print0(ucase ? "PARTITION BY " : "partition by ");
+            partitionBy.accept(this);
+        }
+
+        SQLPartitionBy dbPartitionBy = x.getDbPartitionBy();
+        if (dbPartitionBy != null) {
+            println();
+            print0(ucase ? "DBPARTITION BY " : "dbpartition by ");
+            dbPartitionBy.accept(this);
+        }
+
+        SQLPartitionBy tbPartitionsBy = x.getTablePartitionBy();
+        if (tbPartitionsBy != null) {
+            println();
+            print0(ucase ? "TBPARTITION BY " : "tbpartition by ");
+            tbPartitionsBy.accept(this);
+        }
+
+        if (x.getTbpartitions() != null) {
+            println();
+            print0(ucase ? "TBPARTITIONS " : "tbpartitions ");
+            x.getTbpartitions().accept(this);
         }
 
         if (x.getTableGroup() != null) {
@@ -1462,9 +1488,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlPartitionByKey x) {
         if (x.isLinear()) {
-            print0(ucase ? "PARTITION BY LINEAR KEY (" : "partition by linear key (");
+            print0(ucase ? "LINEAR KEY (" : "linear key (");
         } else {
-            print0(ucase ? "PARTITION BY KEY (" : "partition by key (");
+            print0(ucase ? "KEY (" : "key (");
         }
         printAndAccept(x.getColumns(), ", ");
         print(')');
@@ -2570,7 +2596,22 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlLockTableStatement x) {
-        print0(ucase ? "LOCK TABLES " : "lock tables ");
+        print0(ucase ? "LOCK TABLES" : "lock tables");
+        List<MySqlLockTableStatement.Item> items = x.getItems();
+        if(items.size() > 0) {
+            print(' ');
+            printAndAccept(items, ", ");
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlLockTableStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlLockTableStatement.Item x) {
         x.getTableSource().accept(this);
         if (x.getLockType() != null) {
             print(' ');
@@ -2585,7 +2626,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
-    public void endVisit(MySqlLockTableStatement x) {
+    public void endVisit(MySqlLockTableStatement.Item x) {
 
     }
 

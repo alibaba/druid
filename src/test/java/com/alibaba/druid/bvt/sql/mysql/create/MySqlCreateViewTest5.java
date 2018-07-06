@@ -38,7 +38,7 @@ public class MySqlCreateViewTest5 extends MysqlTest {
         SQLCreateViewStatement stmt = (SQLCreateViewStatement) statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -57,7 +57,7 @@ public class MySqlCreateViewTest5 extends MysqlTest {
                         "\tINNER JOIN t1 ON t1.col1 = tt1.col1;", //
                 SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("create or replace definer = current_user\n" +
+        assertEquals("create or replace definer = current_user\n" +
                         "\tsql security = invoker\n" +
                         "\tview my_view4 (\n" +
                         "\tc1, \n" +
@@ -76,13 +76,13 @@ public class MySqlCreateViewTest5 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t1", "col1")));
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "l_suppkey")));
+        assertTrue(visitor.getColumns().contains(new Column("t1", "col1")));
+//        assertTrue(visitor.getColumns().contains(new Column("t2", "l_suppkey")));
     }
 }

@@ -25,11 +25,8 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLExplainStatement extends SQLStatementImpl {
-
     private String type;
-
     protected SQLStatement       statement;
-
     private List<SQLCommentHint> hints;
     
     public SQLExplainStatement() {

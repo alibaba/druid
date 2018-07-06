@@ -56,7 +56,7 @@ public class OdpsSelectTest29 extends TestCase {
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         assertEquals(2, visitor.getTables().size());
-        assertEquals(0, visitor.getColumns().size());
+        assertEquals(2, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));

@@ -73,6 +73,18 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
         return false;
     }
 
+    public boolean containsColumn(long columnNameHash) {
+        for (SQLSelectOrderByItem item : columns) {
+            SQLExpr expr = item.getExpr();
+            if (expr instanceof SQLIdentifierExpr) {
+                if (((SQLIdentifierExpr) expr).nameHashCode64() == columnNameHash) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void cloneTo(SQLUnique x) {
         super.cloneTo(x);
 

@@ -235,6 +235,13 @@ public class MySqlExprParser extends SQLExprParser {
                     lexer.nextToken();
                 } while (lexer.token() == Token.LITERAL_CHARS || lexer.token() == Token.LITERAL_ALIAS);
                 expr = new SQLCharExpr(text2);
+            } else if (expr instanceof SQLVariantRefExpr) {
+                SQLMethodInvokeExpr concat = new SQLMethodInvokeExpr("CONCAT");
+                concat.addArgument(expr);
+                concat.addArgument(this.primary());
+                expr = concat;
+
+                return primaryRest(expr);
             }
         } else if (lexer.token() == Token.IDENTIFIER) {
             if (expr instanceof SQLHexExpr) {
