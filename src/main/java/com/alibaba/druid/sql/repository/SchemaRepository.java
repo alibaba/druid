@@ -33,6 +33,9 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.io.IOException;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -810,5 +813,37 @@ public class SchemaRepository {
         long nameHashCode64 = x.getName().nameHashCode64();
         schema.objects.remove(nameHashCode64);
         return false;
+    }
+    public void registerSchemaObject(DatabaseMetaData metadata, String catalog, String schemaPattern,
+                                     String tableNamePattern, String types[]) throws SQLException {
+        Schema schema = getDefaultSchema();
+        ResultSet rc = metadata.getTables(catalog, schemaPattern, tableNamePattern, types);
+        while (rc.next()) {
+            String tblCat = rc.getString("TABLE_CAT");
+            String tblSchem = rc.getString("TABLE_SCHEM");
+            String tblName = rc.getString("TABLE_NAME");
+            JDBCSchemaObject so = new JDBCSchemaObject(tblName, SchemaObjectType.Table);
+            registerSchemaObject(schema.getName(), so);
+            ResultSet resultSet = metadata.getColumns(tblCat, tblSchem, tblName, null);
+            while (resultSet.next()) {
+                String name = resultSet.getString("COLUMN_NAME");
+                String type = resultSet.getString("TYPE_NAME");
+                int size = resultSet.getInt("COLUMN_SIZE");
+                SQLColumnDefinition colDef = new SQLColumnDefinition();
+                colDef.setName(name);
+                colDef.setDataType(new SQLDataTypeImpl(type, size));
+                so.addColumn(colDef);
+            }
+        }
+        try {
+            rc.close();
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+
+    public void registerSchemaObject(String schemaName, SchemaObject obj) {
+        Schema schema = findSchema(schemaName, true);
+        schema.objects.put(obj.nameHashCode64(), obj);
     }
 }

@@ -2235,28 +2235,24 @@ class SchemaResolveVisitorFactory {
                 return;
             }
 
-            String alias = from.getAlias();
 
             SchemaObject table = repository.findTable((SQLExprTableSource) from);
             if (table != null) {
-                SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) table.getStatement();
-                for (SQLTableElement e : createTableStmt.getTableElementList()) {
-                    if (e instanceof SQLColumnDefinition) {
-                        SQLColumnDefinition column = (SQLColumnDefinition) e;
 
-                        if (alias != null) {
-                            SQLPropertyExpr name = new SQLPropertyExpr(alias, column.getName().getSimpleName());
-                            name.setResolvedColumn(column);
-                            columns.add(new SQLSelectItem(name));
-                        } else {
-                            SQLIdentifierExpr name = (SQLIdentifierExpr) column.getName().clone();
-                            name.setResolvedColumn(column);
-                            columns.add(new SQLSelectItem(name));
+                if (table instanceof JDBCSchemaObject) {
+                    for (SQLColumnDefinition e : ((JDBCSchemaObject) table).getColumns()) {
+                        addColumnDefinition(from, columns, e);
+                    }
+                } else {
+                    SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) table.getStatement();
+                    for (SQLTableElement e : createTableStmt.getTableElementList()) {
+                        if (e instanceof SQLColumnDefinition) {
+                            SQLColumnDefinition column = (SQLColumnDefinition) e;
+                            addColumnDefinition(from, columns, column);
                         }
-
-
                     }
                 }
+
             }
             return;
         }
@@ -2265,6 +2261,22 @@ class SchemaResolveVisitorFactory {
             SQLJoinTableSource join = (SQLJoinTableSource) from;
             extractColumns(visitor, join.getLeft(), columns);
             extractColumns(visitor, join.getRight(), columns);
+        }
+    }
+
+    private static void addColumnDefinition(SQLTableSource from, List<SQLSelectItem> columns,
+                                            SQLColumnDefinition column) {
+        String alias = from.getAlias();
+        if (alias != null) {
+            SQLPropertyExpr name = new SQLPropertyExpr(alias, column.getName().getSimpleName());
+            name.setResolvedColumn(column);
+            name.setResolvedTableSource(from);
+            columns.add(new SQLSelectItem(name));
+        } else {
+            SQLIdentifierExpr name = (SQLIdentifierExpr) column.getName().clone();
+            name.setResolvedColumn(column);
+            name.setResolvedTableSource(from);
+            columns.add(new SQLSelectItem(name));
         }
     }
 
