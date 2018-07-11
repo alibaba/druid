@@ -122,8 +122,8 @@ public class DataSourceCreator {
     private void loadNameList() {
         Set<String> names = new HashSet<String>();
         for (String n : properties.stringPropertyNames()) {
-            if (n.contains(".")) {
-                names.add(n.split("\\.")[0]);
+            if (n.contains(".url")) {
+                names.add(n.split("\\.url")[0]);
             }
         }
         if (!names.isEmpty()) {
