@@ -1445,12 +1445,19 @@ public class SQLExprParser extends SQLParser {
 
         accept(Token.RPAREN);
 
+        if (lexer.identifierEquals(FnvHash.Constants.FILTER)) {
+            filter(aggregateExpr);
+        }
+
         if (lexer.token == Token.OVER) {
             over(aggregateExpr);
-
         }
 
         return aggregateExpr;
+    }
+
+    protected void filter(SQLAggregateExpr aggregateExpr) {
+
     }
 
     protected void over(SQLAggregateExpr aggregateExpr) {

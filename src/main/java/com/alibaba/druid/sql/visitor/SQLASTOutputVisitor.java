@@ -1562,6 +1562,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             over.accept(this);
         }
 
+        final SQLExpr filter = x.getFilter();
+        if (filter != null) {
+            print0(ucase ? "FILTER (WHERE " : "filter (where ");
+            printExpr(filter);
+            print(')');
+        }
+
         this.parameterized = parameterized;
         return false;
     }
