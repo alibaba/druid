@@ -62,6 +62,8 @@ public interface FilterChain {
 
     int getFilterSize();
 
+    int getPos();
+
     FilterChain cloneChain();
 
     <T> T unwrap(Wrapper wrapper, java.lang.Class<T> iface) throws java.sql.SQLException;

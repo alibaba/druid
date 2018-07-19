@@ -194,4 +194,8 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     public String toString() {
         return SQLUtils.toSQLString(this, dbType);
     }
+
+    public String toLowerCaseString() {
+        return SQLUtils.toSQLString(this, dbType, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+    }
 }

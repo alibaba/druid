@@ -34,8 +34,6 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     private SQLOrderBy orderBy;
 
-    protected List<SQLHint> hints;
-
     public OdpsSelectQueryBlock(){
         dbType = JdbcConstants.ODPS;
 
@@ -70,21 +68,6 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
             if (other.limit != null) return false;
         } else if (!limit.equals(other.limit)) return false;
         return true;
-    }
-
-    public List<SQLHint> getHintsDirect() {
-        return hints;
-    }
-
-    public List<SQLHint> getHints() {
-        if (hints == null) {
-            hints = new ArrayList<SQLHint>(2);
-        }
-        return hints;
-    }
-
-    public void setHints(List<SQLHint> hints) {
-        this.hints = hints;
     }
 
     @Override

@@ -22,10 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
@@ -39,14 +36,13 @@ import com.alibaba.druid.util.JdbcConstants;
 public class MySqlCreateTableStatement extends SQLCreateTableStatement implements MySqlStatement {
 
     private Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
-
     private List<SQLCommentHint>   hints        = new ArrayList<SQLCommentHint>();
-
     private List<SQLCommentHint>   optionHints  = new ArrayList<SQLCommentHint>();
-
-
-    
     private SQLName                tableGroup;
+
+    protected SQLPartitionBy dbPartitionBy;
+    protected SQLPartitionBy tablePartitionBy;
+    protected SQLExpr        tbpartitions;
 
     public MySqlCreateTableStatement(){
         super (JdbcConstants.MYSQL);
@@ -81,7 +77,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         if (visitor instanceof MySqlASTVisitor) {
             accept0((MySqlASTVisitor) visitor);
         } else {
-            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+            super.accept0(visitor);
         }
     }
 
@@ -391,5 +387,38 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         MySqlCreateTableStatement x = new MySqlCreateTableStatement();
         cloneTo(x);
         return x;
+    }
+
+    public SQLPartitionBy getDbPartitionBy() {
+        return dbPartitionBy;
+    }
+
+    public void setDbPartitionBy(SQLPartitionBy x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.dbPartitionBy = x;
+    }
+
+    public SQLPartitionBy getTablePartitionBy() {
+        return tablePartitionBy;
+    }
+
+    public void setTablePartitionBy(SQLPartitionBy x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.tablePartitionBy = x;
+    }
+
+    public SQLExpr getTbpartitions() {
+        return tbpartitions;
+    }
+
+    public void setTbpartitions(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.tbpartitions = x;
     }
 }

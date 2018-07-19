@@ -2245,9 +2245,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(ucase ? "MONITORING" : "monitoring");
         }
 
-        if (x.getPartitioning() != null) {
+        SQLPartitionBy partitionBy = x.getPartitioning();
+        if (partitionBy != null) {
             println();
-            x.getPartitioning().accept(this);
+            print0(ucase ? "PARTITION BY " : "partition by ");
+            partitionBy.accept(this);
         }
 
         if (x.getCluster() != null) {
@@ -3026,5 +3028,13 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print0(ucase ? "ADD COLUMN " : "add column ");
         printAndAccept(x.getColumns(), ", ");
         return false;
+    }
+
+    protected void visitAggreateRest(SQLAggregateExpr x) {
+        SQLOrderBy orderBy = x.getWithinGroup();
+        if (orderBy != null) {
+            print(' ');
+            orderBy.accept(this);
+        }
     }
 }

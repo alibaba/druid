@@ -73,6 +73,12 @@ public class ParameterizedOutputVisitorUtils {
 
     public static String parameterize(String sql
             , String dbType
+            , List<Object> outParameters, VisitorFeature ...features) {
+        return parameterize(sql, dbType, null, outParameters, features);
+    }
+
+    public static String parameterize(String sql
+            , String dbType
             , SQLSelectListCache selectListCache, List<Object> outParameters, VisitorFeature ...visitorFeatures) {
 
         final SQLParserFeature[] features = outParameters == null

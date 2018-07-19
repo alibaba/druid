@@ -24,6 +24,7 @@ public enum  VisitorFeature {
     OutputSkipSelectListCacheString,
     OutputSkipInsertColumnsString,
     OutputParameterizedQuesUnMergeInList,
+    OutputParameterizedQuesUnMergeOr,
 
     /**
      * @deprecated

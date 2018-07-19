@@ -218,7 +218,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     public ResultSet executeQuery() throws SQLException {
         checkOpen();
 
-        incrementExecuteCount();
+        incrementExecuteQueryCount();
         transactionRecord(sql);
 
         oracleSetRowPrefetch();
@@ -248,7 +248,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     public int executeUpdate() throws SQLException {
         checkOpen();
 
-        incrementExecuteCount();
+        incrementExecuteUpdateCount();
         transactionRecord(sql);
 
         conn.beforeExecute();
@@ -558,7 +558,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     public int[] executeBatch() throws SQLException {
         checkOpen();
 
-        incrementExecuteCount();
+        incrementExecuteBatchCount();
         transactionRecord(sql);
 
         conn.beforeExecute();

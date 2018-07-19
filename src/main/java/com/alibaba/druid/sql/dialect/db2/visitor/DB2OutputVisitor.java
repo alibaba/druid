@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntervalUnit;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2CreateTableStatement;
@@ -125,6 +126,7 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
         SQLPartitionBy partitionBy = x.getPartitioning();
         if (partitionBy != null) {
             println();
+            print0(ucase ? "PARTITION BY " : "partition by ");
             partitionBy.accept(this);
         }
 
@@ -164,6 +166,33 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
             print0(ucase ? unit.name() : unit.name_lcase);
             print(ucase ? 'S' : 's');
         }
+        return false;
+    }
+
+    public boolean visit(SQLColumnDefinition.Identity x) {
+        print0(ucase ? "GENERATED ALWAYS AS IDENTITY" : "generated always as identity");
+
+        final Integer seed = x.getSeed();
+        final Integer increment = x.getIncrement();
+
+        if (seed != null || increment != null) {
+            print0(" (");
+        }
+
+        if (seed != null) {
+            print0(ucase ? "START WITH " : "start with ");
+            print(seed);
+            if (increment != null) {
+                print0(", ");
+            }
+        }
+
+        if (increment != null) {
+            print0(ucase ? "INCREMENT BY " : "increment by ");
+            print(increment);
+            print(')');
+        }
+
         return false;
     }
 }

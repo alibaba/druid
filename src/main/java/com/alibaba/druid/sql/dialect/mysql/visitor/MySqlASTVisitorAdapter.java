@@ -789,6 +789,16 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
     }
 
     @Override
+    public boolean visit(MySqlLockTableStatement.Item x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlLockTableStatement.Item x) {
+
+    }
+
+    @Override
     public boolean visit(MySqlUnlockTablesStatement x) {
         return true;
     }

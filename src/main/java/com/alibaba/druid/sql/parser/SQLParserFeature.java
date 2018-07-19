@@ -24,7 +24,9 @@ public enum SQLParserFeature {
     OptimizedForForParameterizedSkipValue,
     KeepComments,
     SkipComments,
-    StrictForWall
+    StrictForWall,
+
+    PipesAsConcat, // for mysql
     ;
 
     private SQLParserFeature(){

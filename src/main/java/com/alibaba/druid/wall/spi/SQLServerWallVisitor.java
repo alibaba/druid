@@ -347,4 +347,9 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     public List<WallUpdateCheckItem> getUpdateCheckItems() {
         return updateCheckItems;
     }
+
+    public boolean visit(SQLJoinTableSource x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
 }

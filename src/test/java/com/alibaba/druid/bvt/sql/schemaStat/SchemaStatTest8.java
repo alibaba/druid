@@ -30,7 +30,7 @@ public class SchemaStatTest8 extends TestCase {
 //        System.out.println(statVisitor.getGroupByColumns()); // group by
         System.out.println("relationships : " + statVisitor.getRelationships()); // group by
 
-        Assert.assertEquals(6, statVisitor.getColumns().size());
-        Assert.assertEquals(6, statVisitor.getConditions().size());
+        assertEquals(8, statVisitor.getColumns().size());
+        assertEquals(6, statVisitor.getConditions().size());
     }
 }

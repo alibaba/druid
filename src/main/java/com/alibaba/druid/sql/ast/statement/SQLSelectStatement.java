@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -84,5 +85,9 @@ public class SQLSelectStatement extends SQLStatementImpl {
     @Override
     public List<SQLObject> getChildren() {
         return Collections.<SQLObject>singletonList(select);
+    }
+
+    public boolean addWhere(SQLExpr where) {
+        return select.addWhere(where);
     }
 }

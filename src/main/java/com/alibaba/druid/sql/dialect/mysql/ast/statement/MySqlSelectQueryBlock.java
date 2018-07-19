@@ -39,7 +39,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     private SQLName              procedureName;
     private List<SQLExpr>        procedureArgumentList;
     private boolean              lockInShareMode;
-    private List<SQLCommentHint> hints;
     private SQLName              forcePartition; // for petadata
 
     public MySqlSelectQueryBlock(){
@@ -72,25 +71,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
         x.lockInShareMode = lockInShareMode;
 
         return x;
-    }
-
-    public int getHintsSize() {
-        if (hints == null) {
-            return 0;
-        }
-
-        return hints.size();
-    }
-
-    public List<SQLCommentHint> getHints() {
-        if (hints == null) {
-            hints = new ArrayList<SQLCommentHint>(2);
-        }
-        return hints;
-    }
-
-    public void setHints(List<SQLCommentHint> hints) {
-        this.hints = hints;
     }
 
     public boolean isLockInShareMode() {

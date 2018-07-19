@@ -17,12 +17,14 @@ package com.alibaba.druid.sql.dialect.db2.parser;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 
 
 public class DB2StatementParser extends SQLStatementParser {
@@ -75,10 +77,17 @@ public class DB2StatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     accept(Token.NULL);
                     alterColumn.setSetNotNull(true);
-                } else {
-                    accept(Token.DEFAULT);
+                } else if (lexer.token() == Token.DEFAULT) {
+                    lexer.nextToken();
                     SQLExpr defaultValue = this.exprParser.expr();
                     alterColumn.setSetDefault(defaultValue);
+                } else if (lexer.identifierEquals(FnvHash.Constants.DATA)) {
+                    lexer.nextToken();
+                    acceptIdentifier("TYPE");
+                    SQLDataType dataType = this.exprParser.parseDataType();
+                    alterColumn.setDataType(dataType);
+                } else {
+                    throw new ParserException("TODO : " + lexer.info());
                 }
             } else if (lexer.token() == Token.DROP) {
                 lexer.nextToken();

@@ -35,7 +35,9 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
     protected SQLAggregateOption  option;
     protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
     protected SQLKeep             keep;
+    protected SQLExpr             filter;
     protected SQLOver             over;
+    protected SQLName             overRef;
     protected SQLOrderBy          withinGroup;
     protected Boolean             ignoreNulls      = false;
 
@@ -104,6 +106,17 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
         }
         this.over = over;
     }
+
+    public SQLName getOverRef() {
+        return overRef;
+    }
+
+    public void setOverRef(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.overRef = x;
+    }
     
     public SQLKeep getKeep() {
         return keep;
@@ -139,6 +152,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
             acceptChild(visitor, this.arguments);
             acceptChild(visitor, this.keep);
             acceptChild(visitor, this.over);
+            acceptChild(visitor, this.overRef);
             acceptChild(visitor, this.withinGroup);
         }
 
@@ -162,53 +176,37 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((arguments == null) ? 0 : arguments.hashCode());
-        result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
-        result = prime * result + ((option == null) ? 0 : option.hashCode());
-        result = prime * result + ((over == null) ? 0 : over.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLAggregateExpr that = (SQLAggregateExpr) o;
+
+        if (methodNameHashCod64 != that.methodNameHashCod64) return false;
+        if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null) return false;
+        if (option != that.option) return false;
+        if (arguments != null ? !arguments.equals(that.arguments) : that.arguments != null) return false;
+        if (keep != null ? !keep.equals(that.keep) : that.keep != null) return false;
+        if (filter != null ? !filter.equals(that.filter) : that.filter != null) return false;
+        if (over != null ? !over.equals(that.over) : that.over != null) return false;
+        if (overRef != null ? !overRef.equals(that.overRef) : that.overRef != null) return false;
+        if (withinGroup != null ? !withinGroup.equals(that.withinGroup) : that.withinGroup != null) return false;
+        return ignoreNulls != null ? ignoreNulls.equals(that.ignoreNulls) : that.ignoreNulls == null;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        SQLAggregateExpr other = (SQLAggregateExpr) obj;
-        if (arguments == null) {
-            if (other.arguments != null) {
-                return false;
-            }
-        } else if (!arguments.equals(other.arguments)) {
-            return false;
-        }
-        if (methodName == null) {
-            if (other.methodName != null) {
-                return false;
-            }
-        } else if (!methodName.equals(other.methodName)) {
-            return false;
-        }
-        if (over == null) {
-            if (other.over != null) {
-                return false;
-            }
-        } else if (!over.equals(other.over)) {
-            return false;
-        }
-        if (option != other.option) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        int result = methodName != null ? methodName.hashCode() : 0;
+        result = 31 * result + (int) (methodNameHashCod64 ^ (methodNameHashCod64 >>> 32));
+        result = 31 * result + (option != null ? option.hashCode() : 0);
+        result = 31 * result + (arguments != null ? arguments.hashCode() : 0);
+        result = 31 * result + (keep != null ? keep.hashCode() : 0);
+        result = 31 * result + (filter != null ? filter.hashCode() : 0);
+        result = 31 * result + (over != null ? over.hashCode() : 0);
+        result = 31 * result + (overRef != null ? overRef.hashCode() : 0);
+        result = 31 * result + (withinGroup != null ? withinGroup.hashCode() : 0);
+        result = 31 * result + (ignoreNulls != null ? ignoreNulls.hashCode() : 0);
+        return result;
     }
 
     public SQLAggregateExpr clone() {
@@ -224,8 +222,16 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
             x.setKeep(keep.clone());
         }
 
+        if (filter != null) {
+            x.setFilter(filter.clone());
+        }
+
         if (over != null) {
             x.setOver(over.clone());
+        }
+
+        if (overRef != null) {
+            x.setOverRef(overRef.clone());
         }
 
         if (withinGroup != null) {
@@ -235,6 +241,17 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
         x.ignoreNulls = ignoreNulls;
 
         return x;
+    }
+
+    public SQLExpr getFilter() {
+        return filter;
+    }
+
+    public void setFilter(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.filter = x;
     }
 
     public SQLDataType computeDataType() {
@@ -264,6 +281,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
         if (target == null) {
             return false;
         }
+
         for (int i = 0; i < arguments.size(); ++i) {
             if (arguments.get(i) == expr) {
                 arguments.set(i, target);
@@ -271,6 +289,17 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
                 return true;
             }
         }
+
+        if (overRef == expr) {
+            setOverRef((SQLName) target);
+            return true;
+        }
+
+        if (filter == expr) {
+            this.filter = target;
+            target.setParent(this);
+        }
+
         return false;
     }
 }

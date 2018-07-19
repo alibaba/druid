@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -320,5 +321,27 @@ public class SQLSelect extends SQLObjectImpl {
         }
 
         return null;
+    }
+
+    public boolean addWhere(SQLExpr where) {
+        if (where == null) {
+            return false;
+        }
+
+        if (query instanceof SQLSelectQueryBlock) {
+            ((SQLSelectQueryBlock) query).addWhere(where);
+            return true;
+        }
+
+        if (query instanceof SQLUnionQuery) {
+            SQLSelectQueryBlock queryBlock = new SQLSelectQueryBlock();
+            queryBlock.setFrom(new SQLSelect(query), "u");
+            queryBlock.addSelectItem(new SQLAllColumnExpr());
+            queryBlock.setParent(queryBlock);
+            query = queryBlock;
+            return true;
+        }
+
+        return false;
     }
 }

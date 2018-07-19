@@ -52,7 +52,17 @@ public class FilterManager {
     }
 
     public static final String getFilter(String alias) {
-        return aliasMap.get(alias);
+        if (alias == null) {
+            return null;
+        }
+
+        String filter = aliasMap.get(alias);
+
+        if (filter == null && alias.length() < 128) {
+            filter = alias;
+        }
+
+        return filter;
     }
 
     public static Properties loadFilterConfig() throws IOException {
@@ -118,6 +128,8 @@ public class FilterManager {
                 } catch (InstantiationException e) {
                     throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
                 } catch (IllegalAccessException e) {
+                    throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
+                } catch (RuntimeException e) {
                     throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
                 }
 

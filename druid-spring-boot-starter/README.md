@@ -12,12 +12,12 @@ Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Drui
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.8</version>
+       <version>1.1.10</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.8'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.10'
     
     ```
 2. 添加配置
@@ -111,7 +111,7 @@ spring.datasource.druid.two.max-active=20
 spring.datasource.druid.two.max-wait=20000
 ...
 ```
-**强烈注意**：Spring Boot 2.X 版本不再支持配置继承，多数据源的话每个数据源都需要单独配置，否则配置不会生效
+**强烈注意**：Spring Boot 2.X 版本不再支持配置继承，多数据源的话每个数据源的所有配置都需要单独配置，否则配置不会生效
 
 2. 创建数据源
 ```java

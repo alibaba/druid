@@ -118,6 +118,13 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         this.parameters.add(param);
     }
 
+    public void addArgument(SQLExpr arg) {
+        if (arg != null) {
+            arg.setParent(this);
+        }
+        this.parameters.add(arg);
+    }
+
     public void output(StringBuffer buf) {
         if (this.owner != null) {
             this.owner.output(buf);

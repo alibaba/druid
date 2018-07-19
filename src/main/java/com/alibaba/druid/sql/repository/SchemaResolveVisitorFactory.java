@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.dialect.db2.ast.DB2Object;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
@@ -2067,6 +2068,13 @@ class SchemaResolveVisitorFactory {
             ctx.setTableSource(from);
 
             from.accept(visitor);
+        } else if (x.getParent() != null && x.getParent().getParent() instanceof HiveInsert
+                && x.getParent().getParent().getParent() instanceof HiveMultiInsertStatement){
+            HiveMultiInsertStatement insert = (HiveMultiInsertStatement) x.getParent().getParent().getParent();
+            if (insert.getFrom() instanceof SQLExprTableSource) {
+                from = insert.getFrom();
+                ctx.setTableSource(from);
+            }
         }
 
         List<SQLSelectItem> selectList = x.getSelectList();
@@ -2077,9 +2085,7 @@ class SchemaResolveVisitorFactory {
             SQLExpr expr = selectItem.getExpr();
             if (expr instanceof SQLAllColumnExpr) {
                 SQLAllColumnExpr allColumnExpr = (SQLAllColumnExpr) expr;
-                if (from instanceof SQLExprTableSource) {
-                    allColumnExpr.setResolvedTableSource(from);
-                }
+                allColumnExpr.setResolvedTableSource(from);
 
                 visitor.visit(allColumnExpr);
 

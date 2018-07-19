@@ -292,4 +292,13 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
 
         return false;
     }
+
+    public boolean addWhere(SQLExpr where) {
+        if (where == null) {
+            return false;
+        }
+
+        this.addCondition(where);
+        return true;
+    }
 }

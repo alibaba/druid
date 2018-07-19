@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.sql;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -66,5 +68,13 @@ public class PagerUtilsTest_Count_MySql_0 extends TestCase {
                 "\tSELECT id, name\n" +
                 "\tFROM t2\n" +
                 ") ALIAS_COUNT", result);
+    }
+
+    public void test_mysql_select() throws Exception {
+        SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseStatements("select * from t", JdbcConstants.MYSQL).get(0);
+        PagerUtils.limit(stmt.getSelect(), stmt.getDbType(), 10, 10);
+        assertEquals("SELECT *\n" +
+                "FROM t\n" +
+                "LIMIT 10, 10", stmt.toString());
     }
 }

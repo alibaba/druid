@@ -100,23 +100,62 @@ public class SQLSelectParser extends SQLParser {
     }
 
     public SQLSelectQuery queryRest(SQLSelectQuery selectQuery) {
+        return queryRest(selectQuery, true);
+    }
+
+    public SQLSelectQuery queryRest(SQLSelectQuery selectQuery, boolean acceptUnion) {
+        if (!acceptUnion) {
+            return selectQuery;
+        }
+
         if (lexer.token == Token.UNION) {
-            lexer.nextToken();
-
-            SQLUnionQuery union = createSQLUnionQuery();
-            union.setLeft(selectQuery);
-
-            if (lexer.token == Token.ALL) {
-                union.setOperator(SQLUnionOperator.UNION_ALL);
+            do {
                 lexer.nextToken();
-            } else if (lexer.token == Token.DISTINCT) {
-                union.setOperator(SQLUnionOperator.DISTINCT);
-                lexer.nextToken();
-            }
-            SQLSelectQuery right = this.query();
-            union.setRight(right);
 
-            return unionRest(union);
+                SQLUnionQuery union = createSQLUnionQuery();
+                if (union.getLeft() == null) {
+                    union.setLeft(selectQuery);
+                }
+
+                boolean paren = lexer.token == Token.LPAREN;
+
+                if (lexer.token == Token.ALL) {
+                    union.setOperator(SQLUnionOperator.UNION_ALL);
+                    lexer.nextToken();
+                } else if (lexer.token == Token.DISTINCT) {
+                    union.setOperator(SQLUnionOperator.DISTINCT);
+                    lexer.nextToken();
+                }
+                SQLSelectQuery right = this.query(paren ? null : union, false);
+                union.setRight(right);
+
+                if (!paren) {
+                    if (right instanceof SQLSelectQueryBlock) {
+                        SQLSelectQueryBlock rightQuery = (SQLSelectQueryBlock) right;
+                        SQLOrderBy orderBy = rightQuery.getOrderBy();
+                        SQLLimit limit = rightQuery.getLimit();
+                        if (orderBy != null && limit == null) {
+                            union.setOrderBy(orderBy);
+                            rightQuery.setOrderBy(null);
+                        }
+                    } else if (right instanceof SQLUnionQuery) {
+                        SQLUnionQuery rightUnion = (SQLUnionQuery) right;
+                        if (rightUnion.getOrderBy() != null) {
+                            union.setOrderBy(rightUnion.getOrderBy());
+                            rightUnion.setOrderBy(null);
+                        }
+                    }
+                }
+
+                union = unionRest(union);
+
+                selectQuery = union;
+
+            } while (lexer.token() == Token.UNION);
+
+            selectQuery = queryRest(selectQuery, true);
+
+            return selectQuery;
         }
 
         if (lexer.token == Token.EXCEPT) {
@@ -127,10 +166,10 @@ public class SQLSelectParser extends SQLParser {
 
             union.setOperator(SQLUnionOperator.EXCEPT);
 
-            SQLSelectQuery right = this.query();
+            SQLSelectQuery right = this.query(union, false);
             union.setRight(right);
 
-            return union;
+            return queryRest(union, true);
         }
 
         if (lexer.token == Token.INTERSECT) {
@@ -141,13 +180,13 @@ public class SQLSelectParser extends SQLParser {
 
             union.setOperator(SQLUnionOperator.INTERSECT);
 
-            SQLSelectQuery right = this.query();
+            SQLSelectQuery right = this.query(union, false);
             union.setRight(right);
 
-            return union;
+            return queryRest(union, true);
         }
 
-        if (lexer.token == Token.MINUS) {
+        if (acceptUnion && lexer.token == Token.MINUS) {
             lexer.nextToken();
 
             SQLUnionQuery union = new SQLUnionQuery();
@@ -155,32 +194,44 @@ public class SQLSelectParser extends SQLParser {
 
             union.setOperator(SQLUnionOperator.MINUS);
 
-            SQLSelectQuery right = this.query();
+            SQLSelectQuery right = this.query(union, false);
             union.setRight(right);
 
-            return union;
+            return queryRest(union, true);
         }
 
         return selectQuery;
     }
 
     public SQLSelectQuery query() {
+        return query(null, true);
+    }
+
+    public SQLSelectQuery query(SQLObject parent) {
+        return query(parent, true);
+    }
+
+    public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
 
             SQLSelectQuery select = query();
             accept(Token.RPAREN);
 
-            return queryRest(select);
+            return queryRest(select, acceptUnion);
         }
-        
+
         SQLSelectQueryBlock queryBlock = new SQLSelectQueryBlock();
-        
+
         if (lexer.hasComment() && lexer.isKeepComments()) {
             queryBlock.addBeforeComment(lexer.readAndResetComments());
         }
 
         accept(Token.SELECT);
+
+        if (lexer.token() == Token.HINT) {
+            this.exprParser.parseHints(queryBlock.getHints());
+        }
 
         if (lexer.token == Token.COMMENT) {
             lexer.nextToken();
@@ -219,9 +270,31 @@ public class SQLSelectParser extends SQLParser {
 
         parseGroupBy(queryBlock);
 
+        parseSortBy(queryBlock);
+
         parseFetchClause(queryBlock);
 
-        return queryRest(queryBlock);
+        if (lexer.token() == Token.FOR) {
+            lexer.nextToken();
+            accept(Token.UPDATE);
+
+            queryBlock.setForUpdate(true);
+
+            if (lexer.identifierEquals(FnvHash.Constants.NO_WAIT) || lexer.identifierEquals(FnvHash.Constants.NOWAIT)) {
+                lexer.nextToken();
+                queryBlock.setNoWait(true);
+            } else if (lexer.identifierEquals(FnvHash.Constants.WAIT)) {
+                lexer.nextToken();
+                SQLExpr waitTime = this.exprParser.primary();
+                queryBlock.setWaitTime(waitTime);
+            }
+        }
+
+        return queryRest(queryBlock, acceptUnion);
+    }
+
+    protected void parseSortBy(SQLSelectQueryBlock queryBlock) {
+
     }
 
     protected void withSubquery(SQLSelect select) {
@@ -334,7 +407,24 @@ public class SQLSelectParser extends SQLParser {
                 long hash_lower = lexer.hash_lower();
                 lexer.nextTokenEq();
 
-                SQLExpr identExpr = new SQLIdentifierExpr(ident, hash_lower);
+                SQLExpr identExpr;
+                if (lexer.token == Token.LITERAL_CHARS) {
+                    String literal = lexer.stringVal;
+                    if (hash_lower == FnvHash.Constants.TIMESTAMP) {
+                        identExpr = new SQLTimestampExpr(literal);
+                        lexer.nextToken();
+                    } else if (hash_lower == FnvHash.Constants.DATE) {
+                        identExpr = new SQLDateExpr(literal);
+                        lexer.nextToken();
+                    } else if (hash_lower == FnvHash.Constants.REAL) {
+                        identExpr = new SQLRealExpr(Float.parseFloat(literal));
+                        lexer.nextToken();
+                    } else {
+                        identExpr = new SQLIdentifierExpr(ident, hash_lower);
+                    }
+                } else {
+                    identExpr = new SQLIdentifierExpr(ident, hash_lower);
+                }
 
                 if (lexer.token == Token.DOT) {
                     identExpr = this.exprParser.primaryRest(identExpr);
@@ -344,6 +434,7 @@ public class SQLSelectParser extends SQLParser {
                     SQLExpr rightExp;
 
                     lexer.nextToken();
+
                     try {
                         rightExp = this.exprParser.bitOr();
                     } catch (EOFParserException e) {
@@ -351,7 +442,31 @@ public class SQLSelectParser extends SQLParser {
                     }
 
                     where = new SQLBinaryOpExpr(identExpr, SQLBinaryOperator.Equality, rightExp, dbType);
+                    switch (lexer.token) {
+                        case BETWEEN:
+                        case IS:
+                        case EQ:
+                        case IN:
+                        case CONTAINS:
+                        case BANG_TILDE_STAR:
+                        case TILDE_EQ:
+                        case LT:
+                        case LTEQ:
+                        case LTEQGT:
+                        case GT:
+                        case GTEQ:
+                        case LTGT:
+                        case BANGEQ:
+                        case LIKE:
+                        case NOT:
+                            where = this.exprParser.relationalRest(where);
+                            break;
+                        default:
+                            break;
+                    }
+
                     where = this.exprParser.andRest(where);
+                    where = this.exprParser.xorRest(where);
                     where = this.exprParser.orRest(where);
                 } else {
                     identExpr = this.exprParser.primaryRest(identExpr);
@@ -361,18 +476,41 @@ public class SQLSelectParser extends SQLParser {
                 where = this.exprParser.expr();
             }
 //            where = this.exprParser.expr();
-            
+
             if (beforeComments != null) {
                 where.addBeforeComment(beforeComments);
             }
-            
+
             if (lexer.hasComment() && lexer.isKeepComments() //
                     && lexer.token != Token.INSERT // odps multi-insert
                     ) {
                 where.addAfterComment(lexer.readAndResetComments());
             }
-            
+
             queryBlock.setWhere(where);
+        }
+    }
+
+    protected void parseWindow(SQLSelectQueryBlock queryBlock) {
+        if (!(lexer.identifierEquals(FnvHash.Constants.WINDOW) || lexer.token == Token.WINDOW)) {
+            return;
+        }
+
+        lexer.nextToken();
+
+        for (;;) {
+            SQLName name = this.exprParser.name();
+            accept(Token.AS);
+            SQLOver over = new SQLOver();
+            this.exprParser.over(over);
+            queryBlock.addWindow(new SQLWindow(name, over));
+
+            if (lexer.token == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
         }
     }
     
@@ -533,10 +671,10 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
             SQLTableSource tableSource;
             if (lexer.token == Token.SELECT || lexer.token == Token.WITH
-            		|| lexer.token == Token.SEL) {
+                    || lexer.token == Token.SEL) {
                 SQLSelect select = select();
                 accept(Token.RPAREN);
-                SQLSelectQuery query = queryRest(select.getQuery());
+                SQLSelectQuery query = queryRest(select.getQuery(), true);
                 if (query instanceof SQLUnionQuery) {
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                 } else {
@@ -550,7 +688,59 @@ public class SQLSelectParser extends SQLParser {
                 accept(Token.RPAREN);
             }
 
+            if (lexer.token == Token.AS
+                    && tableSource instanceof SQLValuesTableSource
+                    && ((SQLValuesTableSource) tableSource).getColumns().size() == 0)
+            {
+                lexer.nextToken();
+
+                String alias = this.tableAlias();
+                tableSource.setAlias(alias);
+
+                SQLValuesTableSource values = (SQLValuesTableSource) tableSource;
+                accept(Token.LPAREN);
+                this.exprParser.names(values.getColumns(), values);
+                accept(Token.RPAREN);
+            }
+
             return parseTableSourceRest(tableSource);
+        }
+
+        if (lexer.token() == Token.VALUES) {
+            lexer.nextToken();
+            SQLValuesTableSource tableSource = new SQLValuesTableSource();
+
+            for (;;) {
+                accept(Token.LPAREN);
+                SQLListExpr listExpr = new SQLListExpr();
+                this.exprParser.exprList(listExpr.getItems(), listExpr);
+                accept(Token.RPAREN);
+
+                listExpr.setParent(tableSource);
+
+                tableSource.getValues().add(listExpr);
+
+                if (lexer.token == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+
+            if (lexer.token == Token.RPAREN) {
+                return tableSource;
+            }
+
+            String alias = this.tableAlias();
+            if (alias != null) {
+                tableSource.setAlias(alias);
+            }
+
+            accept(Token.LPAREN);
+            this.exprParser.names(tableSource.getColumns(), tableSource);
+            accept(Token.RPAREN);
+
+            return tableSource;
         }
 
         if (lexer.token == Token.SELECT) {
@@ -562,11 +752,11 @@ public class SQLSelectParser extends SQLParser {
         parseTableSourceQueryTableExpr(tableReference);
 
         SQLTableSource tableSrc = parseTableSourceRest(tableReference);
-        
+
         if (lexer.hasComment() && lexer.isKeepComments()) {
             tableSrc.addAfterComment(lexer.readAndResetComments());
         }
-        
+
         return tableSrc;
     }
 
@@ -822,6 +1012,7 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token == Token.FETCH) {
             lexer.nextToken();
             if (lexer.token == Token.FIRST
+                    || lexer.token == Token.NEXT
                     || lexer.identifierEquals(FnvHash.Constants.NEXT)) {
                 lexer.nextToken();
             } else {

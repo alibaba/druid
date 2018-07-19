@@ -18,6 +18,7 @@ package com.alibaba.druid.stat;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -366,26 +367,32 @@ public class TableStat {
         }
 
         public String toString() {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(this.column.toString());
-            stringBuilder.append(' ');
-            stringBuilder.append(this.operator);
+            StringBuilder buf = new StringBuilder();
+            buf.append(this.column.toString());
+            buf.append(' ');
+            buf.append(this.operator);
 
             if (values.size() == 1) {
-                stringBuilder.append(' ');
-                stringBuilder.append(String.valueOf(this.values.get(0)));
+                buf.append(' ');
+                buf.append(String.valueOf(this.values.get(0)));
             } else if (values.size() > 0) {
-                stringBuilder.append(" (");
+                buf.append(" (");
                 for (int i = 0; i < values.size(); ++i) {
                     if (i != 0) {
-                        stringBuilder.append(", ");
+                        buf.append(", ");
                     }
-                    stringBuilder.append(String.valueOf(values.get(i)));
+                    Object val = values.get(i);
+                    if (val instanceof String) {
+                        String jsonStr = JSONUtils.toJSONString(val);
+                        buf.append(jsonStr);
+                    } else {
+                        buf.append(String.valueOf(val));
+                    }
                 }
-                stringBuilder.append(")");
+                buf.append(")");
             }
 
-            return stringBuilder.toString();
+            return buf.toString();
         }
     }
 
@@ -446,7 +453,7 @@ public class TableStat {
 
         public String getFullName() {
             if (fullName == null) {
-                if (table != null) {
+                if (table == null) {
                     fullName = name;
                 } else {
                     fullName = table + '.' + name;

@@ -312,4 +312,13 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         result = 31 * result + (hints != null ? hints.hashCode() : 0);
         return result;
     }
+
+    public boolean addWhere(SQLExpr where) {
+        if (where == null) {
+            return false;
+        }
+
+        this.addCondition(where);
+        return true;
+    }
 }

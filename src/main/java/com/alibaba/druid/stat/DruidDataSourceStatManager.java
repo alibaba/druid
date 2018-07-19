@@ -343,11 +343,15 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 SimpleType.LONG, //
                 SimpleType.STRING, //
 
-                // 40 -
+                // 40 - 44
                 SimpleType.DATE, //
                 SimpleType.DATE, //
                 SimpleType.LONG, //
-                SimpleType.LONG //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+
+                // 45
+                SimpleType.LONG, //
         //
         };
 
@@ -413,6 +417,9 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "LastCreateErrorTime", //
                 "CreateErrorCount", //
                 "DiscardCount", //
+                "ExecuteQueryCount", //
+
+                "ExecuteUpdateCount", //
         //
         };
 

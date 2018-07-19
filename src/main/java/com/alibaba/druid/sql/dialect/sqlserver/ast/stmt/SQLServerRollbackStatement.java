@@ -40,7 +40,7 @@ public class SQLServerRollbackStatement extends SQLRollbackStatement implements 
         if (visitor instanceof SQLServerASTVisitor) {
             accept0((SQLServerASTVisitor) visitor);
         } else {
-            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+            super.accept0(visitor);
         }
     }
 

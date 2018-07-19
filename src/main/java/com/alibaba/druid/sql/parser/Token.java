@@ -100,6 +100,9 @@ public enum Token {
     END("END"), 
     EXISTS("EXISTS"), 
     IN("IN"),
+    CONTAINS("CONTAINS"),
+    RLIKE("RLIKE"),
+    FULLTEXT("FULLTEXT"),
 
     NEW("NEW"), 
     ASC("ASC"), 

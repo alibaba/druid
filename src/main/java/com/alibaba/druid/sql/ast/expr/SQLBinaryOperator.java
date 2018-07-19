@@ -58,6 +58,7 @@ public enum SQLBinaryOperator {
     LessThanOrGreater("<>", 110), 
     
     Like("LIKE", 110),
+    SoudsLike("SOUNDS LIKE", 110),
     NotLike("NOT LIKE", 110),
 
     ILike("ILIKE", 110),

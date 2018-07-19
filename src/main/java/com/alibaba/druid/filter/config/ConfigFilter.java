@@ -111,12 +111,12 @@ public class ConfigFilter extends FilterAdapter {
         }
 
         DruidDataSource dataSource = (DruidDataSource) dataSourceProxy;
-        Properties connectinProperties = dataSource.getConnectProperties();
+        Properties connectionProperties = dataSource.getConnectProperties();
 
-        Properties configFileProperties = loadPropertyFromConfigFile(connectinProperties);
+        Properties configFileProperties = loadPropertyFromConfigFile(connectionProperties);
 
         // 判断是否需要解密，如果需要就进行解密行动
-        boolean decrypt = isDecrypt(connectinProperties, configFileProperties);
+        boolean decrypt = isDecrypt(connectionProperties, configFileProperties);
 
         if (configFileProperties == null) {
             if (decrypt) {
@@ -136,8 +136,8 @@ public class ConfigFilter extends FilterAdapter {
         }
     }
 
-    public boolean isDecrypt(Properties connectinProperties, Properties configFileProperties) {
-        String decrypterId = connectinProperties.getProperty(CONFIG_DECRYPT);
+    public boolean isDecrypt(Properties connectionProperties, Properties configFileProperties) {
+        String decrypterId = connectionProperties.getProperty(CONFIG_DECRYPT);
         if (decrypterId == null || decrypterId.length() == 0) {
             if (configFileProperties != null) {
                 decrypterId = configFileProperties.getProperty(CONFIG_DECRYPT);
@@ -151,8 +151,8 @@ public class ConfigFilter extends FilterAdapter {
         return Boolean.valueOf(decrypterId);
     }
 
-    Properties loadPropertyFromConfigFile(Properties connectinProperties) {
-        String configFile = connectinProperties.getProperty(CONFIG_FILE);
+    Properties loadPropertyFromConfigFile(Properties connectionProperties) {
+        String configFile = connectionProperties.getProperty(CONFIG_FILE);
 
         if (configFile == null) {
             configFile = System.getProperty(SYS_PROP_CONFIG_FILE);
@@ -206,14 +206,14 @@ public class ConfigFilter extends FilterAdapter {
         }
     }
 
-    public PublicKey getPublicKey(Properties connectinProperties, Properties configFileProperties) {
+    public PublicKey getPublicKey(Properties connectionProperties, Properties configFileProperties) {
         String key = null;
         if (configFileProperties != null) {
             key = configFileProperties.getProperty(CONFIG_KEY);
         }
 
-        if (StringUtils.isEmpty(key) && connectinProperties != null) {
-            key = connectinProperties.getProperty(CONFIG_KEY);
+        if (StringUtils.isEmpty(key) && connectionProperties != null) {
+            key = connectionProperties.getProperty(CONFIG_KEY);
         }
 
         if (StringUtils.isEmpty(key)) {

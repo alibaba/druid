@@ -25,7 +25,7 @@ public interface JdbcConstants {
 
     String DB2                        = "db2";
 
-    String DB2_DRIVER                 = "COM.ibm.db2.jdbc.app.DB2Driver";
+    String DB2_DRIVER                 = "com.ibm.db2.jcc.DB2Driver";
 
     String POSTGRESQL                 = "postgresql";
     String POSTGRESQL_DRIVER          = "org.postgresql.Driver";
