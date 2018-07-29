@@ -47,14 +47,26 @@ public class ConfigTools {
 	public static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKHGwq7q2RmwuRgKxBypQHw0mYu4BQZ3eMsTrdK8E6igRcxsobUC7uT0SoxIjl1WveWniCASejoQtn/BY6hVKWsCAwEAAQ==";
 
 	public static void main(String[] args) throws Exception {
-		String keyLength = args[0];
-		String[] arr = genKeyPair(Integer.parseInt(keyLength));
-		System.out.println("keySize:"+keyLength);
-		System.out.println("privateKey:" + arr[0]);
-		System.out.println("publicKey:" + arr[1]);
-		int paramsLength = args.length;
-		for(int i = 0;i<paramsLength;i++) {
-		    System.out.println("secret---"+(i+1)+":" + encrypt(arr[0], args[i]));
+		if(null == args || args.length == 0){
+			System.out.println("参数不能为空!");
+			return;
+		}
+		if(args.length==1){
+			String password = args[0];
+			String[] arr = genKeyPair(512);
+			System.out.println("privateKey:" + arr[0]);
+			System.out.println("publicKey:" + arr[1]);
+			System.out.println("password:" + encrypt(arr[0], password));
+		}else{
+			String keyLength = args[0];
+			String[] arr = genKeyPair(Integer.parseInt(keyLength));
+			System.out.println("keySize:"+keyLength);
+			System.out.println("privateKey:" + arr[0]);
+			System.out.println("publicKey:" + arr[1]);
+			int paramsLength = args.length;
+			for(int i = 0;i<paramsLength;i++) {
+			    System.out.println("secret---"+(i+1)+":" + encrypt(arr[0], args[i]));
+			}
 		}
 	}
 
