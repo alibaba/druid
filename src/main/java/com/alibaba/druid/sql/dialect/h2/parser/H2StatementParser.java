@@ -18,11 +18,14 @@ package com.alibaba.druid.sql.dialect.h2.parser;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.parser.*;
-import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class H2StatementParser extends SQLStatementParser {
@@ -42,6 +45,7 @@ public class H2StatementParser extends SQLStatementParser {
         return new H2SelectParser(this.exprParser, selectListCache);
     }
 
+    @Override
     public SQLStatement parseMerge() {
         accept(Token.MERGE);
         accept(Token.INTO);
@@ -74,4 +78,36 @@ public class H2StatementParser extends SQLStatementParser {
 
         return stmt;
     }
+
+    @Override
+    protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
+        super.parseInsert0(insertStatement, acceptSubQuery);
+        parseSetStatement(insertStatement);
+    }
+
+    private void parseSetStatement(SQLInsertInto insertStatement) {
+        if (lexer.token() == Token.SET) {
+            lexer.nextToken();
+            SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
+            insertStatement.addValueCause(values);
+
+            for (; ; ) {
+                SQLName name = this.exprParser.name();
+                insertStatement.addColumn(name);
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                } else {
+                    accept(Token.COLONEQ);
+                }
+                values.addValue(this.exprParser.expr());
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+        }
+    }
+
 }
