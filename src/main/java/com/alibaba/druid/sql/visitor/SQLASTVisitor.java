@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -799,4 +799,50 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLDropTypeStatement x);
     void endVisit(SQLDropTypeStatement x);
+
+    boolean visit(SQLExternalRecordFormat x);
+    void endVisit(SQLExternalRecordFormat x);
+
+    boolean visit(SQLArrayDataType x);
+    void endVisit(SQLArrayDataType x);
+
+    boolean visit(SQLMapDataType x);
+    void endVisit(SQLMapDataType x);
+
+    boolean visit(SQLStructDataType x);
+    void endVisit(SQLStructDataType x);
+
+    boolean visit(SQLStructDataType.Field x);
+    void endVisit(SQLStructDataType.Field x);
+
+    boolean visit(SQLDropMaterializedViewStatement x);
+    void endVisit(SQLDropMaterializedViewStatement x);
+
+    boolean visit(SQLAlterTableRenameIndex x);
+    void endVisit(SQLAlterTableRenameIndex x);
+
+    boolean visit(SQLAlterSequenceStatement x);
+    void endVisit(SQLAlterSequenceStatement x);
+
+    boolean visit(SQLAlterTableExchangePartition x);
+    void endVisit(SQLAlterTableExchangePartition x);
+
+    boolean visit(SQLValuesExpr x);
+    void endVisit(SQLValuesExpr x);
+
+    boolean visit(SQLValuesTableSource x);
+    void endVisit(SQLValuesTableSource x);
+
+    boolean visit(SQLContainsExpr x);
+    void endVisit(SQLContainsExpr x);
+
+    boolean visit(SQLRealExpr x);
+    void endVisit(SQLRealExpr x);
+
+    boolean visit(SQLWindow x);
+    void endVisit(SQLWindow x);
+
+    boolean visit(SQLDumpStatement x);
+    void endVisit(SQLDumpStatement x);
+
 }

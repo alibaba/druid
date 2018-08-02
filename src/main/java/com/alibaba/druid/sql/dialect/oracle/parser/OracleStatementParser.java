@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -606,6 +606,15 @@ public class OracleStatementParser extends SQLStatementParser {
                     continue;
                 }
 
+                if (lexer.identifierEquals(FnvHash.Constants.MATERIALIZED)) {
+                    lexer.reset(savePoint);
+
+                    SQLStatement stmt = parseDropMaterializedView();
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
+
                 throw new ParserException("TODO : " + lexer.info());
             }
 
@@ -706,6 +715,21 @@ public class OracleStatementParser extends SQLStatementParser {
         stmt.setDbType(dbType);
 
         acceptIdentifier("TYPE");
+
+        stmt.setName(this.exprParser.name());
+        return stmt;
+    }
+
+    public SQLStatement parseDropMaterializedView() {
+        if (lexer.token() == Token.DROP) {
+            lexer.nextToken();
+        }
+        SQLDropMaterializedViewStatement stmt = new SQLDropMaterializedViewStatement();
+        stmt.setDbType(dbType);
+
+        acceptIdentifier("MATERIALIZED");
+
+        accept(Token.VIEW);
 
         stmt.setName(this.exprParser.name());
         return stmt;
@@ -1406,6 +1430,9 @@ public class OracleStatementParser extends SQLStatementParser {
         } else if (lexer.token() == Token.FUNCTION) {
             lexer.reset(savePoint);
             return parseAlterFunction();
+        } else if (lexer.token() == Token.SEQUENCE) {
+            lexer.reset(savePoint);
+            return parseAlterSequence();
         } else if (lexer.identifierEquals(FnvHash.Constants.TYPE)) {
             lexer.reset(savePoint);
             return parseAlterType();
@@ -1633,6 +1660,11 @@ public class OracleStatementParser extends SQLStatementParser {
             SQLName indexName = this.exprParser.name();
             SQLAlterTableDropIndex item = new SQLAlterTableDropIndex();
             item.setIndexName(indexName);
+            stmt.addItem(item);
+        } else if (lexer.token() == Token.PRIMARY) {
+            lexer.nextToken();
+            accept(Token.KEY);
+            SQLAlterTableDropPrimaryKey item = new SQLAlterTableDropPrimaryKey();
             stmt.addItem(item);
         } else {
             throw new ParserException("TODO : " + lexer.info());
@@ -2446,8 +2478,6 @@ public class OracleStatementParser extends SQLStatementParser {
                         break;
                     }
                 }
-
-                break;
             } else if (lexer.identifierEquals("GLOBAL")) {
                 lexer.nextToken();
                 stmt.setGlobal(true);
@@ -2493,6 +2523,78 @@ public class OracleStatementParser extends SQLStatementParser {
                 break;
             }
         }
+        return stmt;
+    }
+
+    public SQLAlterSequenceStatement parseAlterSequence() {
+        accept(Token.ALTER);
+
+        accept(Token.SEQUENCE);
+
+        SQLAlterSequenceStatement stmt = new SQLAlterSequenceStatement();
+        stmt.setDbType(dbType);
+        stmt.setName(this.exprParser.name());
+
+        for (;;) {
+            if (lexer.token() == Token.START) {
+                lexer.nextToken();
+                accept(Token.WITH);
+                stmt.setStartWith(this.exprParser.expr());
+                continue;
+            } else if (lexer.identifierEquals("INCREMENT")) {
+                lexer.nextToken();
+                accept(Token.BY);
+                stmt.setIncrementBy(this.exprParser.expr());
+                continue;
+            } else if (lexer.token() == Token.CACHE) {
+                lexer.nextToken();
+                stmt.setCache(Boolean.TRUE);
+
+                if (lexer.token() == Token.LITERAL_INT || lexer.token() == Token.QUES) {
+                    stmt.setCacheValue(this.exprParser.primary());
+                }
+
+                continue;
+            } else if (lexer.token() == Token.NOCACHE) {
+                lexer.nextToken();
+                stmt.setCache(Boolean.FALSE);
+                continue;
+            } else if (lexer.token() == Token.ORDER) {
+                lexer.nextToken();
+                stmt.setOrder(Boolean.TRUE);
+                continue;
+            } else if (lexer.identifierEquals("NOORDER")) {
+                lexer.nextToken();
+                stmt.setOrder(Boolean.FALSE);
+                continue;
+            } else if (lexer.identifierEquals("CYCLE")) {
+                lexer.nextToken();
+                stmt.setCycle(Boolean.TRUE);
+                continue;
+            } else if (lexer.identifierEquals("NOCYCLE")) {
+                lexer.nextToken();
+                stmt.setCycle(Boolean.FALSE);
+                continue;
+            } else if (lexer.identifierEquals("MINVALUE")) {
+                lexer.nextToken();
+                stmt.setMinValue(this.exprParser.expr());
+                continue;
+            } else if (lexer.identifierEquals("MAXVALUE")) {
+                lexer.nextToken();
+                stmt.setMaxValue(this.exprParser.expr());
+                continue;
+            } else if (lexer.identifierEquals("NOMAXVALUE")) {
+                lexer.nextToken();
+                stmt.setNoMaxValue(true);
+                continue;
+            } else if (lexer.identifierEquals("NOMINVALUE")) {
+                lexer.nextToken();
+                stmt.setNoMinValue(true);
+                continue;
+            }
+            break;
+        }
+
         return stmt;
     }
 

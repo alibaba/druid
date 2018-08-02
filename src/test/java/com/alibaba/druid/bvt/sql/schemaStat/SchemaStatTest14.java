@@ -17,13 +17,11 @@ public class SchemaStatTest14 extends TestCase {
     public void test_schemaStat() throws Exception {
         String sql = "delete r from t_res r where id=1 ";
 
-        String dbType = JdbcConstants.MYSQL;
-        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
-        SQLStatement stmt = parser.parseStatementList().get(0);
+        SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL).get(0);
 
         System.out.println(stmt);
 
-        SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(dbType);
+        SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(statVisitor);
 
         Set<TableStat.Relationship> relationships = statVisitor.getRelationships();

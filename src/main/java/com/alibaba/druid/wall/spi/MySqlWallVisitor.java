@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -35,7 +33,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -449,5 +446,10 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     public List<WallUpdateCheckItem> getUpdateCheckItems() {
         return updateCheckItems;
+    }
+
+    public boolean visit(SQLJoinTableSource x) {
+        WallVisitorUtils.check(this, x);
+        return true;
     }
 }

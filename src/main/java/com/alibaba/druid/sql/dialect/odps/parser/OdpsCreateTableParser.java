@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.odps.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -177,6 +178,19 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
             lexer.nextToken();
             stmt.setLifecycle(this.exprParser.expr());
+        }
+
+        while (lexer.identifierEquals(FnvHash.Constants.STORED)) {
+            lexer.nextToken();
+            if (lexer.token() == Token.AS) {
+                lexer.nextToken();
+                SQLName storedAs = this.exprParser.name();
+                stmt.setStoredAs(storedAs);
+            } else {
+                accept(Token.BY);
+                SQLExpr storedBy = this.exprParser.expr();
+                stmt.setStoredBy(storedBy);
+            }
         }
         
         return stmt;

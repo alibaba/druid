@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class MySqlCreateTriggerTest3 extends MysqlTest {
                 "\tFOR EACH ROW\n" +
                 "BEGIN\n" +
                 "\tINSERT INTO log_table\n" +
-                "\tVALUES (\"delete row from test.t1\");\n" +
+                "\tVALUES ('delete row from test.t1');\n" +
                 "\tINSERT INTO t4\n" +
                 "\tVALUES (old.col1, old.col1 + 5, old.col1 + 7);\n" +
                 "END;", stmt.toString());

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,19 +93,21 @@ public class PagerUtils {
             return limitSQLServer(select, dbType, offset, count, check);
         }
 
-        if (query instanceof SQLSelectQueryBlock) {
-            return limitQueryBlock(select, dbType, offset, count, check);
-        }
-
-        throw new UnsupportedOperationException();
+        return limitQueryBlock(select, dbType, offset, count, check);
     }
 
     private static boolean limitQueryBlock(SQLSelect select, String dbType, int offset, int count, boolean check) {
-        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) select.getQuery();
+        SQLSelectQuery query = select.getQuery();
+        if (query instanceof SQLUnionQuery) {
+            SQLUnionQuery union = (SQLUnionQuery) query;
+            return limitUnion(union, dbType, offset, count, check);
+        }
+
+        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
         if (JdbcConstants.MYSQL.equals(dbType) || //
             JdbcConstants.MARIADB.equals(dbType) || //
             JdbcConstants.H2.equals(dbType)) {
-            return limitMySqlQueryBlock((MySqlSelectQueryBlock) queryBlock, dbType, offset, count, check);
+            return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
         }
 
         if (JdbcConstants.POSTGRESQL.equals(dbType)) {
@@ -369,7 +371,38 @@ public class PagerUtils {
         return true;
     }
 
-    private static boolean limitMySqlQueryBlock(MySqlSelectQueryBlock queryBlock, String dbType, int offset, int count, boolean check) {
+    private static boolean limitMySqlQueryBlock(SQLSelectQueryBlock queryBlock, String dbType, int offset, int count, boolean check) {
+        SQLLimit limit = queryBlock.getLimit();
+        if (limit != null) {
+            if (offset > 0) {
+                limit.setOffset(new SQLIntegerExpr(offset));
+            }
+
+            if (check && limit.getRowCount() instanceof SQLNumericLiteralExpr) {
+                int rowCount = ((SQLNumericLiteralExpr) limit.getRowCount()).getNumber().intValue();
+                if (rowCount <= count && offset <= 0) {
+                    return false;
+                }
+            } else if (check && limit.getRowCount() instanceof SQLVariantRefExpr) {
+                return false;
+            }
+
+            limit.setRowCount(new SQLIntegerExpr(count));
+        }
+
+        if (limit == null) {
+            limit = new SQLLimit();
+            if (offset > 0) {
+                limit.setOffset(new SQLIntegerExpr(offset));
+            }
+            limit.setRowCount(new SQLIntegerExpr(count));
+            queryBlock.setLimit(limit);
+        }
+
+        return true;
+    }
+
+    private static boolean limitUnion(SQLUnionQuery queryBlock, String dbType, int offset, int count, boolean check) {
         SQLLimit limit = queryBlock.getLimit();
         if (limit != null) {
             if (offset > 0) {

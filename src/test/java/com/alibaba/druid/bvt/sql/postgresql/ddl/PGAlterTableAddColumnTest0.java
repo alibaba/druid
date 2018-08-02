@@ -17,13 +17,14 @@ public class PGAlterTableAddColumnTest0 extends PGTest {
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-        print(statementList);
+        SQLStatement stmt = statementList.get(0);
+        assertEquals("ALTER TABLE products\n" +
+                "\tADD COLUMN description text;", stmt.toString());
 
         Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());

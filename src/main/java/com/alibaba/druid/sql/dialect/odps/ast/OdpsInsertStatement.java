@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,9 @@ package com.alibaba.druid.sql.dialect.odps.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -30,7 +29,7 @@ public class OdpsInsertStatement extends SQLStatementImpl {
 
     private SQLTableSource from;
 
-    private List<OdpsInsert>       items = new ArrayList<OdpsInsert>();
+    private List<HiveInsert>       items = new ArrayList<HiveInsert>();
     
     public OdpsInsertStatement() {
         super (JdbcConstants.ODPS);
@@ -44,11 +43,11 @@ public class OdpsInsertStatement extends SQLStatementImpl {
         return from;
     }
 
-    public List<OdpsInsert> getItems() {
+    public List<HiveInsert> getItems() {
         return items;
     }
     
-    public void addItem(OdpsInsert item) {
+    public void addItem(HiveInsert item) {
         if (item != null) {
             item.setParent(this);
         }

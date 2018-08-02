@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
-import com.alibaba.druid.sql.ast.statement.SQLAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.*;
@@ -923,16 +922,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
 
     @Override
     public void endVisit(OracleCreateTableStatement.Organization x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
 
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -291,5 +291,14 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
         }
 
         return false;
+    }
+
+    public boolean addWhere(SQLExpr where) {
+        if (where == null) {
+            return false;
+        }
+
+        this.addCondition(where);
+        return true;
     }
 }

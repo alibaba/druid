@@ -12,12 +12,12 @@ Spring Boot with Druid support, help you simplify Druid config in Spring Boot.
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.5</version>
+       <version>1.1.10</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.5'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.10'
     ```
 2. Add configuration properties.
     ```xml
@@ -78,7 +78,6 @@ spring.datasource.druid.stat-view-servlet.deny=
 
 # With Spring monitoring properties, detail see Druid Wiki
 spring.datasource.druid.aop-patterns= # Spring monitoring AOP point, such as x.y.z.service.*, multiple separated by comma.
-# If 'spring.datasource.druid.aop-patterns' to be the agent class does not define interface need set 'spring.aop.proxy-target-class = true' .
 ```
 The Druid Spring Boot Starter is not limited to support for the above configuration properties, and the configurable properties that provide the ```setter``` method in [``` DruidDataSource```](https://github.com/alibaba/druid/blob/master/src/main/java/com/alibaba/druid/pool/DruidDataSource.java) will be supported. You can refer to the WIKI document or configure it via the IDE input prompt. The format of the configuration file You can choose ```.properties``` or``` .yml```, the effect is the same, in the configuration of more cases recommend the use of ```.yml```.
 
@@ -106,6 +105,8 @@ spring.datasource.druid.two.max-active=20
 spring.datasource.druid.two.max-wait=20000
 ...
 ```
+Warning: Spring Boot 2.X not support extents, please configure one by one. 
+
 2. Create DruidDataSource
 ```java
 @Primary

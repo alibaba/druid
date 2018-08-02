@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -161,6 +162,20 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             x.getLifecycle().accept(this);
         }
 
+        SQLExpr storedBy = x.getStoredBy();
+        if (storedBy != null) {
+            println();
+            print0(ucase ? "STORED BY " : "stored by ");
+            storedBy.accept(this);
+        }
+
+        SQLExpr storedAs = x.getStoredAs();
+        if (storedAs != null) {
+            println();
+            print0(ucase ? "STORED AS " : "stored as ");
+            storedAs.accept(this);
+        }
+
         if (x.getSelect() != null) {
             println();
             print0(ucase ? "AS" : "as");
@@ -209,7 +224,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         }
 
         for (int i = 0; i < x.getItems().size(); ++i) {
-            OdpsInsert insert = x.getItems().get(i);
+            HiveInsert insert = x.getItems().get(i);
             if (i != 0) {
                 println();
             }
@@ -219,12 +234,12 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     }
 
     @Override
-    public void endVisit(OdpsInsert x) {
+    public void endVisit(HiveInsert x) {
 
     }
 
     @Override
-    public boolean visit(OdpsInsert x) {
+    public boolean visit(HiveInsert x) {
         if (x.hasBeforeComment()) {
             printlnComments(x.getBeforeCommentsDirect());
         }
@@ -440,7 +455,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         print0(ucase ? "SELECT " : "select ");
 
-        List<SQLHint> hints = x.getHintsDirect();
+        List<SQLCommentHint> hints = x.getHintsDirect();
         if (hints != null) {
             printAndAccept(hints, " ");
             print(' ');

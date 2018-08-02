@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,10 +60,13 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected boolean                          onCommitDeleteRows;
 
     // for hive & odps
+    protected SQLExternalRecordFormat          rowFormat;
     protected final List<SQLColumnDefinition>  partitionColumns = new ArrayList<SQLColumnDefinition>(2);
     protected final List<SQLName>              clusteredBy = new ArrayList<SQLName>();
     protected final List<SQLSelectOrderByItem> sortedBy = new ArrayList<SQLSelectOrderByItem>();
     protected int                              buckets;
+
+    protected Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
 
     public SQLCreateTableStatement(){
 
@@ -229,6 +232,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
 
         this.partitioning = partitioning;
+    }
+
+    public Map<String, SQLObject> getTableOptions() {
+        return tableOptions;
     }
 
     @Override
@@ -1019,6 +1026,13 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         x.onCommitPreserveRows = onCommitPreserveRows;
         x.onCommitDeleteRows = onCommitDeleteRows;
+
+        if (tableOptions != null) {
+            for (Map.Entry<String, SQLObject> entry : tableOptions.entrySet()) {
+                SQLObject entryVal = entry.getValue().clone();
+                x.tableOptions.put(entry.getKey(), entryVal);
+            }
+        }
     }
 
     public SQLName getStoredAs() {
@@ -1080,5 +1094,25 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             column.setParent(this);
         }
         this.partitionColumns.add(column);
+    }
+
+    public SQLExternalRecordFormat getRowFormat() {
+        return rowFormat;
+    }
+
+    public void setRowFormat(SQLExternalRecordFormat x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.rowFormat = x;
+    }
+
+    public boolean isPrimaryColumn(long columnNameHash) {
+        SQLPrimaryKey pk = this.findPrimaryKey();
+        if (pk == null) {
+            return false;
+        }
+
+        return pk.containsColumn(columnNameHash);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,18 +43,18 @@ public class MySqlSelectTest_71_concat extends MysqlTest {
         stmt.accept(visitor);
         {
             String output = SQLUtils.toMySqlString(stmt);
-            assertEquals("SELECT CONCAT('afdf', 'erwhg', 'ads', 'dgs', 'rter') AS tstDiffQuoteConcat;", //
+            assertEquals("SELECT 'afdferwhgadsdgsrter' AS tstDiffQuoteConcat;", //
                                 output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("select CONCAT('afdf', 'erwhg', 'ads', 'dgs', 'rter') as tstDiffQuoteConcat;", //
+            assertEquals("select 'afdferwhgadsdgsrter' as tstDiffQuoteConcat;", //
                                 output);
         }
 
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
-            assertEquals("SELECT CONCAT(?, ?, ?, ?, ?) AS tstDiffQuoteConcat;", //
+            assertEquals("SELECT ? AS tstDiffQuoteConcat;", //
                     output);
         }
     }

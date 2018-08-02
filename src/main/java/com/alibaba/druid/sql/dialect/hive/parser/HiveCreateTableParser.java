@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.hive.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
@@ -120,6 +121,11 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             }
         }
 
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+            SQLExpr comment = this.exprParser.expr();
+            stmt.setComment(comment);
+        }
 
         if (lexer.token() == Token.PARTITIONED) {
             lexer.nextToken();
@@ -159,6 +165,23 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
+        if (lexer.token() == Token.ROW) {
+            lexer.nextToken();
+            acceptIdentifier("FORMAT");
+
+            if (lexer.identifierEquals(FnvHash.Constants.DELIMITED)) {
+                lexer.nextToken();
+                acceptIdentifier("FIELDS");
+                acceptIdentifier("TERMINATED");
+                accept(Token.BY);
+                SQLExternalRecordFormat format = new SQLExternalRecordFormat();
+                format.setTerminatedBy(this.exprParser.expr());
+                stmt.setRowFormat(format);
+            } else {
+                throw new ParserException("TODO " + lexer.info());
+            }
+        }
+
         if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
             lexer.nextToken();
             accept(Token.BY);
@@ -191,6 +214,26 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             accept(Token.AS);
             SQLName name = this.exprParser.name();
             stmt.setStoredAs(name);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+
+            for (;;) {
+                String name = lexer.stringVal();
+                lexer.nextToken();
+                accept(Token.EQ);
+                SQLExpr value = this.exprParser.primary();
+                stmt.getTableOptions().put(name, value);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+
+            accept(Token.RPAREN);
         }
 
         if (lexer.token() == Token.AS) {

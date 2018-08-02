@@ -12,12 +12,12 @@ Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Drui
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.5</version>
+       <version>1.1.10</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.5'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.10'
     
     ```
 2. 添加配置
@@ -81,7 +81,6 @@ spring.datasource.druid.stat-view-servlet.deny=
 
 # Spring监控配置，说明请参考Druid Github Wiki，配置_Druid和Spring关联监控配置
 spring.datasource.druid.aop-patterns= # Spring监控AOP切入点，如x.y.z.service.*,配置多个英文逗号分隔
-# 如果spring.datasource.druid.aop-patterns要代理的类没有定义interface请设置spring.aop.proxy-target-class=true
 ```
 Druid Spring Boot Starter 不仅限于对以上配置属性提供支持，[```DruidDataSource```](https://github.com/alibaba/druid/blob/master/src/main/java/com/alibaba/druid/pool/DruidDataSource.java) 内提供```setter```方法的可配置属性都将被支持。你可以参考WIKI文档或通过IDE输入提示来进行配置。配置文件的格式你可以选择```.properties```或```.yml```，效果是一样的，在配置较多的情况下推荐使用```.yml```。
 
@@ -112,6 +111,8 @@ spring.datasource.druid.two.max-active=20
 spring.datasource.druid.two.max-wait=20000
 ...
 ```
+**强烈注意**：Spring Boot 2.X 版本不再支持配置继承，多数据源的话每个数据源的所有配置都需要单独配置，否则配置不会生效
+
 2. 创建数据源
 ```java
 @Primary

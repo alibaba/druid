@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ public class MySqlLexer extends Lexer {
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
-	map.put("ALGORITHM", Token.ALGORITHM);
         map.put("DUAL", Token.DUAL);
         map.put("FALSE", Token.FALSE);
         map.put("IDENTIFIED", Token.IDENTIFIED);
@@ -62,6 +61,10 @@ public class MySqlLexer extends Lexer {
         map.put("UNDO", Token.UNDO);
         map.put("SQLSTATE", Token.SQLSTATE);
         map.put("CONDITION", Token.CONDITION);
+        map.put("MOD", Token.MOD);
+        map.put("CONTAINS", Token.CONTAINS);
+        map.put("RLIKE", Token.RLIKE);
+        map.put("FULLTEXT", Token.FULLTEXT);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }

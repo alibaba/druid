@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ public class OracleSelectTest81_join_brace extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(5, visitor.getTables().size());
-        assertEquals(14, visitor.getColumns().size());
+        assertEquals(19, visitor.getColumns().size());
         assertEquals(15, visitor.getConditions().size());
         assertEquals(4, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());

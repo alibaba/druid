@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ public class MySqlFlushStatement extends MySqlStatementImpl {
     private boolean slowLogs;
     private boolean status;
     private boolean userResources;
+    private boolean tableOption;
 
     public boolean isNoWriteToBinlog() {
         return noWriteToBinlog;
@@ -205,6 +206,14 @@ public class MySqlFlushStatement extends MySqlStatementImpl {
 
     public void setErrorLogs(boolean errorLogs) {
         this.errorLogs = errorLogs;
+    }
+
+    public boolean isTableOption() {
+        return tableOption;
+    }
+
+    public void setTableOption(boolean tableOption) {
+        this.tableOption = tableOption;
     }
 
     public void accept0(MySqlASTVisitor visitor) {

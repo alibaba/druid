@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
@@ -26,6 +29,36 @@ public class HiveASTVisitorAdapter extends SQLASTVisitorAdapter implements HiveA
 
     @Override
     public void endVisit(HiveCreateTableStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(HiveMultiInsertStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(HiveMultiInsertStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(HiveInsertStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(HiveInsertStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(HiveInsert x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(HiveInsert x) {
 
     }
 }

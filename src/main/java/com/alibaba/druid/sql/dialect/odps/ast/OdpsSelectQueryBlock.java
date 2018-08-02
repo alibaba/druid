@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,6 @@ import com.alibaba.druid.util.JdbcConstants;
 public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     private SQLOrderBy orderBy;
-
-    protected List<SQLHint> hints;
 
     public OdpsSelectQueryBlock(){
         dbType = JdbcConstants.ODPS;
@@ -70,21 +68,6 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
             if (other.limit != null) return false;
         } else if (!limit.equals(other.limit)) return false;
         return true;
-    }
-
-    public List<SQLHint> getHintsDirect() {
-        return hints;
-    }
-
-    public List<SQLHint> getHints() {
-        if (hints == null) {
-            hints = new ArrayList<SQLHint>(2);
-        }
-        return hints;
-    }
-
-    public void setHints(List<SQLHint> hints) {
-        this.hints = hints;
     }
 
     @Override

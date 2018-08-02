@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,22 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface HiveASTVisitor extends SQLASTVisitor {
     boolean visit(HiveCreateTableStatement x);
     void endVisit(HiveCreateTableStatement x);
+
+    boolean visit(HiveMultiInsertStatement x);
+    void endVisit(HiveMultiInsertStatement x);
+
+    boolean visit(HiveInsertStatement x);
+    void endVisit(HiveInsertStatement x);
+
+    boolean visit(HiveInsert x);
+    void endVisit(HiveInsert x);
 }

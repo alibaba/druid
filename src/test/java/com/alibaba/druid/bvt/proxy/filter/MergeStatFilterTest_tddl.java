@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,8 +46,27 @@ public class MergeStatFilterTest_tddl extends TestCase {
 
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xx");
-        dataSource.setFilters("mergeStat");
         dataSource.setDbType("mysql");
+
+//        {
+//            Connection conn = dataSource.getConnection();
+//            {
+//                Statement stmt = conn.createStatement();
+//                stmt.execute("select 1");
+//            }
+//            conn.close();
+//            System.out.println(conn.getClass().getName());
+//        }
+        dataSource.setFilters("mergeStat");
+
+        Connection conn = dataSource.getConnection();
+        {
+            Statement stmt = conn.createStatement();
+            stmt.execute("select 1");
+            System.out.println(stmt.getClass().getName());
+        }
+        conn.close();
+        System.out.println(conn.getClass().getName());
     }
 
     protected void tearDown() throws Exception {
@@ -69,7 +88,7 @@ public class MergeStatFilterTest_tddl extends TestCase {
             conn.close();
         }
 
-        Assert.assertEquals(1, dataSource.getDataSourceStat().getSqlStatMap().size());
+        Assert.assertEquals(2, dataSource.getDataSourceStat().getSqlStatMap().size());
 
     }
 

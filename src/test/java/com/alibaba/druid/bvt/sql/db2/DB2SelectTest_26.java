@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public class DB2SelectTest_26 extends DB2Test {
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
+        Assert.assertEquals(3, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("MK.M_BROAD_BAND_USER_FACT")));
 

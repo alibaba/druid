@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class MySqlCreateTriggerTest4 extends MysqlTest {
                 "\tON test.t2\n" +
                 "\tFOR EACH ROW\n" +
                 "INSERT INTO log_table\n" +
-                "VALUES (concat(\"inserted into table test.t2 values: (1c, _) = (\", CAST(NEW.col1 AS char(100)), \", \", convert(new.`_`, char(100)), \")\"));", stmt.toString());
+                "VALUES (concat('inserted into table test.t2 values: (1c, _) = (', CAST(NEW.col1 AS char(100)), ', ', convert(new.`_`, char(100)), ')'));", stmt.toString());
     }
 
 

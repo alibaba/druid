@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallFilter;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -49,9 +50,10 @@ class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean
         if (super.getUrl() == null) {
             super.setUrl(basicProperties.determineUrl());
         }
-        if (super.getDriverClassName() == null) {
-            super.setDriverClassName(basicProperties.determineDriverClassName());
+        if(super.getDriverClassName() == null){
+            super.setDriverClassName(basicProperties.getDriverClassName());
         }
+
     }
 
     @Autowired(required = false)

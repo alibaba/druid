@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,7 +145,7 @@ public class OracleSelectTest101 extends OracleTest {
 
         assertEquals(5, visitor.getTables().size());
         assertEquals(24, visitor.getColumns().size());
-        assertEquals(11, visitor.getConditions().size());
+        assertEquals(12, visitor.getConditions().size());
         assertEquals(4, visitor.getRelationships().size());
         assertEquals(1, visitor.getOrderByColumns().size());
     }

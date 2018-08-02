@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public class SQLParserUtils {
             return new OracleStatementParser(sql);
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType)) {
+        if (JdbcUtils.MYSQL.equals(dbType) || JdbcUtils.ALIYUN_DRDS.equals(dbType)) {
             return new MySqlStatementParser(sql, features);
         }
 

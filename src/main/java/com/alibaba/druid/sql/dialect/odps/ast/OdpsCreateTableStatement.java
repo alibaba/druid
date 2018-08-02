@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
     private SQLExprTableSource like;
 
+    protected SQLExpr storedBy;
     protected SQLExpr lifecycle;
 
     public OdpsCreateTableStatement(){
@@ -69,9 +70,21 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
             this.acceptChild(visitor, partitionColumns);
             this.acceptChild(visitor, clusteredBy);
             this.acceptChild(visitor, sortedBy);
+            this.acceptChild(visitor, storedBy);
             this.acceptChild(visitor, lifecycle);
             this.acceptChild(visitor, select);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLExpr getStoredBy() {
+        return storedBy;
+    }
+
+    public void setStoredBy(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedBy = x;
     }
 }

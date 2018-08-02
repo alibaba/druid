@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
@@ -23,16 +24,12 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAlterColumn extends SQLObjectImpl implements SQLAlterTableItem {
     private SQLName             originColumn;
-
     private SQLColumnDefinition column;
-
     private boolean             setNotNull;
-
     private boolean             dropNotNull;
-
     private SQLExpr             setDefault;
-
     private boolean             dropDefault;
+    private SQLDataType         dataType;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -87,10 +84,21 @@ public class SQLAlterTableAlterColumn extends SQLObjectImpl implements SQLAlterT
         return originColumn;
     }
 
-    public void setOriginColumn(SQLName originColumn) {
-        if (originColumn != null) {
-            originColumn.setParent(this);
+    public void setOriginColumn(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.originColumn = originColumn;
+        this.originColumn = x;
+    }
+
+    public SQLDataType getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(SQLDataType x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.dataType = x;
     }
 }

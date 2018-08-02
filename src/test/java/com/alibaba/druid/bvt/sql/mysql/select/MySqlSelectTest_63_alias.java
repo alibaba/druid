@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT totalNumber\n" +
-                            "\t, concat(\"\", ?, round(memberNumber, 0), \"\") AS totalDisplay\n" +
+                            "\t, concat('', ?, round(memberNumber, 0), '') AS totalDisplay\n" +
                             "FROM (\n" +
                             "\tSELECT COUNT(1) AS totalNumber, SUM(memberNumber) AS memberNumber\n" +
                             "\tFROM (\n" +
@@ -76,7 +76,7 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select totalNumber\n" +
-                            "\t, concat(\"\", ?, round(memberNumber, 0), \"\") as totalDisplay\n" +
+                            "\t, concat('', ?, round(memberNumber, 0), '') as totalDisplay\n" +
                             "from (\n" +
                             "\tselect count(1) as totalNumber, sum(memberNumber) as memberNumber\n" +
                             "\tfrom (\n" +
@@ -100,7 +100,7 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
             assertEquals("SELECT totalNumber\n" +
-                            "\t, concat(\"\", ?, round(memberNumber, ?), \"\") AS totalDisplay\n" +
+                            "\t, concat(?, ?, round(memberNumber, ?), ?) AS totalDisplay\n" +
                             "FROM (\n" +
                             "\tSELECT COUNT(1) AS totalNumber, SUM(memberNumber) AS memberNumber\n" +
                             "\tFROM (\n" +

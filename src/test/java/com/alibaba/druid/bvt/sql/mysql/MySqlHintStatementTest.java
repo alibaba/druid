@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,5 +47,14 @@ public class MySqlHintStatementTest extends TestCase {
                 + "\n) ENGINE = InnoDB CHARSET = utf8;"
                 + "\n"
                 + "\n/*!40101 SET character_set_client = @saved_cs_client */;", rs);
+    }
+    public void test_1() throws Exception {
+        String sql = "update "
+                     + "/*MS-MRCHISHUB-MH-MESSAGE-UPDATE*/ "
+                     + "/*+ INDEX(mh_message primary) */ "
+                     + "mh_message set gmt_modified = now(),status= '099' where id = 1244918;";
+        String rs = SQLUtils.formatMySql(sql);
+        assertEquals("UPDATE /*MS-MRCHISHUB-MH-MESSAGE-UPDATE*/ /*+ INDEX(mh_message primary) */ mh_message\n"
+                     + "SET gmt_modified = now(), status = '099'\n" + "WHERE id = 1244918;", rs);
     }
 }
