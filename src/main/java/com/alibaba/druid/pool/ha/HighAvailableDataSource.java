@@ -145,12 +145,20 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
         }
         DataSourceSelector selector = DataSourceSelectorFactory.getSelector(name, this);
         if (selector != null) {
-            this.selector = selector;
+            setDataSourceSelector(selector);
         }
     }
 
-    public DataSourceSelector getSelector() {
-        return selector;
+    public String getSelector() {
+        return selector == null ? null : selector.getName();
+    }
+
+    public DataSourceSelector getDataSourceSelector() {
+        return this.selector;
+    }
+
+    public void setDataSourceSelector(DataSourceSelector dataSourceSelector) {
+        this.selector = dataSourceSelector;
     }
 
     @Override
