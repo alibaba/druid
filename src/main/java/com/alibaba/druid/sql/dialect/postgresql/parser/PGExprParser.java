@@ -334,4 +334,15 @@ public class PGExprParser extends SQLExprParser {
         }
         return alias;
     }
+
+    protected void filter(SQLAggregateExpr x) {
+        if (lexer.identifierEquals(FnvHash.Constants.FILTER)) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            accept(Token.WHERE);
+            SQLExpr filter = this.expr();
+            accept(Token.RPAREN);
+            x.setFilter(filter);
+        }
+    }
 }

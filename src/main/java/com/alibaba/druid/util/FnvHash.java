@@ -652,5 +652,6 @@ public final class FnvHash {
         long INCREMENT = fnv1a_64_lower("INCREMENT");
 
         long OVERWRITE = fnv1a_64_lower("OVERWRITE");
+        long FILTER = fnv1a_64_lower("FILTER");
     }
 }
