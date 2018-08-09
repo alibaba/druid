@@ -156,6 +156,112 @@ spring.datasource.druid.filter.wall.config.drop-table-allow=false
 
 要想使自定义 Filter 配置生效需要将对应 Filter 的 ```enabled``` 设置为 ```true``` ，Druid Spring Boot Starter 默认会启用 StatFilter，你也可以将其 ```enabled``` 设置为 ```false``` 来禁用它。
 
+## 如何获取 Druid 的监控数据
+
+Druid 的监控数据可以通过 DruidStatManagerFacade 进行获取，获取到监控数据之后你可以将其暴露给你的监控系统进行使用。Druid 默认的监控系统数据也来源于此。下面给做一个简单的演示，在 Spring Boot 中如何通过 HTTP 接口将 Druid 监控数据以 JSON 的形式暴露出去，实际使用中你可以根据你的需要自由地对监控数据、暴露方式进行扩展。
+
+```java
+@RestController
+public class DruidStatController {
+    @GetMapping("/durid/stat")
+    public Object druidStat(){
+        // DruidStatManagerFacade#getDataSourceStatDataList 该方法可以获取所有数据源的监控数据，除此之外 DruidStatManagerFacade 还提供了一些其他方法，你可以按需选择使用。
+        return DruidStatManagerFacade.getInstance().getDataSourceStatDataList();
+    }
+}
+```
+
+```json
+[
+  {
+    "Identity": 1583082378,
+    "Name": "DataSource-1583082378",
+    "DbType": "h2",
+    "DriverClassName": "org.h2.Driver",
+    "URL": "jdbc:h2:file:./demo-db",
+    "UserName": "sa",
+    "FilterClassNames": [
+      "com.alibaba.druid.filter.stat.StatFilter"
+    ],
+    "WaitThreadCount": 0,
+    "NotEmptyWaitCount": 0,
+    "NotEmptyWaitMillis": 0,
+    "PoolingCount": 2,
+    "PoolingPeak": 2,
+    "PoolingPeakTime": 1533782955104,
+    "ActiveCount": 0,
+    "ActivePeak": 1,
+    "ActivePeakTime": 1533782955178,
+    "InitialSize": 2,
+    "MinIdle": 2,
+    "MaxActive": 30,
+    "QueryTimeout": 0,
+    "TransactionQueryTimeout": 0,
+    "LoginTimeout": 0,
+    "ValidConnectionCheckerClassName": null,
+    "ExceptionSorterClassName": null,
+    "TestOnBorrow": true,
+    "TestOnReturn": true,
+    "TestWhileIdle": true,
+    "DefaultAutoCommit": true,
+    "DefaultReadOnly": null,
+    "DefaultTransactionIsolation": null,
+    "LogicConnectCount": 103,
+    "LogicCloseCount": 103,
+    "LogicConnectErrorCount": 0,
+    "PhysicalConnectCount": 2,
+    "PhysicalCloseCount": 0,
+    "PhysicalConnectErrorCount": 0,
+    "ExecuteCount": 102,
+    "ErrorCount": 0,
+    "CommitCount": 100,
+    "RollbackCount": 0,
+    "PSCacheAccessCount": 100,
+    "PSCacheHitCount": 99,
+    "PSCacheMissCount": 1,
+    "StartTransactionCount": 100,
+    "TransactionHistogram": [
+      55,
+      44,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "ConnectionHoldTimeHistogram": [
+      53,
+      47,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "RemoveAbandoned": false,
+    "ClobOpenCount": 0,
+    "BlobOpenCount": 0,
+    "KeepAliveCheckCount": 0,
+    "KeepAlive": false,
+    "FailFast": false,
+    "MaxWait": 1234,
+    "MaxWaitThreadCount": -1,
+    "PoolPreparedStatements": true,
+    "MaxPoolPreparedStatementPerConnectionSize": 5,
+    "MinEvictableIdleTimeMillis": 30001,
+    "MaxEvictableIdleTimeMillis": 25200000,
+    "LogDifferentThread": true,
+    "RecycleErrorCount": 0,
+    "PreparedStatementOpenCount": 1,
+    "PreparedStatementClosedCount": 0,
+    "UseUnfairLock": true,
+    "InitGlobalVariants": false,
+    "InitVariants": false
+  }
+]
+```
+
 ## IDE 提示支持
 ![](https://raw.githubusercontent.com/lihengming/java-codes/master/shared-resources/github-images/druid-spring-boot-starter-ide-hint.jpg)
 
