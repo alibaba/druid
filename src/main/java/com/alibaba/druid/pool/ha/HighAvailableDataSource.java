@@ -89,14 +89,26 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     private DataSourceSelector selector = new RandomDataSourceSelector(this);
     private String dataSourceFile = DEFAULT_DATA_SOURCE_FILE;
 
+    private boolean inited = false;
+
     public void init() throws SQLException {
+        if (inited) {
+            return;
+        }
         synchronized (this) {
+            if (inited) {
+                return;
+            }
             if (dataSourceMap == null || dataSourceMap.isEmpty()) {
                 dataSourceMap = new DataSourceCreator(dataSourceFile).createMap(this);
             }
             if (selector == null) {
                 selector = new RandomDataSourceSelector(this);
             }
+            if (dataSourceMap == null || dataSourceMap.isEmpty()) {
+                LOG.warn("There is NO DataSource available!!! Please check your configuration.");
+            }
+            inited = true;
         }
     }
 
@@ -117,7 +129,12 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
 
     @Override
     public Connection getConnection() throws SQLException {
+        init();
         DataSource dataSource = selector.get();
+        if (dataSource == null) {
+            LOG.warn("Can NOT obtain DataSource, return null.");
+            return null;
+        }
         return dataSource.getConnection();
     }
 
