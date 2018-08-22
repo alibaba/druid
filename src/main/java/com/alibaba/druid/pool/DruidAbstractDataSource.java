@@ -122,6 +122,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int                             maxPoolPreparedStatementPerConnectionSize = 10;
 
     protected volatile boolean                         inited                                    = false;
+    protected volatile boolean                         initExceptionThrow                        = true;
 
     protected PrintWriter                              logWriter                                 = new PrintWriter(System.out);
 

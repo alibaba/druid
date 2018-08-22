@@ -26,7 +26,6 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -855,23 +854,27 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     this.createSchedulerFuture = createScheduler.submit(task);
                 }
             } else if (!asyncInit) {
-                try {
                     // init connections
-                    for (int i = 0; i < initialSize; ++i) {
-                        PhysicalConnectionInfo pyConnectInfo = createPhysicalConnection();
-                        DruidConnectionHolder holder = new DruidConnectionHolder(this, pyConnectInfo);
-                        connections[poolingCount] = holder;
-                        incrementPoolingCount();
+                    while (poolingCount < initialSize) {
+                        try {
+                            PhysicalConnectionInfo pyConnectInfo = createPhysicalConnection();
+                            DruidConnectionHolder holder = new DruidConnectionHolder(this, pyConnectInfo);
+                            connections[poolingCount++] = holder;
+                        } catch (SQLException ex) {
+                            LOG.error("init datasource error, url: " + this.getUrl(), ex);
+                            if (initExceptionThrow) {
+                                connectError = ex;
+                                break;
+                            } else {
+                                Thread.sleep(3000);
+                            }
+                        }
                     }
 
                     if (poolingCount > 0) {
                         poolingPeak = poolingCount;
                         poolingPeakTime = System.currentTimeMillis();
                     }
-                } catch (SQLException ex) {
-                    LOG.error("init datasource error, url: " + this.getUrl(), ex);
-                    connectError = ex;
-                }
             }
 
             createAndLogThread();
