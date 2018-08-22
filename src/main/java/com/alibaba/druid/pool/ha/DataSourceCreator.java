@@ -72,7 +72,7 @@ public class DataSourceCreator {
                                          HighAvailableDataSource haDataSource) throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
 
-        dataSource.setName(name);
+        dataSource.setName(name + "-" + System.identityHashCode(dataSource));
         dataSource.setUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
