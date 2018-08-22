@@ -14,7 +14,7 @@ public class InitExceptionThrowTest extends TestClone {
     private int connectCount = 0;
 
     protected void setUp() throws Exception {
-        dataSource.setInitExceptionThrow(true);
+        dataSource.setInitExceptionThrow(false);
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(new MockDriver() {
             public Connection connect(String url, Properties info) throws SQLException {
