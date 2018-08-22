@@ -2027,6 +2027,20 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return onFatalError;
     }
 
+    /**
+     * @ since 1.1.11
+     */
+    public boolean isInitExceptionThrow() {
+        return initExceptionThrow;
+    }
+
+    /**
+     * @ since 1.1.11
+     */
+    public void setInitExceptionThrow(boolean initExceptionThrow) {
+        this.initExceptionThrow = initExceptionThrow;
+    }
+
     public static class PhysicalConnectionInfo {
         private Connection connection;
         private long connectStartNanos;

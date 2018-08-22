@@ -887,7 +887,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initedTime = new Date();
             registerMbean();
 
-            if (connectError != null && poolingCount == 0) {
+            if (connectError != null && poolingCount == 0 && !(initExceptionThrow && !asyncInit)) {
                 throw connectError;
             }
 
