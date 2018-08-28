@@ -2028,14 +2028,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     /**
-     * @ since 1.1.11
+     * @since 1.1.11
      */
     public boolean isInitExceptionThrow() {
         return initExceptionThrow;
     }
 
     /**
-     * @ since 1.1.11
+     * @since 1.1.11
      */
     public void setInitExceptionThrow(boolean initExceptionThrow) {
         this.initExceptionThrow = initExceptionThrow;
