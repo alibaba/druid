@@ -2505,19 +2505,27 @@ public class SQLExprParser extends SQLParser {
         }
 
         SQLName typeExpr = name();
+        final long typeNameHashCode = typeExpr.nameHashCode64();
         String typeName = typeExpr.toString();
-        
-        if ("long".equalsIgnoreCase(typeName) // 
-                && lexer.identifierEquals("byte") //
+
+        if (typeNameHashCode == FnvHash.Constants.LONG
+                && lexer.identifierEquals(FnvHash.Constants.BYTE)
                 && JdbcConstants.MYSQL.equals(getDbType()) //
                 ) {
             typeName += (' ' + lexer.stringVal());
             lexer.nextToken();
-        } else if ("double".equalsIgnoreCase(typeName)
+        } else if (typeNameHashCode == FnvHash.Constants.DOUBLE
                 && JdbcConstants.POSTGRESQL.equals(getDbType()) //
                 ) {
             typeName += (' ' + lexer.stringVal());
             lexer.nextToken();
+        }
+
+        if (typeNameHashCode == FnvHash.Constants.UNSIGNED) {
+            if (lexer.token == Token.IDENTIFIER) {
+                typeName += (' ' + lexer.stringVal());
+                lexer.nextToken();
+            }
         }
 
         if (isCharType(typeName)) {
