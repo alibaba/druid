@@ -847,34 +847,34 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             SQLException connectError = null;
 
-            if (createScheduler != null) {
+            if (createScheduler != null && asyncInit) {
                 for (int i = 0; i < initialSize; ++i) {
                     createTaskCount++;
                     CreateConnectionTask task = new CreateConnectionTask(true);
                     this.createSchedulerFuture = createScheduler.submit(task);
                 }
             } else if (!asyncInit) {
-                    // init connections
-                    while (poolingCount < initialSize) {
-                        try {
-                            PhysicalConnectionInfo pyConnectInfo = createPhysicalConnection();
-                            DruidConnectionHolder holder = new DruidConnectionHolder(this, pyConnectInfo);
-                            connections[poolingCount++] = holder;
-                        } catch (SQLException ex) {
-                            LOG.error("init datasource error, url: " + this.getUrl(), ex);
-                            if (initExceptionThrow) {
-                                connectError = ex;
-                                break;
-                            } else {
-                                Thread.sleep(3000);
-                            }
+                // init connections
+                while (poolingCount < initialSize) {
+                    try {
+                        PhysicalConnectionInfo pyConnectInfo = createPhysicalConnection();
+                        DruidConnectionHolder holder = new DruidConnectionHolder(this, pyConnectInfo);
+                        connections[poolingCount++] = holder;
+                    } catch (SQLException ex) {
+                        LOG.error("init datasource error, url: " + this.getUrl(), ex);
+                        if (initExceptionThrow) {
+                            connectError = ex;
+                            break;
+                        } else {
+                            Thread.sleep(3000);
                         }
                     }
+                }
 
-                    if (poolingCount > 0) {
-                        poolingPeak = poolingCount;
-                        poolingPeakTime = System.currentTimeMillis();
-                    }
+                if (poolingCount > 0) {
+                    poolingPeak = poolingCount;
+                    poolingPeakTime = System.currentTimeMillis();
+                }
             }
 
             createAndLogThread();
