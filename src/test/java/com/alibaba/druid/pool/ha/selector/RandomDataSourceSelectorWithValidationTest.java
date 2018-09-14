@@ -30,8 +30,8 @@ public class RandomDataSourceSelectorWithValidationTest {
 
     @Test
     public void testOneDataSourceFailAndRecover() throws Exception {
-        ((RandomDataSourceSelector) highAvailableDataSource.getSelector()).getValidateThread().setSleepSeconds(3);
-        ((RandomDataSourceSelector) highAvailableDataSource.getSelector()).getRecoverThread().setSleepSeconds(3);
+        ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector()).getValidateThread().setSleepSeconds(3);
+        ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector()).getRecoverThread().setSleepSeconds(3);
 
         Thread.sleep(30 * 1000);
 
@@ -40,7 +40,7 @@ public class RandomDataSourceSelectorWithValidationTest {
         Thread.sleep(10 * 1000);
         assertTrue(dataSource.isTestOnReturn());
         for (int i = 0; i < 100; i++) {
-            assertNotEquals(dataSource, highAvailableDataSource.getSelector().get());
+            assertNotEquals(dataSource, highAvailableDataSource.getDataSourceSelector().get());
         }
 
         dataSource.setValidationQuery(null);
@@ -48,7 +48,7 @@ public class RandomDataSourceSelectorWithValidationTest {
         assertFalse(dataSource.isTestOnReturn());
         int count = 0;
         for (int i = 0; i < 100; i++) {
-            if (dataSource == highAvailableDataSource.getSelector().get()) {
+            if (dataSource == highAvailableDataSource.getDataSourceSelector().get()) {
                 count++;
             }
         }
@@ -57,8 +57,8 @@ public class RandomDataSourceSelectorWithValidationTest {
 
     @Test
     public void testAllDataSourceFail() throws Exception {
-        ((RandomDataSourceSelector) highAvailableDataSource.getSelector()).getValidateThread().setSleepSeconds(3);
-        ((RandomDataSourceSelector) highAvailableDataSource.getSelector()).getRecoverThread().setSleepSeconds(3);
+        ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector()).getValidateThread().setSleepSeconds(3);
+        ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector()).getRecoverThread().setSleepSeconds(3);
 
         Thread.sleep(30 * 1000);
 
@@ -73,7 +73,7 @@ public class RandomDataSourceSelectorWithValidationTest {
 
         int[] count = new int[2];
         for (int i = 0; i < 100; i++) {
-            DataSource dataSource = highAvailableDataSource.getSelector().get();
+            DataSource dataSource = highAvailableDataSource.getDataSourceSelector().get();
             if (foo == dataSource) {
                 count[0]++;
             } else if (bar == dataSource) {
