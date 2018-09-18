@@ -34,7 +34,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author lihengming [89921218@qq.com]
  */
 @ConfigurationProperties("spring.datasource.druid")
-class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean {
+public class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean {
     @Autowired
     private DataSourceProperties basicProperties;
 
