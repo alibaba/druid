@@ -1706,13 +1706,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             boolean result;
-            final long lastActiveTimeMillis = System.currentTimeMillis();
+            final long currentTimeMillis = System.currentTimeMillis();
+
+            if (phyTimeoutMillis > 0) {
+                long phyConnectTimeMillis = currentTimeMillis - holder.connectTimeMillis;
+                if (phyConnectTimeMillis > phyTimeoutMillis) {
+                    discardConnection(holder.conn);
+                    return;
+                }
+            }
+
             lock.lock();
             try {
                 activeCount--;
                 closeCount++;
 
-                result = putLast(holder, lastActiveTimeMillis);
+                result = putLast(holder, currentTimeMillis);
                 recycleCount++;
             } finally {
                 lock.unlock();
