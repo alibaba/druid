@@ -145,6 +145,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long                            minEvictableIdleTimeMillis                = DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
     protected volatile long                            maxEvictableIdleTimeMillis                = DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS;
     protected volatile long                            phyTimeoutMillis                          = DEFAULT_PHY_TIMEOUT_MILLIS;
+    protected volatile long                            phyMaxUseCount                            = -1;
 
     protected volatile boolean                         removeAbandoned;
     protected volatile long                            removeAbandonedTimeoutMillis              = 300 * 1000;
@@ -777,6 +778,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public void setPhyTimeoutMillis(long phyTimeoutMillis) {
         this.phyTimeoutMillis = phyTimeoutMillis;
+    }
+
+    public long getPhyMaxUseCount() {
+        return phyMaxUseCount;
+    }
+
+    public void setPhyMaxUseCount(long phyMaxUseCount) {
+        this.phyMaxUseCount = phyMaxUseCount;
     }
 
     public int getNumTestsPerEvictionRun() {

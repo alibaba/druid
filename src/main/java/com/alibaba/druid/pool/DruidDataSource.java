@@ -1671,6 +1671,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 return;
             }
 
+            if (phyMaxUseCount > 0 && holder.useCount >= phyMaxUseCount) {
+                discardConnection(holder.conn);
+                return;
+            }
+
             if (physicalConnection.isClosed()) {
                 lock.lock();
                 try {
@@ -2833,7 +2838,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     holer.lastActiveTimeMillis = System.currentTimeMillis();
                     put(holer);
                 } else {
-                    JdbcUtils.close(connection);
+                    try {
+                        connection.close();
+                    } catch (Exception e) {
+                        // skip
+                    }
                 }
             }
             Arrays.fill(keepAliveConnections, null);
