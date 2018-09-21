@@ -813,6 +813,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (MockDriver.class.getName().equals(driverClass)) {
                     driver = MockDriver.instance;
                 } else {
+                    if (jdbcUrl == null && (driverClass == null || driverClass.length() == 0)) {
+                        throw new SQLException("url not set");
+                    }
                     driver = JdbcUtils.createDriver(driverClassLoader, driverClass);
                 }
             } else {
@@ -1373,6 +1376,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         for (boolean createDirect = false;;) {
             if (createDirect) {
+                createStartNanosUpdater.set(this, System.nanoTime());
                 if (creatingCountUpdater.compareAndSet(this, 0, 1)) {
                     PhysicalConnectionInfo pyConnInfo = DruidDataSource.this.createPhysicalConnection();
                     holder = new DruidConnectionHolder(this, pyConnInfo);
@@ -1493,6 +1497,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                .append(", maxActive ").append(maxActive)//
                .append(", creating ").append(creatingCount)//
             ;
+            if (creatingCount > 0 && createStartNanos > 0) {
+                long createElapseMillis = (System.nanoTime() - createStartNanos) / (1000 * 1000);
+                if (createElapseMillis > 0) {
+                    buf.append(", createElapseMillis ").append(createElapseMillis);
+                }
+            }
 
             List<JdbcSqlStatValue> sqlList = this.getDataSourceStat().getRuningSqlList();
             for (int i = 0; i < sqlList.size(); ++i) {

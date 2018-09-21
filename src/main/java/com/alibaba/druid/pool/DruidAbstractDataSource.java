@@ -240,12 +240,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int                             directCreateCount                         = 0;
     protected volatile long                            createCount                               = 0L;
     protected volatile long                            destroyCount                              = 0L;
+    protected volatile long                            createStartNanos                          = 0L;
 
     final static AtomicIntegerFieldUpdater<DruidAbstractDataSource> createErrorCountUpdater      = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "createErrorCount");
     final static AtomicIntegerFieldUpdater<DruidAbstractDataSource> creatingCountUpdater         = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "creatingCount");
     final static AtomicIntegerFieldUpdater<DruidAbstractDataSource> directCreateCountUpdater     = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "directCreateCount");
     final static AtomicLongFieldUpdater<DruidAbstractDataSource>    createCountUpdater           = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "createCount");
     final static AtomicLongFieldUpdater<DruidAbstractDataSource>    destroyCountUpdater          = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "destroyCount");
+    final static AtomicLongFieldUpdater<DruidAbstractDataSource> createStartNanosUpdater         = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "createStartNanos");
 
     private Boolean                                    useUnfairLock                             = null;
     private boolean                                    useLocalSessionState                      = true;
@@ -1628,6 +1630,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 ? new HashMap<String, Object>()
                 : null;
 
+        createStartNanosUpdater.set(this, connectStartNanos);
         creatingCountUpdater.incrementAndGet(this);
         try {
             conn = createPhysicalConnection(url, physicalConnectProperties);
