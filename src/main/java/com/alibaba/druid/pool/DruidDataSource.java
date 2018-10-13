@@ -334,6 +334,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
+            String property = properties.getProperty("druid.phyMaxUseCount");
+            if (property != null && property.length() > 0) {
+                try {
+                    long value = Long.parseLong(property);
+                    this.setPhyMaxUseCount(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.phyMaxUseCount'", e);
+                }
+            }
+        }
+        {
             String property = properties.getProperty("druid.minEvictableIdleTimeMillis");
             if (property != null && property.length() > 0) {
                 try {
