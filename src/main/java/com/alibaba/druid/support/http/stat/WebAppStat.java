@@ -337,6 +337,7 @@ public class WebAppStat {
 
                     if (fullCount == 0) {
                         LOG.error("sessionStatMap is full");
+                        reset();
                     }
                 }
 
