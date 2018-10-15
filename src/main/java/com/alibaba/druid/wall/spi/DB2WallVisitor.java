@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -287,5 +287,10 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
 
     public List<WallUpdateCheckItem> getUpdateCheckItems() {
         return updateCheckItems;
+    }
+
+    public boolean visit(SQLJoinTableSource x) {
+        WallVisitorUtils.check(this, x);
+        return true;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -228,14 +228,20 @@ public class MySqlExprParser extends SQLExprParser {
                     return primaryRest(expr);
                 }
             } else if (expr instanceof SQLCharExpr) {
-                SQLMethodInvokeExpr concat = new SQLMethodInvokeExpr("CONCAT");
-                concat.addParameter(expr);
+                String text2 = ((SQLCharExpr) expr).getText();
                 do {
                     String chars = lexer.stringVal();
-                    concat.addParameter(new SQLCharExpr(chars));
+                    text2 += chars;
                     lexer.nextToken();
                 } while (lexer.token() == Token.LITERAL_CHARS || lexer.token() == Token.LITERAL_ALIAS);
+                expr = new SQLCharExpr(text2);
+            } else if (expr instanceof SQLVariantRefExpr) {
+                SQLMethodInvokeExpr concat = new SQLMethodInvokeExpr("CONCAT");
+                concat.addArgument(expr);
+                concat.addArgument(this.primary());
                 expr = concat;
+
+                return primaryRest(expr);
             }
         } else if (lexer.token() == Token.IDENTIFIER) {
             if (expr instanceof SQLHexExpr) {
@@ -348,6 +354,24 @@ public class MySqlExprParser extends SQLExprParser {
             userName.setHost(lexer.stringVal());
         }
         lexer.nextToken();
+
+        if (lexer.token() == Token.IDENTIFIED) {
+            Lexer.SavePoint mark = lexer.mark();
+
+            lexer.nextToken();
+            if (lexer.token() == Token.BY) {
+                lexer.nextToken();
+                if (lexer.identifierEquals(FnvHash.Constants.PASSWORD)) {
+                    lexer.reset(mark);
+                } else {
+                    userName.setIdentifiedBy(lexer.stringVal());
+                    lexer.nextToken();
+                }
+            } else {
+                lexer.reset(mark);
+            }
+        }
+
         return userName;
     }
 
@@ -696,6 +720,14 @@ public class MySqlExprParser extends SQLExprParser {
                 userName.setHost(lexer.stringVal());
             }
             lexer.nextToken();
+
+            if (lexer.token() == Token.IDENTIFIED) {
+                lexer.nextToken();
+                accept(Token.BY);
+                userName.setIdentifiedBy(lexer.stringVal());
+                lexer.nextToken();
+            }
+
             return userName;
         }
         return super.nameRest(name);
@@ -793,6 +825,15 @@ public class MySqlExprParser extends SQLExprParser {
             lexer.nextToken();
             unique.setIndexType(lexer.stringVal());
             lexer.nextToken();
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.KEY_BLOCK_SIZE)) {
+            lexer.nextToken();
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+            }
+            SQLExpr value = this.primary();
+            unique.setKeyBlockSize(value);
         }
 
         return unique;

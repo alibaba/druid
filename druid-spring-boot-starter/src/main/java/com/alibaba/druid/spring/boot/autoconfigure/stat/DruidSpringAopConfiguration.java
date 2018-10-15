@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,6 @@ import org.springframework.context.annotation.Bean;
  */
 @ConditionalOnProperty("spring.datasource.druid.aop-patterns")
 public class DruidSpringAopConfiguration {
-    @Value("${spring.aop.proxy-target-class:false}")
-    private boolean proxyTargetClass;
 
     @Bean
     public Advice advice() {
@@ -46,7 +44,7 @@ public class DruidSpringAopConfiguration {
     @Bean
     public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
-        advisorAutoProxyCreator.setProxyTargetClass(proxyTargetClass);
+        advisorAutoProxyCreator.setProxyTargetClass(true);
         return advisorAutoProxyCreator;
     }
 }

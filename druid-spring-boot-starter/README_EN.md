@@ -12,12 +12,12 @@ Spring Boot with Druid support, help you simplify Druid config in Spring Boot.
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.6</version>
+       <version>1.1.10</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.6'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.10'
     ```
 2. Add configuration properties.
     ```xml
@@ -78,7 +78,6 @@ spring.datasource.druid.stat-view-servlet.deny=
 
 # With Spring monitoring properties, detail see Druid Wiki
 spring.datasource.druid.aop-patterns= # Spring monitoring AOP point, such as x.y.z.service.*, multiple separated by comma.
-# If 'spring.datasource.druid.aop-patterns' to be the agent class does not define interface need set 'spring.aop.proxy-target-class = true' .
 ```
 The Druid Spring Boot Starter is not limited to support for the above configuration properties, and the configurable properties that provide the ```setter``` method in [``` DruidDataSource```](https://github.com/alibaba/druid/blob/master/src/main/java/com/alibaba/druid/pool/DruidDataSource.java) will be supported. You can refer to the WIKI document or configure it via the IDE input prompt. The format of the configuration file You can choose ```.properties``` or``` .yml```, the effect is the same, in the configuration of more cases recommend the use of ```.yml```.
 
@@ -106,6 +105,8 @@ spring.datasource.druid.two.max-active=20
 spring.datasource.druid.two.max-wait=20000
 ...
 ```
+Warning: Spring Boot 2.X not support extents, please configure one by one. 
+
 2. Create DruidDataSource
 ```java
 @Primary
@@ -149,13 +150,110 @@ Currently, configuration support is provided for the following filters. Please r
 
 Druid Spring Boot Starter will enable StatFilter by default, and you can also set its enabled to false.，make the Filter configuration take effect and need to set enabled to true.
 
-## Spring Boot Actuator Endpoints
+## How to get Druid monitoring(stat) data
 
-```endpoints.druid.enabled=true```
+Druid's monitoring data can be obtained through DruidStatManagerFacade. After obtaining the monitoring data, you can expose it to your monitoring system for use. Druid's default monitoring system data also comes from this. Let's take a simple demonstration. In Spring Boot, how to expose Druid monitoring data in the form of JSON through the HTTP interface. In actual use, you can freely expand the monitoring data and exposure methods according to your needs.
+```java
+@RestController
+public class DruidStatController {
+    @GetMapping("/druid/stat")
+    public Object druidStat(){
+        // DruidStatManagerFacade#getDataSourceStatDataList 该方法可以获取所有数据源的监控数据，除此之外 DruidStatManagerFacade 还提供了一些其他方法，你可以按需选择使用。
+        return DruidStatManagerFacade.getInstance().getDataSourceStatDataList();
+    }
+}
+```
 
-default endpoint address is : `/druid-endpoint`, can be used `endpoints.druid.path=` to customize it. 
-
-
+```json
+[
+  {
+    "Identity": 1583082378,
+    "Name": "DataSource-1583082378",
+    "DbType": "h2",
+    "DriverClassName": "org.h2.Driver",
+    "URL": "jdbc:h2:file:./demo-db",
+    "UserName": "sa",
+    "FilterClassNames": [
+      "com.alibaba.druid.filter.stat.StatFilter"
+    ],
+    "WaitThreadCount": 0,
+    "NotEmptyWaitCount": 0,
+    "NotEmptyWaitMillis": 0,
+    "PoolingCount": 2,
+    "PoolingPeak": 2,
+    "PoolingPeakTime": 1533782955104,
+    "ActiveCount": 0,
+    "ActivePeak": 1,
+    "ActivePeakTime": 1533782955178,
+    "InitialSize": 2,
+    "MinIdle": 2,
+    "MaxActive": 30,
+    "QueryTimeout": 0,
+    "TransactionQueryTimeout": 0,
+    "LoginTimeout": 0,
+    "ValidConnectionCheckerClassName": null,
+    "ExceptionSorterClassName": null,
+    "TestOnBorrow": true,
+    "TestOnReturn": true,
+    "TestWhileIdle": true,
+    "DefaultAutoCommit": true,
+    "DefaultReadOnly": null,
+    "DefaultTransactionIsolation": null,
+    "LogicConnectCount": 103,
+    "LogicCloseCount": 103,
+    "LogicConnectErrorCount": 0,
+    "PhysicalConnectCount": 2,
+    "PhysicalCloseCount": 0,
+    "PhysicalConnectErrorCount": 0,
+    "ExecuteCount": 102,
+    "ErrorCount": 0,
+    "CommitCount": 100,
+    "RollbackCount": 0,
+    "PSCacheAccessCount": 100,
+    "PSCacheHitCount": 99,
+    "PSCacheMissCount": 1,
+    "StartTransactionCount": 100,
+    "TransactionHistogram": [
+      55,
+      44,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "ConnectionHoldTimeHistogram": [
+      53,
+      47,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "RemoveAbandoned": false,
+    "ClobOpenCount": 0,
+    "BlobOpenCount": 0,
+    "KeepAliveCheckCount": 0,
+    "KeepAlive": false,
+    "FailFast": false,
+    "MaxWait": 1234,
+    "MaxWaitThreadCount": -1,
+    "PoolPreparedStatements": true,
+    "MaxPoolPreparedStatementPerConnectionSize": 5,
+    "MinEvictableIdleTimeMillis": 30001,
+    "MaxEvictableIdleTimeMillis": 25200000,
+    "LogDifferentThread": true,
+    "RecycleErrorCount": 0,
+    "PreparedStatementOpenCount": 1,
+    "PreparedStatementClosedCount": 0,
+    "UseUnfairLock": true,
+    "InitGlobalVariants": false,
+    "InitVariants": false
+  }
+]
+```
 
 ## IDE Hints
 ![](https://raw.githubusercontent.com/lihengming/java-codes/master/shared-resources/github-images/druid-spring-boot-starter-ide-hint.jpg)

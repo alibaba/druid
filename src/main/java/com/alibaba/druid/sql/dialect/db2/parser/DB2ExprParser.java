@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,10 @@ package com.alibaba.druid.sql.dialect.db2.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.Arrays;
 
@@ -46,6 +45,7 @@ public class DB2ExprParser extends SQLExprParser {
     public DB2ExprParser(String sql){
         this(new DB2Lexer(sql));
         this.lexer.nextToken();
+        this.dbType = JdbcConstants.DB2;
     }
 
     public DB2ExprParser(String sql, SQLParserFeature... features){
@@ -57,6 +57,7 @@ public class DB2ExprParser extends SQLExprParser {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
+        this.dbType = JdbcConstants.DB2;
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
@@ -105,6 +106,24 @@ public class DB2ExprParser extends SQLExprParser {
                     lexer.nextToken();
 
                     expr = new SQLIdentifierExpr("CURRENT TIME");
+                }
+            }
+        } else if (lexer.token() == Token.SCHEMA) {
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+                if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
+                    lexer.nextToken();
+
+                    expr = new SQLIdentifierExpr("CURRENT SCHEMA");
+                }
+            }
+        } else if (lexer.identifierEquals(FnvHash.Constants.PATH)) {
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+                if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
+                    lexer.nextToken();
+
+                    expr = new SQLIdentifierExpr("CURRENT PATH");
                 }
             }
         } else if (lexer.identifierEquals(FnvHash.Constants.MONTHS)) {
@@ -163,4 +182,68 @@ public class DB2ExprParser extends SQLExprParser {
         return super.dotRest(expr);
     }
 
+    public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
+        column = super.parseColumnRest(column);
+
+        if (lexer.identifierEquals(FnvHash.Constants.GENERATED)) {
+            lexer.nextToken();
+            if (lexer.identifierEquals(FnvHash.Constants.ALWAYS)) {
+                lexer.nextToken();
+            } else {
+                throw new ParserException("TODO " + lexer.info());
+            }
+
+            accept(Token.AS);
+
+            if (lexer.token() == Token.IDENTITY) {
+                SQLColumnDefinition.Identity identity = parseIdentity();
+                column.setIdentity(identity);
+            } else {
+                SQLExpr expr = this.expr();
+
+                column.setGeneratedAlawsAs(expr);
+            }
+
+            parseColumnRest(column);
+        }
+
+        return column;
+    }
+
+    private SQLColumnDefinition.Identity parseIdentity() {
+        SQLColumnDefinition.Identity identity = new SQLColumnDefinition.Identity();
+
+        accept(Token.IDENTITY);
+        if (lexer.token() == Token.LPAREN) {
+            accept(Token.LPAREN);
+
+            if (lexer.identifierEquals(FnvHash.Constants.START)) {
+                lexer.nextToken();
+                accept(Token.WITH);
+                if (lexer.token() == Token.LITERAL_INT) {
+                    identity.setSeed((Integer) lexer.integerValue());
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
+                }
+
+                accept(Token.COMMA);
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.INCREMENT)) {
+                lexer.nextToken();
+                accept(Token.BY);
+                if (lexer.token() == Token.LITERAL_INT) {
+                    identity.setIncrement((Integer) lexer.integerValue());
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
+                }
+            }
+
+            accept(Token.RPAREN);
+        }
+
+        return identity;
+    }
 }

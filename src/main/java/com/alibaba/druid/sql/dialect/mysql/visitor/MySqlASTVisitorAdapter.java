@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -789,6 +789,16 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
     }
 
     @Override
+    public boolean visit(MySqlLockTableStatement.Item x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlLockTableStatement.Item x) {
+
+    }
+
+    @Override
     public boolean visit(MySqlUnlockTablesStatement x) {
         return true;
     }
@@ -1225,6 +1235,16 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
 
     @Override
     public void endVisit(MySqlShowDatabasePartitionStatusStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlChecksumTableStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlChecksumTableStatement x) {
 
     }
 

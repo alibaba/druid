@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,9 +71,8 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
                                                                                                                                                 1);
 
     private final AtomicLong                                    clobOpenCount           = new AtomicLong();
-
     private final AtomicLong                                    blobOpenCount           = new AtomicLong();
-    private final AtomicLong                                    keepAliveCheckCount      = new AtomicLong();
+    private final AtomicLong                                    keepAliveCheckCount     = new AtomicLong();
 
     private boolean                                             resetStatEnable         = true;
 

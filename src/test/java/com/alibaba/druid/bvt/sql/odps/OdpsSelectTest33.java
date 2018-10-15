@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class OdpsSelectTest33 extends TestCase {
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         assertEquals(2, visitor.getTables().size());
-        assertEquals(2, visitor.getColumns().size());
+        assertEquals(4, visitor.getColumns().size());
         assertEquals(2, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,14 @@ package com.alibaba.druid.sql.dialect.db2.parser;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 
 
 public class DB2StatementParser extends SQLStatementParser {
@@ -53,5 +58,49 @@ public class DB2StatementParser extends SQLStatementParser {
 
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new DB2CreateTableParser(this.exprParser);
+    }
+
+    protected SQLAlterTableAlterColumn parseAlterColumn() {
+        if (lexer.token() == Token.COLUMN) {
+            lexer.nextToken();
+        }
+
+        SQLColumnDefinition column = this.exprParser.parseColumn();
+
+        SQLAlterTableAlterColumn alterColumn = new SQLAlterTableAlterColumn();
+        alterColumn.setColumn(column);
+
+        if (column.getDataType() == null && column.getConstraints().size() == 0) {
+            if (lexer.token() == Token.SET) {
+                lexer.nextToken();
+                if (lexer.token() == Token.NOT) {
+                    lexer.nextToken();
+                    accept(Token.NULL);
+                    alterColumn.setSetNotNull(true);
+                } else if (lexer.token() == Token.DEFAULT) {
+                    lexer.nextToken();
+                    SQLExpr defaultValue = this.exprParser.expr();
+                    alterColumn.setSetDefault(defaultValue);
+                } else if (lexer.identifierEquals(FnvHash.Constants.DATA)) {
+                    lexer.nextToken();
+                    acceptIdentifier("TYPE");
+                    SQLDataType dataType = this.exprParser.parseDataType();
+                    alterColumn.setDataType(dataType);
+                } else {
+                    throw new ParserException("TODO : " + lexer.info());
+                }
+            } else if (lexer.token() == Token.DROP) {
+                lexer.nextToken();
+                if (lexer.token() == Token.NOT) {
+                    lexer.nextToken();
+                    accept(Token.NULL);
+                    alterColumn.setDropNotNull(true);
+                } else {
+                    accept(Token.DEFAULT);
+                    alterColumn.setDropDefault(true);
+                }
+            }
+        }
+        return alterColumn;
     }
 }

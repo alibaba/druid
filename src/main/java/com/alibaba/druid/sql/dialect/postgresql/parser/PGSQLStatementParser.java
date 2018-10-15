@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -280,20 +280,50 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         switch (lexer.token()) {
-        case START: {
+            case BEGIN:
+            case START: {
+                PGStartTransactionStatement stmt = parseBegin();
+                statementList.add(stmt);
+                return true;
+            }
+
+            case WITH:
+                statementList.add(parseWith());
+                return true;
+            default:
+                break;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.CONNECT)) {
+            SQLStatement stmt = parseConnectTo();
+            statementList.add(stmt);
+            return true;
+        }
+
+        return false;
+    }
+
+    protected PGStartTransactionStatement parseBegin() {
+        PGStartTransactionStatement stmt = new PGStartTransactionStatement();
+        if (lexer.token() == Token.START) {
             lexer.nextToken();
             acceptIdentifier("TRANSACTION");
-            PGStartTransactionStatement stmt = new PGStartTransactionStatement();
-            statementList.add(stmt);
-            lexer.nextToken();
-            return true;
+        } else {
+            accept(Token.BEGIN);
         }
-        case WITH:
-            statementList.add(parseWith());
-            return true;
-        default:
-            return false;
-        }
+
+        return stmt;
+    }
+
+    public SQLStatement parseConnectTo() {
+        acceptIdentifier("CONNECT");
+        accept(Token.TO);
+
+        PGConnectToStatement stmt = new PGConnectToStatement();
+        SQLName target = this.exprParser.name();
+        stmt.setTarget(target);
+
+        return stmt;
     }
 
     public PGSelectStatement parseSelect() {

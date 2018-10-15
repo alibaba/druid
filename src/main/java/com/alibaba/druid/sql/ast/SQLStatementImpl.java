@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,10 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
 
     public String toString() {
         return SQLUtils.toSQLString(this, dbType);
+    }
+
+    public String toLowerCaseString() {
+        return SQLUtils.toSQLString(this, dbType, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
     }
 
     @Override

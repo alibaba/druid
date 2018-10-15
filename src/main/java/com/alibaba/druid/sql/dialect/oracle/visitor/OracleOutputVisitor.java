@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1747,6 +1747,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             for (SQLPartitionBy globalPartition : globalPartitions) {
                 println();
                 print0(ucase ? "GLOBAL " : "global ");
+                print0(ucase ? "PARTITION BY " : "partition by ");
                 globalPartition.accept(this);
             }
 
@@ -2097,9 +2098,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "MONITORING" : "monitoring");
         }
 
-        if (x.getPartitioning() != null) {
+        SQLPartitionBy partitionBy = x.getPartitioning();
+        if (partitionBy != null) {
             println();
-            x.getPartitioning().accept(this);
+            print0(ucase ? "PARTITION BY " : "partition by ");
+            partitionBy.accept(this);
         }
 
         if (x.getCluster() != null) {

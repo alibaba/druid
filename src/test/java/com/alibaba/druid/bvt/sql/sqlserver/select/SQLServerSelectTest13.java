@@ -1,5 +1,5 @@
 /*
-// * Copyright 1999-2017 Alibaba Group Holding Ltd.
+// * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class SQLServerSelectTest13 extends TestCase {
 				"\t\tAND a.time_add >= ?\n" +
 				"\t\tAND a.time_add <= ?\n" +
 				") a\n" +
-				"WHERE a.ROW NOT BETWEEN ? + 1 AND ? + ?";
+				"WHERE a.ROW NOT BETWEEN (? + 1) AND ? + ?";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

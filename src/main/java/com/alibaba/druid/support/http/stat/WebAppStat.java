@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -500,20 +501,26 @@ public class WebAppStat {
     }
 
     public List<Map<String, Object>> getSessionStatDataList() {
-        List<Map<String, Object>> sessionStatDataList = new ArrayList<Map<String, Object>>(this.sessionStatMap.size());
-        for (WebSessionStat sessionStat : Collections.unmodifiableCollection(this.sessionStatMap.values())) {
-            Map<String, Object> sessionStatData = sessionStat.getStatData();
+        Lock lock = sessionStatLock.readLock();
+        lock.lock();
+        try {
+            List<Map<String, Object>> sessionStatDataList = new ArrayList<Map<String, Object>>(this.sessionStatMap.size());
+            for (WebSessionStat sessionStat : this.sessionStatMap.values()) {
+                Map<String, Object> sessionStatData = sessionStat.getStatData();
 
-            int runningCount = ((Number) sessionStatData.get("RunningCount")).intValue();
-            long requestCount = (Long) sessionStatData.get("RequestCount");
+                int runningCount = ((Number) sessionStatData.get("RunningCount")).intValue();
+                long requestCount = (Long) sessionStatData.get("RequestCount");
 
-            if (runningCount == 0 && requestCount == 0) {
-                continue;
+                if (runningCount == 0 && requestCount == 0) {
+                    continue;
+                }
+
+                sessionStatDataList.add(sessionStatData);
             }
-
-            sessionStatDataList.add(sessionStatData);
+            return sessionStatDataList;
+        } finally {
+            lock.unlock();
         }
-        return sessionStatDataList;
     }
 
     public void computeUserAgent(String userAgent) {

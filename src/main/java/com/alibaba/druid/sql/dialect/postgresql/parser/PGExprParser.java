@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,13 +88,21 @@ public class PGExprParser extends SQLExprParser {
 
     public SQLExpr primary() {
         if (lexer.token() == Token.ARRAY) {
-            SQLArrayExpr array = new SQLArrayExpr();
-            array.setExpr(new SQLIdentifierExpr(lexer.stringVal()));
+            String ident = lexer.stringVal();
             lexer.nextToken();
-            accept(Token.LBRACKET);
-            this.exprList(array.getValues(), array);
-            accept(Token.RBRACKET);
-            return primaryRest(array);
+
+            if (lexer.token() == Token.LPAREN) {
+                SQLIdentifierExpr array = new SQLIdentifierExpr(ident);
+                return this.methodRest(array, true);
+            } else {
+                SQLArrayExpr array = new SQLArrayExpr();
+                array.setExpr(new SQLIdentifierExpr(ident));
+                accept(Token.LBRACKET);
+                this.exprList(array.getValues(), array);
+                accept(Token.RBRACKET);
+                return primaryRest(array);
+            }
+
         } else if (lexer.token() == Token.POUND) {
             lexer.nextToken();
             if (lexer.token() == Token.LBRACE) {
@@ -109,6 +117,27 @@ public class PGExprParser extends SQLExprParser {
                 SQLUnaryExpr expr = new SQLUnaryExpr(SQLUnaryOperator.Pound, value);
                 return primaryRest(expr);
             }
+        } else if (lexer.token() == Token.VALUES) {
+            lexer.nextToken();
+
+            SQLValuesExpr values = new SQLValuesExpr();
+            for (;;) {
+                accept(Token.LPAREN);
+                SQLListExpr listExpr = new SQLListExpr();
+                exprList(listExpr.getItems(), listExpr);
+                accept(Token.RPAREN);
+
+                listExpr.setParent(values);
+
+                values.getValues().add(listExpr);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            return values;
         }
         
         return super.primary();
@@ -151,19 +180,20 @@ public class PGExprParser extends SQLExprParser {
         if (expr.getClass() == SQLIdentifierExpr.class) {
             String ident = ((SQLIdentifierExpr)expr).getName();
 
-            if (lexer.token() == Token.COMMA) {
+            if (lexer.token() == Token.COMMA || lexer.token() == Token.RPAREN) {
                 return super.primaryRest(expr);
             }
-            
+
             if ("TIMESTAMP".equalsIgnoreCase(ident)) {
                 if (lexer.token() != Token.LITERAL_ALIAS //
                         && lexer.token() != Token.LITERAL_CHARS //
                         && lexer.token() != Token.WITH) {
-                    return new SQLIdentifierExpr("TIMESTAMP");
+                    return super.primaryRest(
+                            new SQLIdentifierExpr(ident));
                 }
 
                 SQLTimestampExpr timestamp = new SQLTimestampExpr();
-                
+
                 if (lexer.token() == Token.WITH) {
                     lexer.nextToken();
                     acceptIdentifier("TIME");
@@ -185,8 +215,35 @@ public class PGExprParser extends SQLExprParser {
                     accept(Token.LITERAL_CHARS);
                 }
 
-                
-                return primaryRest(timestamp);     
+
+                return primaryRest(timestamp);
+            } else  if ("TIMESTAMPTZ".equalsIgnoreCase(ident)) {
+                if (lexer.token() != Token.LITERAL_ALIAS //
+                        && lexer.token() != Token.LITERAL_CHARS //
+                        && lexer.token() != Token.WITH) {
+                    return super.primaryRest(
+                            new SQLIdentifierExpr(ident));
+                }
+
+                SQLTimestampExpr timestamp = new SQLTimestampExpr();
+                timestamp.setWithTimeZone(true);
+
+                String literal = lexer.stringVal();
+                timestamp.setLiteral(literal);
+                accept(Token.LITERAL_CHARS);
+
+                if (lexer.identifierEquals("AT")) {
+                    lexer.nextToken();
+                    acceptIdentifier("TIME");
+                    acceptIdentifier("ZONE");
+
+                    String timezone = lexer.stringVal();
+                    timestamp.setTimeZone(timezone);
+                    accept(Token.LITERAL_CHARS);
+                }
+
+
+                return primaryRest(timestamp);
             } else if ("EXTRACT".equalsIgnoreCase(ident)) {
                 accept(Token.LPAREN);
                 
@@ -276,5 +333,16 @@ public class PGExprParser extends SQLExprParser {
             break;
         }
         return alias;
+    }
+
+    protected void filter(SQLAggregateExpr x) {
+        if (lexer.identifierEquals(FnvHash.Constants.FILTER)) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            accept(Token.WHERE);
+            SQLExpr filter = this.expr();
+            accept(Token.RPAREN);
+            x.setFilter(filter);
+        }
     }
 }

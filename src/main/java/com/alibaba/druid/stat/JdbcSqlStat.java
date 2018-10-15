@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -657,13 +657,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlSt
         // executeBatchSizeMax
         for (;;) {
             int current = executeBatchSizeMaxUpdater.get(this);
-            if (current < batchSize) {
-                if (executeBatchSizeMaxUpdater.compareAndSet(this, current, (int) batchSize)) {
-                    break;
-                } else {
-                    continue;
-                }
-            } else {
+            if (current >= batchSize) {
+                break;
+            }
+
+            if (executeBatchSizeMaxUpdater.compareAndSet(this, current, (int) batchSize)) {
                 break;
             }
         }
@@ -682,13 +680,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlSt
 
         for (;;) {
             int max = concurrentMaxUpdater.get(this);
-            if (val > max) {
-                if (concurrentMaxUpdater.compareAndSet(this, max, val)) {
-                    break;
-                } else {
-                    continue;
-                }
-            } else {
+            if (val <= max) {
+                break;
+            }
+
+            if (concurrentMaxUpdater.compareAndSet(this, max, val)) {
                 break;
             }
         }
@@ -763,16 +759,13 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlSt
 
         for (;;) {
             long current = executeSpanNanoMaxUpdater.get(this);
-            if (current < nanoSpan) {
-                if (executeSpanNanoMaxUpdater.compareAndSet(this, current, nanoSpan)) {
-                    // 可能不准确，但是绝大多数情况下都会正确，性能换取一致性
-                    executeNanoSpanMaxOccurTime = System.currentTimeMillis();
+            if (current >= nanoSpan) {
+                break;
+            }
 
-                    break;
-                } else {
-                    continue;
-                }
-            } else {
+            if (executeSpanNanoMaxUpdater.compareAndSet(this, current, nanoSpan)) {
+                // 可能不准确，但是绝大多数情况下都会正确，性能换取一致性
+                executeNanoSpanMaxOccurTime = System.currentTimeMillis();
                 break;
             }
         }

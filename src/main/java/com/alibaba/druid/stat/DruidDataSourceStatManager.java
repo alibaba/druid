@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -343,11 +343,15 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 SimpleType.LONG, //
                 SimpleType.STRING, //
 
-                // 40 -
+                // 40 - 44
                 SimpleType.DATE, //
                 SimpleType.DATE, //
                 SimpleType.LONG, //
-                SimpleType.LONG //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+
+                // 45
+                SimpleType.LONG, //
         //
         };
 
@@ -413,6 +417,9 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "LastCreateErrorTime", //
                 "CreateErrorCount", //
                 "DiscardCount", //
+                "ExecuteQueryCount", //
+
+                "ExecuteUpdateCount", //
         //
         };
 

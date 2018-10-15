@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,7 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements OracleSQLObject {
 
-    private List<SQLCommentHint>       hints;
-
     private ModelClause                modelClause;
-
-
     private boolean                    skipLocked  = false;
 
     public OracleSelectQueryBlock clone() {
@@ -82,21 +78,6 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements Oracl
 
     public void setModelClause(ModelClause modelClause) {
         this.modelClause = modelClause;
-    }
-
-    public List<SQLCommentHint> getHints() {
-        if (hints == null) {
-            hints = new ArrayList<SQLCommentHint>(1);
-        }
-        return this.hints;
-    }
-
-    public int getHintsSize() {
-        if (hints == null) {
-            return 0;
-        }
-
-        return hints.size();
     }
 
     public boolean isSkipLocked() {

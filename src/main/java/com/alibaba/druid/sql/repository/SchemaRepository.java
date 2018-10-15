@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -263,6 +263,8 @@ public class SchemaRepository {
             resolveVisitor = new SchemaResolveVisitorFactory.DB2ResolveVisitor(this, optionsValue);
         } else if (JdbcConstants.ODPS.equals(dbType)) {
             resolveVisitor = new SchemaResolveVisitorFactory.OdpsResolveVisitor(this, optionsValue);
+        } else if (JdbcConstants.HIVE.equals(dbType)) {
+            resolveVisitor = new SchemaResolveVisitorFactory.HiveResolveVisitor(this, optionsValue);
         } else if (JdbcConstants.POSTGRESQL.equals(dbType)) {
             resolveVisitor = new SchemaResolveVisitorFactory.PGResolveVisitor(this, optionsValue);
         } else if (JdbcConstants.SQL_SERVER.equals(dbType)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.hive.parser;
 
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectListCache;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -38,4 +41,33 @@ public class HiveSelectParser extends SQLSelectParser {
     protected SQLExprParser createExprParser() {
         return new HiveExprParser(lexer);
     }
+
+    protected void parseSortBy(SQLSelectQueryBlock queryBlock) {
+        if (lexer.token() == Token.SORT) {
+            lexer.nextToken();
+            accept(Token.BY);
+            for (;;) {
+                SQLExpr expr = this.expr();
+
+                SQLSelectOrderByItem sortByItem = new SQLSelectOrderByItem(expr);
+
+                if (lexer.token() == Token.ASC) {
+                    sortByItem.setType(SQLOrderingSpecification.ASC);
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.DESC) {
+                    sortByItem.setType(SQLOrderingSpecification.DESC);
+                    lexer.nextToken();
+                }
+
+                queryBlock.addSortBy(sortByItem);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -340,6 +340,10 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlLockTableStatement x);
 
+    boolean visit(MySqlLockTableStatement.Item x);
+
+    void endVisit(MySqlLockTableStatement.Item x);
+
     boolean visit(MySqlUnlockTablesStatement x);
 
     void endVisit(MySqlUnlockTablesStatement x);
@@ -493,5 +497,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     boolean visit(MySqlShowDatabasePartitionStatusStatement x);
     void endVisit(MySqlShowDatabasePartitionStatusStatement x);
+
+    boolean visit(MySqlChecksumTableStatement x);
+    void endVisit(MySqlChecksumTableStatement x);
 
 } //

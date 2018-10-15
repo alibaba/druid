@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,7 +160,8 @@ public class Keywords {
         map.put("FETCH", Token.FETCH);
         map.put("OUT", Token.OUT);
         map.put("INOUT", Token.INOUT);
-        
+        map.put("LIMIT", Token.LIMIT);
+
         DEFAULT_KEYWORDS = new Keywords(map);
 
         Map<String, Token> sqlitemap = new HashMap<String, Token>();

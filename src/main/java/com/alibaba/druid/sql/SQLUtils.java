@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -833,6 +833,9 @@ public class SQLUtils {
             char x0 = name.charAt(name.length() - 1);
             if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
                 String normalizeName = name.substring(1, name.length() - 1);
+                if (c0 == '`') {
+                    normalizeName = normalizeName.replaceAll("`\\.`", ".");
+                }
 
                 if (JdbcConstants.ORACLE.equals(dbType)) {
                     if (OracleUtils.isKeyword(normalizeName)) {

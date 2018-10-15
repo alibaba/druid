@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,17 +33,22 @@ public final class SQLNotExpr extends SQLExprImpl implements Serializable {
 
     }
 
-    public SQLNotExpr(SQLExpr expr){
-
-        this.expr = expr;
+    public SQLNotExpr(SQLExpr x){
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.expr = x;
     }
 
     public SQLExpr getExpr() {
         return this.expr;
     }
 
-    public void setExpr(SQLExpr expr) {
-        this.expr = expr;
+    public void setExpr(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.expr = x;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.visitor;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
@@ -68,6 +69,12 @@ public class ParameterizedOutputVisitorUtils {
                 visitor.config(features[i], true);
             }
         }
+    }
+
+    public static String parameterize(String sql
+            , String dbType
+            , List<Object> outParameters, VisitorFeature ...features) {
+        return parameterize(sql, dbType, null, outParameters, features);
     }
 
     public static String parameterize(String sql
@@ -286,5 +293,19 @@ public class ParameterizedOutputVisitorUtils {
         }
 
         return new SQLASTOutputVisitor(out, true);
+    }
+
+    public static String restore(String sql, String dbType, List<Object> parameters) {
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+
+        StringBuilder out = new StringBuilder();
+        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(out, dbType);
+        visitor.setInputParameters(parameters);
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
+
+        return out.toString();
     }
 }

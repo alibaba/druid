@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
-import com.alibaba.druid.sql.ast.statement.SQLLateralViewTableSource;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -29,9 +29,9 @@ public interface OdpsASTVisitor extends SQLASTVisitor {
 
     boolean visit(OdpsInsertStatement x);
     
-    void endVisit(OdpsInsert x);
+    void endVisit(HiveInsert x);
     
-    boolean visit(OdpsInsert x);
+    boolean visit(HiveInsert x);
     
     void endVisit(OdpsUDTFSQLSelectItem x);
     

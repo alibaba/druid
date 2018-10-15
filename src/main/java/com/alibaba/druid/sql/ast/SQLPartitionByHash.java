@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ public class SQLPartitionByHash extends SQLPartitionBy {
 
     // for aliyun ads
     protected boolean key;
+    protected boolean unique;
 
     public boolean isKey() {
         return key;
@@ -28,6 +29,14 @@ public class SQLPartitionByHash extends SQLPartitionBy {
 
     public void setKey(boolean key) {
         this.key = key;
+    }
+
+    public boolean isUnique() {
+        return unique;
+    }
+
+    public void setUnique(boolean unique) {
+        this.unique = unique;
     }
 
     @Override
@@ -43,7 +52,10 @@ public class SQLPartitionByHash extends SQLPartitionBy {
     public SQLPartitionByHash clone() {
         SQLPartitionByHash x = new SQLPartitionByHash();
 
+        cloneTo(x);
+
         x.key = key;
+        x.unique = unique;
 
         for (SQLExpr column : columns) {
             SQLExpr c2 = column.clone();
@@ -52,5 +64,9 @@ public class SQLPartitionByHash extends SQLPartitionBy {
         }
 
         return x;
+    }
+
+    public void cloneTo(SQLPartitionByHash x) {
+        super.cloneTo(x);
     }
 }
