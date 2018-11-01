@@ -1107,6 +1107,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 || JdbcUtils.MYSQL_DRIVER_6.equals(this.dbType)) {
             isMySql = true;
         }
+
+        if (removeAbandoned) {
+            LOG.warn("removeAbandoned is true, not use in productiion.");
+        }
     }
 
     private void oracleValidationQueryCheck() {
