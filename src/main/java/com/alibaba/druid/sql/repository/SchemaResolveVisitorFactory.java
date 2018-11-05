@@ -2400,7 +2400,7 @@ class SchemaResolveVisitorFactory {
                 checkParameter(visitor, identifierExpr);
 
                 SQLTableSource tableSource = unwrapAlias(visitor.getContext(), null, identifierExpr.nameHashCode64());
-                if (tableSource != null) {
+                if (tableSource != null && (tableSource.getClass() != SQLExprTableSource.class || ((SQLExprTableSource)tableSource).getExpr() != identifierExpr)) {
                     identifierExpr.setResolvedTableSource(tableSource);
                 }
             }
