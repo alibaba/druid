@@ -15,6 +15,17 @@
  */
 package com.alibaba.druid.pool.vendor;
 
+import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,15 +35,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.pool.ValidConnectionChecker;
-import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.Utils;
-
 public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
     public static final int DEFAULT_VALIDATION_QUERY_TIMEOUT = 1;
@@ -41,27 +43,101 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
     private static final long serialVersionUID = 1L;
     private static final Log  LOG              = LogFactory.getLog(MySqlValidConnectionChecker.class);
 
-    private Class<?> clazz;
-    private Method   ping;
-    private boolean  usePingMethod = false;
+    private PingOperation validateQueryPingOperation;
+    private PingOperation nativePingOperation;
+    private boolean  usePingMethod = true;
+
+    public interface PingOperation {
+        boolean ping(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception;
+    }
+
+    public class ValidationQueryPingOperation implements PingOperation {
+        @Override
+        public boolean ping(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
+            String query = validateQuery;
+            if (validateQuery == null || validateQuery.isEmpty()) {
+                query = DEFAULT_VALIDATION_QUERY;
+            }
+
+            Statement stmt = null;
+            ResultSet rs = null;
+            try {
+                stmt = conn.createStatement();
+                if (validationQueryTimeout > 0) {
+                    stmt.setQueryTimeout(validationQueryTimeout);
+                }
+                rs = stmt.executeQuery(query);
+
+                return true;
+            } finally {
+                JdbcUtils.close(rs);
+                JdbcUtils.close(stmt);
+            }
+        }
+    }
+
+    public class NativePingOperation implements PingOperation {
+
+        private Pair<Class<?>, Method> defaultConnectionPingMethod = null;
+        private Pair<Class<?>, Method> multiHostConnectionPingMethod = null;
+
+        public NativePingOperation() {
+            // Try to load MySQLConnection
+            try {
+                Class<?> connectionClass = Utils.loadClass("com.mysql.jdbc.MySQLConnection");
+                if (connectionClass == null) {
+                    connectionClass = Utils.loadClass("com.mysql.cj.jdbc.ConnectionImpl");
+                }
+
+                if (connectionClass != null) {
+                    Method ping = connectionClass.getMethod("pingInternal", boolean.class, int.class);
+                    if (ping != null) {
+                        defaultConnectionPingMethod = new ImmutablePair<Class<?>, Method>(connectionClass, ping);
+                    }
+                }
+            } catch (Exception e) {
+                LOG.warn("Cannot resolve com.mysql.jdbc.Connection.pingInternal method.  Will use 'SELECT 1' instead.", e);
+            }
+
+            // If current driver support multi-host, also load it
+            try {
+                Class<?> connectionClass = Utils.loadClass("com.mysql.jdbc.MultiHostMySQLConnection");
+                if (connectionClass != null) {
+                    Method ping = connectionClass.getMethod("ping");
+                    if (ping != null) {
+                        multiHostConnectionPingMethod = new ImmutablePair<Class<?>, Method>(connectionClass, ping);
+                    }
+                }
+            }  catch (Exception e) {
+                LOG.warn("Cannot resolve com.mysql.jdbc.MultiHostMySQLConnection.ping method.", e);
+            }
+        }
+
+        @Override
+        public boolean ping(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
+            try {
+                if (multiHostConnectionPingMethod != null && multiHostConnectionPingMethod.getLeft().isAssignableFrom(conn.getClass())) {
+                    multiHostConnectionPingMethod.getRight().invoke(conn);
+                } else if (defaultConnectionPingMethod != null && defaultConnectionPingMethod.getLeft().isAssignableFrom(conn.getClass())) {
+                    defaultConnectionPingMethod.getRight().invoke(conn, true, validationQueryTimeout * 1000);
+                } else {
+                    return false;
+                }
+
+                return true;
+            } catch (InvocationTargetException e) {
+                Throwable cause = e.getCause();
+                if (cause instanceof SQLException) {
+                    throw (SQLException) cause;
+                }
+                throw e;
+            }
+        }
+    }
 
     public MySqlValidConnectionChecker(){
-        try {
-            clazz = Utils.loadClass("com.mysql.jdbc.MySQLConnection");
-            if (clazz == null) {
-                clazz = Utils.loadClass("com.mysql.cj.jdbc.ConnectionImpl");
-            }
-
-            if (clazz != null) {
-                ping = clazz.getMethod("pingInternal", boolean.class, int.class);
-            }
-
-            if (ping != null) {
-                usePingMethod = true;
-            }
-        } catch (Exception e) {
-            LOG.warn("Cannot resolve com.mysql.jdbc.Connection.ping method.  Will use 'SELECT 1' instead.", e);
-        }
+        validateQueryPingOperation = new ValidationQueryPingOperation();
+        nativePingOperation = new NativePingOperation();
 
         configFromProperties(System.getProperties());
     }
@@ -89,6 +165,10 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
             return false;
         }
 
+        if (validationQueryTimeout < 0) {
+            validationQueryTimeout = DEFAULT_VALIDATION_QUERY_TIMEOUT;
+        }
+
         if (usePingMethod) {
             if (conn instanceof DruidPooledConnection) {
                 conn = ((DruidPooledConnection) conn).getConnection();
@@ -98,43 +178,11 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
                 conn = ((ConnectionProxy) conn).getRawObject();
             }
 
-            if (clazz.isAssignableFrom(conn.getClass())) {
-                if (validationQueryTimeout < 0) {
-                    validationQueryTimeout = DEFAULT_VALIDATION_QUERY_TIMEOUT;
-                }
-
-                try {
-                    ping.invoke(conn, true, validationQueryTimeout * 1000);
-                } catch (InvocationTargetException e) {
-                    Throwable cause = e.getCause();
-                    if (cause instanceof SQLException) {
-                        throw (SQLException) cause;
-                    }
-                    throw e;
-                }
+            if (nativePingOperation.ping(conn, validateQuery, validationQueryTimeout)) {
                 return true;
             }
         }
 
-        String query = validateQuery;
-        if (validateQuery == null || validateQuery.isEmpty()) {
-            query = DEFAULT_VALIDATION_QUERY;
-        }
-
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            stmt = conn.createStatement();
-            if (validationQueryTimeout > 0) {
-                stmt.setQueryTimeout(validationQueryTimeout);
-            }
-            rs = stmt.executeQuery(query);
-            return true;
-        } finally {
-            JdbcUtils.close(rs);
-            JdbcUtils.close(stmt);
-        }
-
+        return validateQueryPingOperation.ping(conn, validateQuery, validationQueryTimeout);
     }
-
 }
