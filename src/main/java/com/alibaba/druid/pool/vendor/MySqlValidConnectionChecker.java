@@ -23,8 +23,6 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -78,6 +76,24 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
 
     public class NativePingOperation implements PingOperation {
 
+        public class Pair<L, R> {
+            private final L left;
+            private final R right;
+
+            public Pair(L left, R right) {
+                this.left = left;
+                this.right = right;
+            }
+
+            public L getLeft() {
+                return left;
+            }
+
+            public R getRight() {
+                return right;
+            }
+        }
+
         private Pair<Class<?>, Method> defaultConnectionPingMethod = null;
         private Pair<Class<?>, Method> multiHostConnectionPingMethod = null;
 
@@ -92,7 +108,7 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
                 if (connectionClass != null) {
                     Method ping = connectionClass.getMethod("pingInternal", boolean.class, int.class);
                     if (ping != null) {
-                        defaultConnectionPingMethod = new ImmutablePair<Class<?>, Method>(connectionClass, ping);
+                        defaultConnectionPingMethod = new Pair<Class<?>, Method>(connectionClass, ping);
                     }
                 }
             } catch (Exception e) {
@@ -105,7 +121,7 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
                 if (connectionClass != null) {
                     Method ping = connectionClass.getMethod("ping");
                     if (ping != null) {
-                        multiHostConnectionPingMethod = new ImmutablePair<Class<?>, Method>(connectionClass, ping);
+                        multiHostConnectionPingMethod = new Pair<Class<?>, Method>(connectionClass, ping);
                     }
                 }
             }  catch (Exception e) {
