@@ -95,7 +95,8 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
         }
 
         private Pair<Class<?>, Method> defaultConnectionPingMethod = null;
-        private Pair<Class<?>, Method> multiHostConnectionPingMethod = null;
+        private Pair<Class<?>, Method> replicationConnectionPingMethod = null;
+        private Pair<Class<?>, Method> loadBalancedConnectionPingMethod = null;
 
         public NativePingOperation() {
             // Try to load MySQLConnection
@@ -115,25 +116,40 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
                 LOG.warn("Cannot resolve com.mysql.jdbc.Connection.pingInternal method.  Will use 'SELECT 1' instead.", e);
             }
 
-            // If current driver support multi-host, also load it
+            // If current driver support replication connection, load it
             try {
-                Class<?> connectionClass = Utils.loadClass("com.mysql.jdbc.MultiHostMySQLConnection");
+                Class<?> connectionClass = Utils.loadClass("com.mysql.jdbc.ReplicationConnection");
                 if (connectionClass != null) {
                     Method ping = connectionClass.getMethod("ping");
                     if (ping != null) {
-                        multiHostConnectionPingMethod = new Pair<Class<?>, Method>(connectionClass, ping);
+                        replicationConnectionPingMethod = new Pair<Class<?>, Method>(connectionClass, ping);
                     }
                 }
             }  catch (Exception e) {
-                LOG.warn("Cannot resolve com.mysql.jdbc.MultiHostMySQLConnection.ping method.", e);
+                LOG.warn("Cannot resolve com.mysql.jdbc.ReplicationConnection.ping method.", e);
+            }
+
+            // If current driver support load-balanced connection, also load it
+            try {
+                Class<?> connectionClass = Utils.loadClass("com.mysql.jdbc.LoadBalancedConnection");
+                if (connectionClass != null) {
+                    Method ping = connectionClass.getMethod("ping");
+                    if (ping != null) {
+                        loadBalancedConnectionPingMethod = new Pair<Class<?>, Method>(connectionClass, ping);
+                    }
+                }
+            }  catch (Exception e) {
+                LOG.warn("Cannot resolve com.mysql.jdbc.LoadBalancedConnection.ping method.", e);
             }
         }
 
         @Override
         public boolean ping(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
             try {
-                if (multiHostConnectionPingMethod != null && multiHostConnectionPingMethod.getLeft().isAssignableFrom(conn.getClass())) {
-                    multiHostConnectionPingMethod.getRight().invoke(conn);
+                if (replicationConnectionPingMethod != null && replicationConnectionPingMethod.getLeft().isAssignableFrom(conn.getClass())) {
+                    replicationConnectionPingMethod.getRight().invoke(conn);
+                } else if (loadBalancedConnectionPingMethod != null && loadBalancedConnectionPingMethod.getLeft().isAssignableFrom(conn.getClass())) {
+                    loadBalancedConnectionPingMethod.getRight().invoke(conn);
                 } else if (defaultConnectionPingMethod != null && defaultConnectionPingMethod.getLeft().isAssignableFrom(conn.getClass())) {
                     defaultConnectionPingMethod.getRight().invoke(conn, true, validationQueryTimeout * 1000);
                 } else {
