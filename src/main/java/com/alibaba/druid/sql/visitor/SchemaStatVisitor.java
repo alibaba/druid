@@ -47,6 +47,7 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
+    public final static String COLUMN_ARGUMENTS = "column.arguments";
     protected SchemaRepository repository;
 
     protected final HashMap<TableStat.Name, TableStat> tableStats     = new LinkedHashMap<TableStat.Name, TableStat>();
@@ -142,6 +143,19 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         Column column = this.getColumn(tableName, columnName);
         if (column == null && columnName != null) {
             column = new Column(tableName, columnName);
+            columns.put(column.hashCode64(), column);
+        }
+        return column;
+    }
+
+    protected Column addColumn(String tableName, String columnName, SQLDataType dataType) {
+        Column column = this.getColumn(tableName, columnName);
+        if (column == null && columnName != null) {
+            column = new Column(tableName, columnName);
+            Map<String,Object> attributes=new HashMap<String, Object>(1);
+            attributes.put(COLUMN_ARGUMENTS, dataType.getArguments());
+            column.setAttributes(attributes);
+            column.setDataType(dataType.getName());
             columns.put(column.hashCode64(), column);
         }
         return column;
@@ -1860,6 +1874,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         Column column = addColumn(tableName, columnName);
         if (x.getDataType() != null) {
             column.setDataType(x.getDataType().getName());
+            Map<String,Object> attributes=new HashMap<String, Object>(1);
+            attributes.put(COLUMN_ARGUMENTS, x.getDataType().getArguments());
+            column.setAttributes(attributes);
         }
 
         for (SQLColumnConstraint item : x.getConstraints()) {
@@ -1899,7 +1916,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         for (SQLColumnDefinition column : x.getColumns()) {
             String columnName = column.getName().toString();
-            addColumn(table, columnName);
+            addColumn(table, columnName, column.getDataType());
         }
         return false;
     }

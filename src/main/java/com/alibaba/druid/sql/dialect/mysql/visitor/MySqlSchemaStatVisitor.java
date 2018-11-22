@@ -925,7 +925,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         SQLName column = x.getColumnName();
         String columnName = column.toString();
-        addColumn(tableName, columnName);
+        addColumn(tableName, columnName, x.getNewColumnDefinition().getDataType());
         return false;
     }
 
