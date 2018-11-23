@@ -317,6 +317,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
+            String property = properties.getProperty("druid.maxWait");
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    this.setMaxWait(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.maxWait'", e);
+                }
+            }
+        }
+        {
             Boolean value = getBoolean(properties, "druid.failFast");
             if (value != null) {
                 this.setFailFast(value);
@@ -1517,6 +1528,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (createElapseMillis > 0) {
                     buf.append(", createElapseMillis ").append(createElapseMillis);
                 }
+            }
+
+            if (createErrorCount > 0) {
+                buf.append(", createErrorCount ").append(createErrorCount);
             }
 
             List<JdbcSqlStatValue> sqlList = this.getDataSourceStat().getRuningSqlList();
