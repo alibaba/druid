@@ -1516,7 +1516,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (holder == null) {
             long waitNanos = waitNanosLocal.get();
 
-            StringBuilder buf = new StringBuilder();
+            StringBuilder buf = new StringBuilder(128);
             buf.append("wait millis ")//
                .append(waitNanos / (1000 * 1000))//
                .append(", active ").append(activeCount)//
