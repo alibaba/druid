@@ -18,6 +18,7 @@ package com.alibaba.druid.sql;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -37,5 +38,14 @@ public class SQLExprParserTest extends TestCase {
         
         Assert.assertEquals("AGE", left.getName());
         Assert.assertEquals(5, right.getNumber().intValue());
+    }
+    public void test_signed_data_type() throws Exception {
+        SQLExprParser exprParser_1 = new SQLExprParser("unsigned tinyint");
+        SQLDataType dataType_1 = exprParser_1.parseDataType();
+        Assert.assertEquals("unsigned tinyint", dataType_1.getName());
+
+        SQLExprParser exprParser_2 = new SQLExprParser("signed tinyint");
+        SQLDataType dataType_2 = exprParser_2.parseDataType();
+        Assert.assertEquals("signed tinyint", dataType_2.getName());
     }
 }
