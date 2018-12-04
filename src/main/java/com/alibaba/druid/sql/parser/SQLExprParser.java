@@ -2521,7 +2521,8 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
         }
 
-        if (typeNameHashCode == FnvHash.Constants.UNSIGNED) {
+        if (typeNameHashCode == FnvHash.Constants.UNSIGNED
+                || typeNameHashCode == FnvHash.Constants.SIGNED) {
             if (lexer.token == Token.IDENTIFIER) {
                 typeName += (' ' + lexer.stringVal());
                 lexer.nextToken();
