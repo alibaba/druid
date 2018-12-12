@@ -88,6 +88,7 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     private Map<String, DataSource> dataSourceMap = new ConcurrentHashMap<String, DataSource>();
     private DataSourceSelector selector = new RandomDataSourceSelector(this);
     private String dataSourceFile = DEFAULT_DATA_SOURCE_FILE;
+    private String propertyPrefix = "";
 
     private boolean inited = false;
 
@@ -100,7 +101,7 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
                 return;
             }
             if (dataSourceMap == null || dataSourceMap.isEmpty()) {
-                dataSourceMap = new DataSourceCreator(dataSourceFile).createMap(this);
+                dataSourceMap = new DataSourceCreator(dataSourceFile, propertyPrefix).createMap(this);
             }
             if (selector == null) {
                 selector = new RandomDataSourceSelector(this);
@@ -144,6 +145,14 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
 
     public void setDataSourceFile(String dataSourceFile) {
         this.dataSourceFile = dataSourceFile;
+    }
+
+    public String getPropertyPrefix() {
+        return propertyPrefix;
+    }
+
+    public void setPropertyPrefix(String propertyPrefix) {
+        this.propertyPrefix = propertyPrefix;
     }
 
     public void setDataSourceMap(Map<String, DataSource> dataSourceMap) {

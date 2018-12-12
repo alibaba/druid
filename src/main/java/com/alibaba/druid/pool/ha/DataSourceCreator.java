@@ -44,8 +44,12 @@ public class DataSourceCreator {
     private List<String> nameList = new ArrayList<String>();
 
     public DataSourceCreator(String file) {
+        this(file, "");
+    }
+
+    public DataSourceCreator(String file, String propertyPrefix) {
         loadProperties(file);
-        loadNameList();
+        loadNameList(propertyPrefix);
     }
 
     public Map<String, DataSource> createMap(HighAvailableDataSource haDataSource) throws SQLException {
@@ -119,10 +123,14 @@ public class DataSourceCreator {
         return dataSource;
     }
 
-    private void loadNameList() {
+    private void loadNameList(String propertyPrefix) {
         Set<String> names = new HashSet<String>();
         for (String n : properties.stringPropertyNames()) {
-            if (n.contains(".url")) {
+            if (propertyPrefix != null && !propertyPrefix.isEmpty()
+                    && !n.startsWith(propertyPrefix)) {
+                continue;
+            }
+            if (n.endsWith(".url")) {
                 names.add(n.split("\\.url")[0]);
             }
         }
@@ -166,5 +174,9 @@ public class DataSourceCreator {
         } else {
             LOG.warn("File " + file + " can't be loaded!");
         }
+    }
+
+    public List<String> getNameList() {
+        return nameList;
     }
 }
