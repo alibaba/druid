@@ -150,12 +150,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private boolean                          asyncInit                 = false;
     protected boolean                        killWhenSocketReadTimeout = false;
 
+    private static List<Filter>              autoFilters               = null;
+    private boolean                          loadSpifilterSkip         = false;
+
     protected static final AtomicLongFieldUpdater<DruidDataSource> recycleErrorCountUpdater
             = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "recycleErrorCount");
     protected static final AtomicLongFieldUpdater<DruidDataSource> connectErrorCountUpdater
             = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "connectErrorCount");
     protected static final AtomicLongFieldUpdater<DruidDataSource> resetCountUpdater
             = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "resetCount");
+
 
     public DruidDataSource(){
         this(false);
@@ -478,6 +482,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 } catch (NumberFormatException e) {
                     LOG.error("illegal property 'druid.initConnectionSqls'", e);
                 }
+            }
+        }
+        {
+            String property = System.getProperty("druid.load.spifilter.skip");
+            if (property != null && !"false".equals(property)) {
+                loadSpifilterSkip = true;
             }
         }
     }
@@ -1008,22 +1018,28 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
      * @see ServiceLoader
      */
     private void initFromSPIServiceLoader() {
-
-        String property = System.getProperty("druid.load.spifilter.skip");
-        if (property != null) {
+        if (loadSpifilterSkip) {
             return;
         }
 
-        ServiceLoader<Filter> druidAutoFilterLoader = ServiceLoader.load(Filter.class);
+        if (autoFilters == null) {
+            List<Filter> filters = new ArrayList<Filter>();
+            ServiceLoader<Filter> autoFilterLoader = ServiceLoader.load(Filter.class);
 
-        for (Filter autoFilter : druidAutoFilterLoader) {
-            AutoLoad autoLoad = autoFilter.getClass().getAnnotation(AutoLoad.class);
-            if (autoLoad != null && autoLoad.value()) {
-                if (LOG.isInfoEnabled()) {
-                    LOG.info("load filter from spi :" + autoFilter.getClass().getName());
+            for (Filter filter : autoFilterLoader) {
+                AutoLoad autoLoad = filter.getClass().getAnnotation(AutoLoad.class);
+                if (autoLoad != null && autoLoad.value()) {
+                    filters.add(filter);
                 }
-                addFilter(autoFilter);
             }
+            autoFilters = filters;
+        }
+
+        for (Filter filter : autoFilters) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info("load filter from spi :" + filter.getClass().getName());
+            }
+            addFilter(filter);
         }
     }
 
