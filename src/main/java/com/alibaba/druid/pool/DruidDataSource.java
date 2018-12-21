@@ -760,6 +760,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
+        // bug fixed for dead lock, for issue #2980
+        DruidDriver.getInstance();
+
         final ReentrantLock lock = this.lock;
         try {
             lock.lockInterruptibly();
