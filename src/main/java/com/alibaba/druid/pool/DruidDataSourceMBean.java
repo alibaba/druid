@@ -28,6 +28,8 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
     boolean isEnable();
 
+    String getUrl();
+
     void shrink();
 
     int removeAbandoned();
