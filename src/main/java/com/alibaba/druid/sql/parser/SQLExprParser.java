@@ -436,7 +436,6 @@ public class SQLExprParser extends SQLParser {
                 break;
             case DUAL:
             case KEY:
-            case DISTINCT:
             case LIMIT:
             case SCHEMA:
             case COLUMN:
