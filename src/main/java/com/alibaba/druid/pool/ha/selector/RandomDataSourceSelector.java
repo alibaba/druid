@@ -17,6 +17,8 @@ package com.alibaba.druid.pool.ha.selector;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.HighAvailableDataSource;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 import javax.sql.DataSource;
 import java.util.Collection;
@@ -33,6 +35,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author DigitalSonic
  */
 public class RandomDataSourceSelector implements DataSourceSelector {
+    private final static Log LOG = LogFactory.getLog(RandomDataSourceSelector.class);
+
     private Random random = new Random();
     private List<DataSource> blacklist = new CopyOnWriteArrayList<DataSource>();
     private HighAvailableDataSource highAvailableDataSource;
@@ -41,15 +45,24 @@ public class RandomDataSourceSelector implements DataSourceSelector {
 
     public RandomDataSourceSelector(HighAvailableDataSource highAvailableDataSource) {
         this.highAvailableDataSource = highAvailableDataSource;
-        validateThread = new RandomDataSourceValidateThread(this);
-        recoverThread = new RandomDataSourceRecoverThread(this);
-        new Thread(validateThread, "RandomDataSourceSelector-validate-thread").start();
-        new Thread(recoverThread, "RandomDataSourceSelector-recover-thread").start();
+        if (!highAvailableDataSource.isTestOnBorrow() && !highAvailableDataSource.isTestOnReturn()) {
+            validateThread = new RandomDataSourceValidateThread(this);
+            recoverThread = new RandomDataSourceRecoverThread(this);
+            new Thread(validateThread, "RandomDataSourceSelector-validate-thread").start();
+            new Thread(recoverThread, "RandomDataSourceSelector-recover-thread").start();
+        } else {
+            LOG.info("testOnBorrow or testOnReturn has been set to true, ignore validateThread");
+        }
     }
 
     @Override
     public boolean isSame(String name) {
-        return "random".equalsIgnoreCase(name);
+        return getName().equalsIgnoreCase(name);
+    }
+
+    @Override
+    public String getName() {
+        return "random";
     }
 
     @Override

@@ -36,6 +36,12 @@ public class MySqlExplainStatement extends SQLExplainStatement implements MySqlS
     public MySqlExplainStatement() {
         super (JdbcConstants.MYSQL);
     }
+
+       public MySqlExplainStatement(String dbType) {
+        super (dbType);
+    }
+
+
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {

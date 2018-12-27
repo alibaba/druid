@@ -109,6 +109,7 @@ public interface JdbcConstants {
     String ALIYUN_DRDS                = "aliyun_drds";
 
     String PRESTO                     = "presto";
+    String PRESTO_DRIVER              = "com.facebook.presto.jdbc.PrestoDriver";
 
     String ELASTIC_SEARCH             = "elastic_search";
     

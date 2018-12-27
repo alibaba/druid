@@ -23,17 +23,52 @@ public class DruidWebUtils {
 
     public static String getRemoteAddr(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
+        if (ip != null && !isValidAddress(ip)) {
+            ip = null;
+        }
+
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
+            if (ip != null && !isValidAddress(ip)) {
+                ip = null;
+            }
         }
+
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("WL-Proxy-Client-IP");
+            if (ip != null && !isValidAddress(ip)) {
+                ip = null;
+            }
         }
+
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
+            if (ip != null && !isValidAddress(ip)) {
+                ip = null;
+            }
         }
 
         return ip;
+    }
+
+    private static boolean isValidAddress(String ip) {
+        if (ip == null) {
+            return false;
+        }
+
+        for (int i = 0; i < ip.length(); ++i) {
+            char ch = ip.charAt(i);
+            if (ch >= '0' && ch <= '9') {
+            } else if (ch >= 'A' && ch <= 'F') {
+            } else if (ch >= 'a' && ch <= 'f') {
+            } else if (ch == '.' || ch == ':') {
+                //
+            } else {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static String getContextPath_2_5(ServletContext context) {

@@ -108,9 +108,22 @@ public class MySqlUtils {
             if (method_6_getValue == null && !method_6_getValue_error) {
                 try {
                     class_6_connection = Class.forName("com.mysql.cj.api.jdbc.JdbcConnection");
-                    method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
-                    method_6_getBooleanReadableProperty = Class.forName("com.mysql.cj.api.conf.PropertySet").getMethod("getBooleanReadableProperty", String.class);
-                    method_6_getValue = Class.forName("com.mysql.cj.api.conf.ReadableProperty").getMethod("getValue");
+                } catch (Throwable t) {
+                }
+                
+                try {
+                    // maybe 8.0.11 or higher version, try again with com.mysql.cj.jdbc.JdbcConnection
+                    if (class_6_connection == null) {
+                        class_6_connection = Class.forName("com.mysql.cj.jdbc.JdbcConnection");
+                        method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
+                        method_6_getBooleanReadableProperty = Class.forName("com.mysql.cj.conf.PropertySet").getMethod("getBooleanReadableProperty", String.class);
+                        method_6_getValue = Class.forName("com.mysql.cj.conf.ReadableProperty").getMethod("getValue");
+                    }
+                    else { 
+                        method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
+                        method_6_getBooleanReadableProperty = Class.forName("com.mysql.cj.api.conf.PropertySet").getMethod("getBooleanReadableProperty", String.class);
+                        method_6_getValue = Class.forName("com.mysql.cj.api.conf.ReadableProperty").getMethod("getValue");
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     method_6_getValue_error = true;

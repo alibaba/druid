@@ -485,16 +485,19 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     @Override
     public void close() throws SQLException {
-        if (!this.closed) {
-            clearResultSet();
-            if (stmt != null) {
-                stmt.close();
-            }
-            this.closed = true;
+        if (this.closed) {
+            return;
+        }
 
-            if (conn.getConnectionHolder() != null) {
-                conn.getConnectionHolder().removeTrace(this);
-            }
+        clearResultSet();
+        if (stmt != null) {
+            stmt.close();
+        }
+        this.closed = true;
+
+        DruidConnectionHolder connHolder = conn.getConnectionHolder();
+        if (connHolder != null) {
+            connHolder.removeTrace(this);
         }
     }
 

@@ -73,7 +73,8 @@ public class OdpsExprParser extends SQLExprParser {
     }
     
     protected SQLExpr parseAliasExpr(String alias) {
-        return new SQLCharExpr(alias);
+        String chars = alias.substring(1, alias.length() - 1);
+        return new SQLCharExpr(chars);
     }
     
     @Override

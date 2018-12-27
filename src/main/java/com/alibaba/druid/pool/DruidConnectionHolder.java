@@ -52,7 +52,7 @@ public final class DruidConnectionHolder {
     protected final long                          connectTimeMillis;
     protected volatile long                       lastActiveTimeMillis;
     protected volatile long                       lastValidTimeMillis;
-    private long                                  useCount                 = 0;
+    protected long                                useCount                 = 0;
     private long                                  keepAliveCheckCount      = 0;
     private long                                  lastNotEmptyWaitNanos;
     private final long                            createNanoSpan;

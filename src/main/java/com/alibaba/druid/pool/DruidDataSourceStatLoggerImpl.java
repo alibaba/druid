@@ -206,7 +206,7 @@ public class DruidDataSourceStatLoggerImpl extends DruidDataSourceStatLoggerAdap
 
                 if (sqlStat.getFetchRowCount() > 0) {
                     sqlStatMap.put("fetchRowCount", sqlStat.getFetchRowCount());
-                    sqlStatMap.put("fetchRowCount", sqlStat.getFetchRowCountMax());
+                    sqlStatMap.put("fetchRowCountMax", sqlStat.getFetchRowCountMax());
                     sqlStatMap.put("fetchRowHistogram", rtrim(sqlStat.getFetchRowHistogram()));
                 }
 
