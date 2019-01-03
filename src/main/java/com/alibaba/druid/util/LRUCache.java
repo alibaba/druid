@@ -24,7 +24,7 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
     private final int         maxSize;
 
     public LRUCache(int maxSize){
-        this(maxSize, 16, 0.75f, false);
+        this(maxSize, 16, 0.75f, true);
     }
 
     public LRUCache(int maxSize, int initialCapacity, float loadFactor, boolean accessOrder){
