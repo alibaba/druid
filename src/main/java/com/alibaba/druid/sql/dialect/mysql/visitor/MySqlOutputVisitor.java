@@ -269,6 +269,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             dataType.accept(this);
         }
 
+        SQLExpr generatedAlawsAs = x.getGeneratedAlawsAs();
+        if (generatedAlawsAs != null) {
+            print0(ucase ? " GENERATED ALWAYS AS (" : " generated always as (");
+            printExpr(generatedAlawsAs);
+            print(')');
+        }
+
         final SQLExpr charsetExpr = x.getCharsetExpr();
         if (charsetExpr != null) {
             print0(ucase ? " CHARSET " : " charset ");
