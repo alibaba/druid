@@ -2548,6 +2548,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLInsertStatement x) {
+        List<SQLCommentHint> headHints = x.getHeadHintsDirect();
+        if (headHints != null) {
+            for (SQLCommentHint hint : headHints) {
+                hint.accept(this);
+                println();
+            }
+        }
+
         if (x.isUpsert()) {
             print0(ucase ? "UPSERT INTO " : "upsert into ");
         } else {

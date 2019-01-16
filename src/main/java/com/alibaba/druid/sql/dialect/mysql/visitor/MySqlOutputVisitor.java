@@ -888,6 +888,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlInsertStatement x) {
+        List<SQLCommentHint> headHints = x.getHeadHintsDirect();
+        if (headHints != null) {
+            for (SQLCommentHint hint : headHints) {
+                hint.accept(this);
+                println();
+            }
+        }
+
         print0(ucase ? "INSERT " : "insert ");
 
         if (x.isLowPriority()) {

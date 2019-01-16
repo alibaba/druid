@@ -934,12 +934,12 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             if (tddlHints) {
-                SQLStatementImpl stmt = (SQLStatementImpl)this.parseStatement();
+                SQLStatement stmt = this.parseStatement();
                 stmt.setHeadHints(hints);
                 statementList.add(stmt);
                 return true;
             } else if (accept) {
-                SQLStatementImpl stmt = (SQLStatementImpl) this.parseStatement();
+                SQLStatement stmt = this.parseStatement();
                 stmt.setHeadHints(hints);
                 statementList.add(stmt);
                 return true;
@@ -1712,6 +1712,14 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.identifierEquals("PROCESSLIST")) {
             lexer.nextToken();
             MySqlShowProcessListStatement stmt = new MySqlShowProcessListStatement();
+
+            if (lexer.token() == Token.WHERE) {
+                lexer.nextToken();
+                stmt.setWhere(
+                        this.exprParser.expr()
+                );
+            }
+
             return stmt;
         }
 

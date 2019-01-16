@@ -27,7 +27,7 @@ public class MySqlCreateTableTest134 extends MysqlTest {
                 "\tid int NOT NULL PRIMARY KEY AUTO_INCREMENT,\n" +
                 "\tname char(40),\n" +
                 "\tSimpleDate date,\n" +
-                "\tSimpleDate_dayofweek tinyint(4) GENERATED ALWAYS AS (dayofweek(SimpleDate)),\n" +
+                "\tSimpleDate_dayofweek tinyint(4) GENERATED ALWAYS AS (dayofweek(SimpleDate)) VIRTUAL,\n" +
                 "\tKEY SimpleDate_dayofweek (SimpleDate_dayofweek)\n" +
                 ");", stmt.toString());
 
@@ -35,7 +35,7 @@ public class MySqlCreateTableTest134 extends MysqlTest {
                 "\tid int not null primary key auto_increment,\n" +
                 "\tname char(40),\n" +
                 "\tSimpleDate date,\n" +
-                "\tSimpleDate_dayofweek tinyint(4) generated always as (dayofweek(SimpleDate)),\n" +
+                "\tSimpleDate_dayofweek tinyint(4) generated always as (dayofweek(SimpleDate)) virtual,\n" +
                 "\tkey SimpleDate_dayofweek (SimpleDate_dayofweek)\n" +
                 ");", stmt.toLowerCaseString());
 

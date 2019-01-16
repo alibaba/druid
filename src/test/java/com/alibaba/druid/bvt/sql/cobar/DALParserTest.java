@@ -853,7 +853,7 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW FULL PROCESSLIST", output);
     }
 
-    
+
     public void test_show_profiles() throws Exception {
         String sql = "SHOW profiles";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

@@ -20,7 +20,6 @@ public class DruidDataSourceTest4 extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setInitialSize(1);
-
     }
 
     protected void tearDown() throws Exception {

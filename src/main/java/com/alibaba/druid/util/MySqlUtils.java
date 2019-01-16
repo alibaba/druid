@@ -349,14 +349,14 @@ public class MySqlUtils {
         return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 
-    private static Class   class_connectionImpl                     = null;
-    private static boolean class_connectionImpl_Error               = false;
-    private static Method  method_getIO                             = null;
-    private static boolean method_getIO_error                       = false;
-    private static Class   class_MysqlIO                            = null;
-    private static boolean class_MysqlIO_Error                      = false;
-    private static Method  method_getLastPacketReceivedTimeMs       = null;
-    private static boolean method_getLastPacketReceivedTimeMs_error = false;
+    private static transient Class   class_connectionImpl                     = null;
+    private static transient boolean class_connectionImpl_Error               = false;
+    private static transient Method  method_getIO                             = null;
+    private static transient boolean method_getIO_error                       = false;
+    private static transient Class   class_MysqlIO                            = null;
+    private static transient boolean class_MysqlIO_Error                      = false;
+    private static transient Method  method_getLastPacketReceivedTimeMs       = null;
+    private static transient boolean method_getLastPacketReceivedTimeMs_error = false;
 
     public static long getLastPacketReceivedTimeMs(Connection conn) throws SQLException {
         if (class_connectionImpl == null && !class_connectionImpl_Error) {
