@@ -190,6 +190,6 @@ public class MySqlShowColumnOutpuVisitor extends MySqlOutputVisitor {
 
     void print(String text, int columnSize, char ch) {
         print(text);
-        print(' ', columnSize - text.length());
+        print(ch, columnSize - text.length());
     }
 }
