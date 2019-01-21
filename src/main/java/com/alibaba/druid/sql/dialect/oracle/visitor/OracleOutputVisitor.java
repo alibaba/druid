@@ -1148,7 +1148,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getValues() != null) {
             println();
             print0(ucase ? "VALUES " : "values ");
-            x.getValues().accept(this);
+            printlnAndAccept(x.getValuesList(), ", ");
         } else {
             if (x.getQuery() != null) {
                 println();
@@ -1200,7 +1200,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getValues() != null) {
             println();
             print0(ucase ? "VALUES " : "values ");
-            x.getValues().accept(this);
+            printlnAndAccept(x.getValuesList(), ", ");
         } else {
             if (x.getQuery() != null) {
                 println();
