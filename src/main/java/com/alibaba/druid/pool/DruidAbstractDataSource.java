@@ -1315,7 +1315,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             classes.add(filter.getClass().getName());
         }
 
-        return classes.toArray(new String[classes.size()]);
+        return classes.toArray(new String[0]);
     }
 
     public void setFilters(String filters) throws SQLException {

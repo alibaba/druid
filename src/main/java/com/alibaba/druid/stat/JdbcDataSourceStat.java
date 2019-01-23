@@ -263,7 +263,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     public TabularData getSqlList() throws JMException {
         Map<String, JdbcSqlStat> sqlStatMap = this.getSqlStatMap();
         CompositeType rowType = JdbcSqlStat.getCompositeType();
-        String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
+        String[] indexNames = rowType.keySet().toArray(new String[0]);
 
         TabularType tabularType = new TabularType("SqlListStatistic", "SqlListStatistic", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);
@@ -311,7 +311,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     @Override
     public TabularData getConnectionList() throws JMException {
         CompositeType rowType = JdbcConnectionStat.Entry.getCompositeType();
-        String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
+        String[] indexNames = rowType.keySet().toArray(new String[0]);
 
         TabularType tabularType = new TabularType("ConnectionListStatistic", "ConnectionListStatistic", rowType,
                                                   indexNames);

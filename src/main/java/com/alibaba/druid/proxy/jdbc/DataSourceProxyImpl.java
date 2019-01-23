@@ -139,7 +139,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             classes.add(filter.getClass().getName());
         }
 
-        return classes.toArray(new String[classes.size()]);
+        return classes.toArray(new String[0]);
     }
 
     @Override

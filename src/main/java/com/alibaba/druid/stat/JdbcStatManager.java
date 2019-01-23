@@ -264,7 +264,7 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
     @Override
     public TabularData getDataSourceList() throws JMException {
         CompositeType rowType = getDataSourceCompositeType();
-        String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
+        String[] indexNames = rowType.keySet().toArray(new String[0]);
 
         TabularType tabularType = new TabularType("DataSourceStat", "DataSourceStat", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);
@@ -287,7 +287,7 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
     @Override
     public TabularData getSqlList() throws JMException {
         CompositeType rowType = JdbcSqlStat.getCompositeType();
-        String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
+        String[] indexNames = rowType.keySet().toArray(new String[0]);
 
         TabularType tabularType = new TabularType("SqlListStatistic", "SqlListStatistic", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);
@@ -349,7 +349,7 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
 
     public TabularData getConnectionList() throws JMException {
         CompositeType rowType = JdbcConnectionStat.Entry.getCompositeType();
-        String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
+        String[] indexNames = rowType.keySet().toArray(new String[0]);
 
         TabularType tabularType = new TabularType("ConnectionList", "ConnectionList", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);

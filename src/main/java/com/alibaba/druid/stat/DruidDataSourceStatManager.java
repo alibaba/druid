@@ -257,7 +257,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
     public TabularData getDataSourceList() throws JMException {
         CompositeType rowType = getDruidDataSourceCompositeType();
-        String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
+        String[] indexNames = rowType.keySet().toArray(new String[0]);
 
         TabularType tabularType = new TabularType("DruidDataSourceStat", "DruidDataSourceStat", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);

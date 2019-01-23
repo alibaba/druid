@@ -306,7 +306,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     @Override
     public String[] getDataSourceUrls() {
-        return proxyDataSources.keySet().toArray(new String[proxyDataSources.size()]);
+        return proxyDataSources.keySet().toArray(new String[0]);
     }
 
     public static ConcurrentMap<String, DataSourceProxyImpl> getProxyDataSources() {

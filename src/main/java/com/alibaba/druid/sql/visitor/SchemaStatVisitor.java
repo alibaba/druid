@@ -632,7 +632,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     protected void handleCondition(SQLExpr expr, String operator, List<SQLExpr> values) {
-        handleCondition(expr, operator, values.toArray(new SQLExpr[values.size()]));
+        handleCondition(expr, operator, values.toArray(new SQLExpr[0]));
     }
 
     protected void handleCondition(SQLExpr expr, String operator, SQLExpr... valueExprs) {
