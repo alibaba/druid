@@ -20,17 +20,22 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.concurrent.*;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
-    private static final long serialVersionUID     = -2227528634302168877L;
+    private static final long            serialVersionUID = -2227528634302168877L;
 
+    private static final Log             LOG              = LogFactory.getLog(OracleValidConnectionChecker.class);
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(5);
 
     private int               timeout              = 1;
 
@@ -74,18 +79,41 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
             return true;
         }
 
-        int queryTimeout = validationQueryTimeout < 0 ? timeout : validationQueryTimeout;
+        final int queryTimeout = validationQueryTimeout < 0 ? timeout : validationQueryTimeout;
 
-        Statement stmt = null;
-        ResultSet rs = null;
+        final Connection finalConn = conn;
+        final String finalValidateQuery = validateQuery;
+        Future<Boolean> future = EXECUTOR_SERVICE.submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                Statement stmt = null;
+                ResultSet rs = null;
+                try {
+                    stmt = finalConn.createStatement();
+                    stmt.setQueryTimeout(queryTimeout);
+                    rs = stmt.executeQuery(finalValidateQuery);
+                    return Boolean.TRUE;
+                } catch (Exception e){
+                    String msg = "query error when check oracle connection";
+                    LOG.info(msg);
+                    LOG.debug(msg, e);
+                    return Boolean.FALSE;
+                } finally {
+                    JdbcUtils.close(rs);
+                    JdbcUtils.close(stmt);
+                }
+            }
+        });
+
+        Boolean result = Boolean.TRUE;
         try {
-            stmt = conn.createStatement();
-            stmt.setQueryTimeout(queryTimeout);
-            rs = stmt.executeQuery(validateQuery);
-            return true;
-        } finally {
-            JdbcUtils.close(rs);
-            JdbcUtils.close(stmt);
+            result = future.get(queryTimeout, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            String msg = "check oracle connection error";
+            LOG.info(msg);
+            LOG.debug(msg, e);
+            result = Boolean.FALSE;
         }
+        return result;
     }
 }
