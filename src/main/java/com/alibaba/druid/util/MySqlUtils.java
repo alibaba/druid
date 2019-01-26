@@ -131,14 +131,16 @@ public class MySqlUtils {
             }
 
             try {
+                boolean pinGlobTx = false;
                 // pinGlobalTxToPhysicalConnection
-                boolean pinGlobTx = (Boolean) method_6_getValue.invoke(
-                        method_6_getBooleanReadableProperty.invoke(
-                                method_6_getPropertySet.invoke(physicalConn)
-                                , "pinGlobalTxToPhysicalConnection"
-                        )
-                );
-
+                if(method_6_getValue != null){ // 做空指针判断
+                    pinGlobTx = (Boolean) method_6_getValue.invoke(
+                            method_6_getBooleanReadableProperty.invoke(
+                                    method_6_getPropertySet.invoke(physicalConn)
+                                    , "pinGlobalTxToPhysicalConnection"
+                            )
+                    );
+                }
                 if (pinGlobTx) {
                     try {
                         if (method_6_getInstance == null && !method_6_getInstance_error) {
