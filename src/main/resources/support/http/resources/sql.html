@@ -143,7 +143,7 @@
 	    				var html = "";
 	    				for ( var i = 0; i < sqlStatList.length; i++) {
 	    					var stat = sqlStatList[i], statSQL=stat.SQL;
-	    					var newStatSQL=statSQL.replace(/\"/g,"'");
+	    					var newStatSQL=statSQL.replace(/\"/g,"'").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 	    					var newRow = sqlStatTable.insertRow(-1);
 	    					html += "<tr>";
 	    					html += "<td>" + (i + 1) + "</td>";

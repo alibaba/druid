@@ -287,8 +287,8 @@
 					if (whiteList) {
 						for ( var i = 0; i < whiteList.length; ++i) {
 							var white = whiteList[i];
-							if (white != null) {
-								white = white.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+							if (white.sql != null) {
+								white.sql = white.sql.replace(/</g,"&lt;").replace(/>/g,"&gt;");
 							}
 
 							html += "<tr>";
@@ -335,8 +335,8 @@
 					if (blackList) {
 						for ( var i = 0; i < blackList.length; ++i) {
 							var black = blackList[i];
-							if (black != null) {
-								black = black.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+							if (black.sql != null) {
+								black.sql = black.sql.replace(/</g,"&lt;").replace(/>/g,"&gt;");
 							}
 
 							html += "<tr>";
