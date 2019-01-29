@@ -132,14 +132,14 @@ public class MySqlUtils {
 
             try {
                 // pinGlobalTxToPhysicalConnection
-                boolean pinGlobTx = (Boolean) method_6_getValue.invoke(
+                Boolean pinGlobTx = (Boolean) method_6_getValue.invoke(
                         method_6_getBooleanReadableProperty.invoke(
                                 method_6_getPropertySet.invoke(physicalConn)
                                 , "pinGlobalTxToPhysicalConnection"
                         )
                 );
 
-                if (pinGlobTx) {
+                if (pinGlobTx != null && pinGlobTx) {
                     try {
                         if (method_6_getInstance == null && !method_6_getInstance_error) {
                             class_6_suspendableXAConnection = Class.forName("com.mysql.cj.jdbc.SuspendableXAConnection");
