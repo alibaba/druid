@@ -1477,19 +1477,26 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         && activeCount >= onFatalErrorMaxActive) {
                     connectErrorCountUpdater.incrementAndGet(this);
 
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String errorMsg = "onFatalError, activeCount " + activeCount
-                            + ", onFatalErrorMaxActive " + onFatalErrorMaxActive;
+                    StringBuilder errorMsg = new StringBuilder();
+                    errorMsg.append("onFatalError, activeCount ")
+                            .append(activeCount)
+                            .append(", onFatalErrorMaxActive ")
+                            .append(onFatalErrorMaxActive);
 
                     if (lastFatalErrorTimeMillis > 0) {
-                        errorMsg += ", time '" + format.format(new Date(lastFatalErrorTimeMillis)) + "'";
+                        errorMsg.append(", time '")
+                                .append(StringUtils.formatDateTime19(
+                                        lastFatalErrorTimeMillis, TimeZone.getDefault()))
+                                .append("'");
                     }
 
                     if (lastFatalErrorSql != null) {
-                        errorMsg += ", sql \n" + lastFatalErrorSql;
+                        errorMsg.append(", sql \n")
+                                .append(lastFatalErrorSql);
                     }
 
-                    throw new SQLException(errorMsg, lastFatalError);
+                    throw new SQLException(
+                            errorMsg.toString(), lastFatalError);
                 }
 
                 connectCount++;
