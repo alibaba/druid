@@ -58,7 +58,7 @@ spring.datasource.druid.filters= #Druid filters, default value stat, multiple se
 - Monitor
 ```
 # WebStatFilter properties, detail see Druid Wiki
-spring.datasource.druid.web-stat-filter.enabled= #Enable StatFilter, default value true.
+spring.datasource.druid.web-stat-filter.enabled= #Enable StatFilter, default value false.
 spring.datasource.druid.web-stat-filter.url-pattern=
 spring.datasource.druid.web-stat-filter.exclusions=
 spring.datasource.druid.web-stat-filter.session-stat-enable=
@@ -68,7 +68,7 @@ spring.datasource.druid.web-stat-filter.principal-cookie-name=
 spring.datasource.druid.web-stat-filter.profile-enable=
 
 # StatViewServlet properties, detail see Druid Wiki
-spring.datasource.druid.stat-view-servlet.enabled= #Enable StatViewServlet, default value true.
+spring.datasource.druid.stat-view-servlet.enabled= #Enable StatViewServlet, default value false.
 spring.datasource.druid.stat-view-servlet.url-pattern=
 spring.datasource.druid.stat-view-servlet.reset-enable=
 spring.datasource.druid.stat-view-servlet.login-username=
@@ -148,7 +148,7 @@ Currently, configuration support is provided for the following filters. Please r
 - Log4j2Filter
 - CommonsLogFilter
 
-Druid Spring Boot Starter will enable StatFilter by default, and you can also set its enabled to false.，make the Filter configuration take effect and need to set enabled to true.
+Druid Spring Boot Starter will forbid StatFilter by default, and you can also set its enabled to true.，make the Filter configuration take effect and need to set enabled to true.
 
 ## How to get Druid monitoring(stat) data
 
@@ -158,6 +158,7 @@ Druid's monitoring data can be obtained through DruidStatManagerFacade. After ob
 public class DruidStatController {
     @GetMapping("/druid/stat")
     public Object druidStat(){
+        // Your need enable StatFilter
         // DruidStatManagerFacade#getDataSourceStatDataList 该方法可以获取所有数据源的监控数据，除此之外 DruidStatManagerFacade 还提供了一些其他方法，你可以按需选择使用。
         return DruidStatManagerFacade.getInstance().getDataSourceStatDataList();
     }

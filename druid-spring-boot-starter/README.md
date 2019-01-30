@@ -61,7 +61,7 @@ spring.datasource.druid.filters= #配置多个英文逗号分隔
 - 监控配置
 ```
 # WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
-spring.datasource.druid.web-stat-filter.enabled= #是否启用StatFilter默认值true
+spring.datasource.druid.web-stat-filter.enabled= #是否启用StatFilter默认值false
 spring.datasource.druid.web-stat-filter.url-pattern=
 spring.datasource.druid.web-stat-filter.exclusions=
 spring.datasource.druid.web-stat-filter.session-stat-enable=
@@ -71,7 +71,7 @@ spring.datasource.druid.web-stat-filter.principal-cookie-name=
 spring.datasource.druid.web-stat-filter.profile-enable=
 
 # StatViewServlet配置，说明请参考Druid Wiki，配置_StatViewServlet配置
-spring.datasource.druid.stat-view-servlet.enabled= #是否启用StatViewServlet默认值true
+spring.datasource.druid.stat-view-servlet.enabled= #是否启用StatViewServlet默认值false
 spring.datasource.druid.stat-view-servlet.url-pattern=
 spring.datasource.druid.stat-view-servlet.reset-enable=
 spring.datasource.druid.stat-view-servlet.login-username=
@@ -154,7 +154,7 @@ spring.datasource.druid.filter.wall.config.drop-table-allow=false
 - Log4j2Filter
 - CommonsLogFilter
 
-要想使自定义 Filter 配置生效需要将对应 Filter 的 ```enabled``` 设置为 ```true``` ，Druid Spring Boot Starter 默认会启用 StatFilter，你也可以将其 ```enabled``` 设置为 ```false``` 来禁用它。
+要想使自定义 Filter 配置生效需要将对应 Filter 的 ```enabled``` 设置为 ```true``` ，Druid Spring Boot Starter 默认禁用 StatFilter，你也可以将其 ```enabled``` 设置为 ```true``` 来启用它。
 
 ## 如何获取 Druid 的监控数据
 
@@ -165,6 +165,7 @@ Druid 的监控数据可以通过 DruidStatManagerFacade 进行获取，获取�
 public class DruidStatController {
     @GetMapping("/druid/stat")
     public Object druidStat(){
+        // 需要启用StatFilter
         // DruidStatManagerFacade#getDataSourceStatDataList 该方法可以获取所有数据源的监控数据，除此之外 DruidStatManagerFacade 还提供了一些其他方法，你可以按需选择使用。
         return DruidStatManagerFacade.getInstance().getDataSourceStatDataList();
     }
