@@ -33,17 +33,22 @@ public final class SQLNotExpr extends SQLExprImpl implements Serializable {
 
     }
 
-    public SQLNotExpr(SQLExpr expr){
-
-        this.expr = expr;
+    public SQLNotExpr(SQLExpr x){
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.expr = x;
     }
 
     public SQLExpr getExpr() {
         return this.expr;
     }
 
-    public void setExpr(SQLExpr expr) {
-        this.expr = expr;
+    public void setExpr(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.expr = x;
     }
 
     @Override

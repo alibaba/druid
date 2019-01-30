@@ -262,7 +262,6 @@ public class WebSessionStat {
         }
 
         if (remoteAddresses.length() > 256) {
-            LOG.error("session ip change too many");
             return;
         }
 

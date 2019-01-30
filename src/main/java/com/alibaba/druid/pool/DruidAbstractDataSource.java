@@ -122,6 +122,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int                             maxPoolPreparedStatementPerConnectionSize = 10;
 
     protected volatile boolean                         inited                                    = false;
+    protected volatile boolean                         initExceptionThrow                        = true;
 
     protected PrintWriter                              logWriter                                 = new PrintWriter(System.out);
 
@@ -144,6 +145,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long                            minEvictableIdleTimeMillis                = DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
     protected volatile long                            maxEvictableIdleTimeMillis                = DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS;
     protected volatile long                            phyTimeoutMillis                          = DEFAULT_PHY_TIMEOUT_MILLIS;
+    protected volatile long                            phyMaxUseCount                            = -1;
 
     protected volatile boolean                         removeAbandoned;
     protected volatile long                            removeAbandonedTimeoutMillis              = 300 * 1000;
@@ -238,12 +240,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int                             directCreateCount                         = 0;
     protected volatile long                            createCount                               = 0L;
     protected volatile long                            destroyCount                              = 0L;
+    protected volatile long                            createStartNanos                          = 0L;
 
     final static AtomicIntegerFieldUpdater<DruidAbstractDataSource> createErrorCountUpdater      = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "createErrorCount");
     final static AtomicIntegerFieldUpdater<DruidAbstractDataSource> creatingCountUpdater         = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "creatingCount");
     final static AtomicIntegerFieldUpdater<DruidAbstractDataSource> directCreateCountUpdater     = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "directCreateCount");
     final static AtomicLongFieldUpdater<DruidAbstractDataSource>    createCountUpdater           = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "createCount");
     final static AtomicLongFieldUpdater<DruidAbstractDataSource>    destroyCountUpdater          = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "destroyCount");
+    final static AtomicLongFieldUpdater<DruidAbstractDataSource> createStartNanosUpdater         = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "createStartNanos");
 
     private Boolean                                    useUnfairLock                             = null;
     private boolean                                    useLocalSessionState                      = true;
@@ -776,6 +780,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public void setPhyTimeoutMillis(long phyTimeoutMillis) {
         this.phyTimeoutMillis = phyTimeoutMillis;
+    }
+
+    public long getPhyMaxUseCount() {
+        return phyMaxUseCount;
+    }
+
+    public void setPhyMaxUseCount(long phyMaxUseCount) {
+        this.phyMaxUseCount = phyMaxUseCount;
     }
 
     public int getNumTestsPerEvictionRun() {
@@ -1618,6 +1630,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 ? new HashMap<String, Object>()
                 : null;
 
+        createStartNanosUpdater.set(this, connectStartNanos);
         creatingCountUpdater.incrementAndGet(this);
         try {
             conn = createPhysicalConnection(url, physicalConnectProperties);
@@ -2024,6 +2037,20 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public boolean isOnFatalError() {
         return onFatalError;
+    }
+
+    /**
+     * @since 1.1.11
+     */
+    public boolean isInitExceptionThrow() {
+        return initExceptionThrow;
+    }
+
+    /**
+     * @since 1.1.11
+     */
+    public void setInitExceptionThrow(boolean initExceptionThrow) {
+        this.initExceptionThrow = initExceptionThrow;
     }
 
     public static class PhysicalConnectionInfo {

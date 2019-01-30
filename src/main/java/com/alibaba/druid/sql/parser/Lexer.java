@@ -270,7 +270,7 @@ public class Lexer {
         }
 
         this.posLine = line;
-        this.posColumn = posColumn;
+        this.posColumn = column;
 
         StringBuilder buf = new StringBuilder();
         buf
@@ -1358,8 +1358,9 @@ public class Lexer {
             stringVal = new String(buf, 0, bufPos);
         }
     }
-    
+
     protected final void scanAlias() {
+        final char quote = ch;
         {
             boolean hasSpecial = false;
             int startIndex = pos + 1;
@@ -1370,22 +1371,16 @@ public class Lexer {
                     hasSpecial = true;
                     continue;
                 }
-                if (ch == '"') {
+                if (ch == quote) {
                     if (i + 1 < text.length()) {
                         char ch_next = charAt(i + 1);
-                        if (ch_next == '"' || ch_next == '\'') {
+                        if (ch_next == quote) {
                             hasSpecial = true;
                             i++;
                             continue;
                         }
                     }
-                    if (i > 0) {
-                        char ch_last = charAt(i - 1);
-                        if (ch_last == '\'') {
-                            hasSpecial = true;
-                            continue;
-                        }
-                    }
+
                     endIndex = i;
                     break;
                 }
@@ -1415,6 +1410,7 @@ public class Lexer {
         initBuff(bufPos);
         //putChar(ch);
 
+        putChar(ch);
         for (;;) {
             if (isEOF()) {
                 lexError("unclosed.str.lit");
@@ -1431,9 +1427,15 @@ public class Lexer {
                         putChar('\0');
                         break;
                     case '\'':
+                        if (ch == quote) {
+                            putChar('\\');
+                        }
                         putChar('\'');
                         break;
                     case '"':
+                        if (ch == quote) {
+                            putChar('\\');
+                        }
                         putChar('"');
                         break;
                     case 'b':
@@ -1450,6 +1452,7 @@ public class Lexer {
                         break;
                     case '\\':
                         putChar('\\');
+                        putChar('\\');
                         break;
                     case 'Z':
                         putChar((char) 0x1A); // ctrl + Z
@@ -1462,23 +1465,19 @@ public class Lexer {
                 continue;
             }
 
-//            if (ch == '\'') {
-//                char ch_next = charAt(pos + 1);
-//                if (ch_next == '"') {
-//                    scanChar();
-//                    continue;
-//                }
-//            } else
-            if (ch == '\"') {
+            if (ch == quote) {
                 char ch_next = charAt(pos + 1);
-                if (ch_next == '"' || ch_next == '\'') {
+
+                if (ch_next == quote) {
+                    putChar('\\');
+                    putChar(ch);
                     scanChar();
                     continue;
                 }
 
-                //putChar(ch);
+                putChar(ch);
                 scanChar();
-                token = LITERAL_CHARS;
+                token = LITERAL_ALIAS;
                 break;
             }
 

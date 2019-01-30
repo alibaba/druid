@@ -470,7 +470,9 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.ELASTIC_SEARCH_DRIVER;
         } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
             return JdbcConstants.CLICKHOUSE_DRIVER;
-        } else {
+        } else if(rawUrl.startsWith("jdbc:presto:")) {
+            return JdbcConstants.PRESTO_DRIVER;
+        }else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
     }
@@ -563,6 +565,8 @@ public final class JdbcUtils implements JdbcConstants {
             return ELASTIC_SEARCH;
         } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
             return CLICKHOUSE;
+        }else if (rawUrl.startsWith("jdbc:presto:")) {
+            return PRESTO;
         } else {
             return null;
         }

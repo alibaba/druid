@@ -444,9 +444,11 @@ public final class FnvHash {
         long LESS = fnv1a_64_lower("LESS");
         long MAXVALUE = fnv1a_64_lower("MAXVALUE");
         long OFFSET = fnv1a_64_lower("OFFSET");
+        long LIMIT = fnv1a_64_lower("LIMIT");
         long RAW = fnv1a_64_lower("RAW");
         long LONG_RAW = fnv1a_64_lower("LONG RAW");
         long LONG = fnv1a_64_lower("LONG");
+        long BYTE = fnv1a_64_lower("BYTE");
         long ROWNUM = fnv1a_64_lower("ROWNUM");
         long SYSDATE = fnv1a_64_lower("SYSDATE");
         long SQLCODE = fnv1a_64_lower("SQLCODE");

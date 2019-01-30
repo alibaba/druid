@@ -108,9 +108,22 @@ public class MySqlUtils {
             if (method_6_getValue == null && !method_6_getValue_error) {
                 try {
                     class_6_connection = Class.forName("com.mysql.cj.api.jdbc.JdbcConnection");
-                    method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
-                    method_6_getBooleanReadableProperty = Class.forName("com.mysql.cj.api.conf.PropertySet").getMethod("getBooleanReadableProperty", String.class);
-                    method_6_getValue = Class.forName("com.mysql.cj.api.conf.ReadableProperty").getMethod("getValue");
+                } catch (Throwable t) {
+                }
+                
+                try {
+                    // maybe 8.0.11 or higher version, try again with com.mysql.cj.jdbc.JdbcConnection
+                    if (class_6_connection == null) {
+                        class_6_connection = Class.forName("com.mysql.cj.jdbc.JdbcConnection");
+                        method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
+                        method_6_getBooleanReadableProperty = Class.forName("com.mysql.cj.conf.PropertySet").getMethod("getBooleanReadableProperty", String.class);
+                        method_6_getValue = Class.forName("com.mysql.cj.conf.ReadableProperty").getMethod("getValue");
+                    }
+                    else { 
+                        method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
+                        method_6_getBooleanReadableProperty = Class.forName("com.mysql.cj.api.conf.PropertySet").getMethod("getBooleanReadableProperty", String.class);
+                        method_6_getValue = Class.forName("com.mysql.cj.api.conf.ReadableProperty").getMethod("getValue");
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     method_6_getValue_error = true;
@@ -119,14 +132,14 @@ public class MySqlUtils {
 
             try {
                 // pinGlobalTxToPhysicalConnection
-                boolean pinGlobTx = (Boolean) method_6_getValue.invoke(
+                Boolean pinGlobTx = (Boolean) method_6_getValue.invoke(
                         method_6_getBooleanReadableProperty.invoke(
                                 method_6_getPropertySet.invoke(physicalConn)
                                 , "pinGlobalTxToPhysicalConnection"
                         )
                 );
 
-                if (pinGlobTx) {
+                if (pinGlobTx != null && pinGlobTx) {
                     try {
                         if (method_6_getInstance == null && !method_6_getInstance_error) {
                             class_6_suspendableXAConnection = Class.forName("com.mysql.cj.jdbc.SuspendableXAConnection");
@@ -336,14 +349,14 @@ public class MySqlUtils {
         return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 
-    private static Class   class_connectionImpl                     = null;
-    private static boolean class_connectionImpl_Error               = false;
-    private static Method  method_getIO                             = null;
-    private static boolean method_getIO_error                       = false;
-    private static Class   class_MysqlIO                            = null;
-    private static boolean class_MysqlIO_Error                      = false;
-    private static Method  method_getLastPacketReceivedTimeMs       = null;
-    private static boolean method_getLastPacketReceivedTimeMs_error = false;
+    private static transient Class   class_connectionImpl                     = null;
+    private static transient boolean class_connectionImpl_Error               = false;
+    private static transient Method  method_getIO                             = null;
+    private static transient boolean method_getIO_error                       = false;
+    private static transient Class   class_MysqlIO                            = null;
+    private static transient boolean class_MysqlIO_Error                      = false;
+    private static transient Method  method_getLastPacketReceivedTimeMs       = null;
+    private static transient boolean method_getLastPacketReceivedTimeMs_error = false;
 
     public static long getLastPacketReceivedTimeMs(Connection conn) throws SQLException {
         if (class_connectionImpl == null && !class_connectionImpl_Error) {

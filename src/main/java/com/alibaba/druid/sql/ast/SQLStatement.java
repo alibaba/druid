@@ -24,4 +24,7 @@ public interface SQLStatement extends SQLObject {
     SQLStatement    clone();
     List<SQLObject> getChildren();
     String          toLowerCaseString();
+
+    List<SQLCommentHint> getHeadHintsDirect();
+    void setHeadHints(List<SQLCommentHint> headHints);
 }

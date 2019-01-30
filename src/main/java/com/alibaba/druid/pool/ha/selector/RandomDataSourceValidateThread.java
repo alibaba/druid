@@ -18,6 +18,7 @@ package com.alibaba.druid.pool.ha.selector;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -95,25 +96,28 @@ public class RandomDataSourceValidateThread implements Runnable {
     private boolean check(String name, DruidDataSource dataSource) {
         boolean result = true;
         Driver driver = dataSource.getRawDriver();
-        Properties info = dataSource.getConnectProperties();
-        String url = dataSource.getRawJdbcUrl();
+        Properties info = new Properties(dataSource.getConnectProperties());
+        String username = dataSource.getUsername();
+        String password = dataSource.getPassword();
+        String url = dataSource.getUrl(); // We can't use rawUrl here, because the schema maybe set in url.
         Connection conn = null;
 
+        if (info.getProperty("user") == null && username != null) {
+            info.setProperty("user", username);
+        }
+        if (info.getProperty("password") == null && password != null) {
+            info.setProperty("password", password);
+        }
         try {
             LOG.debug("Validating " + name + " every " + sleepSeconds + " seconds.");
             conn = driver.connect(url, info);
             dataSource.validateConnection(conn);
         } catch (SQLException e) {
-            LOG.warn("Validation FAILED for " + name + ". Exception: " + e.getMessage());
+            LOG.warn("Validation FAILED for " + name + " with url [" + url + "] and username ["
+                    + info.getProperty("user") + "]. Exception: " + e.getMessage());
             result = false;
         } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    LOG.error("Can not close connection for HostAndPort Validation.", e);
-                }
-            }
+            JdbcUtils.close(conn);
         }
 
         return result;
