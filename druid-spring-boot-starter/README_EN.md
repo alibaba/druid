@@ -68,7 +68,7 @@ spring.datasource.druid.web-stat-filter.principal-cookie-name=
 spring.datasource.druid.web-stat-filter.profile-enable=
 
 # StatViewServlet properties, detail see Druid Wiki
-spring.datasource.druid.stat-view-servlet.enabled= #Enable StatViewServlet, default value false.
+spring.datasource.druid.stat-view-servlet.enabled= #Enable StatViewServlet (monitor console), default value false.
 spring.datasource.druid.stat-view-servlet.url-pattern=
 spring.datasource.druid.stat-view-servlet.reset-enable=
 spring.datasource.druid.stat-view-servlet.login-username=
@@ -126,6 +126,7 @@ public DataSource dataSourceTwo(){
 You can ```spring.datasource.druid.filters = stat, wall, log4j, dtc.``` way to enable the corresponding built-in Filter, but these are the default configuration Filter. If the default configuration can not meet your needs, you can give up this way, through the configuration file to configure the Filter, the following is an example.
 ```xml
 # StatFilter configuration example.
+spring.datasource.druid.filter.stat.enabled=true
 spring.datasource.druid.filter.stat.db-type=h2
 spring.datasource.druid.filter.stat.log-slow-sql=true
 spring.datasource.druid.filter.stat.slow-sql-millis=2000
@@ -151,14 +152,12 @@ Currently, configuration support is provided for the following filters. Please r
 Druid Spring Boot Starter will forbid StatFilter by default, and you can also set its enabled to true.，make the Filter configuration take effect and need to set enabled to true.
 
 ## How to get Druid monitoring(stat) data
-
-Druid's monitoring data can be obtained through DruidStatManagerFacade. After obtaining the monitoring data, you can expose it to your monitoring system for use. Druid's default monitoring system data also comes from this. Let's take a simple demonstration. In Spring Boot, how to expose Druid monitoring data in the form of JSON through the HTTP interface. In actual use, you can freely expand the monitoring data and exposure methods according to your needs.
+Druid's monitoring data can be obtained through DruidStatManagerFacade after the StatFilter is enable. After obtaining the monitoring data, you can expose it to your monitoring system for use. Druid's default monitoring system data also comes from this. Let's take a simple demonstration. In Spring Boot, how to expose Druid monitoring data in the form of JSON through the HTTP interface. In actual use, you can freely expand the monitoring data and exposure methods according to your needs.
 ```java
 @RestController
 public class DruidStatController {
     @GetMapping("/druid/stat")
     public Object druidStat(){
-        // Your need enable StatFilter
         // DruidStatManagerFacade#getDataSourceStatDataList 该方法可以获取所有数据源的监控数据，除此之外 DruidStatManagerFacade 还提供了一些其他方法，你可以按需选择使用。
         return DruidStatManagerFacade.getInstance().getDataSourceStatDataList();
     }
