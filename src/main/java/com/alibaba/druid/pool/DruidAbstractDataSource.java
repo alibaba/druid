@@ -1632,7 +1632,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
             validateConnection(conn);
             validatedNanos = System.nanoTime();
-            
+
+            setFailContinuous(false);
             setCreateError(null);
         } catch (SQLException ex) {
             setCreateError(ex);

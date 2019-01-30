@@ -1107,4 +1107,12 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.rowFormat = x;
     }
 
+    public boolean isPrimaryColumn(long columnNameHash) {
+        SQLPrimaryKey pk = this.findPrimaryKey();
+        if (pk == null) {
+            return false;
+        }
+
+        return pk.containsColumn(columnNameHash);
+    }
 }

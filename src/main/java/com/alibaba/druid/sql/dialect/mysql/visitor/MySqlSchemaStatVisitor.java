@@ -887,6 +887,16 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
+    public boolean visit(MySqlLockTableStatement.Item x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlLockTableStatement.Item x) {
+
+    }
+
+    @Override
     public boolean visit(MySqlUnlockTablesStatement x) {
         return false;
     }

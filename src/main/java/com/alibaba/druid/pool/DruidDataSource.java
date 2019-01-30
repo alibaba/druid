@@ -2294,7 +2294,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 try {
                     physicalConnection = createPhysicalConnection();
-                    setFailContinuous(false);
                 } catch (OutOfMemoryError e) {
                     LOG.error("create connection OutOfMemoryError, out memory. ", e);
 
@@ -2466,7 +2465,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 try {
                     connection = createPhysicalConnection();
-                    setFailContinuous(false);
                 } catch (SQLException e) {
                     LOG.error("create connection SQLException, url: " + jdbcUrl + ", errorCode " + e.getErrorCode()
                               + ", state " + e.getSQLState(), e);

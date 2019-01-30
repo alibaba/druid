@@ -842,4 +842,7 @@ public interface SQLASTVisitor {
     boolean visit(SQLWindow x);
     void endVisit(SQLWindow x);
 
+    boolean visit(SQLDumpStatement x);
+    void endVisit(SQLDumpStatement x);
+
 }
