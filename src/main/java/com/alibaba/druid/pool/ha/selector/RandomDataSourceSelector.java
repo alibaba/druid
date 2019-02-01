@@ -43,12 +43,31 @@ public class RandomDataSourceSelector implements DataSourceSelector {
     private RandomDataSourceValidateThread validateThread;
     private RandomDataSourceRecoverThread recoverThread;
 
+    private int checkingIntervalSeconds = 15;
+    private int recoveryIntervalSeconds = 30;
+    private int validationSleepSeconds = 0;
+    private int blacklistThreshold = 3;
+
     public RandomDataSourceSelector(HighAvailableDataSource highAvailableDataSource) {
         this.highAvailableDataSource = highAvailableDataSource;
+    }
+
+    @Override
+    public void init() {
+        if (highAvailableDataSource == null) {
+            LOG.warn("highAvailableDataSource is NULL!");
+            return;
+        }
+
         if (!highAvailableDataSource.isTestOnBorrow() && !highAvailableDataSource.isTestOnReturn()) {
             validateThread = new RandomDataSourceValidateThread(this);
+            validateThread.setCheckingIntervalSeconds(checkingIntervalSeconds);
+            validateThread.setValidationSleepSeconds(validationSleepSeconds);
+            validateThread.setBlacklistThreshold(blacklistThreshold);
+            new Thread(validateThread, "RandomDataSourceSelector-isValid-thread").start();
+
             recoverThread = new RandomDataSourceRecoverThread(this);
-            new Thread(validateThread, "RandomDataSourceSelector-validate-thread").start();
+            recoverThread.setSleepSeconds(recoveryIntervalSeconds);
             new Thread(recoverThread, "RandomDataSourceSelector-recover-thread").start();
         } else {
             LOG.info("testOnBorrow or testOnReturn has been set to true, ignore validateThread");
@@ -123,11 +142,55 @@ public class RandomDataSourceSelector implements DataSourceSelector {
         }
     }
 
+    public HighAvailableDataSource getHighAvailableDataSource() {
+        return highAvailableDataSource;
+    }
+
     public RandomDataSourceValidateThread getValidateThread() {
         return validateThread;
     }
 
+    public void setValidateThread(RandomDataSourceValidateThread validateThread) {
+        this.validateThread = validateThread;
+    }
+
     public RandomDataSourceRecoverThread getRecoverThread() {
         return recoverThread;
+    }
+
+    public void setRecoverThread(RandomDataSourceRecoverThread recoverThread) {
+        this.recoverThread = recoverThread;
+    }
+
+    public int getCheckingIntervalSeconds() {
+        return checkingIntervalSeconds;
+    }
+
+    public void setCheckingIntervalSeconds(int checkingIntervalSeconds) {
+        this.checkingIntervalSeconds = checkingIntervalSeconds;
+    }
+
+    public int getRecoveryIntervalSeconds() {
+        return recoveryIntervalSeconds;
+    }
+
+    public void setRecoveryIntervalSeconds(int recoveryIntervalSeconds) {
+        this.recoveryIntervalSeconds = recoveryIntervalSeconds;
+    }
+
+    public int getValidationSleepSeconds() {
+        return validationSleepSeconds;
+    }
+
+    public void setValidationSleepSeconds(int validationSleepSeconds) {
+        this.validationSleepSeconds = validationSleepSeconds;
+    }
+
+    public int getBlacklistThreshold() {
+        return blacklistThreshold;
+    }
+
+    public void setBlacklistThreshold(int blacklistThreshold) {
+        this.blacklistThreshold = blacklistThreshold;
     }
 }

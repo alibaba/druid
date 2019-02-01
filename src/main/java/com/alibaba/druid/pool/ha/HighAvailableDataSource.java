@@ -105,6 +105,7 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
             }
             if (selector == null) {
                 selector = new RandomDataSourceSelector(this);
+                selector.init();
             }
             if (dataSourceMap == null || dataSourceMap.isEmpty()) {
                 LOG.warn("There is NO DataSource available!!! Please check your configuration.");

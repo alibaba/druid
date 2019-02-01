@@ -30,8 +30,10 @@ public class RandomDataSourceSelectorWithValidationTest {
 
     @Test
     public void testOneDataSourceFailAndRecover() throws Exception {
-        ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector()).getValidateThread().setSleepSeconds(3);
-        ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector()).getRecoverThread().setSleepSeconds(3);
+        RandomDataSourceSelector selector = ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector());
+        selector.setCheckingIntervalSeconds(3);
+        selector.getRecoverThread().setSleepSeconds(3);
+        selector.init();
 
         Thread.sleep(30 * 1000);
 
@@ -57,7 +59,7 @@ public class RandomDataSourceSelectorWithValidationTest {
 
     @Test
     public void testAllDataSourceFail() throws Exception {
-        ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector()).getValidateThread().setSleepSeconds(3);
+        ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector()).getValidateThread().setCheckingIntervalSeconds(3);
         ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector()).getRecoverThread().setSleepSeconds(3);
 
         Thread.sleep(30 * 1000);

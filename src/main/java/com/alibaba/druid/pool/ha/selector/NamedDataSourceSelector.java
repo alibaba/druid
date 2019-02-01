@@ -36,6 +36,10 @@ public class NamedDataSourceSelector implements DataSourceSelector {
     }
 
     @Override
+    public void init() {
+    }
+
+    @Override
     public boolean isSame(String name) {
         return getName().equalsIgnoreCase(name);
     }

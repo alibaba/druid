@@ -29,4 +29,5 @@ public interface DataSourceSelector {
     void setTarget(String name);
     boolean isSame(String name);
     String getName();
+    void init();
 }
