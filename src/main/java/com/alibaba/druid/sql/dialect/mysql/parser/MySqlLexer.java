@@ -289,7 +289,7 @@ public class MySqlLexer extends Lexer {
 
         final char first = ch;
 
-        if (ch == 'b'
+        if ((ch == 'b' || ch == 'B' )
                 && charAt(pos + 1) == '\'') {
             int i = 2;
             int mark = pos + 2;

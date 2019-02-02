@@ -2,6 +2,7 @@ package com.alibaba.druid.postgresql;
 
 import com.alibaba.druid.DbTestCase;
 import com.alibaba.druid.benckmark.proxy.BenchmarkExecutor;
+import com.alibaba.druid.pool.vendor.PGValidConnectionChecker;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -21,6 +22,10 @@ public class PG_getCreateTableScriptTest extends DbTestCase {
 
     public void test_oracle() throws Exception {
         Connection conn = getConnection();
+
+        PGValidConnectionChecker checker = new PGValidConnectionChecker();
+        Connection raw = conn.unwrap(Connection.class);
+        checker.isValidConnection(raw, "select 1", 100);
 
         // 从Oracle通过DBMS_METADATA.GET_DDL获取CreateTable语句列表
         //String createTableScript = JdbcUtils.getCreateTableScript(conn, JdbcConstants.ORACLE);

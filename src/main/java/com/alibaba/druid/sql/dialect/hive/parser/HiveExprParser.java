@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.hive.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -64,6 +65,13 @@ public class HiveExprParser extends SQLExprParser {
             String propertyName = lexer.stringVal();
             lexer.nextToken();
             expr = new SQLPropertyExpr(expr, propertyName);
+        } else if (lexer.token() == Token.LBRACKET) {
+            SQLArrayExpr array = new SQLArrayExpr();
+            array.setExpr(expr);
+            lexer.nextToken();
+            this.exprList(array.getValues(), array);
+            accept(Token.RBRACKET);
+            expr = array;
         }
         return super.primaryRest(expr);
     }

@@ -546,7 +546,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     }
 
     private void logExecutableSql(StatementProxy statement, String sql) {
-        if (!isStatementExecutableSqlLogEnable()) {
+        if ((!isStatementExecutableSqlLogEnable()) || !isStatementLogEnabled()) {
             return;
         }
 

@@ -138,7 +138,14 @@
     						if (sqlInfo == null)
     							return;
 
-    						$("#fullSql").text(sqlInfo.SQL)
+							var sql = sqlInfo.SQL;
+							if (sql != null) {
+								sql = sql.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+							} else {
+								sql = '';
+							}
+
+    						$("#fullSql").text(sql)
     						$("#formattedSql").text(sqlInfo.formattedSql)
     						$("#parsedtable").text(sqlInfo.parsedTable)
     						$("#parsedfields").text(sqlInfo.parsedFields)

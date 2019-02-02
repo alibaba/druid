@@ -150,12 +150,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private boolean                          asyncInit                 = false;
     protected boolean                        killWhenSocketReadTimeout = false;
 
+    private static List<Filter>              autoFilters               = null;
+    private boolean                          loadSpifilterSkip         = false;
+
     protected static final AtomicLongFieldUpdater<DruidDataSource> recycleErrorCountUpdater
             = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "recycleErrorCount");
     protected static final AtomicLongFieldUpdater<DruidDataSource> connectErrorCountUpdater
             = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "connectErrorCount");
     protected static final AtomicLongFieldUpdater<DruidDataSource> resetCountUpdater
             = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "resetCount");
+
 
     public DruidDataSource(){
         this(false);
@@ -317,6 +321,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
+            String property = properties.getProperty("druid.maxWait");
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    this.setMaxWait(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.maxWait'", e);
+                }
+            }
+        }
+        {
             Boolean value = getBoolean(properties, "druid.failFast");
             if (value != null) {
                 this.setFailFast(value);
@@ -330,6 +345,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     this.setPhyTimeoutMillis(value);
                 } catch (NumberFormatException e) {
                     LOG.error("illegal property 'druid.phyTimeoutMillis'", e);
+                }
+            }
+        }
+        {
+            String property = properties.getProperty("druid.phyMaxUseCount");
+            if (property != null && property.length() > 0) {
+                try {
+                    long value = Long.parseLong(property);
+                    this.setPhyMaxUseCount(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.phyMaxUseCount'", e);
                 }
             }
         }
@@ -456,6 +482,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 } catch (NumberFormatException e) {
                     LOG.error("illegal property 'druid.initConnectionSqls'", e);
                 }
+            }
+        }
+        {
+            String property = System.getProperty("druid.load.spifilter.skip");
+            if (property != null && !"false".equals(property)) {
+                loadSpifilterSkip = true;
             }
         }
     }
@@ -728,6 +760,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
+        // bug fixed for dead lock, for issue #2980
+        DruidDriver.getInstance();
+
         final ReentrantLock lock = this.lock;
         try {
             lock.lockInterruptibly();
@@ -986,22 +1021,28 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
      * @see ServiceLoader
      */
     private void initFromSPIServiceLoader() {
-
-        String property = System.getProperty("druid.load.spifilter.skip");
-        if (property != null) {
+        if (loadSpifilterSkip) {
             return;
         }
 
-        ServiceLoader<Filter> druidAutoFilterLoader = ServiceLoader.load(Filter.class);
+        if (autoFilters == null) {
+            List<Filter> filters = new ArrayList<Filter>();
+            ServiceLoader<Filter> autoFilterLoader = ServiceLoader.load(Filter.class);
 
-        for (Filter autoFilter : druidAutoFilterLoader) {
-            AutoLoad autoLoad = autoFilter.getClass().getAnnotation(AutoLoad.class);
-            if (autoLoad != null && autoLoad.value()) {
-                if (LOG.isInfoEnabled()) {
-                    LOG.info("load filter from spi :" + autoFilter.getClass().getName());
+            for (Filter filter : autoFilterLoader) {
+                AutoLoad autoLoad = filter.getClass().getAnnotation(AutoLoad.class);
+                if (autoLoad != null && autoLoad.value()) {
+                    filters.add(filter);
                 }
-                addFilter(autoFilter);
             }
+            autoFilters = filters;
+        }
+
+        for (Filter filter : autoFilters) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info("load filter from spi :" + filter.getClass().getName());
+            }
+            addFilter(filter);
         }
     }
 
@@ -1095,6 +1136,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } else if (JdbcUtils.MYSQL.equals(this.dbType)
                 || JdbcUtils.MYSQL_DRIVER_6.equals(this.dbType)) {
             isMySql = true;
+        }
+
+        if (removeAbandoned) {
+            LOG.warn("removeAbandoned is true, not use in productiion.");
         }
     }
 
@@ -1432,19 +1477,26 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         && activeCount >= onFatalErrorMaxActive) {
                     connectErrorCountUpdater.incrementAndGet(this);
 
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String errorMsg = "onFatalError, activeCount " + activeCount
-                            + ", onFatalErrorMaxActive " + onFatalErrorMaxActive;
+                    StringBuilder errorMsg = new StringBuilder();
+                    errorMsg.append("onFatalError, activeCount ")
+                            .append(activeCount)
+                            .append(", onFatalErrorMaxActive ")
+                            .append(onFatalErrorMaxActive);
 
                     if (lastFatalErrorTimeMillis > 0) {
-                        errorMsg += ", time '" + format.format(new Date(lastFatalErrorTimeMillis)) + "'";
+                        errorMsg.append(", time '")
+                                .append(StringUtils.formatDateTime19(
+                                        lastFatalErrorTimeMillis, TimeZone.getDefault()))
+                                .append("'");
                     }
 
                     if (lastFatalErrorSql != null) {
-                        errorMsg += ", sql \n" + lastFatalErrorSql;
+                        errorMsg.append(", sql \n")
+                                .append(lastFatalErrorSql);
                     }
 
-                    throw new SQLException(errorMsg, lastFatalError);
+                    throw new SQLException(
+                            errorMsg.toString(), lastFatalError);
                 }
 
                 connectCount++;
@@ -1490,7 +1542,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (holder == null) {
             long waitNanos = waitNanosLocal.get();
 
-            StringBuilder buf = new StringBuilder();
+            StringBuilder buf = new StringBuilder(128);
             buf.append("wait millis ")//
                .append(waitNanos / (1000 * 1000))//
                .append(", active ").append(activeCount)//
@@ -1502,6 +1554,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (createElapseMillis > 0) {
                     buf.append(", createElapseMillis ").append(createElapseMillis);
                 }
+            }
+
+            if (createErrorCount > 0) {
+                buf.append(", createErrorCount ").append(createErrorCount);
             }
 
             List<JdbcSqlStatValue> sqlList = this.getDataSourceStat().getRuningSqlList();

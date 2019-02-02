@@ -477,6 +477,24 @@ public class SQLUtils {
         return stmtList;
     }
 
+    public static SQLStatement parseSingleStatement(String sql, String dbType, SQLParserFeature... features) {
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, features);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        if (stmtList.size() > 1) {
+            throw new ParserException(" Mutil-Statment be found.");
+        }
+
+        if (parser.getLexer().token() != Token.EOF) {
+            throw new ParserException("syntax error. " + sql);
+        }
+        return stmtList.get(0);
+    }
+
+    public static SQLStatement parseSingleMysqlStatement(String sql) {
+        return parseSingleStatement(sql, JdbcConstants.MYSQL);
+    }
+
     /**
      * @author owenludong.lud
      * @param columnName

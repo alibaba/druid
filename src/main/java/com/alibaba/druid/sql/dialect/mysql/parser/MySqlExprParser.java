@@ -516,6 +516,16 @@ public class MySqlExprParser extends SQLExprParser {
         column.setName(name());
         column.setDataType(parseDataType());
 
+        if (lexer.identifierEquals(FnvHash.Constants.GENERATED)) {
+            lexer.nextToken();
+            acceptIdentifier("ALWAYS");
+            accept(Token.AS);
+            accept(Token.LPAREN);
+            SQLExpr expr = this.expr();
+            accept(Token.RPAREN);
+            column.setGeneratedAlawsAs(expr);
+        }
+
         return parseColumnRest(column);
     }
 
