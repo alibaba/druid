@@ -55,7 +55,7 @@ public class PGValidConnectionChecker extends ValidConnectionCheckerAdapter impl
             conn = ((ConnectionProxy) conn).getRawObject();
         }
 
-        int queryTimeout = validationQueryTimeout < 0 ? defaultQueryTimeout : validationQueryTimeout;
+        int queryTimeout = validationQueryTimeout <= 0 ? defaultQueryTimeout : validationQueryTimeout;
 
         Statement stmt = null;
         ResultSet rs = null;
