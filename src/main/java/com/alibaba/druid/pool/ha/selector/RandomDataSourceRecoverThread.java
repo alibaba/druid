@@ -83,6 +83,10 @@ public class RandomDataSourceRecoverThread implements Runnable {
         }
     }
 
+    public int getSleepSeconds() {
+        return sleepSeconds;
+    }
+
     public void setSleepSeconds(int sleepSeconds) {
         this.sleepSeconds = sleepSeconds;
     }

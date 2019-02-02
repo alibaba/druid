@@ -174,12 +174,24 @@ public class RandomDataSourceValidateThread implements Runnable {
         }
     }
 
+    public int getCheckingIntervalSeconds() {
+        return checkingIntervalSeconds;
+    }
+
     public void setCheckingIntervalSeconds(int checkingIntervalSeconds) {
         this.checkingIntervalSeconds = checkingIntervalSeconds;
     }
 
+    public int getValidationSleepSeconds() {
+        return validationSleepSeconds;
+    }
+
     public void setValidationSleepSeconds(int validationSleepSeconds) {
         this.validationSleepSeconds = validationSleepSeconds;
+    }
+
+    public int getBlacklistThreshold() {
+        return blacklistThreshold;
     }
 
     public void setBlacklistThreshold(int blacklistThreshold) {

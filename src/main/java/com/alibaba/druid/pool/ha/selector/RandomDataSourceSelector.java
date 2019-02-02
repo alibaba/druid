@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -35,6 +36,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author DigitalSonic
  */
 public class RandomDataSourceSelector implements DataSourceSelector {
+    private static final String PROP_PREFIX = "druid.ha.random.";
+    public static final String PROP_CHECKING_INTERVAL = PROP_PREFIX + "checkingIntervalSeconds";
+    public static final String PROP_RECOVERY_INTERVAL = PROP_PREFIX + "recoveryIntervalSeconds";
+    public static final String PROP_VALIDATION_SLEEP = PROP_PREFIX + "validationSleepSeconds";
+    public static final String PROP_BLACKLIST_THRESHOLD = PROP_PREFIX + "blacklistThreshold";
+
     private final static Log LOG = LogFactory.getLog(RandomDataSourceSelector.class);
 
     private Random random = new Random();
@@ -58,17 +65,9 @@ public class RandomDataSourceSelector implements DataSourceSelector {
             LOG.warn("highAvailableDataSource is NULL!");
             return;
         }
-
         if (!highAvailableDataSource.isTestOnBorrow() && !highAvailableDataSource.isTestOnReturn()) {
-            validateThread = new RandomDataSourceValidateThread(this);
-            validateThread.setCheckingIntervalSeconds(checkingIntervalSeconds);
-            validateThread.setValidationSleepSeconds(validationSleepSeconds);
-            validateThread.setBlacklistThreshold(blacklistThreshold);
-            new Thread(validateThread, "RandomDataSourceSelector-isValid-thread").start();
-
-            recoverThread = new RandomDataSourceRecoverThread(this);
-            recoverThread.setSleepSeconds(recoveryIntervalSeconds);
-            new Thread(recoverThread, "RandomDataSourceSelector-recover-thread").start();
+            loadProperties();
+            initThreads();
         } else {
             LOG.info("testOnBorrow or testOnReturn has been set to true, ignore validateThread");
         }
@@ -135,6 +134,42 @@ public class RandomDataSourceSelector implements DataSourceSelector {
                 ((DruidDataSource) dataSource).setTestOnReturn(highAvailableDataSource.isTestOnReturn());
             }
         }
+    }
+
+    private void loadProperties() {
+        checkingIntervalSeconds = loadInteger(PROP_CHECKING_INTERVAL, checkingIntervalSeconds);
+        recoveryIntervalSeconds = loadInteger(PROP_RECOVERY_INTERVAL, recoveryIntervalSeconds);
+        validationSleepSeconds = loadInteger(PROP_VALIDATION_SLEEP, validationSleepSeconds);
+        blacklistThreshold = loadInteger(PROP_BLACKLIST_THRESHOLD, blacklistThreshold);
+    }
+
+    private int loadInteger(String name, int defaultValue) {
+        if (name == null) {
+            return defaultValue;
+        }
+
+        Properties properties = highAvailableDataSource.getConnectProperties();
+        int value = defaultValue;
+        try {
+            if (properties.containsKey(name)) {
+                value = Integer.parseInt(properties.getProperty(name));
+            }
+        } catch (Exception e) {
+            LOG.error("Exception occurred while parsing " + name, e);
+        }
+        return value;
+    }
+
+    private void initThreads() {
+        validateThread = new RandomDataSourceValidateThread(this);
+        validateThread.setCheckingIntervalSeconds(checkingIntervalSeconds);
+        validateThread.setValidationSleepSeconds(validationSleepSeconds);
+        validateThread.setBlacklistThreshold(blacklistThreshold);
+        new Thread(validateThread, "RandomDataSourceSelector-isValid-thread").start();
+
+        recoverThread = new RandomDataSourceRecoverThread(this);
+        recoverThread.setSleepSeconds(recoveryIntervalSeconds);
+        new Thread(recoverThread, "RandomDataSourceSelector-recover-thread").start();
     }
 
     public HighAvailableDataSource getHighAvailableDataSource() {
