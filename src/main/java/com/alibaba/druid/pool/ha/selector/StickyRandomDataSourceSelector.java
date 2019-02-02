@@ -2,6 +2,8 @@ package com.alibaba.druid.pool.ha.selector;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.HighAvailableDataSource;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 import javax.sql.DataSource;
 
@@ -13,6 +15,8 @@ import javax.sql.DataSource;
  * @see StickyDataSourceHolder
  */
 public class StickyRandomDataSourceSelector extends RandomDataSourceSelector {
+    private final static Log LOG = LogFactory.getLog(StickyRandomDataSourceSelector.class);
+
     private ThreadLocal<StickyDataSourceHolder> holders = new ThreadLocal<StickyDataSourceHolder>();
 
     private int expireSeconds = 5;
@@ -25,8 +29,10 @@ public class StickyRandomDataSourceSelector extends RandomDataSourceSelector {
     public DataSource get() {
         StickyDataSourceHolder holder = holders.get();
         if (holder != null && isValid(holder) && !isExpired(holder)) {
+            LOG.debug("Return the sticky DataSource " + holder.getDataSource().toString() + " directly.");
             return holder.getDataSource();
         }
+        LOG.debug("Return a random DataSource.");
         DataSource dataSource = super.get();
         holder = new StickyDataSourceHolder(dataSource);
         holders.remove();

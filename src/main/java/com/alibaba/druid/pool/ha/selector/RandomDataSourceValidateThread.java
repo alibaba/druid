@@ -24,8 +24,14 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A Thread trying to test all DataSource provided by HADataSource.
@@ -40,7 +46,7 @@ public class RandomDataSourceValidateThread implements Runnable {
     private int blacklistThreshold = 3;
     private RandomDataSourceSelector selector;
     private ExecutorService checkExecutor = Executors.newFixedThreadPool(5);
-    private Map<String, Integer> errorCounts = new HashMap<String, Integer>();
+    private Map<String, Integer> errorCounts = new ConcurrentHashMap<String, Integer>();
 
     public RandomDataSourceValidateThread(RandomDataSourceSelector selector) {
         this.selector = selector;
