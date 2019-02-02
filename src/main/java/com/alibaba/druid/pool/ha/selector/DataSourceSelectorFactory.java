@@ -23,11 +23,16 @@ import com.alibaba.druid.pool.ha.HighAvailableDataSource;
  * @author DigitalSonic
  */
 public class DataSourceSelectorFactory {
+    /**
+     * Get a new instance of the given selector name.
+     *
+     * @return null if the given name do not represent a DataSourceSelector
+     */
     public static DataSourceSelector getSelector(String name, HighAvailableDataSource highAvailableDataSource) {
-        if ("random".equalsIgnoreCase(name)) {
-            return new RandomDataSourceSelector(highAvailableDataSource);
-        } else if ("byName".equalsIgnoreCase(name)) {
-            return new NamedDataSourceSelector(highAvailableDataSource);
+        for (DataSourceSelectorEnum e : DataSourceSelectorEnum.values()) {
+            if (e.getName().equalsIgnoreCase(name)) {
+                return e.newInstance(highAvailableDataSource);
+            }
         }
         return null;
     }

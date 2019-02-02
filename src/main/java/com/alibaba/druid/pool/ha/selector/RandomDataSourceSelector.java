@@ -75,13 +75,8 @@ public class RandomDataSourceSelector implements DataSourceSelector {
     }
 
     @Override
-    public boolean isSame(String name) {
-        return getName().equalsIgnoreCase(name);
-    }
-
-    @Override
     public String getName() {
-        return "random";
+        return DataSourceSelectorEnum.RANDOM.getName();
     }
 
     @Override

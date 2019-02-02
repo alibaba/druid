@@ -26,6 +26,11 @@ public class StickyRandomDataSourceSelector extends RandomDataSourceSelector {
     }
 
     @Override
+    public String getName() {
+        return DataSourceSelectorEnum.STICKY_RANDOM.getName();
+    }
+
+    @Override
     public DataSource get() {
         StickyDataSourceHolder holder = holders.get();
         if (holder != null && isValid(holder) && !isExpired(holder)) {

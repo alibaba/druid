@@ -27,7 +27,6 @@ import java.util.Map;
 public interface DataSourceSelector {
     DataSource get();
     void setTarget(String name);
-    boolean isSame(String name);
     String getName();
     void init();
 }
