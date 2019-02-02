@@ -86,11 +86,11 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     // Properties copied from DruidAbstractDataSource END
 
     private Map<String, DataSource> dataSourceMap = new ConcurrentHashMap<String, DataSource>();
-    private DataSourceSelector selector = new RandomDataSourceSelector(this);
+    private DataSourceSelector selector;
     private String dataSourceFile = DEFAULT_DATA_SOURCE_FILE;
     private String propertyPrefix = "";
 
-    private boolean inited = false;
+    private volatile boolean inited = false;
 
     public void init() throws SQLException {
         if (inited) {
