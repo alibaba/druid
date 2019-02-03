@@ -107,10 +107,14 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         this.from = x;
     }
 
+    public List<SQLExpr> getArguments() {
+        return this.parameters;
+    }
+
     public List<SQLExpr> getParameters() {
         return this.parameters;
     }
-    
+
     public void addParameter(SQLExpr param) {
         if (param != null) {
             param.setParent(this);
