@@ -298,6 +298,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
         if (filter == expr) {
             this.filter = target;
             target.setParent(this);
+            return true;
         }
 
         return false;
