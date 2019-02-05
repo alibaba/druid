@@ -596,7 +596,7 @@ public class MySqlExprParser extends SQLExprParser {
         
         if (lexer.identifierEquals(FnvHash.Constants.STORED)) {
             lexer.nextToken();
-            column.setSorted(true);
+            column.setStored(true);
         }
         
         if (lexer.identifierEquals(FnvHash.Constants.VIRTUAL)) {
