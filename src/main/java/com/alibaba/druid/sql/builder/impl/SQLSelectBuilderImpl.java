@@ -15,44 +15,32 @@
  */
 package com.alibaba.druid.sql.builder.impl;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.builder.SQLSelectBuilder;
-import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class SQLSelectBuilderImpl implements SQLSelectBuilder {
 
     private SQLSelectStatement stmt;
-    private String             dbType;
+    private String dbType;
 
-    public SQLSelectBuilderImpl(String dbType){
+    public SQLSelectBuilderImpl(String dbType) {
         this(new SQLSelectStatement(), dbType);
     }
-    
-    public SQLSelectBuilderImpl(String sql, String dbType){
+
+    public SQLSelectBuilderImpl(String sql, String dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.size() == 0) {
@@ -68,7 +56,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
         this.dbType = dbType;
     }
 
-    public SQLSelectBuilderImpl(SQLSelectStatement stmt, String dbType){
+    public SQLSelectBuilderImpl(SQLSelectStatement stmt, String dbType) {
         this.stmt = stmt;
         this.dbType = dbType;
     }
@@ -85,6 +73,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
         return stmt;
     }
 
+    @Override
     public SQLSelectBuilderImpl select(String... columns) {
         SQLSelectQueryBlock queryBlock = getQueryBlock();
 
@@ -123,12 +112,12 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
 
     @Override
     public SQLSelectBuilderImpl orderBy(String... columns) {
-        SQLSelect select = this.getSQLSelect();
+        SQLSelectQueryBlock queryBlock = getQueryBlock();
 
-        SQLOrderBy orderBy = select.getOrderBy();
+        SQLOrderBy orderBy = queryBlock.getOrderBy();
         if (orderBy == null) {
             orderBy = createOrderBy();
-            select.setOrderBy(orderBy);
+            queryBlock.setOrderBy(orderBy);
         }
 
         for (String column : columns) {
@@ -205,7 +194,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
 
         SQLExpr exprObj = SQLUtils.toSQLExpr(expr, dbType);
         SQLExpr newCondition = SQLUtils.buildCondition(SQLBinaryOperator.BooleanOr, exprObj, false,
-                                                       queryBlock.getWhere());
+                queryBlock.getWhere());
         queryBlock.setWhere(newCondition);
 
         return this;
