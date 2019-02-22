@@ -1436,6 +1436,7 @@ public class SQLExprParser extends SQLParser {
                 case EXPLAIN:
                 case PARTITION:
                 case SET:
+                case DEFAULT:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;
