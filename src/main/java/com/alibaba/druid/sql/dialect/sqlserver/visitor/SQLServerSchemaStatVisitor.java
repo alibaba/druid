@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
-import java.util.Map;
-
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
@@ -33,7 +31,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatemen
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQLServerASTVisitor {
     public SQLServerSchemaStatVisitor() {

@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-import java.util.Collections;
-import java.util.List;
 
 public final class SQLAllColumnExpr extends SQLExprImpl {
     private transient SQLTableSource resolvedTableSource;

@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLRecordDataType extends SQLDataTypeImpl implements SQLDataType {
     private final List<SQLColumnDefinition> columns = new ArrayList<SQLColumnDefinition>();

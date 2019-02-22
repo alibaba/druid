@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.pool;
 
-import com.alibaba.druid.proxy.jdbc.WrapperProxy;
-
 import java.sql.SQLException;
 import java.sql.Wrapper;
+
+import com.alibaba.druid.proxy.jdbc.WrapperProxy;
 
 /**
  * @author wenshao [szujobs@hotmail.com]

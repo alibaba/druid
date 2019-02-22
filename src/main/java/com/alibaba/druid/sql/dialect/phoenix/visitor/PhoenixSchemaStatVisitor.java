@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.phoenix.visitor;
 
-import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 

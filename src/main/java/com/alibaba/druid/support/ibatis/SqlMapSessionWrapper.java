@@ -15,12 +15,13 @@
  */
 package com.alibaba.druid.support.ibatis;
 
-import com.ibatis.sqlmap.client.SqlMapSession;
-import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import com.ibatis.sqlmap.client.SqlMapSession;
+import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
 
 @SuppressWarnings("deprecation")
 public class SqlMapSessionWrapper extends SqlMapExecutorWrapper implements SqlMapSession {

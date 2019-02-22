@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLStatement;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class OracleProcedureDataType extends SQLDataTypeImpl {
     private boolean isStatic = false;

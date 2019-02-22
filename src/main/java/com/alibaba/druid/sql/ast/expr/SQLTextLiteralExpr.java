@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-
 import java.util.Collections;
 import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLExprImpl;
 
 public abstract class SQLTextLiteralExpr extends SQLExprImpl implements SQLLiteralExpr {
 

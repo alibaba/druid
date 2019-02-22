@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.h2.parser;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class H2Lexer extends Lexer {
     public final static Keywords DEFAULT_H2_KEYWORDS;

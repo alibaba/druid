@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import com.alibaba.druid.mock.MockConnectionClosedException;
-import com.alibaba.druid.pool.ExceptionSorter;
-
 import java.sql.SQLException;
 import java.util.Properties;
+
+import com.alibaba.druid.mock.MockConnectionClosedException;
+import com.alibaba.druid.pool.ExceptionSorter;
 
 public class MockExceptionSorter implements ExceptionSorter {
 

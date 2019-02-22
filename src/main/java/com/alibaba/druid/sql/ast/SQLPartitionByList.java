@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPartitionByList extends SQLPartitionBy {

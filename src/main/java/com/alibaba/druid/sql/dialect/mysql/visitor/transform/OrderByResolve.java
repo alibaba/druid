@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor.transform;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -25,9 +28,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.util.FnvHash;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by wenshao on 27/07/2017.

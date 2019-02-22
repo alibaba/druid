@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.wall;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.alibaba.druid.support.monitor.annotation.AggregateType;
 import com.alibaba.druid.support.monitor.annotation.MField;
 import com.alibaba.druid.support.monitor.annotation.MTable;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @MTable(name = "druid_wall_sql")
 public class WallSqlStatValue {
