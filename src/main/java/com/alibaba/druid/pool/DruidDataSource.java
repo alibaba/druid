@@ -129,7 +129,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private volatile DruidConnectionHolder[] connections;
     private int                              poolingCount              = 0;
     private int                              activeCount               = 0;
-    private long                             discardCount              = 0;
+    private volatile long                    discardCount              = 0;
     private int                              notEmptyWaitThreadCount   = 0;
     private int                              notEmptyWaitThreadPeak    = 0;
     //
@@ -2920,14 +2920,27 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     // skip
                 }
 
+                boolean discard = !validate;
                 if (validate) {
                     holer.lastActiveTimeMillis = System.currentTimeMillis();
-                    put(holer);
-                } else {
+                    boolean putOk = put(holer);
+                    if (!putOk) {
+                        discard = true;
+                    }
+                }
+
+                if (discard) {
                     try {
                         connection.close();
                     } catch (Exception e) {
                         // skip
+                    }
+
+                    lock.lock();
+                    try {
+                        discardCount++;
+                    } finally {
+                        lock.unlock();
                     }
                 }
             }
