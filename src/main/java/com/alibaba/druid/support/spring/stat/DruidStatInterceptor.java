@@ -15,17 +15,18 @@
  */
 package com.alibaba.druid.support.spring.stat;
 
-import com.alibaba.druid.filter.stat.StatFilterContext;
-import com.alibaba.druid.filter.stat.StatFilterContextListenerAdapter;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
+import java.lang.reflect.Method;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.TargetSource;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.lang.reflect.Method;
+import com.alibaba.druid.filter.stat.StatFilterContext;
+import com.alibaba.druid.filter.stat.StatFilterContextListenerAdapter;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 public class DruidStatInterceptor implements MethodInterceptor, InitializingBean, DisposableBean {
 

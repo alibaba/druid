@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-import java.util.List;
 
 public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLStatement {
     protected String               dbType;

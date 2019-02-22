@@ -15,16 +15,16 @@
  */
 package com.alibaba.druid.support.http.stat;
 
-import com.alibaba.druid.support.monitor.annotation.AggregateType;
-import com.alibaba.druid.support.monitor.annotation.MField;
-import com.alibaba.druid.support.monitor.annotation.MTable;
-import com.alibaba.druid.support.profile.ProfileEntryStatValue;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
+import com.alibaba.druid.support.profile.ProfileEntryStatValue;
 
 @MTable(name = "druid_weburi")
 public class WebURIStatValue {

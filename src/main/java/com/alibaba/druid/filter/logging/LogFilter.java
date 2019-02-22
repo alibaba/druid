@@ -38,8 +38,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.SQLUtils.FormatOption;
 import com.alibaba.druid.util.JdbcUtils;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 /**
  * @author wenshao [szujobs@hotmail.com]
  */

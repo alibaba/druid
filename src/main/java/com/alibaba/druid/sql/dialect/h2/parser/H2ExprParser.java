@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.h2.parser;
 
+import java.util.Arrays;
+
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.util.FnvHash;
-
-import java.util.Arrays;
 
 public class H2ExprParser extends SQLExprParser {
     private final static String[] AGGREGATE_FUNCTIONS;

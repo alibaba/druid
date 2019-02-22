@@ -15,17 +15,6 @@
  */
 package com.alibaba.druid.pool.ha;
 
-import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.pool.DruidAbstractDataSource;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.WrapperAdapter;
-import com.alibaba.druid.pool.ha.selector.DataSourceSelector;
-import com.alibaba.druid.pool.ha.selector.DataSourceSelectorFactory;
-import com.alibaba.druid.pool.ha.selector.RandomDataSourceSelector;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
-import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -37,6 +26,18 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
+
+import javax.sql.DataSource;
+
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.pool.DruidAbstractDataSource;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.WrapperAdapter;
+import com.alibaba.druid.pool.ha.selector.DataSourceSelector;
+import com.alibaba.druid.pool.ha.selector.DataSourceSelectorFactory;
+import com.alibaba.druid.pool.ha.selector.RandomDataSourceSelector;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * DataSource class which contains multiple DataSource objects.

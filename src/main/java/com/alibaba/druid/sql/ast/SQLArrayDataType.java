@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FnvHash;
-
 import java.util.Collections;
 import java.util.List;
+
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLArrayDataType extends SQLObjectImpl implements SQLDataType {
     private String dbType;
@@ -76,7 +76,7 @@ public class SQLArrayDataType extends SQLObjectImpl implements SQLDataType {
 
     @Override
     public void setDbType(String dbType) {
-        dbType = dbType;
+        this.dbType = dbType;
     }
 
     @Override

@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.dialect.phoenix.ast;
 
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixASTVisitor;
 
 /**

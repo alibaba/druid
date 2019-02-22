@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.hive.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -22,9 +25,6 @@ import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HiveInsertStatement extends SQLInsertStatement implements SQLStatement {
     private boolean              overwrite  = false;

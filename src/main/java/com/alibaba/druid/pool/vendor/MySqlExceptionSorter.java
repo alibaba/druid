@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import com.alibaba.druid.pool.ExceptionSorter;
-
-import java.io.IOException;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.Properties;
+
+import com.alibaba.druid.pool.ExceptionSorter;
 
 public class MySqlExceptionSorter implements ExceptionSorter {
 

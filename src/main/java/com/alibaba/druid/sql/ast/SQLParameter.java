@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDataType {
     private SQLName                  name;

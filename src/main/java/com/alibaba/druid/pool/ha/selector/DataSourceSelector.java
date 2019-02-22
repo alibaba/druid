@@ -16,7 +16,6 @@
 package com.alibaba.druid.pool.ha.selector;
 
 import javax.sql.DataSource;
-import java.util.Map;
 
 /**
  * Interface for those selector to implement.

@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.hive.stmt;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-
-import java.util.List;
 
 public class HiveCreateTableStatement extends SQLCreateTableStatement {
 

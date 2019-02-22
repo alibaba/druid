@@ -1,9 +1,9 @@
 package com.alibaba.druid.sql.ast;
 
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /*
  * Copyright 1999-2018 Alibaba Group Holding Ltd.

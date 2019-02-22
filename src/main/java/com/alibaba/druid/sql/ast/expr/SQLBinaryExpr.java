@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import java.math.BigInteger;
+import java.util.Collections;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.Utils;
-
-import java.math.BigInteger;
-import java.util.Collections;
-import java.util.List;
 
 public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
 

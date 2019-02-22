@@ -15,8 +15,9 @@
  */
 package com.alibaba.druid.support.ibatis;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.TargetSource;
@@ -25,8 +26,8 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.util.PatternMatchUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
 
 /**
  * 类BeanTypeAutoProxyCreator.java的实现描述：使用配置类型代替Springframework中配置名称的实现

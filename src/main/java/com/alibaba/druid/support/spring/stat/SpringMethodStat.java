@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.support.spring.stat;
 
-import com.alibaba.druid.support.profile.Profiler;
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
 
 import java.util.Date;
 import java.util.Map;
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
-import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+import com.alibaba.druid.support.profile.Profiler;
 
 public class SpringMethodStat {
 

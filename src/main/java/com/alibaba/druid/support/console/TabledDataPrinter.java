@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.support.console;
 
-import com.alibaba.druid.sql.SQLUtils;
-
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.alibaba.druid.sql.SQLUtils;
 
 public class TabledDataPrinter {
 

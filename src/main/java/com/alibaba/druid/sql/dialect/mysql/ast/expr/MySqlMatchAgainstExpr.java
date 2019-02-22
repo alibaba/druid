@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;

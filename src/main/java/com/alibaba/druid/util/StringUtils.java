@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.util;
 
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
 import java.util.Calendar;
 import java.util.TimeZone;
+
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * @author sandzhang[sandzhangtoo@gmail.com]
