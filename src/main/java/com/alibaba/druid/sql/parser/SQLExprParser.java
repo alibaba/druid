@@ -721,6 +721,7 @@ public class SQLExprParser extends SQLParser {
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         break;
                     case BANG:
+                    case CAST:
                         sqlExpr = expr();
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         break;
@@ -753,6 +754,7 @@ public class SQLExprParser extends SQLParser {
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
                         break;
                     case SUB:
+                    case CAST:
                         sqlExpr = expr();
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
                         break;
