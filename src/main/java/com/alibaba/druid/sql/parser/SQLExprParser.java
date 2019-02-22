@@ -436,7 +436,6 @@ public class SQLExprParser extends SQLParser {
                 break;
             case DUAL:
             case KEY:
-            case DISTINCT:
             case LIMIT:
             case SCHEMA:
             case COLUMN:
@@ -629,6 +628,8 @@ public class SQLExprParser extends SQLParser {
                         lexer.nextToken();
                         break;
                     case IDENTIFIER: // 当负号后面为字段的情况
+                    case LITERAL_CHARS:
+                    case LITERAL_ALIAS:
                         sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                         lexer.nextToken();
 
@@ -671,6 +672,8 @@ public class SQLExprParser extends SQLParser {
                         lexer.nextToken();
                         break;
                     case IDENTIFIER: // 当+号后面为字段的情况
+                    case LITERAL_CHARS:
+                    case LITERAL_ALIAS:
                         sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
                         lexer.nextToken();

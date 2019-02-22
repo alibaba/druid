@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid;
+package com.alibaba.druid.bvt.sql.mysql.select;
 
-public final class VERSION {
+import com.alibaba.druid.sql.MysqlTest;
+import com.alibaba.druid.sql.SQLUtils;
 
-    public final static int MajorVersion    = 1;
-    public final static int MinorVersion    = 1;
-    public final static int RevisionVersion = 14;
 
-    public static String getVersionNumber() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
+public class MySqlSelectTest_227 extends MysqlTest {
+
+    public void test_0() throws Exception {
+        String sql = "select id, distinct name from a";
+
+        Exception error = null;
+        try {
+            SQLUtils.parseSingleMysqlStatement(sql);
+        } catch (Exception ex) {
+            error = ex;
+        }
+        assertNotNull(error);
     }
 }

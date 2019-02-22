@@ -15,14 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowProcessListStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
     private boolean full = false;
+    private SQLExpr where;
 
     public void accept0(MySqlASTVisitor visitor) {
-        visitor.visit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, where);
+        }
         visitor.endVisit(this);
     }
 
@@ -34,4 +38,14 @@ public class MySqlShowProcessListStatement extends MySqlStatementImpl implements
         this.full = full;
     }
 
+    public SQLExpr getWhere() {
+        return where;
+    }
+
+    public void setWhere(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.where = x;
+    }
 }

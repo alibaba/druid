@@ -791,8 +791,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         for (;;) {
             if (expr instanceof SQLMethodInvokeExpr) {
                 SQLMethodInvokeExpr methodInvokeExp = (SQLMethodInvokeExpr) expr;
-                if (methodInvokeExp.getParameters().size() == 1) {
-                    SQLExpr firstExpr = methodInvokeExp.getParameters().get(0);
+                if (methodInvokeExp.getArguments().size() == 1) {
+                    SQLExpr firstExpr = methodInvokeExp.getArguments().get(0);
                     expr = firstExpr;
                     continue;
                 }
@@ -823,9 +823,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                         SQLSelectItem selectItem = queryBlock.findSelectItem(propertyExpr
                                 .nameHashCode64());
                         if (selectItem != null) {
-                            expr = selectItem.getExpr();
-                            continue;
-
+                            SQLExpr selectItemExpr = selectItem.getExpr();
+                            if (selectItemExpr != expr) {
+                                expr = selectItemExpr;
+                                continue;
+                            }
                         } else if (queryBlock.selectItemHasAllColumn()) {
                             SQLTableSource allColumnTableSource = null;
 
