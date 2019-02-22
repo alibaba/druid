@@ -455,10 +455,12 @@ public class PGSQLStatementParser extends SQLStatementParser {
             option = SQLSetStatement.Option.LOCAL;
             lexer.nextToken();
         }
+
+        long hash = lexer.hash_lower();
         String parameter = lexer.stringVal();
         SQLExpr paramExpr;
         List<SQLExpr> values = new ArrayList<SQLExpr>();
-        if (TIME.equalsIgnoreCase(parameter)) {
+        if (hash == FnvHash.Constants.TIME) {
             lexer.nextToken();
             acceptIdentifier("ZONE");
             paramExpr = new SQLIdentifierExpr("TIME ZONE");
@@ -470,6 +472,11 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
             lexer.nextToken();
 //            return new PGSetStatement(range, TIME_ZONE, exprs);
+        } else if (hash == FnvHash.Constants.ROLE) {
+            paramExpr = new SQLIdentifierExpr(parameter);
+            lexer.nextToken();
+            values.add(this.exprParser.primary());
+            lexer.nextToken();
         } else {
             paramExpr = new SQLIdentifierExpr(parameter);
             lexer.nextToken();
