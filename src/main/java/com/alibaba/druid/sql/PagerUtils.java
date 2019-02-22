@@ -272,8 +272,13 @@ public class PagerUtils {
 
             SQLAggregateExpr aggregateExpr = new SQLAggregateExpr("ROW_NUMBER");
             SQLOrderBy orderBy = select.getOrderBy();
-            aggregateExpr.setOver(new SQLOver(orderBy));
-            select.setOrderBy(null);
+            if (orderBy != null) {
+                aggregateExpr.setOver(new SQLOver(orderBy));
+                select.setOrderBy(null);
+            } else if (queryBlock.getOrderBy() != null){
+                aggregateExpr.setOver(new SQLOver(queryBlock.getOrderBy()));
+                queryBlock.setOrderBy(null);
+            }
 
             queryBlock.getSelectList().add(new SQLSelectItem(aggregateExpr, "ROWNUM"));
 
