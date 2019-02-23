@@ -15,6 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author lihengming [89921218@qq.com]
+ *
+ * for issue #1796, #3084, #2763
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DemoApplication.class)
