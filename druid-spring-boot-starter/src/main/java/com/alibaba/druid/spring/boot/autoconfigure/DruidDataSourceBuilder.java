@@ -30,6 +30,9 @@ public class DruidDataSourceBuilder {
 
     /**
      * For build multiple DruidDataSource, detail see document.
+     *
+     * -------
+     * The API is history, and now you can use 'new DruidDataSourceWrapper()' instead.
      */
     public DruidDataSource build() {
         return new DruidDataSourceWrapper();
