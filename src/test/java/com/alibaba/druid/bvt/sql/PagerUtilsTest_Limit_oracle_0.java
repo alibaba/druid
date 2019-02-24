@@ -87,9 +87,9 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
                 "FROM (\n" +
                 "\tSELECT XX.*, ROWNUM AS RN\n" +
                 "\tFROM (\n" +
-                "\t\tSELECT id, name, salary\n" +
-                "\t\tFROM t\n" +
-                "\t\tORDER BY id, name\n" +
+                "\t\tSELECT TO_CHAR(ADD_MONTHS(TO_DATE('2014', 'yyyy'), ROWNUM * 12), 'yyyy') AS YEAR\n" +
+                "\t\tFROM DUAL\n" +
+                "\t\tCONNECT BY ROWNUM <= months_between(to_date(to_char(SYSDATE, 'yyyy'), 'yyyy'), to_date('2014', 'yyyy')) / 12\n" +
                 "\t) XX\n" +
                 "\tWHERE ROWNUM <= 30\n" +
                 ") XXX\n" +
