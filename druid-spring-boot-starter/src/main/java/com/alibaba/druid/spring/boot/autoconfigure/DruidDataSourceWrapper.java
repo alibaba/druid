@@ -50,10 +50,9 @@ class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean
         if (super.getUrl() == null) {
             super.setUrl(basicProperties.determineUrl());
         }
-        if(super.getDriverClassName() == null){
+        if (super.getDriverClassName() == null) {
             super.setDriverClassName(basicProperties.getDriverClassName());
         }
-
     }
 
     @Autowired(required = false)
@@ -96,5 +95,20 @@ class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean
         super.filters.add(wallFilter);
     }
 
-
+    /**
+     * Ignore the 'maxEvictableIdleTimeMillis < minEvictableIdleTimeMillis' validate,
+     * it will be validated again in {@link DruidDataSource#init()}.
+     *
+     * for fix issue #3084, #2763
+     *
+     * @since 1.1.14
+     */
+    @Override
+    public void setMaxEvictableIdleTimeMillis(long maxEvictableIdleTimeMillis) {
+        try {
+            super.setMaxEvictableIdleTimeMillis(maxEvictableIdleTimeMillis);
+        } catch (IllegalArgumentException ignore) {
+            super.maxEvictableIdleTimeMillis = maxEvictableIdleTimeMillis;
+        }
+    }
 }
