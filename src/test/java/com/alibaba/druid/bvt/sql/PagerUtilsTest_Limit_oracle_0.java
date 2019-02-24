@@ -74,4 +74,25 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
                 ") XXX\n" +
                 "WHERE RN > 20", result);
     }
+
+    public void test_oracle_4() throws Exception {
+        String sql = "SELECT TO_CHAR(ADD_MONTHS(TO_DATE('2014', 'yyyy'), (ROWNUM) * 12), 'yyyy') as YEAR\n" +
+                "FROM DUAL\n" +
+                "CONNECT BY ROWNUM <=\n" +
+                "months_between(to_date(to_char(sysdate,'yyyy'),'yyyy') ,\n" +
+                "to_date('2014', 'yyyy')) / 12";
+
+        String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 20, 10);
+        Assert.assertEquals("SELECT *\n" +
+                "FROM (\n" +
+                "\tSELECT XX.*, ROWNUM AS RN\n" +
+                "\tFROM (\n" +
+                "\t\tSELECT id, name, salary\n" +
+                "\t\tFROM t\n" +
+                "\t\tORDER BY id, name\n" +
+                "\t) XX\n" +
+                "\tWHERE ROWNUM <= 30\n" +
+                ") XXX\n" +
+                "WHERE RN > 20", result);
+    }
 }
