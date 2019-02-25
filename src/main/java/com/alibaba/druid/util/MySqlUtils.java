@@ -48,8 +48,9 @@ public class MySqlUtils {
     static Class<?>       class_5_MysqlXAConnection = null;
     static Constructor<?> constructor_5_MysqlXAConnection = null;
 
-    static Class<?>       class_5_ConnectionImpl = null;
-    static Method         method_5_getId         = null;
+    static Class<?>       class_ConnectionImpl = null;
+    static Method         method_getId = null;
+    static boolean        method_getId_error = false;
 
     static Class<?>       class_6_ConnectionImpl = null;
     static Method         method_6_getId         = null;
@@ -185,41 +186,7 @@ public class MySqlUtils {
     }
 
     public static String buildKillQuerySql(Connection connection, SQLException error) throws SQLException {
-        Long threadId = null;
-        try {
-            Class clazz = connection.getClass();
-
-            if (class_5_ConnectionImpl == null) {
-                if (clazz.getName().equals("com.mysql.jdbc.ConnectionImpl")) {
-                    class_5_ConnectionImpl = clazz;
-                }
-            }
-
-            if (class_5_ConnectionImpl == clazz) {
-                if (method_5_getId == null) {
-                    method_5_getId = class_5_ConnectionImpl.getMethod("getId");
-                }
-
-                threadId = (Long) method_5_getId.invoke(connection);
-            }
-
-            if (class_6_ConnectionImpl == null) {
-                if (clazz.getName().equals("com.mysql.cj.jdbc.ConnectionImpl")) {
-                    class_6_ConnectionImpl = clazz;
-                }
-            }
-
-            if (class_6_ConnectionImpl == clazz) {
-                if (method_6_getId == null) {
-                    method_6_getId = class_6_ConnectionImpl.getMethod("getId");
-                }
-
-                threadId = (Long) method_6_getId.invoke(connection);
-            }
-        } catch (Exception e) {
-            // skip
-        }
-
+        Long threadId = getId(connection);
         if (threadId == null) {
             return null;
         }
@@ -363,6 +330,41 @@ public class MySqlUtils {
     private static transient boolean class_MysqlIO_Error                      = false;
     private static transient Method  method_getLastPacketReceivedTimeMs       = null;
     private static transient boolean method_getLastPacketReceivedTimeMs_error = false;
+
+    public static Long getId(Object conn) {
+        if (conn == null) {
+            return null;
+        }
+
+        Class<?> clazz = conn.getClass();
+        if (class_ConnectionImpl == null) {
+            if (clazz.getName().equals("com.mysql.jdbc.ConnectionImpl")) {
+                class_ConnectionImpl = clazz;
+            } else if (clazz.getName().equals("com.mysql.jdbc.Connection")) { // mysql 5.0.x
+                class_ConnectionImpl = clazz;
+            } else if (clazz.getName().equals("com.mysql.cj.jdbc.ConnectionImpl")) { // mysql 5.0.x
+                class_ConnectionImpl = clazz;
+            } else if (clazz.getSuperclass().getName().equals("com.mysql.jdbc.ConnectionImpl")) {
+                class_ConnectionImpl = clazz.getSuperclass();
+            }
+        }
+
+        if (class_ConnectionImpl == clazz || class_ConnectionImpl == clazz.getSuperclass()) {
+            try {
+                if (method_getId == null && !method_getId_error) {
+                    Method method = class_ConnectionImpl.getDeclaredMethod("getId");
+                    method.setAccessible(true);
+                    method_getId = method;
+                }
+
+                return (Long) method_getId.invoke(conn);
+            } catch (Throwable ex) {
+                method_getId_error = true;
+            }
+        }
+
+        return null;
+    }
 
     public static long getLastPacketReceivedTimeMs(Connection conn) throws SQLException {
         if (class_connectionImpl == null && !class_connectionImpl_Error) {
