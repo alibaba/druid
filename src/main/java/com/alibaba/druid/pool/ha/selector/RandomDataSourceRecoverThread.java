@@ -31,7 +31,8 @@ import java.sql.Connection;
 public class RandomDataSourceRecoverThread implements Runnable {
     private final static Log LOG = LogFactory.getLog(RandomDataSourceRecoverThread.class);
     private RandomDataSourceSelector selector;
-    private int sleepSeconds = 30;
+    private int sleepSeconds = 60;
+    private int validationSleepSeconds = 0;
 
     public RandomDataSourceRecoverThread(RandomDataSourceSelector selector) {
         this.selector = selector;
@@ -61,6 +62,7 @@ public class RandomDataSourceRecoverThread implements Runnable {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
+            sleepBeforeValidation();
             dataSource.validateConnection(connection);
             LOG.info(dataSource.getName() + " is available now.");
             selector.removeBlacklist(dataSource);
@@ -72,6 +74,17 @@ public class RandomDataSourceRecoverThread implements Runnable {
             }
         } finally {
             JdbcUtils.close(connection);
+        }
+    }
+
+    private void sleepBeforeValidation() {
+        if (validationSleepSeconds > 0) {
+            try {
+                LOG.debug("Sleep " + validationSleepSeconds + " second(s) before validation.");
+                Thread.sleep(validationSleepSeconds * 1000);
+            } catch (InterruptedException e) {
+                // ignore
+            }
         }
     }
 
@@ -89,5 +102,13 @@ public class RandomDataSourceRecoverThread implements Runnable {
 
     public void setSleepSeconds(int sleepSeconds) {
         this.sleepSeconds = sleepSeconds;
+    }
+
+    public int getValidationSleepSeconds() {
+        return validationSleepSeconds;
+    }
+
+    public void setValidationSleepSeconds(int validationSleepSeconds) {
+        this.validationSleepSeconds = validationSleepSeconds;
     }
 }

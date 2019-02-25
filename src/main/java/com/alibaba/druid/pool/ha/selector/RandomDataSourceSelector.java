@@ -51,7 +51,7 @@ public class RandomDataSourceSelector implements DataSourceSelector {
     private RandomDataSourceRecoverThread recoverThread;
 
     private int checkingIntervalSeconds = 15;
-    private int recoveryIntervalSeconds = 30;
+    private int recoveryIntervalSeconds = 60;
     private int validationSleepSeconds = 0;
     private int blacklistThreshold = 3;
 
@@ -118,6 +118,10 @@ public class RandomDataSourceSelector implements DataSourceSelector {
         return blacklist;
     }
 
+    public boolean containInBlacklist(DataSource dataSource) {
+        return dataSource != null && blacklist.contains(dataSource);
+    }
+
     public void addBlacklist(DataSource dataSource) {
         if (dataSource != null && !blacklist.contains(dataSource)) {
             blacklist.add(dataSource);
@@ -128,7 +132,7 @@ public class RandomDataSourceSelector implements DataSourceSelector {
     }
 
     public void removeBlacklist(DataSource dataSource) {
-        if (dataSource != null && blacklist.contains(dataSource)) {
+        if (containInBlacklist(dataSource)) {
             blacklist.remove(dataSource);
             if (dataSource instanceof DruidDataSource) {
                 ((DruidDataSource) dataSource).setTestOnReturn(highAvailableDataSource.isTestOnReturn());
@@ -161,14 +165,19 @@ public class RandomDataSourceSelector implements DataSourceSelector {
     }
 
     private void initThreads() {
-        validateThread = new RandomDataSourceValidateThread(this);
-        validateThread.setCheckingIntervalSeconds(checkingIntervalSeconds);
-        validateThread.setValidationSleepSeconds(validationSleepSeconds);
-        validateThread.setBlacklistThreshold(blacklistThreshold);
-        new Thread(validateThread, "RandomDataSourceSelector-isValid-thread").start();
+        if (validateThread == null) {
+            validateThread = new RandomDataSourceValidateThread(this);
+            validateThread.setCheckingIntervalSeconds(checkingIntervalSeconds);
+            validateThread.setValidationSleepSeconds(validationSleepSeconds);
+            validateThread.setBlacklistThreshold(blacklistThreshold);
+        }
+        new Thread(validateThread, "RandomDataSourceSelector-validate-thread").start();
 
-        recoverThread = new RandomDataSourceRecoverThread(this);
-        recoverThread.setSleepSeconds(recoveryIntervalSeconds);
+        if (recoverThread == null) {
+            recoverThread = new RandomDataSourceRecoverThread(this);
+            recoverThread.setSleepSeconds(recoveryIntervalSeconds);
+            recoverThread.setValidationSleepSeconds(validationSleepSeconds);
+        }
         new Thread(recoverThread, "RandomDataSourceSelector-recover-thread").start();
     }
 

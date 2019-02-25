@@ -31,13 +31,13 @@ public class RandomDataSourceSelectorWithValidationTest {
     @Test
     public void testOneDataSourceFailAndRecover() throws Exception {
         RandomDataSourceSelector selector = ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector());
-        selector.setCheckingIntervalSeconds(3);
+        selector.getValidateThread().setCheckingIntervalSeconds(3);
         selector.getRecoverThread().setSleepSeconds(3);
         selector.init();
 
         DruidDataSource dataSource = (DruidDataSource) highAvailableDataSource.getDataSourceMap().get("foo");
         dataSource.setValidationQuery("select xxx from yyy");
-        Thread.sleep(6 * 1000);
+        Thread.sleep(10 * 1000);
         assertTrue(dataSource.isTestOnReturn());
         for (int i = 0; i < 100; i++) {
             assertNotEquals(dataSource, selector.get());

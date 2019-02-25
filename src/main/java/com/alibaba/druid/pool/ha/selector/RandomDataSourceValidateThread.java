@@ -89,7 +89,8 @@ public class RandomDataSourceValidateThread implements Runnable {
         for (Map.Entry<String, Integer> e : errorCounts.entrySet()) {
             if (e.getValue() <= 0) {
                 selector.removeBlacklist(dataSourceMap.get(e.getKey()));
-            } else if (e.getValue() >= blacklistThreshold) {
+            } else if (e.getValue() >= blacklistThreshold
+                    && !selector.containInBlacklist(dataSourceMap.get(e.getKey()))) {
                 LOG.warn("Adding " + e.getKey() + " to blacklist.");
                 selector.addBlacklist(dataSourceMap.get(e.getKey()));
             }
@@ -102,6 +103,11 @@ public class RandomDataSourceValidateThread implements Runnable {
 
         for (final Map.Entry<String, DataSource> e : dataSourceMap.entrySet()) {
             if (!(e.getValue() instanceof DruidDataSource)) {
+                continue;
+            }
+
+            if (selector.containInBlacklist(e.getValue())) {
+                LOG.debug(e.getKey() + " is already in blacklist, skip.");
                 continue;
             }
 
