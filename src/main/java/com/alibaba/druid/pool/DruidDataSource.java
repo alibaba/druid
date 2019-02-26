@@ -2939,6 +2939,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     lock.lock();
                     try {
                         discardCount++;
+
+                        if (activeCount <= minIdle) {
+                            emptySignal();
+                        }
                     } finally {
                         lock.unlock();
                     }

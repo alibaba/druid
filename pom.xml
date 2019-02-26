@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.1.14-preview_1</version>
+	<version>1.1.14-preview_2</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -463,7 +463,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.45</version>
+			<version>6.0.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -727,6 +727,12 @@
 			<groupId>org.openjdk.jmh</groupId>
 			<artifactId>jmh-generator-annprocess</artifactId>
 			<version>${jmh.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>2.4.0</version>
 			<scope>test</scope>
 		</dependency>
 
