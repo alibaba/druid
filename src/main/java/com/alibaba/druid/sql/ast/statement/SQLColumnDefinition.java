@@ -49,7 +49,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     protected SQLExpr                         storage;
     protected SQLExpr                         charsetExpr;
     protected SQLExpr                         asExpr;
-    protected boolean                         sorted        = false;
+    protected boolean                         stored        = false;
     protected boolean                         virtual       = false;
 
     protected Identity                        identity;
@@ -212,12 +212,12 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         this.virtual = virtual;
     }
 
-    public boolean isSorted() {
-        return sorted;
+    public boolean isStored() {
+        return stored;
     }
 
-    public void setSorted(boolean sorted) {
-        this.sorted = sorted;
+    public void setStored(boolean stored) {
+        this.stored = stored;
     }
 
     public SQLExpr getCharsetExpr() {
@@ -391,7 +391,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             x.setAsExpr(asExpr.clone());
         }
 
-        x.sorted = sorted;
+        x.stored = stored;
         x.virtual = virtual;
 
         if (identity != null) {

@@ -458,8 +458,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(')');
         }
 
-        if (x.isSorted()) {
-            print0(ucase ? " SORTED" : " sorted");
+        if (x.isStored()) {
+            print0(ucase ? " STORED" : " stored");
         }
 
         if (x.isVirtual()) {
