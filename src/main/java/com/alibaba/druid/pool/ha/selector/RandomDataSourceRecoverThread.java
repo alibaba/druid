@@ -31,7 +31,7 @@ import java.sql.Connection;
 public class RandomDataSourceRecoverThread implements Runnable {
     private final static Log LOG = LogFactory.getLog(RandomDataSourceRecoverThread.class);
     private RandomDataSourceSelector selector;
-    private int sleepSeconds = 60;
+    private int sleepSeconds = 120;
     private int validationSleepSeconds = 0;
 
     public RandomDataSourceRecoverThread(RandomDataSourceSelector selector) {
@@ -69,9 +69,6 @@ public class RandomDataSourceRecoverThread implements Runnable {
         } catch(Exception e) {
             LOG.warn("DataSource[" + dataSource.getName() + "] is still unavailable. Exception: "
                     + e.getMessage());
-            if (connection != null) {
-                dataSource.discardConnection(connection);
-            }
         } finally {
             JdbcUtils.close(connection);
         }

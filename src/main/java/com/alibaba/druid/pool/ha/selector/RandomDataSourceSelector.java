@@ -51,7 +51,7 @@ public class RandomDataSourceSelector implements DataSourceSelector {
     private RandomDataSourceRecoverThread recoverThread;
 
     private int checkingIntervalSeconds = 15;
-    private int recoveryIntervalSeconds = 60;
+    private int recoveryIntervalSeconds = 120;
     private int validationSleepSeconds = 0;
     private int blacklistThreshold = 3;
 
