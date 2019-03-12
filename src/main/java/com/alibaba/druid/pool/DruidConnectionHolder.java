@@ -19,7 +19,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +55,7 @@ public final class DruidConnectionHolder {
     private long                                  lastNotEmptyWaitNanos;
     private final long                            createNanoSpan;
     protected PreparedStatementPool               statementPool;
-    protected final List<Statement>               statementTrace           = new ArrayList<Statement>(2);
+    protected final List<Statement>               statementTrace           = new CopyOnWriteArrayList<Statement>();
     protected final boolean                       defaultReadOnly;
     protected final int                           defaultHoldability;
     protected final int                           defaultTransactionIsolation;
