@@ -93,17 +93,33 @@ public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLRepl
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         SQLSelectOrderByItem other = (SQLSelectOrderByItem) obj;
         if (collate == null) {
-            if (other.collate != null) return false;
-        } else if (!collate.equals(other.collate)) return false;
+            if (other.collate != null) {
+                return false;
+            }
+        } else if (!collate.equals(other.collate)) {
+            return false;
+        }
         if (expr == null) {
-            if (other.expr != null) return false;
-        } else if (!expr.equals(other.expr)) return false;
-        if (type != other.type) return false;
+            if (other.expr != null) {
+                return false;
+            }
+        } else if (!expr.equals(other.expr)) {
+            return false;
+        }
+        if (type != other.type) {
+            return false;
+        }
         return true;
     }
 

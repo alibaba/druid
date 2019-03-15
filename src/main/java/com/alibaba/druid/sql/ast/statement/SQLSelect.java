@@ -134,19 +134,37 @@ public class SQLSelect extends SQLObjectImpl {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         SQLSelect other = (SQLSelect) obj;
         if (orderBy == null) {
-            if (other.orderBy != null) return false;
-        } else if (!orderBy.equals(other.orderBy)) return false;
+            if (other.orderBy != null) {
+                return false;
+            }
+        } else if (!orderBy.equals(other.orderBy)) {
+            return false;
+        }
         if (query == null) {
-            if (other.query != null) return false;
-        } else if (!query.equals(other.query)) return false;
+            if (other.query != null) {
+                return false;
+            }
+        } else if (!query.equals(other.query)) {
+            return false;
+        }
         if (withSubQuery == null) {
-            if (other.withSubQuery != null) return false;
-        } else if (!withSubQuery.equals(other.withSubQuery)) return false;
+            if (other.withSubQuery != null) {
+                return false;
+            }
+        } else if (!withSubQuery.equals(other.withSubQuery)) {
+            return false;
+        }
         return true;
     }
 

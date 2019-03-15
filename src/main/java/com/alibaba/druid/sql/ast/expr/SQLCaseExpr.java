@@ -167,16 +167,30 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            if (getClass() != obj.getClass()) return false;
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
             Item other = (Item) obj;
             if (conditionExpr == null) {
-                if (other.conditionExpr != null) return false;
-            } else if (!conditionExpr.equals(other.conditionExpr)) return false;
+                if (other.conditionExpr != null) {
+                    return false;
+                }
+            } else if (!conditionExpr.equals(other.conditionExpr)) {
+                return false;
+            }
             if (valueExpr == null) {
-                if (other.valueExpr != null) return false;
-            } else if (!valueExpr.equals(other.valueExpr)) return false;
+                if (other.valueExpr != null) {
+                    return false;
+                }
+            } else if (!valueExpr.equals(other.valueExpr)) {
+                return false;
+            }
             return true;
         }
 

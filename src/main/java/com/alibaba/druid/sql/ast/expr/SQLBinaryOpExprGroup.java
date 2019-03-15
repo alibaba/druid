@@ -39,12 +39,18 @@ public class SQLBinaryOpExprGroup extends SQLExprImpl {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLBinaryOpExprGroup that = (SQLBinaryOpExprGroup) o;
 
-        if (operator != that.operator) return false;
+        if (operator != that.operator) {
+            return false;
+        }
         return items.equals(that.items);
     }
 

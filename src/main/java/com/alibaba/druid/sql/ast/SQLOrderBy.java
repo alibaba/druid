@@ -75,14 +75,26 @@ public final class SQLOrderBy extends SQLObjectImpl {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         SQLOrderBy other = (SQLOrderBy) obj;
         if (items == null) {
-            if (other.items != null) return false;
-        } else if (!items.equals(other.items)) return false;
-        if (sibings != other.sibings) return false;
+            if (other.items != null) {
+                return false;
+            }
+        } else if (!items.equals(other.items)) {
+            return false;
+        }
+        if (sibings != other.sibings) {
+            return false;
+        }
         return true;
     }
 

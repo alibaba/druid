@@ -104,7 +104,7 @@ public abstract class DruidPanel extends JPanel {
     protected void addOrRefreshTable(String url) throws Exception {
         if (url != null) {
             boolean needRefresh = false;
-            long timeNow = new Date().getTime();
+            long timeNow = System.currentTimeMillis();
             if (scrollPane == null) {
                 table = new JTable();
 

@@ -89,10 +89,11 @@ public class ListDG {
             ENode node1 = new ENode();
             node1.ivex = p2;
             // 将node1链接到"p1所在链表的末尾"
-            if(mVexs.get(p1).firstEdge == null)
+            if(mVexs.get(p1).firstEdge == null) {
                 mVexs.get(p1).firstEdge = node1;
-            else
+            } else {
                 linkLast(mVexs.get(p1).firstEdge, node1);
+            }
         }
     }
 
@@ -102,8 +103,9 @@ public class ListDG {
     private void linkLast(ENode list, ENode node) {
         ENode p = list;
 
-        while(p.nextEdge!=null)
+        while(p.nextEdge!=null) {
             p = p.nextEdge;
+        }
         p.nextEdge = node;
     }
 
@@ -111,9 +113,11 @@ public class ListDG {
      * 返回ch位置
      */
     private int getPosition(Object ch) {
-        for(int i=0; i<mVexs.size(); i++)
-            if(mVexs.get(i).data == ch)
+        for(int i=0; i<mVexs.size(); i++) {
+            if(mVexs.get(i).data == ch) {
                 return i;
+            }
+        }
         return -1;
     }
 
@@ -126,8 +130,9 @@ public class ListDG {
         visited[i] = true;
         node = mVexs.get(i).firstEdge;
         while (node != null) {
-            if (!visited[node.ivex])
+            if (!visited[node.ivex]) {
                 DFS(node.ivex, visited);
+            }
             node = node.nextEdge;
         }
     }
@@ -139,12 +144,14 @@ public class ListDG {
         boolean[] visited = new boolean[mVexs.size()];       // 顶点访问标记
 
         // 初始化所有顶点都没有被访问
-        for (int i = 0; i < mVexs.size(); i++)
+        for (int i = 0; i < mVexs.size(); i++) {
             visited[i] = false;
+        }
 
         for (int i = 0; i < mVexs.size(); i++) {
-            if (!visited[i])
+            if (!visited[i]) {
                 DFS(i, visited);
+            }
         }
     }
 
@@ -157,8 +164,9 @@ public class ListDG {
         int[] queue = new int[mVexs.size()];            // 辅组队列
         boolean[] visited = new boolean[mVexs.size()];  // 顶点访问标记
 
-        for (int i = 0; i < mVexs.size(); i++)
+        for (int i = 0; i < mVexs.size(); i++) {
             visited[i] = false;
+        }
 
         for (int i = 0; i < mVexs.size(); i++) {
             if (!visited[i]) {
@@ -232,9 +240,11 @@ public class ListDG {
         }
 
         // 将所有入度为0的顶点入队列
-        for(int i = 0; i < num; i ++)
-            if(ins[i] == 0)
+        for(int i = 0; i < num; i ++) {
+            if(ins[i] == 0) {
                 queue.offer(i);                 // 入队列
+            }
+        }
 
         while (!queue.isEmpty()) {              // 队列非空
             int j = queue.poll().intValue();    // 出队列。j是顶点的序号
@@ -247,8 +257,9 @@ public class ListDG {
                 // 将节点(序号为node.ivex)的入度减1。
                 ins[node.ivex]--;
                 // 若节点的入度为0，则将其"入队列"
-                if( ins[node.ivex] == 0)
+                if( ins[node.ivex] == 0) {
                     queue.offer(node.ivex);    // 入队列
+                }
 
                 node = node.nextEdge;
             }

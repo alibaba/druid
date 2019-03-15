@@ -97,13 +97,21 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLDataTypeImpl dataType = (SQLDataTypeImpl) o;
 
-        if (name != null ? !name.equals(dataType.name) : dataType.name != null) return false;
-        if (arguments != null ? !arguments.equals(dataType.arguments) : dataType.arguments != null) return false;
+        if (name != null ? !name.equals(dataType.name) : dataType.name != null) {
+            return false;
+        }
+        if (arguments != null ? !arguments.equals(dataType.arguments) : dataType.arguments != null) {
+            return false;
+        }
         return withTimeZone != null ? withTimeZone.equals(dataType.withTimeZone) : dataType.withTimeZone == null;
     }
 

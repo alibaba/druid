@@ -138,16 +138,30 @@ public class SQLCaseStatement extends SQLStatementImpl implements Serializable {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            if (getClass() != obj.getClass()) return false;
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
             Item other = (Item) obj;
             if (conditionExpr == null) {
-                if (other.conditionExpr != null) return false;
-            } else if (!conditionExpr.equals(other.conditionExpr)) return false;
+                if (other.conditionExpr != null) {
+                    return false;
+                }
+            } else if (!conditionExpr.equals(other.conditionExpr)) {
+                return false;
+            }
             if (statement == null) {
-                if (other.statement != null) return false;
-            } else if (!statement.equals(other.statement)) return false;
+                if (other.statement != null) {
+                    return false;
+                }
+            } else if (!statement.equals(other.statement)) {
+                return false;
+            }
             return true;
         }
 
@@ -155,13 +169,21 @@ public class SQLCaseStatement extends SQLStatementImpl implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLCaseStatement that = (SQLCaseStatement) o;
 
-        if (items != null ? !items.equals(that.items) : that.items != null) return false;
-        if (valueExpr != null ? !valueExpr.equals(that.valueExpr) : that.valueExpr != null) return false;
+        if (items != null ? !items.equals(that.items) : that.items != null) {
+            return false;
+        }
+        if (valueExpr != null ? !valueExpr.equals(that.valueExpr) : that.valueExpr != null) {
+            return false;
+        }
         return elseStatements != null ? elseStatements.equals(that.elseStatements) : that.elseStatements == null;
     }
 

@@ -82,12 +82,18 @@ public class SQLFlashbackExpr extends SQLExprImpl {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLFlashbackExpr that = (SQLFlashbackExpr) o;
 
-        if (type != that.type) return false;
+        if (type != that.type) {
+            return false;
+        }
         return expr != null ? expr.equals(that.expr) : that.expr == null;
     }
 

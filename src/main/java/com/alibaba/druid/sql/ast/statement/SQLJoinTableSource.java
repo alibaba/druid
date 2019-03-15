@@ -179,16 +179,30 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLJoinTableSource that = (SQLJoinTableSource) o;
 
-        if (natural != that.natural) return false;
-        if (left != null ? !left.equals(that.left) : that.left != null) return false;
-        if (joinType != that.joinType) return false;
-        if (right != null ? !right.equals(that.right) : that.right != null) return false;
-        if (condition != null ? !condition.equals(that.condition) : that.condition != null) return false;
+        if (natural != that.natural) {
+            return false;
+        }
+        if (left != null ? !left.equals(that.left) : that.left != null) {
+            return false;
+        }
+        if (joinType != that.joinType) {
+            return false;
+        }
+        if (right != null ? !right.equals(that.right) : that.right != null) {
+            return false;
+        }
+        if (condition != null ? !condition.equals(that.condition) : that.condition != null) {
+            return false;
+        }
         return using != null ? using.equals(that.using) : that.using == null;
     }
 

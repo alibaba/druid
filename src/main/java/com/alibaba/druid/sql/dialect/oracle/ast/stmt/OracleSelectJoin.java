@@ -90,13 +90,21 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         OracleSelectJoin that = (OracleSelectJoin) o;
 
-        if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) return false;
+        if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) {
+            return false;
+        }
         return flashback != null ? flashback.equals(that.flashback) : that.flashback == null;
     }
 

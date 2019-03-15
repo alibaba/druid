@@ -1157,7 +1157,7 @@ public class WallVisitorUtils {
             SQLExpr item = groupList.get(i);
             Object result = getValue(visitor, item);
             Boolean booleanVal = SQLEvalVisitorUtils.castToBoolean(result);
-            if (Boolean.TRUE == booleanVal) {
+            if (Boolean.TRUE.equals(booleanVal)) {
                 final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
                 if (wallContext != null && !isFirst(item)) {
                     wallContext.setPartAlwayTrue(true);
@@ -1165,7 +1165,7 @@ public class WallVisitorUtils {
                 return true;
             }
 
-            if (Boolean.FALSE != booleanVal) {
+            if (!Boolean.FALSE.equals(booleanVal)) {
                 allFalse = false;
             }
         }
@@ -1186,13 +1186,13 @@ public class WallVisitorUtils {
             Object result = getValue(visitor, item);
             Boolean booleanVal = SQLEvalVisitorUtils.castToBoolean(result);
 
-            if (Boolean.TRUE == booleanVal) {
+            if (Boolean.TRUE.equals(booleanVal)) {
                 final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
                 if (wallContext != null && !isFirst(item)) {
                     wallContext.setPartAlwayTrue(true);
                 }
                 dalConst++;
-            } else if (Boolean.FALSE == booleanVal) {
+            } else if (Boolean.FALSE.equals(booleanVal)) {
                 final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
                 if (wallContext != null && !isFirst(item)) {
                     wallContext.setPartAlwayFalse(true);
@@ -1200,7 +1200,7 @@ public class WallVisitorUtils {
                 allTrue = Boolean.FALSE;
                 dalConst++;
             } else {
-                if (allTrue != Boolean.FALSE) {
+                if (!Boolean.FALSE.equals(allTrue)) {
                     allTrue = null;
                 }
                 dalConst = 0;
@@ -1211,9 +1211,9 @@ public class WallVisitorUtils {
             }
         }
 
-        if (Boolean.TRUE == allTrue) {
+        if (Boolean.TRUE.equals(allTrue)) {
             return true;
-        } else if (Boolean.FALSE == allTrue) {
+        } else if (Boolean.FALSE.equals(allTrue)) {
             return false;
         }
         return null;

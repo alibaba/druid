@@ -426,13 +426,18 @@ public class ModelClause extends OracleSQLObjectImpl {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             CellAssignment that = (CellAssignment) o;
 
-            if (measureColumn != null ? !measureColumn.equals(that.measureColumn) : that.measureColumn != null)
+            if (measureColumn != null ? !measureColumn.equals(that.measureColumn) : that.measureColumn != null) {
                 return false;
+            }
             return conditions != null ? conditions.equals(that.conditions) : that.conditions == null;
         }
 

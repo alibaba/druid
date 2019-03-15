@@ -168,24 +168,51 @@ public class SQLOver extends SQLObjectImpl {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLOver sqlOver = (SQLOver) o;
 
-        if (windowingPreceding != sqlOver.windowingPreceding) return false;
-        if (windowingFollowing != sqlOver.windowingFollowing) return false;
-        if (windowingBetweenBeginPreceding != sqlOver.windowingBetweenBeginPreceding) return false;
-        if (windowingBetweenBeginFollowing != sqlOver.windowingBetweenBeginFollowing) return false;
-        if (windowingBetweenEndPreceding != sqlOver.windowingBetweenEndPreceding) return false;
-        if (windowingBetweenEndFollowing != sqlOver.windowingBetweenEndFollowing) return false;
-        if (partitionBy != null ? !partitionBy.equals(sqlOver.partitionBy) : sqlOver.partitionBy != null) return false;
-        if (orderBy != null ? !orderBy.equals(sqlOver.orderBy) : sqlOver.orderBy != null) return false;
-        if (of != null ? !of.equals(sqlOver.of) : sqlOver.of != null) return false;
-        if (windowing != null ? !windowing.equals(sqlOver.windowing) : sqlOver.windowing != null) return false;
-        if (windowingType != sqlOver.windowingType) return false;
-        if (windowingBetweenBegin != null ? !windowingBetweenBegin.equals(sqlOver.windowingBetweenBegin) : sqlOver.windowingBetweenBegin != null)
+        if (windowingPreceding != sqlOver.windowingPreceding) {
             return false;
+        }
+        if (windowingFollowing != sqlOver.windowingFollowing) {
+            return false;
+        }
+        if (windowingBetweenBeginPreceding != sqlOver.windowingBetweenBeginPreceding) {
+            return false;
+        }
+        if (windowingBetweenBeginFollowing != sqlOver.windowingBetweenBeginFollowing) {
+            return false;
+        }
+        if (windowingBetweenEndPreceding != sqlOver.windowingBetweenEndPreceding) {
+            return false;
+        }
+        if (windowingBetweenEndFollowing != sqlOver.windowingBetweenEndFollowing) {
+            return false;
+        }
+        if (partitionBy != null ? !partitionBy.equals(sqlOver.partitionBy) : sqlOver.partitionBy != null) {
+            return false;
+        }
+        if (orderBy != null ? !orderBy.equals(sqlOver.orderBy) : sqlOver.orderBy != null) {
+            return false;
+        }
+        if (of != null ? !of.equals(sqlOver.of) : sqlOver.of != null) {
+            return false;
+        }
+        if (windowing != null ? !windowing.equals(sqlOver.windowing) : sqlOver.windowing != null) {
+            return false;
+        }
+        if (windowingType != sqlOver.windowingType) {
+            return false;
+        }
+        if (windowingBetweenBegin != null ? !windowingBetweenBegin.equals(sqlOver.windowingBetweenBegin) : sqlOver.windowingBetweenBegin != null) {
+            return false;
+        }
         return windowingBetweenEnd != null ? windowingBetweenEnd.equals(sqlOver.windowingBetweenEnd) : sqlOver.windowingBetweenEnd == null;
 
     }

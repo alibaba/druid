@@ -174,36 +174,82 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         MySqlSelectQueryBlock other = (MySqlSelectQueryBlock) obj;
-        if (bigResult != other.bigResult) return false;
-        if (bufferResult != other.bufferResult) return false;
+        if (bigResult != other.bigResult) {
+            return false;
+        }
+        if (bufferResult != other.bufferResult) {
+            return false;
+        }
         if (cache == null) {
-            if (other.cache != null) return false;
-        } else if (!cache.equals(other.cache)) return false;
-        if (calcFoundRows != other.calcFoundRows) return false;
-        if (forUpdate != other.forUpdate) return false;
-        if (hignPriority != other.hignPriority) return false;
+            if (other.cache != null) {
+                return false;
+            }
+        } else if (!cache.equals(other.cache)) {
+            return false;
+        }
+        if (calcFoundRows != other.calcFoundRows) {
+            return false;
+        }
+        if (forUpdate != other.forUpdate) {
+            return false;
+        }
+        if (hignPriority != other.hignPriority) {
+            return false;
+        }
         if (hints == null) {
-            if (other.hints != null) return false;
-        } else if (!hints.equals(other.hints)) return false;
+            if (other.hints != null) {
+                return false;
+            }
+        } else if (!hints.equals(other.hints)) {
+            return false;
+        }
         if (limit == null) {
-            if (other.limit != null) return false;
-        } else if (!limit.equals(other.limit)) return false;
-        if (lockInShareMode != other.lockInShareMode) return false;
+            if (other.limit != null) {
+                return false;
+            }
+        } else if (!limit.equals(other.limit)) {
+            return false;
+        }
+        if (lockInShareMode != other.lockInShareMode) {
+            return false;
+        }
         if (orderBy == null) {
-            if (other.orderBy != null) return false;
-        } else if (!orderBy.equals(other.orderBy)) return false;
+            if (other.orderBy != null) {
+                return false;
+            }
+        } else if (!orderBy.equals(other.orderBy)) {
+            return false;
+        }
         if (procedureArgumentList == null) {
-            if (other.procedureArgumentList != null) return false;
-        } else if (!procedureArgumentList.equals(other.procedureArgumentList)) return false;
+            if (other.procedureArgumentList != null) {
+                return false;
+            }
+        } else if (!procedureArgumentList.equals(other.procedureArgumentList)) {
+            return false;
+        }
         if (procedureName == null) {
-            if (other.procedureName != null) return false;
-        } else if (!procedureName.equals(other.procedureName)) return false;
-        if (smallResult != other.smallResult) return false;
-        if (straightJoin != other.straightJoin) return false;
+            if (other.procedureName != null) {
+                return false;
+            }
+        } else if (!procedureName.equals(other.procedureName)) {
+            return false;
+        }
+        if (smallResult != other.smallResult) {
+            return false;
+        }
+        if (straightJoin != other.straightJoin) {
+            return false;
+        }
         return true;
     }
 

@@ -184,20 +184,42 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLAggregateExpr that = (SQLAggregateExpr) o;
 
-        if (methodNameHashCod64 != that.methodNameHashCod64) return false;
-        if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null) return false;
-        if (option != that.option) return false;
-        if (arguments != null ? !arguments.equals(that.arguments) : that.arguments != null) return false;
-        if (keep != null ? !keep.equals(that.keep) : that.keep != null) return false;
-        if (filter != null ? !filter.equals(that.filter) : that.filter != null) return false;
-        if (over != null ? !over.equals(that.over) : that.over != null) return false;
-        if (overRef != null ? !overRef.equals(that.overRef) : that.overRef != null) return false;
-        if (withinGroup != null ? !withinGroup.equals(that.withinGroup) : that.withinGroup != null) return false;
+        if (methodNameHashCod64 != that.methodNameHashCod64) {
+            return false;
+        }
+        if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null) {
+            return false;
+        }
+        if (option != that.option) {
+            return false;
+        }
+        if (arguments != null ? !arguments.equals(that.arguments) : that.arguments != null) {
+            return false;
+        }
+        if (keep != null ? !keep.equals(that.keep) : that.keep != null) {
+            return false;
+        }
+        if (filter != null ? !filter.equals(that.filter) : that.filter != null) {
+            return false;
+        }
+        if (over != null ? !over.equals(that.over) : that.over != null) {
+            return false;
+        }
+        if (overRef != null ? !overRef.equals(that.overRef) : that.overRef != null) {
+            return false;
+        }
+        if (withinGroup != null ? !withinGroup.equals(that.withinGroup) : that.withinGroup != null) {
+            return false;
+        }
         return ignoreNulls != null ? ignoreNulls.equals(that.ignoreNulls) : that.ignoreNulls == null;
     }
 

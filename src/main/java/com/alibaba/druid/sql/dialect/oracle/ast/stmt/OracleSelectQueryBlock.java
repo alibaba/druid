@@ -34,6 +34,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements Oracl
     private ModelClause                modelClause;
     private boolean                    skipLocked  = false;
 
+    @SuppressWarnings("PMD.DontModifyInForeachCircleRule")
     public OracleSelectQueryBlock clone() {
         OracleSelectQueryBlock x = new OracleSelectQueryBlock();
 

@@ -291,18 +291,36 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLUpdateStatement that = (SQLUpdateStatement) o;
 
-        if (with != null ? !with.equals(that.with) : that.with != null) return false;
-        if (items != null ? !items.equals(that.items) : that.items != null) return false;
-        if (where != null ? !where.equals(that.where) : that.where != null) return false;
-        if (from != null ? !from.equals(that.from) : that.from != null) return false;
-        if (hints != null ? !hints.equals(that.hints) : that.hints != null) return false;
-        if (tableSource != null ? !tableSource.equals(that.tableSource) : that.tableSource != null) return false;
-        if (returning != null ? !returning.equals(that.returning) : that.returning != null) return false;
+        if (with != null ? !with.equals(that.with) : that.with != null) {
+            return false;
+        }
+        if (items != null ? !items.equals(that.items) : that.items != null) {
+            return false;
+        }
+        if (where != null ? !where.equals(that.where) : that.where != null) {
+            return false;
+        }
+        if (from != null ? !from.equals(that.from) : that.from != null) {
+            return false;
+        }
+        if (hints != null ? !hints.equals(that.hints) : that.hints != null) {
+            return false;
+        }
+        if (tableSource != null ? !tableSource.equals(that.tableSource) : that.tableSource != null) {
+            return false;
+        }
+        if (returning != null ? !returning.equals(that.returning) : that.returning != null) {
+            return false;
+        }
         return orderBy != null ? orderBy.equals(that.orderBy) : that.orderBy == null;
     }
 

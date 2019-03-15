@@ -3334,7 +3334,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         for (int i = 0; i < x.getWhenList().size(); i++) {
             x.getWhenList().get(i).accept(this);
         }
-        if (x.getElseItem() != null) x.getElseItem().accept(this);
+        if (x.getElseItem() != null) {
+            x.getElseItem().accept(this);
+        }
         print0(ucase ? "END CASE" : "end case");
         return false;
     }
@@ -3362,7 +3364,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print0(ucase ? " INTO " : " into ");
         for (int i = 0; i < x.getVarList().size(); i++) {
             x.getVarList().get(i).accept(this);
-            if (i != x.getVarList().size() - 1) print0(", ");
+            if (i != x.getVarList().size() - 1) {
+                print0(", ");
+            }
         }
         return false;
     }

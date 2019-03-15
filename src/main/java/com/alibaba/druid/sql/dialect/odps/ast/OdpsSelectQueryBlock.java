@@ -63,8 +63,12 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
         OdpsSelectQueryBlock other = (OdpsSelectQueryBlock) obj;
         if (limit == null) {
-            if (other.limit != null) return false;
-        } else if (!limit.equals(other.limit)) return false;
+            if (other.limit != null) {
+                return false;
+            }
+        } else if (!limit.equals(other.limit)) {
+            return false;
+        }
         return true;
     }
 

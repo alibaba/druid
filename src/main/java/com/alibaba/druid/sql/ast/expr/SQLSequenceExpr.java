@@ -97,14 +97,26 @@ public class SQLSequenceExpr extends SQLExprImpl {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         SQLSequenceExpr other = (SQLSequenceExpr) obj;
-        if (function != other.function) return false;
+        if (function != other.function) {
+            return false;
+        }
         if (sequence == null) {
-            if (other.sequence != null) return false;
-        } else if (!sequence.equals(other.sequence)) return false;
+            if (other.sequence != null) {
+                return false;
+            }
+        } else if (!sequence.equals(other.sequence)) {
+            return false;
+        }
         return true;
     }
 

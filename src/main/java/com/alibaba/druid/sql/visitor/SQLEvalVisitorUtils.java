@@ -1270,9 +1270,9 @@ public class SQLEvalVisitorUtils {
         
         if (val instanceof Boolean) {
             if (((Boolean) val).booleanValue()) {
-                return 1l;
+                return 1L;
             } else {
-                return 0l;
+                return 0L;
             }
         }
 
@@ -1842,8 +1842,12 @@ public class SQLEvalVisitorUtils {
 
         if (a instanceof Boolean || b instanceof Boolean) {
             int aI = 0, bI = 0;
-            if (castToBoolean(a)) aI = 1;
-            if (castToBoolean(b)) bI = 1;
+            if (castToBoolean(a)) {
+                aI = 1;
+            }
+            if (castToBoolean(b)) {
+                bI = 1;
+            }
             return aI + bI;
         }
 
@@ -1913,8 +1917,12 @@ public class SQLEvalVisitorUtils {
 
         if (a instanceof Boolean || b instanceof Boolean) {
             int aI = 0, bI = 0;
-            if (castToBoolean(a)) aI = 1;
-            if (castToBoolean(b)) bI = 1;
+            if (castToBoolean(a)) {
+                aI = 1;
+            }
+            if (castToBoolean(b)) {
+                bI = 1;
+            }
             return aI - bI;
         }
 

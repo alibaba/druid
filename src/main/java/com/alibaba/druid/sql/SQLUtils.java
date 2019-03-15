@@ -536,21 +536,31 @@ public class SQLUtils {
      */
     public static String buildToDate(String columnName, String tableAlias, String pattern, String dbType) {
         StringBuilder sql = new StringBuilder();
-        if (StringUtils.isEmpty(columnName)) return "";
-        if (StringUtils.isEmpty(dbType)) dbType = JdbcConstants.MYSQL;
+        if (StringUtils.isEmpty(columnName)) {
+            return "";
+        }
+        if (StringUtils.isEmpty(dbType)) {
+            dbType = JdbcConstants.MYSQL;
+        }
         String formatMethod = "";
         if (JdbcConstants.MYSQL.equalsIgnoreCase(dbType)) {
             formatMethod = "STR_TO_DATE";
-            if (StringUtils.isEmpty(pattern)) pattern = "%Y-%m-%d %H:%i:%s";
+            if (StringUtils.isEmpty(pattern)) {
+                pattern = "%Y-%m-%d %H:%i:%s";
+            }
         } else if (JdbcConstants.ORACLE.equalsIgnoreCase(dbType)) {
             formatMethod = "TO_DATE";
-            if (StringUtils.isEmpty(pattern)) pattern = "yyyy-mm-dd hh24:mi:ss";
+            if (StringUtils.isEmpty(pattern)) {
+                pattern = "yyyy-mm-dd hh24:mi:ss";
+            }
         } else {
             return "";
             // expand date's handle method for other database
         }
         sql.append(formatMethod).append("(");
-        if (!StringUtils.isEmpty(tableAlias)) sql.append(tableAlias).append(".");
+        if (!StringUtils.isEmpty(tableAlias)) {
+            sql.append(tableAlias).append(".");
+        }
         sql.append(columnName).append(",");
         sql.append("'");
         sql.append(pattern);

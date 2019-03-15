@@ -77,7 +77,9 @@ public class ColumnGroup {
      * @param obj
      */
     public void add(Object obj) {
-        if (obj == null) return;
+        if (obj == null) {
+            return;
+        }
         vector.addElement(obj);
     }
 
@@ -91,7 +93,9 @@ public class ColumnGroup {
     public Vector<ColumnGroup> getColumnGroups(TableColumn column, Vector<ColumnGroup> group) {
         // 通过递归判断列到底属于那个ColumnGroup
         group.addElement(this);
-        if (vector.contains(column)) return group;
+        if (vector.contains(column)) {
+            return group;
+        }
         Enumeration<Object> enumeration = vector.elements();
         while (enumeration.hasMoreElements()) {
             Object obj = enumeration.nextElement();

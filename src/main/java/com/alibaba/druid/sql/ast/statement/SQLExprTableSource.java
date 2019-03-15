@@ -140,12 +140,18 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLExprTableSource that = (SQLExprTableSource) o;
 
-        if (expr != null ? !expr.equals(that.expr) : that.expr != null) return false;
+        if (expr != null ? !expr.equals(that.expr) : that.expr != null) {
+            return false;
+        }
         return partitions != null ? partitions.equals(that.partitions) : that.partitions == null;
     }
 
