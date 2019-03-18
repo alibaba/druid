@@ -50,7 +50,7 @@ class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean
         }
     }
 
-    @Autowired
+    @Autowired(required = false)
     public void autoAddFilters(List<Filter> filtes){
         this.filters.addAll(filtes);
     }
