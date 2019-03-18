@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.spring.boot.demo.DemoApplication;
 
@@ -37,6 +36,7 @@ public class DruidFilterTestCase {
     @Test
     public void test() {
         List<Filter> filters = dataSource.getProxyFilters();
+        //配置文件中3个，自定义1个，共4个
         assertThat(filters.size()).isEqualTo(4);
     }
 
@@ -58,7 +58,11 @@ public class DruidFilterTestCase {
 
             @Override
             public void init(DataSourceProxy dataSourceProxy){
-                logger.info("db configuration: url="+dataSourceProxy.getConnectProperties().getProperty(DruidDataSourceFactory.PROP_URL));
+                if (!(dataSourceProxy instanceof DruidDataSource)) {
+                    logger.error("ConfigLoader only support DruidDataSource");
+                }
+                DruidDataSource dataSource = (DruidDataSource) dataSourceProxy;
+                logger.info("db configuration: url="+ dataSource.getUrl());
             }
         }
     }
