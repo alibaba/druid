@@ -1679,8 +1679,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         if (requireDiscard) {
             if (holder.statementTrace != null) {
-                for (Statement stmt : holder.statementTrace) {
-                    JdbcUtils.close(stmt);
+                holder.lock.lock();
+                try {
+                    for (Statement stmt : holder.statementTrace) {
+                        JdbcUtils.close(stmt);
+                    }
+                } finally {
+                    holder.lock.unlock();
                 }
             }
 

@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
@@ -68,6 +69,7 @@ public final class DruidConnectionHolder {
     protected boolean                             discard                  = false;
     protected final Map<String, Object>           variables;
     protected final Map<String, Object>           globleVariables;
+    final ReentrantLock                           lock                     = new ReentrantLock();
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo)
                                                                                                           throws SQLException{
@@ -191,11 +193,21 @@ public final class DruidConnectionHolder {
     }
 
     public void addTrace(DruidPooledStatement stmt) {
-        statementTrace.add(stmt);
+        lock.lock();
+        try {
+            statementTrace.add(stmt);
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void removeTrace(DruidPooledStatement stmt) {
-        statementTrace.remove(stmt);
+        lock.lock();
+        try {
+            statementTrace.remove(stmt);
+        } finally {
+            lock.unlock();
+        }
     }
 
     public List<ConnectionEventListener> getConnectionEventListeners() {
@@ -285,11 +297,17 @@ public final class DruidConnectionHolder {
         connectionEventListeners.clear();
         statementEventListeners.clear();
 
-        for (Object item : statementTrace.toArray()) {
-            Statement stmt = (Statement) item;
-            JdbcUtils.close(stmt);
+        lock.lock();
+        try {
+            for (Object item : statementTrace.toArray()) {
+                Statement stmt = (Statement) item;
+                JdbcUtils.close(stmt);
+            }
+            
+            statementTrace.clear();
+        } finally {
+            lock.unlock();
         }
-        statementTrace.clear();
 
         conn.clearWarnings();
     }
