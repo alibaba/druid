@@ -28,8 +28,10 @@ public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements Oracl
     }
 
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((OracleASTVisitor) visitor);
+    protected void accept0(SQLASTVisitor v) {
+        if (v instanceof OracleASTVisitor) {
+            this.accept0((OracleASTVisitor) v);
+        }
     }
 
     public abstract void accept0(OracleASTVisitor visitor);
