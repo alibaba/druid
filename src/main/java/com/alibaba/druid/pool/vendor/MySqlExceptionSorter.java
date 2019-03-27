@@ -87,9 +87,9 @@ public class MySqlExceptionSorter implements ExceptionSorter {
             final String errorText = message.toUpperCase();
 
             if ((errorCode == 0 && (errorText.contains("COMMUNICATIONS LINK FAILURE")) //
-            || errorText.contains("COULD NOT CREATE CONNECTION")) //
-                || errorText.contains("NO DATASOURCE") //
-                || errorText.contains("NO ALIVE DATASOURCE")) {
+                    || errorText.contains("COULD NOT CREATE CONNECTION")) //
+                    || errorText.contains("NO DATASOURCE") //
+                    || errorText.contains("NO ALIVE DATASOURCE")) {
                 return true;
             }
         }
