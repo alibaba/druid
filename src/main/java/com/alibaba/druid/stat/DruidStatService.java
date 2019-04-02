@@ -357,8 +357,9 @@ public final class DruidStatService implements DruidStatServiceMBean {
     public static void registerMBean() {
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
         try {
-
-            ObjectName objectName = new ObjectName(MBEAN_NAME);
+            int id = System.identityHashCode(instance.getClass());
+            ObjectName objectName = new ObjectName(MBEAN_NAME + ",id=" + id);
+            // ObjectName objectName = new ObjectName(MBEAN_NAME);
             if (!mbeanServer.isRegistered(objectName)) {
                 mbeanServer.registerMBean(instance, objectName);
             }
@@ -369,9 +370,10 @@ public final class DruidStatService implements DruidStatServiceMBean {
 
     public static void unregisterMBean() {
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-
         try {
-            mbeanServer.unregisterMBean(new ObjectName(MBEAN_NAME));
+            int id = System.identityHashCode(instance.getClass());
+            ObjectName objectName = new ObjectName(MBEAN_NAME + ",id=" + id);
+            mbeanServer.unregisterMBean(objectName);
         } catch (JMException ex) {
             LOG.error("unregister mbean error", ex);
         }
