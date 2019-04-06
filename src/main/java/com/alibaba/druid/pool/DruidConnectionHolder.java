@@ -51,6 +51,7 @@ public final class DruidConnectionHolder {
     protected final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
     protected final long                          connectTimeMillis;
     protected volatile long                       lastActiveTimeMillis;
+    protected volatile long                       lastKeepTimeMillis;
     protected volatile long                       lastValidTimeMillis;
     protected long                                useCount                 = 0;
     private long                                  keepAliveCheckCount      = 0;
@@ -345,7 +346,13 @@ public final class DruidConnectionHolder {
 
         if (lastActiveTimeMillis > 0) {
             buf.append(", LastActiveTime:\"");
-            buf.append(Utils.toString(new Date(this.lastActiveTimeMillis)));
+            buf.append(Utils.toString(new Date(lastActiveTimeMillis)));
+            buf.append("\"");
+        }
+
+        if (lastKeepTimeMillis > 0) {
+            buf.append(", LastKeepTimeMillis:\"");
+            buf.append(Utils.toString(new Date(lastKeepTimeMillis)));
             buf.append("\"");
         }
 

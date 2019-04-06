@@ -153,6 +153,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int                             numTestsPerEvictionRun                    = DEFAULT_NUM_TESTS_PER_EVICTION_RUN;
     protected volatile long                            minEvictableIdleTimeMillis                = DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
     protected volatile long                            maxEvictableIdleTimeMillis                = DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS;
+    protected volatile long                            keepAliveBetweenTimeMillis                = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS * 2;
     protected volatile long                            phyTimeoutMillis                          = DEFAULT_PHY_TIMEOUT_MILLIS;
     protected volatile long                            phyMaxUseCount                            = -1;
 
@@ -769,7 +770,19 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         
         this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
     }
-    
+
+    public long getKeepAliveBetweenTimeMillis() {
+        return keepAliveBetweenTimeMillis;
+    }
+
+    public void setKeepAliveBetweenTimeMillis(long keepAliveBetweenTimeMillis) {
+        if (keepAliveBetweenTimeMillis < 1000 * 30) {
+            LOG.error("keepAliveBetweenTimeMillis should be greater than 30000");
+        }
+
+        this.keepAliveBetweenTimeMillis = keepAliveBetweenTimeMillis;
+    }
+
     public long getMaxEvictableIdleTimeMillis() {
         return maxEvictableIdleTimeMillis;
     }
