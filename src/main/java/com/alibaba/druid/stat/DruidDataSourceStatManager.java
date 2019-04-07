@@ -144,7 +144,9 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         synchronized (instances) {
             if (instances.size() == 0) {
                 try {
-                    ObjectName objectName = new ObjectName(MBEAN_NAME);
+                    int id = System.identityHashCode(instance.getClass());
+                    ObjectName objectName = new ObjectName(MBEAN_NAME + ",id=" + id);
+                    // ObjectName objectName = new ObjectName(MBEAN_NAME);
                     if (!mbeanServer.isRegistered(objectName)) {
                         mbeanServer.registerMBean(instance, objectName);
                     }
@@ -206,7 +208,9 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
         if (instances.size() == 0) {
             try {
-                mbeanServer.unregisterMBean(new ObjectName(MBEAN_NAME));
+                int id = System.identityHashCode(instance.getClass());
+                ObjectName objName = new ObjectName(MBEAN_NAME + ",id=" + id);
+                mbeanServer.unregisterMBean(objName);
             } catch (Throwable ex) {
                 LOG.error("unregister mbean error", ex);
             }
