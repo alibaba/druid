@@ -34,8 +34,8 @@ import com.alibaba.druid.pool.DruidAbstractDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.WrapperAdapter;
 import com.alibaba.druid.pool.ha.selector.DataSourceSelector;
+import com.alibaba.druid.pool.ha.selector.DataSourceSelectorEnum;
 import com.alibaba.druid.pool.ha.selector.DataSourceSelectorFactory;
-import com.alibaba.druid.pool.ha.selector.RandomDataSourceSelector;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
