@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.support.metrics;
 
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
-
-import java.util.concurrent.Callable;
-
 public class MetricCollector {
 
     public void collect() throws Exception {

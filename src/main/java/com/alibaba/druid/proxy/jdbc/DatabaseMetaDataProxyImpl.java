@@ -15,7 +15,11 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.RowIdLifetime;
+import java.sql.SQLException;
 
 /**
  * Created by wenshao on 26/05/2017.

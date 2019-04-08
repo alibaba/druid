@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.hive.parser;
 
+import java.util.Arrays;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
@@ -23,8 +25,6 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
-
-import java.util.Arrays;
 
 public class HiveExprParser extends SQLExprParser {
     private final static String[] AGGREGATE_FUNCTIONS;

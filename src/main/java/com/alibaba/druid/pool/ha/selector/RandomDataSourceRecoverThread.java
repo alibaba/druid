@@ -15,13 +15,14 @@
  */
 package com.alibaba.druid.pool.ha.selector;
 
+import java.sql.Connection;
+
+import javax.sql.DataSource;
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
 
 /**
  * A Thread trying to test if DataSource in blacklist has been recovered.

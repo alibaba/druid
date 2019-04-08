@@ -19,9 +19,6 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.Collections;
-import java.util.List;
-
 public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuableExpr{
     public static final SQLDataType DEFAULT_DATA_TYPE = new SQLDataTypeImpl("bigint");
 

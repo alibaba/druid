@@ -18,7 +18,6 @@ package com.alibaba.druid.wall;
 import java.util.Map;
 import java.util.Properties;
 
-import com.alibaba.druid.pool.DruidDataSourceStatLoggerImpl;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;

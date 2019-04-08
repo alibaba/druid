@@ -19,12 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLObjectWithDataType;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement, SQLObjectWithDataType, SQLReplaceable {
     protected String                          dbType;
@@ -45,7 +49,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     protected SQLExpr                         storage;
     protected SQLExpr                         charsetExpr;
     protected SQLExpr                         asExpr;
-    protected boolean                         sorted        = false;
+    protected boolean                         stored        = false;
     protected boolean                         virtual       = false;
 
     protected Identity                        identity;
@@ -208,12 +212,12 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         this.virtual = virtual;
     }
 
-    public boolean isSorted() {
-        return sorted;
+    public boolean isStored() {
+        return stored;
     }
 
-    public void setSorted(boolean sorted) {
-        this.sorted = sorted;
+    public void setStored(boolean stored) {
+        this.stored = stored;
     }
 
     public SQLExpr getCharsetExpr() {
@@ -387,7 +391,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             x.setAsExpr(asExpr.clone());
         }
 
-        x.sorted = sorted;
+        x.stored = stored;
         x.virtual = virtual;
 
         if (identity != null) {

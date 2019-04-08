@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
-import com.alibaba.druid.filter.FilterChainImpl;
-import com.alibaba.druid.filter.stat.StatFilter;
-
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -28,7 +25,6 @@ import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Savepoint;
@@ -38,6 +34,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
+
+import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.stat.StatFilter;
 
 /**
  * @author wenshao [szujobs@hotmail.com]

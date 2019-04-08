@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-
 import java.util.Collections;
 import java.util.List;
 

@@ -15,12 +15,6 @@
  */
 package com.alibaba.druid.pool.ha.selector;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ha.HighAvailableDataSource;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
-import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +23,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.sql.DataSource;
+
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.ha.HighAvailableDataSource;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * A selector which uses java.util.Random to choose DataSource.

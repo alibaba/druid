@@ -384,6 +384,7 @@ public final class FnvHash {
         long DATE = fnv1a_64_lower("DATE");
         long DATETIME = fnv1a_64_lower("DATETIME");
         long TIME = fnv1a_64_lower("TIME");
+        long ROLE = fnv1a_64_lower("ROLE");
         long TIMESTAMP = fnv1a_64_lower("TIMESTAMP");
         long CLOB = fnv1a_64_lower("CLOB");
         long NCLOB = fnv1a_64_lower("NCLOB");

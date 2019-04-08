@@ -15,9 +15,9 @@
  */
 package com.alibaba.druid.wall;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-
 import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLExpr;
 
 /**
  * Created by wenshao on 14/08/2017.

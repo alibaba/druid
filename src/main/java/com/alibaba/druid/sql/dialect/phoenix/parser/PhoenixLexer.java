@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.phoenix.parser;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.Token;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by wenshao on 16/9/13.
