@@ -1585,7 +1585,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
         }
 
-        print0(ucase ? "FRO" : "fro");
+        print0(ucase ? "FOR" : "for");
         println();
         x.getStatement().accept(this);
 
