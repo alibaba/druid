@@ -34,8 +34,8 @@ import com.alibaba.druid.pool.DruidAbstractDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.WrapperAdapter;
 import com.alibaba.druid.pool.ha.selector.DataSourceSelector;
+import com.alibaba.druid.pool.ha.selector.DataSourceSelectorEnum;
 import com.alibaba.druid.pool.ha.selector.DataSourceSelectorFactory;
-import com.alibaba.druid.pool.ha.selector.RandomDataSourceSelector;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
@@ -87,10 +87,11 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     // Properties copied from DruidAbstractDataSource END
 
     private Map<String, DataSource> dataSourceMap = new ConcurrentHashMap<String, DataSource>();
-    private DataSourceSelector selector = new RandomDataSourceSelector(this);
+    private DataSourceSelector selector;
     private String dataSourceFile = DEFAULT_DATA_SOURCE_FILE;
+    private String propertyPrefix = "";
 
-    private boolean inited = false;
+    private volatile boolean inited = false;
 
     public void init() throws SQLException {
         if (inited) {
@@ -101,10 +102,10 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
                 return;
             }
             if (dataSourceMap == null || dataSourceMap.isEmpty()) {
-                dataSourceMap = new DataSourceCreator(dataSourceFile).createMap(this);
+                dataSourceMap = new DataSourceCreator(dataSourceFile, propertyPrefix).createMap(this);
             }
             if (selector == null) {
-                selector = new RandomDataSourceSelector(this);
+                setSelector(DataSourceSelectorEnum.RANDOM.getName());
             }
             if (dataSourceMap == null || dataSourceMap.isEmpty()) {
                 LOG.warn("There is NO DataSource available!!! Please check your configuration.");
@@ -147,6 +148,14 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
         this.dataSourceFile = dataSourceFile;
     }
 
+    public String getPropertyPrefix() {
+        return propertyPrefix;
+    }
+
+    public void setPropertyPrefix(String propertyPrefix) {
+        this.propertyPrefix = propertyPrefix;
+    }
+
     public void setDataSourceMap(Map<String, DataSource> dataSourceMap) {
         if (dataSourceMap != null) {
             this.dataSourceMap = dataSourceMap;
@@ -158,11 +167,9 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     }
 
     public void setSelector(String name) {
-        if (name != null && this.selector != null && this.selector.isSame(name)) {
-            return;
-        }
         DataSourceSelector selector = DataSourceSelectorFactory.getSelector(name, this);
         if (selector != null) {
+            selector.init();
             setDataSourceSelector(selector);
         }
     }
@@ -181,7 +188,7 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        throw new UnsupportedOperationException("Not supported by DruidDataSource");
+        throw new UnsupportedOperationException("Not supported by HighAvailableDataSource.");
     }
 
     @Override
@@ -221,7 +228,15 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     }
 
     public void setConnectProperties(Properties connectProperties) {
-        this.connectProperties = connectProperties;
+        if (connectProperties == null) {
+            connectProperties = new Properties();
+        }
+
+        if (this.connectProperties != null) {
+            this.connectProperties.putAll(connectProperties);
+        } else {
+            this.connectProperties = connectProperties;
+        }
     }
 
     public int getInitialSize() {
@@ -406,6 +421,32 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
 
     public void setConnectionProperties(String connectionProperties) {
         this.connectionProperties = connectionProperties;
+
+        // COPIED FROM DruidAbstractDataSource.setConnectionProperties()
+
+        if (connectionProperties == null || connectionProperties.trim().length() == 0) {
+            setConnectProperties(null);
+            return;
+        }
+
+        String[] entries = connectionProperties.split(";");
+        Properties properties = new Properties();
+        for (int i = 0; i < entries.length; i++) {
+            String entry = entries[i];
+            if (entry.length() > 0) {
+                int index = entry.indexOf('=');
+                if (index > 0) {
+                    String name = entry.substring(0, index);
+                    String value = entry.substring(index + 1);
+                    properties.setProperty(name, value);
+                } else {
+                    // no value is empty string which is how java.util.Properties works
+                    properties.setProperty(entry, "");
+                }
+            }
+        }
+
+        setConnectProperties(properties);
     }
 
     public String getFilters() {

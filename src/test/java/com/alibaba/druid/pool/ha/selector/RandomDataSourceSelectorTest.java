@@ -1,39 +1,14 @@
 package com.alibaba.druid.pool.ha.selector;
 
-import com.alibaba.druid.pool.ha.HighAvailableDataSource;
 import com.alibaba.druid.pool.ha.MockDataSource;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
-
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class RandomDataSourceSelectorTest {
-    private Map<String, DataSource> dataSourceMap;
-    private HighAvailableDataSource dataSource;
-
-    @Before
-    public void setUp() {
-        dataSourceMap = new HashMap<String, DataSource>();
-        for (int i = 0; i < 10; i++) {
-            dataSourceMap.put(Integer.toString(i), new MockDataSource(Integer.toString(i)));
-        }
-        dataSource = new HighAvailableDataSource();
-        dataSource.setDataSourceMap(dataSourceMap);
-    }
-
-    @After
-    public void tearDown() {
-        dataSourceMap = null;
-        dataSource = null;
-    }
-
+public class RandomDataSourceSelectorTest extends BaseRandomDataSourceSelectorTest {
     @Test
-    public void testRandomGet() throws Exception {
+    public void testRandomGet() {
         RandomDataSourceSelector selector = new RandomDataSourceSelector(dataSource);
         int[] count = new int[10];
 
@@ -48,8 +23,26 @@ public class RandomDataSourceSelectorTest {
     }
 
     @Test
-    public void testOneDataSourceFail() {
+    public void testCreateSelectorWithProperties() {
+        String props = "druid.ha.random.checkingIntervalSeconds=60;";
+        props += "druid.ha.random.recoveryIntervalSeconds=120;";
+        props += "druid.ha.random.validationSleepSeconds=10;";
+        props += "druid.ha.random.blacklistThreshold=5;";
+        dataSource.setConnectionProperties(props);
 
+        RandomDataSourceSelector selector = new RandomDataSourceSelector(dataSource);
+        selector.init();
+        assertEquals(60, selector.getCheckingIntervalSeconds());
+        assertEquals(60, selector.getValidateThread().getCheckingIntervalSeconds());
+
+        assertEquals(120, selector.getRecoveryIntervalSeconds());
+        assertEquals(120, selector.getRecoverThread().getSleepSeconds());
+
+        assertEquals(10, selector.getValidationSleepSeconds());
+        assertEquals(10, selector.getValidateThread().getValidationSleepSeconds());
+        assertEquals(10, selector.getRecoverThread().getValidationSleepSeconds());
+
+        assertEquals(5, selector.getBlacklistThreshold());
+        assertEquals(5, selector.getValidateThread().getBlacklistThreshold());
     }
-
 }

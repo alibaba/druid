@@ -37,13 +37,12 @@ public class NamedDataSourceSelector implements DataSourceSelector {
     }
 
     @Override
-    public boolean isSame(String name) {
-        return getName().equalsIgnoreCase(name);
+    public void init() {
     }
 
     @Override
     public String getName() {
-        return "byName";
+        return DataSourceSelectorEnum.BY_NAME.getName();
     }
 
     @Override
