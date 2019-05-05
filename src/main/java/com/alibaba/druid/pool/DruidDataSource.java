@@ -2981,7 +2981,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     try {
                         discardCount++;
 
-                        if (activeCount <= minIdle) {
+                        if (activeCount + poolingCount <= minIdle) {
                             emptySignal();
                         }
                     } finally {
