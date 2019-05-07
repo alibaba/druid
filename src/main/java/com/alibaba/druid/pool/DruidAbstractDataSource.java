@@ -2113,6 +2113,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         private Map<String, Object> vairiables;
         private Map<String, Object> globalVairiables;
 
+        long createTaskId;
+
         public PhysicalConnectionInfo(Connection connection //
                 , long connectStartNanos //
                 , long connectedNanos //
