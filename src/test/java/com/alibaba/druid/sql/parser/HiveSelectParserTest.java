@@ -16,7 +16,7 @@ import junit.framework.TestCase;
  */
 public class HiveSelectParserTest extends TestCase {
 
-	public void _limit() throws Exception {
+	public void test_limit() throws Exception {
 		String sql = "SELECT col_1, col_2 FROM table_1 LIMIT 5";
 		List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
 		for (SQLStatement stmt : stmtList) {
@@ -27,7 +27,7 @@ public class HiveSelectParserTest extends TestCase {
 		}
 	}
 
-	public void _sortby() throws Exception {
+	public void test_sortby() throws Exception {
 		String sql = "SELECT col_1, col_2 FROM table_1 SORT BY col_1 ASC, col_2 DESC";
 		List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
 		for (SQLStatement stmt : stmtList) {
@@ -38,7 +38,7 @@ public class HiveSelectParserTest extends TestCase {
 		}
 	}
 	
-	public void _distributeby() throws Exception {
+	public void test_distributeby() throws Exception {
 		String sql = "SELECT col_1, col_2 FROM table_1 DISTRIBUTE BY col_1";
 		List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
 		for (SQLStatement stmt : stmtList) {
@@ -60,7 +60,7 @@ public class HiveSelectParserTest extends TestCase {
 		}
 	}
 	
-	public void _complex() throws Exception {
+	public void test_complex() throws Exception {
 		String sql = "SELECT col_1, col_2 FROM table_1 DISTRIBUTE BY col_1 SORT BY col_1 ASC, col_2 DESC LIMIT 5";
 		List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
 		for (SQLStatement stmt : stmtList) {
