@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
@@ -143,4 +144,11 @@ public class HiveStatementParser extends SQLStatementParser {
 
         return false;
     }
+    
+	public SQLStatement parseSelect() {
+		SQLSelectParser selectParser = createSQLSelectParser();
+		SQLSelect select = selectParser.select();
+		return new SQLSelectStatement(select, JdbcConstants.HIVE);
+	}
+	
 }

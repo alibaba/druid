@@ -16,10 +16,19 @@
 package com.alibaba.druid.sql.dialect.hive.parser;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveClusterBy;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveClusterByItem;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveDistributeBy;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveDistributeByItem;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveSelectSortByItem;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveSortBy;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -75,4 +84,98 @@ public class HiveExprParser extends SQLExprParser {
         }
         return super.primaryRest(expr);
     }
+    
+	public HiveSortBy parseHiveSortBy() {
+		if (lexer.token() == Token.SORT) {
+			HiveSortBy hiveSortBy = new HiveSortBy();
+			lexer.nextToken();
+			accept(Token.BY);
+			sortBy(hiveSortBy.getItems(), hiveSortBy);
+			return hiveSortBy;
+		}
+		return null;
+	}
+
+	public void sortBy(List<HiveSelectSortByItem> items, SQLObject parent) {
+		HiveSelectSortByItem item = parseSelectSortByItem();
+		item.setParent(parent);
+		items.add(item);
+		while (lexer.token() == Token.COMMA) {
+			lexer.nextToken();
+			item = parseSelectSortByItem();
+			item.setParent(parent);
+			items.add(item);
+		}
+	}
+
+	public HiveSelectSortByItem parseSelectSortByItem() {
+		HiveSelectSortByItem item = new HiveSelectSortByItem();
+		item.setExpr(expr());
+		if (lexer.token() == Token.ASC) {
+			lexer.nextToken();
+			item.setType(SQLOrderingSpecification.ASC);
+		} else if (lexer.token() == Token.DESC) {
+			lexer.nextToken();
+			item.setType(SQLOrderingSpecification.DESC);
+		}
+		return item;
+	}
+	
+	public HiveDistributeBy parseHiveDistributeBy() {
+		if (lexer.token() == Token.DISTRIBUTE) {
+			HiveDistributeBy hiveDistributeBy = new HiveDistributeBy();
+			lexer.nextToken();
+			accept(Token.BY);
+			distributeBy(hiveDistributeBy.getItems(), hiveDistributeBy);
+			return hiveDistributeBy;
+		}
+		return null;
+	}
+	
+	public void distributeBy(List<HiveDistributeByItem> items, SQLObject parent) {
+		HiveDistributeByItem item = parseHiveDistributeByItem();
+		item.setParent(parent);
+		items.add(item);
+		while (lexer.token() == Token.COMMA) {
+			lexer.nextToken();
+			item = parseHiveDistributeByItem();
+			item.setParent(parent);
+			items.add(item);
+		}
+	}
+	
+	public HiveDistributeByItem parseHiveDistributeByItem() {
+		HiveDistributeByItem item = new HiveDistributeByItem();
+		item.setExpr(expr());
+		return item;
+	}
+	
+	public HiveClusterBy parseHiveClusterBy() {
+		if (lexer.token() == Token.CLUSTER) {
+			HiveClusterBy hiveClusterBy = new HiveClusterBy();
+			lexer.nextToken();
+			accept(Token.BY);
+			clusterBy(hiveClusterBy.getItems(), hiveClusterBy);
+			return hiveClusterBy;
+		}
+		return null;
+	}
+	
+	public void clusterBy(List<HiveClusterByItem> items, SQLObject parent) {
+		HiveClusterByItem item = parseHiveClusterByItem();
+		item.setParent(parent);
+		items.add(item);
+		while (lexer.token() == Token.COMMA) {
+			lexer.nextToken();
+			item = parseHiveClusterByItem();
+			item.setParent(parent);
+			items.add(item);
+		}
+	}
+	
+	public HiveClusterByItem parseHiveClusterByItem() {
+		HiveClusterByItem item = new HiveClusterByItem();
+		item.setExpr(expr());
+		return item;
+	}
 }

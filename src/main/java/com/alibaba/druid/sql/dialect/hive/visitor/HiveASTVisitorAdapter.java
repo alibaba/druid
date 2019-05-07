@@ -15,9 +15,15 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
+import com.alibaba.druid.sql.dialect.hive.ast.HiveClusterBy;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveClusterByItem;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveDistributeBy;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveDistributeByItem;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveSelectSortByItem;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveSortBy;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
@@ -61,4 +67,66 @@ public class HiveASTVisitorAdapter extends SQLASTVisitorAdapter implements HiveA
     public void endVisit(HiveInsert x) {
 
     }
+
+	@Override
+	public boolean visit(HiveSelectSortByItem x) {		
+		return true;
+	}
+
+	@Override
+	public void endVisit(HiveSelectSortByItem x) {		
+		
+	}
+
+	@Override
+	public boolean visit(HiveSortBy x) {		
+		return true;
+	}
+
+	@Override
+	public void endVisit(HiveSortBy x) {		
+		
+	}
+
+	@Override
+	public boolean visit(HiveDistributeBy x) {
+		return true;
+	}
+
+	@Override
+	public void endVisit(HiveDistributeBy x) {
+		
+	}
+
+	@Override
+	public boolean visit(HiveDistributeByItem x) {
+		return true;
+	}
+
+	@Override
+	public void endVisit(HiveDistributeByItem x) {
+		
+	}
+
+	@Override
+	public boolean visit(HiveClusterBy x) {
+		return true;
+	}
+
+	@Override
+	public void endVisit(HiveClusterBy x) {
+		
+	}
+
+	@Override
+	public boolean visit(HiveClusterByItem x) {
+		return true;
+	}
+
+	@Override
+	public void endVisit(HiveClusterByItem x) {
+		
+	}
+    
+    
 }

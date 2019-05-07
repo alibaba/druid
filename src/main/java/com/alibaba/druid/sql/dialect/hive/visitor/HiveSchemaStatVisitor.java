@@ -20,9 +20,15 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveClusterBy;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveClusterByItem;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveDistributeBy;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveDistributeByItem;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveSelectSortByItem;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveSortBy;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
@@ -117,5 +123,77 @@ public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTV
 
         return false;
     }
+
+	@Override
+	public boolean visit(HiveSelectSortByItem x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endVisit(HiveSelectSortByItem x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(HiveSortBy x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endVisit(HiveSortBy x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(HiveDistributeBy x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endVisit(HiveDistributeBy x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(HiveDistributeByItem x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endVisit(HiveDistributeByItem x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(HiveClusterBy x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endVisit(HiveClusterBy x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(HiveClusterByItem x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endVisit(HiveClusterByItem x) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

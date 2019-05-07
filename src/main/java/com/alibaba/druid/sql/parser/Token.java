@@ -251,6 +251,7 @@ public enum Token {
     DISTRIBUTE("DISTRIBUTE"),
     
     // hive
+    CLUSTER("CLUSTER"),
 
     EOF, 
     ERROR,
