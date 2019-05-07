@@ -1043,6 +1043,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (createTasks[i] == taskId) {
                 createTasks[i] = 0;
                 createTaskCount--;
+
+                if (createTaskCount < 0) {
+                    createTaskCount = 0;
+                }
+
+                if (createTaskCount == 0 && createTasks.length > 8) {
+                    createTasks = new long[8];
+                }
                 return true;
             }
         }
@@ -2581,6 +2589,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     setFailContinuous(true);
                     break;
                 } catch (Throwable e) {
+                    lock.lock();
+                    try {
+                        clearCreateTask(taskId);
+                    } finally {
+                        lock.unlock();
+                    }
+
                     LOG.error("create connection unexecpted error.", e);
                     break;
                 }
@@ -2942,6 +2957,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
+        boolean needFill = false;
         int evictCount = 0;
         int keepAliveCount = 0;
         try {
@@ -3000,6 +3016,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 poolingCount -= removeCount;
             }
             keepAliveCheckCount += keepAliveCount;
+
+            if (keepAlive && poolingCount + activeCount < minIdle) {
+                needFill = true;
+            }
         } finally {
             lock.unlock();
         }
@@ -3062,6 +3082,18 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
             this.getDataSourceStat().addKeepAliveCheckCount(keepAliveCount);
             Arrays.fill(keepAliveConnections, null);
+        }
+
+        if (needFill) {
+            lock.lock();
+            try {
+                int fillCount = minIdle - (activeCount + poolingCount + createTaskCount);
+                for (int i = 0; i < fillCount; ++i) {
+                    emptySignal();
+                }
+            } finally {
+                lock.unlock();
+            }
         }
     }
 
