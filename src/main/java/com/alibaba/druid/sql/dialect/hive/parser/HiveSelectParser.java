@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.hive.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
@@ -24,6 +25,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveClusterBy;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveDistributeBy;
@@ -197,4 +199,18 @@ public class HiveSelectParser extends SQLSelectParser {
 			}
 		}
 	}
+	
+    public SQLUnionQuery unionRest(SQLUnionQuery union) {
+        if (lexer.token() == Token.ORDER) {
+            SQLOrderBy orderBy = this.exprParser.parseOrderBy();
+            union.setOrderBy(orderBy);
+            return unionRest(union);
+        }
+        if (lexer.token() == Token.LIMIT) {
+        	SQLLimit limit = this.exprParser.parseLimit();
+        	union.setLimit(limit);
+            return unionRest(union);
+        }
+        return union;
+    }
 }

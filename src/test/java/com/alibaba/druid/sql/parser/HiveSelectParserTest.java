@@ -65,7 +65,6 @@ public class HiveSelectParserTest extends TestCase {
 		List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
 		for (SQLStatement stmt : stmtList) {
 			String result = stmt.toString();
-			System.out.println(result);
 			if (result == null || result.toUpperCase().indexOf("DISTRIBUTE BY") < 0) {
 				throw new Exception("'DISTRIBUTE BY' not found in the result");
 			}
@@ -78,4 +77,35 @@ public class HiveSelectParserTest extends TestCase {
 		}
 	}
 
+	public void test_union_order_limit_1() throws Exception {
+		String sql = "SELECT col_1 col FROM table_1 "
+				+ "union "
+				+ "SELECT col_2 col FROM table_2 "
+				+ "union "
+				+ "SELECT col_3 col FROM table_3 "
+				+ "ORDER BY col ASC LIMIT 5";
+		List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
+		for (SQLStatement stmt : stmtList) {
+			String result = stmt.toString();
+			if (result == null || result.toUpperCase().indexOf("LIMIT") < 0) {
+				throw new Exception("'LIMIT' not found in the result");
+			}
+		}
+	}
+	
+	public void test_union_order_limit_2() throws Exception {
+		String sql = "select tmp.col col from (SELECT col_1 col FROM table_1 ORDER BY col LIMIT 5) tmp "
+				+ "union "
+				+ "SELECT col_2 col FROM table_2 "
+				+ "union "
+				+ "SELECT col_3 col FROM table_3 "
+				+ "ORDER BY col ASC LIMIT 5";
+		List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
+		for (SQLStatement stmt : stmtList) {
+			String result = stmt.toString();
+			if (result == null || result.toUpperCase().indexOf("LIMIT") < 0) {
+				throw new Exception("'LIMIT' not found in the result");
+			}
+		}
+	}
 }
