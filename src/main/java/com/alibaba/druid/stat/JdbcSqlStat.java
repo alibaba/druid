@@ -389,6 +389,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlSt
         val.setSql(sql);
         val.setSqlHash(getSqlHash());
         val.setId(id);
+        val.setName(name);
+        val.setFile(file);
         val.setExecuteLastStartTime(executeLastStartTime);
         if (reset) {
             executeLastStartTime = 0;
