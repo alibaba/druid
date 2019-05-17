@@ -257,4 +257,8 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
     protected HiveCreateTableStatement newCreateStatement() {
         return new HiveCreateTableStatement();
     }
+    
+    public HiveSelectParser createSQLSelectParser() {
+        return new HiveSelectParser(this.exprParser, selectListCache);
+    }
 }
