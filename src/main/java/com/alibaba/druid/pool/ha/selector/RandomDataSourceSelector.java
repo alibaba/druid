@@ -86,21 +86,10 @@ public class RandomDataSourceSelector implements DataSourceSelector {
             return null;
         }
 
-        Collection<DataSource> targetDataSourceSet;
-        if (blacklist == null || blacklist.isEmpty() || blacklist.size() >= dataSourceMap.size()) {
-            targetDataSourceSet = dataSourceMap.values();
-        } else {
-            targetDataSourceSet = new HashSet<DataSource>(dataSourceMap.values());
-            for (DataSource b : blacklist) {
-                targetDataSourceSet.remove(b);
-            }
-        }
-
-        DataSource[] dataSources = targetDataSourceSet.toArray(new DataSource[] {});
-        if (dataSources != null && dataSources.length > 0) {
-            return dataSources[random.nextInt(targetDataSourceSet.size())];
-        }
-        return null;
+        Collection<DataSource> targetDataSourceSet = removeBlackList(dataSourceMap);
+        removeBusyDataSource(targetDataSourceSet);
+        DataSource dataSource = getRandomDataSource(targetDataSourceSet);
+        return dataSource;
     }
 
     @Override
@@ -180,6 +169,41 @@ public class RandomDataSourceSelector implements DataSourceSelector {
             recoverThread.setValidationSleepSeconds(validationSleepSeconds);
         }
         new Thread(recoverThread, "RandomDataSourceSelector-recover-thread").start();
+    }
+
+    private Collection<DataSource> removeBlackList(Map<String, DataSource> dataSourceMap) {
+        Collection<DataSource> dataSourceSet;
+        if (blacklist == null || blacklist.isEmpty() || blacklist.size() >= dataSourceMap.size()) {
+            dataSourceSet = dataSourceMap.values();
+        } else {
+            dataSourceSet = new HashSet<DataSource>(dataSourceMap.values());
+            for (DataSource b : blacklist) {
+                dataSourceSet.remove(b);
+            }
+        }
+        return dataSourceSet;
+    }
+
+    private void removeBusyDataSource(Collection<DataSource> dataSourceSet) {
+        Collection<DataSource> busyDataSourceSet = new HashSet<DataSource>();
+        for (DataSource ds : dataSourceSet) {
+            if (ds instanceof DruidDataSource && ((DruidDataSource) ds).getPoolingCount() <= 0) {
+                busyDataSourceSet.add(ds);
+            }
+        }
+        if (!busyDataSourceSet.isEmpty() && busyDataSourceSet.size() < dataSourceSet.size()) {
+            for (DataSource ds : busyDataSourceSet) {
+                dataSourceSet.remove(ds);
+            }
+        }
+    }
+
+    private DataSource getRandomDataSource(Collection<DataSource> dataSourceSet) {
+        DataSource[] dataSources = dataSourceSet.toArray(new DataSource[] {});
+        if (dataSources != null && dataSources.length > 0) {
+            return dataSources[random.nextInt(dataSourceSet.size())];
+        }
+        return null;
     }
 
     public HighAvailableDataSource getHighAvailableDataSource() {
