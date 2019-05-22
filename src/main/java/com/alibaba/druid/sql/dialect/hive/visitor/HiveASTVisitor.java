@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveSelectSortByItem;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveShowTablesStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveSortBy;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -60,4 +62,13 @@ public interface HiveASTVisitor extends SQLASTVisitor {
     
     boolean visit(HiveClusterByItem x);
     void endVisit(HiveClusterByItem x);
+    
+    // show databases
+    boolean visit(HiveShowDatabasesStatement x);
+    void endVisit(HiveShowDatabasesStatement x);
+    
+    // show tables
+    boolean visit(HiveShowTablesStatement x);
+    void endVisit(HiveShowTablesStatement x);
+    
 }

@@ -51,6 +51,8 @@ public class HiveLexer extends Lexer {
         
         map.put("DISTRIBUTE", Token.DISTRIBUTE);
         map.put("CLUSTER", Token.CLUSTER);
+        
+        map.put("SHOW", Token.SHOW);
 
         DEFAULT_HIVE_KEYWORDS = new Keywords(map);
     }

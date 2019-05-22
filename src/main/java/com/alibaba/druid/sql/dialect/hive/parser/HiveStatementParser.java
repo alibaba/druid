@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.hive.parser;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
@@ -27,7 +28,10 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveShowTablesStatement;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -151,4 +155,42 @@ public class HiveStatementParser extends SQLStatementParser {
 		return new SQLSelectStatement(select, JdbcConstants.HIVE);
 	}
 	
+	public SQLStatement parseShow() {
+		accept(Token.SHOW);
+		if (lexer.identifierEquals("DATABASES") || lexer.identifierEquals("SCHEMAS")) {
+			lexer.nextToken();
+			HiveShowDatabasesStatement stmt = parseShowDatabases();
+			return stmt;
+		} else if (lexer.identifierEquals("TABLES")) {
+			lexer.nextToken();
+			HiveShowTablesStatement stmt = parseShowTables();
+			return stmt;
+		}
+		throw new ParserException("TODO " + lexer.info());
+	}
+    
+	private HiveShowDatabasesStatement parseShowDatabases() {
+		HiveShowDatabasesStatement stmt = new HiveShowDatabasesStatement();
+
+		if (lexer.token() == Token.LIKE) {
+			lexer.nextToken();
+			SQLExpr like = exprParser.expr();
+			stmt.setLike(like);
+		}
+		return stmt;
+	}
+	
+	private HiveShowTablesStatement parseShowTables() {
+		HiveShowTablesStatement stmt = new HiveShowTablesStatement();
+		if (lexer.token() == Token.IN) {
+			lexer.nextToken();
+			SQLExpr database = exprParser.expr();
+			stmt.setDatabase(database);
+		}
+		if(lexer.token() != Token.EOF) {
+			SQLExpr like = exprParser.expr();
+			stmt.setLike(like);
+		}
+		return stmt;
+	}
 }

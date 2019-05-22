@@ -47,6 +47,8 @@ import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveSelectSortByItem;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveShowTablesStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveSortBy;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveSelectQueryBlock;
@@ -560,6 +562,43 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
 
 	@Override
 	public void endVisit(HiveClusterByItem x) {
+		
+	}
+
+	@Override
+	public boolean visit(HiveShowDatabasesStatement x) {
+		print0(ucase ? "SHOW DATABASES" : "show databases");
+		SQLExpr like = x.getLike();
+		if(like != null) {
+			print0(ucase ? " LIKE " : " like ");
+			printExpr(like);
+		}
+		return false;
+	}
+
+	@Override
+	public void endVisit(HiveShowDatabasesStatement x) {
+	
+	}
+
+	@Override
+	public boolean visit(HiveShowTablesStatement x) {
+		print0(ucase ? "SHOW TABLES" : "show tables");
+		SQLExpr database = x.getDatabase();
+		if(database != null) {
+			print0(ucase ? " IN " : " in ");
+			printExpr(database);
+		}
+		SQLExpr like = x.getLike();
+		if(like != null) {
+			print0(" ");
+			printExpr(like);
+		}
+		return false;
+	}
+
+	@Override
+	public void endVisit(HiveShowTablesStatement x) {
 		
 	}
 	

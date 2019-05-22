@@ -28,6 +28,8 @@ import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveSelectSortByItem;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveShowTablesStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveSortBy;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
@@ -192,6 +194,30 @@ public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTV
 
 	@Override
 	public void endVisit(HiveClusterByItem x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(HiveShowDatabasesStatement x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endVisit(HiveShowDatabasesStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(HiveShowTablesStatement x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endVisit(HiveShowTablesStatement x) {
 		// TODO Auto-generated method stub
 		
 	}
