@@ -124,7 +124,7 @@ public class MySqlUtils {
                         class_6_connection = Class.forName("com.mysql.cj.jdbc.JdbcConnection");
                         method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
                         method_6_getBooleanReadableProperty = Class.forName("com.mysql.cj.conf.PropertySet").getMethod("getBooleanProperty", String.class);
-                        method_6_getValue = Class.forName("com.mysql.cj.conf.ReadableProperty").getMethod("getValue");
+                        method_6_getValue = Class.forName("com.mysql.cj.conf.RuntimeProperty").getMethod("getValue");
                     }
                     else { 
                         method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
