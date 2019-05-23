@@ -4412,7 +4412,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlChecksumTableStatement x) {
         print0(ucase ? "CHECKSUM TABLE " : "checksum table ");
-        printAndAccept(x.getTables(), "，");
+        printAndAccept(x.getTables(), ", ");
         return false;
     }
 } //
