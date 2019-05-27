@@ -42,7 +42,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -176,6 +175,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private static List<Filter>              autoFilters               = null;
     private boolean                          loadSpifilterSkip         = false;
+    private volatile DataSourceDisableException disableException       = null;
 
     protected static final AtomicLongFieldUpdater<DruidDataSource> recycleErrorCountUpdater
             = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "recycleErrorCount");
@@ -1507,6 +1507,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         if (!enable) {
             connectErrorCountUpdater.incrementAndGet(this);
+
+            if (disableException != null) {
+                throw disableException;
+            }
+
             throw new DataSourceDisableException();
         }
 
@@ -2002,6 +2007,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.closed = true;
             this.closeTimeMillis = System.currentTimeMillis();
 
+            disableException = new DataSourceDisableException();
+
             for (Filter filter : filters) {
                 filter.destroy();
             }
@@ -2092,6 +2099,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 if (!enable) {
                     connectErrorCountUpdater.incrementAndGet(this);
+                    if (disableException != null) {
+                        throw disableException;
+                    }
+
                     throw new DataSourceDisableException();
                 }
             }
@@ -2139,6 +2150,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     if (!enable) {
                         connectErrorCountUpdater.incrementAndGet(this);
+
+                        if (disableException != null) {
+                            throw disableException;
+                        }
+
                         throw new DataSourceDisableException();
                     }
                 } catch (InterruptedException ie) {
@@ -2428,18 +2444,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         private int errorCount   = 0;
         private boolean initTask = false;
-        private long taskId;
+        private final long taskId;
 
         public CreateConnectionTask() {
-            init();
-        }
-
-        private void init() {
             taskId = createTaskIdSeedUpdater.getAndIncrement(DruidDataSource.this);
         }
 
         public CreateConnectionTask(boolean initTask) {
-            init();
+            taskId = createTaskIdSeedUpdater.getAndIncrement(DruidDataSource.this);
             this.initTask = initTask;
         }
 
@@ -2527,7 +2539,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             return;
                         }
 
-                        this.init();
                         createSchedulerFuture = createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
                         return;
                     }
@@ -2568,7 +2579,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             return;
                         }
 
-                        this.init();
                         createSchedulerFuture = createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
                         return;
                     }
