@@ -479,7 +479,7 @@ public class Lexer {
                     && ((c1 = text.charAt(pos + 1)) == 'u' || c1 == 'U')
                     && ((c2 = text.charAt(pos + 2)) == 'l' || c2 == 'L')
                     && ((c3 = text.charAt(pos + 3)) == 'l' || c3 == 'L')
-                    && (isWhitespace(c4 = text.charAt(pos + 4)) || c4 == ',' || c4 == ')')) {
+                    && (isWhitespace(c4 = text.charAt(pos + 4), isEnabled(SQLParserFeature.IngoreChinese)) || c4 == ',' || c4 == ')')) {
                 pos += 4;
                 ch = c4;
                 token = Token.NULL;
@@ -503,7 +503,7 @@ public class Lexer {
             return;
         }
 
-        if (isFirstIdentifierChar(ch)) {
+        if (isFirstIdentifierChar(ch, isEnabled(SQLParserFeature.IngoreChinese))) {
             scanIdentifier();
             return;
         }
@@ -546,7 +546,7 @@ public class Lexer {
 
             if ((c1 == 'o' || c1 == 'O')
                     && (c2 == 't' || c2 == 'T')
-                    && isWhitespace(c3)) {
+                    && isWhitespace(c3, isEnabled(SQLParserFeature.IngoreChinese))) {
                 pos += 3;
                 ch = c3;
                 token = Token.NOT;
@@ -576,7 +576,7 @@ public class Lexer {
             scanChar();
         }
 
-        if (isFirstIdentifierChar(ch)) {
+        if (isFirstIdentifierChar(ch, isEnabled(SQLParserFeature.IngoreChinese))) {
             scanIdentifier();
             return;
         }
@@ -601,7 +601,7 @@ public class Lexer {
         int startLine = line;
         
         for (;;) {
-            if (isWhitespace(ch)) {
+            if (isWhitespace(ch, isEnabled(SQLParserFeature.IngoreChinese))) {
                 if (ch == '\n') {
                     line++;
                     
@@ -617,16 +617,18 @@ public class Lexer {
                 return;
             }
 
-            if (isFirstIdentifierChar(ch)) {
-                if (ch == '（') {
-                    scanChar();
-                    token = LPAREN;
-                    return;
-                } else if (ch == '）') {
-                    scanChar();
-                    token = RPAREN;
-                    return;
-                }
+            if (isFirstIdentifierChar(ch, isEnabled(SQLParserFeature.IngoreChinese))) {
+				if (!isEnabled(SQLParserFeature.IngoreChinese)) {
+					if (ch == '（') {
+						scanChar();
+						token = LPAREN;
+						return;
+					} else if (ch == '）') {
+						scanChar();
+						token = RPAREN;
+						return;
+					}
+				}               
 
                 if (ch == 'N' || ch == 'n') {
                     if (charAt(pos + 1) == '\'') {
@@ -668,13 +670,21 @@ public class Lexer {
                     scanChar();
                     token = COMMA;
                     return;
-                case '(':
                 case '（':
+					if (isEnabled(SQLParserFeature.IngoreChinese)) {
+						scanChar();
+						return;
+					}
+                case '(':
                     scanChar();
                     token = LPAREN;
                     return;
-                case ')':
                 case '）':
+                	if (isEnabled(SQLParserFeature.IngoreChinese)) {
+						scanChar();
+						return;
+					}
+                case ')':
                     scanChar();
                     token = RPAREN;
                     return;
@@ -715,7 +725,7 @@ public class Lexer {
                     return;
                 case '.':
                     scanChar();
-                    if (isDigit(ch) && !isFirstIdentifierChar(charAt(pos - 2))) {
+                    if (isDigit(ch) && !isFirstIdentifierChar(charAt(pos - 2), isEnabled(SQLParserFeature.IngoreChinese))) {
                         unscan();
                         scanNumber();
                         return;
@@ -990,7 +1000,7 @@ public class Lexer {
                 break;
             case '!':
                 scanChar();
-                while (isWhitespace(ch)) {
+                while (isWhitespace(ch, isEnabled(SQLParserFeature.IngoreChinese))) {
                     scanChar();
                 }
                 if (ch == '=') {
@@ -1555,7 +1565,7 @@ public class Lexer {
         for (;;) {
             ch = charAt(++pos);
 
-            if (!isIdentifierChar(ch)) {
+            if (!isIdentifierChar(ch, isEnabled(SQLParserFeature.IngoreChinese))) {
                 break;
             }
 
@@ -1587,7 +1597,7 @@ public class Lexer {
         for (;;) {
             ch = charAt(++pos);
 
-            if (!isIdentifierChar(ch)) {
+            if (!isIdentifierChar(ch, isEnabled(SQLParserFeature.IngoreChinese))) {
                 break;
             }
 
@@ -1743,7 +1753,7 @@ public class Lexer {
             return;
         }
 
-        final boolean firstFlag = isFirstIdentifierChar(first);
+        final boolean firstFlag = isFirstIdentifierChar(first, isEnabled(SQLParserFeature.IngoreChinese));
         if (!firstFlag) {
             throw new ParserException("illegal identifier. " + info());
         }
@@ -1763,7 +1773,7 @@ public class Lexer {
         for (;;) {
             ch = charAt(++pos);
 
-            if (!isIdentifierChar(ch)) {
+            if (!isIdentifierChar(ch, isEnabled(SQLParserFeature.IngoreChinese))) {
                 break;
             }
 

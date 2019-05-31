@@ -27,6 +27,8 @@ public enum SQLParserFeature {
     StrictForWall,
 
     PipesAsConcat, // for mysql
+    
+    IngoreChinese, // for postgresql
     ;
 
     private SQLParserFeature(){

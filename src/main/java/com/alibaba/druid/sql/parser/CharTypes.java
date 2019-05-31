@@ -55,11 +55,23 @@ public class CharTypes {
     }
 
     public static boolean isFirstIdentifierChar(char c) {
-        if (c <= firstIdentifierFlags.length) {
-            return firstIdentifierFlags[c];
-        }
-        return c != '　' && c != '，';
+//        if (c <= firstIdentifierFlags.length) {
+//            return firstIdentifierFlags[c];
+//        }
+//        return c != '　' && c != '，';
+    	return isFirstIdentifierChar(c, false);
     }
+    
+	public static boolean isFirstIdentifierChar(char c, boolean ignoreChinese) {
+		if (c <= firstIdentifierFlags.length) {
+			return firstIdentifierFlags[c];
+		}
+		if (!ignoreChinese) {
+			return c != '　' && c != '，';
+		} else {
+			return true;
+		}
+	}
 
     private final static String[] stringCache = new String[256];
     private final static boolean[] identifierFlags = new boolean[256];
@@ -87,11 +99,23 @@ public class CharTypes {
     }
 
     public static boolean isIdentifierChar(char c) {
-        if (c <= identifierFlags.length) {
-            return identifierFlags[c];
-        }
-        return c != '　' && c != '，' && c != '）';
+//        if (c <= identifierFlags.length) {
+//            return identifierFlags[c];
+//        }
+//        return c != '　' && c != '，' && c != '）';
+    	return isIdentifierChar(c, false);
     }
+    
+	public static boolean isIdentifierChar(char c, boolean ignoreChinese) {
+		if (c <= identifierFlags.length) {
+			return identifierFlags[c];
+		}
+		if (!ignoreChinese) {
+			return c != '　' && c != '，' && c != '）';
+		} else {
+			return true;
+		}
+	}
 
     public static String valueOf(char ch) {
         if (ch < stringCache.length) {
@@ -118,8 +142,20 @@ public class CharTypes {
      * @return false if {@link LayoutCharacters#EOI}
      */
     public static boolean isWhitespace(char c) {
-        return (c <= whitespaceFlags.length && whitespaceFlags[c]) //
-               || c == '　'; // Chinese space
+//        return (c <= whitespaceFlags.length && whitespaceFlags[c]) //
+//               || c == '　'; // Chinese space
+    	return isWhitespace(c, false);
     }
+    
+	public static boolean isWhitespace(char c, boolean ignoreChinese) {
+		if (c <= whitespaceFlags.length) {
+			return whitespaceFlags[c];
+		}
+		if (!ignoreChinese) {
+			return c == '　';
+		} else {
+			return false;
+		}
+	}
 
 }

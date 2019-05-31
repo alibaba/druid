@@ -80,6 +80,8 @@ public class PGLexer extends Lexer {
         super(input);
         super.keywods = DEFAULT_PG_KEYWORDS;
         super.dbType = JdbcConstants.POSTGRESQL;
+        // postgresql not support chinese indentifier 
+        config(SQLParserFeature.IngoreChinese, true);
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
@@ -215,7 +217,7 @@ public class PGLexer extends Lexer {
         for (;;) {
             ch = charAt(++pos);
 
-            if (!isIdentifierChar(ch)) {
+            if (!isIdentifierChar(ch, isEnabled(SQLParserFeature.IngoreChinese))) {
                 break;
             }
 
@@ -228,4 +230,6 @@ public class PGLexer extends Lexer {
         stringVal = addSymbol();
         token = Token.VARIANT;
     }
+    
+
 }
