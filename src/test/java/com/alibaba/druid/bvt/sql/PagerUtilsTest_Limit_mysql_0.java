@@ -41,4 +41,12 @@ public class PagerUtilsTest_Limit_mysql_0 extends TestCase {
                             "\nORDER BY id, name" + //
                             "\nLIMIT 20, 10", result);
     }
+
+    public void test_mysql_4() throws Exception {
+        String sql = "select id, name, salary from t limit 100 offset 5";
+        String result = PagerUtils.limit(sql, JdbcConstants.MYSQL, 0, 20);
+        Assert.assertEquals("SELECT id, name, salary" + //
+            "\nFROM t" + //
+            "\nLIMIT 0, 20", result);
+    }
 }
