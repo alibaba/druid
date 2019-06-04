@@ -187,9 +187,13 @@ public class MySqlExprParser extends SQLExprParser {
                 }
                 return this.methodRest(new SQLIdentifierExpr("VALUES"), true);
             case BINARY:
+                Token prevToken = lexer.token();
                 lexer.nextToken();
                 if (lexer.token() == Token.COMMA || lexer.token() == Token.SEMI || lexer.token() == Token.EOF) {
                     return new SQLIdentifierExpr("BINARY");
+                } else if (prevToken == Token.BINARY) {
+                    SQLUnaryExpr binaryExpr = new SQLUnaryExpr(SQLUnaryOperator.BINARY, relational());
+                    return primaryRest(binaryExpr);
                 } else {
                     SQLUnaryExpr binaryExpr = new SQLUnaryExpr(SQLUnaryOperator.BINARY, expr());
                     return primaryRest(binaryExpr);
