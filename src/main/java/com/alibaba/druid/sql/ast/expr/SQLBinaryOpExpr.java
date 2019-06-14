@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.Utils;
 
 public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
@@ -568,7 +569,7 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         }
 
         // ID = ? OR ID = ? => ID = ?
-        if (x.operator == SQLBinaryOperator.BooleanOr) {
+        if (x.operator == SQLBinaryOperator.BooleanOr && !v.isEnabled(VisitorFeature.OutputParameterizedQuesUnMergeOr)) {
             if ((x.left instanceof SQLBinaryOpExpr) && (x.right instanceof SQLBinaryOpExpr)) {
                 SQLBinaryOpExpr leftBinary = (SQLBinaryOpExpr) x.left;
                 SQLBinaryOpExpr rightBinary = (SQLBinaryOpExpr) x.right;
