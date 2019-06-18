@@ -61,7 +61,7 @@ spring.datasource.druid.filters= #配置多个英文逗号分隔
 - 监控配置
 ```
 # WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
-spring.datasource.druid.web-stat-filter.enabled= #是否启用StatFilter默认值false
+spring.datasource.druid.web-stat-filter.enabled= #是否启用StatFilter默认值true
 spring.datasource.druid.web-stat-filter.url-pattern=
 spring.datasource.druid.web-stat-filter.exclusions=
 spring.datasource.druid.web-stat-filter.session-stat-enable=
@@ -71,7 +71,7 @@ spring.datasource.druid.web-stat-filter.principal-cookie-name=
 spring.datasource.druid.web-stat-filter.profile-enable=
 
 # StatViewServlet配置，说明请参考Druid Wiki，配置_StatViewServlet配置
-spring.datasource.druid.stat-view-servlet.enabled= #是否启用StatViewServlet（监控页面）默认值为false（考虑到安全问题默认并未启动，如需启用建议设置密码或白名单以保障安全）
+spring.datasource.druid.stat-view-servlet.enabled= #是否启用StatViewServlet（监控页面）默认值为true（考虑到安全问题默认并未启动，如需启用建议设置密码或白名单以保障安全）
 spring.datasource.druid.stat-view-servlet.url-pattern=
 spring.datasource.druid.stat-view-servlet.reset-enable=
 spring.datasource.druid.stat-view-servlet.login-username=
@@ -132,7 +132,7 @@ public DataSource dataSourceTwo(){
 你可以通过 ```spring.datasource.druid.filters=stat,wall,log4j ...``` 的方式来启用相应的内置Filter，不过这些Filter都是默认配置。如果默认配置不能满足你的需求，你可以放弃这种方式，通过配置文件来配置Filter，下面是例子。
 ```xml
 # 配置StatFilter 
-spring.datasource.druid.filter.stat.enabled=true
+spring.datasource.druid.filter.stat.enabled=true #状态过滤器默认是打开的
 spring.datasource.druid.filter.stat.db-type=h2
 spring.datasource.druid.filter.stat.log-slow-sql=true
 spring.datasource.druid.filter.stat.slow-sql-millis=2000
