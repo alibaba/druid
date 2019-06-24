@@ -1228,7 +1228,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         if (removeAbandoned) {
-            LOG.warn("removeAbandoned is true, not use in productiion.");
+            LOG.warn("removeAbandoned is true, not use in production.");
         }
     }
 
