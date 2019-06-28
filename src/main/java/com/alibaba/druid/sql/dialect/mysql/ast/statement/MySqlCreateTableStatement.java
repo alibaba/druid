@@ -40,7 +40,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlShowColumnOutpuVisitor;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlShowColumnOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -179,7 +179,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     }
 
     public void showCoumns(Appendable out) throws IOException {
-        this.accept(new MySqlShowColumnOutpuVisitor(out));
+        this.accept(new MySqlShowColumnOutputVisitor(out));
     }
 
     public boolean apply(MySqlRenameTableStatement x) {

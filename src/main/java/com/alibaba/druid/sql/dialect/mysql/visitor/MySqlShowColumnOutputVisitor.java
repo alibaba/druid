@@ -28,8 +28,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 /**
  * Created by wenshao on 27/07/2017.
  */
-public class MySqlShowColumnOutpuVisitor extends MySqlOutputVisitor {
-    public MySqlShowColumnOutpuVisitor(Appendable appender) {
+public class MySqlShowColumnOutputVisitor extends MySqlOutputVisitor {
+    public MySqlShowColumnOutputVisitor(Appendable appender) {
         super(appender);
     }
 
