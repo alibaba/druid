@@ -1716,6 +1716,18 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
+    public <T> T resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex,
+                                     Class<T> type) throws SQLException {
+        return chain.resultSet_getObject(result, columnIndex, type);
+    }
+
+    @Override
+    public <T> T resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel,
+                                     Class<T> type) throws SQLException {
+        return chain.resultSet_getObject(result, columnLabel, type);
+    }
+
+    @Override
     public Ref resultSet_getRef(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         return chain.resultSet_getRef(result, columnIndex);
     }

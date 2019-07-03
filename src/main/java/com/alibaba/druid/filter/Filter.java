@@ -292,6 +292,10 @@ public interface Filter extends Wrapper {
 
     Object resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, String columnLabel) throws SQLException;
 
+    <T> T resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Class<T> type) throws SQLException;
+
+    <T> T resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, String columnLabel, Class<T> type) throws SQLException;
+
     int resultSet_findColumn(FilterChain chain, ResultSetProxy resultSet, String columnLabel) throws SQLException;
 
     java.io.Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex)

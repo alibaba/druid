@@ -1549,11 +1549,17 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     }
 
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        FilterChainImpl chain = createChain();
+        T t = chain.resultSet_getObject(this, columnIndex, type);
+        recycleFilterChain(chain);
+        return t;
     }
 
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        FilterChainImpl chain = createChain();
+        T t = chain.resultSet_getObject(this, columnLabel, type);
+        recycleFilterChain(chain);
+        return t;
     }
 
     public int getCloseCount() {
