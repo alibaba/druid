@@ -1285,6 +1285,39 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         {
             return false;
         }
+        if(x.getParent() != null && x.getParent() instanceof SQLMethodInvokeExpr) {
+        	SQLMethodInvokeExpr sqlMethodInvokeExpr =(SQLMethodInvokeExpr)x.getParent();
+        	String methodName = sqlMethodInvokeExpr.getMethodName();
+        	List<SQLExpr> parameters = sqlMethodInvokeExpr.getParameters();
+        	if(methodName !=null ) {
+        		methodName = methodName.toUpperCase();
+        		switch (methodName){
+        		  case "TIMESTAMPADD":
+        		  case "TIMESTAMPDIFF":
+        			  if(parameters!=null && parameters.size() == 3) {
+        				  SQLExpr sqlExpr = parameters.get(0);
+        				  if(sqlExpr != null && sqlExpr instanceof SQLIdentifierExpr) {
+        					  if(sqlExpr.equals(x)) {
+        						  return false;
+        					  }
+        				  }
+        			  }
+        			  break;
+        		  case "EXTRACT":
+        			  if(parameters!=null && parameters.size() == 1) {
+        				  SQLExpr sqlExpr = parameters.get(0);
+        				  if(sqlExpr != null && sqlExpr instanceof SQLIdentifierExpr) {
+        					  if(sqlExpr.equals(x)) {
+        						  return false;
+        					  }
+        				  }
+        			  }
+        			  break;
+        		  default:
+        			 break;
+        		}
+        	}
+        }
 
         long hash = x.nameHashCode64();
         if (isPseudoColumn(hash)) {
