@@ -1369,6 +1369,32 @@ public class FilterChainImpl implements FilterChain {
     }
 
     @Override
+    public <T> T resultSet_getObject(ResultSetProxy rs, int columnIndex, Class<T> type) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSet_getObject(this, rs, columnIndex, type);
+        }
+
+        Object obj = rs.getResultSetRaw().getObject(columnIndex, type);
+
+        if (obj instanceof ResultSet) {
+            StatementProxy statement = rs.getStatementProxy();
+            return (T) new ResultSetProxyImpl(statement
+                    , (ResultSet) obj
+                    , dataSource.createResultSetId()
+                    , statement.getLastExecuteSql()
+            );
+        }
+
+        if (obj instanceof Clob) {
+            return (T) wrap(
+                    rs.getStatementProxy(), (Clob) obj);
+        }
+
+        return (T) obj;
+    }
+
+    @Override
     public Object resultSet_getObject(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
             return nextFilter()
@@ -1389,6 +1415,32 @@ public class FilterChainImpl implements FilterChain {
 
         if (obj instanceof Clob) {
             return wrap(rs.getStatementProxy(), (Clob) obj);
+        }
+
+        return obj;
+    }
+
+    @Override
+    public <T> T resultSet_getObject(ResultSetProxy rs, String columnLabel, Class<T> type) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSet_getObject(this, rs, columnLabel, type);
+        }
+
+        T obj = rs.getResultSetRaw()
+                .getObject(columnLabel, type);
+
+        if (obj instanceof ResultSet) {
+            StatementProxy stmt = rs.getStatementProxy();
+            return (T) new ResultSetProxyImpl(stmt
+                    , (ResultSet) obj
+                    , dataSource.createResultSetId()
+                    , stmt.getLastExecuteSql()
+            );
+        }
+
+        if (obj instanceof Clob) {
+            return (T) wrap(rs.getStatementProxy(), (Clob) obj);
         }
 
         return obj;
