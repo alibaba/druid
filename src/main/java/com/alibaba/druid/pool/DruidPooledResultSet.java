@@ -1764,10 +1764,10 @@ public final class DruidPooledResultSet extends PoolableWrapper implements Resul
     }
 
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return rs.getObject(columnIndex, type);
     }
 
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return rs.getObject(columnLabel, type);
     }
 }

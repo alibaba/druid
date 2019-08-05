@@ -992,6 +992,11 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     @Override
+    public <T> T resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Class<T> type) throws SQLException {
+        return chain.resultSet_getObject(resultSet, resultSet.getPhysicalColumn(columnIndex), type);
+    }
+
+    @Override
     public Object resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
                                       java.util.Map<String, Class<?>> map) throws SQLException {
         return chain.resultSet_getObject(resultSet, resultSet.getPhysicalColumn(columnIndex), map);
