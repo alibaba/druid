@@ -3503,6 +3503,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         dataMap.put("PhysicalCloseCount", this.getDestroyCount());
         dataMap.put("PhysicalConnectErrorCount", this.getCreateErrorCount());
 
+        dataMap.put("DiscardCount", this.getDiscardCount());
+
         dataMap.put("ExecuteCount", this.getExecuteCount());
         dataMap.put("ExecuteUpdateCount", this.getExecuteUpdateCount());
         dataMap.put("ExecuteQueryCount", this.getExecuteQueryCount());
