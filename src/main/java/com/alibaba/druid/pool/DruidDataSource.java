@@ -1740,8 +1740,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             sql = sql.substring(0, 1024);
         }
 
-        DruidAbstractDataSource dataSource = holder.getDataSource();
-
         boolean requireDiscard = false;
         final ReentrantLock lock = conn.lock;
         lock.lock();
@@ -1761,8 +1759,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
 
-        if(dataSource != null) {
-            ReentrantLock dataSourceLock = dataSource.lock;
+        if(holder != null && holder.getDataSource() != null) {
+            ReentrantLock dataSourceLock = holder.getDataSource().lock;
             dataSourceLock.lock();
             try {
                 if (poolingCount < minIdle) {
