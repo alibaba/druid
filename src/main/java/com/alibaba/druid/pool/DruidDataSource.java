@@ -1691,6 +1691,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void handleConnectionException(DruidPooledConnection pooledConnection, Throwable t, String sql) throws SQLException {
         final DruidConnectionHolder holder = pooledConnection.getConnectionHolder();
+        if (holder == null) {
+            return;
+        }
 
         errorCountUpdater.incrementAndGet(this);
         lastError = t;
@@ -2998,7 +3001,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 DruidConnectionHolder connection = connections[i];
 
                 if (onFatalError || fatalErrorIncrement > 0) {
-                    if (lastFatalErrorTimeMillis < connection.lastActiveTimeMillis) {
+                    if (lastFatalErrorTimeMillis > connection.lastActiveTimeMillis) {
                         keepAliveConnections[keepAliveCount++] = connection;
                         continue;
                     } else {
