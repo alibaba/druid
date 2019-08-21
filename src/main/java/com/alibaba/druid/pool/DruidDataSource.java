@@ -1762,13 +1762,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
 
-        if(holder != null && holder.getDataSource() != null) {
+        if(onFatalError && holder != null && holder.getDataSource() != null) {
             ReentrantLock dataSourceLock = holder.getDataSource().lock;
             dataSourceLock.lock();
             try {
-                if (poolingCount < minIdle) {
-                    emptySignal();
-                }
+                emptySignal();
             }
             finally {
                 dataSourceLock.unlock();
@@ -3001,12 +2999,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 DruidConnectionHolder connection = connections[i];
 
                 if (onFatalError || fatalErrorIncrement > 0) {
-                    if (lastFatalErrorTimeMillis > connection.lastActiveTimeMillis) {
-                        keepAliveConnections[keepAliveCount++] = connection;
-                        continue;
-                    } else {
-                        break;
-                    }
+                    keepAliveConnections[keepAliveCount++] = connection;
+                    continue;
                 }
 
                 if (checkTime) {
