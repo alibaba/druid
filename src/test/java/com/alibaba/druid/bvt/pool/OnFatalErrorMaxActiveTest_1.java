@@ -30,8 +30,9 @@ public class OnFatalErrorMaxActiveTest_1 extends PoolTestCase {
         Field field = DruidAbstractDataSource.class.getDeclaredField("onFatalError");
         field.setAccessible(true);
 
-        SQLException faltalError = new SQLException();
-        {
+        SQLException faltalError = null;
+        for ( int i = 0; i < 2; i++) {
+            faltalError = new SQLException();
             Connection conn = dataSource.getConnection();
 
             Method method = DruidDataSource.class.getDeclaredMethod("handleFatalError", DruidPooledConnection.class, SQLException.class, String.class);
