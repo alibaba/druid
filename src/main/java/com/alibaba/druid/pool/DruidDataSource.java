@@ -1754,8 +1754,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             lastFatalErrorTimeMillis = lastErrorTimeMillis;
-            onFatalError = true;
             fatalErrorCount++;
+            if (fatalErrorCount - fatalErrorCountLastShrink > onFatalErrorMaxActive) {
+                onFatalError = true;
+            }
             lastFatalError = error;
             lastFatalErrorSql = sql;
         } finally {
@@ -2498,6 +2500,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 && (!(keepAlive && activeCount + poolingCount < minIdle)) // 在keepAlive场景不能放弃创建
                                 && (!initTask) // 线程池初始化时的任务不能放弃创建
                                 && !isFailContinuous() // failContinuous时不能放弃创建，否则会无法创建线程
+                                && !isOnFatalError() // onFatalError时不能放弃创建，否则会无法创建线程
                         ) {
                             clearCreateTask(taskId);
                             return;
@@ -2985,13 +2988,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         boolean needFill = false;
         int evictCount = 0;
         int keepAliveCount = 0;
+        int fatalErrorIncrement = fatalErrorCount - fatalErrorCountLastShrink;
+        fatalErrorCountLastShrink = fatalErrorCount;
+        
         try {
             if (!inited) {
                 return;
             }
-
-            int fatalErrorIncrement = fatalErrorCount - fatalErrorCountLastShrink;
-            fatalErrorCountLastShrink = fatalErrorCount;
 
             final int checkCount = poolingCount - minIdle;
             final long currentTimeMillis = System.currentTimeMillis();
@@ -3124,6 +3127,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 for (int i = 0; i < fillCount; ++i) {
                     emptySignal();
                 }
+            } finally {
+                lock.unlock();
+            }
+        } else if (onFatalError || fatalErrorIncrement > 0) {
+            lock.lock();
+            try {
+                emptySignal();
             } finally {
                 lock.unlock();
             }
