@@ -2998,13 +2998,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             for (int i = 0; i < poolingCount; ++i) {
                 DruidConnectionHolder connection = connections[i];
 
-                if (onFatalError || fatalErrorIncrement > 0) {
-                    if (lastFatalErrorTimeMillis > connection.connectTimeMillis) {
-                        keepAliveConnections[keepAliveCount++] = connection;
-                        continue;
-                    } else {
-                        break;
-                    }
+                if ((onFatalError || fatalErrorIncrement > 0) && (lastFatalErrorTimeMillis > connection.connectTimeMillis))  {
+                    keepAliveConnections[keepAliveCount++] = connection;
+                    continue;
                 }
 
                 if (checkTime) {
