@@ -2999,8 +2999,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 DruidConnectionHolder connection = connections[i];
 
                 if (onFatalError || fatalErrorIncrement > 0) {
-                    keepAliveConnections[keepAliveCount++] = connection;
-                    continue;
+                    if (lastFatalErrorTimeMillis > connection.connectTimeMillis) {
+                        keepAliveConnections[keepAliveCount++] = connection;
+                        continue;
+                    } else {
+                        break;
+                    }
                 }
 
                 if (checkTime) {
