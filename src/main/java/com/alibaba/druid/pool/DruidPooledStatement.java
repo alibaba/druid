@@ -98,8 +98,9 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
         DruidDataSource dataSource = null;
 
-        if (this.conn.holder.dataSource instanceof DruidDataSource) {
-            dataSource = (DruidDataSource) this.conn.holder.dataSource;
+        final DruidConnectionHolder holder = this.conn.holder;
+        if (holder.dataSource instanceof DruidDataSource) {
+            dataSource = (DruidDataSource) holder.dataSource;
         }
         if (dataSource == null) {
             return;
