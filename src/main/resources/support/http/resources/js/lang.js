@@ -46,8 +46,8 @@ druid.lang = function() {
 		'DefaultAutoCommit' : ['DefaultAutoCommit', '默认autocommit设置'],
 		'DefaultReadOnly' : ['DefaultReadOnly', '默认只读设置'],
 		'DefaultTransactionIsolation' : ['DefaultTransactionIsolation', '默认事务隔离'],//
-		'NotEmptyWaitCount' : ['NotEmptyWaitCount', '等待次数'],//
-		'NotEmptyWaitMillis' : ['NotEmptyWaitMillis', '等待最大时长'],//
+		'NotEmptyWaitCount' : ['NotEmptyWaitCount', '累计总次数'],//
+		'NotEmptyWaitMillis' : ['NotEmptyWaitMillis', '等待总时长'],//
 		'WaitThreadCount' : ['WaitThreadCount', '等待线程数量'],
 		'StartTransactionCount' : ['StartTransactionCount', '事务启动数'],//
 		'TransactionHistogram' : ['TransactionHistogram', '事务时间分布'],//
