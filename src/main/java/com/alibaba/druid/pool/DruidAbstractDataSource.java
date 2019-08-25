@@ -280,6 +280,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected boolean                                  initGlobalVariants                        = false;
     protected volatile boolean                         onFatalError                              = false;
     protected volatile int                             onFatalErrorMaxActive                     = 0;
+    protected volatile int                             fatalErrorCount                           = 0;
+    protected volatile int                             fatalErrorCountLastShrink                 = 0;
     protected volatile long                            lastFatalErrorTimeMillis                  = 0;
     protected volatile String                          lastFatalErrorSql                         = null;
     protected volatile Throwable                       lastFatalError                            = null;
@@ -1382,6 +1384,17 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             Exception error = null;
             try {
                 result = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
+
+                if (result && onFatalError) {
+                    lock.lock();
+                    try {
+                        if (onFatalError) {
+                            onFatalError = false;
+                        }
+                    } finally {
+                        lock.unlock();
+                    }
+                }
             } catch (SQLException ex) {
                 throw ex;
             } catch (Exception ex) {
@@ -1408,6 +1421,18 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 rs = stmt.executeQuery(query);
                 if (!rs.next()) {
                     throw new SQLException("validationQuery didn't return a row");
+                }
+
+                if (onFatalError) {
+                    lock.lock();
+                    try {
+                        if (onFatalError) {
+                            onFatalError = false;
+                        }
+                    }
+                    finally {
+                        lock.unlock();
+                    }
                 }
             } finally {
                 JdbcUtils.close(rs);
@@ -1458,6 +1483,17 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     }
                 }
 
+                if (valid && onFatalError) {
+                    lock.lock();
+                    try {
+                        if (onFatalError) {
+                            onFatalError = false;
+                        }
+                    } finally {
+                        lock.unlock();
+                    }
+                }
+
                 return valid;
             }
 
@@ -1483,6 +1519,17 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             } finally {
                 JdbcUtils.close(rset);
                 JdbcUtils.close(stmt);
+            }
+
+            if (onFatalError) {
+                lock.lock();
+                try {
+                    if (onFatalError) {
+                        onFatalError = false;
+                    }
+                } finally {
+                    lock.unlock();
+                }
             }
 
             return true;

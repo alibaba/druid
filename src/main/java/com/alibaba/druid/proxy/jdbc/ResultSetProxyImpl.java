@@ -1549,7 +1549,10 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     }
 
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        FilterChainImpl chain = createChain();
+        Object value = chain.resultSet_getObject(this, columnIndex, type);
+        recycleFilterChain(chain);
+        return (T) value;
     }
 
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
