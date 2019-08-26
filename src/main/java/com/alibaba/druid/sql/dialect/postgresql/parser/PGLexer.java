@@ -42,7 +42,7 @@ public class PGLexer extends Lexer {
         map.put("CONTINUE", Token.CONTINUE);
         map.put("CURRENT", Token.CURRENT);
         map.put("FETCH", Token.FETCH);
-        map.put("FIRST", Token.FIRST);
+        //map.put("FIRST", Token.FIRST);
 
         map.put("IDENTITY", Token.IDENTITY);
         map.put("LIMIT", Token.LIMIT);
