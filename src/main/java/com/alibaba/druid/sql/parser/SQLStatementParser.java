@@ -981,7 +981,11 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                 } else if (lexer.identifierEquals("TEMPORARY")) {
                     lexer.nextToken();
-                    accept(Token.TABLES);
+                    if(this.getDbType().equals("mysql")) {
+                        accept(Token.TABLES);
+                    }else{
+                        accept(Token.TABLE);
+                    }
                     privilege = "CREATE TEMPORARY TABLE";
                 } else if (lexer.token == Token.ON) {
                     privilege = "CREATE";
