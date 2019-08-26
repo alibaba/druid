@@ -44,7 +44,8 @@ public enum Token {
     NOT("NOT"), 
     DISTINCT("DISTINCT"),
 
-    TABLE("TABLE"), 
+    TABLE("TABLE"),
+    TABLES("TABLES"),
     TABLESPACE("TABLESPACE"), 
     VIEW("VIEW"), 
     SEQUENCE("SEQUENCE"), 

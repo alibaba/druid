@@ -242,6 +242,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     private static final String EXTENDED = "EXTENDED";
     private static final String PARTITIONS = "PARTITIONS";
     private static final String FORMAT = "FORMAT";
+    private static final String GRANT="GRANT";
 
     private int maxIntoClause = -1;
 

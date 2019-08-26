@@ -159,6 +159,7 @@ public class Keywords {
         map.put("OUT", Token.OUT);
         map.put("INOUT", Token.INOUT);
         map.put("LIMIT", Token.LIMIT);
+        map.put("TABLES", Token.TABLES);
 
         DEFAULT_KEYWORDS = new Keywords(map);
 

@@ -981,7 +981,7 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                 } else if (lexer.identifierEquals("TEMPORARY")) {
                     lexer.nextToken();
-                    accept(Token.TABLE);
+                    accept(Token.TABLES);
                     privilege = "CREATE TEMPORARY TABLE";
                 } else if (lexer.token == Token.ON) {
                     privilege = "CREATE";

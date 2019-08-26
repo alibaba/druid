@@ -642,6 +642,7 @@ public class MySqlLexer extends Lexer {
         }
         // identifierFlags['`'] = true;
         identifierFlags['_'] = true;
+        identifierFlags['@'] = true;
         //identifierFlags['-'] = true; // mysql
     }
 

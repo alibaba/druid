@@ -99,6 +99,8 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             doPrivilegedAllow           = false;
 
+    private boolean             grantAllow                  = true;
+
     protected final Set<String> denyFunctions               = new ConcurrentSkipListSet<String>();
     protected final Set<String> denyTables                  = new ConcurrentSkipListSet<String>();
     protected final Set<String> denySchemas                 = new ConcurrentSkipListSet<String>();
@@ -150,6 +152,15 @@ public class WallConfig implements WallConfigMBean {
 
     public boolean isConditionDoubleConstAllow() {
         return conditionDoubleConstAllow;
+    }
+
+
+    public boolean isGrantAllow() {
+        return grantAllow;
+    }
+
+    public void setGrantAllow(boolean grantAllow) {
+        this.grantAllow = grantAllow;
     }
 
     public void setConditionDoubleConstAllow(boolean conditionDoubleConstAllow) {
