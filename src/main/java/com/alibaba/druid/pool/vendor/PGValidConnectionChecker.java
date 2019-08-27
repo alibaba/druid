@@ -61,7 +61,7 @@ public class PGValidConnectionChecker extends ValidConnectionCheckerAdapter impl
         ResultSet rs = null;
         try {
             stmt = conn.createStatement();
-            if(queryTimeout>=0){
+            if (queryTimeout >= 0) {
                 //pgsql Driver 9.0以及以下版本不支持setQueryTimeout，可通过设置queryTimeout<0兼容低版本
                 stmt.setQueryTimeout(queryTimeout);
             }
