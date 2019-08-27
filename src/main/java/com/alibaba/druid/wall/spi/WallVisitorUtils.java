@@ -288,6 +288,20 @@ public class WallVisitorUtils {
             return;
         }
 
+        List<SQLCommentHint> hints = x.getHintsDirect();
+        if (hints != null
+                && x.getParent() instanceof SQLUnionQuery
+                && x == ((SQLUnionQuery) x.getParent()).getRight()
+        ) {
+            for (SQLCommentHint hint : hints) {
+                String text = hint.getText();
+                if (text.startsWith("!")) {
+                    addViolation(visitor, ErrorCode.UNION, "union select hint not allow", x);
+                    return;
+                }
+            }
+        }
+
         SQLExpr where = x.getWhere();
         if (where != null) {
             checkCondition(visitor, x.getWhere());
