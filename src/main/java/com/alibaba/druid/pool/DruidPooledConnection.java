@@ -1193,15 +1193,15 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     }
 
     public void abort(Executor executor) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        conn.abort(executor);
     }
 
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        conn.setNetworkTimeout(executor, milliseconds);
     }
 
     public int getNetworkTimeout() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return conn.getNetworkTimeout();
     }
 
     final void beforeExecute() {
