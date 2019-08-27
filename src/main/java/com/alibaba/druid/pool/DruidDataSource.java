@@ -3401,7 +3401,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             map.put("ActiveCount", this.getActiveCount());
             map.put("PoolingCount", this.getPoolingCount());
             map.put("LockQueueLength", this.getLockQueueLength());
-            map.put("WaitThreadCount", this.getNotEmptyWaitThreadPeak());
+            map.put("WaitThreadCount", this.getNotEmptyWaitThreadCount());
 
             // 10 - 14
             map.put("InitialSize", this.getInitialSize());
