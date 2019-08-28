@@ -400,8 +400,12 @@ public class PagerUtils {
     private static boolean limitMySqlQueryBlock(SQLSelectQueryBlock queryBlock, String dbType, int offset, int count, boolean check) {
         SQLLimit limit = queryBlock.getLimit();
         if (limit != null) {
-            if (offset >= 0) {
+            if (offset > 0) {
                 limit.setOffset(new SQLIntegerExpr(offset));
+            } else if (offset == 0) {
+                if (limit.getOffset() != null) {
+                    limit.setOffset(new SQLIntegerExpr(offset));
+                }
             }
 
             if (check && limit.getRowCount() instanceof SQLNumericLiteralExpr) {
