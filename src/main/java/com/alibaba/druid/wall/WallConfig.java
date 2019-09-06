@@ -15,19 +15,15 @@
  */
 package com.alibaba.druid.wall;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.wall.spi.WallVisitorUtils;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
+
 import static com.alibaba.druid.util.Utils.getBoolean;
 import static com.alibaba.druid.util.Utils.getInteger;
 import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
-
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
-
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
 public class WallConfig implements WallConfigMBean {
 
@@ -101,6 +97,9 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             grantAllow                  = true;
 
+    private boolean             declareAllow                = true;
+    private boolean             returnAllow                 = true;
+
     protected final Set<String> denyFunctions               = new ConcurrentSkipListSet<String>();
     protected final Set<String> denyTables                  = new ConcurrentSkipListSet<String>();
     protected final Set<String> denySchemas                 = new ConcurrentSkipListSet<String>();
@@ -148,6 +147,22 @@ public class WallConfig implements WallConfigMBean {
 
     public void setCaseConditionConstAllow(boolean caseConditionConstAllow) {
         this.caseConditionConstAllow = caseConditionConstAllow;
+    }
+
+    public boolean isDeclareAllow() {
+        return declareAllow;
+    }
+
+    public boolean isReturnAllow() {
+        return returnAllow;
+    }
+
+    public void setReturnAllow(boolean returnAllow) {
+        this.returnAllow = returnAllow;
+    }
+
+    public void setDeclareAllow(boolean declareAllow) {
+        this.declareAllow = declareAllow;
     }
 
     public boolean isConditionDoubleConstAllow() {
