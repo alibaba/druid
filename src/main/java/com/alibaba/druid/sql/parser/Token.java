@@ -354,6 +354,7 @@ public enum Token {
     POUNDGTGT("#>>"),
     MONKEYS_AT_GT("@>"),
     LT_MONKEYS_AT("<@"),
+    DOLLAR("$"),
     ;
 
     public final String name;

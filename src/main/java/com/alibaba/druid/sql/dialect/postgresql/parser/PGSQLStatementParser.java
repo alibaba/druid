@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDoStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -307,6 +308,8 @@ public class PGSQLStatementParser extends SQLStatementParser {
             case WITH:
                 statementList.add(parseWith());
                 return true;
+            case DO:
+                parseDo();
             default:
                 break;
         }
@@ -639,5 +642,9 @@ public class PGSQLStatementParser extends SQLStatementParser {
         accept(Token.RPAREN);
 
         return stmt;
+    }
+
+    public PGDoStatement parseDo(){
+        return new PGDoStatement();
     }
 }
