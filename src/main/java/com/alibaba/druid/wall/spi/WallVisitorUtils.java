@@ -1454,7 +1454,7 @@ public class WallVisitorUtils {
         }
 
         if (visitor != null && visitor.getConfig().isConditionLikeTrueAllow()
-            && sqlObject.getAttributes().containsKey(HAS_TRUE_LIKE)) {
+            && sqlObject.containsAttribute(HAS_TRUE_LIKE)) {
             return null;
         }
         return sqlObject.getAttribute(EVAL_VALUE);
@@ -1465,7 +1465,7 @@ public class WallVisitorUtils {
     }
 
     public static Object getValue(WallVisitor visitor, SQLExpr x) {
-        if (x != null && x.getAttributes().containsKey(EVAL_VALUE)) {
+        if (x != null && x.containsAttribute(EVAL_VALUE)) {
             return getValueFromAttributes(visitor, x);
         }
 

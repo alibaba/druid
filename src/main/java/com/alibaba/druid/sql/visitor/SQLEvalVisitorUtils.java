@@ -230,8 +230,8 @@ public class SQLEvalVisitorUtils {
         if (function != null) {
             Object result = function.eval(visitor, x);
 
-            if (result != SQLEvalVisitor.EVAL_ERROR) {
-                x.getAttributes().put(EVAL_VALUE, result);
+            if (result != SQLEvalVisitor.EVAL_ERROR && result != null) {
+                x.putAttribute(EVAL_VALUE, result);
             }
             return false;
         }
@@ -728,14 +728,14 @@ public class SQLEvalVisitorUtils {
     public static boolean visit(SQLEvalVisitor visitor, SQLInListExpr x) {
         SQLExpr valueExpr = x.getExpr();
         valueExpr.accept(visitor);
-        if (!valueExpr.getAttributes().containsKey(EVAL_VALUE)) {
+        if (!valueExpr.containsAttribute(EVAL_VALUE)) {
             return false;
         }
         Object value = valueExpr.getAttribute(EVAL_VALUE);
 
         for (SQLExpr item : x.getTargetList()) {
             item.accept(visitor);
-            if (!item.getAttributes().containsKey(EVAL_VALUE)) {
+            if (!item.containsAttribute(EVAL_VALUE)) {
                 return false;
             }
             Object itemValue = item.getAttribute(EVAL_VALUE);
@@ -745,7 +745,7 @@ public class SQLEvalVisitorUtils {
             }
         }
 
-        x.getAttributes().put(EVAL_VALUE, x.isNot() ? true : false);
+        x.putAttribute(EVAL_VALUE, x.isNot() ? true : false);
         return false;
     }
 
@@ -877,7 +877,7 @@ public class SQLEvalVisitorUtils {
         }
 
         Object leftValue = left.getAttribute(EVAL_VALUE);
-        Object rightValue = right.getAttributes().get(EVAL_VALUE);
+        Object rightValue = right.getAttribute(EVAL_VALUE);
 
         if (x.getOperator() == SQLBinaryOperator.Like) {
             if (isAlwayTrueLikePattern(x.getRight())) {
@@ -894,8 +894,8 @@ public class SQLEvalVisitorUtils {
             }
         }
 
-        boolean leftHasValue = left.getAttributes().containsKey(EVAL_VALUE);
-        boolean rightHasValue = right.getAttributes().containsKey(EVAL_VALUE);
+        boolean leftHasValue = left.containsAttribute(EVAL_VALUE);
+        boolean rightHasValue = right.containsAttribute(EVAL_VALUE);
 
         if ((!leftHasValue) && !rightHasValue) {
             SQLExpr leftEvalExpr = (SQLExpr) left.getAttribute(EVAL_EXPR);
@@ -1098,7 +1098,7 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLNumericLiteralExpr x) {
-        x.getAttributes().put(EVAL_VALUE, x.getNumber());
+        x.putAttribute(EVAL_VALUE, x.getNumber());
         return false;
     }
 

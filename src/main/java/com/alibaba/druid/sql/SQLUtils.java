@@ -459,6 +459,20 @@ public class SQLUtils {
         return new SchemaStatVisitor();
     }
 
+    public static SQLStatement parseSingleStatement(String sql, String dbType, SQLParserFeature... features) {
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, features);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        if (stmtList.size() > 1) {
+            throw new ParserException("multi-statement be found.");
+        }
+
+        if (parser.getLexer().token() != Token.EOF) {
+            throw new ParserException("syntax error. " + sql);
+        }
+        return stmtList.get(0);
+    }
+
     public static List<SQLStatement> parseStatements(String sql, String dbType) {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();
