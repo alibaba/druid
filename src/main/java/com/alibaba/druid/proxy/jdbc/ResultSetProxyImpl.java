@@ -29,7 +29,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Statement;
@@ -1548,15 +1547,20 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
         return result;
     }
 
+    @Override
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
         FilterChainImpl chain = createChain();
-        Object value = chain.resultSet_getObject(this, columnIndex, type);
+        T value = chain.resultSet_getObject(this, columnIndex, type);
         recycleFilterChain(chain);
-        return (T) value;
+        return value;
     }
 
+    @Override
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        FilterChainImpl chain = createChain();
+        T value = chain.resultSet_getObject(this, columnLabel, type);
+        recycleFilterChain(chain);
+        return value;
     }
 
     public int getCloseCount() {
@@ -1604,6 +1608,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (iface == ResultSetProxy.class || iface == ResultSetProxyImpl.class) {
             return (T) this;
@@ -1612,6 +1617,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
         return super.unwrap(iface);
     }
 
+    @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         if (iface == ResultSetProxy.class || iface == ResultSetProxyImpl.class) {
             return true;
