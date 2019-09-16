@@ -76,20 +76,20 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             sql = ((DruidPooledPreparedStatement) this).getSql();
         }
 
-        handleScoketTimeout(error);
+        handleSocketTimeout(error);
 
         exceptionCount++;
         return conn.handleException(error, sql);
     }
 
     protected SQLException checkException(Throwable error, String sql) throws SQLException {
-        handleScoketTimeout(error);
+        handleSocketTimeout(error);
 
         exceptionCount++;
         return conn.handleException(error, sql);
     }
 
-    protected void handleScoketTimeout(Throwable error) throws SQLException {
+    protected void handleSocketTimeout(Throwable error) throws SQLException {
         if (this.conn == null
                 || this.conn.transactionInfo != null
                 || this.conn.holder == null) {
