@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -24,17 +25,21 @@ public class PGDoStatement extends SQLStatementImpl implements PGSQLStatement {
 
     private SQLName name;
 
+    private SQLName funcName;
+
+    private SQLStatement block;
+
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof PGASTVisitor) {
-            accept0((PGASTVisitor) visitor);
-            return;
-        }
-        super.accept0(visitor);
+        accept0((PGASTVisitor) visitor);
     }
 
     @Override
     public void accept0(PGASTVisitor visitor) {
-        super.accept0(visitor);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, funcName);
+            acceptChild(visitor, block);
+        }
+        visitor.endVisit(this);
     }
 
     public SQLName getName() {
@@ -43,5 +48,24 @@ public class PGDoStatement extends SQLStatementImpl implements PGSQLStatement {
 
     public void setName(SQLName name) {
         this.name = name;
+    }
+
+    public SQLName getFuncName() {
+        return funcName;
+    }
+
+    public void setFuncName(SQLName funcName) {
+        this.funcName = funcName;
+    }
+
+    public SQLStatement getBlock() {
+        return block;
+    }
+
+    public void setBlock(SQLStatement block) {
+        if (block != null) {
+            block.setParent(this);
+        }
+        this.block = block;
     }
 }

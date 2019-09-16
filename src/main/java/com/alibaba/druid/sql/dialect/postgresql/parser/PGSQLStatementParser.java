@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
+import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDoStatement;
 import java.util.ArrayList;
 import java.util.List;
@@ -299,17 +302,17 @@ public class PGSQLStatementParser extends SQLStatementParser {
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         switch (lexer.token()) {
             case BEGIN:
-            case START: {
-                PGStartTransactionStatement stmt = parseBegin();
-                statementList.add(stmt);
+            case START:
+                PGStartTransactionStatement pgStartTransactionStatement = parseBegin();
+                statementList.add(pgStartTransactionStatement);
                 return true;
-            }
-
             case WITH:
                 statementList.add(parseWith());
                 return true;
             case DO:
-                parseDo();
+                PGDoStatement pgDoStatement = parseDo();
+                statementList.add(pgDoStatement);
+                return true;
             default:
                 break;
         }
@@ -644,7 +647,106 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public PGDoStatement parseDo(){
-        return new PGDoStatement();
+    public PGDoStatement parseDo() {
+        PGDoStatement stmt = new PGDoStatement();
+        stmt.setDbType(dbType);
+
+        accept(Token.DO);
+
+        stmt.setFuncName(this.exprParser.name());
+
+        if (lexer.token() == Token.DECLARE) {
+            parseVariables(stmt);
+        }
+
+        SQLStatement block;
+        if (lexer.token() == Token.BEGIN) {
+            block = this.parseBlock();
+        } else {
+            block = this.parseStatement();
+        }
+
+        stmt.setBlock(block);
+
+        if (lexer.token() == Token.IDENTIFIER) {
+            SQLName endFuncName = this.exprParser.name();
+            if (!stmt.getFuncName().equals(endFuncName)){
+                printError(lexer.token());
+            }
+        }
+
+        return stmt;
+    }
+
+    public void parseVariables(PGDoStatement stmt) {
+        accept(Token.DECLARE);
+        if (lexer.token() != Token.BEGIN) {
+            // todo: parseVariables
+            throw new ParserException("TODO " + lexer.info());
+        }
+    }
+
+    public SQLBlockStatement parseBlock() {
+        SQLBlockStatement block = new SQLBlockStatement();
+        block.setDbType(dbType);
+
+        accept(Token.BEGIN);
+        List<SQLStatement> statementList = block.getStatementList();
+        this.parseStatementList(statementList, -1, block);
+
+        if (lexer.token() != Token.END
+            && statementList.size() > 0
+            && (statementList.get(statementList.size() - 1) instanceof SQLCommitStatement
+            || statementList.get(statementList.size() - 1) instanceof SQLRollbackStatement)) {
+            block.setEndOfCommit(true);
+            return block;
+        }
+        accept(Token.END);
+
+        return block;
+    }
+
+    @Override
+    public SQLStatement parseIf() {
+        accept(Token.IF);
+
+        SQLIfStatement stmt = new SQLIfStatement();
+
+        stmt.setCondition(this.exprParser.expr());
+
+        accept(Token.THEN);
+
+        this.parseStatementList(stmt.getStatements(), -1, stmt);
+
+        while (lexer.token() == Token.ELSE) {
+            lexer.nextToken();
+
+            if (lexer.token() == Token.IF) {
+                lexer.nextToken();
+
+                SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
+
+                elseIf.setCondition(this.exprParser.expr());
+                elseIf.setParent(stmt);
+
+                accept(Token.THEN);
+                this.parseStatementList(elseIf.getStatements(), -1, elseIf);
+
+
+                stmt.getElseIfList().add(elseIf);
+            } else {
+                SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
+                this.parseStatementList(elseItem.getStatements(), -1, elseItem);
+                stmt.setElseItem(elseItem);
+                break;
+            }
+        }
+
+        accept(Token.END);
+        accept(Token.IF);
+        accept(Token.SEMI);
+        stmt.setAfterSemi(true);
+
+        return stmt;
     }
 }

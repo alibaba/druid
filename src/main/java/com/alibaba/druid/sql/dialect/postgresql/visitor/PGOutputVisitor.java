@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDoStatement;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -766,6 +768,43 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(PGStartTransactionStatement x) {
         print0(ucase ? "START TRANSACTION" : "start transaction");
+        return false;
+    }
+
+    @Override
+    public void endVisit(PGDoStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(PGDoStatement x) {
+        print0(ucase ? "DO " : "do ");
+        x.getFuncName().accept(this);
+        println();
+        print0(ucase ? "BEGIN" : "begin");
+        x.getBlock().accept(this);
+        print0(ucase ? "END " : "end ");
+        x.getFuncName().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLBlockStatement x) {
+        this.indentCount++;
+
+        for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
+            println();
+            SQLStatement stmt = x.getStatementList().get(i);
+            stmt.accept(this);
+        }
+        this.indentCount--;
+
+        SQLStatement exception = x.getException();
+        if (exception != null) {
+            println();
+            exception.accept(this);
+        }
+        println();
         return false;
     }
 
