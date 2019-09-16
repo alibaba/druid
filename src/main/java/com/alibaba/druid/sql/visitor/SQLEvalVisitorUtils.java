@@ -246,8 +246,8 @@ public class SQLEvalVisitorUtils {
         if (function != null) {
             Object result = function.eval(visitor, x);
 
-            if (result != SQLEvalVisitor.EVAL_ERROR) {
-                x.getAttributes().put(EVAL_VALUE, result);
+            if (result != SQLEvalVisitor.EVAL_ERROR && result != null) {
+                x.putAttribute(EVAL_VALUE, result);
             }
             return false;
         }
@@ -744,7 +744,7 @@ public class SQLEvalVisitorUtils {
     public static boolean visit(SQLEvalVisitor visitor, SQLInListExpr x) {
         SQLExpr valueExpr = x.getExpr();
         valueExpr.accept(visitor);
-        if (!valueExpr.getAttributes().containsKey(EVAL_VALUE)) {
+        if (!valueExpr.containsAttribute(EVAL_VALUE)) {
             return false;
         }
         Object value = valueExpr.getAttribute(EVAL_VALUE);
