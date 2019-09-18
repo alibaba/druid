@@ -15,13 +15,15 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /**
  * Created by wenshao on 16/9/14.

@@ -15,15 +15,16 @@
  */
 package com.alibaba.druid.sql.dialect.hive.parser;
 
+import java.util.Arrays;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
-
-import java.util.Arrays;
 
 public class HiveExprParser extends SQLExprParser {
     private final static String[] AGGREGATE_FUNCTIONS;
@@ -64,6 +65,13 @@ public class HiveExprParser extends SQLExprParser {
             String propertyName = lexer.stringVal();
             lexer.nextToken();
             expr = new SQLPropertyExpr(expr, propertyName);
+        } else if (lexer.token() == Token.LBRACKET) {
+            SQLArrayExpr array = new SQLArrayExpr();
+            array.setExpr(expr);
+            lexer.nextToken();
+            this.exprList(array.getValues(), array);
+            accept(Token.RBRACKET);
+            expr = array;
         }
         return super.primaryRest(expr);
     }

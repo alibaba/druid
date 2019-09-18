@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.h2.visitor;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-
-import java.util.List;
 
 public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor {
     public H2OutputVisitor(Appendable appender) {

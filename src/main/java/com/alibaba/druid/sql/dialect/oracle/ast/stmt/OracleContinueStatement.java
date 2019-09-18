@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleContinueStatement extends OracleStatementImpl {

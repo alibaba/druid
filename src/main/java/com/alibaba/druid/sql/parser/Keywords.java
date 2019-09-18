@@ -15,13 +15,11 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.Utils;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.alibaba.druid.util.Utils;
 
 /**
  * @author wenshao [szujobs@hotmail.com]

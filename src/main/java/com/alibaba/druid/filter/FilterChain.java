@@ -266,7 +266,11 @@ public interface FilterChain {
 
     Object resultSet_getObject(ResultSetProxy resultSet, int columnIndex) throws SQLException;
 
+    <T> T resultSet_getObject(ResultSetProxy resultSet, int columnIndex, Class<T> type) throws SQLException;
+
     Object resultSet_getObject(ResultSetProxy resultSet, String columnLabel) throws SQLException;
+
+    <T> T resultSet_getObject(ResultSetProxy resultSet, String columnLabel, Class<T> type) throws SQLException;
 
     int resultSet_findColumn(ResultSetProxy resultSet, String columnLabel) throws SQLException;
 

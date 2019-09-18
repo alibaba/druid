@@ -20,7 +20,7 @@ public class PagerUtilsTest_Limit_mysql_question_placeholder extends TestCase {
     }
 
     public void  testQuestionLimitPlaceholder2(){
-        String sql = "select * from test_table limit ?, ?";
+        String sql = "select * from test_table limit 0, ?";
         testQuestionLimitPlaceholderInternal(sql);
     }
 

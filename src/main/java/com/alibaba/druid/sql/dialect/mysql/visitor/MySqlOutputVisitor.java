@@ -15,9 +15,61 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.*;
+import java.io.IOException;
+import java.security.AccessControlException;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
+import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
+import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateFunctionStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
+import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
+import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
+import com.alibaba.druid.sql.ast.statement.SQLStartTransactionStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
@@ -43,17 +95,102 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterEventStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterLogFileGroupStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterServerStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAlterColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTablespaceStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlChecksumTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateAddLogFileGroupStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateEventStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateServerStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableSpaceStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
-import com.alibaba.druid.sql.visitor.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlEventSchedule;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlFlushStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlOptimizeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabaseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateEventStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateFunctionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateProcedureStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTriggerStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateViewStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasePartitionStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowErrorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfileStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowRelayLogEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveHostsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
-
-import java.io.IOException;
-import java.security.AccessControlException;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTVisitor {
 
@@ -321,8 +458,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(')');
         }
 
-        if (x.isSorted()) {
-            print0(ucase ? " SORTED" : " sorted");
+        if (x.isStored()) {
+            print0(ucase ? " STORED" : " stored");
         }
 
         if (x.isVirtual()) {
@@ -4275,7 +4412,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlChecksumTableStatement x) {
         print0(ucase ? "CHECKSUM TABLE " : "checksum table ");
-        printAndAccept(x.getTables(), "，");
+        printAndAccept(x.getTables(), ", ");
         return false;
     }
 } //

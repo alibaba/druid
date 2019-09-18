@@ -22,7 +22,11 @@ import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock.Isolation;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectListCache;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectParser extends SQLSelectParser {

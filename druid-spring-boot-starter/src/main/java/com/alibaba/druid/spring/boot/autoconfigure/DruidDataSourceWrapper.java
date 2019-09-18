@@ -15,15 +15,10 @@
  */
 package com.alibaba.druid.spring.boot.autoconfigure;
 
-import com.alibaba.druid.filter.config.ConfigFilter;
-import com.alibaba.druid.filter.encoding.EncodingConvertFilter;
-import com.alibaba.druid.filter.logging.CommonsLogFilter;
-import com.alibaba.druid.filter.logging.Log4j2Filter;
-import com.alibaba.druid.filter.logging.Log4jFilter;
-import com.alibaba.druid.filter.logging.Slf4jLogFilter;
-import com.alibaba.druid.filter.stat.StatFilter;
+import java.util.List;
+
+import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.wall.WallFilter;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,51 +45,30 @@ class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean
         if (super.getUrl() == null) {
             super.setUrl(basicProperties.determineUrl());
         }
-        if(super.getDriverClassName() == null){
+        if (super.getDriverClassName() == null) {
             super.setDriverClassName(basicProperties.getDriverClassName());
         }
-
     }
 
     @Autowired(required = false)
-    public void addStatFilter(StatFilter statFilter) {
-        super.filters.add(statFilter);
+    public void autoAddFilters(List<Filter> filters){
+        super.filters.addAll(filters);
     }
 
-    @Autowired(required = false)
-    public void addConfigFilter(ConfigFilter configFilter) {
-        super.filters.add(configFilter);
+    /**
+     * Ignore the 'maxEvictableIdleTimeMillis < minEvictableIdleTimeMillis' validate,
+     * it will be validated again in {@link DruidDataSource#init()}.
+     *
+     * for fix issue #3084, #2763
+     *
+     * @since 1.1.14
+     */
+    @Override
+    public void setMaxEvictableIdleTimeMillis(long maxEvictableIdleTimeMillis) {
+        try {
+            super.setMaxEvictableIdleTimeMillis(maxEvictableIdleTimeMillis);
+        } catch (IllegalArgumentException ignore) {
+            super.maxEvictableIdleTimeMillis = maxEvictableIdleTimeMillis;
+        }
     }
-
-    @Autowired(required = false)
-    public void addEncodingConvertFilter(EncodingConvertFilter encodingConvertFilter) {
-        super.filters.add(encodingConvertFilter);
-    }
-
-    @Autowired(required = false)
-    public void addSlf4jLogFilter(Slf4jLogFilter slf4jLogFilter) {
-        super.filters.add(slf4jLogFilter);
-    }
-
-    @Autowired(required = false)
-    public void addLog4jFilter(Log4jFilter log4jFilter) {
-        super.filters.add(log4jFilter);
-    }
-
-    @Autowired(required = false)
-    public void addLog4j2Filter(Log4j2Filter log4j2Filter) {
-        super.filters.add(log4j2Filter);
-    }
-
-    @Autowired(required = false)
-    public void addCommonsLogFilter(CommonsLogFilter commonsLogFilter) {
-        super.filters.add(commonsLogFilter);
-    }
-
-    @Autowired(required = false)
-    public void addWallFilter(WallFilter wallFilter) {
-        super.filters.add(wallFilter);
-    }
-
-
 }

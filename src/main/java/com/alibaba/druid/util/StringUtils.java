@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.util;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
@@ -346,5 +349,41 @@ public class StringUtils {
         // allowSigns is true iff the val ends in 'E'
         // found digit it to make sure weird stuff like '.' and '1E-' doesn't pass
         return !allowSigns && foundDigit;
+    }
+
+    public static String formatDateTime19(long millis, TimeZone timeZone) {
+        Calendar cale = timeZone == null
+                ? Calendar.getInstance()
+                : Calendar.getInstance(timeZone);
+        cale.setTimeInMillis(millis);
+
+        int year = cale.get(Calendar.YEAR);
+        int month = cale.get(Calendar.MONTH) + 1;
+        int dayOfMonth = cale.get(Calendar.DAY_OF_MONTH);
+        int hour = cale.get(Calendar.HOUR_OF_DAY);
+        int minute = cale.get(Calendar.MINUTE);
+        int second = cale.get(Calendar.SECOND);
+
+        char[] chars = new char[19];
+        chars[0] = (char) (year/1000 + '0');
+        chars[1] = (char) ((year/100)%10 + '0');
+        chars[2] = (char) ((year/10)%10 + '0');
+        chars[3] = (char) (year%10 + '0');
+        chars[4] = '-';
+        chars[5] = (char) (month/10 + '0');
+        chars[6] = (char) (month%10 + '0');
+        chars[7] = '-';
+        chars[8] = (char) (dayOfMonth/10 + '0');
+        chars[9] = (char) (dayOfMonth%10 + '0');
+        chars[10] = ' ';
+        chars[11] = (char) (hour/10 + '0');
+        chars[12] = (char) (hour%10 + '0');
+        chars[13] = ':';
+        chars[14] = (char) (minute/10 + '0');
+        chars[15] = (char) (minute%10 + '0');
+        chars[16] = ':';
+        chars[17] = (char) (second/10 + '0');
+        chars[18] = (char) (second%10 + '0');
+        return new String(chars);
     }
 }

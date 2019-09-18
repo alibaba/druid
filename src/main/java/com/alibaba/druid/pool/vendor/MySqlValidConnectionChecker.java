@@ -99,7 +99,7 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
             }
 
             if (clazz.isAssignableFrom(conn.getClass())) {
-                if (validationQueryTimeout < 0) {
+                if (validationQueryTimeout <= 0) {
                     validationQueryTimeout = DEFAULT_VALIDATION_QUERY_TIMEOUT;
                 }
 

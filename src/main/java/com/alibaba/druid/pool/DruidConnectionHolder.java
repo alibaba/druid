@@ -51,6 +51,7 @@ public final class DruidConnectionHolder {
     protected final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
     protected final long                          connectTimeMillis;
     protected volatile long                       lastActiveTimeMillis;
+    protected volatile long                       lastKeepTimeMillis;
     protected volatile long                       lastValidTimeMillis;
     protected long                                useCount                 = 0;
     private long                                  keepAliveCheckCount      = 0;
@@ -69,6 +70,7 @@ public final class DruidConnectionHolder {
     protected boolean                             discard                  = false;
     protected final Map<String, Object>           variables;
     protected final Map<String, Object>           globleVariables;
+    final ReentrantLock                           lock                     = new ReentrantLock();
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo)
                                                                                                           throws SQLException{
@@ -192,11 +194,21 @@ public final class DruidConnectionHolder {
     }
 
     public void addTrace(DruidPooledStatement stmt) {
-        statementTrace.add(stmt);
+        lock.lock();
+        try {
+            statementTrace.add(stmt);
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void removeTrace(DruidPooledStatement stmt) {
-        statementTrace.remove(stmt);
+        lock.lock();
+        try {
+            statementTrace.remove(stmt);
+        } finally {
+            lock.unlock();
+        }
     }
 
     public List<ConnectionEventListener> getConnectionEventListeners() {
@@ -286,11 +298,17 @@ public final class DruidConnectionHolder {
         connectionEventListeners.clear();
         statementEventListeners.clear();
 
-        for (Object item : statementTrace.toArray()) {
-            Statement stmt = (Statement) item;
-            JdbcUtils.close(stmt);
+        lock.lock();
+        try {
+            for (Object item : statementTrace.toArray()) {
+                Statement stmt = (Statement) item;
+                JdbcUtils.close(stmt);
+            }
+            
+            statementTrace.clear();
+        } finally {
+            lock.unlock();
         }
-        statementTrace.clear();
 
         conn.clearWarnings();
     }
@@ -328,7 +346,13 @@ public final class DruidConnectionHolder {
 
         if (lastActiveTimeMillis > 0) {
             buf.append(", LastActiveTime:\"");
-            buf.append(Utils.toString(new Date(this.lastActiveTimeMillis)));
+            buf.append(Utils.toString(new Date(lastActiveTimeMillis)));
+            buf.append("\"");
+        }
+
+        if (lastKeepTimeMillis > 0) {
+            buf.append(", LastKeepTimeMillis:\"");
+            buf.append(Utils.toString(new Date(lastKeepTimeMillis)));
             buf.append("\"");
         }
 

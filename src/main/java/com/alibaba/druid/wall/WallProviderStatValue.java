@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.wall;
 
-import com.alibaba.druid.support.monitor.annotation.AggregateType;
-import com.alibaba.druid.support.monitor.annotation.MField;
-import com.alibaba.druid.support.monitor.annotation.MTable;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
 
 @MTable(name = "druid_wall")
 public class WallProviderStatValue {

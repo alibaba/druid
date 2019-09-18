@@ -15,15 +15,19 @@
  */
 package com.alibaba.druid.support.calcite;
 
-import com.google.common.collect.*;
-import org.apache.calcite.linq4j.tree.Expression;
-import org.apache.calcite.materialize.Lattice;
-import org.apache.calcite.schema.*;
-import org.apache.calcite.schema.Table;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.calcite.linq4j.tree.Expression;
+import org.apache.calcite.materialize.Lattice;
+import org.apache.calcite.schema.Function;
+import org.apache.calcite.schema.Schema;
+import org.apache.calcite.schema.SchemaPlus;
+import org.apache.calcite.schema.SchemaVersion;
+import org.apache.calcite.schema.Table;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Created by wenshao on 17/07/2017.

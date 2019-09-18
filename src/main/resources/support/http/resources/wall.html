@@ -287,6 +287,10 @@
 					if (whiteList) {
 						for ( var i = 0; i < whiteList.length; ++i) {
 							var white = whiteList[i];
+							if (white.sql != null) {
+								white.sql = white.sql.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+							}
+
 							html += "<tr>";
 							html += "<td>"+ (i+1) +"</td>";
 							html += '<td style="word-break:break-all">' + white.sql + "</td>";
@@ -331,6 +335,10 @@
 					if (blackList) {
 						for ( var i = 0; i < blackList.length; ++i) {
 							var black = blackList[i];
+							if (black.sql != null) {
+								black.sql = black.sql.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+							}
+
 							html += "<tr>";
 							html += "<td>"+ (i+1) +"</td>";
 							html += '<td style="word-break:break-all">' + black.sql + "</td>";

@@ -15,9 +15,22 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
+import java.util.Arrays;
+
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLValuesExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
@@ -35,8 +48,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
-
-import java.util.Arrays;
 
 public class PGExprParser extends SQLExprParser {
 

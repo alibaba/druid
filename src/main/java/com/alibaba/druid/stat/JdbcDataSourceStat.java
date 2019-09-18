@@ -15,19 +15,6 @@
  */
 package com.alibaba.druid.stat;
 
-import com.alibaba.druid.Constants;
-import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.filter.stat.StatFilter;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.Histogram;
-
-import javax.management.JMException;
-import javax.management.openmbean.CompositeType;
-import javax.management.openmbean.TabularData;
-import javax.management.openmbean.TabularDataSupport;
-import javax.management.openmbean.TabularType;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -38,6 +25,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import javax.management.JMException;
+import javax.management.openmbean.CompositeType;
+import javax.management.openmbean.TabularData;
+import javax.management.openmbean.TabularDataSupport;
+import javax.management.openmbean.TabularType;
+
+import com.alibaba.druid.Constants;
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.stat.StatFilter;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.Histogram;
 
 public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 

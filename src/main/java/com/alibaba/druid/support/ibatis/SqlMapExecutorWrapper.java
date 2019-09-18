@@ -15,16 +15,16 @@
  */
 package com.alibaba.druid.support.ibatis;
 
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 import com.ibatis.common.util.PaginatedList;
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.client.event.RowHandler;
 import com.ibatis.sqlmap.engine.execution.BatchException;
 import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
 import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
-
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 @SuppressWarnings("deprecation")
 public class SqlMapExecutorWrapper implements SqlMapExecutor {

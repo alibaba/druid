@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.support.http.stat;
 
-import com.alibaba.druid.support.profile.ProfileStat;
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
 
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
-import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+import com.alibaba.druid.support.profile.ProfileStat;
 
 public class WebURIStat {
 

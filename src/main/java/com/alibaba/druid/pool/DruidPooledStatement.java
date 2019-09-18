@@ -15,17 +15,22 @@
  */
 package com.alibaba.druid.pool;
 
+import java.net.SocketTimeoutException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLWarning;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.MySqlUtils;
-
-import java.net.SocketTimeoutException;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -93,8 +98,9 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
         DruidDataSource dataSource = null;
 
-        if (this.conn.holder.dataSource instanceof DruidDataSource) {
-            dataSource = (DruidDataSource) this.conn.holder.dataSource;
+        final DruidConnectionHolder holder = this.conn.holder;
+        if (holder.dataSource instanceof DruidDataSource) {
+            dataSource = (DruidDataSource) holder.dataSource;
         }
         if (dataSource == null) {
             return;
@@ -337,6 +343,11 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
             long currentTimeMillis = System.currentTimeMillis();
             long lastActiveTimeMillis = holder.lastActiveTimeMillis;
+
+            if (lastActiveTimeMillis < holder.lastKeepTimeMillis) {
+                lastActiveTimeMillis = holder.lastKeepTimeMillis;
+            }
+
             long idleMillis = currentTimeMillis - lastActiveTimeMillis;
             long lastValidIdleMillis = currentTimeMillis - holder.lastActiveTimeMillis;
 

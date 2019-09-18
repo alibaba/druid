@@ -15,6 +15,21 @@
  */
 package com.alibaba.druid.wall.spi;
 
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
@@ -22,13 +37,82 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExprGroup;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr.Item;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDescribeStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
+import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
+import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
+import com.alibaba.druid.sql.ast.statement.SQLStartTransactionStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlOptimizeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExecuteImmediateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
@@ -46,26 +130,17 @@ import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.ServletPathMatcher;
 import com.alibaba.druid.util.StringUtils;
-import com.alibaba.druid.wall.*;
+import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack.StatementType;
+import com.alibaba.druid.wall.WallContext;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.WallSqlTableStat;
+import com.alibaba.druid.wall.WallUpdateCheckHandler;
+import com.alibaba.druid.wall.WallUpdateCheckItem;
+import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Stack;
-
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class WallVisitorUtils {
 
@@ -211,6 +286,20 @@ public class WallVisitorUtils {
         if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
             addViolation(visitor, ErrorCode.SELECT_INTO_NOT_ALLOW, "select into not allow", x);
             return;
+        }
+
+        List<SQLCommentHint> hints = x.getHintsDirect();
+        if (hints != null
+                && x.getParent() instanceof SQLUnionQuery
+                && x == ((SQLUnionQuery) x.getParent()).getRight()
+        ) {
+            for (SQLCommentHint hint : hints) {
+                String text = hint.getText();
+                if (text.startsWith("!")) {
+                    addViolation(visitor, ErrorCode.UNION, "union select hint not allow", x);
+                    return;
+                }
+            }
         }
 
         SQLExpr where = x.getWhere();
@@ -1484,7 +1573,7 @@ public class WallVisitorUtils {
     }
 
     public static Object getValue(WallVisitor visitor, SQLExpr x) {
-        if (x != null && x.getAttributes().containsKey(EVAL_VALUE)) {
+        if (x != null && x.containsAttribute(EVAL_VALUE)) {
             return getValueFromAttributes(visitor, x);
         }
 

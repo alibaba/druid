@@ -15,17 +15,15 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by wenshao on 27/07/2017.

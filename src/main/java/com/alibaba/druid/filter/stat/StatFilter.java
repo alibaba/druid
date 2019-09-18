@@ -796,6 +796,21 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     @Override
+    public <T> T resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex, Class<T> type) throws SQLException {
+        T obj = chain.resultSet_getObject(result, columnIndex, type);
+
+        if (obj instanceof Clob) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
+        } else if (obj instanceof Blob) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (Blob) obj);
+        } else if (obj instanceof String) {
+            result.addReadStringLength(((String) obj).length());
+        }
+
+        return obj;
+    }
+
+    @Override
     public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex,
                                       java.util.Map<String, Class<?>> map) throws SQLException {
         Object obj = chain.resultSet_getObject(result, columnIndex, map);
@@ -814,6 +829,21 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     @Override
     public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         Object obj = chain.resultSet_getObject(result, columnLabel);
+
+        if (obj instanceof Clob) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
+        } else if (obj instanceof Blob) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (Blob) obj);
+        } else if (obj instanceof String) {
+            result.addReadStringLength(((String) obj).length());
+        }
+
+        return obj;
+    }
+
+    @Override
+    public <T> T resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel, Class<T> type) throws SQLException {
+        T obj = chain.resultSet_getObject(result, columnLabel, type);
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);

@@ -16,7 +16,7 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLParser {
     protected final Lexer lexer;
@@ -79,8 +79,11 @@ public class SQLParser {
         }
 
         if (token == Token.IDENTIFIER) {
-            String ident = lexer.stringVal;
-            if (ident.equalsIgnoreCase("START") || ident.equalsIgnoreCase("CONNECT")) {
+            long hash = lexer.hash_lower;
+            if (hash == FnvHash.Constants.START
+                    || hash == FnvHash.Constants.CONNECT
+                    || hash == FnvHash.Constants.OFFSET
+                    || hash == FnvHash.Constants.LIMIT) {
                 if (must) {
                     throw new ParserException("illegal alias. " + lexer.info());
                 }

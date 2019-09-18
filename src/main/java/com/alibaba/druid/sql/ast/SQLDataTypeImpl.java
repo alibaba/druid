@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 

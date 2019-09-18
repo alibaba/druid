@@ -18,9 +18,28 @@ package com.alibaba.druid.sql;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
@@ -38,13 +57,25 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.SQLParserUtils;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.*;
+import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.MySqlUtils;
+import com.alibaba.druid.util.OracleUtils;
+import com.alibaba.druid.util.PGUtils;
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.druid.util.Utils;
 
 public class SQLUtils {
     private final static SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
@@ -962,7 +993,7 @@ public class SQLUtils {
      * @return
      */
     public static String sort(String sql, String dbType) {
-        List stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLCreateTableStatement.sort(stmtList);
         return SQLUtils.toSQLString(stmtList, dbType);
     }

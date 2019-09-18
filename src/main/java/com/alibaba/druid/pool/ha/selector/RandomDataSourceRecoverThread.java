@@ -15,13 +15,14 @@
  */
 package com.alibaba.druid.pool.ha.selector;
 
+import java.sql.Connection;
+
+import javax.sql.DataSource;
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
 
 /**
  * A Thread trying to test if DataSource in blacklist has been recovered.
@@ -31,7 +32,8 @@ import java.sql.Connection;
 public class RandomDataSourceRecoverThread implements Runnable {
     private final static Log LOG = LogFactory.getLog(RandomDataSourceRecoverThread.class);
     private RandomDataSourceSelector selector;
-    private int sleepSeconds = 30;
+    private int sleepSeconds = 120;
+    private int validationSleepSeconds = 0;
 
     public RandomDataSourceRecoverThread(RandomDataSourceSelector selector) {
         this.selector = selector;
@@ -61,17 +63,26 @@ public class RandomDataSourceRecoverThread implements Runnable {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
+            sleepBeforeValidation();
             dataSource.validateConnection(connection);
             LOG.info(dataSource.getName() + " is available now.");
             selector.removeBlacklist(dataSource);
         } catch(Exception e) {
             LOG.warn("DataSource[" + dataSource.getName() + "] is still unavailable. Exception: "
                     + e.getMessage());
-            if (connection != null) {
-                dataSource.discardConnection(connection);
-            }
         } finally {
             JdbcUtils.close(connection);
+        }
+    }
+
+    private void sleepBeforeValidation() {
+        if (validationSleepSeconds > 0) {
+            try {
+                LOG.debug("Sleep " + validationSleepSeconds + " second(s) before validation.");
+                Thread.sleep(validationSleepSeconds * 1000);
+            } catch (InterruptedException e) {
+                // ignore
+            }
         }
     }
 
@@ -83,7 +94,19 @@ public class RandomDataSourceRecoverThread implements Runnable {
         }
     }
 
+    public int getSleepSeconds() {
+        return sleepSeconds;
+    }
+
     public void setSleepSeconds(int sleepSeconds) {
         this.sleepSeconds = sleepSeconds;
+    }
+
+    public int getValidationSleepSeconds() {
+        return validationSleepSeconds;
+    }
+
+    public void setValidationSleepSeconds(int validationSleepSeconds) {
+        this.validationSleepSeconds = validationSleepSeconds;
     }
 }

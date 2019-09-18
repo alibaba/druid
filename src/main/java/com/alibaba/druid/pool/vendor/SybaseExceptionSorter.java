@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import com.alibaba.druid.pool.ExceptionSorter;
-
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.Properties;
+
+import com.alibaba.druid.pool.ExceptionSorter;
 
 public class SybaseExceptionSorter implements ExceptionSorter, Serializable {
 

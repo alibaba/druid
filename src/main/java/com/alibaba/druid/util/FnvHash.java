@@ -384,6 +384,7 @@ public final class FnvHash {
         long DATE = fnv1a_64_lower("DATE");
         long DATETIME = fnv1a_64_lower("DATETIME");
         long TIME = fnv1a_64_lower("TIME");
+        long ROLE = fnv1a_64_lower("ROLE");
         long TIMESTAMP = fnv1a_64_lower("TIMESTAMP");
         long CLOB = fnv1a_64_lower("CLOB");
         long NCLOB = fnv1a_64_lower("NCLOB");
@@ -444,6 +445,7 @@ public final class FnvHash {
         long LESS = fnv1a_64_lower("LESS");
         long MAXVALUE = fnv1a_64_lower("MAXVALUE");
         long OFFSET = fnv1a_64_lower("OFFSET");
+        long LIMIT = fnv1a_64_lower("LIMIT");
         long RAW = fnv1a_64_lower("RAW");
         long LONG_RAW = fnv1a_64_lower("LONG RAW");
         long LONG = fnv1a_64_lower("LONG");

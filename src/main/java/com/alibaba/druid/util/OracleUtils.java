@@ -15,25 +15,32 @@
  */
 package com.alibaba.druid.util;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.sql.XAConnection;
 import javax.transaction.xa.XAException;
 
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleStatement;
 import oracle.jdbc.internal.OraclePreparedStatement;
 import oracle.jdbc.xa.client.OracleXAConnection;
 import oracle.sql.ROWID;
-
-import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
 
 public class OracleUtils {
 

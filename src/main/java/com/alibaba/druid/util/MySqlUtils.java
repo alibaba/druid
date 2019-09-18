@@ -15,18 +15,24 @@
  */
 package com.alibaba.druid.util;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-
-import javax.sql.XAConnection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.sql.XAConnection;
+
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 
 public class MySqlUtils {
     static Class<?>       utilClass;
@@ -42,8 +48,9 @@ public class MySqlUtils {
     static Class<?>       class_5_MysqlXAConnection = null;
     static Constructor<?> constructor_5_MysqlXAConnection = null;
 
-    static Class<?>       class_5_ConnectionImpl = null;
-    static Method         method_5_getId         = null;
+    static Class<?>       class_ConnectionImpl = null;
+    static Method         method_getId = null;
+    static boolean        method_getId_error = false;
 
     static Class<?>       class_6_ConnectionImpl = null;
     static Method         method_6_getId         = null;
@@ -132,14 +139,14 @@ public class MySqlUtils {
 
             try {
                 // pinGlobalTxToPhysicalConnection
-                boolean pinGlobTx = (Boolean) method_6_getValue.invoke(
+                Boolean pinGlobTx = (Boolean) method_6_getValue.invoke(
                         method_6_getBooleanReadableProperty.invoke(
                                 method_6_getPropertySet.invoke(physicalConn)
                                 , "pinGlobalTxToPhysicalConnection"
                         )
                 );
 
-                if (pinGlobTx) {
+                if (pinGlobTx != null && pinGlobTx) {
                     try {
                         if (method_6_getInstance == null && !method_6_getInstance_error) {
                             class_6_suspendableXAConnection = Class.forName("com.mysql.cj.jdbc.SuspendableXAConnection");
@@ -179,41 +186,7 @@ public class MySqlUtils {
     }
 
     public static String buildKillQuerySql(Connection connection, SQLException error) throws SQLException {
-        Long threadId = null;
-        try {
-            Class clazz = connection.getClass();
-
-            if (class_5_ConnectionImpl == null) {
-                if (clazz.getName().equals("com.mysql.jdbc.ConnectionImpl")) {
-                    class_5_ConnectionImpl = clazz;
-                }
-            }
-
-            if (class_5_ConnectionImpl == clazz) {
-                if (method_5_getId == null) {
-                    method_5_getId = class_5_ConnectionImpl.getMethod("getId");
-                }
-
-                threadId = (Long) method_5_getId.invoke(connection);
-            }
-
-            if (class_6_ConnectionImpl == null) {
-                if (clazz.getName().equals("com.mysql.cj.jdbc.ConnectionImpl")) {
-                    class_6_ConnectionImpl = clazz;
-                }
-            }
-
-            if (class_6_ConnectionImpl == clazz) {
-                if (method_6_getId == null) {
-                    method_6_getId = class_6_ConnectionImpl.getMethod("getId");
-                }
-
-                threadId = (Long) method_6_getId.invoke(connection);
-            }
-        } catch (Exception e) {
-            // skip
-        }
-
+        Long threadId = getId(connection);
         if (threadId == null) {
             return null;
         }
@@ -357,6 +330,41 @@ public class MySqlUtils {
     private static transient boolean class_MysqlIO_Error                      = false;
     private static transient Method  method_getLastPacketReceivedTimeMs       = null;
     private static transient boolean method_getLastPacketReceivedTimeMs_error = false;
+
+    public static Long getId(Object conn) {
+        if (conn == null) {
+            return null;
+        }
+
+        Class<?> clazz = conn.getClass();
+        if (class_ConnectionImpl == null) {
+            if (clazz.getName().equals("com.mysql.jdbc.ConnectionImpl")) {
+                class_ConnectionImpl = clazz;
+            } else if (clazz.getName().equals("com.mysql.jdbc.Connection")) { // mysql 5.0.x
+                class_ConnectionImpl = clazz;
+            } else if (clazz.getName().equals("com.mysql.cj.jdbc.ConnectionImpl")) { // mysql 5.0.x
+                class_ConnectionImpl = clazz;
+            } else if (clazz.getSuperclass().getName().equals("com.mysql.jdbc.ConnectionImpl")) {
+                class_ConnectionImpl = clazz.getSuperclass();
+            }
+        }
+
+        if (class_ConnectionImpl == clazz || class_ConnectionImpl == clazz.getSuperclass()) {
+            try {
+                if (method_getId == null && !method_getId_error) {
+                    Method method = class_ConnectionImpl.getDeclaredMethod("getId");
+                    method.setAccessible(true);
+                    method_getId = method;
+                }
+
+                return (Long) method_getId.invoke(conn);
+            } catch (Throwable ex) {
+                method_getId_error = true;
+            }
+        }
+
+        return null;
+    }
 
     public static long getLastPacketReceivedTimeMs(Connection conn) throws SQLException {
         if (class_connectionImpl == null && !class_connectionImpl_Error) {

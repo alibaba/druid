@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import com.alibaba.druid.pool.ExceptionSorter;
-
-import java.io.IOException;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.Properties;
+
+import com.alibaba.druid.pool.ExceptionSorter;
 
 public class MySqlExceptionSorter implements ExceptionSorter {
 
@@ -40,7 +38,7 @@ public class MySqlExceptionSorter implements ExceptionSorter {
         }
         
         switch (errorCode) {
-        // Communications Errors
+            // Communications Errors
             case 1040: // ER_CON_COUNT_ERROR
             case 1042: // ER_BAD_HOST_ERROR
             case 1043: // ER_HANDSHAKE_ERROR
@@ -48,20 +46,22 @@ public class MySqlExceptionSorter implements ExceptionSorter {
             case 1081: // ER_IPSOCK_ERROR
             case 1129: // ER_HOST_IS_BLOCKED
             case 1130: // ER_HOST_NOT_PRIVILEGED
-                // Authentication Errors
+            // Authentication Errors
             case 1045: // ER_ACCESS_DENIED_ERROR
-                // Resource errors
+            // Resource errors
             case 1004: // ER_CANT_CREATE_FILE
             case 1005: // ER_CANT_CREATE_TABLE
             case 1015: // ER_CANT_LOCK
             case 1021: // ER_DISK_FULL
             case 1041: // ER_OUT_OF_RESOURCES
-                // Out-of-memory errors
+            // Out-of-memory errors
             case 1037: // ER_OUTOFMEMORY
             case 1038: // ER_OUT_OF_SORTMEMORY
-                // Access denied
+            // Access denied
             case 1142: // ER_TABLEACCESS_DENIED_ERROR
             case 1227: // ER_SPECIFIC_ACCESS_DENIED_ERROR
+
+            case 1023: // ER_ERROR_ON_CLOSE
 
             case 1290: // ER_OPTION_PREVENTS_STATEMENT
                 return true;
@@ -89,9 +89,9 @@ public class MySqlExceptionSorter implements ExceptionSorter {
             final String errorText = message.toUpperCase();
 
             if ((errorCode == 0 && (errorText.contains("COMMUNICATIONS LINK FAILURE")) //
-            || errorText.contains("COULD NOT CREATE CONNECTION")) //
-                || errorText.contains("NO DATASOURCE") //
-                || errorText.contains("NO ALIVE DATASOURCE")) {
+                    || errorText.contains("COULD NOT CREATE CONNECTION")) //
+                    || errorText.contains("NO DATASOURCE") //
+                    || errorText.contains("NO ALIVE DATASOURCE")) {
                 return true;
             }
         }

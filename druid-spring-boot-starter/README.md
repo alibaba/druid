@@ -5,19 +5,19 @@
 Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Druid数据库连接池和监控。
 
 ## 如何使用
-1. 在 Spring Boot 项目中加入```druid-spring-boot-starter```依赖
+1. 在 Spring Boot 项目中加入```druid-spring-boot-starter```依赖 ([点击查询最新版本](https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter))
 
     ```Maven```
     ```xml
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.10</version>
+       <version>1.1.17</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.10'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.17'
     
     ```
 2. 添加配置
@@ -61,7 +61,7 @@ spring.datasource.druid.filters= #配置多个英文逗号分隔
 - 监控配置
 ```
 # WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
-spring.datasource.druid.web-stat-filter.enabled= #是否启用StatFilter默认值true
+spring.datasource.druid.web-stat-filter.enabled= #是否启用StatFilter默认值false
 spring.datasource.druid.web-stat-filter.url-pattern=
 spring.datasource.druid.web-stat-filter.exclusions=
 spring.datasource.druid.web-stat-filter.session-stat-enable=
@@ -71,7 +71,7 @@ spring.datasource.druid.web-stat-filter.principal-cookie-name=
 spring.datasource.druid.web-stat-filter.profile-enable=
 
 # StatViewServlet配置，说明请参考Druid Wiki，配置_StatViewServlet配置
-spring.datasource.druid.stat-view-servlet.enabled= #是否启用StatViewServlet默认值true
+spring.datasource.druid.stat-view-servlet.enabled= #是否启用StatViewServlet（监控页面）默认值为false（考虑到安全问题默认并未启动，如需启用建议设置密码或白名单以保障安全）
 spring.datasource.druid.stat-view-servlet.url-pattern=
 spring.datasource.druid.stat-view-servlet.reset-enable=
 spring.datasource.druid.stat-view-servlet.login-username=
@@ -132,6 +132,7 @@ public DataSource dataSourceTwo(){
 你可以通过 ```spring.datasource.druid.filters=stat,wall,log4j ...``` 的方式来启用相应的内置Filter，不过这些Filter都是默认配置。如果默认配置不能满足你的需求，你可以放弃这种方式，通过配置文件来配置Filter，下面是例子。
 ```xml
 # 配置StatFilter 
+spring.datasource.druid.filter.stat.enabled=true
 spring.datasource.druid.filter.stat.db-type=h2
 spring.datasource.druid.filter.stat.log-slow-sql=true
 spring.datasource.druid.filter.stat.slow-sql-millis=2000
@@ -154,11 +155,11 @@ spring.datasource.druid.filter.wall.config.drop-table-allow=false
 - Log4j2Filter
 - CommonsLogFilter
 
-要想使自定义 Filter 配置生效需要将对应 Filter 的 ```enabled``` 设置为 ```true``` ，Druid Spring Boot Starter 默认会启用 StatFilter，你也可以将其 ```enabled``` 设置为 ```false``` 来禁用它。
+要想使自定义 Filter 配置生效需要将对应 Filter 的 ```enabled``` 设置为 ```true``` ，Druid Spring Boot Starter 默认禁用 StatFilter，你也可以将其 ```enabled``` 设置为 ```true``` 来启用它。
 
 ## 如何获取 Druid 的监控数据
 
-Druid 的监控数据可以通过 DruidStatManagerFacade 进行获取，获取到监控数据之后你可以将其暴露给你的监控系统进行使用。Druid 默认的监控系统数据也来源于此。下面给做一个简单的演示，在 Spring Boot 中如何通过 HTTP 接口将 Druid 监控数据以 JSON 的形式暴露出去，实际使用中你可以根据你的需要自由地对监控数据、暴露方式进行扩展。
+Druid 的监控数据可以在开启 StatFilter 后通过 DruidStatManagerFacade 进行获取，获取到监控数据之后你可以将其暴露给你的监控系统进行使用。Druid 默认的监控系统数据也来源于此。下面给做一个简单的演示，在 Spring Boot 中如何通过 HTTP 接口将 Druid 监控数据以 JSON 的形式暴露出去，实际使用中你可以根据你的需要自由地对监控数据、暴露方式进行扩展。
 
 ```java
 @RestController

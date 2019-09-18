@@ -20,8 +20,6 @@ import java.util.List;
 
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPartition extends OracleSegmentAttributesImpl implements OracleSegmentAttributes {
