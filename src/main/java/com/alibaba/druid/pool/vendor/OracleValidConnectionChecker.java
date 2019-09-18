@@ -79,7 +79,7 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
             return true;
         }
 
-        final int queryTimeout = validationQueryTimeout < 0 ? timeout : validationQueryTimeout;
+        final int queryTimeout = validationQueryTimeout <= 0 ? timeout : validationQueryTimeout;
 
         final Connection finalConn = conn;
         final String finalValidateQuery = validateQuery;
