@@ -455,7 +455,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             if (onConflictDoNothing) {
                 print0(ucase ? " DO NOTHING" : " do nothing");
             } else if ((onConflictUpdateSetItems != null && onConflictUpdateSetItems.size() > 0)) {
-                print0(ucase ? " UPDATE SET " : " update set ");
+                print0(ucase ? " DO UPDATE SET " : " do update set ");
                 printAndAccept(onConflictUpdateSetItems, ", ");
             }
         }
