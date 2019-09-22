@@ -30,7 +30,6 @@ import javax.sql.DataSource;
 import junit.framework.TestCase;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.logicalcobwebs.proxool.ProxoolDataSource;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.mock.MockDriver;
@@ -200,26 +199,6 @@ public class Case1 extends TestCase {
 
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "c3p0", threadCount);
-        }
-        System.out.println();
-    }
-
-    public void test_proxool() throws Exception {
-        ProxoolDataSource dataSource = new ProxoolDataSource();
-        // dataSource.(10);
-        // dataSource.setMaxActive(50);
-        dataSource.setMinimumConnectionCount(minPoolSize);
-        dataSource.setMaximumConnectionCount(maxPoolSize);
-
-        dataSource.setDriver(driverClass);
-        dataSource.setDriverUrl(jdbcUrl);
-        // dataSource.setPoolPreparedStatements(true);
-        // dataSource.setMaxOpenPreparedStatements(100);
-        dataSource.setUser(user);
-        dataSource.setPassword(password);
-
-        for (int i = 0; i < loopCount; ++i) {
-            p0(dataSource, "proxool", threadCount);
         }
         System.out.println();
     }

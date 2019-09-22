@@ -25,7 +25,6 @@ import javax.sql.DataSource;
 import junit.framework.TestCase;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.logicalcobwebs.proxool.ProxoolDataSource;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -147,27 +146,7 @@ public class Case0 extends TestCase {
         }
         System.out.println();
     }
-    
-    public void f_test_proxool() throws Exception {
-        ProxoolDataSource dataSource = new ProxoolDataSource();
-        // dataSource.(10);
-        // dataSource.setMaxActive(50);
-        dataSource.setMinimumConnectionCount(minIdle);
-        dataSource.setMaximumConnectionCount(maxIdle);
 
-        dataSource.setDriver(driverClass);
-        dataSource.setDriverUrl(jdbcUrl);
-        // dataSource.setPoolPreparedStatements(true);
-        // dataSource.setMaxOpenPreparedStatements(100);
-        dataSource.setUser(user);
-        dataSource.setPassword(password);
-
-        for (int i = 0; i < LOOP_COUNT; ++i) {
-            p0(dataSource, "proxool");
-        }
-        System.out.println();
-    }
-    
     public void f_test_tomcat_jdbc() throws Exception {
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
         // dataSource.(10);

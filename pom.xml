@@ -617,18 +617,6 @@
 			<version>0.8.0.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>proxool</groupId>
-			<artifactId>proxool</artifactId>
-			<version>0.9.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>proxool</groupId>
-			<artifactId>proxool-cglib</artifactId>
-			<version>0.9.1</version>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>c3p0</groupId>
