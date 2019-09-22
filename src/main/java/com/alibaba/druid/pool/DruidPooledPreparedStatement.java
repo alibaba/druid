@@ -490,7 +490,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         incrementExecuteCount();
         transactionRecord(sql);
 
-        // oracleSetRowPrefetch();
+        oracleSetRowPrefetch();
 
         conn.beforeExecute();
         try {

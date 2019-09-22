@@ -27,7 +27,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Statement;
@@ -1763,11 +1762,21 @@ public final class DruidPooledResultSet extends PoolableWrapper implements Resul
         }
     }
 
+    @Override
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-        return rs.getObject(columnIndex, type);
+        try {
+            return rs.getObject(columnIndex, type);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
+    @Override
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
-        return rs.getObject(columnLabel, type);
+        try {
+            return rs.getObject(columnLabel, type);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 }
