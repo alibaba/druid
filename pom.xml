@@ -640,19 +640,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.taobao.tbdatasource</groupId>
-			<artifactId>tbdatasource</artifactId>
-			<version>2.0.2</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>jboss</groupId>
-					<artifactId>jboss-j2ee</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
 			<groupId>org.javasimon</groupId>
 			<artifactId>javasimon-spring</artifactId>
 			<version>4.1.1</version>
