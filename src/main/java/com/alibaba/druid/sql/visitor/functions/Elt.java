@@ -41,7 +41,7 @@ public class Elt implements Function {
         param0IntValue = ((Number) param0Value).intValue();
 
         if (param0IntValue >= x.getParameters().size()) {
-            return null;
+            return SQLEvalVisitor.EVAL_VALUE_NULL;
         }
 
         SQLExpr item = x.getParameters().get(param0IntValue);

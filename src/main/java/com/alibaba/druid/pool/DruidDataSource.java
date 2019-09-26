@@ -1228,7 +1228,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         if (removeAbandoned) {
-            LOG.warn("removeAbandoned is true, not use in productiion.");
+            LOG.warn("removeAbandoned is true, not use in production.");
         }
     }
 
@@ -1691,6 +1691,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void handleConnectionException(DruidPooledConnection pooledConnection, Throwable t, String sql) throws SQLException {
         final DruidConnectionHolder holder = pooledConnection.getConnectionHolder();
+        if (holder == null) {
+            return;
+        }
 
         errorCountUpdater.incrementAndGet(this);
         lastError = t;
@@ -1751,11 +1754,25 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             lastFatalErrorTimeMillis = lastErrorTimeMillis;
-            onFatalError = true;
+            fatalErrorCount++;
+            if (fatalErrorCount - fatalErrorCountLastShrink > onFatalErrorMaxActive) {
+                onFatalError = true;
+            }
             lastFatalError = error;
             lastFatalErrorSql = sql;
         } finally {
             lock.unlock();
+        }
+
+        if(onFatalError && holder != null && holder.getDataSource() != null) {
+            ReentrantLock dataSourceLock = holder.getDataSource().lock;
+            dataSourceLock.lock();
+            try {
+                emptySignal();
+            }
+            finally {
+                dataSourceLock.unlock();
+            }
         }
 
         if (requireDiscard) {
@@ -2483,6 +2500,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 && (!(keepAlive && activeCount + poolingCount < minIdle)) // 在keepAlive场景不能放弃创建
                                 && (!initTask) // 线程池初始化时的任务不能放弃创建
                                 && !isFailContinuous() // failContinuous时不能放弃创建，否则会无法创建线程
+                                && !isOnFatalError() // onFatalError时不能放弃创建，否则会无法创建线程
                         ) {
                             clearCreateTask(taskId);
                             return;
@@ -2970,6 +2988,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         boolean needFill = false;
         int evictCount = 0;
         int keepAliveCount = 0;
+        int fatalErrorIncrement = fatalErrorCount - fatalErrorCountLastShrink;
+        fatalErrorCountLastShrink = fatalErrorCount;
+        
         try {
             if (!inited) {
                 return;
@@ -2979,6 +3000,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             final long currentTimeMillis = System.currentTimeMillis();
             for (int i = 0; i < poolingCount; ++i) {
                 DruidConnectionHolder connection = connections[i];
+
+                if ((onFatalError || fatalErrorIncrement > 0) && (lastFatalErrorTimeMillis > connection.connectTimeMillis))  {
+                    keepAliveConnections[keepAliveCount++] = connection;
+                    continue;
+                }
 
                 if (checkTime) {
                     if (phyTimeoutMillis > 0) {
@@ -3101,6 +3127,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 for (int i = 0; i < fillCount; ++i) {
                     emptySignal();
                 }
+            } finally {
+                lock.unlock();
+            }
+        } else if (onFatalError || fatalErrorIncrement > 0) {
+            lock.lock();
+            try {
+                emptySignal();
             } finally {
                 lock.unlock();
             }
@@ -3368,7 +3401,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             map.put("ActiveCount", this.getActiveCount());
             map.put("PoolingCount", this.getPoolingCount());
             map.put("LockQueueLength", this.getLockQueueLength());
-            map.put("WaitThreadCount", this.getNotEmptyWaitThreadPeak());
+            map.put("WaitThreadCount", this.getNotEmptyWaitThreadCount());
 
             // 10 - 14
             map.put("InitialSize", this.getInitialSize());

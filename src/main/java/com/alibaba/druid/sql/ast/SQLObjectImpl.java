@@ -88,6 +88,14 @@ public abstract class SQLObjectImpl implements SQLObject {
         return attributes;
     }
 
+    public boolean containsAttribute(String name) {
+        if (attributes == null) {
+            return false;
+        }
+
+        return attributes.containsKey(name);
+    }
+
     public Object getAttribute(String name) {
         if (attributes == null) {
             return null;

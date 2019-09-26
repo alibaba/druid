@@ -87,6 +87,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
 import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
@@ -5539,6 +5540,35 @@ public class MySqlStatementParser extends SQLStatementParser {
         stmt.setConditionValue(condition);
 
         accept(Token.SEMI);
+
+        return stmt;
+    }
+    
+    /**
+     * FETCH [[NEXT] FROM] cursor_name INTO var_name [, var_name] ...
+     */
+    public SQLFetchStatement parseFetch() {
+        accept(Token.FETCH);
+
+        if (lexer.identifierEquals("NEXT")) {
+            lexer.nextToken();
+            accept(Token.FROM);
+        } else if (Token.FROM == lexer.token()) {
+            lexer.nextToken();
+        }
+
+        SQLFetchStatement stmt = new SQLFetchStatement();
+        stmt.setCursorName(this.exprParser.name());
+
+        accept(Token.INTO);
+        for (;;) {
+            stmt.getInto().add(this.exprParser.name());
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
 
         return stmt;
     }
