@@ -69,6 +69,7 @@ public class PGSelectParser extends SQLSelectParser {
             lexer.nextToken();
 
             SQLSelectQuery select = query();
+            select.setBracket(true);
             if (select instanceof SQLSelectQueryBlock) {
                 ((SQLSelectQueryBlock) select).setParenthesized(true);
             }

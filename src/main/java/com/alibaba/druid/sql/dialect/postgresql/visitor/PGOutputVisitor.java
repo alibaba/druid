@@ -249,6 +249,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
 
     public boolean visit(PGSelectQueryBlock x) {
+        final boolean bracket = x.isBracket();
+        if (bracket) {
+            print('(');
+        }
+
         print0(ucase ? "SELECT " : "select ");
 
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
@@ -315,6 +320,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.getForClause() != null) {
             println();
             x.getForClause().accept(this);
+        }
+
+        if (bracket) {
+            print(')');
         }
 
         return false;

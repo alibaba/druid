@@ -245,6 +245,7 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
 
             SQLSelectQuery select = query();
+            select.setBracket(true);
             accept(Token.RPAREN);
 
             return queryRest(select, acceptUnion);
