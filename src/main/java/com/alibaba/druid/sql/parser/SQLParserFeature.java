@@ -25,6 +25,8 @@ public enum SQLParserFeature {
     KeepComments,
     SkipComments,
     StrictForWall,
+    EnableMultiUnion,
+    IgnoreNameQuotes,
 
     PipesAsConcat, // for mysql
     ;

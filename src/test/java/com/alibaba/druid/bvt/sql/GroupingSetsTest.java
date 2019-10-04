@@ -12,7 +12,7 @@ public class GroupingSetsTest extends TestCase {
         
         String result = SQLUtils.format(sql, null);
         
-        Assert.assertEquals("SELECT brand, size, SUM(sales)"
+        Assert.assertEquals("SELECT brand, size, sum(sales)"
                 + "\nFROM items_sold"
                 + "\nGROUP BY GROUPING SETS ((brand), (size), ());", result);
     }

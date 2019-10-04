@@ -67,7 +67,7 @@ public class DB2SelectTest_10 extends DB2Test {
 
         Assert.assertEquals("SELECT *\n" +
                         "FROM (\n" +
-                        "\tSELECT inner2_.*, ROWNUMBER() OVER (ORDER BY order OF inner2_) AS rownumber_\n" +
+                        "\tSELECT inner2_.*, rownumber() OVER (ORDER BY order OF inner2_) AS rownumber_\n" +
                         "\tFROM (\n" +
                         "\t\tSELECT tsuserstb0_.USERID AS USERID1_1_, tsuserstb0_.CREASTAF AS CREASTAF2_1_, tsuserstb0_.CREATIME AS CREATIME3_1_, tsuserstb0_.LOCORGNO AS LOCORGNO4_1_, tsuserstb0_.PWDMODIFYTIME AS PWDMODIF5_1_\n" +
                         "\t\t\t, tsuserstb0_.REMARK01 AS REMARK6_1_, tsuserstb0_.REMARK02 AS REMARK7_1_, tsuserstb0_.STAORGNO AS STAORGNO8_1_, tsuserstb0_.UPDASTAF AS UPDASTAF9_1_, tsuserstb0_.UPDATIME AS UPDATIM10_1_\n" +

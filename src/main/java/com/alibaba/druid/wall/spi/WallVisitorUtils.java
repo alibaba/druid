@@ -1729,7 +1729,7 @@ public class WallVisitorUtils {
                 SQLExpr selectItemExpr = queryBlock.getSelectList().get(0).getExpr();
                 if (selectItemExpr instanceof SQLAggregateExpr) {
                     if (((SQLAggregateExpr) selectItemExpr)
-                            .methodNameHashCod64() == FnvHash.Constants.COUNT) {
+                            .methodNameHashCode64() == FnvHash.Constants.COUNT) {
                         simpleCount = true;
                     }
                 }

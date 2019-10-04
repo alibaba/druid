@@ -67,7 +67,7 @@ public class MySqlSelectTest_48_union extends MysqlTest {
         
         {
             String output = SQLUtils.toMySqlString(stmt);
-            assertEquals("SELECT SUM(hd.paid_amount)\n" +
+            assertEquals("SELECT sum(hd.paid_amount)\n" +
                             "FROM (\n" +
                             "\tSELECT 'fl', CAST(a.hosted_ymd AS date) AS hosted_ymd, a.user_id, 'boss1', a.paid_amount\n" +
                             "\t\t, m.user_id, m.create_date, m.pmcode, n.type_name, n.product_name\n" +
@@ -154,7 +154,7 @@ public class MySqlSelectTest_48_union extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
-            assertEquals("SELECT SUM(hd.paid_amount)\n" +
+            assertEquals("SELECT sum(hd.paid_amount)\n" +
                             "FROM (\n" +
                             "\tSELECT ?, CAST(a.hosted_ymd AS date) AS hosted_ymd, a.user_id, ?, a.paid_amount\n" +
                             "\t\t, m.user_id, m.create_date, m.pmcode, n.type_name, n.product_name\n" +

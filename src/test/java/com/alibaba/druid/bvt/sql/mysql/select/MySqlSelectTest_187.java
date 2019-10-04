@@ -62,7 +62,7 @@ public class MySqlSelectTest_187 extends MysqlTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(2, visitor.getTables().size());
-        assertEquals(15, visitor.getColumns().size());
+        assertEquals(14, visitor.getColumns().size());
         assertEquals(10, visitor.getConditions().size());
         assertEquals(1, visitor.getOrderByColumns().size());
 
@@ -72,14 +72,14 @@ public class MySqlSelectTest_187 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("SELECT coach_id, tournament_name, tournament_id, season_id, season\n" +
-                        "\t, COUNT(1) AS num, SUM(CASE \n" +
+                        "\t, count(1) AS num, sum(CASE \n" +
                         "\t\tWHEN wdl = 0 THEN 1\n" +
                         "\t\tELSE 0\n" +
                         "\tEND) AS loss\n" +
-                        "\t, SUM(CASE \n" +
+                        "\t, sum(CASE \n" +
                         "\t\tWHEN wdl = 1 THEN 1\n" +
                         "\t\tELSE 0\n" +
-                        "\tEND) AS draw, SUM(CASE \n" +
+                        "\tEND) AS draw, sum(CASE \n" +
                         "\t\tWHEN wdl = 3 THEN 1\n" +
                         "\t\tELSE 0\n" +
                         "\tEND) AS win\n" +

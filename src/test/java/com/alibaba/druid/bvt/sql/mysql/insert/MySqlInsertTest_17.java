@@ -69,13 +69,13 @@ public class MySqlInsertTest_17 extends MysqlTest {
                 "\t\t\t\t) c\n" +
                 "\t\t\t\tON a.userid = c.userid\n" +
                 "\t\t)\n" +
-                "\tSELECT 'col_1' AS cname, col_1 AS cvalue, SUM(orders_week) AS orders\n" +
-                "\t\t, COUNT(userid) AS users\n" +
+                "\tSELECT 'col_1' AS cname, col_1 AS cvalue, sum(orders_week) AS orders\n" +
+                "\t\t, count(userid) AS users\n" +
                 "\tFROM h\n" +
                 "\tGROUP BY col_1\n" +
                 "\tUNION ALL\n" +
-                "\tSELECT 'col_2' AS cname, col_2 AS cvalue, SUM(orders_week) AS orders\n" +
-                "\t\t, COUNT(userid) AS users\n" +
+                "\tSELECT 'col_2' AS cname, col_2 AS cvalue, sum(orders_week) AS orders\n" +
+                "\t\t, count(userid) AS users\n" +
                 "\tFROM h\n" +
                 "\tGROUP BY col_2\n" +
                 ") x";

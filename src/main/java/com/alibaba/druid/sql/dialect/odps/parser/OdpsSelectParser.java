@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.odps.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
@@ -29,6 +30,7 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectListCache;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
 
 public class OdpsSelectParser extends SQLSelectParser {
     public OdpsSelectParser(SQLExprParser exprParser){
@@ -43,24 +45,24 @@ public class OdpsSelectParser extends SQLSelectParser {
     }
 
     @Override
-    public SQLSelectQuery query() {
+    public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
             SQLSelectQuery select = query();
             accept(Token.RPAREN);
 
-            return queryRest(select);
+            return queryRest(select, acceptUnion);
         }
 
         OdpsSelectQueryBlock queryBlock = new OdpsSelectQueryBlock();
-        
+
         if (lexer.hasComment() && lexer.isKeepComments()) {
             queryBlock.addBeforeComment(lexer.readAndResetComments());
         }
-        
+
         accept(Token.SELECT);
-        
+
         if (lexer.token() == Token.HINT) {
             this.exprParser.parseHints(queryBlock.getHints());
         }
@@ -89,36 +91,51 @@ public class OdpsSelectParser extends SQLSelectParser {
         parseGroupBy(queryBlock);
 
         queryBlock.setOrderBy(this.exprParser.parseOrderBy());
-        
+
         if (lexer.token() == Token.DISTRIBUTE) {
             lexer.nextToken();
             accept(Token.BY);
-            this.exprParser.exprList(queryBlock.getDistributeBy(), queryBlock);
 
-            if (lexer.identifierEquals("SORT")) {
-                lexer.nextToken();
-                accept(Token.BY);
-                
-                for (;;) {
-                    SQLExpr expr = this.expr();
-                    
-                    SQLSelectOrderByItem sortByItem = new SQLSelectOrderByItem(expr);
-                    
-                    if (lexer.token() == Token.ASC) {
-                        sortByItem.setType(SQLOrderingSpecification.ASC);
-                        lexer.nextToken();
-                    } else if (lexer.token() == Token.DESC) {
-                        sortByItem.setType(SQLOrderingSpecification.DESC);
-                        lexer.nextToken();
-                    }
-                    
-                    queryBlock.getSortBy().add(sortByItem);
-                    
-                    if (lexer.token() == Token.COMMA) {
-                        lexer.nextToken();
-                    } else {
-                        break;
-                    }
+            for (;;) {
+                SQLSelectOrderByItem distributeByItem = this.exprParser.parseSelectOrderByItem();
+                queryBlock.addDistributeBy(distributeByItem);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.SORT)) {
+            lexer.nextToken();
+            accept(Token.BY);
+
+            for (;;) {
+                SQLSelectOrderByItem sortByItem = this.exprParser.parseSelectOrderByItem();
+                queryBlock.addSortBy(sortByItem);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.CLUSTER)) {
+            lexer.nextToken();
+            accept(Token.BY);
+
+            for (;;) {
+                SQLSelectOrderByItem clusterByItem = this.exprParser.parseSelectOrderByItem();
+                queryBlock.addClusterBy(clusterByItem);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                } else {
+                    break;
                 }
             }
         }
@@ -128,7 +145,7 @@ public class OdpsSelectParser extends SQLSelectParser {
             queryBlock.setLimit(new SQLLimit(this.expr()));
         }
 
-        return queryRest(queryBlock);
+        return queryRest(queryBlock, acceptUnion);
     }
 
     public SQLTableSource parseTableSource() {

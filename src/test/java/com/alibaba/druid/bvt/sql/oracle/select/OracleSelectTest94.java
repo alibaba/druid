@@ -60,7 +60,7 @@ public class OracleSelectTest94 extends OracleTest {
                     "\tSELECT times_purchased AS \"puchase frequency\", state_code\n" +
                     "\tFROM customers t\n" +
                     ")\n" +
-                    "PIVOT XML (COUNT(state_code) FOR state_code IN (\n" +
+                    "PIVOT XML (count(state_code) FOR state_code IN (\n" +
                     "\tSELECT state_code\n" +
                     "\tFROM preferred_states))\n" +
                     "ORDER BY 1", text);

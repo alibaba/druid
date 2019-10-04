@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.util.FnvHash;
 
@@ -138,5 +139,9 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
             return this;
         }
         return null;
+    }
+
+    public SQLObject resolveColum(long columnNameHash) {
+        return findColumn(columnNameHash);
     }
 }

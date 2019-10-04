@@ -55,7 +55,7 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
             assertEquals("SELECT totalNumber\n" +
                             "\t, concat('', ?, round(memberNumber, 0), '') AS totalDisplay\n" +
                             "FROM (\n" +
-                            "\tSELECT COUNT(1) AS totalNumber, SUM(memberNumber) AS memberNumber\n" +
+                            "\tSELECT count(1) AS totalNumber, SUM(memberNumber) AS memberNumber\n" +
                             "\tFROM (\n" +
                             "\t\tSELECT mmd.office_id AS departID, st.no AS staffNO, st.name AS staffName, COUNT(mmd.id) AS memberNumber\n" +
                             "\t\tFROM ms_member_def mmd\n" +
@@ -102,7 +102,7 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
             assertEquals("SELECT totalNumber\n" +
                             "\t, concat(?, ?, round(memberNumber, ?), ?) AS totalDisplay\n" +
                             "FROM (\n" +
-                            "\tSELECT COUNT(1) AS totalNumber, SUM(memberNumber) AS memberNumber\n" +
+                            "\tSELECT count(1) AS totalNumber, SUM(memberNumber) AS memberNumber\n" +
                             "\tFROM (\n" +
                             "\t\tSELECT mmd.office_id AS departID, st.no AS staffNO, st.name AS staffName, COUNT(mmd.id) AS memberNumber\n" +
                             "\t\tFROM ms_member_def mmd\n" +

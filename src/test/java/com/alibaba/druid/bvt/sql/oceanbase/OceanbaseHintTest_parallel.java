@@ -35,7 +35,7 @@ public class OceanbaseHintTest_parallel extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
         
         String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT /*+ parallel(5) */ COUNT(*)"
+        Assert.assertEquals("SELECT /*+ parallel(5) */ count(*)"
                 + "\nFROM t1;", result);
         print(stmtList);
 

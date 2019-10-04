@@ -59,15 +59,15 @@ public class OdpsSelectTest25 extends TestCase {
                 "GROUP BY tt.os,\n" +
                 "         tt.ver;";//
         assertEquals("INSERT OVERWRITE TABLE ids_openapp_dau_d PARTITION (dt='${lastday}')\n" +
-                "SELECT tt.os, tt.ver, COUNT(1) AS tt_user\n" +
-                "\t, SUM(tt.tt_cnt) AS tt_cnt\n" +
-                "\t, COUNT(IF(tt.tmp_cnt > 0, 1, NULL)) AS tmp_user\n" +
-                "\t, SUM(tt.tmp_cnt) AS tmp_cnt\n" +
-                "\t, COUNT(IF(tt.formal_cnt > 0, 1, NULL)) AS formal_user\n" +
-                "\t, SUM(tt.formal_cnt) AS formal_cnt\n" +
+                "SELECT tt.os, tt.ver, count(1) AS tt_user\n" +
+                "\t, sum(tt.tt_cnt) AS tt_cnt\n" +
+                "\t, count(IF(tt.tmp_cnt > 0, 1, NULL)) AS tmp_user\n" +
+                "\t, sum(tt.tmp_cnt) AS tmp_cnt\n" +
+                "\t, count(IF(tt.formal_cnt > 0, 1, NULL)) AS formal_user\n" +
+                "\t, sum(tt.formal_cnt) AS formal_cnt\n" +
                 "FROM (\n" +
-                "\tSELECT t1.uid, t2.os, t3.ver, COUNT(1) AS tt_cnt\n" +
-                "\t\t, COUNT(t1.tmp) AS tmp_cnt, COUNT(t1.formal) AS formal_cnt\n" +
+                "\tSELECT t1.uid, t2.os, t3.ver, count(1) AS tt_cnt\n" +
+                "\t\t, count(t1.tmp) AS tmp_cnt, count(t1.formal) AS formal_cnt\n" +
                 "\tFROM (\n" +
                 "\t\tSELECT uid, array(pv, 'all') AS os\n" +
                 "\t\t\t, array(v, 'all') AS ver\n" +

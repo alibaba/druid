@@ -33,7 +33,7 @@ public class SQLServerSelectTest32_with_lock extends TestCase {
         {
             String text = SQLUtils.toSQLString(stmtList, JdbcConstants.SQL_SERVER);
 
-            assertEquals("SELECT COUNT(*)\n" +
+            assertEquals("SELECT count(*)\n" +
                     "FROM t1 WITH (NOLOCK)", text);
         }
         {

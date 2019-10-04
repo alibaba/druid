@@ -26,7 +26,7 @@ public class MySqlParameterizedOutputVisitorTest_32 extends TestCase {
                 ") as miao_sale_ledger_0060 where `miao_sale_ledger_0060`.`env_type` = 3";
 
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
-        assertEquals("SELECT COUNT(*) AS count\n" +
+        assertEquals("SELECT count(*) AS count\n" +
                 "FROM (\n" +
                 "\t(SELECT env_type\n" +
                 "\tFROM `tmall_miaoscm`.miao_sale_ledger\n" +
@@ -68,7 +68,7 @@ public class MySqlParameterizedOutputVisitorTest_32 extends TestCase {
         visitor1.setInputParameters(visitor.getParameters());
         pstmt.accept(visitor1);
 
-        assertEquals("SELECT COUNT(*) AS count\n" +
+        assertEquals("SELECT count(*) AS count\n" +
                 "FROM (\n" +
                 "\t(SELECT env_type\n" +
                 "\tFROM `tmall_miaoscm`.miao_sale_ledger\n" +

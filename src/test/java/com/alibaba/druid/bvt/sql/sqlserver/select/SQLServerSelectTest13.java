@@ -68,7 +68,7 @@ public class SQLServerSelectTest13 extends TestCase {
 
         String expect = "SELECT a.*\n" +
 				"FROM (\n" +
-				"\tSELECT ROW_NUMBER() OVER (ORDER BY a.time_add DESC) AS ROW, a.detail_no AS detailNo, a.ba_id AS baId, a.ba_name AS baName, a.tran_no AS tranNo\n" +
+				"\tSELECT row_number() OVER (ORDER BY a.time_add DESC) AS ROW, a.detail_no AS detailNo, a.ba_id AS baId, a.ba_name AS baName, a.tran_no AS tranNo\n" +
 				"\t\t, a.tran_name AS tranName, a.tran_type AS tranType, a.balance_type AS balanceType, a.detail_income AS detailIncome, a.detail_payout AS detailPayout\n" +
 				"\t\t, a.before_balance AS beforeBalance, a.after_balance AS afterBalance, a.time_add AS timeAdd, a.user_add AS userAdd, a.remark AS remark\n" +
 				"\t\t, (\n" +

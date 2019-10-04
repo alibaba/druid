@@ -67,7 +67,7 @@ public class OracleSelectTest96_pivot extends OracleTest {
             assertEquals("SELECT *\n" +
                     "FROM s\n" +
                     "\tJOIN d USING (c)\n" +
-                    "PIVOT (MAX(c_c_p) AS max_ccp, MAX(d_c_p) AS max_dcp, MAX(d_x_p) AS dxp, COUNT(1) AS cnt FOR (i, p) IN ((1, 1) AS one_one, (1, 2) AS one_two, (1, 3) AS one_three, (2, 1) AS two_one, (2, 2) AS two_two, (2, 3) AS two_three))\n" +
+                    "PIVOT (max(c_c_p) AS max_ccp, max(d_c_p) AS max_dcp, max(d_x_p) AS dxp, count(1) AS cnt FOR (i, p) IN ((1, 1) AS one_one, (1, 2) AS one_two, (1, 3) AS one_three, (2, 1) AS two_one, (2, 2) AS two_two, (2, 3) AS two_three))\n" +
                     "WHERE d_t = 'p'", text);
         }
 

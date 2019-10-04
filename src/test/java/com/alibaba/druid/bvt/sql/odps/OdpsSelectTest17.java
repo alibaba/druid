@@ -49,7 +49,7 @@ public class OdpsSelectTest17 extends TestCase {
                 "\tAND prov IN (\n" +
                 "\t\tSELECT prov\n" +
                 "\t\tFROM (\n" +
-                "\t\t\tSELECT prov, SUM(cnt) AS cnt\n" +
+                "\t\t\tSELECT prov, sum(cnt) AS cnt\n" +
                 "\t\t\tFROM mock_app.adl_mock_v_fct\n" +
                 "\t\t\tWHERE ds = 20160920\n" +
                 "\t\t\tGROUP BY prov\n" +

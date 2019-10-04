@@ -46,7 +46,7 @@ public class PGSelectTest58 extends TestCase {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
         SQLStatement stmt = stmtList.get(0);
 
-        assertEquals("SELECT id, SUM(uv[1]) AS uv1, SUM(uv[2]) AS uv2\n" +
+        assertEquals("SELECT id, sum(uv[1]) AS uv1, sum(uv[2]) AS uv2\n" +
                 "FROM xxxxx\n" +
                 "WHERE a IN (?)\n" +
                 "\tAND ta -> 'taAge' ?| '{  \n" +

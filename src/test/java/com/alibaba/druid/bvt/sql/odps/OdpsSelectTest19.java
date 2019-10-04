@@ -31,7 +31,7 @@ public class OdpsSelectTest19 extends TestCase {
         putLong(bytes, 0, 1095288847322L);
         // 1095288847322
         String sql = "select wm_concat(distinct ',', name) from mytable";//
-        Assert.assertEquals("SELECT WM_CONCAT(DISTINCT ',', name)\n" +
+        Assert.assertEquals("SELECT wm_concat(DISTINCT ',', name)\n" +
                 "FROM mytable", SQLUtils.formatOdps(sql));
         Assert.assertEquals("select wm_concat(DISTINCT ',', name)\n" +
                 "from mytable", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

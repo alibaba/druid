@@ -56,7 +56,7 @@ public class MySqlSelectTest_55 extends MysqlTest {
         
         {
             String output = SQLUtils.toMySqlString(stmt);
-            assertEquals("SELECT COUNT(0)\n" +
+            assertEquals("SELECT count(0)\n" +
                             "FROM tb_user\n" +
                             "WHERE (login_name LIKE '%j%'\n" +
                             "\t\tAND v_sort BETWEEN 1 AND 10)\n" +
@@ -77,7 +77,7 @@ public class MySqlSelectTest_55 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
-            assertEquals("SELECT COUNT(0)\n" +
+            assertEquals("SELECT count(0)\n" +
                             "FROM tb_user\n" +
                             "WHERE (login_name LIKE ?\n" +
                             "\t\tAND v_sort BETWEEN ? AND ?)\n" +
