@@ -366,6 +366,8 @@ public class SQLExprParser extends SQLParser {
                     ((SQLBinaryOpExpr) sqlExpr).setBracket(true);
                 }
 
+                accept(Token.RPAREN);
+
                 if (lexer.token == Token.UNION && sqlExpr instanceof SQLQueryExpr) {
                     SQLQueryExpr queryExpr = (SQLQueryExpr) sqlExpr;
 
@@ -377,7 +379,7 @@ public class SQLExprParser extends SQLParser {
                 //select * from test_a where id=(select id from test_b where id = 1) union all select * from test_c .....
                 //会解析为 select * from select * from test_a where id=(select id from test_b where id = 1 union all select * from test_c .....
                 //所以需要将accept(Token.RPAREN) 移动到 处理 Union all 以及 子查询之后
-                accept(Token.RPAREN);
+
 
                 break;
             case INSERT:

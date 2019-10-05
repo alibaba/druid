@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.sql.oracle;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
@@ -16,7 +17,12 @@ public class AntlrExamplesTest extends TestCase {
         for (File file : dir.listFiles()) {
             System.out.println(file);
             String sql = FileUtils.readFileToString(file);
-            SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
+            try {
+                SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
+            } catch (ParserException ex) {
+                System.out.println(sql);
+                throw ex;
+            }
         }
     }
 }
