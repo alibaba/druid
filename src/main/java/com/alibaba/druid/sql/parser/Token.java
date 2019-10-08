@@ -302,7 +302,7 @@ public enum Token {
     COMMA(","), 
     DOT("."), 
     DOTDOT(".."), 
-    DOTDOTDOT("..,"), 
+    DOTDOTDOT("..."), 
     EQ("="), 
     GT(">"), 
     LT("<"),
