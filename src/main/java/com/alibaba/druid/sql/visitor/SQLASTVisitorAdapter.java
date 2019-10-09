@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLArgument;
 import com.alibaba.druid.sql.ast.SQLArrayDataType;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDataTypeRefExpr;
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLKeep;
 import com.alibaba.druid.sql.ast.SQLLimit;
@@ -84,6 +85,9 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
     protected int features;
@@ -412,6 +416,58 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public boolean visit(SQLUnionQuery x) {
+        SQLUnionOperator operator = x.getOperator();
+        List<SQLSelectQuery> relations = x.getRelations();
+        if (relations.size() > 2) {
+            for (SQLSelectQuery relation : x.getRelations()) {
+                relation.accept(this);
+            }
+            return false;
+        }
+
+        SQLSelectQuery left = x.getLeft();
+        SQLSelectQuery right = x.getRight();
+
+        boolean bracket = x.isBracket() && !(x.getParent() instanceof SQLUnionQueryTableSource);
+
+        if ((!bracket)
+                && left instanceof SQLUnionQuery
+                && ((SQLUnionQuery) left).getOperator() == operator
+                && !right.isBracket()
+                && x.getOrderBy() == null) {
+
+            SQLUnionQuery leftUnion = (SQLUnionQuery) left;
+
+            List<SQLSelectQuery> rights = new ArrayList<SQLSelectQuery>();
+            rights.add(right);
+
+            for (; ; ) {
+                SQLSelectQuery leftLeft = leftUnion.getLeft();
+                SQLSelectQuery leftRight = leftUnion.getRight();
+
+                if ((!leftUnion.isBracket())
+                        && leftUnion.getOrderBy() == null
+                        && (!leftLeft.isBracket())
+                        && (!leftRight.isBracket())
+                        && leftLeft instanceof SQLUnionQuery
+                        && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
+                    rights.add(leftRight);
+                    leftUnion = (SQLUnionQuery) leftLeft;
+                    continue;
+                } else {
+                    rights.add(leftRight);
+                    rights.add(leftLeft);
+                }
+                break;
+            }
+
+            for (int i = rights.size() - 1; i >= 0; i--) {
+                SQLSelectQuery item = rights.get(i);
+                item.accept(this);
+            }
+            return false;
+        }
+
         return true;
     }
 
@@ -2066,6 +2122,26 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     public void endVisit(SQLDumpStatement x) {
 
+    }
+
+    @Override
+    public void endVisit(SQLValuesQuery x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLValuesQuery x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDataTypeRefExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDataTypeRefExpr x) {
+        return true;
     }
 
     public final boolean isEnabled(VisitorFeature feature) {

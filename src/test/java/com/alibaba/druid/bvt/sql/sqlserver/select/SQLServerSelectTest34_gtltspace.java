@@ -36,7 +36,7 @@ public class SQLServerSelectTest34_gtltspace extends TestCase {
         {
             String text = SQLUtils.toSQLString(stmtList, JdbcConstants.SQL_SERVER);
 
-            assertEquals("SELECT COUNT(1)\n" +
+            assertEquals("SELECT count(1)\n" +
                     "FROM wms.pack_box_material a, wms.pack_box b\n" +
                     "WHERE a.pb_id = b.pb_id\n" +
                     "\tAND b.state <> 2\n" +

@@ -1917,6 +1917,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             orderBy.accept(this);
         }
 
+        final SQLLimit limit = x.getLimit();
+        if (limit != null) {
+            println();
+            limit.accept(this);
+        }
+
         if (x.getHintsSize() > 0) {
             printAndAccept(x.getHints(), "");
         }
@@ -2881,6 +2887,34 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLUnionQuery x) {
         SQLUnionOperator operator = x.getOperator();
+
+        List<SQLSelectQuery> relations = x.getRelations();
+        if (relations.size() > 2) {
+            for (int i = 0; i < relations.size(); i++) {
+                if (i != 0) {
+                    println();
+                    print0(ucase ? operator.name : operator.name_lcase);
+                    println();
+                }
+
+                SQLSelectQuery item = relations.get(i);
+                item.accept(this);
+            }
+
+            SQLOrderBy orderBy = x.getOrderBy();
+            if (orderBy != null) {
+                println();
+                orderBy.accept(this);
+            }
+
+            SQLLimit limit = x.getLimit();
+            if (limit != null) {
+                println();
+                limit.accept(this);
+            }
+            return false;
+        }
+
         SQLSelectQuery left = x.getLeft();
         SQLSelectQuery right = x.getRight();
 
@@ -2891,9 +2925,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 && left instanceof SQLUnionQuery
                 && ((SQLUnionQuery) left).getOperator() == operator
                 && !right.isBracket()
+                && x.getLimit() == null
                 && orderBy == null) {
 
             SQLUnionQuery leftUnion = (SQLUnionQuery) left;
+
+            if (right instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock rightQueryBlock = (SQLSelectQueryBlock) right;
+                if (rightQueryBlock.getOrderBy() != null || rightQueryBlock.getLimit() != null) {
+                    rightQueryBlock.setBracket(true);
+                }
+            }
 
             List<SQLSelectQuery> rights = new ArrayList<SQLSelectQuery>();
             rights.add(right);
@@ -2901,6 +2943,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             for (;;) {
                 SQLSelectQuery leftLeft = leftUnion.getLeft();
                 SQLSelectQuery leftRight = leftUnion.getRight();
+
+                if (leftRight instanceof SQLSelectQueryBlock) {
+                    SQLSelectQueryBlock leftRightQueryBlock = (SQLSelectQueryBlock) leftRight;
+                    if (leftRightQueryBlock.getOrderBy() != null || leftRightQueryBlock.getLimit() != null) {
+                        leftRightQueryBlock.setBracket(true);
+                    }
+                }
 
                 if ((!leftUnion.isBracket())
                         && leftUnion.getOrderBy() == null
@@ -2939,24 +2988,30 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             for (;;) {
                 if (left.getClass() == SQLUnionQuery.class) {
                     SQLUnionQuery leftUnion = (SQLUnionQuery) left;
-                    SQLSelectQuery leftLeft = leftUnion.getLeft();
-                    SQLSelectQuery leftRigt = leftUnion.getRight();
-                    if ((!leftUnion.isBracket())
-                            && leftUnion.getRight() instanceof SQLSelectQueryBlock
-                            && leftUnion.getLeft() != null
-                            && leftUnion.getOrderBy() == null)
-                    {
-                        if (leftLeft.getClass() == SQLUnionQuery.class) {
-                            visit((SQLUnionQuery) leftLeft);
-                        } else {
-                            printQuery(leftLeft);
-                        }
-                        println();
-                        print0(ucase ? leftUnion.getOperator().name : leftUnion.getOperator().name_lcase);
-                        println();
-                        leftRigt.accept(this);
-                    } else {
+                    if (leftUnion.getRelations().size() > 2) {
                         visit(leftUnion);
+                    } else {
+                        SQLSelectQuery leftLeft = leftUnion.getLeft();
+                        SQLSelectQuery leftRigt = leftUnion.getRight();
+                        if ((!leftUnion.isBracket())
+                                && leftUnion.getRight() instanceof SQLSelectQueryBlock
+                                && leftUnion.getLeft() != null
+                                && leftUnion.getLimit() == null
+                                && leftUnion.getOrderBy() == null) {
+                            if (leftLeft.getClass() == SQLUnionQuery.class) {
+                                visit((SQLUnionQuery) leftLeft);
+                            }
+                            else {
+                                printQuery(leftLeft);
+                            }
+                            println();
+                            print0(ucase ? leftUnion.getOperator().name : leftUnion.getOperator().name_lcase);
+                            println();
+                            leftRigt.accept(this);
+                        }
+                        else {
+                            visit(leftUnion);
+                        }
                     }
                 } else {
                     left.accept(this);
@@ -2974,8 +3029,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
 
         boolean needParen = false;
-        if (orderBy != null
-                && (!right.isBracket()) && right instanceof SQLSelectQueryBlock) {
+        if ((!right.isBracket())
+                && right instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock rightQuery = (SQLSelectQueryBlock) right;
             if (rightQuery.getOrderBy() != null || rightQuery.getLimit() != null) {
                 needParen = true;

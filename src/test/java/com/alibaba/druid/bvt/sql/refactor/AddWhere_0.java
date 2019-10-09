@@ -26,7 +26,7 @@ public class AddWhere_0 extends TestCase {
         assertEquals("SELECT *\n" +
                 "FROM t\n" +
                 "WHERE name = 'xx'\n" +
-                "AND id = 1", stmt.toString());
+                "\tAND id = 1", stmt.toString());
     }
 
     public void test_select_1_union() throws Exception {

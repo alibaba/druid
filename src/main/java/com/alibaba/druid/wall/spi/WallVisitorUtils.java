@@ -288,6 +288,20 @@ public class WallVisitorUtils {
             return;
         }
 
+        List<SQLCommentHint> hints = x.getHintsDirect();
+        if (hints != null
+                && x.getParent() instanceof SQLUnionQuery
+                && x == ((SQLUnionQuery) x.getParent()).getRight()
+        ) {
+            for (SQLCommentHint hint : hints) {
+                String text = hint.getText();
+                if (text.startsWith("!")) {
+                    addViolation(visitor, ErrorCode.UNION, "union select hint not allow", x);
+                    return;
+                }
+            }
+        }
+
         SQLExpr where = x.getWhere();
         if (where != null) {
             checkCondition(visitor, x.getWhere());
@@ -1559,7 +1573,7 @@ public class WallVisitorUtils {
     }
 
     public static Object getValue(WallVisitor visitor, SQLExpr x) {
-        if (x != null && x.getAttributes().containsKey(EVAL_VALUE)) {
+        if (x != null && x.containsAttribute(EVAL_VALUE)) {
             return getValueFromAttributes(visitor, x);
         }
 
@@ -1715,7 +1729,7 @@ public class WallVisitorUtils {
                 SQLExpr selectItemExpr = queryBlock.getSelectList().get(0).getExpr();
                 if (selectItemExpr instanceof SQLAggregateExpr) {
                     if (((SQLAggregateExpr) selectItemExpr)
-                            .methodNameHashCod64() == FnvHash.Constants.COUNT) {
+                            .methodNameHashCode64() == FnvHash.Constants.COUNT) {
                         simpleCount = true;
                     }
                 }

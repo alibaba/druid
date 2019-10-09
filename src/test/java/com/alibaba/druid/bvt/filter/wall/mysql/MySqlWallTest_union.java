@@ -44,4 +44,21 @@ public class MySqlWallTest_union extends TestCase {
 
         Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 'u1' as u1, 'u2' as u2",  config)); // union select item has alias
     }
+
+    public void testUnion2() throws Exception
+    {
+        assertFalse(
+                WallUtils.isValidateMySql("SELECT name, surname FROM users WHERE name='' UNION SELECT @@version, 'string1'")
+        );
+
+        assertFalse(
+                WallUtils.isValidateMySql("SELECT name, surname FROM users WHERE name='' UNION SELECT /*! @@version,*/ 'string1'")
+        );
+
+    assertFalse(
+                WallUtils.isValidateMySql("SELECT name, surname FROM users WHERE name=' ' UNION SELECT /*! (select table_name FROM information_schema.tables limit 1,1),*/ 'string1'")
+        );
+
+
+    }
 }

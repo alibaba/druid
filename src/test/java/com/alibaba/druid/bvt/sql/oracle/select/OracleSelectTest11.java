@@ -69,7 +69,7 @@ public class OracleSelectTest11 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("IMAGE_REPOSITORY")));
 
-        Assert.assertEquals(17, visitor.getColumns().size());
+        Assert.assertEquals(7, visitor.getColumns().size());
 
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("IMAGE_REPOSITORY", "rowid")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("IMAGE_REPOSITORY", "COMPANY_ID")));

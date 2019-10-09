@@ -656,5 +656,24 @@ public final class FnvHash {
 
         long OVERWRITE = fnv1a_64_lower("OVERWRITE");
         long FILTER = fnv1a_64_lower("FILTER");
+        long MAPJOIN = fnv1a_64_lower("MAPJOIN");
+        long DISTRIBUTE = fnv1a_64_lower("DISTRIBUTE");
+        long SORT = fnv1a_64_lower("SORT");
+        long CLUSTER = fnv1a_64_lower("CLUSTER");
+        long GROUPING = fnv1a_64_lower("GROUPING");
+        long IDENTIFIED = fnv1a_64_lower("IDENTIFIED");
+        long STRAIGHT = fnv1a_64_lower("STRAIGHT");
+        long IFNULL = fnv1a_64_lower("IFNULL");
+        long TO_DATE = fnv1a_64_lower("TO_DATE");
+        long ADD_MONTHS = fnv1a_64_lower("ADD_MONTHS");
+        long PERIOD_ADD = fnv1a_64_lower("PERIOD_ADD");
+        long PERIOD_DIFF = fnv1a_64_lower("PERIOD_DIFF");
+        long ISNULL = fnv1a_64_lower("ISNULL");
+        long COALESCE = fnv1a_64_lower("COALESCE");
+        long NVL = fnv1a_64_lower("NVL");
+        long ROUND = fnv1a_64_lower("ROUND");
+        long BIT_COUNT = fnv1a_64_lower("BIT_COUNT");
+        long WEIGHT_STRING = fnv1a_64_lower("WEIGHT_STRING");
+        long REVERSE = fnv1a_64_lower("REVERSE");
     }
 }

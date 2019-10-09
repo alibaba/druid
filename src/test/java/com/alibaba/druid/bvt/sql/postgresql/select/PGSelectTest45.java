@@ -33,7 +33,7 @@ public class PGSelectTest45 extends PGTest {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals("SELECT COUNT(1)\n" +
+        Assert.assertEquals("SELECT count(1)\n" +
                 "FROM t_user\n" +
                 "WHERE property ?| 'name'", SQLUtils.toPGString(stmt));
         

@@ -38,6 +38,11 @@ public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLRepl
         this.setExpr(expr);
     }
 
+    public SQLSelectOrderByItem(SQLExpr expr, SQLOrderingSpecification type){
+        this.setExpr(expr);
+        this.type = type;
+    }
+
     public SQLExpr getExpr() {
         return this.expr;
     }

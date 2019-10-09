@@ -28,6 +28,7 @@ public interface SQLObject {
     void                setParent(SQLObject parent);
 
     Map<String, Object> getAttributes();
+    boolean             containsAttribute(String name);
     Object              getAttribute(String name);
     void                putAttribute(String name, Object value);
     Map<String, Object> getAttributesDirect();

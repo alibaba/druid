@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.SQLWindow;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
@@ -247,8 +248,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         return false;
     }
 
-
     public boolean visit(PGSelectQueryBlock x) {
+        if ((!isParameterized()) && isPrettyFormat() && x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+
+        final boolean bracket = x.isBracket();
+        if (bracket) {
+            print('(');
+        }
+
         print0(ucase ? "SELECT " : "select ");
 
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
@@ -258,7 +267,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
             if (x.getDistinctOn() != null && x.getDistinctOn().size() > 0) {
                 print0(ucase ? "ON " : "on ");
+                print0("(");
                 printAndAccept(x.getDistinctOn(), ", ");
+                print0(") ");
             }
         }
 
@@ -281,10 +292,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             x.getFrom().accept(this);
         }
 
-        if (x.getWhere() != null) {
+        SQLExpr where = x.getWhere();
+        if (where != null) {
             println();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().accept(this);
+            where.accept(this);
+
+            if (where.hasAfterComment() && isPrettyFormat()) {
+                print(' ');
+                printlnComment(x.getWhere().getAfterCommentsDirect());
+            }
         }
 
         if (x.getGroupBy() != null) {
@@ -292,9 +309,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             x.getGroupBy().accept(this);
         }
 
-        if (x.getWindow() != null) {
+//        if (x.getWindow() != null) {
+//            println();
+//            x.getWindow().accept(this);
+//        }
+
+        final List<SQLWindow> windows = x.getWindows();
+        if (windows != null && windows.size() > 0) {
             println();
-            x.getWindow().accept(this);
+            print0(ucase ? "WINDOW " : "window ");
+            printAndAccept(windows, ", ");
         }
 
         if (x.getOrderBy() != null) {
@@ -315,6 +339,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.getForClause() != null) {
             println();
             x.getForClause().accept(this);
+        }
+
+        if (bracket) {
+            print(')');
         }
 
         return false;
@@ -455,7 +483,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             if (onConflictDoNothing) {
                 print0(ucase ? " DO NOTHING" : " do nothing");
             } else if ((onConflictUpdateSetItems != null && onConflictUpdateSetItems.size() > 0)) {
-                print0(ucase ? " UPDATE SET " : " update set ");
+                print0(ucase ? " DO UPDATE SET " : " do update set ");
                 printAndAccept(onConflictUpdateSetItems, ", ");
             }
         }

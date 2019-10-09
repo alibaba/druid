@@ -51,7 +51,7 @@ public class PGInsertTest7 extends PGTest {
 
         assertEquals("INSERT INTO test (k, v)\n" +
                 "VALUES (1, 2)\n" +
-                "ON CONFLICT (k) UPDATE SET v = EXCLUDED.v;", stmt.toString());
+                "ON CONFLICT (k) DO UPDATE SET v = EXCLUDED.v;", stmt.toString());
     }
 
 }

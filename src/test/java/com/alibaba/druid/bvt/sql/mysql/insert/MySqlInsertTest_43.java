@@ -87,7 +87,7 @@ public class MySqlInsertTest_43 extends TestCase {
                 "\t, CAST(20190115 AS bigint) AS sys_ds, str_to_date('2019-01-15 21:51:00', '%Y-%m-%d %H:%i:%s') AS sys_biztime, now() AS sys_gmt_modified\n" +
                 "\t, CAST(businessType AS varchar) AS business_type, CAST(parcelledOrderNum AS bigint) AS parcelled_order_num, CAST(warehouseId AS varchar) AS warehouse_id\n" +
                 "FROM (\n" +
-                "\tSELECT CAST(t1.warehouse_id AS varchar) AS warehouseId, t2.businessType, COUNT(1) AS parcelledOrderNum\n" +
+                "\tSELECT CAST(t1.warehouse_id AS varchar) AS warehouseId, t2.businessType, count(1) AS parcelledOrderNum\n" +
                 "\tFROM sales_order t1\n" +
                 "\t\tJOIN (\n" +
                 "\t\t\tSELECT t2_1.warehouse_id, t2_1.external_batch_code\n" +

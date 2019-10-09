@@ -402,6 +402,10 @@ public class PagerUtils {
         if (limit != null) {
             if (offset > 0) {
                 limit.setOffset(new SQLIntegerExpr(offset));
+            } else if (offset == 0) {
+                if (limit.getOffset() != null) {
+                    limit.setOffset(new SQLIntegerExpr(offset));
+                }
             }
 
             if (check && limit.getRowCount() instanceof SQLNumericLiteralExpr) {

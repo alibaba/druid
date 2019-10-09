@@ -87,6 +87,16 @@ public final class SQLInListExpr extends SQLExprImpl implements Serializable {
         this.targetList = targetList;
     }
 
+    public void addTarget(SQLExpr x) {
+        x.setParent(this);
+        targetList.add(x);
+    }
+
+    public void addTarget(int index, SQLExpr x) {
+        x.setParent(this);
+        targetList.add(index, x);
+    }
+
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.expr);

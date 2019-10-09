@@ -179,7 +179,7 @@ public class DMLSelectParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT SQL_CACHE id1, MAX(id2)\nFROM tb1\nGROUP BY id1\nHAVING id1 > 10\nORDER BY id3 DESC",
+        Assert.assertEquals("SELECT SQL_CACHE id1, max(id2)\nFROM tb1\nGROUP BY id1\nHAVING id1 > 10\nORDER BY id3 DESC",
                             output);
     }
 

@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -36,6 +37,7 @@ public class SQLSelect extends SQLObjectImpl {
     protected SQLWithSubqueryClause withSubQuery;
     protected SQLSelectQuery        query;
     protected SQLOrderBy            orderBy;
+    protected SQLLimit              limit;
 
     protected List<SQLHint>         hints;
 
@@ -123,31 +125,65 @@ public class SQLSelect extends SQLObjectImpl {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((orderBy == null) ? 0 : orderBy.hashCode());
-        result = prime * result + ((query == null) ? 0 : query.hashCode());
-        result = prime * result + ((withSubQuery == null) ? 0 : withSubQuery.hashCode());
-        return result;
+    public boolean equals(Object o)
+    {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        SQLSelect sqlSelect = (SQLSelect) o;
+
+        if (forBrowse != sqlSelect.forBrowse) {
+            return false;
+        }
+        if (withSubQuery != null ? !withSubQuery.equals(sqlSelect.withSubQuery) : sqlSelect.withSubQuery != null) {
+            return false;
+        }
+        if (query != null ? !query.equals(sqlSelect.query) : sqlSelect.query != null) {
+            return false;
+        }
+        if (orderBy != null ? !orderBy.equals(sqlSelect.orderBy) : sqlSelect.orderBy != null) {
+            return false;
+        }
+        if (limit != null ? !limit.equals(sqlSelect.limit) : sqlSelect.limit != null) {
+            return false;
+        }
+        if (hints != null ? !hints.equals(sqlSelect.hints) : sqlSelect.hints != null) {
+            return false;
+        }
+        if (restriction != null ? !restriction.equals(sqlSelect.restriction) : sqlSelect.restriction != null) {
+            return false;
+        }
+        if (forXmlOptions != null ? !forXmlOptions.equals(sqlSelect.forXmlOptions) : sqlSelect.forXmlOptions != null) {
+            return false;
+        }
+        if (xmlPath != null ? !xmlPath.equals(sqlSelect.xmlPath) : sqlSelect.xmlPath != null) {
+            return false;
+        }
+        if (rowCount != null ? !rowCount.equals(sqlSelect.rowCount) : sqlSelect.rowCount != null) {
+            return false;
+        }
+        return offset != null ? offset.equals(sqlSelect.offset) : sqlSelect.offset == null;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        SQLSelect other = (SQLSelect) obj;
-        if (orderBy == null) {
-            if (other.orderBy != null) return false;
-        } else if (!orderBy.equals(other.orderBy)) return false;
-        if (query == null) {
-            if (other.query != null) return false;
-        } else if (!query.equals(other.query)) return false;
-        if (withSubQuery == null) {
-            if (other.withSubQuery != null) return false;
-        } else if (!withSubQuery.equals(other.withSubQuery)) return false;
-        return true;
+    public int hashCode()
+    {
+        int result = withSubQuery != null ? withSubQuery.hashCode() : 0;
+        result = 31 * result + (query != null ? query.hashCode() : 0);
+        result = 31 * result + (orderBy != null ? orderBy.hashCode() : 0);
+        result = 31 * result + (limit != null ? limit.hashCode() : 0);
+        result = 31 * result + (hints != null ? hints.hashCode() : 0);
+        result = 31 * result + (restriction != null ? restriction.hashCode() : 0);
+        result = 31 * result + (forBrowse ? 1 : 0);
+        result = 31 * result + (forXmlOptions != null ? forXmlOptions.hashCode() : 0);
+        result = 31 * result + (xmlPath != null ? xmlPath.hashCode() : 0);
+        result = 31 * result + (rowCount != null ? rowCount.hashCode() : 0);
+        result = 31 * result + (offset != null ? offset.hashCode() : 0);
+        return result;
     }
 
     public void output(StringBuffer buf) {
@@ -348,5 +384,16 @@ public class SQLSelect extends SQLObjectImpl {
         }
 
         return false;
+    }
+
+    public SQLLimit getLimit() {
+        return limit;
+    }
+
+    public void setLimit(SQLLimit x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.limit = x;
     }
 }

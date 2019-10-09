@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 public class PGFromAsTest extends PGTest {
     public void testFromAs() throws Exception {
         String sql = "SELECT Count(*) FROM tb_abc AS t1 WHERE ((t1.a_id = 'global_a_id') AND (t1.owner = 'global_bc'));";
-        String expectedSql = "SELECT COUNT(*)\nFROM tb_abc t1\nWHERE t1.a_id = 'global_a_id'\n\tAND t1.owner = 'global_bc';";
+        String expectedSql = "SELECT Count(*)\nFROM tb_abc t1\nWHERE t1.a_id = 'global_a_id'\n\tAND t1.owner = 'global_bc';";
         String expectedPattern = "SELECT COUNT(*)\nFROM tb_abc t1\nWHERE t1.a_id = ?\n\tAND t1.owner = ?";
         testParseSql(sql, expectedSql, expectedPattern, PGSelectStatement.class);
     }

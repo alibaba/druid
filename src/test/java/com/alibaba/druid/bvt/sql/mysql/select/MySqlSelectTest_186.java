@@ -53,7 +53,7 @@ public class MySqlSelectTest_186 extends MysqlTest {
         assertTrue(visitor.containsColumn("auth_tenant", "name"));
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("SELECT COUNT(0)\n" +
+        assertEquals("SELECT count(0)\n" +
                         "FROM (\n" +
                         "\tSELECT *\n" +
                         "\tFROM auth_tenant\n" +

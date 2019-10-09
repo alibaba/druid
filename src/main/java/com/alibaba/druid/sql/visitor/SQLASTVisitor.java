@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLArgument;
 import com.alibaba.druid.sql.ast.SQLArrayDataType;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDataTypeRefExpr;
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLKeep;
 import com.alibaba.druid.sql.ast.SQLLimit;
@@ -904,5 +905,11 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLDumpStatement x);
     void endVisit(SQLDumpStatement x);
+
+    boolean visit(SQLValuesQuery x);
+    void endVisit(SQLValuesQuery x);
+
+    boolean visit(SQLDataTypeRefExpr x);
+    void endVisit(SQLDataTypeRefExpr x);
 
 }

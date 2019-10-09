@@ -53,7 +53,7 @@ public class OracleSelectTest72 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT A, B, C, SUM(E)\n" +
+            assertEquals("SELECT A, B, C, sum(E)\n" +
                     "FROM test\n" +
                     "GROUP BY ROLLUP (A, B, C)", text);
         }

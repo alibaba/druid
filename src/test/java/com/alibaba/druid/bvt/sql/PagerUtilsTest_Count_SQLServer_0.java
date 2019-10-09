@@ -35,7 +35,7 @@ public class PagerUtilsTest_Count_SQLServer_0 extends TestCase {
         String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
         assertEquals("SELECT COUNT(*)\n" +
                 "FROM (\n" +
-                "\tSELECT type, COUNT(*)\n" +
+                "\tSELECT type, count(*)\n" +
                 "\tFROM t\n" +
                 "\tGROUP BY type\n" +
                 ") ALIAS_COUNT", result);

@@ -35,7 +35,7 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
     public OdpsSelectQueryBlock(){
         dbType = JdbcConstants.ODPS;
 
-        distributeBy = new ArrayList<SQLExpr>();
+        distributeBy = new ArrayList<SQLSelectOrderByItem>();
         sortBy = new ArrayList<SQLSelectOrderByItem>(2);
     }
 

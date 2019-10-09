@@ -48,7 +48,7 @@ public class MySqlCreateViewTest2 extends MysqlTest {
 
         assertEquals("CREATE VIEW revenue0\n" +
                         "AS\n" +
-                        "SELECT l_suppkey AS supplier_no, SUM(l_extendedprice * (1 - l_discount)) AS total_revenue\n" +
+                        "SELECT l_suppkey AS supplier_no, sum(l_extendedprice * (1 - l_discount)) AS total_revenue\n" +
                         "FROM lineitem\n" +
                         "WHERE l_shipdate >= DATE '1993-01-01'\n" +
                         "\tAND l_shipdate < DATE '1993-01-01' + INTERVAL '3' MONTH\n" +
