@@ -66,11 +66,19 @@ public class DataSourceCreator {
             String username = properties.getProperty(n + ".username");
             String password = properties.getProperty(n + ".password");
             LOG.info("Creating " + n + " with url[" + url + "] and username[" + username + "].");
+            DruidDataSource dataSource = null;
             try {
-                DruidDataSource dataSource = create(n, url, username, password, haDataSource);
+                dataSource = create(n, url, username, password, haDataSource);
                 map.put(n, dataSource);
             } catch(Exception e) {
                 LOG.error("Can NOT create DruidDataSource for " + n, e);
+                if (dataSource != null) {
+                    try {
+                        dataSource.close();
+                    } catch (Exception ex) {
+                        LOG.error("Exception occurred while closing the FAILURE DataSource.", ex);
+                    }
+                }
             }
         }
         LOG.info(map.size() + " DruidDataSource(s) created. ");
@@ -172,7 +180,7 @@ public class DataSourceCreator {
                     try {
                         is.close();
                     } catch (Exception e) {
-                        // ignore
+                        LOG.debug("Can not close Inputstream.", e);
                     }
                 }
             }
