@@ -879,10 +879,10 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     public void closeOnCompletion() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        stmt.closeOnCompletion();
     }
 
     public boolean isCloseOnCompletion() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        stmt.isCloseOnCompletion();
     }
 }
