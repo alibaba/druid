@@ -883,6 +883,6 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     public boolean isCloseOnCompletion() throws SQLException {
-        stmt.isCloseOnCompletion();
+        return stmt.isCloseOnCompletion();
     }
 }
