@@ -507,7 +507,7 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
     }
 
     public boolean isCloseOnCompletion() throws SQLException {
-        statement.isCloseOnCompletion();
+        return statement.isCloseOnCompletion();
     }
 
     @Override
