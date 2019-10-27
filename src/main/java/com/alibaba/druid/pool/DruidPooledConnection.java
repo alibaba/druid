@@ -712,12 +712,17 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         try {
             conn.setAutoCommit(autoCommit);
             holder.setUnderlyingAutoCommit(autoCommit);
+            holder.setLastExecTimeMillis(System.currentTimeMillis());
         } catch (SQLException ex) {
             handleException(ex, null);
         }
     }
 
     protected void transactionRecord(String sql) throws SQLException {
+        if (holder != null) {
+            holder.setLastExecTimeMillis(System.currentTimeMillis());
+        }
+
         if (transactionInfo == null && (!conn.getAutoCommit())) {
             DruidAbstractDataSource dataSource = holder.getDataSource();
             dataSource.incrementStartTransactionCount();

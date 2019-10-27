@@ -172,6 +172,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private volatile boolean                 keepAlive                 = false;
     private boolean                          asyncInit                 = false;
     protected boolean                        killWhenSocketReadTimeout = false;
+    protected boolean                        checkExecuteTime          = false;
 
     private static List<Filter>              autoFilters               = null;
     private boolean                          loadSpifilterSkip         = false;
@@ -524,6 +525,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             String property = System.getProperty("druid.load.spifilter.skip");
             if (property != null && !"false".equals(property)) {
                 loadSpifilterSkip = true;
+            }
+        }
+        {
+            String property = System.getProperty("druid.checkExecuteTime");
+            if (property != null && !"false".equals(property)) {
+                checkExecuteTime = true;
             }
         }
     }
@@ -1426,7 +1433,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     final DruidConnectionHolder holder = poolableConnection.holder;
                     long currentTimeMillis             = System.currentTimeMillis();
                     long lastActiveTimeMillis          = holder.lastActiveTimeMillis;
+                    long lastExecTimeMillis            = holder.lastExecTimeMillis;
                     long lastKeepTimeMillis            = holder.lastKeepTimeMillis;
+
+                    if (checkExecuteTime
+                            && lastExecTimeMillis != lastActiveTimeMillis) {
+                        lastActiveTimeMillis = lastExecTimeMillis;
+                    }
 
                     if (lastKeepTimeMillis > lastActiveTimeMillis) {
                         lastActiveTimeMillis = lastKeepTimeMillis;
@@ -3803,5 +3816,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public boolean isClosed() {
         return this.closed;
+    }
+
+    public boolean isCheckExecuteTime() {
+        return checkExecuteTime;
+    }
+
+    public void setCheckExecuteTime(boolean checkExecuteTime) {
+        this.checkExecuteTime = checkExecuteTime;
     }
 }

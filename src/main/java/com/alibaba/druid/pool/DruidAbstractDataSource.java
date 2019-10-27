@@ -1464,6 +1464,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 long currentTimeMillis = System.currentTimeMillis();
                 if (holder != null) {
                     holder.lastValidTimeMillis = currentTimeMillis;
+                    holder.lastExecTimeMillis = currentTimeMillis;
                 }
 
                 if (valid && isMySql) { // unexcepted branch
