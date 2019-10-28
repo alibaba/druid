@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
+import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -36,6 +37,10 @@ import com.alibaba.druid.util.JdbcConstants;
 public class HiveCreateTableParser extends SQLCreateTableParser {
     public HiveCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
+    }
+
+    public HiveCreateTableParser(Lexer lexer) {
+        super(new HiveExprParser(lexer));
     }
 
     public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {

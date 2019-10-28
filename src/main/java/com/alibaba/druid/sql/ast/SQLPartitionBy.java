@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,6 +102,21 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
             name2.setParent(x);
             x.storeIn.add(name2);
         }
+    }
+
+    public boolean isPartitionByColumn(long columnNameHashCode64) {
+        for (SQLExpr column : columns) {
+            if (column instanceof SQLIdentifierExpr
+                    && ((SQLIdentifierExpr) column)
+                    .nameHashCode64() == columnNameHashCode64) {
+                return true;
+            }
+        }
+
+        if (subPartitionBy != null) {
+            return subPartitionBy.isPartitionByColumn(columnNameHashCode64);
+        }
+        return false;
     }
 
     public abstract SQLPartitionBy clone();

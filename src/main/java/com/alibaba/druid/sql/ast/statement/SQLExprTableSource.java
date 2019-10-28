@@ -34,6 +34,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
 
     protected SQLExpr     expr;
     private List<SQLName> partitions;
+    protected SQLTableSampling sampling;
     private SchemaObject  schemaObject;
 
     protected List<SQLName>    columns;
@@ -64,6 +65,17 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
 
     public void setExpr(String name) {
         this.setExpr(new SQLIdentifierExpr(name));
+    }
+
+    public SQLTableSampling getSampling() {
+        return sampling;
+    }
+
+    public void setSampling(SQLTableSampling x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.sampling = x;
     }
 
     public SQLName getName() {
@@ -145,17 +157,25 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         SQLExprTableSource that = (SQLExprTableSource) o;
 
         if (expr != null ? !expr.equals(that.expr) : that.expr != null) return false;
-        return partitions != null ? partitions.equals(that.partitions) : that.partitions == null;
+        if (partitions != null ? !partitions.equals(that.partitions) : that.partitions != null) return false;
+        if (sampling != null ? !sampling.equals(that.sampling) : that.sampling != null) return false;
+        if (schemaObject != null ? !schemaObject.equals(that.schemaObject) : that.schemaObject != null) return false;
+        return columns != null ? columns.equals(that.columns) : that.columns == null;
     }
 
     @Override
     public int hashCode() {
-        int result = expr != null ? expr.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + (expr != null ? expr.hashCode() : 0);
         result = 31 * result + (partitions != null ? partitions.hashCode() : 0);
+        result = 31 * result + (sampling != null ? sampling.hashCode() : 0);
+        result = 31 * result + (schemaObject != null ? schemaObject.hashCode() : 0);
+        result = 31 * result + (columns != null ? columns.hashCode() : 0);
         return result;
     }
 
