@@ -85,7 +85,12 @@ public final class JdbcUtils implements JdbcConstants {
         if (x == null) {
             return;
         }
+
         try {
+            if (x.isClosed()) {
+                return;
+            }
+
             x.close();
         } catch (Exception e) {
             LOG.debug("close connection error", e);

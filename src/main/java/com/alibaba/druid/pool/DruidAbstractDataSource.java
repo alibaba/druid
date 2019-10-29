@@ -1473,7 +1473,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                         long mysqlIdleMillis = currentTimeMillis - lastPacketReceivedTimeMs;
                         if (lastPacketReceivedTimeMs > 0 //
                                 && mysqlIdleMillis >= timeBetweenEvictionRunsMillis) {
-                            discardConnection(conn);
+                            discardConnection(holder);
                             String errorMsg = "discard long time none received connection. "
                                     + ", jdbcUrl : " + jdbcUrl
                                     + ", jdbcUrl : " + jdbcUrl
@@ -2064,7 +2064,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
     
     public abstract void discardConnection(Connection realConnection);
-    
+
+    public void discardConnection(DruidConnectionHolder holder) {
+        discardConnection(holder.getConnection());
+    }
 
     public boolean isAsyncCloseConnectionEnable() {
         if (isRemoveAbandoned()) {
