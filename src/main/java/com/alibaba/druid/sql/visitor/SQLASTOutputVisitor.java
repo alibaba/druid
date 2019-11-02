@@ -1994,6 +1994,27 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             orderBy.accept(this);
         }
 
+        final List<SQLSelectOrderByItem> distributeBy = x.getDistributeByDirect();
+        if (distributeBy != null && distributeBy.size() > 0) {
+            println();
+            print0(ucase ? "DISTRIBUTE BY " : "distribute by ");
+            printAndAccept(distributeBy, ", ");
+        }
+
+        List<SQLSelectOrderByItem> sortBy = x.getSortByDirect();
+        if (sortBy != null && sortBy.size() > 0) {
+            println();
+            print0(ucase ? "SORT BY " : "sort by ");
+            printAndAccept(sortBy, ", ");
+        }
+
+        final List<SQLSelectOrderByItem> clusterBy = x.getClusterByDirect();
+        if (clusterBy != null && clusterBy.size() > 0) {
+            println();
+            print0(ucase ? "CLUSTER BY " : "cluster by ");
+            printAndAccept(clusterBy, ", ");
+        }
+
         if (!informix) {
             printFetchFirst(x);
         }

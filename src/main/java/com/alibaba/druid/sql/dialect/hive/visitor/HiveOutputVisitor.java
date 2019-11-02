@@ -118,7 +118,7 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             print(')');
         }
 
-        List<SQLName> clusteredBy = x.getClusteredBy();
+        List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
         if (clusteredBy.size() > 0) {
             println();
             print0(ucase ? "CLUSTERED BY (" : "clustered by (");

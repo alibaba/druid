@@ -689,5 +689,9 @@ public final class FnvHash {
         long OUTLINE = fnv1a_64_lower("OUTLINE");
         long BD = fnv1a_64_lower("BD");
         long CURRENT_DATE = fnv1a_64_lower("CURRENT_DATE");
+        long PARTITION = fnv1a_64_lower("PARTITION");
+        long MODEL = fnv1a_64_lower("MODEL");
+        long DIMENSION = fnv1a_64_lower("DIMENSION");
+        long KEEP = fnv1a_64_lower("KEEP");
     }
 }

@@ -768,7 +768,6 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         DruidAbstractDataSource dataSource = holder.getDataSource();
         dataSource.incrementStartTransactionCount();
         transactionInfo = new TransactionInfo(dataSource.createTransactionId());
-        holder.setLastExecTimeMillis(System.currentTimeMillis());
     }
 
     @Override

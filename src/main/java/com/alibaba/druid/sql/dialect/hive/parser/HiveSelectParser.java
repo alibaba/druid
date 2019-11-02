@@ -48,34 +48,6 @@ public class HiveSelectParser extends SQLSelectParser {
         return new HiveExprParser(lexer);
     }
 
-    protected void parseSortBy(SQLSelectQueryBlock queryBlock) {
-        if (lexer.token() == Token.SORT) {
-            lexer.nextToken();
-            accept(Token.BY);
-            for (;;) {
-                SQLExpr expr = this.expr();
-
-                SQLSelectOrderByItem sortByItem = new SQLSelectOrderByItem(expr);
-
-                if (lexer.token() == Token.ASC) {
-                    sortByItem.setType(SQLOrderingSpecification.ASC);
-                    lexer.nextToken();
-                } else if (lexer.token() == Token.DESC) {
-                    sortByItem.setType(SQLOrderingSpecification.DESC);
-                    lexer.nextToken();
-                }
-
-                queryBlock.addSortBy(sortByItem);
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                } else {
-                    break;
-                }
-            }
-        }
-    }
-
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if (lexer.identifierEquals(FnvHash.Constants.TABLESAMPLE) && tableSource instanceof SQLExprTableSource) {
             Lexer.SavePoint mark = lexer.mark();

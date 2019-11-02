@@ -715,7 +715,7 @@ public class SQLSelectParser extends SQLParser {
             }
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.SORT)) {
+        if (lexer.token == Token.SORT || lexer.identifierEquals(FnvHash.Constants.SORT)) {
             lexer.nextToken();
             accept(Token.BY);
 

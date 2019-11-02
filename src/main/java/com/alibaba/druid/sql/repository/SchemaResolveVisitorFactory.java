@@ -2294,6 +2294,20 @@ class SchemaResolveVisitorFactory {
             }
         }
 
+        List<SQLSelectOrderByItem> distributeBy = x.getDistributeBy();
+        if (distributeBy != null) {
+            for (SQLSelectOrderByItem item : distributeBy) {
+                item.accept(visitor);
+            }
+        }
+
+        List<SQLSelectOrderByItem> sortBy = x.getSortBy();
+        if (sortBy != null) {
+            for (SQLSelectOrderByItem item : sortBy) {
+                item.accept(visitor);
+            }
+        }
+
         visitor.popContext();
     }
 

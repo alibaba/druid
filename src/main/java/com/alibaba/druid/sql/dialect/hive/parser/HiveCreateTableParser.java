@@ -176,7 +176,15 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
             accept(Token.BY);
             accept(Token.LPAREN);
-            this.exprParser.names(stmt.getClusteredBy());
+            for (; ; ) {
+                SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+                stmt.addClusteredByItem(item);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
             accept(Token.RPAREN);
         }
 

@@ -162,7 +162,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print(')');
         }
 
-        List<SQLName> clusteredBy = x.getClusteredBy();
+        List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
         if (clusteredBy.size() > 0) {
             println();
             print0(ucase ? "CLUSTERED BY (" : "clustered by (");
