@@ -829,7 +829,8 @@ public class OracleSelectParser extends SQLSelectParser {
             tableSource.setAlias(tableAlias(true));
         } else if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
             if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL) {
-                tableSource.setAlias(tableAlias());
+                final String tableAlias = tableAlias();
+                tableSource.setAlias(tableAlias);
             }
         }
 
@@ -866,10 +867,19 @@ public class OracleSelectParser extends SQLSelectParser {
             joinType = SQLJoinTableSource.JoinType.FULL_OUTER_JOIN;
         }
 
+        boolean natural = lexer.identifierEquals(FnvHash.Constants.NATURAL);
+        if (natural) {
+            lexer.nextToken();
+        }
+
         if (lexer.token() == Token.INNER) {
             lexer.nextToken();
             accept(Token.JOIN);
-            joinType = SQLJoinTableSource.JoinType.INNER_JOIN;
+            if (natural) {
+                joinType = SQLJoinTableSource.JoinType.NATURAL_INNER_JOIN;
+            } else {
+                joinType = SQLJoinTableSource.JoinType.INNER_JOIN;
+            }
         }
         if (lexer.token() == Token.CROSS) {
             lexer.nextToken();
@@ -879,7 +889,11 @@ public class OracleSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.JOIN) {
             lexer.nextToken();
-            joinType = SQLJoinTableSource.JoinType.JOIN;
+            if (natural) {
+                joinType = SQLJoinTableSource.JoinType.NATURAL_JOIN;
+            } else {
+                joinType = SQLJoinTableSource.JoinType.JOIN;
+            }
         }
 
         if (lexer.token() == (Token.COMMA)) {
@@ -894,7 +908,8 @@ public class OracleSelectParser extends SQLSelectParser {
 
             SQLTableSource right;
             right = parseTableSourcePrimary();
-            right.setAlias(this.tableAlias());
+            String tableAlias = tableAlias();
+            right.setAlias(tableAlias);
             join.setRight(right);
 
             if (lexer.token() == Token.ON) {
@@ -918,6 +933,10 @@ public class OracleSelectParser extends SQLSelectParser {
             parsePivot(join);
 
             return parseTableSourceRest(join);
+        } else {
+            if (lexer.identifierEquals(FnvHash.Constants.PIVOT)) {
+                parsePivot(tableSource);
+            }
         }
 
         return tableSource;

@@ -135,7 +135,8 @@ public class SQLParser {
                     return ident;
                 } else if (hash == FnvHash.Constants.DISTRIBUTE
                         || hash == FnvHash.Constants.SORT
-                        || hash == FnvHash.Constants.CLUSTER) {
+                        || hash == FnvHash.Constants.CLUSTER
+                ) {
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
                     if (lexer.token == Token.BY) {
