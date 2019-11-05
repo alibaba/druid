@@ -50,6 +50,8 @@ public class RandomDataSourceSelector implements DataSourceSelector {
     private HighAvailableDataSource highAvailableDataSource;
     private RandomDataSourceValidateThread validateThread;
     private RandomDataSourceRecoverThread recoverThread;
+    private Thread runningValidateThread;
+    private Thread runningRecoverThread;
 
     private int checkingIntervalSeconds = 15;
     private int recoveryIntervalSeconds = 120;
@@ -161,14 +163,22 @@ public class RandomDataSourceSelector implements DataSourceSelector {
             validateThread.setValidationSleepSeconds(validationSleepSeconds);
             validateThread.setBlacklistThreshold(blacklistThreshold);
         }
-        new Thread(validateThread, "RandomDataSourceSelector-validate-thread").start();
+        if (runningValidateThread != null) {
+            runningValidateThread.interrupt();
+        }
+        runningValidateThread = new Thread(validateThread, "RandomDataSourceSelector-validate-thread");
+        runningValidateThread.start();
 
         if (recoverThread == null) {
             recoverThread = new RandomDataSourceRecoverThread(this);
             recoverThread.setSleepSeconds(recoveryIntervalSeconds);
             recoverThread.setValidationSleepSeconds(validationSleepSeconds);
         }
-        new Thread(recoverThread, "RandomDataSourceSelector-recover-thread").start();
+        if (runningRecoverThread != null) {
+            runningRecoverThread.interrupt();
+        }
+        runningRecoverThread = new Thread(recoverThread, "RandomDataSourceSelector-recover-thread");
+        runningRecoverThread.start();
     }
 
     private Collection<DataSource> removeBlackList(Map<String, DataSource> dataSourceMap) {
