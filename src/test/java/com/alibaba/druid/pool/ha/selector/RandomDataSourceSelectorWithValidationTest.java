@@ -30,10 +30,7 @@ public class RandomDataSourceSelectorWithValidationTest {
 
     @Test
     public void testOneDataSourceFailAndRecover() throws Exception {
-        RandomDataSourceSelector selector = ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector());
-        selector.getValidateThread().setCheckingIntervalSeconds(3);
-        selector.getRecoverThread().setSleepSeconds(3);
-        selector.init();
+        RandomDataSourceSelector selector = initSelector();
 
         DruidDataSource dataSource = (DruidDataSource) highAvailableDataSource.getDataSourceMap().get("foo");
         dataSource.setValidationQuery("select xxx from yyy");
@@ -57,10 +54,8 @@ public class RandomDataSourceSelectorWithValidationTest {
 
     @Test
     public void testAllDataSourceFail() throws Exception {
-        RandomDataSourceSelector selector = (RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector();
-        selector.setCheckingIntervalSeconds(3);
-        selector.setRecoveryIntervalSeconds(3);
-        selector.init();
+        initSelector();
+        RandomDataSourceSelector selector = ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector());
 
         DruidDataSource foo = (DruidDataSource) highAvailableDataSource.getDataSourceMap().get("foo");
         DruidDataSource bar = (DruidDataSource) highAvailableDataSource.getDataSourceMap().get("bar");
@@ -82,5 +77,17 @@ public class RandomDataSourceSelectorWithValidationTest {
         }
         assertTrue(count[0] > 0);
         assertTrue(count[1] > 0);
+    }
+
+    private RandomDataSourceSelector initSelector() {
+        RandomDataSourceSelector selector = ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector());
+        RandomDataSourceValidateThread validateThread = new RandomDataSourceValidateThread(selector);
+        RandomDataSourceRecoverThread recoverThread = new RandomDataSourceRecoverThread(selector);
+        validateThread.setCheckingIntervalSeconds(3);
+        recoverThread.setSleepSeconds(3);
+        selector.setValidateThread(validateThread);
+        selector.setRecoverThread(recoverThread);
+        selector.init();
+        return selector;
     }
 }
