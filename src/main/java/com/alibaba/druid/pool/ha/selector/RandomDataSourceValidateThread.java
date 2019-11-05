@@ -58,7 +58,10 @@ public class RandomDataSourceValidateThread implements Runnable {
      */
     public static void logSuccessTime(DataSourceProxy dataSource) {
         if (dataSource != null && !StringUtils.isEmpty(dataSource.getName())) {
-            SUCCESS_TIMES.put(dataSource.getName(), System.currentTimeMillis());
+            String name = dataSource.getName();
+            long time = System.currentTimeMillis();
+            LOG.debug("Log successTime [" + time + "] for " + name);
+            SUCCESS_TIMES.put(name, time);
         }
     }
 
@@ -115,7 +118,7 @@ public class RandomDataSourceValidateThread implements Runnable {
     private void checkAllDataSources() {
         Map<String, DataSource> dataSourceMap = selector.getDataSourceMap();
         List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
-
+        LOG.debug("Checking all DataSource.");
         for (final Map.Entry<String, DataSource> e : dataSourceMap.entrySet()) {
             if (!(e.getValue() instanceof DruidDataSource)) {
                 continue;
@@ -136,6 +139,7 @@ public class RandomDataSourceValidateThread implements Runnable {
                         return true;
                     }
 
+                    LOG.debug("Start checking " + key + ".");
                     boolean flag = check(key, dataSource);
 
                     if (flag) {
@@ -164,10 +168,12 @@ public class RandomDataSourceValidateThread implements Runnable {
     private boolean isSkipChecking(String key, DruidDataSource dataSource) {
         Long lastSuccessTime = SUCCESS_TIMES.get(dataSource.getName());
         Long lastCheckTime = lastCheckTimes.get(dataSource.getName());
-
+        long currentTime = System.currentTimeMillis();
+        LOG.debug("Connection=" + key + ", lastSuccessTime=" + lastSuccessTime
+                + ", lastCheckTime=" + lastCheckTime + ", currentTime=" + currentTime);
         return lastSuccessTime != null && lastCheckTime != null
-                && (System.currentTimeMillis() - lastSuccessTime) <= checkingIntervalSeconds * 1000
-                && (System.currentTimeMillis() - lastCheckTime) <= 5 * checkingIntervalSeconds * 1000
+                && (currentTime - lastSuccessTime) <= checkingIntervalSeconds * 1000
+                && (currentTime - lastCheckTime) <= 5 * checkingIntervalSeconds * 1000
                 && (!errorCounts.containsKey(key) || errorCounts.get(key) < 1);
     }
 
