@@ -4334,8 +4334,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                 if (lexer.token() == Token.IDENTIFIER) {
                     if ("ADD".equalsIgnoreCase(lexer.stringVal()) || "MODIFY".equalsIgnoreCase(lexer.stringVal())
-                            || "CHANGE".equalsIgnoreCase(lexer.stringVal()) || "RENAME".equalsIgnoreCase(lexer.stringVal())
-                            || "TOUCH".equalsIgnoreCase(lexer.stringVal()) || "MERGE".equalsIgnoreCase(lexer.stringVal())) {
+                            || "RENAME".equalsIgnoreCase(lexer.stringVal())) {
                         lexer.reset(markBp, markChar, Token.COMMA);
                         break;
                     }
