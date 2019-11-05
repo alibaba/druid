@@ -2162,6 +2162,13 @@ public class SQLExprParser extends SQLParser {
             } else {
                 break;
             }
+
+            if (lexer.token() == Token.HINT && !lexer.isEnabled(SQLParserFeature.StrictForWall)) {
+                String comment = "/*" + lexer.stringVal() + "*/";
+                expr.addAfterComment(comment);
+                lexer.nextToken();
+            }
+
         }
 
         return expr;

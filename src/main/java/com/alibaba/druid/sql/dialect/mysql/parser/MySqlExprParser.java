@@ -565,6 +565,15 @@ public class MySqlExprParser extends SQLExprParser {
             return parseColumnRest(column);
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.COLLATE)) {
+            lexer.nextToken();
+            MySqlCharExpr charSetCollateExpr=new MySqlCharExpr();
+            charSetCollateExpr.setCollate(lexer.stringVal());
+            lexer.nextToken();
+            column.setCollateExpr(charSetCollateExpr);
+            return parseColumnRest(column);
+        }
+
         if (lexer.identifierEquals(FnvHash.Constants.CHARSET)) {
             lexer.nextToken();
             MySqlCharExpr charSetCollateExpr=new MySqlCharExpr();

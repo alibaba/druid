@@ -45,6 +45,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLSelectListCache;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -283,7 +284,13 @@ public class MySqlSelectParser extends SQLSelectParser {
         if (lexer.hasComment() && lexer.isKeepComments()) {
             tableSrc.addAfterComment(lexer.readAndResetComments());
         }
-        
+
+        if (lexer.token() == Token.HINT && !lexer.isEnabled(SQLParserFeature.StrictForWall)) {
+            String comment = "/*" + lexer.stringVal() + "*/";
+            tableSrc.addAfterComment(comment);
+            lexer.nextToken();
+        }
+
         return tableSrc;
     }
     

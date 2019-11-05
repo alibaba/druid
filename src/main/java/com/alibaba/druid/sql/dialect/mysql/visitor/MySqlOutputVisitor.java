@@ -424,6 +424,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             item.accept(this);
         }
 
+        final SQLExpr collateExpr = x.getCollateExpr();
+        if(collateExpr != null){
+            collateExpr.accept(this);
+        }
+
         final SQLExpr defaultExpr = x.getDefaultExpr();
         if (defaultExpr != null) {
             print0(ucase ? " DEFAULT " : " default ");

@@ -4358,7 +4358,12 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.addItem(item);
 
             if (lexer.token() == Token.COMMA) {
+                char markChar = lexer.current();
+                int markBp = lexer.bp();
                 lexer.nextToken();
+                if(lexer.token() != Token.DROP){
+                    lexer.reset(markBp, markChar, Token.COMMA);
+                }
             }
 
             if (lexer.token() == Token.DROP) {
