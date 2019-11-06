@@ -38,5 +38,22 @@ public class MySQLSelectTest extends TestCase {
                 + "WHERE k.table_name = 'activate_log'\n"
                 + "\tAND k.table_schema = 'b_yaoking_cn' /*!50116 AND c.constraint_schema = 'b_yaoking_cn' */\n"
                 + "\tAND k.REFERENCED_COLUMN_NAME IS NOT NULL;");
+
+        sql = "SELECT SysNo,MATCH(Name)AGAINST('张三' WITH QUERY EXPANSION) AS score\n"
+                + "FROM `test_table`\n" + "WHERE MATCH(Name)AGAINST('张三' WITH QUERY EXPANSION)";
+
+        parser = new MySqlStatementParser(sql);
+        stmtList = parser.parseStatementList();
+
+        out = new StringBuilder();
+        visitor = new MySqlOutputVisitor(out);
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+            out.append(";");
+        }
+
+        Assert.assertEquals(out.toString(),"SELECT SysNo, MATCH (Name) AGAINST ('张三' WITH QUERY EXPANSION) AS score\n"
+                + "FROM `test_table`\n" + "WHERE MATCH (Name) AGAINST ('张三' WITH QUERY EXPANSION);");
     }
 }
