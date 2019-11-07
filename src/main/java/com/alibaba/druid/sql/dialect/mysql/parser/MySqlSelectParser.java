@@ -285,11 +285,11 @@ public class MySqlSelectParser extends SQLSelectParser {
             tableSrc.addAfterComment(lexer.readAndResetComments());
         }
 
-        if (lexer.token() == Token.HINT && !lexer.isEnabled(SQLParserFeature.StrictForWall)) {
-            String comment = "/*" + lexer.stringVal() + "*/";
-            tableSrc.addAfterComment(comment);
-            lexer.nextToken();
-        }
+//        if (lexer.token() == Token.HINT && !lexer.isEnabled(SQLParserFeature.StrictForWall)) {
+//            String comment = "/*" + lexer.stringVal() + "*/";
+//            tableSrc.addAfterComment(comment);
+//            lexer.nextToken();
+//        }
 
         return tableSrc;
     }

@@ -2163,11 +2163,11 @@ public class SQLExprParser extends SQLParser {
                 break;
             }
 
-            if (lexer.token() == Token.HINT && !lexer.isEnabled(SQLParserFeature.StrictForWall)) {
-                String comment = "/*" + lexer.stringVal() + "*/";
-                expr.addAfterComment(comment);
-                lexer.nextToken();
-            }
+//            if (lexer.token() == Token.HINT && !lexer.isEnabled(SQLParserFeature.StrictForWall)) {
+//                String comment = "/*" + lexer.stringVal() + "*/";
+//                expr.addAfterComment(comment);
+//                lexer.nextToken();
+//            }
 
         }
 
