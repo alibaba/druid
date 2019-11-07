@@ -91,7 +91,12 @@ public class SQLParser {
                     || hash == FnvHash.Constants.NATURAL
                     || hash == FnvHash.Constants.CROSS
                     || hash == FnvHash.Constants.OFFSET
-                    || hash == FnvHash.Constants.LIMIT) {
+                    || hash == FnvHash.Constants.LIMIT
+                    || hash == FnvHash.Constants.QUICK
+                    || hash == FnvHash.Constants.MEDIUM
+                    || hash == FnvHash.Constants.FAST
+                    || hash == FnvHash.Constants.CHANGED
+                    || hash == FnvHash.Constants.EXTENDED) {
                 if (must) {
                     throw new ParserException("illegal alias. " + lexer.info());
                 }

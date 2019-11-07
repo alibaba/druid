@@ -18,20 +18,19 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlChecksumTableStatement extends MySqlStatementImpl {
-    private final List<SQLExprTableSource> tables = new ArrayList<SQLExprTableSource>();
+    private final List<SQLTableSource> tables = new ArrayList<SQLTableSource>();
 
-    private boolean quick;
-    private boolean extended;
+    private Boolean isQuickOrExtended;
 
     public MySqlChecksumTableStatement() {
 
     }
 
-    public void addTable(SQLExprTableSource table) {
+    public void addTable(SQLTableSource table) {
         if (table == null) {
             return;
         }
@@ -40,24 +39,16 @@ public class MySqlChecksumTableStatement extends MySqlStatementImpl {
         tables.add(table);
     }
 
-    public List<SQLExprTableSource> getTables() {
+    public List<SQLTableSource> getTables() {
         return tables;
     }
 
-    public boolean isQuick() {
-        return quick;
+    public Boolean isQuickOrExtended() {
+        return isQuickOrExtended;
     }
 
-    public void setQuick(boolean quick) {
-        this.quick = quick;
-    }
-
-    public boolean isExtended() {
-        return extended;
-    }
-
-    public void setExtended(boolean extended) {
-        this.extended = extended;
+    public void setQuickOrExtended(Boolean quickOrExtended) {
+        isQuickOrExtended = quickOrExtended;
     }
 
     public void accept0(MySqlASTVisitor visitor) {

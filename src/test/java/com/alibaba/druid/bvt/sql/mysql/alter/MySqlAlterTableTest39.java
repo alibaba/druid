@@ -9,7 +9,7 @@ import org.junit.Assert;
 import java.util.List;
 
 /**
- * @author huangganyan
+ * @author Dagon0577
  * @date 2019/11/7 10:54
  */
 public class MySqlAlterTableTest39 extends TestCase {

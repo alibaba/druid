@@ -66,6 +66,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTablespaceSta
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCheckTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlChecksumTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateAddLogFileGroupStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateEventStatement;
@@ -1478,6 +1479,16 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlChecksumTableStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCheckTableStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlCheckTableStatement x) {
 
     }
 }

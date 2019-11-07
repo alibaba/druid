@@ -6,7 +6,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
 
 /**
- * @author huangganyan
+ * @author Dagon0577
  * @date 2019/11/7 10:50
  */
 public class MySqlSelectTest_247 extends MysqlTest {

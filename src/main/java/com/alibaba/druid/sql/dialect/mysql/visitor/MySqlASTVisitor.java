@@ -53,6 +53,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlChecksumTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCheckTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateAddLogFileGroupStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateEventStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateServerStatement;
@@ -587,5 +588,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     boolean visit(MySqlChecksumTableStatement x);
     void endVisit(MySqlChecksumTableStatement x);
+
+    boolean visit(MySqlCheckTableStatement x);
+    void endVisit(MySqlCheckTableStatement x);
 
 } //

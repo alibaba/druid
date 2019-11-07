@@ -134,6 +134,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTablespaceSta
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCheckTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlChecksumTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateAddLogFileGroupStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateEventStatement;
@@ -1051,6 +1052,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                 setErrorEndPos(lexer.pos());
                 throw new ParserException("syntax error, expect TABLES or TABLE, actual " + lexer.token() + ", " + lexer.info());
             }
+            return true;
+        }
+
+        if(lexer.token() == Token.CHECK){
+            statementList.add(this.parseCheck());
             return true;
         }
 
@@ -4969,6 +4975,60 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     }
 
+    public MySqlCheckTableStatement parseCheck(){
+        MySqlCheckTableStatement stmt = new MySqlCheckTableStatement();
+        if(lexer.token() == Token.CHECK){
+            lexer.nextToken();
+        }else{
+            throw new ParserException("TODO " + lexer.info());
+        }
+
+        for (;;) {
+            SQLTableSource table = this.createSQLSelectParser().parseTableSource();
+            stmt.addTable(table);
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
+        }
+
+        for(;;){
+            if(lexer.token() == Token.FOR){
+                lexer.nextToken();
+                acceptIdentifier("UPGRADE");
+                stmt.setFor_upgrade(true);
+                continue;
+            }else if(lexer.token() == Token.IDENTIFIER){
+                if(lexer.identifierEquals("QUICK")){
+                    lexer.nextToken();
+                    stmt.setQuick(true);
+                    continue;
+                }else if(lexer.identifierEquals("FAST")){
+                    lexer.nextToken();
+                    stmt.setFast(true);
+                    continue;
+                }else if(lexer.identifierEquals("MEDIUM")){
+                    lexer.nextToken();
+                    stmt.setMedium(true);
+                    continue;
+                }else if(lexer.identifierEquals("EXTENDED")){
+                    lexer.nextToken();
+                    stmt.setExtended(true);
+                    continue;
+                }else if(lexer.identifierEquals("CHANGED")){
+                    lexer.nextToken();
+                    stmt.setChanged(true);
+                    continue;
+                }
+            }
+            break;
+        }
+
+        return stmt;
+    }
 
     public MySqlChecksumTableStatement parseChecksum() {
         MySqlChecksumTableStatement stmt = new MySqlChecksumTableStatement();
@@ -4979,7 +5039,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         for (;;) {
-            SQLExprTableSource table = (SQLExprTableSource) this.createSQLSelectParser().parseTableSource();
+            SQLTableSource table = this.createSQLSelectParser().parseTableSource();
             stmt.addTable(table);
 
             if (lexer.token() == Token.COMMA) {
@@ -4988,6 +5048,14 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             break;
+        }
+
+        if(lexer.identifierEquals("QUICK")){
+            lexer.nextToken();
+            stmt.setQuickOrExtended(true);
+        }else if(lexer.identifierEquals("EXTENDED")){
+            lexer.nextToken();
+            stmt.setQuickOrExtended(false);
         }
 
         return stmt;

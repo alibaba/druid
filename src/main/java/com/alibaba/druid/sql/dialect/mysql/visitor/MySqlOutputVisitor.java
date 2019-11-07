@@ -110,6 +110,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlChecksumTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCheckTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateAddLogFileGroupStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateEventStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateServerStatement;
@@ -4416,8 +4417,56 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlChecksumTableStatement x) {
-        print0(ucase ? "CHECKSUM TABLE " : "checksum table ");
+        print0(ucase ? "CHECKSUM " : "checksum ");
         printAndAccept(x.getTables(), ", ");
+        print(' ');
+
+        if(x.isQuickOrExtended() != null) {
+            if (x.isQuickOrExtended()) {
+                print0(ucase ? "QUICK " : "quick ");
+            } else {
+                print0(ucase ? "EXTENDED " : "extended ");
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCheckTableStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCheckTableStatement x) {
+        print0(ucase ? "CHECK " : "check ");
+        printAndAccept(x.getTables(), ", ");
+        print(' ');
+
+        if(x.isFor_upgrade()){
+            print0(ucase ? "FOR UPGRADE " : "for upgrade ");
+        }
+
+        if(x.isQuick()){
+            print0(ucase ? "QUICK " : "quick ");
+        }
+
+        if(x.isFast()){
+            print0(ucase ? "FAST " : "fast ");
+        }
+
+        if(x.isMedium()){
+            print0(ucase ? "MEDIUM " : "medium ");
+        }
+
+        if(x.isExtended()){
+            print0(ucase ? "EXTENDED " : "extended ");
+        }
+
+        if(x.isChanged()){
+            print0(ucase ? "CHANGED " : "changed ");
+        }
+
         return false;
     }
 } //

@@ -694,5 +694,11 @@ public final class FnvHash {
         long DIMENSION = fnv1a_64_lower("DIMENSION");
         long KEEP = fnv1a_64_lower("KEEP");
         long PIVOT = fnv1a_64_lower("PIVOT");
+
+        long QUICK = fnv1a_64_lower("QUICK");
+        long FAST = fnv1a_64_lower("FAST");
+        long MEDIUM = fnv1a_64_lower("MEDIUM");
+        long CHANGED = fnv1a_64_lower("CHANGED");
+        long EXTENDED = fnv1a_64_lower("EXTENDED");
     }
 }
