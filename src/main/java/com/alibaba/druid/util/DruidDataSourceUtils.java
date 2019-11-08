@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.util;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
-import javax.management.ObjectName;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+
+import javax.management.ObjectName;
+
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 public class DruidDataSourceUtils {
 

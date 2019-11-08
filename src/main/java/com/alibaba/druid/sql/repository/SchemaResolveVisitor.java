@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.sql.repository;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by wenshao on 03/08/2017.

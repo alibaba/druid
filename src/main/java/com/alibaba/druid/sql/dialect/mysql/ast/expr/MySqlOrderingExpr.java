@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-import java.util.Collections;
-import java.util.List;
 
 public class MySqlOrderingExpr extends SQLExprImpl implements MySqlExpr {
 

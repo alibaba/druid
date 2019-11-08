@@ -25,12 +25,44 @@ import java.util.Map;
 import java.util.Set;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.SQLPartition;
+import com.alibaba.druid.sql.ast.SQLPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLPartitionByList;
+import com.alibaba.druid.sql.ast.SQLPartitionByRange;
+import com.alibaba.druid.sql.ast.SQLPartitionValue;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.SQLSubPartition;
+import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLWindow;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
+import com.alibaba.druid.sql.ast.expr.SQLExprUtils;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
-import com.alibaba.druid.sql.ast.statement.SQLLateralViewTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
@@ -972,7 +1004,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLSelectQueryBlock x) {
-        if (x.getFrom() == null) {
+        SQLTableSource from = x.getFrom();
+
+        if (from == null) {
             for (SQLSelectItem selectItem : x.getSelectList()) {
                 statExpr(
                         selectItem.getExpr());
@@ -987,7 +1021,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 //            return false;
 //        }
 
-        SQLTableSource from = x.getFrom();
         if (from != null) {
             from.accept(this); // 提前执行，获得aliasMap
         }
@@ -1008,8 +1041,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         for (SQLSelectItem selectItem : x.getSelectList()) {
-            statExpr(
-                    selectItem.getExpr());
+            if (selectItem.getClass() == SQLSelectItem.class) {
+                statExpr(
+                        selectItem.getExpr());
+            } else {
+                selectItem.accept(this);
+            }
         }
 
         SQLExpr where = x.getWhere();
@@ -1034,6 +1071,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
         }
 
+        List<SQLWindow> windows = x.getWindows();
+        if (windows != null && windows.size() > 0) {
+            for (SQLWindow window : windows) {
+                window.accept(this);
+            }
+        }
+
         SQLOrderBy orderBy = x.getOrderBy();
         if (orderBy != null) {
             this.visit(orderBy);
@@ -1044,17 +1088,17 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             statExpr(first);
         }
 
-        List<SQLExpr> distributeBy = x.getDistributeBy();
+        List<SQLSelectOrderByItem> distributeBy = x.getDistributeBy();
         if (distributeBy != null) {
-            for (SQLExpr expr : distributeBy) {
-                statExpr(expr);
+            for (SQLSelectOrderByItem item : distributeBy) {
+                statExpr(item.getExpr());
             }
         }
 
         List<SQLSelectOrderByItem> sortBy = x.getSortBy();
         if (sortBy != null) {
             for (SQLSelectOrderByItem orderByItem : sortBy) {
-                visit(orderBy);
+                statExpr(orderByItem.getExpr());
             }
         }
 

@@ -15,17 +15,6 @@
  */
 package com.alibaba.druid.filter;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
-import com.alibaba.druid.proxy.jdbc.ClobProxy;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
-import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
-import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxy;
-import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
-import com.alibaba.druid.proxy.jdbc.StatementProxy;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -55,6 +44,17 @@ import java.sql.Wrapper;
 import java.util.Calendar;
 import java.util.Properties;
 import java.util.concurrent.Executor;
+
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
+import com.alibaba.druid.proxy.jdbc.ClobProxy;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
+import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxy;
+import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
+import com.alibaba.druid.proxy.jdbc.StatementProxy;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -290,7 +290,11 @@ public interface Filter extends Wrapper {
 
     Object resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException;
 
+    <T> T resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Class<T> type) throws SQLException;
+
     Object resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, String columnLabel) throws SQLException;
+
+    <T> T resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, String columnLabel, Class<T> type) throws SQLException;
 
     int resultSet_findColumn(FilterChain chain, ResultSetProxy resultSet, String columnLabel) throws SQLException;
 

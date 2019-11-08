@@ -32,7 +32,7 @@ public class MySqlAlterViewTest_0 extends TestCase {
         assertEquals("ALTER DEFINER = 'ivan'@'%'\n" +
                 "\tVIEW my_view3\n" +
                 "AS\n" +
-                "SELECT COUNT(*)\n" +
+                "SELECT count(*)\n" +
                 "FROM t3;", SQLUtils.toMySqlString(stmt));
         assertEquals("atler definer = 'ivan'@'%'\n" +
                 "\tview my_view3\n" +

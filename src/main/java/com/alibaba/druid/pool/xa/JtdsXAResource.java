@@ -22,10 +22,10 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import net.sourceforge.jtds.jdbc.XASupport;
-
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+
+import net.sourceforge.jtds.jdbc.XASupport;
 
 public class JtdsXAResource implements XAResource {
 

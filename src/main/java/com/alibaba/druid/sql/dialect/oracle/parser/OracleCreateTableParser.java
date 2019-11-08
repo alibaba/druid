@@ -22,8 +22,8 @@ import com.alibaba.druid.sql.ast.SQLPartitionByList;
 import com.alibaba.druid.sql.ast.SQLPartitionByRange;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
-import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
@@ -31,7 +31,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement.DeferredSegmentCreation;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSupplementalIdKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSupplementalLogGrp;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.Token;
 
 public class OracleCreateTableParser extends SQLCreateTableParser {
 

@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLObjectImpl implements SQLObject {
@@ -87,6 +86,14 @@ public abstract class SQLObjectImpl implements SQLObject {
         }
 
         return attributes;
+    }
+
+    public boolean containsAttribute(String name) {
+        if (attributes == null) {
+            return false;
+        }
+
+        return attributes.containsKey(name);
     }
 
     public Object getAttribute(String name) {

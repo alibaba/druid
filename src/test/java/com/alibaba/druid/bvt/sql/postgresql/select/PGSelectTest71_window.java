@@ -46,7 +46,8 @@ public class PGSelectTest71_window extends TestCase {
                 "\tAND a.stat_date >= '0000-00-00'\n" +
                 "\tAND a.stat_date <= '9999-99-99'\n" +
                 "\tAND a.nav > 0\n" +
-                "\tAND a.swanav > 0", SQLUtils.toPGString(stmt));
+                "\tAND a.swanav > 0\n" +
+                "WINDOW w AS OVER (ORDER BY a.stat_date DESC)", SQLUtils.toPGString(stmt));
         
         assertEquals("select a.*\n" +
                 "\t, (a.swanav - lead(a.swanav, 1, null::numeric)) / lead(a.swanav, 1, null::numeric) as roe_lag\n" +
@@ -55,7 +56,8 @@ public class PGSelectTest71_window extends TestCase {
                 "\tand a.stat_date >= '0000-00-00'\n" +
                 "\tand a.stat_date <= '9999-99-99'\n" +
                 "\tand a.nav > 0\n" +
-                "\tand a.swanav > 0", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "\tand a.swanav > 0\n" +
+                "window w as over (order by a.stat_date desc)", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, stmtList.size());
 
@@ -66,7 +68,7 @@ public class PGSelectTest71_window extends TestCase {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        assertEquals(5, visitor.getColumns().size());
+        assertEquals(7, visitor.getColumns().size());
         assertEquals(1, visitor.getTables().size());
     }
 }

@@ -17,15 +17,30 @@ package com.alibaba.druid.sql.dialect.hive.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class HiveCreateTableParser extends SQLCreateTableParser {
     public HiveCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
+    }
+
+    public HiveCreateTableParser(Lexer lexer) {
+        super(new HiveExprParser(lexer));
     }
 
     public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
@@ -161,7 +176,15 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
             accept(Token.BY);
             accept(Token.LPAREN);
-            this.exprParser.names(stmt.getClusteredBy());
+            for (; ; ) {
+                SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+                stmt.addClusteredByItem(item);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
             accept(Token.RPAREN);
         }
 

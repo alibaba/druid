@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.List;
+
 public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLReplaceable {
 
     protected SQLExpr                  expr;
@@ -36,6 +38,11 @@ public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLRepl
 
     public SQLSelectOrderByItem(SQLExpr expr){
         this.setExpr(expr);
+    }
+
+    public SQLSelectOrderByItem(SQLExpr expr, SQLOrderingSpecification type){
+        this.setExpr(expr);
+        this.type = type;
     }
 
     public SQLExpr getExpr() {
@@ -149,5 +156,42 @@ public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLRepl
 
     public void setResolvedSelectItem(SQLSelectItem resolvedSelectItem) {
         this.resolvedSelectItem = resolvedSelectItem;
+    }
+
+    public boolean isClusterBy() {
+        if (parent instanceof SQLCreateTableStatement) {
+            List<SQLSelectOrderByItem> clusteredBy = ((SQLCreateTableStatement) parent).getClusteredBy();
+            return clusteredBy.indexOf(this) != -1;
+        }
+
+        if (parent instanceof SQLSelectQueryBlock) {
+            List<SQLSelectOrderByItem> clusterBy = ((SQLSelectQueryBlock) parent).getClusterByDirect();
+            return clusterBy != null && clusterBy.indexOf(this) != -1;
+        }
+
+        return false;
+    }
+
+    public boolean isSortBy() {
+        if (parent instanceof SQLCreateTableStatement) {
+            List<SQLSelectOrderByItem> sortedBy = ((SQLCreateTableStatement) parent).getSortedBy();
+            return sortedBy.indexOf(this) != -1;
+        }
+
+        if (parent instanceof SQLSelectQueryBlock) {
+            List<SQLSelectOrderByItem> sortedBy = ((SQLSelectQueryBlock) parent).getSortByDirect();
+            return sortedBy != null && sortedBy.indexOf(this) != -1;
+        }
+
+        return false;
+    }
+
+    public boolean isDistributeBy() {
+        if (parent instanceof SQLSelectQueryBlock) {
+            List<SQLSelectOrderByItem> distributeBy = ((SQLSelectQueryBlock) parent).getDistributeBy();
+            return distributeBy.indexOf(this) != -1;
+        }
+
+        return false;
     }
 }

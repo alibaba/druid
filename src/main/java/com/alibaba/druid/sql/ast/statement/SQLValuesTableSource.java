@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by wenshao on 23/02/2017.

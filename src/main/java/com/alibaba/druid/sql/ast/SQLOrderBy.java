@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public final class SQLOrderBy extends SQLObjectImpl {
 
@@ -37,11 +37,20 @@ public final class SQLOrderBy extends SQLObjectImpl {
         addItem(item);
     }
 
+    public SQLOrderBy(SQLExpr expr, SQLOrderingSpecification type){
+        SQLSelectOrderByItem item = new SQLSelectOrderByItem(expr, type);
+        addItem(item);
+    }
+
     public void addItem(SQLSelectOrderByItem item) {
         if (item != null) {
             item.setParent(this);
         }
         this.items.add(item);
+    }
+
+    public void addItem(SQLExpr item) {
+        addItem(new SQLSelectOrderByItem(item));
     }
 
     public List<SQLSelectOrderByItem> getItems() {

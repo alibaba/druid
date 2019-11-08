@@ -3,7 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.1.14-preview_1</version>
+	<version>1.1.21_preview_01</version>
+
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -16,17 +17,17 @@
 		<junit.version>4.12</junit.version>
 		<jmh.version>1.19</jmh.version>
 
-		<gpg.skip>false</gpg.skip>
-		<javadoc.skip>false</javadoc.skip>
+		<gpg.skip>true</gpg.skip>
+		<javadoc.skip>true</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jdk.version>1.6</jdk.version>
+		<jdk.version>1.8</jdk.version>
 	</properties>
 
 	<repositories>
 		<repository>
 			<id>local-file</id>
-			<url>file://${basedir}/lib/</url>
+			<url>file://${project.basedir}/lib/</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
@@ -160,39 +161,6 @@
 				</executions>
 			</plugin>
 
-			<!-- http://code.google.com/p/maven-license-plugin/wiki/HowTo -->
-			<plugin>
-				<!-- Working with multi-module projects -->
-				<inherited>false</inherited>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<version>1.10.b1</version>
-				<configuration>
-					<header>${basedir}/doc/license.txt</header>
-					<failIfMissing>true</failIfMissing>
-					<aggregate>true</aggregate>
-					<strictCheck>true</strictCheck>
-					<properties>
-						<!-- <year>2012</year> -->
-					</properties>
-					<mapping>
-						<java>SLASHSTAR_STYLE</java>
-					</mapping>
-					<includes>
-						<include>src/main/java/**/*.java</include>
-					</includes>
-					<encoding>UTF-8</encoding>
-				</configuration>
-				<executions>
-					<execution>
-						<id>check-headers</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -463,7 +431,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.45</version>
+			<version>8.0.17</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -475,7 +443,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.1.4</version>
+			<version>42.2.6</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -512,7 +480,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.191</version>
+			<version>1.4.199</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -617,18 +585,6 @@
 			<version>0.8.0.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>proxool</groupId>
-			<artifactId>proxool</artifactId>
-			<version>0.9.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>proxool</groupId>
-			<artifactId>proxool-cglib</artifactId>
-			<version>0.9.1</version>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>c3p0</groupId>
@@ -649,19 +605,6 @@
 			<artifactId>nutz</artifactId>
 			<version>1.r.55</version>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.taobao.tbdatasource</groupId>
-			<artifactId>tbdatasource</artifactId>
-			<version>2.0.2</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>jboss</groupId>
-					<artifactId>jboss-j2ee</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -729,6 +672,28 @@
 			<version>${jmh.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>2.4.0</version>
+			<scope>test</scope>
+		</dependency>
 
-	</dependencies>
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.8</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/openjdk-1.8-tools.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>jconsole</artifactId>
+            <version>1.8</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/openjdk-1.8-jconsole.jar</systemPath>
+        </dependency>
+
+    </dependencies>
 </project>

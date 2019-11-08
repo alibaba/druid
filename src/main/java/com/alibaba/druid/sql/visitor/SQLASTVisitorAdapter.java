@@ -15,15 +15,84 @@
  */
 package com.alibaba.druid.sql.visitor;
 
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.SQLAdhocTableSource;
+import com.alibaba.druid.sql.ast.SQLArgument;
+import com.alibaba.druid.sql.ast.SQLArrayDataType;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLCurrentTimeExpr;
+import com.alibaba.druid.sql.ast.SQLCurrentUserExpr;
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDataTypeRefExpr;
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
+import com.alibaba.druid.sql.ast.SQLKeep;
+import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.SQLMapDataType;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.SQLPartition;
+import com.alibaba.druid.sql.ast.SQLPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLPartitionByList;
+import com.alibaba.druid.sql.ast.SQLPartitionByRange;
+import com.alibaba.druid.sql.ast.SQLPartitionValue;
+import com.alibaba.druid.sql.ast.SQLRecordDataType;
+import com.alibaba.druid.sql.ast.SQLStructDataType;
+import com.alibaba.druid.sql.ast.SQLSubPartition;
+import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLSubPartitionByList;
+import com.alibaba.druid.sql.ast.SQLWindow;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExprGroup;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCaseStatement;
+import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLContainsExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
+import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
+import com.alibaba.druid.sql.ast.expr.SQLFlashbackExpr;
+import com.alibaba.druid.sql.ast.expr.SQLGroupingSetExpr;
+import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLRealExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSizeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLValuesExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
-import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
     protected int features;
@@ -352,6 +421,58 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public boolean visit(SQLUnionQuery x) {
+        SQLUnionOperator operator = x.getOperator();
+        List<SQLSelectQuery> relations = x.getRelations();
+        if (relations.size() > 2) {
+            for (SQLSelectQuery relation : x.getRelations()) {
+                relation.accept(this);
+            }
+            return false;
+        }
+
+        SQLSelectQuery left = x.getLeft();
+        SQLSelectQuery right = x.getRight();
+
+        boolean bracket = x.isBracket() && !(x.getParent() instanceof SQLUnionQueryTableSource);
+
+        if ((!bracket)
+                && left instanceof SQLUnionQuery
+                && ((SQLUnionQuery) left).getOperator() == operator
+                && !right.isBracket()
+                && x.getOrderBy() == null) {
+
+            SQLUnionQuery leftUnion = (SQLUnionQuery) left;
+
+            List<SQLSelectQuery> rights = new ArrayList<SQLSelectQuery>();
+            rights.add(right);
+
+            for (; ; ) {
+                SQLSelectQuery leftLeft = leftUnion.getLeft();
+                SQLSelectQuery leftRight = leftUnion.getRight();
+
+                if ((!leftUnion.isBracket())
+                        && leftUnion.getOrderBy() == null
+                        && (!leftLeft.isBracket())
+                        && (!leftRight.isBracket())
+                        && leftLeft instanceof SQLUnionQuery
+                        && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
+                    rights.add(leftRight);
+                    leftUnion = (SQLUnionQuery) leftLeft;
+                    continue;
+                } else {
+                    rights.add(leftRight);
+                    rights.add(leftLeft);
+                }
+                break;
+            }
+
+            for (int i = rights.size() - 1; i >= 0; i--) {
+                SQLSelectQuery item = rights.get(i);
+                item.accept(this);
+            }
+            return false;
+        }
+
         return true;
     }
 
@@ -2006,6 +2127,96 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     public void endVisit(SQLDumpStatement x) {
 
+    }
+
+    @Override
+    public void endVisit(SQLValuesQuery x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLValuesQuery x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDataTypeRefExpr x) {
+
+    }
+
+    @Override
+    public void endVisit(SQLTableSampling x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLTableSampling x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLSizeExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLSizeExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLUnnestTableSource x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLUnnestTableSource x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAdhocTableSource x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLCurrentTimeExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCurrentTimeExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAdhocTableSource x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDecimalExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDecimalExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCurrentUserExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLCurrentUserExpr x) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLDataTypeRefExpr x) {
+        return true;
     }
 
     public final boolean isEnabled(VisitorFeature feature) {

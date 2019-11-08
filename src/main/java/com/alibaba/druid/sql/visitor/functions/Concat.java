@@ -31,7 +31,7 @@ public class Concat implements Function {
         for (SQLExpr item : x.getParameters()) {
             item.accept(visitor);
 
-            Object itemValue = item.getAttributes().get(EVAL_VALUE);
+            Object itemValue = item.getAttribute(EVAL_VALUE);
             if (itemValue == null) {
                 return null;
             }

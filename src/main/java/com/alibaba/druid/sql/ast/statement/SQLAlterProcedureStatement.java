@@ -17,9 +17,6 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleStatementImpl;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterProcedureStatement extends SQLStatementImpl implements SQLAlterStatement {

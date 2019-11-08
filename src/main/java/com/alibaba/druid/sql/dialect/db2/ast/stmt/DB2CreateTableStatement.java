@@ -21,9 +21,6 @@ import com.alibaba.druid.sql.dialect.db2.ast.DB2Statement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DB2CreateTableStatement extends SQLCreateTableStatement implements DB2Statement {
     private boolean dataCaptureNone;
     private boolean dataCaptureChanges;

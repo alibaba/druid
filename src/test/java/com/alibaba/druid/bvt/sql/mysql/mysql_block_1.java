@@ -86,18 +86,18 @@ public class mysql_block_1 extends OracleTest {
 							"\t, `physical_read_requests`, `\n" +
 							"physical_write_requests`, `elapsed_time`, `user_io_wait_time`, `collection_time`)\n" +
 							"SELECT `dbid`, `sql_id`, `parsing_schema_name`, `sql_fulltext`\n" +
-							"\t, SUM(`cpu_time`), SUM(`buffer_gets`)\n" +
-							"\t, SUM(`executions`), MAX(`command_name`)\n" +
-							"\t, SUM(`sharable_mem`), SUM(`\n" +
+							"\t, sum(`cpu_time`), sum(`buffer_gets`)\n" +
+							"\t, sum(`executions`), max(`command_name`)\n" +
+							"\t, sum(`sharable_mem`), sum(`\n" +
 							"persistent_mem`)\n" +
-							"\t, SUM(`users_opening`), SUM(`fetches`)\n" +
-							"\t, SUM(`loads`), SUM(`disk_reads`)\n" +
-							"\t, SUM(`direct_writes`), MAX(`command_type`)\n" +
-							"\t, MAX(`plan_hash_value`), MAX(`action`)\n" +
-							"\t, MAX(`remote`), MAX(`is_obsolete`)\n" +
-							"\t, SUM(`physical_read_requests`), SUM(`physical_write_requests`)\n" +
-							"\t, SUM(`elapsed_time`), SUM(`user_io_wait_time`)\n" +
-							"\t, MAX(`collection_time`)\n" +
+							"\t, sum(`users_opening`), sum(`fetches`)\n" +
+							"\t, sum(`loads`), sum(`disk_reads`)\n" +
+							"\t, sum(`direct_writes`), max(`command_type`)\n" +
+							"\t, max(`plan_hash_value`), max(`action`)\n" +
+							"\t, max(`remote`), max(`is_obsolete`)\n" +
+							"\t, sum(`physical_read_requests`), sum(`physical_write_requests`)\n" +
+							"\t, sum(`elapsed_time`), sum(`user_io_wait_time`)\n" +
+							"\t, max(`collection_time`)\n" +
 							"FROM ktv_sqlarea\n" +
 							"WHERE dbid = ?\n" +
 							"GROUP BY sql_fulltext;\n" +

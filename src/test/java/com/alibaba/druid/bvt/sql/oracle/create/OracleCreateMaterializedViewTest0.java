@@ -52,7 +52,7 @@ public class OracleCreateMaterializedViewTest0 extends OracleTest {
 
         assertEquals("CREATE MATERIALIZED VIEW sales_summary\n" +
                         "AS\n" +
-                        "SELECT seller_no, invoice_date, SUM(invoice_amt) AS sales_amt\n" +
+                        "SELECT seller_no, invoice_date, sum(invoice_amt) AS sales_amt\n" +
                         "FROM invoice\n" +
                         "WHERE invoice_date < CURRENT_DATE\n" +
                         "GROUP BY seller_no, invoice_date\n" +

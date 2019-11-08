@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.util.Utils;
-
 import java.nio.charset.Charset;
 
 /**

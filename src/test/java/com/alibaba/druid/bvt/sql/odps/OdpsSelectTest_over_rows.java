@@ -28,7 +28,7 @@ public class OdpsSelectTest_over_rows extends TestCase {
 
     public void test_select() throws Exception {
         String sql = "SELECT sum(c) over(order by ds rows 9999 preceding) s, ds FROM t1";//
-        assertEquals("SELECT SUM(c) OVER (ORDER BY ds ROWS 9999 PRECEDING) AS s, ds\n" +
+        assertEquals("SELECT sum(c) OVER (ORDER BY ds ROWS 9999 PRECEDING) AS s, ds\n" +
                 "FROM t1", SQLUtils.formatOdps(sql));
         Assert.assertEquals("select sum(c) over (order by ds rows 9999 preceding) as s, ds\n" +
                 "from t1", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

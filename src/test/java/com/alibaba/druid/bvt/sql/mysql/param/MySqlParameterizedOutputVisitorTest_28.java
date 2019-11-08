@@ -22,7 +22,7 @@ public class MySqlParameterizedOutputVisitorTest_28 extends TestCase {
         String sql = "SELECT `xxx_reverse_od`.dept, count(*) from xxx_reverse_od_0446 `xxx_reverse_od` join abc_xx_abc `aa` on `xxx_reverse_od`.id = `aa`.id";
 
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
-        assertEquals("SELECT `xxx_reverse_od`.dept, COUNT(*)\n" +
+        assertEquals("SELECT `xxx_reverse_od`.dept, count(*)\n" +
                 "FROM xxx_reverse_od `xxx_reverse_od`\n" +
                 "\tJOIN abc_xx_abc `aa` ON `xxx_reverse_od`.id = `aa`.id", psql);
 
@@ -50,7 +50,7 @@ public class MySqlParameterizedOutputVisitorTest_28 extends TestCase {
         visitor1.setParameters(visitor.getParameters());
         stmt.accept(visitor1);
 
-        assertEquals("SELECT `xxx_reverse_od`.dept, COUNT(*)\n" +
+        assertEquals("SELECT `xxx_reverse_od`.dept, count(*)\n" +
                 "FROM xxx_reverse_od_0446 `xxx_reverse_od`\n" +
                 "\tJOIN abc_xx_abc `aa` ON `xxx_reverse_od`.id = `aa`.id", buf.toString());
     }

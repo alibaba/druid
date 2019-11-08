@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.ast;
 
-import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;

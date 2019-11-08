@@ -18,12 +18,14 @@ package com.alibaba.druid.sql.ast.expr;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -261,6 +263,21 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         List<SQLExpr> groupList = new ArrayList<SQLExpr>();
         split(groupList, x, op);
         return groupList;
+    }
+
+    public static List<SQLExpr> split(SQLExpr x, SQLBinaryOperator op) {
+        if (x instanceof SQLBinaryOpExprGroup) {
+            SQLBinaryOpExprGroup group = (SQLBinaryOpExprGroup) x;
+            if (group.getOperator() == op) {
+                return new ArrayList<SQLExpr>(group.getItems());
+            }
+        } else if (x instanceof SQLBinaryOpExpr) {
+            return split((SQLBinaryOpExpr) x, op);
+        }
+
+        List<SQLExpr> list = new ArrayList<SQLExpr>(1);
+        list.add(x);
+        return list;
     }
 
     public static void split(List<SQLExpr> outList, SQLExpr expr, SQLBinaryOperator op) {
@@ -646,5 +663,48 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         }
 
         return binaryA.getLeft().toString().equals(binaryB.getLeft().toString());
+    }
+
+    public static boolean isOr(SQLExpr x) {
+        return x instanceof SQLBinaryOpExpr
+                && ((SQLBinaryOpExpr) x).getOperator() == SQLBinaryOperator.BooleanOr;
+    }
+
+    public static SQLExpr or(List<? extends SQLExpr> list) {
+        if (list.size() == 0) {
+            return null;
+        }
+        SQLExpr first = list.get(0);
+        for (int i = 1; i < list.size(); i++) {
+            first = or(first, list.get(i));
+        }
+        return first;
+    }
+
+    public static SQLExpr or(SQLExpr a, SQLExpr b) {
+        if (a == null) {
+            return b;
+        }
+
+        if (b == null) {
+            return a;
+        }
+
+        if (a instanceof SQLBinaryOpExprGroup) {
+            SQLBinaryOpExprGroup group = (SQLBinaryOpExprGroup) a;
+            if (group.getOperator() == SQLBinaryOperator.BooleanOr) {
+                group.add(b);
+                return group;
+            }
+        }
+
+        if (b instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr bb = (SQLBinaryOpExpr) b;
+            if (bb.operator == SQLBinaryOperator.BooleanOr) {
+                return or(or(a, bb.left), bb.right);
+            }
+        }
+
+        return new SQLBinaryOpExpr(a, SQLBinaryOperator.BooleanOr, b);
     }
 }

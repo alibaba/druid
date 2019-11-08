@@ -45,7 +45,7 @@ public class OdpsSelectTest13 extends TestCase {
         stmt.accept(visitor);
         
 //        System.out.println("Tables : " + visitor.getTables());
-//      System.out.println("fields : " + visitor.getColumns());
+      System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
         
@@ -53,7 +53,7 @@ public class OdpsSelectTest13 extends TestCase {
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
         
-        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
+        assertTrue(visitor.containsColumn("abc", "name"));
     }
     
 }
