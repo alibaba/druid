@@ -202,6 +202,31 @@
 
 	<profiles>
 		<profile>
+			<id>openjdk</id>
+			<activation>
+				<file>
+					<missing>${env.JAVA_HOME}/lib/jconsole.jar</missing>
+				</file>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.sun</groupId>
+					<artifactId>tools</artifactId>
+					<version>1.8</version>
+					<scope>system</scope>
+					<systemPath>${project.basedir}/lib/openjdk-1.8-tools.jar</systemPath>
+				</dependency>
+
+				<dependency>
+					<groupId>com.sun</groupId>
+					<artifactId>jconsole</artifactId>
+					<version>1.8</version>
+					<scope>system</scope>
+					<systemPath>${project.basedir}/lib/openjdk-1.8-jconsole.jar</systemPath>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
 			<id>default-profile</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -679,21 +704,6 @@
 			<scope>test</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>tools</artifactId>
-            <version>1.8</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/openjdk-1.8-tools.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>jconsole</artifactId>
-            <version>1.8</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/openjdk-1.8-jconsole.jar</systemPath>
-        </dependency>
 
     </dependencies>
 </project>
