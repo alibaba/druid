@@ -51,6 +51,7 @@ public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatem
             acceptChild(visitor, with);
             acceptChild(visitor, tableSource);
             acceptChild(visitor, items);
+            acceptChild(visitor, from);
             acceptChild(visitor, where);
         }
         visitor.endVisit(this);
