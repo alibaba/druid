@@ -166,9 +166,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
                         SQLInListExpr inListItem = (SQLInListExpr) item;
                         if (inListExpr.getExpr().equals(inListItem.getExpr())) {
                             TreeSet<SQLExpr> set = new TreeSet<SQLExpr>();
-                            for (SQLExpr itemItem : inListItem.getTargetList()) {
-                                set.add(itemItem);
-                            }
+                            set.addAll(inListItem.getTargetList());
 
                             List<SQLExpr> andList = new ArrayList<SQLExpr>();
                             for (SQLExpr exprItem : inListExpr.getTargetList()) {
