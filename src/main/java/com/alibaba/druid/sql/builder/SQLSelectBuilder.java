@@ -47,5 +47,6 @@ public interface SQLSelectBuilder {
 
     SQLSelectBuilder whereOr(String sql);
 
+    @Override
     String toString();
 }

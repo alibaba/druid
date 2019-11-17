@@ -118,6 +118,7 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
         return this;
     }
 
+    @Override
     public SQLUpdateBuilderImpl set(String... items) {
         SQLUpdateStatement update = getSQLUpdateStatement();
         for (String item : items) {
@@ -177,6 +178,7 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
         return new SQLUpdateStatement();
     }
     
+    @Override
     public String toString() {
         return SQLUtils.toSQLString(stmt, dbType);
     }
