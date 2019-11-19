@@ -273,6 +273,9 @@ public class OracleLexer extends Lexer {
                     scanChar();
                     break;
                 }
+                if (ch == '\n') {
+                    line++;
+                }
 
                 scanChar();
                 bufPos++;
@@ -310,6 +313,8 @@ public class OracleLexer extends Lexer {
                     if (charAt(pos + 1) == '\n') {
                         bufPos += 2;
                         scanChar();
+                        scanChar();
+                        line++;
                         break;
                     }
                     bufPos++;
@@ -321,6 +326,7 @@ public class OracleLexer extends Lexer {
                 if (ch == '\n') {
                     scanChar();
                     bufPos++;
+                    line++;
                     break;
                 }
 
