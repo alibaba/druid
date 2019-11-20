@@ -25,14 +25,16 @@
       		</div> 
     	</div>
     	<script id="datasource-tmpl" type="text/template">
-			{{~ it.Content :datasourceNow:i  }}
 			<ul class="nav nav-tabs" id="datasourceTab">
-					<li class="active">
+				{{~ it.Content :datasourceNow:i  }}
+					<li class="{{=i==0?'active':''}}" id="datasourceTab-li-{{=i}}">
 						<a href="datasource.html#dstab{{=datasourceNow.Identity}}">{{=datasourceNow.Name}}</a>
 					</li>
+				{{~ }}
 			</ul>
 			<div class="tab-content">
-				<div class="tab-pane active" id="dstab{{=datasourceNow.Identity}}">
+				{{~ it.Content :datasourceNow:i  }}
+				<div class="tab-pane {{=i==0?'active':''}}" id="dstab{{=datasourceNow.Identity}}">
 					<h4>
 						Basic Info For {{=datasourceNow.Name}}<a href="datasource-{{=datasourceNow.Identity}}.json" target="_blank"  >View JSON API</a>
 					</h4>
@@ -401,8 +403,8 @@
 						</tbody>
 					</table>
 				</div>
+				{{~ }}
 			</div>
-			{{~ }}	
 		</script>
     	<script type="text/javascript">
 			$.namespace("druid.datasource");
