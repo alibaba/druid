@@ -1493,6 +1493,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
      * 抛弃连接，不进行回收，而是抛弃
      * 
      * @param realConnection
+     * @deprecated
      */
     public void discardConnection(Connection realConnection) {
         JdbcUtils.close(realConnection);
@@ -1526,7 +1527,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 return;
             }
 
-            activeCount--;
+            if (holder.active) {
+                activeCount--;
+                holder.active = false;
+            }
             discardCount++;
 
             holder.discard = true;
@@ -1580,6 +1584,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     try {
                         if (activeCount < maxActive) {
                             activeCount++;
+                            holder.active = true;
                             if (activeCount > activePeak) {
                                 activePeak = activeCount;
                                 activePeakTime = System.currentTimeMillis();
@@ -1661,7 +1666,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
 
                 if (holder != null) {
+                    if (holder.discard) {
+                        continue;
+                    }
+
                     activeCount++;
+                    holder.active = true;
                     if (activeCount > activePeak) {
                         activePeak = activeCount;
                         activePeakTime = System.currentTimeMillis();
@@ -1906,7 +1916,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (physicalConnection.isClosed()) {
                 lock.lock();
                 try {
-                    activeCount--;
+                    if (holder.active) {
+                        activeCount--;
+                        holder.active = false;
+                    }
                     closeCount++;
                 } finally {
                     lock.unlock();
@@ -1923,7 +1936,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     lock.lock();
                     try {
-                        activeCount--;
+                        if (holder.active) {
+                            activeCount--;
+                            holder.active = false;
+                        }
                         closeCount++;
                     } finally {
                         lock.unlock();
@@ -1950,7 +1966,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             lock.lock();
             try {
-                activeCount--;
+                if (holder.active) {
+                    activeCount--;
+                    holder.active = false;
+                }
                 closeCount++;
 
                 result = putLast(holder, currentTimeMillis);
@@ -2113,7 +2132,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     boolean putLast(DruidConnectionHolder e, long lastActiveTimeMillis) {
-        if (poolingCount >= maxActive) {
+        if (poolingCount >= maxActive || e.discard) {
             return false;
         }
 

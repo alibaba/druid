@@ -69,6 +69,7 @@ public final class DruidConnectionHolder {
     protected int                                 underlyingTransactionIsolation;
     protected boolean                             underlyingAutoCommit;
     protected volatile boolean                    discard                  = false;
+    protected volatile boolean                    active                   = false;
     protected final Map<String, Object>           variables;
     protected final Map<String, Object>           globleVariables;
     final ReentrantLock                           lock                     = new ReentrantLock();
