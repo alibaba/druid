@@ -38,6 +38,7 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
     private SQLExpr                onConflictWhere;
     private boolean                onConflictDoNothing;
     private List<SQLUpdateSetItem> onConflictUpdateSetItems;
+    private SQLExpr                onConflictSetWhere;
 
     public PGInsertStatement() {
         dbType = JdbcConstants.POSTGRESQL;
@@ -141,7 +142,12 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
         return onConflictUpdateSetItems;
     }
 
+    @Deprecated
     public void addConflicUpdateItem(SQLUpdateSetItem item) {
+        this.addConflictUpdateItem(item);
+    }
+
+    public void addConflictUpdateItem(SQLUpdateSetItem item) {
         if (onConflictUpdateSetItems == null) {
             onConflictUpdateSetItems = new ArrayList<SQLUpdateSetItem>();
         }
@@ -152,6 +158,14 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
 
     public SQLName getOnConflictConstraint() {
         return onConflictConstraint;
+    }
+
+    public void setOnConflictSetWhere(SQLExpr onConflictSetWhere) {
+        this.onConflictSetWhere = onConflictSetWhere;
+    }
+
+    public SQLExpr getOnConflictSetWhere() {
+        return onConflictSetWhere;
     }
 
     public void setOnConflictConstraint(SQLName x) {

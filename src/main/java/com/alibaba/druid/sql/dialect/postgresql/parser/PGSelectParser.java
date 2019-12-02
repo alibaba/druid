@@ -140,7 +140,11 @@ public class PGSelectParser extends SQLSelectParser {
 
         for (;;) {
             if (lexer.token() == Token.LIMIT) {
-                SQLLimit limit = new SQLLimit();
+                // PG支持 offset xxx limit xxx和limit xxx offset xxx
+                SQLLimit limit = queryBlock.getLimit();
+                if (limit == null) {
+                    limit = new SQLLimit();
+                }
 
                 lexer.nextToken();
                 if (lexer.token() == Token.ALL) {
@@ -155,11 +159,11 @@ public class PGSelectParser extends SQLSelectParser {
                 SQLLimit limit = queryBlock.getLimit();
                 if (limit == null) {
                     limit = new SQLLimit();
-                    queryBlock.setLimit(limit);
                 }
                 lexer.nextToken();
                 SQLExpr offset = expr();
                 limit.setOffset(offset);
+                queryBlock.setLimit(limit);
 
                 if (lexer.token() == Token.ROW || lexer.token() == Token.ROWS) {
                     lexer.nextToken();
@@ -236,6 +240,7 @@ public class PGSelectParser extends SQLSelectParser {
         }
 
         return queryRest(queryBlock, acceptUnion);
+
     }
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {

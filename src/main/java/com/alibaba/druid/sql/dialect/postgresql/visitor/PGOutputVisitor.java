@@ -485,6 +485,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             } else if ((onConflictUpdateSetItems != null && onConflictUpdateSetItems.size() > 0)) {
                 print0(ucase ? " DO UPDATE SET " : " do update set ");
                 printAndAccept(onConflictUpdateSetItems, ", ");
+                SQLExpr onConflictSetWhere = x.getOnConflictSetWhere();
+                if (onConflictSetWhere != null) {
+                    print0(ucase ? " WHERE " : " where ");
+                    printExpr(onConflictSetWhere);
+                }
             }
         }
 
@@ -545,6 +550,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             printTableSource(from);
         }
 
+        // where condition | where cursor of name
         SQLExpr where = x.getWhere();
         if (where != null) {
             println();

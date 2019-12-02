@@ -17,6 +17,7 @@ package com.alibaba.druid.bvt.sql.postgresql;
 
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
@@ -54,5 +55,12 @@ public class PGUpdateTest0 extends PGTest {
         assertTrue(visitor.containsColumn("student", "grade"));
     }
 
+    public void test_1() throws Exception {
+        String sql = "update t1 as t set a = 'a1',b = ? ,c = default where current of c1 returning *";
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        PGUpdateStatement stmt = (PGUpdateStatement) statementList.get(0);
+        System.out.println(stmt);
+    }
     
 }

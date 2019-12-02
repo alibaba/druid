@@ -82,30 +82,42 @@ public class PGSQLStatementParser extends SQLStatementParser {
     public SQLUpdateStatement parseUpdateStatement() {
         accept(Token.UPDATE);
 
-        PGUpdateStatement udpateStatement = new PGUpdateStatement();
+        PGUpdateStatement updateStatement = new PGUpdateStatement();
+
+        if (lexer.token() == Token.ONLY) {
+            lexer.nextToken();
+            updateStatement.setOnly(true);
+        }
 
         SQLSelectParser selectParser = this.exprParser.createSelectParser();
         SQLTableSource tableSource = selectParser.parseTableSource();
-        udpateStatement.setTableSource(tableSource);
+        updateStatement.setTableSource(tableSource);
 
-        parseUpdateSet(udpateStatement);
+        parseUpdateSet(updateStatement);
 
         if (lexer.token() == Token.FROM) {
             lexer.nextToken();
             SQLTableSource from = selectParser.parseTableSource();
-            udpateStatement.setFrom(from);
+            updateStatement.setFrom(from);
         }
 
-        if (lexer.token() == (Token.WHERE)) {
+        if (lexer.token() == Token.WHERE) {
             lexer.nextToken();
-            udpateStatement.setWhere(this.exprParser.expr());
+            // where current of cursor_name
+            if (lexer.token() == Token.CURRENT) {
+                lexer.nextToken();
+                accept(Token.OF);
+                updateStatement.setWhere(new SQLCurrentOfCursorExpr(this.exprParser.name()));
+            } else {
+                updateStatement.setWhere(this.exprParser.expr());
+            }
         }
 
         if (lexer.token() == Token.RETURNING) {
             lexer.nextToken();
 
             for (;;) {
-                udpateStatement.getReturning().add(this.exprParser.expr());
+                updateStatement.getReturning().add(this.exprParser.expr());
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
@@ -114,7 +126,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
         }
 
-        return udpateStatement;
+        return updateStatement;
     }
 
     public PGInsertStatement parseInsert() {
@@ -209,13 +221,18 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
                         for (;;) {
                             SQLUpdateSetItem item = this.exprParser.parseUpdateSetItem();
-                            stmt.addConflicUpdateItem(item);
+                            stmt.addConflictUpdateItem(item);
 
                             if (lexer.token() != Token.COMMA) {
                                 break;
                             }
 
                             lexer.nextToken();
+                        }
+                        if (lexer.token() == Token.WHERE) {
+                            lexer.nextToken();
+                            SQLExpr where = this.exprParser.expr();
+                            stmt.setOnConflictSetWhere(where);
                         }
                     }
                 }

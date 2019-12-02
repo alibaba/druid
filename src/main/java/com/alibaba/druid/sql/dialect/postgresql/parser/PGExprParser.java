@@ -84,7 +84,7 @@ public class PGExprParser extends SQLExprParser {
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
         this.dbType = JdbcConstants.POSTGRESQL;
     }
-    
+
     @Override
     public SQLDataType parseDataType() {
         if (lexer.token() == Token.TYPE) {
@@ -92,7 +92,7 @@ public class PGExprParser extends SQLExprParser {
         }
         return super.parseDataType();
     }
-    
+
     public PGSelectParser createSelectParser() {
         return new PGSelectParser(this);
     }
@@ -150,7 +150,7 @@ public class PGExprParser extends SQLExprParser {
             }
             return values;
         }
-        
+
         return super.primary();
     }
 
@@ -166,19 +166,20 @@ public class PGExprParser extends SQLExprParser {
         return intervalExpr;
     }
 
+    @Override
     public SQLExpr primaryRest(SQLExpr expr) {
         if (lexer.token() == Token.COLONCOLON) {
             lexer.nextToken();
             SQLDataType dataType = this.parseDataType();
-            
+
             PGTypeCastExpr castExpr = new PGTypeCastExpr();
-            
+
             castExpr.setExpr(expr);
             castExpr.setDataType(dataType);
 
             return primaryRest(castExpr);
         }
-        
+
         if (lexer.token() == Token.LBRACKET) {
             SQLArrayExpr array = new SQLArrayExpr();
             array.setExpr(expr);
@@ -187,7 +188,7 @@ public class PGExprParser extends SQLExprParser {
             accept(Token.RBRACKET);
             return primaryRest(array);
         }
-        
+
         if (expr.getClass() == SQLIdentifierExpr.class) {
             String ident = ((SQLIdentifierExpr)expr).getName();
 
@@ -257,23 +258,23 @@ public class PGExprParser extends SQLExprParser {
                 return primaryRest(timestamp);
             } else if ("EXTRACT".equalsIgnoreCase(ident)) {
                 accept(Token.LPAREN);
-                
+
                 PGExtractExpr extract = new PGExtractExpr();
-                
+
                 String fieldName = lexer.stringVal();
                 PGDateField field = PGDateField.valueOf(fieldName.toUpperCase());
                 lexer.nextToken();
-                
+
                 extract.setField(field);
-                
+
                 accept(Token.FROM);
                 SQLExpr source = this.expr();
-                
+
                 extract.setSource(source);
-                
+
                 accept(Token.RPAREN);
-                
-                return primaryRest(extract);     
+
+                return primaryRest(extract);
             } else if ("POINT".equalsIgnoreCase(ident)) {
                 SQLExpr value = this.primary();
                 PGPointExpr point = new PGPointExpr();
