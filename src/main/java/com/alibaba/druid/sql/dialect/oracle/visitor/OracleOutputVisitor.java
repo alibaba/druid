@@ -196,7 +196,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OracleAnalytic x) {
         print0(ucase ? "OVER (" : "over (");
-        
+
         boolean space = false;
         if (x.getPartitionBy().size() > 0) {
             print0(ucase ? "PARTITION BY " : "partition by ");
@@ -227,7 +227,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         print(')');
-        
+
         return false;
     }
 
@@ -701,7 +701,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OracleUpdateStatement x) {
         print0(ucase ? "UPDATE " : "update ");
-        
+
         if (x.getHints().size() > 0) {
             printAndAccept(x.getHints(), ", ");
             print(' ');
@@ -1237,16 +1237,16 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(OracleInsertStatement x) {
         //visit((SQLInsertStatement) x);
-        
+
         print0(ucase ? "INSERT " : "insert ");
-        
+
         if (x.getHints().size() > 0) {
             printAndAccept(x.getHints(), ", ");
             print(' ');
         }
 
         print0(ucase ? "INTO " : "into ");
-        
+
         x.getTableSource().accept(this);
 
         printInsertColumns(x.getColumns());
@@ -1632,7 +1632,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
                 print0(ucase ? "RENAME " : "rename ");
                 x.getName().accept(this);
-                print0(ucase ? " TO " : "to ");
+                print0(ucase ? " TO " : " to ");
                 to.accept(this);
                 return false;
             }
