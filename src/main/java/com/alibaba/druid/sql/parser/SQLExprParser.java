@@ -1585,11 +1585,7 @@ public class SQLExprParser extends SQLParser {
                 throw new ParserException("error, " + lexer.info());
             }
 
-            if (lexer.token == Token.LITERAL_ALIAS) {
-                name = new SQLPropertyExpr(name, lexer.stringVal());
-            } else {
-                name = new SQLPropertyExpr(name, lexer.stringVal());
-            }
+            name = new SQLPropertyExpr(name, lexer.stringVal());
             lexer.nextToken();
             name = nameRest(name);
         }
