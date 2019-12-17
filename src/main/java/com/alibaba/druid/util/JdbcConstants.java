@@ -46,6 +46,7 @@ public interface JdbcConstants {
 
     String MYSQL                      = "mysql";
     String MYSQL_DRIVER               = "com.mysql.jdbc.Driver";
+    String MYSQL_MARIADB_DRIVER       = "org.mariadb.jdbc.Driver";
     String MYSQL_DRIVER_6             = "com.mysql.cj.jdbc.Driver";
     String MYSQL_DRIVER_REPLICATE     = "com.mysql.jdbc.";
 
