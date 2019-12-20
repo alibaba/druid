@@ -1335,7 +1335,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             String realDriverClassName = driverClass.getName();
             if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
                     || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)
-                    || realDriverClassName.equals(JdbcConstants.MYSQL_MARIADB_DRIVER)) {
+                    || realDriverClassName.equals(JdbcConstants.MYSQL_MARIADB_DRIVER)) { // for mysql mariadb driver
                 this.exceptionSorter = new MySqlExceptionSorter();
                 this.isMySql = true;
             } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
