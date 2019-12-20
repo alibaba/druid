@@ -426,6 +426,40 @@ public class MySqlExprParser extends SQLExprParser {
         return primaryRest(expr);
     }
 
+    protected String as(){
+        String alias=super.as();
+
+        if(alias==null || alias.isEmpty()){
+            switch (lexer.token()){
+                case COMMENT:
+                case ANY:
+                case ENABLE:
+                case DISABLE:
+                case CAST:
+                case FUNCTION:
+                case EXCEPT:
+                case ESCAPE:
+                case INTERSECT:
+                case MINUS:
+                case SOME:
+                case TRUNCATE:
+                case VIEW:
+                case SEQUENCE:
+                case OVER:
+                case COMPUTE:
+                case UNTIL:
+                case OPEN:
+                case CLOSE:
+                    alias=lexer.stringVal();
+                    lexer.nextToken();
+                    break;
+            }
+        }
+
+        return alias;
+    }
+
+
     protected SQLExpr parseMatch() {
 
         MySqlMatchAgainstExpr matchAgainstExpr = new MySqlMatchAgainstExpr();
