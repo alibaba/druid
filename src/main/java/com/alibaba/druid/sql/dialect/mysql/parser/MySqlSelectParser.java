@@ -66,12 +66,12 @@ public class MySqlSelectParser extends SQLSelectParser {
     public MySqlSelectParser(String sql){
         this(new MySqlExprParser(sql));
     }
-    
+
     public void parseFrom(SQLSelectQueryBlock queryBlock) {
         if (lexer.token() != Token.FROM) {
             return;
         }
-        
+
         lexer.nextTokenIdent();
 
         if (lexer.token() == Token.UPDATE) { // taobao returning to urgly syntax
@@ -85,7 +85,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             returningFlag = true;
             return;
         }
-        
+
         queryBlock.setFrom(parseTableSource());
     }
 
@@ -126,56 +126,100 @@ public class MySqlSelectParser extends SQLSelectParser {
                 }
             }
 
-            Token token = lexer.token();
-            if (token == (Token.DISTINCT)) {
-                queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
-                lexer.nextToken();
-            } else if (lexer.identifierEquals(FnvHash.Constants.DISTINCTROW)) {
-                queryBlock.setDistionOption(SQLSetQuantifier.DISTINCTROW);
-                lexer.nextToken();
-            } else if (token == (Token.ALL)) {
-                queryBlock.setDistionOption(SQLSetQuantifier.ALL);
-                lexer.nextToken();
-            }
 
-            if (lexer.identifierEquals(FnvHash.Constants.HIGH_PRIORITY)) {
-                queryBlock.setHignPriority(true);
-                lexer.nextToken();
-            }
+            while (true) {
+                Token token = lexer.token();
+                if (token == (Token.DISTINCT)) {
+                    //DISTINCT and ALL is mutual exclusion
+                    if (queryBlock.getDistionOption() != SQLSetQuantifier.ALL) {
+                        queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
+                        lexer.nextToken();
+                        continue;
+                    } else {
+                        throw new ParserException("ERROR. " + lexer.info());
+                    }
+                }
 
-            if (lexer.identifierEquals(FnvHash.Constants.STRAIGHT_JOIN)) {
-                queryBlock.setStraightJoin(true);
-                lexer.nextToken();
-            }
+                if (lexer.identifierEquals(FnvHash.Constants.DISTINCTROW)) {
+                    //DISTINCTROW and ALL is mutual exclusion
+                    if(queryBlock.getDistionOption() != SQLSetQuantifier.ALL) {
+                        queryBlock.setDistionOption(SQLSetQuantifier.DISTINCTROW);
+                        lexer.nextToken();
+                        continue;
+                    } else {
+                        throw new ParserException("ERROR. " + lexer.info());
+                    }
+                }
 
-            if (lexer.identifierEquals(FnvHash.Constants.SQL_SMALL_RESULT)) {
-                queryBlock.setSmallResult(true);
-                lexer.nextToken();
-            }
+                if (token == (Token.ALL)) {
+                    //ALL and DISTINCT/DISTINCTROW is mutual exclusion
+                    if(queryBlock.getDistionOption() == SQLSetQuantifier.DISTINCT
+                        || queryBlock.getDistionOption() == SQLSetQuantifier.DISTINCTROW) {
+                        throw new ParserException("ERROR. " + lexer.info());
+                    } else {
+                        queryBlock.setDistionOption(SQLSetQuantifier.ALL);
+                        lexer.nextToken();
+                        continue;
+                    }
+                }
 
-            if (lexer.identifierEquals(FnvHash.Constants.SQL_BIG_RESULT)) {
-                queryBlock.setBigResult(true);
-                lexer.nextToken();
-            }
+                if (lexer.identifierEquals(FnvHash.Constants.HIGH_PRIORITY)) {
+                    queryBlock.setHignPriority(true);
+                    lexer.nextToken();
+                    continue;
+                }
 
-            if (lexer.identifierEquals(FnvHash.Constants.SQL_BUFFER_RESULT)) {
-                queryBlock.setBufferResult(true);
-                lexer.nextToken();
-            }
+                if (lexer.identifierEquals(FnvHash.Constants.STRAIGHT_JOIN)) {
+                    queryBlock.setStraightJoin(true);
+                    lexer.nextToken();
+                    continue;
+                }
 
-            if (lexer.identifierEquals(FnvHash.Constants.SQL_CACHE)) {
-                queryBlock.setCache(true);
-                lexer.nextToken();
-            }
+                if (lexer.identifierEquals(FnvHash.Constants.SQL_SMALL_RESULT)) {
+                    queryBlock.setSmallResult(true);
+                    lexer.nextToken();
+                    continue;
+                }
 
-            if (lexer.identifierEquals(FnvHash.Constants.SQL_NO_CACHE)) {
-                queryBlock.setCache(false);
-                lexer.nextToken();
-            }
+                if (lexer.identifierEquals(FnvHash.Constants.SQL_BIG_RESULT)) {
+                    queryBlock.setBigResult(true);
+                    lexer.nextToken();
+                    continue;
+                }
 
-            if (lexer.identifierEquals(FnvHash.Constants.SQL_CALC_FOUND_ROWS)) {
-                queryBlock.setCalcFoundRows(true);
-                lexer.nextToken();
+                if (lexer.identifierEquals(FnvHash.Constants.SQL_BUFFER_RESULT)) {
+                    queryBlock.setBufferResult(true);
+                    lexer.nextToken();
+                    continue;
+                }
+
+                if (lexer.identifierEquals(FnvHash.Constants.SQL_CACHE)) {
+                    if(queryBlock.getCache() == null || Boolean.TRUE.equals(queryBlock.getCache())) {
+                        queryBlock.setCache(true);
+                        lexer.nextToken();
+                        continue;
+                    } else {
+                        throw new ParserException("ERROR. " + lexer.info());
+                    }
+                }
+
+                if (lexer.identifierEquals(FnvHash.Constants.SQL_NO_CACHE)) {
+                    if(queryBlock.getCache() == null || Boolean.FALSE.equals(queryBlock.getCache())) {
+                        queryBlock.setCache(false);
+                        lexer.nextToken();
+                        continue;
+                    } else {
+                        throw new ParserException("ERROR. " + lexer.info());
+                    }
+                }
+
+                if (lexer.identifierEquals(FnvHash.Constants.SQL_CALC_FOUND_ROWS)) {
+                    queryBlock.setCalcFoundRows(true);
+                    lexer.nextToken();
+                    continue;
+                }
+
+                break;
             }
 
             parseSelectList(queryBlock);
@@ -237,7 +281,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         return queryRest(queryBlock, acceptUnion);
     }
-    
+
     public SQLTableSource parseTableSource() {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
@@ -264,7 +308,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
             return parseTableSourceRest(tableSource);
         }
-        
+
         if(lexer.token() == Token.UPDATE) {
             SQLTableSource tableSource = new MySqlUpdateTableSource(parseUpdateStatment());
             return parseTableSourceRest(tableSource);
@@ -279,14 +323,14 @@ public class MySqlSelectParser extends SQLSelectParser {
         parseTableSourceQueryTableExpr(tableReference);
 
         SQLTableSource tableSrc = parseTableSourceRest(tableReference);
-        
+
         if (lexer.hasComment() && lexer.isKeepComments()) {
             tableSrc.addAfterComment(lexer.readAndResetComments());
         }
-        
+
         return tableSrc;
     }
-    
+
     protected MySqlUpdateStatement parseUpdateStatment() {
         MySqlUpdateStatement update = new MySqlUpdateStatement();
 
@@ -301,22 +345,22 @@ public class MySqlSelectParser extends SQLSelectParser {
             lexer.nextToken();
             update.setIgnore(true);
         }
-        
+
         if (lexer.identifierEquals(FnvHash.Constants.COMMIT_ON_SUCCESS)) {
             lexer.nextToken();
             update.setCommitOnSuccess(true);
         }
-        
+
         if (lexer.identifierEquals(FnvHash.Constants.ROLLBACK_ON_FAIL)) {
             lexer.nextToken();
             update.setRollBackOnFail(true);
         }
-        
+
         if (lexer.identifierEquals(FnvHash.Constants.QUEUE_ON_PK)) {
             lexer.nextToken();
             update.setQueryOnPk(true);
         }
-        
+
         if (lexer.identifierEquals(FnvHash.Constants.TARGET_AFFECT_ROW)) {
             lexer.nextToken();
             SQLExpr targetAffectRow = this.exprParser.expr();
@@ -370,10 +414,10 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         update.setOrderBy(this.exprParser.parseOrderBy());
         update.setLimit(this.exprParser.parseLimit());
-        
+
         return update;
     }
-    
+
     protected void parseInto(SQLSelectQueryBlock queryBlock) {
         if (lexer.token() == (Token.INTO)) {
             lexer.nextToken();
@@ -465,7 +509,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
 
         parseIndexHintList(tableSource);
-        
+
         if (lexer.token() == Token.PARTITION) {
             lexer.nextToken();
             accept(Token.LPAREN);
