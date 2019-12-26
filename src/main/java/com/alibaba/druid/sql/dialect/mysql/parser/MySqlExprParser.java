@@ -578,6 +578,17 @@ public class MySqlExprParser extends SQLExprParser {
             column.setCharsetExpr(charSetCollateExpr);
             return parseColumnRest(column);
         }
+
+        // MySQL COLLATE without charset
+        if (lexer.identifierEquals(FnvHash.Constants.COLLATE)) {
+            lexer.nextToken();
+            MySqlCharExpr charSetCollateExpr=new MySqlCharExpr();
+            charSetCollateExpr.setCollate(lexer.stringVal());
+            column.setCharsetExpr(charSetCollateExpr);
+            lexer.nextToken();
+            return parseColumnRest(column);
+        }
+
         if (lexer.identifierEquals(FnvHash.Constants.AUTO_INCREMENT)) {
             lexer.nextToken();
             column.setAutoIncrement(true);
