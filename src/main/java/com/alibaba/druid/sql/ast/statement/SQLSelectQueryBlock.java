@@ -1170,8 +1170,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             int removedCount = 0;
             List<SQLExpr> items = group.getItems();
             for (int i = items.size() - 1; i >= 0; i--) {
-                SQLExpr item = items.get(i);
-                if (item.equals(condition)) {
+                if (items.get(i).equals(condition)) {
                     items.remove(i);
                     removedCount++;
                 }
