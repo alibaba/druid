@@ -603,11 +603,11 @@ public class CallableStatementProxyImpl extends PreparedStatementProxyImpl imple
     }
 
     public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return statement.getObject(parameterIndex, type);
     }
 
     public <T> T getObject(String parameterName, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return statement.getObject(parameterName, type);
     }
 
     @SuppressWarnings("unchecked")

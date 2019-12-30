@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-import java.util.List;
 
 public class SQLCharacterDataType extends SQLDataTypeImpl {
 

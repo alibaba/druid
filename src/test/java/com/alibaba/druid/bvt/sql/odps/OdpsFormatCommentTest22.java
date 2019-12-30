@@ -20,7 +20,7 @@ public class OdpsFormatCommentTest22 extends TestCase {
     }
     public void test_count() throws Exception {
         String sql = "select count(*) from dual";
-        Assert.assertEquals("SELECT COUNT(*)"
+        Assert.assertEquals("SELECT count(*)"
                 + "\nFROM dual", SQLUtils.formatOdps(sql));
     }
 

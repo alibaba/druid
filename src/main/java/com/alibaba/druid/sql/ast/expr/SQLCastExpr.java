@@ -15,12 +15,15 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObjectWithDataType;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, SQLReplaceable {
 

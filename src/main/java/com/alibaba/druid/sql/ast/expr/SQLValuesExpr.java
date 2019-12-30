@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SQLValuesExpr extends SQLExprImpl {
     private List<SQLListExpr> values = new ArrayList<SQLListExpr>();

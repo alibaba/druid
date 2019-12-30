@@ -21,7 +21,11 @@ import static com.alibaba.druid.sql.parser.Token.IDENTIFIER;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.Keywords;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.NotAllowCommentException;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.Token;
 
 public class SQLServerLexer extends Lexer {
 

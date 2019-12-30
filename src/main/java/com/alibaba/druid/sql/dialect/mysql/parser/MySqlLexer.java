@@ -21,8 +21,14 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.druid.sql.parser.*;
-import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.sql.parser.CharTypes;
+import com.alibaba.druid.sql.parser.Keywords;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.NotAllowCommentException;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.SymbolTable;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlLexer extends Lexer {
@@ -289,7 +295,7 @@ public class MySqlLexer extends Lexer {
 
         final char first = ch;
 
-        if (ch == 'b'
+        if ((ch == 'b' || ch == 'B' )
                 && charAt(pos + 1) == '\'') {
             int i = 2;
             int mark = pos + 2;

@@ -22,7 +22,21 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.SQLParserFeature.KeepComments;
 import static com.alibaba.druid.sql.parser.SQLParserFeature.OptimizedForParameterized;
 import static com.alibaba.druid.sql.parser.SQLParserFeature.SkipComments;
-import static com.alibaba.druid.sql.parser.Token.*;
+import static com.alibaba.druid.sql.parser.Token.COLONCOLON;
+import static com.alibaba.druid.sql.parser.Token.COLONEQ;
+import static com.alibaba.druid.sql.parser.Token.COMMA;
+import static com.alibaba.druid.sql.parser.Token.DOT;
+import static com.alibaba.druid.sql.parser.Token.EOF;
+import static com.alibaba.druid.sql.parser.Token.EQ;
+import static com.alibaba.druid.sql.parser.Token.ERROR;
+import static com.alibaba.druid.sql.parser.Token.LBRACE;
+import static com.alibaba.druid.sql.parser.Token.LBRACKET;
+import static com.alibaba.druid.sql.parser.Token.LITERAL_ALIAS;
+import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
+import static com.alibaba.druid.sql.parser.Token.LPAREN;
+import static com.alibaba.druid.sql.parser.Token.RBRACE;
+import static com.alibaba.druid.sql.parser.Token.RBRACKET;
+import static com.alibaba.druid.sql.parser.Token.RPAREN;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -270,7 +284,7 @@ public class Lexer {
         }
 
         this.posLine = line;
-        this.posColumn = posColumn;
+        this.posColumn = column;
 
         StringBuilder buf = new StringBuilder();
         buf
@@ -1358,8 +1372,9 @@ public class Lexer {
             stringVal = new String(buf, 0, bufPos);
         }
     }
-    
+
     protected final void scanAlias() {
+        final char quote = ch;
         {
             boolean hasSpecial = false;
             int startIndex = pos + 1;
@@ -1370,22 +1385,16 @@ public class Lexer {
                     hasSpecial = true;
                     continue;
                 }
-                if (ch == '"') {
+                if (ch == quote) {
                     if (i + 1 < text.length()) {
                         char ch_next = charAt(i + 1);
-                        if (ch_next == '"' || ch_next == '\'') {
+                        if (ch_next == quote) {
                             hasSpecial = true;
                             i++;
                             continue;
                         }
                     }
-                    if (i > 0) {
-                        char ch_last = charAt(i - 1);
-                        if (ch_last == '\'') {
-                            hasSpecial = true;
-                            continue;
-                        }
-                    }
+
                     endIndex = i;
                     break;
                 }
@@ -1415,6 +1424,7 @@ public class Lexer {
         initBuff(bufPos);
         //putChar(ch);
 
+        putChar(ch);
         for (;;) {
             if (isEOF()) {
                 lexError("unclosed.str.lit");
@@ -1431,9 +1441,15 @@ public class Lexer {
                         putChar('\0');
                         break;
                     case '\'':
+                        if (ch == quote) {
+                            putChar('\\');
+                        }
                         putChar('\'');
                         break;
                     case '"':
+                        if (ch == quote) {
+                            putChar('\\');
+                        }
                         putChar('"');
                         break;
                     case 'b':
@@ -1450,6 +1466,7 @@ public class Lexer {
                         break;
                     case '\\':
                         putChar('\\');
+                        putChar('\\');
                         break;
                     case 'Z':
                         putChar((char) 0x1A); // ctrl + Z
@@ -1462,23 +1479,19 @@ public class Lexer {
                 continue;
             }
 
-//            if (ch == '\'') {
-//                char ch_next = charAt(pos + 1);
-//                if (ch_next == '"') {
-//                    scanChar();
-//                    continue;
-//                }
-//            } else
-            if (ch == '\"') {
+            if (ch == quote) {
                 char ch_next = charAt(pos + 1);
-                if (ch_next == '"' || ch_next == '\'') {
+
+                if (ch_next == quote) {
+                    putChar('\\');
+                    putChar(ch);
                     scanChar();
                     continue;
                 }
 
-                //putChar(ch);
+                putChar(ch);
                 scanChar();
-                token = LITERAL_CHARS;
+                token = LITERAL_ALIAS;
                 break;
             }
 

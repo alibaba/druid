@@ -384,6 +384,7 @@ public final class FnvHash {
         long DATE = fnv1a_64_lower("DATE");
         long DATETIME = fnv1a_64_lower("DATETIME");
         long TIME = fnv1a_64_lower("TIME");
+        long ROLE = fnv1a_64_lower("ROLE");
         long TIMESTAMP = fnv1a_64_lower("TIMESTAMP");
         long CLOB = fnv1a_64_lower("CLOB");
         long NCLOB = fnv1a_64_lower("NCLOB");
@@ -444,6 +445,7 @@ public final class FnvHash {
         long LESS = fnv1a_64_lower("LESS");
         long MAXVALUE = fnv1a_64_lower("MAXVALUE");
         long OFFSET = fnv1a_64_lower("OFFSET");
+        long LIMIT = fnv1a_64_lower("LIMIT");
         long RAW = fnv1a_64_lower("RAW");
         long LONG_RAW = fnv1a_64_lower("LONG RAW");
         long LONG = fnv1a_64_lower("LONG");
@@ -654,5 +656,43 @@ public final class FnvHash {
 
         long OVERWRITE = fnv1a_64_lower("OVERWRITE");
         long FILTER = fnv1a_64_lower("FILTER");
+        long MAPJOIN = fnv1a_64_lower("MAPJOIN");
+        long DISTRIBUTE = fnv1a_64_lower("DISTRIBUTE");
+        long SORT = fnv1a_64_lower("SORT");
+        long CLUSTER = fnv1a_64_lower("CLUSTER");
+        long GROUPING = fnv1a_64_lower("GROUPING");
+        long IDENTIFIED = fnv1a_64_lower("IDENTIFIED");
+        long STRAIGHT = fnv1a_64_lower("STRAIGHT");
+        long IFNULL = fnv1a_64_lower("IFNULL");
+        long TO_DATE = fnv1a_64_lower("TO_DATE");
+        long ADD_MONTHS = fnv1a_64_lower("ADD_MONTHS");
+        long PERIOD_ADD = fnv1a_64_lower("PERIOD_ADD");
+        long PERIOD_DIFF = fnv1a_64_lower("PERIOD_DIFF");
+        long ISNULL = fnv1a_64_lower("ISNULL");
+        long COALESCE = fnv1a_64_lower("COALESCE");
+        long NVL = fnv1a_64_lower("NVL");
+        long ROUND = fnv1a_64_lower("ROUND");
+        long BIT_COUNT = fnv1a_64_lower("BIT_COUNT");
+        long WEIGHT_STRING = fnv1a_64_lower("WEIGHT_STRING");
+        long REVERSE = fnv1a_64_lower("REVERSE");
+        long TABLESAMPLE = fnv1a_64_lower("TABLESAMPLE");
+        long BUCKET = fnv1a_64_lower("BUCKET");
+        long UNNEST = fnv1a_64_lower("UNNEST");
+        long FIELDS = fnv1a_64_lower("FIELDS");
+        long ESCAPED = fnv1a_64_lower("ESCAPED");
+        long YEAR_TO_MONTH = fnv1a_64_lower("YEAR_TO_MONTH");
+        long COLPROPERTIES = fnv1a_64_lower("COLPROPERTIES");
+        long MAPPED = fnv1a_64_lower("MAPPED");
+        long LINES = fnv1a_64_lower("LINES");
+        long COLLECTION = fnv1a_64_lower("COLLECTION");
+        long SERDE = fnv1a_64_lower("SERDE");
+        long OUTLINE = fnv1a_64_lower("OUTLINE");
+        long BD = fnv1a_64_lower("BD");
+        long CURRENT_DATE = fnv1a_64_lower("CURRENT_DATE");
+        long PARTITION = fnv1a_64_lower("PARTITION");
+        long MODEL = fnv1a_64_lower("MODEL");
+        long DIMENSION = fnv1a_64_lower("DIMENSION");
+        long KEEP = fnv1a_64_lower("KEEP");
+        long PIVOT = fnv1a_64_lower("PIVOT");
     }
 }

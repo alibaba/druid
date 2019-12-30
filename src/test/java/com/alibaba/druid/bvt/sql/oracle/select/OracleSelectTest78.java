@@ -329,7 +329,7 @@ public class OracleSelectTest78 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(10, visitor.getTables().size());
-        assertEquals(65, visitor.getColumns().size());
+        assertEquals(46, visitor.getColumns().size());
         assertEquals(30, visitor.getConditions().size());
         assertEquals(7, visitor.getRelationships().size());
         assertEquals(2, visitor.getOrderByColumns().size());

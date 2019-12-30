@@ -30,16 +30,12 @@ import javax.sql.DataSource;
 import junit.framework.TestCase;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.logicalcobwebs.proxool.ProxoolDataSource;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.jolbox.bonecp.BoneCPDataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.taobao.datasource.LocalTxDataSourceDO;
-import com.taobao.datasource.TaobaoDataSourceFactory;
-import com.taobao.datasource.resource.adapter.jdbc.local.LocalTxDataSource;
 
 /**
  * TestOnBo 类Case1.java的实现描述：TODO 类实现描述
@@ -116,26 +112,6 @@ public class Case1 extends TestCase {
         System.out.println();
     }
 
-    public void test_jobss() throws Exception {
-        LocalTxDataSourceDO dataSourceDO = new LocalTxDataSourceDO();
-        dataSourceDO.setBlockingTimeoutMillis(1000 * 60);
-        dataSourceDO.setMaxPoolSize(maxPoolSize);
-        dataSourceDO.setMinPoolSize(minPoolSize);
-
-        dataSourceDO.setDriverClass(driverClass);
-        dataSourceDO.setConnectionURL(jdbcUrl);
-        dataSourceDO.setUserName(user);
-        dataSourceDO.setPassword(password);
-
-        LocalTxDataSource tx = TaobaoDataSourceFactory.createLocalTxDataSource(dataSourceDO);
-        DataSource dataSource = tx.getDatasource();
-
-        for (int i = 0; i < loopCount; ++i) {
-            p0(dataSource, "jboss-datasource", threadCount);
-        }
-        System.out.println();
-    }
-
     public void test_dbcp() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 
@@ -200,26 +176,6 @@ public class Case1 extends TestCase {
 
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "c3p0", threadCount);
-        }
-        System.out.println();
-    }
-
-    public void test_proxool() throws Exception {
-        ProxoolDataSource dataSource = new ProxoolDataSource();
-        // dataSource.(10);
-        // dataSource.setMaxActive(50);
-        dataSource.setMinimumConnectionCount(minPoolSize);
-        dataSource.setMaximumConnectionCount(maxPoolSize);
-
-        dataSource.setDriver(driverClass);
-        dataSource.setDriverUrl(jdbcUrl);
-        // dataSource.setPoolPreparedStatements(true);
-        // dataSource.setMaxOpenPreparedStatements(100);
-        dataSource.setUser(user);
-        dataSource.setPassword(password);
-
-        for (int i = 0; i < loopCount; ++i) {
-            p0(dataSource, "proxool", threadCount);
         }
         System.out.println();
     }

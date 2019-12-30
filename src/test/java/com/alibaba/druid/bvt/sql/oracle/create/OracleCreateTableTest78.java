@@ -117,7 +117,7 @@ public class OracleCreateTableTest78 extends OracleTest {
                         "\t, TCP_EPM.EPM_TB_CONTRACT_EX.sIsLastChecked AS sIsLastChecked\n" +
                         "\t, CASE \n" +
                         "\t\tWHEN (\n" +
-                        "\t\t\tSELECT COUNT(*)\n" +
+                        "\t\t\tSELECT count(*)\n" +
                         "\t\t\tFROM EPM_TBL_ENGINE_PROJECT, EPM_TBL_SUBCONTRACT_DISPATCH\n" +
                         "\t\t\tWHERE EPM_TBL_ENGINE_PROJECT.CONTRACTID = EPM_TBL_CONTRACT.Oid\n" +
                         "\t\t\t\tAND EPM_TBL_ENGINE_PROJECT.OID = EPM_TBL_SUBCONTRACT_DISPATCH.ENGINEID\n" +
@@ -126,7 +126,7 @@ public class OracleCreateTableTest78 extends OracleTest {
                         "\tEND AS sIsOutSource\n" +
                         "\t, CASE \n" +
                         "\t\tWHEN (\n" +
-                        "\t\t\tSELECT COUNT(*)\n" +
+                        "\t\t\tSELECT count(*)\n" +
                         "\t\t\tFROM TCP_EPM.EPM_TBL_RECONSIGN_RECONSIGN\n" +
                         "\t\t\tWHERE TCP_EPM.EPM_TBL_RECONSIGN_RECONSIGN.CONTRACTID = EPM_TBL_CONTRACT.Oid\n" +
                         "\t\t) > 0 THEN '/'\n" +

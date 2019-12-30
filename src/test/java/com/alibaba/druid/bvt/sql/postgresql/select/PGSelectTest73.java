@@ -36,24 +36,24 @@ public class PGSelectTest73 extends TestCase {
         assertEquals(1, statements.size());
         final SQLStatement stmt = statements.get(0);
 
-        assertEquals("SELECT a.*, AVG(a.nv_roe_lag) OVER () AS nv_roe_avg, AVG(a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_roe_avg\n" +
-                "\t, AVG(a.if300_roe_lag) OVER () AS if300_roe_avg, AVG(a.ih50_roe_lag) OVER () AS ih50_roe_avg\n" +
-                "\t, AVG(a.ic500_roe_lag) OVER () AS ic500_roe_avg, MAX(a.nv_retrace) OVER (ORDER BY a.stat_date) AS nv_retrace_max\n" +
-                "\t, MAX(a.idx_retrace) OVER (ORDER BY a.stat_date) AS idx_retrace_max, MAX(a.if300_retrace) OVER (ORDER BY a.stat_date) AS if300_retrace_max\n" +
-                "\t, MAX(a.ih50_retrace) OVER (ORDER BY a.stat_date) AS ih50_retrace_max, MAX(a.ic500_retrace) OVER (ORDER BY a.stat_date) AS ic500_retrace_max\n" +
+        assertEquals("SELECT a.*, avg(a.nv_roe_lag) OVER () AS nv_roe_avg, avg(a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_roe_avg\n" +
+                "\t, avg(a.if300_roe_lag) OVER () AS if300_roe_avg, avg(a.ih50_roe_lag) OVER () AS ih50_roe_avg\n" +
+                "\t, avg(a.ic500_roe_lag) OVER () AS ic500_roe_avg, max(a.nv_retrace) OVER (ORDER BY a.stat_date) AS nv_retrace_max\n" +
+                "\t, max(a.idx_retrace) OVER (ORDER BY a.stat_date) AS idx_retrace_max, max(a.if300_retrace) OVER (ORDER BY a.stat_date) AS if300_retrace_max\n" +
+                "\t, max(a.ih50_retrace) OVER (ORDER BY a.stat_date) AS ih50_retrace_max, max(a.ic500_retrace) OVER (ORDER BY a.stat_date) AS ic500_retrace_max\n" +
                 "\t, CASE \n" +
-                "\t\tWHEN a.nv_flag >= 0 THEN SUM(1) OVER (ORDER BY a.stat_date)\n" +
-                "\t\tELSE SUM(0) OVER (ORDER BY a.stat_date)\n" +
-                "\tEND AS nv_flag_up, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.nv_flag <= 0) AS nv_flag_down, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.idx_flag >= 0) AS idx_flag_up\n" +
-                "\t, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.idx_flag <= 0) AS idx_flag_down, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.if300_flag >= 0) AS if300_flag_up\n" +
-                "\t, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.if300_flag <= 0) AS if300_flag_down, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ih50_flag >= 0) AS ih50_flag_up\n" +
-                "\t, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ih50_flag <= 0) AS ih50_flag_down, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ic500_flag >= 0) AS ic500_flag_up\n" +
-                "\t, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ic500_flag <= 0) AS ic500_flag_down, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.idx_roe_lag > 0) AS idx_win_cnt\n" +
-                "\t, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.idx_roe_lag > a.idx_roe_lag) AS idx_win_idx_cnt, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.nv_roe_lag > 0) AS nv_win_cnt\n" +
-                "\t, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.nv_roe_lag > a.idx_roe_lag) AS nv_win_idx_cnt, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.if300_roe_lag > 0) AS if300_win_cnt\n" +
-                "\t, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.if300_roe_lag > a.idx_roe_lag) AS if300_win_idx_cnt, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ih50_roe_lag > 0) AS ih50_win_cnt\n" +
-                "\t, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ih50_roe_lag > a.idx_roe_lag) AS ih50_win_idx_cnt, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ic500_roe_lag > 0) AS ic500_win_cnt\n" +
-                "\t, COUNT(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ic500_roe_lag > a.idx_roe_lag) AS ic500_win_idx_cnt\n" +
+                "\t\tWHEN a.nv_flag >= 0 THEN sum(1) OVER (ORDER BY a.stat_date)\n" +
+                "\t\tELSE sum(0) OVER (ORDER BY a.stat_date)\n" +
+                "\tEND AS nv_flag_up, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.nv_flag <= 0) AS nv_flag_down, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.idx_flag >= 0) AS idx_flag_up\n" +
+                "\t, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.idx_flag <= 0) AS idx_flag_down, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.if300_flag >= 0) AS if300_flag_up\n" +
+                "\t, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.if300_flag <= 0) AS if300_flag_down, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ih50_flag >= 0) AS ih50_flag_up\n" +
+                "\t, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ih50_flag <= 0) AS ih50_flag_down, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ic500_flag >= 0) AS ic500_flag_up\n" +
+                "\t, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ic500_flag <= 0) AS ic500_flag_down, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.idx_roe_lag > 0) AS idx_win_cnt\n" +
+                "\t, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.idx_roe_lag > a.idx_roe_lag) AS idx_win_idx_cnt, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.nv_roe_lag > 0) AS nv_win_cnt\n" +
+                "\t, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.nv_roe_lag > a.idx_roe_lag) AS nv_win_idx_cnt, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.if300_roe_lag > 0) AS if300_win_cnt\n" +
+                "\t, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.if300_roe_lag > a.idx_roe_lag) AS if300_win_idx_cnt, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ih50_roe_lag > 0) AS ih50_win_cnt\n" +
+                "\t, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ih50_roe_lag > a.idx_roe_lag) AS ih50_win_idx_cnt, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ic500_roe_lag > 0) AS ic500_win_cnt\n" +
+                "\t, count(1) OVER (ORDER BY a.stat_date)FILTER (WHERE a.ic500_roe_lag > a.idx_roe_lag) AS ic500_win_idx_cnt\n" +
                 "\t, regr_slope(a.nv_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS nv_beta\n" +
                 "\t, regr_slope(a.idx_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_beta\n" +
                 "\t, regr_slope(a.if300_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS if300_beta\n" +

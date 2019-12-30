@@ -16,7 +16,8 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
+import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.StringUtils;
 
 public class SQLParser {
     protected final Lexer lexer;
@@ -80,11 +81,70 @@ public class SQLParser {
 
         if (token == Token.IDENTIFIER) {
             String ident = lexer.stringVal;
-            if (ident.equalsIgnoreCase("START") || ident.equalsIgnoreCase("CONNECT")) {
+            long hash = lexer.hash_lower;
+            if (isEnabled(SQLParserFeature.IgnoreNameQuotes) && ident.length() > 1) {
+                ident = StringUtils.removeNameQuotes(ident);
+            }
+
+            if (hash == FnvHash.Constants.START
+                    || hash == FnvHash.Constants.CONNECT
+                    || hash == FnvHash.Constants.NATURAL
+                    || hash == FnvHash.Constants.CROSS
+                    || hash == FnvHash.Constants.OFFSET
+                    || hash == FnvHash.Constants.LIMIT) {
                 if (must) {
                     throw new ParserException("illegal alias. " + lexer.info());
                 }
+
+                Lexer.SavePoint mark = lexer.mark();
+                lexer.nextToken();
+                switch (lexer.token) {
+                    case EOF:
+                    case COMMA:
+                    case WHERE:
+                    case INNER:
+                        return ident;
+                    default:
+                        lexer.reset(mark);
+                        break;
+                }
+
                 return null;
+            }
+
+            if (!must) {
+                if (hash == FnvHash.Constants.MODEL) {
+                    Lexer.SavePoint mark = lexer.mark();
+                    lexer.nextToken();
+                    if (lexer.token == Token.PARTITION
+                            || lexer.token == Token.UNION
+                            || lexer.identifierEquals(FnvHash.Constants.DIMENSION)
+                            || lexer.identifierEquals(FnvHash.Constants.IGNORE)
+                            || lexer.identifierEquals(FnvHash.Constants.KEEP)) {
+                        lexer.reset(mark);
+                        return null;
+                    }
+                    return ident;
+                } else if (hash == FnvHash.Constants.WINDOW) {
+                    Lexer.SavePoint mark = lexer.mark();
+                    lexer.nextToken();
+                    if (lexer.token == Token.IDENTIFIER) {
+                        lexer.reset(mark);
+                        return null;
+                    }
+                    return ident;
+                } else if (hash == FnvHash.Constants.DISTRIBUTE
+                        || hash == FnvHash.Constants.SORT
+                        || hash == FnvHash.Constants.CLUSTER
+                ) {
+                    Lexer.SavePoint mark = lexer.mark();
+                    lexer.nextToken();
+                    if (lexer.token == Token.BY) {
+                        lexer.reset(mark);
+                        return null;
+                    }
+                    return ident;
+                }
             }
         }
 

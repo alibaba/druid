@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
@@ -33,6 +34,8 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     protected boolean upsert = false; // for phoenix
 
     private boolean afterSemi;
+
+    protected List<SQLCommentHint> headHints;
 
     public SQLInsertStatement(){
 
@@ -197,5 +200,13 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
     public String toLowerCaseString() {
         return SQLUtils.toSQLString(this, dbType, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+    }
+
+    public List<SQLCommentHint> getHeadHintsDirect() {
+        return headHints;
+    }
+
+    public void setHeadHints(List<SQLCommentHint> headHints) {
+        this.headHints = headHints;
     }
 }

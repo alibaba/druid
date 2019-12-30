@@ -36,7 +36,7 @@ public class OracleListAggTest1 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("SELECT COUNT(0)\n" +
+        Assert.assertEquals("SELECT count(0)\n" +
                         "FROM WEP_USER T\n" +
                         "\tLEFT JOIN (\n" +
                         "\t\tSELECT T.ID, LISTAGG(T2.ROLE_NAME, ',') WITHIN GROUP (ORDER BY T.ID) AS ROLENAMES\n" +

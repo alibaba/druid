@@ -42,7 +42,7 @@ public class OracleSelectTest124 extends TestCase {
 
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
-        assertEquals("SELECT J01.COL_A, J01.COL_B, SUM(J01.COL_C) OVER (PARTITION BY J01.COL_A ORDER BY J01.COL_B NULLS FIRST ROWS  BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS COL_C\n" +
+        assertEquals("SELECT J01.COL_A, J01.COL_B, \"SUM\"(J01.COL_C) OVER (PARTITION BY J01.COL_A ORDER BY J01.COL_B NULLS FIRST ROWS  BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS COL_C\n" +
                 "FROM TAB_A J01", stmt.toString());
     }
 

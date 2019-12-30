@@ -28,7 +28,7 @@ public class OdpsSelectTest_over_rows_5 extends TestCase {
 
     public void test_select() throws Exception {
         String sql = "SELECT sum(c) over(order by ds rows UNBOUNDED following) s, ds FROM t1";//
-        Assert.assertEquals("SELECT SUM(c) OVER (ORDER BY ds ROWS UNBOUNDED FOLLOWING) AS s, ds\n" +
+        Assert.assertEquals("SELECT sum(c) OVER (ORDER BY ds ROWS UNBOUNDED FOLLOWING) AS s, ds\n" +
                 "FROM t1", SQLUtils.formatOdps(sql));
         Assert.assertEquals("select sum(c) over (order by ds rows unbounded following) as s, ds\n" +
                 "from t1", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

@@ -10,7 +10,7 @@ public class OdpsIfTest extends TestCase {
     
     public void test_if() throws Exception {
         String sql = "select sum(if(a > 0, 1, 0)) from t1";
-        Assert.assertEquals("SELECT SUM(IF(a > 0, 1, 0))" //
+        Assert.assertEquals("SELECT sum(IF(a > 0, 1, 0))" //
                 + "\nFROM t1", SQLUtils.formatOdps(sql));
     }
 }

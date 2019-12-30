@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectGroupByClause extends SQLObjectImpl {
@@ -28,6 +29,8 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
     private SQLExpr             having;
     private boolean             withRollUp = false;
     private boolean             withCube = false;
+    private boolean             distinct   = false;
+    private boolean             paren      = false;
 
     public SQLSelectGroupByClause(){
 
@@ -95,5 +98,59 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
         x.withRollUp = withRollUp;
         x.withCube = withCube;
         return x;
+    }
+
+    public void addHaving(SQLExpr condition) {
+        if (condition == null) {
+            return;
+        }
+
+        if (having == null) {
+            having = condition;
+        } else {
+            having = SQLBinaryOpExpr.and(having, condition);
+        }
+    }
+
+    public boolean isDistinct() {
+        return distinct;
+    }
+
+    public void setDistinct(boolean distinct) {
+        this.distinct = distinct;
+    }
+
+    public boolean isParen() {
+        return paren;
+    }
+
+    public void setParen(boolean paren) {
+        this.paren = paren;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLSelectGroupByClause group = (SQLSelectGroupByClause) o;
+
+        if (withRollUp != group.withRollUp) return false;
+        if (withCube != group.withCube) return false;
+        if (distinct != group.distinct) return false;
+        if (paren != group.paren) return false;
+        if (!items.equals(group.items)) return false;
+        return having != null ? having.equals(group.having) : group.having == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = items != null ? items.hashCode() : 0;
+        result = 31 * result + (having != null ? having.hashCode() : 0);
+        result = 31 * result + (withRollUp ? 1 : 0);
+        result = 31 * result + (withCube ? 1 : 0);
+        result = 31 * result + (distinct ? 1 : 0);
+        result = 31 * result + (paren ? 1 : 0);
+        return result;
     }
 }

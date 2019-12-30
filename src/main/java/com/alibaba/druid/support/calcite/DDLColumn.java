@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.support.calcite;
 
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rel.type.RelDataTypeField;
+
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 
 /**
  * Created by wenshao on 17/07/2017.

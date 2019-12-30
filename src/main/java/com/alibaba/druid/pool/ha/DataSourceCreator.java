@@ -15,11 +15,6 @@
  */
 package com.alibaba.druid.pool.ha;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
-import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -31,6 +26,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.sql.DataSource;
+
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * An utility class to create DruidDataSource dynamically.
@@ -44,8 +45,12 @@ public class DataSourceCreator {
     private List<String> nameList = new ArrayList<String>();
 
     public DataSourceCreator(String file) {
+        this(file, "");
+    }
+
+    public DataSourceCreator(String file, String propertyPrefix) {
         loadProperties(file);
-        loadNameList();
+        loadNameList(propertyPrefix);
     }
 
     public Map<String, DataSource> createMap(HighAvailableDataSource haDataSource) throws SQLException {
@@ -61,8 +66,12 @@ public class DataSourceCreator {
             String username = properties.getProperty(n + ".username");
             String password = properties.getProperty(n + ".password");
             LOG.info("Creating " + n + " with url[" + url + "] and username[" + username + "].");
-            DruidDataSource dataSource = create(n, url, username, password, haDataSource);
-            map.put(n, dataSource);
+            try {
+                DruidDataSource dataSource = create(n, url, username, password, haDataSource);
+                map.put(n, dataSource);
+            } catch(Exception e) {
+                LOG.error("Can NOT create DruidDataSource for " + n, e);
+            }
         }
         LOG.info(map.size() + " DruidDataSource(s) created. ");
         return map;
@@ -119,10 +128,14 @@ public class DataSourceCreator {
         return dataSource;
     }
 
-    private void loadNameList() {
+    private void loadNameList(String propertyPrefix) {
         Set<String> names = new HashSet<String>();
         for (String n : properties.stringPropertyNames()) {
-            if (n.contains(".url")) {
+            if (propertyPrefix != null && !propertyPrefix.isEmpty()
+                    && !n.startsWith(propertyPrefix)) {
+                continue;
+            }
+            if (n.endsWith(".url")) {
                 names.add(n.split("\\.url")[0]);
             }
         }
@@ -166,5 +179,9 @@ public class DataSourceCreator {
         } else {
             LOG.warn("File " + file + " can't be loaded!");
         }
+    }
+
+    public List<String> getNameList() {
+        return nameList;
     }
 }

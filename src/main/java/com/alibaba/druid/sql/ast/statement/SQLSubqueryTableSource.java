@@ -15,11 +15,16 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
     protected SQLSelect select;
+    protected List<SQLName> columns = new ArrayList<SQLName>();
 
     public SQLSubqueryTableSource(){
 
@@ -57,6 +62,7 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, select);
+            acceptChild(visitor, columns);
         }
         visitor.endVisit(this);
     }
@@ -72,6 +78,12 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
         if (select != null) {
             x.select = select.clone();
+        }
+
+        for (SQLName column : columns) {
+            SQLName c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
         }
     }
 
@@ -113,5 +125,29 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
         }
 
         return null;
+    }
+
+    public List<SQLName> getColumns() {
+        return columns;
+    }
+
+    public void addColumn(SQLName column) {
+        column.setParent(this);
+        this.columns.add(column);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLSubqueryTableSource that = (SQLSubqueryTableSource) o;
+
+        return select != null ? select.equals(that.select) : that.select == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return select != null ? select.hashCode() : 0;
     }
 }

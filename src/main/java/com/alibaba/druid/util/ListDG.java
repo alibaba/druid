@@ -22,8 +22,10 @@ package com.alibaba.druid.util;
  * @author skywang
  * @date 2014/04/22
  */
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public class ListDG {
     public static class Edge {

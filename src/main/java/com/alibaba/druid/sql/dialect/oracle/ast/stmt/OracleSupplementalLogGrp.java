@@ -15,14 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by wenshao on 20/05/2017.

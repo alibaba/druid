@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.stat;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.management.JMException;
 import javax.management.openmbean.ArrayType;
@@ -28,10 +29,10 @@ import javax.management.openmbean.SimpleType;
 import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
+
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 
 public final class JdbcStatManager implements JdbcStatManagerMBean {
 

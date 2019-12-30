@@ -48,7 +48,7 @@ public class MySqlSelectTest_114 extends TestCase {
         assertEquals(1, visitor.getConditions().size());
         assertEquals(1, visitor.getOrderByColumns().size());
 
-        assertEquals("SELECT COUNT(0)\n" +
+        assertEquals("SELECT count(0)\n" +
                 "FROM (\n" +
                 "\tSELECT id\n" +
                 "\tFROM auth\n" +
@@ -59,7 +59,7 @@ public class MySqlSelectTest_114 extends TestCase {
                 ") total", stmt.toString());
 
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL);
-        assertEquals("SELECT COUNT(0)\n" +
+        assertEquals("SELECT count(0)\n" +
                 "FROM (\n" +
                 "\tSELECT id\n" +
                 "\tFROM auth\n" +

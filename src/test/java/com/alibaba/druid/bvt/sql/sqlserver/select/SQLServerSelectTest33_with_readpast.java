@@ -33,7 +33,7 @@ public class SQLServerSelectTest33_with_readpast extends TestCase {
         {
             String text = SQLUtils.toSQLString(stmtList, JdbcConstants.SQL_SERVER);
 
-            assertEquals("SELECT COUNT(*)\n" +
+            assertEquals("SELECT count(*)\n" +
                     "FROM t1 WITH (READPAST)", text);
         }
         {

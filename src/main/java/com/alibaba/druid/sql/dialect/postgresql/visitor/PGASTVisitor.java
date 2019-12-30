@@ -15,8 +15,26 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGConnectToStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGStartTransactionStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface PGASTVisitor extends SQLASTVisitor {

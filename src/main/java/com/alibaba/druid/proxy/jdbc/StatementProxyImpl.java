@@ -503,11 +503,11 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
     }
 
     public void closeOnCompletion() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        statement.closeOnCompletion();
     }
 
     public boolean isCloseOnCompletion() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return statement.isCloseOnCompletion();
     }
 
     @Override

@@ -36,7 +36,7 @@ public class OracleGroupingSetTest extends TestCase {
                      + "( calendar_month_desc, co.country_id) );\n";
 
         String expected = "SELECT channel_desc, calendar_month_desc, co.country_id\n" +
-                "\t, TO_CHAR(SUM(amount_sold), '9,999,999,999') AS SALES$\n" +
+                "\t, TO_CHAR(sum(amount_sold), '9,999,999,999') AS SALES$\n" +
                 "FROM sales, customers, times, channels, countries co\n" +
                 "WHERE sales.time_id = times.time_id\n" +
                 "\tAND sales.cust_id = customers.cust_id\n" +

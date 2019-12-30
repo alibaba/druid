@@ -35,7 +35,7 @@ public class SchemaStatTest13 extends TestCase {
         assertEquals(2, relationships.size());
 
         Assert.assertEquals(5, statVisitor.getColumns().size());
-        Assert.assertEquals(3, statVisitor.getConditions().size());
+        Assert.assertEquals(4, statVisitor.getConditions().size());
         assertEquals(0, statVisitor.getFunctions().size());
     }
 }

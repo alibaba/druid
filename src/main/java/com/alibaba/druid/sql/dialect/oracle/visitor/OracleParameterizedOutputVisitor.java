@@ -16,13 +16,8 @@
 package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
-import com.alibaba.druid.sql.visitor.*;
+import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
 
 public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implements ParameterizedVisitor {
 

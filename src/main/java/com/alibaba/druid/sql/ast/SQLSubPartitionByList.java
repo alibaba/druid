@@ -48,4 +48,9 @@ public class SQLSubPartitionByList extends SQLSubPartitionBy {
         }
         return x;
     }
+
+    public boolean isPartitionByColumn(long columnNameHashCode64) {
+        return column != null
+                && column.nameHashCode64() == columnNameHashCode64;
+    }
 }

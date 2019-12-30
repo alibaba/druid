@@ -35,11 +35,11 @@ public class OceanbaseHintTest_Topk extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
         
         String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT /*+ topk(90 1000) */ SUM(c2), c1"
-                + "\nFROM t1"
-                + "\nGROUP BY c1"
-                + "\nORDER BY SUM(c2)"
-                + "\nLIMIT 10", result);
+        Assert.assertEquals("SELECT /*+ topk(90 1000) */ sum(c2), c1\n" +
+                "FROM t1\n" +
+                "GROUP BY c1\n" +
+                "ORDER BY sum(c2)\n" +
+                "LIMIT 10", result);
         print(stmtList);
 
         Assert.assertEquals(1, stmtList.size());

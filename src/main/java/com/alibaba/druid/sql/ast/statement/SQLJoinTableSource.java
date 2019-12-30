@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -125,6 +126,29 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         this.condition = condition;
     }
 
+    public void addCondition(SQLExpr condition) {
+        if (this.condition == null) {
+            this.condition = condition;
+            setImplicitJoinToCross();
+            return;
+        }
+
+        this.condition = SQLBinaryOpExpr.and(this.condition, condition);
+    }
+
+    public void setImplicitJoinToCross() {
+        if (joinType == JoinType.COMMA) {
+            joinType = JoinType.CROSS_JOIN;
+        }
+        if (left instanceof SQLJoinTableSource) {
+            ((SQLJoinTableSource) left).setImplicitJoinToCross();
+        }
+
+        if (right instanceof SQLJoinTableSource) {
+            ((SQLJoinTableSource) right).setImplicitJoinToCross();
+        }
+    }
+
     public void addConditionn(SQLExpr condition) {
         this.condition = SQLBinaryOpExpr.and(this.condition, condition);
     }
@@ -207,6 +231,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         JOIN("JOIN"), //
         INNER_JOIN("INNER JOIN"), //
         CROSS_JOIN("CROSS JOIN"), //
+        NATURAL_CROSS_JOIN("NATURAL CROSS JOIN"), //
         NATURAL_JOIN("NATURAL JOIN"), //
         NATURAL_INNER_JOIN("NATURAL INNER JOIN"), //
         LEFT_OUTER_JOIN("LEFT JOIN"), //
@@ -513,6 +538,21 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
         if (right == x) {
             return left;
+        }
+
+        return null;
+    }
+
+    public SQLObject resolveColum(long columnNameHash) {
+        if (left != null) {
+            SQLObject column = left.resolveColum(columnNameHash);
+            if (column != null) {
+                return column;
+            }
+        }
+
+        if (right != null) {
+            return right.resolveColum(columnNameHash);
         }
 
         return null;

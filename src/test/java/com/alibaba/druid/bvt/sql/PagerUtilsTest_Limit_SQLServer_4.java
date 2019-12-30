@@ -14,7 +14,7 @@ public class PagerUtilsTest_Limit_SQLServer_4 extends TestCase {
         String result = PagerUtils.limit(sql, JdbcConstants.SQL_SERVER, 100, 10);
         Assert.assertEquals("SELECT *\n" +
                 "FROM (\n" +
-                "\tSELECT *, ROW_NUMBER() OVER () AS ROWNUM\n" +
+                "\tSELECT *, ROW_NUMBER() AS ROWNUM\n" +
                 "\tFROM t1\n" +
                 "\tWHERE id > 1\n" +
                 ") XX\n" +

@@ -46,8 +46,8 @@ druid.lang = function() {
 		'DefaultAutoCommit' : ['DefaultAutoCommit', '默认autocommit设置'],
 		'DefaultReadOnly' : ['DefaultReadOnly', '默认只读设置'],
 		'DefaultTransactionIsolation' : ['DefaultTransactionIsolation', '默认事务隔离'],//
-		'NotEmptyWaitCount' : ['NotEmptyWaitCount', '等待次数'],//
-		'NotEmptyWaitMillis' : ['NotEmptyWaitMillis', '等待最大时长'],//
+		'NotEmptyWaitCount' : ['NotEmptyWaitCount', '累计总次数'],//
+		'NotEmptyWaitMillis' : ['NotEmptyWaitMillis', '等待总时长'],//
 		'WaitThreadCount' : ['WaitThreadCount', '等待线程数量'],
 		'StartTransactionCount' : ['StartTransactionCount', '事务启动数'],//
 		'TransactionHistogram' : ['TransactionHistogram', '事务时间分布'],//
@@ -63,6 +63,7 @@ druid.lang = function() {
 		'PhysicalConnectCount' : ['PhysicalConnectCount', '物理连接打开次数'],
 		'PhysicalCloseCount' : ['PhysicalCloseCount', '物理关闭数量'],
 		'PhysicalConnectErrorCount' : ['PhysicalConnectErrorCount', '物理连接错误次数'],
+        'DiscardCount' : ['DiscardCount', '校验失败废弃连接数'],
 		'ExecuteCount' : ['ExecuteCount (Total)', '执行数(总共)'],
 		'ErrorCount' : ['ErrorCount', '错误数'],
 		'CommitCount' : ['CommitCount', '提交数'],
@@ -97,11 +98,11 @@ druid.lang = function() {
 		'DefaultAutoCommitDesc' : ['', ''],
 		'DefaultReadOnlyDesc' : ['', ''],
 		'DefaultTransactionIsolationDesc' : ['', ''],
-		'NotEmptyWaitCountDesc' : ['Total times for wait to get a connection', '获取连接时最多等待多少次'],//
-		'NotEmptyWaitMillisDesc' : ['Total millins for wait to get a connection', '获取连接时最多等待多长时间'],
+		'NotEmptyWaitCountDesc' : ['Total times for wait to get a connection', '获取连接时累计等待多少次'],//
+		'NotEmptyWaitMillisDesc' : ['Total millis for wait to get a connection', '获取连接时累计等待多长时间'],
 		'WaitThreadCountDesc' : ['The current waiting thread count', '当前等待获取连接的线程数'],
 		'StartTransactionCountDesc' : ['The count of start transaction', '事务开始的个数'],
-		'TransactionHistogramDesc' : ['The histogram values of transaction time, [0-10 ms, 10-100 ms, 100-1 s, 1-10 s, 10-100 s, >100 s]', '事务运行时间分布，分布区间为[0-10 ms, 10-100 ms, 100-1 s, 1-10 s, 10-100 s, >100 s]'],
+		'TransactionHistogramDesc' : ['The histogram values of transaction time, [0-1 ms, 1-10 ms, 10-100 ms, 100-1 s, 1-10 s, 10-100 s, >100 s]', '事务运行时间分布，分布区间为[0-1 ms, 1-10 ms, 10-100 ms, 100-1 s, 1-10 s, 10-100 s, >100 s]'],
 		'PoolingCountDesc' : ['The current usefull connection count', '当前连接池中的数目'],//
 		'PoolingPeakDesc' : ['The usefull connection peak count', '连接池中数目的峰值'],
 		'PoolingPeakTimeDesc' : ['The usefull connection peak time', '连接池数目峰值出现的时间'],
@@ -114,6 +115,7 @@ druid.lang = function() {
 		'RecycleErrorCount' : ['Logic Connection Recycle Count', '逻辑连接回收重用次数'],
 		'PhysicalConnectCountDesc' : ['Create physical connnection count', '产生的物理连接建立总数'],
 		'PhysicalCloseCountDesc' : ['Close physical connnection count', '产生的物理关闭总数'],
+        'DiscardCountDesc' : ['Discard connection count with validate fail', '校验连接失败丢弃连接次数'],
 		'PhysicalConnectErrorCountDesc' : ['Total physical connect error times', '产生的物理连接失败总数'],
 		'ExecuteCountDesc' : ['', ''],
 		'ErrorCountDesc' : ['', ''],

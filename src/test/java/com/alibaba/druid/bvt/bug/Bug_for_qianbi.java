@@ -17,7 +17,7 @@ public class Bug_for_qianbi extends TestCase {
                      + "where match(auctionTitle,\"男鞋\\n中石化&加油卡\\n中石化&充值卡\\n中石化&冲值卡\\n中石化&代冲\\n中石化&代充\\n中国石化&加油卡\\n中国石化&充值卡\\n中国石化&冲值卡\\n中国石化&代冲\\n中国石化&代充\",\"\\n\")";
 
         String expected = "INSERT INTO TABLE lol\n" +
-                "SELECT detail(sellerid, id) AS count1, SUM(sellerid) AS sum1\n" +
+                "SELECT detail(sellerid, id) AS count1, sum(sellerid) AS sum1\n" +
                 "FROM ctu_trade_paid_done:time('natural', '1d', '1h')\n" +
                 "WHERE match(auctionTitle, '男鞋\\n中石化&加油卡\\n中石化&充值卡\\n中石化&冲值卡\\n中石化&代冲\\n中石化&代充\\n中国石化&加油卡\\n中国石化&充值卡\\n中国石化&冲值卡\\n中国石化&代冲\\n中国石化&代充', '\\n');\n";
 

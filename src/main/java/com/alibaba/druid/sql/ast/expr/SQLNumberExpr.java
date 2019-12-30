@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import java.math.BigDecimal;
+
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.Utils;
-
-import java.io.IOException;
-import java.math.BigDecimal;
 
 public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableExpr {
     public final static SQLDataType defaultDataType = new SQLDataTypeImpl("number");

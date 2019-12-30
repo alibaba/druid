@@ -21,6 +21,18 @@ public class DruidDataSourceTest9_phyMaxUseCount extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setInitialSize(1);
         dataSource.setPhyMaxUseCount(10);
+
+        assertEquals(10, dataSource.getPhyMaxUseCount());
+
+        Properties properties = new Properties();
+        properties.put("druid.phyMaxUseCount", "20");
+        dataSource.configFromPropety(properties);
+        assertEquals(20, dataSource.getPhyMaxUseCount());
+
+        properties.put("druid.phyMaxUseCount", "10");
+        dataSource.configFromPropety(properties);
+        assertEquals(10, dataSource.getPhyMaxUseCount());
+
         dataSource.setFilters("log4j");
     }
 

@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -33,7 +34,10 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
 
     protected SQLExpr     expr;
     private List<SQLName> partitions;
+    protected SQLTableSampling sampling;
     private SchemaObject  schemaObject;
+
+    protected List<SQLName>    columns;
 
     public SQLExprTableSource(){
 
@@ -61,6 +65,17 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
 
     public void setExpr(String name) {
         this.setExpr(new SQLIdentifierExpr(name));
+    }
+
+    public SQLTableSampling getSampling() {
+        return sampling;
+    }
+
+    public void setSampling(SQLTableSampling x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.sampling = x;
     }
 
     public SQLName getName() {
@@ -142,17 +157,25 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         SQLExprTableSource that = (SQLExprTableSource) o;
 
         if (expr != null ? !expr.equals(that.expr) : that.expr != null) return false;
-        return partitions != null ? partitions.equals(that.partitions) : that.partitions == null;
+        if (partitions != null ? !partitions.equals(that.partitions) : that.partitions != null) return false;
+        if (sampling != null ? !sampling.equals(that.sampling) : that.sampling != null) return false;
+        if (schemaObject != null ? !schemaObject.equals(that.schemaObject) : that.schemaObject != null) return false;
+        return columns != null ? columns.equals(that.columns) : that.columns == null;
     }
 
     @Override
     public int hashCode() {
-        int result = expr != null ? expr.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + (expr != null ? expr.hashCode() : 0);
         result = 31 * result + (partitions != null ? partitions.hashCode() : 0);
+        result = 31 * result + (sampling != null ? sampling.hashCode() : 0);
+        result = 31 * result + (schemaObject != null ? schemaObject.hashCode() : 0);
+        result = 31 * result + (columns != null ? columns.hashCode() : 0);
         return result;
     }
 
@@ -309,4 +332,54 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
         }
         return false;
     }
+
+    public SQLObject resolveColum(long columnNameHash) {
+        if (schemaObject != null) {
+            SQLStatement stmt = schemaObject.getStatement();
+            if (stmt instanceof SQLCreateTableStatement) {
+                SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) stmt;
+                return createTableStmt.findColumn(columnNameHash);
+            }
+        }
+
+        SQLObject resolvedOwnerObject = null;
+        if (expr instanceof SQLIdentifierExpr) {
+            resolvedOwnerObject = ((SQLIdentifierExpr) expr).getResolvedOwnerObject();
+        }
+
+        if (resolvedOwnerObject == null) {
+            return resolvedOwnerObject;
+        }
+
+        if (resolvedOwnerObject instanceof SQLWithSubqueryClause.Entry) {
+            final SQLSelect subQuery = ((SQLWithSubqueryClause.Entry) resolvedOwnerObject)
+                    .getSubQuery();
+            if (subQuery == null) {
+                return null;
+            }
+
+            final SQLSelectQueryBlock firstQueryBlock = subQuery.getFirstQueryBlock();
+            if (firstQueryBlock == null) {
+                return null;
+            }
+
+            SQLSelectItem selectItem = firstQueryBlock.findSelectItem(columnNameHash);
+            if (selectItem != null) {
+                return selectItem;
+            }
+        }
+        return null;
+    }
+
+    public List<SQLName> getColumns() {
+        if (columns == null) {
+            columns = new ArrayList<SQLName>(2);
+        }
+        return columns;
+    }
+
+    public List<SQLName> getColumnsDirect() {
+        return columns;
+    }
+
 }

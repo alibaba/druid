@@ -15,10 +15,7 @@
  */
 package com.alibaba.druid.filter.logging;
 
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Savepoint;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -36,9 +33,9 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.SQLUtils.FormatOption;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
-
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import com.alibaba.druid.util.MySqlUtils;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -371,7 +368,20 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         }
         
         if (connectionConnectAfterLogEnable && isConnectionLogEnabled()) {
-            connectionLog("{conn-" + connection.getId() + "} connected");
+            StringBuilder msg = new StringBuilder(34)
+                    .append("{conn-")
+                    .append(connection.getId());
+
+            Connection impl = connection.getRawObject();
+            if (JdbcConstants.MYSQL.equals(dataSource.getDbType())) {
+                Long procId = MySqlUtils.getId(impl);
+                if (procId != null) {
+                    msg.append(",procId-").append(procId);
+                }
+            }
+
+            msg.append("} connected");
+            connectionLog(msg.toString());
         }
     }
 
@@ -546,7 +556,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     }
 
     private void logExecutableSql(StatementProxy statement, String sql) {
-        if (!isStatementExecutableSqlLogEnable()) {
+        if ((!isStatementExecutableSqlLogEnable()) || !isStatementLogEnabled()) {
             return;
         }
 

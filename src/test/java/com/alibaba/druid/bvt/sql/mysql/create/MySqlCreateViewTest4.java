@@ -45,7 +45,7 @@ public class MySqlCreateViewTest4 extends MysqlTest {
         assertEquals("CREATE OR REPLACE DEFINER = 'ivan'@'%'\n" +
                         "\tVIEW my_view3\n" +
                         "AS\n" +
-                        "SELECT COUNT(*)\n" +
+                        "SELECT count(*)\n" +
                         "FROM t3;", //
                 SQLUtils.toMySqlString(stmt));
 

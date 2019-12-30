@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLLateralViewTableSource extends SQLTableSourceImpl {
 
     private SQLTableSource      tableSource;
+    private boolean outer;
 
     private SQLMethodInvokeExpr method;
 
@@ -100,5 +101,13 @@ public class SQLLateralViewTableSource extends SQLTableSourceImpl {
             return tableSource.findTableSourceWithColumn(columnNameHash);
         }
         return null;
+    }
+
+    public boolean isOuter() {
+        return outer;
+    }
+
+    public void setOuter(boolean outer) {
+        this.outer = outer;
     }
 }

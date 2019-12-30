@@ -5,19 +5,19 @@
 Spring Boot with Druid support, help you simplify Druid config in Spring Boot.
 
 ## Usage
-1. Add the ```druid-spring-boot-starter``` dependency in Spring Boot project.
+1. Add the ```druid-spring-boot-starter``` dependency in Spring Boot project ([click get last version](https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter)).
 
     ```Maven```
     ```xml
     <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.10</version>
+       <version>1.1.17</version>
     </dependency>
     ```
     ```Gradle```
     ```xml
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.10'
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.17'
     ```
 2. Add configuration properties.
     ```xml
@@ -58,7 +58,7 @@ spring.datasource.druid.filters= #Druid filters, default value stat, multiple se
 - Monitor
 ```
 # WebStatFilter properties, detail see Druid Wiki
-spring.datasource.druid.web-stat-filter.enabled= #Enable StatFilter, default value true.
+spring.datasource.druid.web-stat-filter.enabled= #Enable StatFilter, default value false.
 spring.datasource.druid.web-stat-filter.url-pattern=
 spring.datasource.druid.web-stat-filter.exclusions=
 spring.datasource.druid.web-stat-filter.session-stat-enable=
@@ -68,7 +68,7 @@ spring.datasource.druid.web-stat-filter.principal-cookie-name=
 spring.datasource.druid.web-stat-filter.profile-enable=
 
 # StatViewServlet properties, detail see Druid Wiki
-spring.datasource.druid.stat-view-servlet.enabled= #Enable StatViewServlet, default value true.
+spring.datasource.druid.stat-view-servlet.enabled= #Enable StatViewServlet (monitor console), default value false.
 spring.datasource.druid.stat-view-servlet.url-pattern=
 spring.datasource.druid.stat-view-servlet.reset-enable=
 spring.datasource.druid.stat-view-servlet.login-username=
@@ -126,6 +126,7 @@ public DataSource dataSourceTwo(){
 You can ```spring.datasource.druid.filters = stat, wall, log4j, dtc.``` way to enable the corresponding built-in Filter, but these are the default configuration Filter. If the default configuration can not meet your needs, you can give up this way, through the configuration file to configure the Filter, the following is an example.
 ```xml
 # StatFilter configuration example.
+spring.datasource.druid.filter.stat.enabled=true
 spring.datasource.druid.filter.stat.db-type=h2
 spring.datasource.druid.filter.stat.log-slow-sql=true
 spring.datasource.druid.filter.stat.slow-sql-millis=2000
@@ -148,11 +149,10 @@ Currently, configuration support is provided for the following filters. Please r
 - Log4j2Filter
 - CommonsLogFilter
 
-Druid Spring Boot Starter will enable StatFilter by default, and you can also set its enabled to false.，make the Filter configuration take effect and need to set enabled to true.
+Druid Spring Boot Starter will forbid StatFilter by default, and you can also set its enabled to true.，make the Filter configuration take effect and need to set enabled to true.
 
 ## How to get Druid monitoring(stat) data
-
-Druid's monitoring data can be obtained through DruidStatManagerFacade. After obtaining the monitoring data, you can expose it to your monitoring system for use. Druid's default monitoring system data also comes from this. Let's take a simple demonstration. In Spring Boot, how to expose Druid monitoring data in the form of JSON through the HTTP interface. In actual use, you can freely expand the monitoring data and exposure methods according to your needs.
+Druid's monitoring data can be obtained through DruidStatManagerFacade after the StatFilter is enable. After obtaining the monitoring data, you can expose it to your monitoring system for use. Druid's default monitoring system data also comes from this. Let's take a simple demonstration. In Spring Boot, how to expose Druid monitoring data in the form of JSON through the HTTP interface. In actual use, you can freely expand the monitoring data and exposure methods according to your needs.
 ```java
 @RestController
 public class DruidStatController {

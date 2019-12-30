@@ -16,12 +16,36 @@
 package com.alibaba.druid.sql;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.druid.DruidRuntimeException;
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
@@ -31,7 +55,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -79,8 +102,6 @@ public class PagerUtils {
     }
 
     public static boolean limit(SQLSelect select, String dbType, int offset, int count, boolean check) {
-        SQLSelectQuery query = select.getQuery();
-
         if (JdbcConstants.ORACLE.equals(dbType)) {
             return limitOracle(select, dbType, offset, count, check);
         }
@@ -251,8 +272,13 @@ public class PagerUtils {
 
             SQLAggregateExpr aggregateExpr = new SQLAggregateExpr("ROW_NUMBER");
             SQLOrderBy orderBy = select.getOrderBy();
-            aggregateExpr.setOver(new SQLOver(orderBy));
-            select.setOrderBy(null);
+            if (orderBy != null) {
+                aggregateExpr.setOver(new SQLOver(orderBy));
+                select.setOrderBy(null);
+            } else if (queryBlock.getOrderBy() != null){
+                aggregateExpr.setOver(new SQLOver(queryBlock.getOrderBy()));
+                queryBlock.setOrderBy(null);
+            }
 
             queryBlock.getSelectList().add(new SQLSelectItem(aggregateExpr, "ROWNUM"));
 
@@ -376,6 +402,10 @@ public class PagerUtils {
         if (limit != null) {
             if (offset > 0) {
                 limit.setOffset(new SQLIntegerExpr(offset));
+            } else if (offset == 0) {
+                if (limit.getOffset() != null) {
+                    limit.setOffset(new SQLIntegerExpr(offset));
+                }
             }
 
             if (check && limit.getRowCount() instanceof SQLNumericLiteralExpr) {

@@ -23,7 +23,7 @@ public class OracleGroupingSetsTest extends OracleTest {
         print(statementList);
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("SELECT department_id, job_id, AVG(salary)"
+        Assert.assertEquals("SELECT department_id, job_id, avg(salary)"
                 + "\nFROM hr.employees"
                 + "\nGROUP BY GROUPING SETS ((department_id, job_id));", SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
