@@ -795,7 +795,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             LOG.error("maxEvictableIdleTimeMillis should be greater than 30000");
         }
         
-        if (maxEvictableIdleTimeMillis < minEvictableIdleTimeMillis) {
+        if (inited && maxEvictableIdleTimeMillis < minEvictableIdleTimeMillis) {
             throw new IllegalArgumentException("maxEvictableIdleTimeMillis must be grater than minEvictableIdleTimeMillis");
         }
         
