@@ -144,4 +144,24 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     public SQLObject resolveColum(long columnNameHash) {
         return findColumn(columnNameHash);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLTableSourceImpl that = (SQLTableSourceImpl) o;
+
+        if (aliasHashCode64() != that.aliasHashCode64()) return false;
+        if (hints != null ? !hints.equals(that.hints) : that.hints != null) return false;
+        return flashback != null ? flashback.equals(that.flashback) : that.flashback == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (hints != null ? hints.hashCode() : 0);
+        result = 31 * result + (flashback != null ? flashback.hashCode() : 0);
+        result = 31 * result + (int) (aliasHashCode64() ^ (aliasHashCode64() >>> 32));
+        return result;
+    }
 }

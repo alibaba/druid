@@ -51,6 +51,7 @@ public final class DruidConnectionHolder {
     protected final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
     protected final long                          connectTimeMillis;
     protected volatile long                       lastActiveTimeMillis;
+    protected volatile long                       lastExecTimeMillis;
     protected volatile long                       lastKeepTimeMillis;
     protected volatile long                       lastValidTimeMillis;
     protected long                                useCount                 = 0;
@@ -67,7 +68,8 @@ public final class DruidConnectionHolder {
     protected int                                 underlyingHoldability;
     protected int                                 underlyingTransactionIsolation;
     protected boolean                             underlyingAutoCommit;
-    protected boolean                             discard                  = false;
+    protected volatile boolean                    discard                  = false;
+    protected volatile boolean                    active                   = false;
     protected final Map<String, Object>           variables;
     protected final Map<String, Object>           globleVariables;
     final ReentrantLock                           lock                     = new ReentrantLock();
@@ -97,6 +99,7 @@ public final class DruidConnectionHolder {
 
         this.connectTimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connectTimeMillis;
+        this.lastExecTimeMillis   = connectTimeMillis;
 
         this.underlyingAutoCommit = conn.getAutoCommit();
 
@@ -153,6 +156,10 @@ public final class DruidConnectionHolder {
         this.defaultReadOnly = underlyingReadOnly;
     }
 
+    public long getConnectTimeMillis() {
+        return connectTimeMillis;
+    }
+
     public boolean isUnderlyingReadOnly() {
         return underlyingReadOnly;
     }
@@ -191,6 +198,14 @@ public final class DruidConnectionHolder {
 
     public void setLastActiveTimeMillis(long lastActiveMillis) {
         this.lastActiveTimeMillis = lastActiveMillis;
+    }
+
+    public long getLastExecTimeMillis() {
+        return lastExecTimeMillis;
+    }
+
+    public void setLastExecTimeMillis(long lastExecTimeMillis) {
+        this.lastExecTimeMillis = lastExecTimeMillis;
     }
 
     public void addTrace(DruidPooledStatement stmt) {

@@ -81,4 +81,13 @@ public class MySqlSubPartitionByKey extends SQLSubPartitionBy implements MySqlOb
         cloneTo(x);
         return x;
     }
+
+    public boolean isPartitionByColumn(long columnNameHashCode64) {
+        for (SQLName column : columns) {
+            if (column.nameHashCode64() == columnNameHashCode64) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

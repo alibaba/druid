@@ -27,6 +27,7 @@ public enum SQLParserFeature {
     StrictForWall,
     EnableMultiUnion,
     IgnoreNameQuotes,
+    EnableCurrentUserExpr,
 
     PipesAsConcat, // for mysql
     ;

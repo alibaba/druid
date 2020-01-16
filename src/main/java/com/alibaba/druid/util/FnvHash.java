@@ -675,5 +675,24 @@ public final class FnvHash {
         long BIT_COUNT = fnv1a_64_lower("BIT_COUNT");
         long WEIGHT_STRING = fnv1a_64_lower("WEIGHT_STRING");
         long REVERSE = fnv1a_64_lower("REVERSE");
+        long TABLESAMPLE = fnv1a_64_lower("TABLESAMPLE");
+        long BUCKET = fnv1a_64_lower("BUCKET");
+        long UNNEST = fnv1a_64_lower("UNNEST");
+        long FIELDS = fnv1a_64_lower("FIELDS");
+        long ESCAPED = fnv1a_64_lower("ESCAPED");
+        long YEAR_TO_MONTH = fnv1a_64_lower("YEAR_TO_MONTH");
+        long COLPROPERTIES = fnv1a_64_lower("COLPROPERTIES");
+        long MAPPED = fnv1a_64_lower("MAPPED");
+        long LINES = fnv1a_64_lower("LINES");
+        long COLLECTION = fnv1a_64_lower("COLLECTION");
+        long SERDE = fnv1a_64_lower("SERDE");
+        long OUTLINE = fnv1a_64_lower("OUTLINE");
+        long BD = fnv1a_64_lower("BD");
+        long CURRENT_DATE = fnv1a_64_lower("CURRENT_DATE");
+        long PARTITION = fnv1a_64_lower("PARTITION");
+        long MODEL = fnv1a_64_lower("MODEL");
+        long DIMENSION = fnv1a_64_lower("DIMENSION");
+        long KEEP = fnv1a_64_lower("KEEP");
+        long PIVOT = fnv1a_64_lower("PIVOT");
     }
 }

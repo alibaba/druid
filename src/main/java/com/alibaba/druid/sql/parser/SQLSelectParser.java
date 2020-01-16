@@ -715,7 +715,7 @@ public class SQLSelectParser extends SQLParser {
             }
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.SORT)) {
+        if (lexer.token == Token.SORT || lexer.identifierEquals(FnvHash.Constants.SORT)) {
             lexer.nextToken();
             accept(Token.BY);
 
@@ -896,7 +896,7 @@ public class SQLSelectParser extends SQLParser {
                 groupBy.setWithRollUp(true);
             }
 
-            if (JdbcConstants.MYSQL.equals(dbType)
+            if(JdbcConstants.MYSQL.equals(dbType)
                     && lexer.token == Token.DESC) {
                 lexer.nextToken(); // skip
             }
@@ -919,7 +919,7 @@ public class SQLSelectParser extends SQLParser {
         }
         SQLExpr item = this.exprParser.expr();
 
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if(JdbcConstants.MYSQL.equals(dbType)) {
             if (lexer.token == Token.DESC) {
                 lexer.nextToken(); // skip
                 item =new MySqlOrderingExpr(item, SQLOrderingSpecification.DESC);
@@ -1250,7 +1250,45 @@ public class SQLSelectParser extends SQLParser {
                         accept(Token.RPAREN);
                     }
                 }
+            } else if (lexer.token() == Token.TABLE) {
+                HiveCreateTableParser createTableParser = new HiveCreateTableParser(lexer);
+                HiveCreateTableStatement stmt = (HiveCreateTableStatement) createTableParser
+                        .parseCreateTable(false);
+                rightTableSource = new SQLAdhocTableSource(stmt);
+                primaryTableSourceRest(rightTableSource);
             } else {
+                if (lexer.identifierEquals(FnvHash.Constants.UNNEST)) {
+                    Lexer.SavePoint mark = lexer.mark();
+                    lexer.nextToken();
+
+                    if (lexer.token() == Token.LPAREN){
+                        lexer.nextToken();
+                        SQLUnnestTableSource unnest = new SQLUnnestTableSource();
+                        this.exprParser.exprList(unnest.getItems(), unnest);
+                        accept(Token.RPAREN);
+
+                        if (lexer.token() == Token.WITH) {
+                            lexer.nextToken();
+                            acceptIdentifier("ORDINALITY");
+                            unnest.setOrdinality(true);
+                        }
+
+                        String alias = this.tableAlias();
+                        unnest.setAlias(alias);
+
+                        if (lexer.token() == Token.LPAREN) {
+                            lexer.nextToken();
+                            this.exprParser.names(unnest.getColumns(), unnest);
+                            accept(Token.RPAREN);
+                        }
+
+                        SQLTableSource tableSrc = parseTableSourceRest(unnest);
+                        rightTableSource = tableSrc;
+                    } else {
+                        lexer.reset(mark);
+                    }
+                }
+
                 if (rightTableSource == null) {
                     boolean aliasToken = lexer.token == Token.LITERAL_ALIAS;
                     SQLExpr expr = this.expr();

@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.sql.visitor;
 
+import com.alibaba.druid.sql.ast.SQLAdhocTableSource;
 import com.alibaba.druid.sql.ast.SQLArgument;
 import com.alibaba.druid.sql.ast.SQLArrayDataType;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLCurrentTimeExpr;
+import com.alibaba.druid.sql.ast.SQLCurrentUserExpr;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeRefExpr;
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
@@ -56,6 +59,7 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLContainsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLFlashbackExpr;
@@ -76,6 +80,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLRealExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSizeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
@@ -912,4 +917,24 @@ public interface SQLASTVisitor {
     boolean visit(SQLDataTypeRefExpr x);
     void endVisit(SQLDataTypeRefExpr x);
 
+    boolean visit(SQLTableSampling x);
+    void endVisit(SQLTableSampling x);
+
+    boolean visit(SQLSizeExpr x);
+    void endVisit(SQLSizeExpr x);
+
+    boolean visit(SQLUnnestTableSource x);
+    void endVisit(SQLUnnestTableSource x);
+
+    boolean visit(SQLAdhocTableSource x);
+    void endVisit(SQLAdhocTableSource x);
+
+    boolean visit(SQLCurrentTimeExpr x);
+    void endVisit(SQLCurrentTimeExpr x);
+
+    boolean visit(SQLDecimalExpr x);
+    void endVisit(SQLDecimalExpr x);
+
+    boolean visit(SQLCurrentUserExpr x);
+    void endVisit(SQLCurrentUserExpr x);
 }

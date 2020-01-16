@@ -72,7 +72,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     // for hive & odps
     protected SQLExternalRecordFormat          rowFormat;
     protected final List<SQLColumnDefinition>  partitionColumns = new ArrayList<SQLColumnDefinition>(2);
-    protected final List<SQLName>              clusteredBy = new ArrayList<SQLName>();
+    protected final List<SQLSelectOrderByItem> clusteredBy = new ArrayList<SQLSelectOrderByItem>();
     protected final List<SQLSelectOrderByItem> sortedBy = new ArrayList<SQLSelectOrderByItem>();
     protected int                              buckets;
 
@@ -1074,7 +1074,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.onCommitPreserveRows = onCommitPreserveRows;
     }
 
-    public List<SQLName> getClusteredBy() {
+    public List<SQLSelectOrderByItem> getClusteredBy() {
         return clusteredBy;
     }
 
@@ -1124,5 +1124,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
 
         return pk.containsColumn(columnNameHash);
+    }
+
+    public void addClusteredByItem(SQLSelectOrderByItem item) {
+        item.setParent(this);
+        this.clusteredBy.add(item);
     }
 }

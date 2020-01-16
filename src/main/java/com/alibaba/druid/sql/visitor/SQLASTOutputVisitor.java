@@ -36,9 +36,12 @@ import java.util.Map;
 import java.util.Set;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLAdhocTableSource;
 import com.alibaba.druid.sql.ast.SQLArgument;
 import com.alibaba.druid.sql.ast.SQLArrayDataType;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLCurrentTimeExpr;
+import com.alibaba.druid.sql.ast.SQLCurrentUserExpr;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -84,6 +87,7 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLContainsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExprUtils;
@@ -107,6 +111,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLRealExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSizeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
@@ -1987,6 +1992,27 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (orderBy != null) {
             println();
             orderBy.accept(this);
+        }
+
+        final List<SQLSelectOrderByItem> distributeBy = x.getDistributeByDirect();
+        if (distributeBy != null && distributeBy.size() > 0) {
+            println();
+            print0(ucase ? "DISTRIBUTE BY " : "distribute by ");
+            printAndAccept(distributeBy, ", ");
+        }
+
+        List<SQLSelectOrderByItem> sortBy = x.getSortByDirect();
+        if (sortBy != null && sortBy.size() > 0) {
+            println();
+            print0(ucase ? "SORT BY " : "sort by ");
+            printAndAccept(sortBy, ", ");
+        }
+
+        final List<SQLSelectOrderByItem> clusterBy = x.getClusterByDirect();
+        if (clusterBy != null && clusterBy.size() > 0) {
+            println();
+            print0(ucase ? "CLUSTER BY " : "cluster by ");
+            printAndAccept(clusterBy, ", ");
         }
 
         if (!informix) {
@@ -6773,5 +6799,131 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else {
             print0(Float.toString(value));
         }
+    }
+
+    public boolean visit(SQLTableSampling x) {
+        print0(ucase ? "TABLESAMPLE " : "tablesample ");
+
+        if (x.isBernoulli()) {
+            print0(ucase ? "BERNOULLI " : "bernoulli ");
+        } else if (x.isSystem()) {
+            print0(ucase ? "SYSTEM " : "system ");
+        }
+
+        print('(');
+
+        final SQLExpr bucket = x.getBucket();
+        if (bucket != null) {
+            print0(ucase ? "BUCKET " : "bucket ");
+            bucket.accept(this);
+        }
+
+        final SQLExpr outOf = x.getOutOf();
+        if (outOf != null) {
+            print0(ucase ? " OUT OF " : " out of ");
+            outOf.accept(this);
+        }
+
+        final SQLExpr on = x.getOn();
+        if (on != null) {
+            print0(ucase ? " ON " : " on ");
+            on.accept(this);
+        }
+
+        final SQLExpr percent = x.getPercent();
+        if (percent != null) {
+            percent.accept(this);
+            print0(ucase ? " PERCENT" : " percent");
+        }
+
+        final SQLExpr rows = x.getRows();
+        if (rows != null) {
+            rows.accept(this);
+
+            if (JdbcConstants.MYSQL.equals(dbType)) {
+                print0(ucase ? " ROWS" : " rows");
+            }
+        }
+
+        final SQLExpr size = x.getByteLength();
+        if (size != null) {
+            size.accept(this);
+        }
+
+        print(')');
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLUnnestTableSource x) {
+        print0(ucase ? "UNNEST(" : "unnest(");
+        List<SQLExpr> items = x.getItems();
+        printAndAccept(items, ", ");
+        print(')');
+
+        final List<SQLName> columns = x.getColumns();
+        final String alias = x.getAlias();
+        if (alias != null) {
+            if (columns.size() > 0) {
+                print0(ucase ?" AS " : " as ");
+            } else {
+                print(' ');
+            }
+            print0(alias);
+        }
+
+        if (columns.size() > 0) {
+            print0(" (");
+            for (int i = 0; i < columns.size(); i++) {
+                if (i != 0) {
+                    print0(", ");
+                }
+                printExpr(columns.get(i));
+            }
+            print(')');
+        }
+
+        if (x.isOrdinality()) {
+            print0(ucase ? " WITH ORDINALITY" : " with ordinality");
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAdhocTableSource x) {
+        final SQLCreateTableStatement definition = x.getDefinition();
+        definition.accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCurrentTimeExpr x) {
+        final SQLCurrentTimeExpr.Type type = x.getType();
+        print(ucase ? type.name : type.name_lower);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCurrentUserExpr x) {
+        print(ucase ? "CURRENT_USER" : "current_user");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLSizeExpr x) {
+        x.getValue().accept(this);
+        print0(x.getUnit().name());
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDecimalExpr x) {
+        BigDecimal value = x.getValue();
+        print0(ucase ? "DECIMAL '" : "decimal '");
+        print(value.toString());
+        print('\'');
+
+        return false;
     }
 }

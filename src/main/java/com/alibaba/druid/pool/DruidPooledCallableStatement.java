@@ -1068,11 +1068,11 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
     }
 
     public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return stmt.getObject(parameterIndex, type);
     }
 
     public <T> T getObject(String parameterName, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return stmt.getObject(parameterName, type);
     }
 
     @SuppressWarnings("unchecked")

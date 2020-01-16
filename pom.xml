@@ -3,7 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.1.20</version>
+	<version>1.1.21_preview_01</version>
+
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -20,13 +21,13 @@
 		<javadoc.skip>true</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jdk.version>1.6</jdk.version>
+		<jdk.version>1.8</jdk.version>
 	</properties>
 
 	<repositories>
 		<repository>
 			<id>local-file</id>
-			<url>file://${basedir}/lib/</url>
+			<url>file://${project.basedir}/lib/</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
@@ -678,5 +679,21 @@
 			<scope>test</scope>
 		</dependency>
 
-	</dependencies>
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.8</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/openjdk-1.8-tools.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>jconsole</artifactId>
+            <version>1.8</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/openjdk-1.8-jconsole.jar</systemPath>
+        </dependency>
+
+    </dependencies>
 </project>

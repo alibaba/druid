@@ -73,5 +73,9 @@ public abstract class SQLSubPartitionBy extends SQLObjectImpl {
         }
     }
 
+    public boolean isPartitionByColumn(long columnNameHashCode64) {
+        return false;
+    }
+
     public abstract SQLSubPartitionBy clone();
 }
