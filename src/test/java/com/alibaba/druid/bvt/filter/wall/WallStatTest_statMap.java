@@ -55,14 +55,14 @@ public class WallStatTest_statMap extends TestCase {
         System.out.println(JSONUtils.toJSONString(statMapB));
         System.out.println(JSONUtils.toJSONString(statMapC));
 
-        Map<String, Object> statMapMerged = DruidStatManagerFacade.mergWallStat(statMapA, statMapB);
+        Map<String, Object> statMapMerged = DruidStatManagerFacade.mergeWallStat(statMapA, statMapB);
         System.out.println(JSONUtils.toJSONString(statMapMerged));
         
         Assert.assertEquals(2L, statMapMerged.get("checkCount"));
         Assert.assertEquals(21L, statMapMerged.get("violationEffectRowCount"));
         Assert.assertEquals(2, ((Collection<Map<String, Object>>) statMapMerged.get("blackList")).size());
         
-        statMapMerged = DruidStatManagerFacade.mergWallStat(statMapMerged, statMapC);
+        statMapMerged = DruidStatManagerFacade.mergeWallStat(statMapMerged, statMapC);
         System.out.println(JSONUtils.toJSONString(statMapMerged));
         Assert.assertEquals(2, ((Collection<Map<String, Object>>) statMapMerged.get("blackList")).size());
         Assert.assertEquals(33L, statMapMerged.get("violationEffectRowCount"));
