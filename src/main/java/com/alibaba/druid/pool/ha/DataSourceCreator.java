@@ -15,16 +15,10 @@
  */
 package com.alibaba.druid.pool.ha;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
@@ -41,19 +35,19 @@ import com.alibaba.druid.support.logging.LogFactory;
 public class DataSourceCreator {
     private final static Log LOG = LogFactory.getLog(DataSourceCreator.class);
 
-    private Properties properties = new Properties();
-    private List<String> nameList = new ArrayList<String>();
+    private Properties properties;
+    private List<String> nameList;
 
     public DataSourceCreator(String file) {
         this(file, "");
     }
 
     public DataSourceCreator(String file, String propertyPrefix) {
-        loadProperties(file);
-        loadNameList(propertyPrefix);
+        this.properties = PropertiesUtils.loadProperties(file);
+        this.nameList = PropertiesUtils.loadNameList(this.properties, propertyPrefix);
     }
 
-    public Map<String, DataSource> createMap(HighAvailableDataSource haDataSource) throws SQLException {
+    public Map<String, DataSource> createMap(HighAvailableDataSource haDataSource) {
         Map<String, DataSource> map = new ConcurrentHashMap<String, DataSource>();
 
         if (nameList == null || nameList.isEmpty()) {
@@ -134,59 +128,6 @@ public class DataSourceCreator {
         dataSource.init();
 
         return dataSource;
-    }
-
-    private void loadNameList(String propertyPrefix) {
-        Set<String> names = new HashSet<String>();
-        for (String n : properties.stringPropertyNames()) {
-            if (propertyPrefix != null && !propertyPrefix.isEmpty()
-                    && !n.startsWith(propertyPrefix)) {
-                continue;
-            }
-            if (n.endsWith(".url")) {
-                names.add(n.split("\\.url")[0]);
-            }
-        }
-        if (!names.isEmpty()) {
-            nameList.addAll(names);
-        }
-    }
-
-    private void loadProperties(String file) {
-        Properties properties = new Properties();
-        if (file == null) {
-            return;
-        }
-        InputStream is = null;
-        try {
-            LOG.debug("Trying to load " + file + " from FileSystem.");
-            is = new FileInputStream(file);
-        } catch(FileNotFoundException e) {
-            LOG.debug("Trying to load " + file + " from Classpath.");
-            try {
-                is = DataSourceCreator.class.getResourceAsStream(file);
-            } catch (Exception ex) {
-                LOG.warn("Can not load resource " + file, ex);
-            }
-        }
-        if (is != null) {
-            try {
-                properties.load(is);
-                this.properties = properties;
-            } catch(Exception e) {
-                LOG.error("Exception occurred while loading " + file, e);
-            } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (Exception e) {
-                        LOG.debug("Can not close Inputstream.", e);
-                    }
-                }
-            }
-        } else {
-            LOG.warn("File " + file + " can't be loaded!");
-        }
     }
 
     public List<String> getNameList() {
