@@ -116,7 +116,7 @@ public class RandomDataSourceValidateThread implements Runnable {
     }
 
     private void checkAllDataSources() {
-        Map<String, DataSource> dataSourceMap = selector.getDataSourceMap();
+        Map<String, DataSource> dataSourceMap = selector.getFullDataSourceMap();
         List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
         LOG.debug("Checking all DataSource.");
         for (final Map.Entry<String, DataSource> e : dataSourceMap.entrySet()) {

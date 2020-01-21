@@ -99,9 +99,16 @@ public class RandomDataSourceSelector implements DataSourceSelector {
         // do nothing
     }
 
-    public Map<String, DataSource> getDataSourceMap() {
+    public Map<String, DataSource> getFullDataSourceMap() {
         if (highAvailableDataSource != null) {
             return highAvailableDataSource.getDataSourceMap();
+        }
+        return new HashMap<String, DataSource>();
+    }
+
+    public Map<String, DataSource> getDataSourceMap() {
+        if (highAvailableDataSource != null) {
+            return highAvailableDataSource.getAvailableDataSourceMap();
         }
         return new HashMap<String, DataSource>();
     }

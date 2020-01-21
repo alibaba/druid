@@ -51,7 +51,7 @@ public class NamedDataSourceSelector implements DataSourceSelector {
             return null;
         }
 
-        Map<String, DataSource> dataSourceMap = highAvailableDataSource.getDataSourceMap();
+        Map<String, DataSource> dataSourceMap = highAvailableDataSource.getAvailableDataSourceMap();
         if (dataSourceMap == null || dataSourceMap.isEmpty()) {
             return null;
         }

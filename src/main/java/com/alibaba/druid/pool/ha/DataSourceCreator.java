@@ -79,7 +79,7 @@ public class DataSourceCreator {
         return map;
     }
 
-    protected DruidDataSource create(String name, String url, String username, String password,
+    public static DruidDataSource create(String name, String url, String username, String password,
                                          HighAvailableDataSource haDataSource) throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
 

@@ -23,8 +23,10 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -87,13 +89,14 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     // Properties copied from DruidAbstractDataSource END
 
     private Map<String, DataSource> dataSourceMap = new ConcurrentHashMap<String, DataSource>();
+    private Set<String> blacklist = new CopyOnWriteArraySet<String>();
     private DataSourceSelector selector;
     private String dataSourceFile = DEFAULT_DATA_SOURCE_FILE;
     private String propertyPrefix = "";
 
     private volatile boolean inited = false;
 
-    public void init() throws SQLException {
+    public void init() {
         if (inited) {
             return;
         }
@@ -112,6 +115,10 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
             }
             inited = true;
         }
+    }
+
+    public void close() {
+        destroy();
     }
 
     public void destroy() {
@@ -164,6 +171,28 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
 
     public Map<String, DataSource> getDataSourceMap() {
         return dataSourceMap;
+    }
+
+    public Map<String, DataSource> getAvailableDataSourceMap() {
+        Map<String, DataSource> map = new ConcurrentHashMap<String, DataSource>(this.dataSourceMap);
+        for (String n : blacklist) {
+            if (map.containsKey(n)) {
+                map.remove(n);
+            }
+        }
+        return map;
+    }
+
+    public void addBlackList(String name) {
+        if (dataSourceMap.containsKey(name)) {
+            blacklist.add(name);
+        } else {
+            LOG.info("Key " + name + " is NOT existed, ignore it.");
+        }
+    }
+
+    public void removeBlackList(String name) {
+        blacklist.remove(name);
     }
 
     public void setSelector(String name) {

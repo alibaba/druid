@@ -128,7 +128,7 @@ public class RandomDataSourceSelectorWithFilterTest {
     }
 
     private void initChecker() {
-        Map<String, DataSource> map = highAvailableDataSource.getDataSourceMap();
+        Map<String, DataSource> map = highAvailableDataSource.getAvailableDataSourceMap();
         for (DataSource ds : map.values()) {
             DruidDataSource dds = (DruidDataSource) ds;
             dds.setValidConnectionChecker(checker);

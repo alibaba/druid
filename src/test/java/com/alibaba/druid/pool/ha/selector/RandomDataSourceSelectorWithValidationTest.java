@@ -32,7 +32,7 @@ public class RandomDataSourceSelectorWithValidationTest {
     public void testOneDataSourceFailAndRecover() throws Exception {
         RandomDataSourceSelector selector = initSelector();
 
-        DruidDataSource dataSource = (DruidDataSource) highAvailableDataSource.getDataSourceMap().get("foo");
+        DruidDataSource dataSource = (DruidDataSource) highAvailableDataSource.getAvailableDataSourceMap().get("foo");
         dataSource.setValidationQuery("select xxx from yyy");
         Thread.sleep(10 * 1000);
         assertTrue(dataSource.isTestOnReturn());
@@ -57,8 +57,8 @@ public class RandomDataSourceSelectorWithValidationTest {
         initSelector();
         RandomDataSourceSelector selector = ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector());
 
-        DruidDataSource foo = (DruidDataSource) highAvailableDataSource.getDataSourceMap().get("foo");
-        DruidDataSource bar = (DruidDataSource) highAvailableDataSource.getDataSourceMap().get("bar");
+        DruidDataSource foo = (DruidDataSource) highAvailableDataSource.getAvailableDataSourceMap().get("foo");
+        DruidDataSource bar = (DruidDataSource) highAvailableDataSource.getAvailableDataSourceMap().get("bar");
         foo.setValidationQuery("select xxx from yyy");
         bar.setValidationQuery("select xxx from yyy");
 
