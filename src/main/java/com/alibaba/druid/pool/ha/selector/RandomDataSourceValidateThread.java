@@ -102,7 +102,7 @@ public class RandomDataSourceValidateThread implements Runnable {
     }
 
     private void maintainBlacklist() {
-        Map<String, DataSource> dataSourceMap = selector.getDataSourceMap();
+        Map<String, DataSource> dataSourceMap = selector.getFullDataSourceMap();
         for (Map.Entry<String, Integer> e : errorCounts.entrySet()) {
             DataSource dataSource = dataSourceMap.get(e.getKey());
             if (e.getValue() <= 0) {
