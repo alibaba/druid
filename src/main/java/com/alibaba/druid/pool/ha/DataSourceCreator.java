@@ -16,16 +16,8 @@
 package com.alibaba.druid.pool.ha;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.sql.DataSource;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * An utility class to create DruidDataSource dynamically.
@@ -33,51 +25,6 @@ import com.alibaba.druid.support.logging.LogFactory;
  * @author DigitalSonic
  */
 public class DataSourceCreator {
-    private final static Log LOG = LogFactory.getLog(DataSourceCreator.class);
-
-    private Properties properties;
-    private List<String> nameList;
-
-    public DataSourceCreator(String file) {
-        this(file, "");
-    }
-
-    public DataSourceCreator(String file, String propertyPrefix) {
-        this.properties = PropertiesUtils.loadProperties(file);
-        this.nameList = PropertiesUtils.loadNameList(this.properties, propertyPrefix);
-    }
-
-    public Map<String, DataSource> createMap(HighAvailableDataSource haDataSource) {
-        Map<String, DataSource> map = new ConcurrentHashMap<String, DataSource>();
-
-        if (nameList == null || nameList.isEmpty()) {
-            LOG.error("No DataSource will be created!");
-            return map;
-        }
-
-        for (String n : nameList) {
-            String url = properties.getProperty(n + ".url");
-            String username = properties.getProperty(n + ".username");
-            String password = properties.getProperty(n + ".password");
-            LOG.info("Creating " + n + " with url[" + url + "] and username[" + username + "].");
-            DruidDataSource dataSource = null;
-            try {
-                dataSource = create(n, url, username, password, haDataSource);
-                map.put(n, dataSource);
-            } catch(Exception e) {
-                LOG.error("Can NOT create DruidDataSource for " + n, e);
-                if (dataSource != null) {
-                    try {
-                        dataSource.close();
-                    } catch (Exception ex) {
-                        LOG.error("Exception occurred while closing the FAILURE DataSource.", ex);
-                    }
-                }
-            }
-        }
-        LOG.info(map.size() + " DruidDataSource(s) created. ");
-        return map;
-    }
 
     public static DruidDataSource create(String name, String url, String username, String password,
                                          HighAvailableDataSource haDataSource) throws SQLException {
@@ -128,9 +75,5 @@ public class DataSourceCreator {
         dataSource.init();
 
         return dataSource;
-    }
-
-    public List<String> getNameList() {
-        return nameList;
     }
 }

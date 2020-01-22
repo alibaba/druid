@@ -15,11 +15,16 @@
  */
 package com.alibaba.druid.pool.ha.node;
 
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This abstract class defines a listener to monitor the change of DataSource nodes.
@@ -28,14 +33,22 @@ import java.util.Properties;
  * @see Observable
  */
 public abstract class NodeListener extends Observable {
+    private final static Log LOG = LogFactory.getLog(NodeListener.class);
+
     private Properties properties = new Properties();
     private Date lastUpdateTime = null;
     private Observer observer = null;
+    private Lock lock = new ReentrantLock();
 
     /**
      * The method implements the detail update logic.
      */
     public abstract List<NodeEvent> refresh();
+
+    /**
+     * Do some cleanup.
+     */
+    public abstract void destroy();
 
     /**
      * Add the given PoolUpdater as the Observer.
@@ -55,15 +68,23 @@ public abstract class NodeListener extends Observable {
      * @see #refresh()
      */
     public void update() {
-        List<NodeEvent> events = refresh();
-        if (events != null && !events.isEmpty()) {
-            this.lastUpdateTime = new Date();
-            NodeEvent[] arr = new NodeEvent[events.size()];
-            for (int i = 0; i < events.size(); i++) {
-                arr[i] = events.get(i);
+        if (!lock.tryLock()) {
+            LOG.info("Can not acquire the lock, skip this time.");
+            return;
+        }
+        try {
+            List<NodeEvent> events = refresh();
+            if (events != null && !events.isEmpty()) {
+                this.lastUpdateTime = new Date();
+                NodeEvent[] arr = new NodeEvent[events.size()];
+                for (int i = 0; i < events.size(); i++) {
+                    arr[i] = events.get(i);
+                }
+                this.setChanged();
+                this.notifyObservers(arr);
             }
-            this.setChanged();
-            this.notifyObservers(arr);
+        } finally {
+            lock.unlock();
         }
     }
 

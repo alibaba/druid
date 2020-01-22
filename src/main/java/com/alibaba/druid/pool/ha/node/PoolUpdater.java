@@ -48,6 +48,9 @@ public class PoolUpdater implements Observer {
     private Lock lock = new ReentrantLock();
     private ScheduledExecutorService executor;
 
+    /**
+     * Create a ScheduledExecutorService to remove unused DataSources.
+     */
     public PoolUpdater() {
         executor = Executors.newScheduledThreadPool(1);
         executor.scheduleAtFixedRate(new Runnable() {
@@ -62,11 +65,28 @@ public class PoolUpdater implements Observer {
         }, 60, 60, TimeUnit.SECONDS);
     }
 
+    /**
+     * @see #PoolUpdater()
+     */
     public PoolUpdater(HighAvailableDataSource highAvailableDataSource) {
         this();
         setHighAvailableDataSource(highAvailableDataSource);
     }
 
+    public void destroy() {
+        if (executor == null || executor.isShutdown()) {
+            return;
+        }
+        try {
+            executor.shutdown();
+        } catch (Exception e) {
+            LOG.error("Can NOT shutdown the ScheduledExecutorService.", e);
+        }
+    }
+
+    /**
+     * Process the given NodeEvent[]. Maybe add / delete some nodes.
+     */
     @Override
     public void update(Observable o, Object arg) {
         if (!(o instanceof NodeListener)) {
@@ -99,6 +119,9 @@ public class PoolUpdater implements Observer {
         }
     }
 
+    /**
+     * Remove unused DataSources.
+     */
     public void removeDataSources() {
         if (nodesToDel == null || nodesToDel.isEmpty()) {
             return;
@@ -157,12 +180,20 @@ public class PoolUpdater implements Observer {
             cancelBlacklistNode(nodeName);
             return;
         }
+        DruidDataSource dataSource = null;
         try {
-            DruidDataSource dataSource = DataSourceCreator.create(nodeName, url, username,
+            dataSource = DataSourceCreator.create(nodeName, url, username,
                     password, this.highAvailableDataSource);
             map.put(nodeName, dataSource);
         } catch (Exception e) {
-            LOG.error("Can NOT create DataSource " + nodeName, e);
+            LOG.error("Can NOT create DataSource " + nodeName + ". IGNORE IT.", e);
+            if (dataSource != null) {
+                try {
+                    dataSource.close();
+                } catch (Exception ex) {
+                    LOG.error("Exception occurred while closing the FAILURE DataSource.", ex);
+                }
+            }
         }
     }
 

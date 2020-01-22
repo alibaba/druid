@@ -60,7 +60,7 @@ public class FileNodeListener extends NodeListener {
                     LOG.error("Can NOT update the node list.", e);
                 }
             }
-        }, 0, intervalSeconds, TimeUnit.SECONDS);
+        }, intervalSeconds, intervalSeconds, TimeUnit.SECONDS);
     }
 
     /**
@@ -77,14 +77,22 @@ public class FileNodeListener extends NodeListener {
             String url = originalProperties.getProperty(n + ".url");
             String username = originalProperties.getProperty(n + ".username");
             String password = originalProperties.getProperty(n + ".password");
-            if (url == null || url.isEmpty()
-                    || username == null || username.isEmpty()
-                    || password == null || password.isEmpty()) {
+            if (url == null || url.isEmpty()) {
+                LOG.warn(n + ".url is EMPTY! IGNORE!");
                 continue;
+            } else {
+                properties.setProperty(n + ".url", url);
             }
-            properties.setProperty(n + ".url", url);
-            properties.setProperty(n + ".username", username);
-            properties.setProperty(n + ".password", password);
+            if (username == null || username.isEmpty()) {
+                LOG.warn(n + ".username is EMPTY. Maybe you should check the config.");
+            } else {
+                properties.setProperty(n + ".username", username);
+            }
+            if (password == null || password.isEmpty()) {
+                LOG.warn(n + ".password is EMPTY. Maybe you should check the config.");
+            } else {
+                properties.setProperty(n + ".password", password);
+            }
         }
 
         List<NodeEvent> events = NodeEvent.getEventListFromProperties(getProperties(), properties);
@@ -92,6 +100,18 @@ public class FileNodeListener extends NodeListener {
             setProperties(properties);
         }
         return events;
+    }
+
+    @Override
+    public void destroy() {
+        if (executor == null || executor.isShutdown()) {
+            return;
+        }
+        try {
+            executor.shutdown();
+        } catch (Exception e) {
+            LOG.error("Can NOT shutdown the ScheduledExecutorService.", e);
+        }
     }
 
     public int getIntervalSeconds() {

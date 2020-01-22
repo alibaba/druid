@@ -35,6 +35,9 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.DruidAbstractDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.WrapperAdapter;
+import com.alibaba.druid.pool.ha.node.FileNodeListener;
+import com.alibaba.druid.pool.ha.node.NodeListener;
+import com.alibaba.druid.pool.ha.node.PoolUpdater;
 import com.alibaba.druid.pool.ha.selector.DataSourceSelector;
 import com.alibaba.druid.pool.ha.selector.DataSourceSelectorEnum;
 import com.alibaba.druid.pool.ha.selector.DataSourceSelectorFactory;
@@ -96,6 +99,9 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
 
     private volatile boolean inited = false;
 
+    private PoolUpdater poolUpdater = new PoolUpdater(this);
+    private NodeListener nodeListener;
+
     public void init() {
         if (inited) {
             return;
@@ -105,7 +111,7 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
                 return;
             }
             if (dataSourceMap == null || dataSourceMap.isEmpty()) {
-                dataSourceMap = new DataSourceCreator(dataSourceFile, propertyPrefix).createMap(this);
+                createNodeMap();
             }
             if (selector == null) {
                 setSelector(DataSourceSelectorEnum.RANDOM.getName());
@@ -122,6 +128,12 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     }
 
     public void destroy() {
+        if (nodeListener != null) {
+            nodeListener.destroy();
+        }
+        if (poolUpdater != null) {
+            poolUpdater.destroy();
+        }
         if (dataSourceMap == null || dataSourceMap.isEmpty()) {
             return;
         }
@@ -211,27 +223,9 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
         return selector == null ? null : selector.getName();
     }
 
-    public DataSourceSelector getDataSourceSelector() {
-        return this.selector;
-    }
-
-    public void setDataSourceSelector(DataSourceSelector dataSourceSelector) {
-        this.selector = dataSourceSelector;
-    }
-
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
         throw new UnsupportedOperationException("Not supported by HighAvailableDataSource.");
-    }
-
-    @Override
-    public PrintWriter getLogWriter() throws SQLException {
-        return logWriter;
-    }
-
-    @Override
-    public void setLogWriter(PrintWriter out) throws SQLException {
-        this.logWriter = out;
     }
 
     @Override
@@ -248,16 +242,34 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
         throw new SQLFeatureNotSupportedException();
     }
 
-    public String getDriverClassName() {
-        return driverClassName;
-    }
+    public void setConnectionProperties(String connectionProperties) {
+        this.connectionProperties = connectionProperties;
 
-    public void setDriverClassName(String driverClassName) {
-        this.driverClassName = driverClassName;
-    }
+        // COPIED FROM DruidAbstractDataSource.setConnectionProperties()
 
-    public Properties getConnectProperties() {
-        return connectProperties;
+        if (connectionProperties == null || connectionProperties.trim().length() == 0) {
+            setConnectProperties(null);
+            return;
+        }
+
+        String[] entries = connectionProperties.split(";");
+        Properties properties = new Properties();
+        for (int i = 0; i < entries.length; i++) {
+            String entry = entries[i];
+            if (entry.length() > 0) {
+                int index = entry.indexOf('=');
+                if (index > 0) {
+                    String name = entry.substring(0, index);
+                    String value = entry.substring(index + 1);
+                    properties.setProperty(name, value);
+                } else {
+                    // no value is empty string which is how java.util.Properties works
+                    properties.setProperty(entry, "");
+                }
+            }
+        }
+
+        setConnectProperties(properties);
     }
 
     public void setConnectProperties(Properties connectProperties) {
@@ -270,6 +282,68 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
         } else {
             this.connectProperties = connectProperties;
         }
+    }
+
+    private void createNodeMap() {
+        if (nodeListener == null) {
+            // Compatiable with the old version.
+            // Create a FileNodeListener to watch the dataSourceFile.
+            FileNodeListener listener = new FileNodeListener();
+            listener.setFile(dataSourceFile);
+            listener.setPrefix(propertyPrefix);
+            listener.setObserver(poolUpdater);
+            listener.init();
+            nodeListener = listener;
+        }
+        nodeListener.update(); // Do update in the current Thread at the startup
+    }
+
+    // Getters & Setters
+
+    public PoolUpdater getPoolUpdater() {
+        return poolUpdater;
+    }
+
+    public void setPoolUpdater(PoolUpdater poolUpdater) {
+        this.poolUpdater = poolUpdater;
+    }
+
+    public NodeListener getNodeListener() {
+        return nodeListener;
+    }
+
+    public void setNodeListener(NodeListener nodeListener) {
+        this.nodeListener = nodeListener;
+    }
+
+    public DataSourceSelector getDataSourceSelector() {
+        return this.selector;
+    }
+
+    public void setDataSourceSelector(DataSourceSelector dataSourceSelector) {
+        this.selector = dataSourceSelector;
+    }
+
+    @Override
+    public PrintWriter getLogWriter() throws SQLException {
+        return logWriter;
+    }
+
+    @Override
+    public void setLogWriter(PrintWriter out) throws SQLException {
+        this.logWriter = out;
+    }
+
+    public String getDriverClassName() {
+        return driverClassName;
+    }
+
+    public void setDriverClassName(String driverClassName) {
+        this.driverClassName = driverClassName;
+    }
+
+    public Properties getConnectProperties() {
+        return connectProperties;
     }
 
     public int getInitialSize() {
@@ -450,36 +524,6 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
 
     public String getConnectionProperties() {
         return connectionProperties;
-    }
-
-    public void setConnectionProperties(String connectionProperties) {
-        this.connectionProperties = connectionProperties;
-
-        // COPIED FROM DruidAbstractDataSource.setConnectionProperties()
-
-        if (connectionProperties == null || connectionProperties.trim().length() == 0) {
-            setConnectProperties(null);
-            return;
-        }
-
-        String[] entries = connectionProperties.split(";");
-        Properties properties = new Properties();
-        for (int i = 0; i < entries.length; i++) {
-            String entry = entries[i];
-            if (entry.length() > 0) {
-                int index = entry.indexOf('=');
-                if (index > 0) {
-                    String name = entry.substring(0, index);
-                    String value = entry.substring(index + 1);
-                    properties.setProperty(name, value);
-                } else {
-                    // no value is empty string which is how java.util.Properties works
-                    properties.setProperty(entry, "");
-                }
-            }
-        }
-
-        setConnectProperties(properties);
     }
 
     public String getFilters() {

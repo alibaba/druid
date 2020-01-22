@@ -25,6 +25,7 @@ public class RandomDataSourceSelectorWithValidationTest {
 
     @After
     public void tearDown() {
+        highAvailableDataSource.destroy();
         highAvailableDataSource = null;
     }
 
