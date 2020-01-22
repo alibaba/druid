@@ -195,6 +195,10 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
         blacklist.remove(name);
     }
 
+    public boolean isInBlackList(String name) {
+        return blacklist.contains(name);
+    }
+
     public void setSelector(String name) {
         DataSourceSelector selector = DataSourceSelectorFactory.getSelector(name, this);
         if (selector != null) {
