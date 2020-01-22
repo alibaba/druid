@@ -1,7 +1,6 @@
 package com.alibaba.druid.pool.ha.node;
 
 import org.junit.Test;
-import sun.java2d.SurfaceDataProxy;
 
 import java.util.List;
 import java.util.Observable;
@@ -28,7 +27,7 @@ public class FileNodeListenerTest {
                 assertTrue(arg instanceof NodeEvent[]);
                 NodeEvent[] events = (NodeEvent[]) arg;
                 assertEquals(1, events.length);
-                assertEquals(NodeEventType.ADD, events[0].getType());
+                assertEquals(NodeEventTypeEnum.ADD, events[0].getType());
                 assertEquals("prefix1.foo", events[0].getNodeName());
                 assertEquals("jdbc:derby:memory:foo1;create=true", events[0].getUrl());
             }
@@ -64,7 +63,7 @@ public class FileNodeListenerTest {
 
         assertEquals(1, list.size());
         NodeEvent event = list.get(0);
-        assertEquals(NodeEventType.ADD, event.getType());
+        assertEquals(NodeEventTypeEnum.ADD, event.getType());
         assertEquals("prefix1.foo", event.getNodeName());
         assertEquals("jdbc:derby:memory:foo1;create=true", event.getUrl());
     }

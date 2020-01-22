@@ -20,6 +20,6 @@ package com.alibaba.druid.pool.ha.node;
  *
  * @author DigitalSonic
  */
-public enum NodeEventType {
+public enum NodeEventTypeEnum {
     ADD, DELETE
 }

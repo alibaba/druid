@@ -24,7 +24,7 @@ public class NodeEventTest {
         list = NodeEvent.getEventListFromProperties(p1, p2);
         assertEquals(1, list.size());
         NodeEvent event = list.get(0);
-        assertEquals(NodeEventType.DELETE, event.getType());
+        assertEquals(NodeEventTypeEnum.DELETE, event.getType());
         assertEquals("foo", event.getNodeName());
         assertEquals("foo_url", event.getUrl());
         assertEquals("foo_username", event.getUsername());
@@ -33,7 +33,7 @@ public class NodeEventTest {
         list = NodeEvent.getEventListFromProperties(p2, p1);
         assertEquals(1, list.size());
         event = list.get(0);
-        assertEquals(NodeEventType.ADD, event.getType());
+        assertEquals(NodeEventTypeEnum.ADD, event.getType());
         assertEquals("foo", event.getNodeName());
         assertEquals("foo_url", event.getUrl());
         assertEquals("foo_username", event.getUsername());

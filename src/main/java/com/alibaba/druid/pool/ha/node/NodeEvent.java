@@ -27,7 +27,7 @@ import java.util.Properties;
  * @author DigitalSonic
  */
 public class NodeEvent {
-    private NodeEventType type;
+    private NodeEventTypeEnum type;
     private String nodeName;
     private String url;
     private String username;
@@ -56,13 +56,13 @@ public class NodeEvent {
         }
 
         List<NodeEvent> list = new ArrayList<NodeEvent>();
-        list.addAll(generateEvents(next, namesToAdd, NodeEventType.ADD));
-        list.addAll(generateEvents(previous, namesToDel, NodeEventType.DELETE));
+        list.addAll(generateEvents(next, namesToAdd, NodeEventTypeEnum.ADD));
+        list.addAll(generateEvents(previous, namesToDel, NodeEventTypeEnum.DELETE));
 
         return list;
     }
 
-    private static List<NodeEvent> generateEvents(Properties properties, List<String> names, NodeEventType type) {
+    private static List<NodeEvent> generateEvents(Properties properties, List<String> names, NodeEventTypeEnum type) {
         List<NodeEvent> list = new ArrayList<NodeEvent>();
         for (String n : names) {
             NodeEvent event = new NodeEvent();
@@ -76,11 +76,11 @@ public class NodeEvent {
         return list;
     }
 
-    public NodeEventType getType() {
+    public NodeEventTypeEnum getType() {
         return type;
     }
 
-    public void setType(NodeEventType type) {
+    public void setType(NodeEventTypeEnum type) {
         this.type = type;
     }
 

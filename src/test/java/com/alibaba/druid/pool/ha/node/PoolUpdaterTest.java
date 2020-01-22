@@ -10,7 +10,6 @@ import org.junit.Test;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -39,14 +38,14 @@ public class PoolUpdaterTest {
 
         NodeEvent event = new NodeEvent();
         event.setNodeName("foo");
-        event.setType(NodeEventType.DELETE);
+        event.setType(NodeEventTypeEnum.DELETE);
 
         updater.update(new FileNodeListener(), new NodeEvent[] { event });
         validateDeleteNode();
 
         event = new NodeEvent();
         event.setNodeName("foo");
-        event.setType(NodeEventType.ADD);
+        event.setType(NodeEventTypeEnum.ADD);
         updater.update(new FileNodeListener(), new NodeEvent[] { event });
         assertFalse(updater.getNodesToDel().contains("foo"));
         assertFalse(haDataSource.isInBlackList("foo"));
@@ -115,7 +114,7 @@ public class PoolUpdaterTest {
     public void testDeleteNode_notExisted() {
         NodeEvent event = new NodeEvent();
         event.setNodeName("foo");
-        event.setType(NodeEventType.DELETE);
+        event.setType(NodeEventTypeEnum.DELETE);
         updater.deleteNode(event);
         assertTrue(updater.getNodesToDel().isEmpty());
         assertFalse(haDataSource.isInBlackList("foo"));
@@ -127,7 +126,7 @@ public class PoolUpdaterTest {
 
         NodeEvent event = new NodeEvent();
         event.setNodeName("foo");
-        event.setType(NodeEventType.DELETE);
+        event.setType(NodeEventTypeEnum.DELETE);
         updater.deleteNode(event);
         validateDeleteNode();
     }
@@ -142,7 +141,7 @@ public class PoolUpdaterTest {
         NodeEvent event = new NodeEvent();
         event.setNodeName(name);
         event.setUrl(url);
-        event.setType(NodeEventType.ADD);
+        event.setType(NodeEventTypeEnum.ADD);
         updater.addNode(event);
     }
 }

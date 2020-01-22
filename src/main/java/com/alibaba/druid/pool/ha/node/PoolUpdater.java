@@ -86,9 +86,9 @@ public class PoolUpdater implements Observer {
             lock.lock();
             LOG.info("Start processing the NodeEvent[" + events.length + "].");
             for (NodeEvent e : events) {
-                if (e.getType() == NodeEventType.ADD) {
+                if (e.getType() == NodeEventTypeEnum.ADD) {
                     addNode(e);
-                } else if (e.getType() == NodeEventType.DELETE) {
+                } else if (e.getType() == NodeEventTypeEnum.DELETE) {
                     deleteNode(e);
                 }
             }
