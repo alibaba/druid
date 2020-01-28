@@ -24,6 +24,7 @@ public class PoolUpdaterTest {
         haDataSource.setDataSourceMap(map);
 
         updater = new PoolUpdater(haDataSource);
+        updater.init();
     }
 
     @After

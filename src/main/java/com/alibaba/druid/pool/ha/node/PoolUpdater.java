@@ -40,29 +40,17 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author DigitalSonic
  */
 public class PoolUpdater implements Observer {
+    public final static int DEFAULT_PERIOD = 60;
     private final static Log LOG = LogFactory.getLog(PoolUpdater.class);
-
     private Set<String> nodesToDel = new CopyOnWriteArraySet<String>();
     private HighAvailableDataSource highAvailableDataSource;
 
     private Lock lock = new ReentrantLock();
     private ScheduledExecutorService executor;
+    private int periodSeconds = DEFAULT_PERIOD;
+    private boolean inited = false;
 
-    /**
-     * Create a ScheduledExecutorService to remove unused DataSources.
-     */
     public PoolUpdater() {
-        executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    removeDataSources();
-                } catch (Exception e) {
-                    LOG.error("Exception occurred while removing DataSources.", e);
-                }
-            }
-        }, 60, 60, TimeUnit.SECONDS);
     }
 
     /**
@@ -71,6 +59,34 @@ public class PoolUpdater implements Observer {
     public PoolUpdater(HighAvailableDataSource highAvailableDataSource) {
         this();
         setHighAvailableDataSource(highAvailableDataSource);
+    }
+
+    /**
+     * Create a ScheduledExecutorService to remove unused DataSources.
+     */
+    public void init() {
+        if (inited) {
+            return;
+        }
+        synchronized (this) {
+            if (inited) {
+                return;
+            }
+            if (periodSeconds <= 0) {
+                periodSeconds = DEFAULT_PERIOD;
+            }
+            executor = Executors.newScheduledThreadPool(1);
+            executor.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        removeDataSources();
+                    } catch (Exception e) {
+                        LOG.error("Exception occurred while removing DataSources.", e);
+                    }
+                }
+            }, periodSeconds, periodSeconds, TimeUnit.SECONDS);
+        }
     }
 
     public void destroy() {
@@ -228,5 +244,13 @@ public class PoolUpdater implements Observer {
 
     public Set<String> getNodesToDel() {
         return nodesToDel;
+    }
+
+    public int getPeriodSeconds() {
+        return periodSeconds;
+    }
+
+    public void setPeriodSeconds(int periodSeconds) {
+        this.periodSeconds = periodSeconds;
     }
 }
