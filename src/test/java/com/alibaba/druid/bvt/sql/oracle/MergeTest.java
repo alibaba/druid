@@ -32,6 +32,7 @@ public class MergeTest extends TestCase {
         String sql = "{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}";
 
         ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.ORACLE);
+        ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.OCEANBASE_ORACLE);
         ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.ALI_ORACLE);
     }
 
@@ -39,5 +40,6 @@ public class MergeTest extends TestCase {
         String sql = "{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}";
 
         ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.MYSQL);
+        ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.OCEANBASE);
     }
 }

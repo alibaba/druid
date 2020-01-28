@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBuilder {
 
@@ -158,20 +159,20 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
     }
 
     public SQLUpdateStatement createSQLUpdateStatement() {
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcUtils.isMysqlDbType(dbType)) {
             return new MySqlUpdateStatement();    
         }
-        
-        if (JdbcConstants.ORACLE.equals(dbType)) {
-            return new OracleUpdateStatement();    
+
+        if (JdbcUtils.isOracleDbType(dbType)) {
+            return new OracleUpdateStatement();
+        }
+
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
+            return new PGUpdateStatement();
         }
         
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
-            return new PGUpdateStatement();    
-        }
-        
-        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
-            return new SQLServerUpdateStatement();    
+        if (JdbcUtils.isSqlserverDbType(dbType)) {
+            return new SQLServerUpdateStatement();
         }
         
         return new SQLUpdateStatement();
