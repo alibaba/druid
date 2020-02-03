@@ -17,6 +17,7 @@ package com.alibaba.druid.pool.ha;
 
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -97,5 +98,18 @@ public class PropertiesUtils {
             nameList.addAll(names);
         }
         return nameList;
+    }
+
+    public static Properties filterPrefix(Properties properties, String prefix) {
+        if (properties == null || prefix == null || prefix.isEmpty()) {
+            return properties;
+        }
+        Properties result = new Properties();
+        for (String n : properties.stringPropertyNames()) {
+            if (n.startsWith(prefix)) {
+                result.setProperty(n, properties.getProperty(n));
+            }
+        }
+        return result;
     }
 }

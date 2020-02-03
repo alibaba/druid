@@ -24,6 +24,8 @@ import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A NodeList that monitors the change of a file.
@@ -33,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 public class FileNodeListener extends NodeListener {
     private final static Log LOG = LogFactory.getLog(FileNodeListener.class);
 
+    private Lock lock = new ReentrantLock();
     private String file = null;
     private String prefix = "";
     private int intervalSeconds = 60;
@@ -54,10 +57,16 @@ public class FileNodeListener extends NodeListener {
         executor.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
+                if (!lock.tryLock()) {
+                    LOG.info("Can not acquire the lock, skip this time.");
+                    return;
+                }
                 try {
                     update();
                 } catch (Exception e) {
                     LOG.error("Can NOT update the node list.", e);
+                } finally {
+                    lock.unlock();
                 }
             }
         }, intervalSeconds, intervalSeconds, TimeUnit.SECONDS);
@@ -95,7 +104,7 @@ public class FileNodeListener extends NodeListener {
             }
         }
 
-        List<NodeEvent> events = NodeEvent.getEventListFromProperties(getProperties(), properties);
+        List<NodeEvent> events = NodeEvent.getEventsByDiffProperties(getProperties(), properties);
         if (events != null && !events.isEmpty()) {
             setProperties(properties);
         }

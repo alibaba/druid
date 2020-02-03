@@ -66,25 +66,24 @@ public abstract class NodeListener extends Observable {
      * Fire the refresh() method and notify the Observer.
      *
      * @see #refresh()
+     * @see #update(List)
      */
     public void update() {
-        if (!lock.tryLock()) {
-            LOG.info("Can not acquire the lock, skip this time.");
-            return;
-        }
-        try {
-            List<NodeEvent> events = refresh();
-            if (events != null && !events.isEmpty()) {
-                this.lastUpdateTime = new Date();
-                NodeEvent[] arr = new NodeEvent[events.size()];
-                for (int i = 0; i < events.size(); i++) {
-                    arr[i] = events.get(i);
-                }
-                this.setChanged();
-                this.notifyObservers(arr);
+        update(refresh());
+    }
+
+    /**
+     * Notify the Observer.
+     */
+    public void update(List<NodeEvent> events) {
+        if (events != null && !events.isEmpty()) {
+            this.lastUpdateTime = new Date();
+            NodeEvent[] arr = new NodeEvent[events.size()];
+            for (int i = 0; i < events.size(); i++) {
+                arr[i] = events.get(i);
             }
-        } finally {
-            lock.unlock();
+            this.setChanged();
+            this.notifyObservers(arr);
         }
     }
 

@@ -38,7 +38,7 @@ public class NodeEvent {
      *
      * @return A List of AddEvent and DelEvent
      */
-    public static List<NodeEvent> getEventListFromProperties(Properties previous, Properties next) {
+    public static List<NodeEvent> getEventsByDiffProperties(Properties previous, Properties next) {
         List<String> prevNames = PropertiesUtils.loadNameList(previous, "");
         List<String> nextNames = PropertiesUtils.loadNameList(next, "");
 
@@ -62,7 +62,7 @@ public class NodeEvent {
         return list;
     }
 
-    private static List<NodeEvent> generateEvents(Properties properties, List<String> names, NodeEventTypeEnum type) {
+    public static List<NodeEvent> generateEvents(Properties properties, List<String> names, NodeEventTypeEnum type) {
         List<NodeEvent> list = new ArrayList<NodeEvent>();
         for (String n : names) {
             NodeEvent event = new NodeEvent();
