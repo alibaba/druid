@@ -111,6 +111,9 @@ public class FileNodeListener extends NodeListener {
         return events;
     }
 
+    /**
+     * Close the ScheduledExecutorService.
+     */
     @Override
     public void destroy() {
         if (executor == null || executor.isShutdown()) {
