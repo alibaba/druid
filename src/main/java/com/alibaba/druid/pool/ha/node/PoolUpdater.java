@@ -40,14 +40,14 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author DigitalSonic
  */
 public class PoolUpdater implements Observer {
-    public final static int DEFAULT_PERIOD = 60;
+    public final static int DEFAULT_INTERVAL = 60;
     private final static Log LOG = LogFactory.getLog(PoolUpdater.class);
     private Set<String> nodesToDel = new CopyOnWriteArraySet<String>();
     private HighAvailableDataSource highAvailableDataSource;
 
     private Lock lock = new ReentrantLock();
     private ScheduledExecutorService executor;
-    private int periodSeconds = DEFAULT_PERIOD;
+    private int intervalSeconds = DEFAULT_INTERVAL;
     private boolean inited = false;
 
     public PoolUpdater() {
@@ -72,20 +72,21 @@ public class PoolUpdater implements Observer {
             if (inited) {
                 return;
             }
-            if (periodSeconds <= 0) {
-                periodSeconds = DEFAULT_PERIOD;
+            if (intervalSeconds <= 0) {
+                intervalSeconds = DEFAULT_INTERVAL;
             }
             executor = Executors.newScheduledThreadPool(1);
             executor.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
+                    LOG.debug("Purging the DataSource Pool every " + intervalSeconds + "s.");
                     try {
                         removeDataSources();
                     } catch (Exception e) {
                         LOG.error("Exception occurred while removing DataSources.", e);
                     }
                 }
-            }, periodSeconds, periodSeconds, TimeUnit.SECONDS);
+            }, intervalSeconds, intervalSeconds, TimeUnit.SECONDS);
         }
     }
 
@@ -201,6 +202,7 @@ public class PoolUpdater implements Observer {
             dataSource = DataSourceCreator.create(nodeName, url, username,
                     password, this.highAvailableDataSource);
             map.put(nodeName, dataSource);
+            LOG.info("Creating Node " + nodeName + "[url: " + url + ", username: " + username + "].");
         } catch (Exception e) {
             LOG.error("Can NOT create DataSource " + nodeName + ". IGNORE IT.", e);
             if (dataSource != null) {
@@ -246,11 +248,11 @@ public class PoolUpdater implements Observer {
         return nodesToDel;
     }
 
-    public int getPeriodSeconds() {
-        return periodSeconds;
+    public int getIntervalSeconds() {
+        return intervalSeconds;
     }
 
-    public void setPeriodSeconds(int periodSeconds) {
-        this.periodSeconds = periodSeconds;
+    public void setIntervalSeconds(int intervalSeconds) {
+        this.intervalSeconds = intervalSeconds;
     }
 }

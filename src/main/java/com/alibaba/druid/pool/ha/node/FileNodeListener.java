@@ -57,6 +57,7 @@ public class FileNodeListener extends NodeListener {
         executor.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
+                LOG.debug("Checking file " + file + " every " + intervalSeconds + "s.");
                 if (!lock.tryLock()) {
                     LOG.info("Can not acquire the lock, skip this time.");
                     return;
@@ -93,12 +94,12 @@ public class FileNodeListener extends NodeListener {
                 properties.setProperty(n + ".url", url);
             }
             if (username == null || username.isEmpty()) {
-                LOG.warn(n + ".username is EMPTY. Maybe you should check the config.");
+                LOG.debug(n + ".username is EMPTY. Maybe you should check the config.");
             } else {
                 properties.setProperty(n + ".username", username);
             }
             if (password == null || password.isEmpty()) {
-                LOG.warn(n + ".password is EMPTY. Maybe you should check the config.");
+                LOG.debug(n + ".password is EMPTY. Maybe you should check the config.");
             } else {
                 properties.setProperty(n + ".password", password);
             }
@@ -106,6 +107,7 @@ public class FileNodeListener extends NodeListener {
 
         List<NodeEvent> events = NodeEvent.getEventsByDiffProperties(getProperties(), properties);
         if (events != null && !events.isEmpty()) {
+            LOG.info(events.size() + " different(s) detected.");
             setProperties(properties);
         }
         return events;

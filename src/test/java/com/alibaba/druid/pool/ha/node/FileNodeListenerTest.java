@@ -1,7 +1,12 @@
 package com.alibaba.druid.pool.ha.node;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.ha.HighAvailableDataSource;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -9,9 +14,62 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class FileNodeListenerTest {
+    @Test
+    public void testHaWithPropertiesFile() throws Exception {
+        // init a properties file
+        String folder = System.getProperty("java.io.tmpdir");
+        File file = new File(folder + "/ha.properties");
+        file.deleteOnExit();
+
+        Properties properties = new Properties();
+        properties.setProperty("bar.username", "sa");
+        properties.setProperty("bar.password", "");
+        properties.setProperty("bar.url", "jdbc:derby:memory:bar;create=true");
+        writePropertiesFile(file, properties);
+
+        // init HighAvailableDataSource
+        FileNodeListener listener = new FileNodeListener();
+        listener.setFile(file.getAbsolutePath());
+        listener.setPrefix("foo");
+        listener.setIntervalSeconds(1);
+        HighAvailableDataSource dataSource = new HighAvailableDataSource();
+        dataSource.setPoolPurgeIntervalSeconds(5);
+        dataSource.setDataSourceFile(file.getAbsolutePath());
+        dataSource.setNodeListener(listener);
+        dataSource.init();
+
+        assertTrue(dataSource.getDataSourceMap().isEmpty());
+
+        // Add one valid DataSource
+        properties.setProperty("foo.username", "sa");
+        properties.setProperty("foo.password", "");
+        properties.setProperty("foo.url", "jdbc:derby:memory:foo;create=true");
+        writePropertiesFile(file, properties);
+        Thread.sleep(6000);
+
+        assertEquals(1, dataSource.getAvailableDataSourceMap().size());
+        DruidDataSource foo = (DruidDataSource) dataSource.getAvailableDataSourceMap().get("foo");
+        assertEquals("jdbc:derby:memory:foo;create=true", foo.getUrl());
+
+        // Remove all
+        writePropertiesFile(file, new Properties());
+
+        Thread.sleep(6000);
+        assertTrue(dataSource.getAvailableDataSourceMap().isEmpty());
+
+        dataSource.destroy();
+    }
+
+    private void writePropertiesFile(File file, Properties properties) throws IOException {
+        FileWriter writer = new FileWriter(file);
+        properties.store(writer, "");
+        writer.close();
+    }
+
     @Test
     public void testUpdate() throws InterruptedException {
         final CountDownLatch cdl = new CountDownLatch(1);

@@ -96,7 +96,7 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     private DataSourceSelector selector;
     private String dataSourceFile = DEFAULT_DATA_SOURCE_FILE;
     private String propertyPrefix = "";
-    private int poolUpdatePeriodSeconds = PoolUpdater.DEFAULT_PERIOD;
+    private int poolPurgeIntervalSeconds = PoolUpdater.DEFAULT_INTERVAL;
 
     private volatile boolean inited = false;
 
@@ -111,9 +111,9 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
             if (inited) {
                 return;
             }
-            poolUpdater.setPeriodSeconds(poolUpdatePeriodSeconds);
-            poolUpdater.init();
             if (dataSourceMap == null || dataSourceMap.isEmpty()) {
+                poolUpdater.setIntervalSeconds(poolPurgeIntervalSeconds);
+                poolUpdater.init();
                 createNodeMap();
             }
             if (selector == null) {
@@ -294,21 +294,21 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
             FileNodeListener listener = new FileNodeListener();
             listener.setFile(dataSourceFile);
             listener.setPrefix(propertyPrefix);
-            listener.setObserver(poolUpdater);
-            listener.init();
             nodeListener = listener;
         }
+        nodeListener.setObserver(poolUpdater);
+        nodeListener.init();
         nodeListener.update(); // Do update in the current Thread at the startup
     }
 
     // Getters & Setters
 
-    public int getPoolUpdatePeriodSeconds() {
-        return poolUpdatePeriodSeconds;
+    public int getPoolPurgeIntervalSeconds() {
+        return poolPurgeIntervalSeconds;
     }
 
-    public void setPoolUpdatePeriodSeconds(int poolUpdatePeriodSeconds) {
-        this.poolUpdatePeriodSeconds = poolUpdatePeriodSeconds;
+    public void setPoolPurgeIntervalSeconds(int poolPurgeIntervalSeconds) {
+        this.poolPurgeIntervalSeconds = poolPurgeIntervalSeconds;
     }
 
     public NodeListener getNodeListener() {
