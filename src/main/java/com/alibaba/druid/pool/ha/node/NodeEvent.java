@@ -76,6 +76,20 @@ public class NodeEvent {
         return list;
     }
 
+    @Override
+    public String toString() {
+        String str = "NodeEvent{" +
+                "type=" + type +
+                ", nodeName='" + nodeName + '\'' +
+                ", url='" + url + '\'' +
+                ", username='" + username + '\'';
+        if (password != null) {
+            str += ", password.length=" + password.length();
+        }
+        str += '}';
+        return str;
+    }
+
     public NodeEventTypeEnum getType() {
         return type;
     }

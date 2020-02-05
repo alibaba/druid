@@ -40,6 +40,7 @@ public class ZookeeperNodeRegister {
     private String path = "/ha-druid-datasources";
     private CuratorFramework client;
     private GroupMember member;
+    private boolean privateZkClient = false; // Should I close the client?
     private Lock lock = new ReentrantLock();
 
     /**
@@ -54,6 +55,7 @@ public class ZookeeperNodeRegister {
                     .sessionTimeoutMs(30000)
                     .build();
             client.start();
+            privateZkClient = true;
         }
     }
 
@@ -74,6 +76,7 @@ public class ZookeeperNodeRegister {
         }
         try {
             lock.lock();
+            createPathIfNotExisted();
             if (member != null) {
                 LOG.warn("GroupMember has already registered. Please deregister first.");
                 return false;
@@ -96,6 +99,9 @@ public class ZookeeperNodeRegister {
             member.close();
             member = null;
         }
+        if (client != null && privateZkClient) {
+            client.close();
+        }
     }
 
     /**
@@ -103,6 +109,17 @@ public class ZookeeperNodeRegister {
      */
     public void destroy() {
         deregister();
+    }
+
+    private void createPathIfNotExisted() {
+        try {
+            if (client.checkExists().forPath(path) == null) {
+                LOG.info("Path[" + path + "] is NOT existed, create it.");
+                client.create().creatingParentsIfNeeded().forPath(path);
+            }
+        } catch(Exception e) {
+            LOG.error("Can NOT check the path.", e);
+        }
     }
 
     private String getPropertiesString(List<ZookeeperNodeInfo> payload) {
@@ -130,6 +147,17 @@ public class ZookeeperNodeRegister {
         return sw.toString();
     }
 
+    public void setClient(CuratorFramework client) {
+        if (client != null) {
+            this.client = client;
+            privateZkClient = false;
+        }
+    }
+
+    public CuratorFramework getClient() {
+        return client;
+    }
+
     public String getZkConnectString() {
         return zkConnectString;
     }
@@ -144,13 +172,5 @@ public class ZookeeperNodeRegister {
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public CuratorFramework getClient() {
-        return client;
-    }
-
-    public void setClient(CuratorFramework client) {
-        this.client = client;
     }
 }

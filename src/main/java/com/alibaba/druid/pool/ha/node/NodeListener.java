@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.pool.ha.node;
 
+import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
@@ -57,7 +58,7 @@ public abstract class NodeListener extends Observable {
      */
     public void init() {
         if (observer == null) {
-            throw new RuntimeException("No Observer(such as PoolUpdater) specified.");
+            throw new DruidRuntimeException("No Observer(such as PoolUpdater) specified.");
         }
         this.addObserver(observer);
     }
