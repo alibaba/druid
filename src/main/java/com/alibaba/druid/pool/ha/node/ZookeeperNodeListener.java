@@ -57,6 +57,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * bar.port=3309
  * bar.username=bar
  * bar.password=bar_password
+ * bar.database=bar_database
  * </pre>
  *
  * @author DigitalSonic
@@ -65,15 +66,14 @@ public class ZookeeperNodeListener extends NodeListener {
     private final static Log LOG = LogFactory.getLog(ZookeeperNodeListener.class);
     private String zkConnectString;
     private String path = "/ha-druid-datasources";
-    private String dataPrefix = "";
     private Lock lock = new ReentrantLock();
     private boolean privateZkClient = false; // Should I close the client?
     private PathChildrenCache cache;
     private CuratorFramework client;
     /**
-     * Template Format:
-     * jdbc:mysql://${host}:${port}/foo?useUnicode=true
-     * ${host} and ${port} will be replaced by values in ZK
+     * URL Template, e.g.
+     * jdbc:mysql://${host}:${port}/${database}?useUnicode=true
+     * ${host}, ${port} and ${database} will be replaced by values in ZK
      */
     private String urlTemplate;
 
@@ -183,7 +183,7 @@ public class ZookeeperNodeListener extends NodeListener {
         ChildData data = event.getData();
         String nodeName = getNodeName(data);
         List<String> names = new ArrayList<String>();
-        names.add(dataPrefix + "." + nodeName);
+        names.add(getPrefix() + "." + nodeName);
         Properties properties = getPropertiesFromChildData(data);
         List<NodeEvent> events = NodeEvent.generateEvents(properties, names, type);
 
@@ -228,6 +228,7 @@ public class ZookeeperNodeListener extends NodeListener {
     }
 
     private Properties getPropertiesFromChildData(ChildData data) {
+        String dataPrefix = getPrefix();
         Properties properties = new Properties();
         if (data == null) {
             return properties;
@@ -243,7 +244,7 @@ public class ZookeeperNodeListener extends NodeListener {
         Properties filtered = PropertiesUtils.filterPrefix(full, dataPrefix);
         for (String n : filtered.stringPropertyNames()) {
             properties.setProperty(
-                    n.replaceFirst(dataPrefix, dataPrefix + "." + nodeName),
+                    n.replaceFirst(dataPrefix, dataPrefix + "\\." + nodeName),
                     filtered.getProperty(n));
         }
         if (!properties.containsKey(dataPrefix + "." + nodeName + ".url")) {
@@ -254,11 +255,15 @@ public class ZookeeperNodeListener extends NodeListener {
 
     private String formatUrl(Properties properties) {
         String url = urlTemplate;
+        String dataPrefix = getPrefix();
         if (properties.containsKey(dataPrefix + ".host")) {
             url = url.replace("${host}", properties.getProperty(dataPrefix + ".host"));
         }
         if (properties.containsKey(dataPrefix + ".port")) {
             url = url.replace("${port}", properties.getProperty(dataPrefix + ".port"));
+        }
+        if (properties.containsKey(dataPrefix + ".database")) {
+            url = url.replace("${database}", properties.getProperty(dataPrefix + ".database"));
         }
         return url;
     }
@@ -297,14 +302,6 @@ public class ZookeeperNodeListener extends NodeListener {
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public String getDataPrefix() {
-        return dataPrefix;
-    }
-
-    public void setDataPrefix(String dataPrefix) {
-        this.dataPrefix = dataPrefix;
     }
 
     public String getUrlTemplate() {

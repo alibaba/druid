@@ -3,8 +3,6 @@ package com.alibaba.druid.pool.ha.node;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.test.TestingServer;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -17,12 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ZookeeperNodeRegisterTest {
     private final static Log LOG = LogFactory.getLog(ZookeeperNodeRegisterTest.class);
-    private final String PATH = "/ha-druid-datasource";
     private static TestingServer server;
+    private final String PATH = "/ha-druid-datasource";
     private ZookeeperNodeRegister register;
 
     @BeforeClass
@@ -56,6 +56,7 @@ public class ZookeeperNodeRegisterTest {
         node1.setPrefix("foo");
         node1.setHost("127.0.0.1");
         node1.setPort(1234);
+        node1.setDatabase("foo_db");
         node1.setUsername("foo");
         node1.setPassword("password");
         payload.add(node1);
@@ -87,6 +88,9 @@ public class ZookeeperNodeRegisterTest {
         properties.load(new StringReader(str));
         validateNodeProperties(node1, properties);
         validateNodeProperties(node2, properties);
+        assertTrue(properties.containsKey("foo.database"));
+        assertFalse(properties.containsKey("bar.database"));
+        assertEquals("foo_db", properties.getProperty("foo.database"));
     }
 
     private void validateNodeProperties(ZookeeperNodeInfo node, Properties properties) {

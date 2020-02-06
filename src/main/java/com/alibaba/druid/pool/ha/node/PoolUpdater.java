@@ -231,7 +231,7 @@ public class PoolUpdater implements Observer {
     }
 
     private void blacklistNode(String nodeName) {
-        LOG.info("Deleting Node " + nodeName + ", just add into blacklist.");
+        LOG.info("Deleting Node " + nodeName + ", just add it into blacklist.");
         nodesToDel.add(nodeName);
         highAvailableDataSource.addBlackList(nodeName);
     }

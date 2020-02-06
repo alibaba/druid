@@ -36,6 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class NodeListener extends Observable {
     private final static Log LOG = LogFactory.getLog(NodeListener.class);
 
+    private String prefix = "";
     private Properties properties = new Properties();
     private Date lastUpdateTime = null;
     private Observer observer = null;
@@ -110,5 +111,13 @@ public abstract class NodeListener extends Observable {
 
     public void setProperties(Properties properties) {
         this.properties = properties;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 }

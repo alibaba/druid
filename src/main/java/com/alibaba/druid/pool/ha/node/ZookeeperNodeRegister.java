@@ -131,6 +131,9 @@ public class ZookeeperNodeRegister {
             if (n.getPort() != null) {
                 properties.setProperty(n.getPrefix() + "port", n.getPort().toString());
             }
+            if (n.getDatabase() != null) {
+                properties.setProperty(n.getPrefix() + "database", n.getDatabase());
+            }
             if (n.getUsername() != null) {
                 properties.setProperty(n.getPrefix() + "username", n.getUsername());
             }

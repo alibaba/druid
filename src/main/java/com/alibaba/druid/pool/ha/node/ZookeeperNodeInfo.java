@@ -24,6 +24,13 @@ public class ZookeeperNodeInfo {
     private String prefix = "";
     private String host;
     private Integer port;
+    /**
+     * Database can be the following ones:
+     * 1. Database in MySQL and PostgreSQL JDBC URL
+     * 2. ServiceName or SID in Oracle JDBC URL
+     * etc.
+     */
+    private String database;
     private String username;
     private String password;
 
@@ -70,5 +77,13 @@ public class ZookeeperNodeInfo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
     }
 }

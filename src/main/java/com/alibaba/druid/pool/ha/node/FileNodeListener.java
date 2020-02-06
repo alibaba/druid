@@ -37,7 +37,6 @@ public class FileNodeListener extends NodeListener {
 
     private Lock lock = new ReentrantLock();
     private String file = null;
-    private String prefix = "";
     private int intervalSeconds = 60;
     private ScheduledExecutorService executor;
 
@@ -81,7 +80,7 @@ public class FileNodeListener extends NodeListener {
     @Override
     public List<NodeEvent> refresh() {
         Properties originalProperties = PropertiesUtils.loadProperties(file);
-        List<String> nameList = PropertiesUtils.loadNameList(originalProperties, prefix);
+        List<String> nameList = PropertiesUtils.loadNameList(originalProperties, getPrefix());
         Properties properties = new Properties();
         for (String n : nameList) {
             String url = originalProperties.getProperty(n + ".url");
@@ -142,13 +141,5 @@ public class FileNodeListener extends NodeListener {
 
     public void setFile(String file) {
         this.file = file;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
     }
 }
