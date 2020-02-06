@@ -31,6 +31,14 @@ public class RandomDataSourceSelectorWithFilterTest {
         String file = "/com/alibaba/druid/pool/ha/ha-datasource.properties";
         highAvailableDataSource.setDataSourceFile(file);
         highAvailableDataSource.setFilters("haRandomValidator");
+
+        RandomDataSourceSelector selector = new RandomDataSourceSelector(highAvailableDataSource);
+        RandomDataSourceValidateThread thread = new RandomDataSourceValidateThread(selector);
+        thread.setCheckingIntervalSeconds(2);
+        selector.setValidateThread(thread);
+        selector.init();
+
+        highAvailableDataSource.setDataSourceSelector(selector);
         highAvailableDataSource.init();
         initChecker();
     }
@@ -45,12 +53,6 @@ public class RandomDataSourceSelectorWithFilterTest {
 
     @Test
     public void testSkipValidation() throws Exception {
-        RandomDataSourceSelector selector = ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector());
-        RandomDataSourceValidateThread thread = new RandomDataSourceValidateThread(selector);
-        thread.setCheckingIntervalSeconds(2);
-        selector.setValidateThread(thread);
-        selector.init();
-
         Connection conn = highAvailableDataSource.getConnection();
         createTable(conn);
         String url = conn.getMetaData().getURL();
@@ -63,7 +65,7 @@ public class RandomDataSourceSelectorWithFilterTest {
         Thread.sleep(1000);
         assertEquals(initValue, checker.getCountValue(url));
 
-        Thread.sleep(3000);
+        Thread.sleep(2500);
         int value = checker.getCountValue(url);
         LOG.info("URL: " + url + " Value: " + value + " Init: " + initValue);
         assertEquals(initValue + 1, value);
@@ -78,12 +80,6 @@ public class RandomDataSourceSelectorWithFilterTest {
 
     @Test
     public void testForceValidation() throws Exception {
-        RandomDataSourceSelector selector = ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector());
-        RandomDataSourceValidateThread thread = new RandomDataSourceValidateThread(selector);
-        thread.setCheckingIntervalSeconds(2);
-        selector.setValidateThread(thread);
-        selector.init();
-
         Connection conn = highAvailableDataSource.getConnection();
         createTable(conn);
         String url = conn.getMetaData().getURL();

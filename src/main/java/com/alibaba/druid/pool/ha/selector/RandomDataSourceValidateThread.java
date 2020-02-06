@@ -18,9 +18,11 @@ package com.alibaba.druid.pool.ha.selector;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -75,6 +77,7 @@ public class RandomDataSourceValidateThread implements Runnable {
             if (selector != null) {
                 checkAllDataSources();
                 maintainBlacklist();
+                cleanup();
             }
             sleepForNextValidation();
         }
@@ -101,15 +104,49 @@ public class RandomDataSourceValidateThread implements Runnable {
         }
     }
 
+    private void cleanup() {
+        Map<String, DataSource> dataSourceMap = selector.getFullDataSourceMap();
+        Set<String> dataSources = new HashSet<String>();
+        for (DataSource ds : dataSourceMap.values()) {
+            if (ds instanceof DruidDataSource) {
+                dataSources.add(((DruidDataSource) ds).getName());
+            }
+        }
+        cleanupMap(SUCCESS_TIMES, dataSources);
+        cleanupMap(errorCounts, dataSources);
+        cleanupMap(lastCheckTimes, dataSources);
+    }
+
+    private void cleanupMap(Map<String, ?> mapToClean, Set<String> keys) {
+        Set<String> keysToRemove = new HashSet<String>();
+        for (String k : mapToClean.keySet()) {
+            if (!keys.contains(k)) {
+                keysToRemove.add(k);
+            }
+        }
+        for (String k : keysToRemove) {
+            mapToClean.remove(k);
+        }
+    }
+
     private void maintainBlacklist() {
         Map<String, DataSource> dataSourceMap = selector.getFullDataSourceMap();
-        for (Map.Entry<String, Integer> e : errorCounts.entrySet()) {
-            DataSource dataSource = dataSourceMap.get(e.getKey());
-            if (e.getValue() <= 0) {
+        for (String name : errorCounts.keySet()) {
+            Integer count = errorCounts.get(name);
+            DataSource dataSource = dataSourceMap.get(name);
+            if (dataSource == null) {
+                for (DataSource ds : dataSourceMap.values()) {
+                    if (ds instanceof DruidDataSource
+                            && name.equals(((DruidDataSource) ds).getName())) {
+                        dataSource = ds;
+                    }
+                }
+            }
+            if (count == null || count <= 0) {
                 selector.removeBlacklist(dataSource);
-            } else if (e.getValue() >= blacklistThreshold
+            } else if (count != null && count >= blacklistThreshold
                     && !selector.containInBlacklist(dataSource)) {
-                LOG.warn("Adding " + e.getKey() + " to blacklist.");
+                LOG.warn("Adding " + name + " to blacklist.");
                 selector.addBlacklist(dataSource);
             }
         }
@@ -118,7 +155,7 @@ public class RandomDataSourceValidateThread implements Runnable {
     private void checkAllDataSources() {
         Map<String, DataSource> dataSourceMap = selector.getFullDataSourceMap();
         List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
-        LOG.debug("Checking all DataSource.");
+        LOG.debug("Checking all DataSource(s).");
         for (final Map.Entry<String, DataSource> e : dataSourceMap.entrySet()) {
             if (!(e.getValue() instanceof DruidDataSource)) {
                 continue;
@@ -132,27 +169,28 @@ public class RandomDataSourceValidateThread implements Runnable {
             tasks.add(new Callable<Boolean>() {
                 @Override
                 public Boolean call() {
-                    String key = e.getKey();
                     DruidDataSource dataSource = (DruidDataSource) e.getValue();
+                    String name = dataSource.getName();
 
-                    if (isSkipChecking(key, dataSource)) {
+                    if (isSkipChecking(dataSource)) {
+                        LOG.debug("Skip checking DataSource[" + name + "] this time.");
                         return true;
                     }
 
-                    LOG.debug("Start checking " + key + ".");
-                    boolean flag = check(key, dataSource);
+                    LOG.debug("Start checking " + name + ".");
+                    boolean flag = check(dataSource);
 
                     if (flag) {
                         logSuccessTime(dataSource);
-                        errorCounts.put(key, 0);
+                        errorCounts.put(name, 0);
                     } else {
-                        if (!errorCounts.containsKey(key)) {
-                            errorCounts.put(key, 0);
+                        if (!errorCounts.containsKey(name)) {
+                            errorCounts.put(name, 0);
                         }
-                        int count = errorCounts.get(key);
-                        errorCounts.put(key, count + 1);
+                        int count = errorCounts.get(name);
+                        errorCounts.put(name, count + 1);
                     }
-                    lastCheckTimes.put(dataSource.getName(), System.currentTimeMillis());
+                    lastCheckTimes.put(name, System.currentTimeMillis());
 
                     return flag;
                 }
@@ -165,20 +203,22 @@ public class RandomDataSourceValidateThread implements Runnable {
         }
     }
 
-    private boolean isSkipChecking(String key, DruidDataSource dataSource) {
+    private boolean isSkipChecking(DruidDataSource dataSource) {
+        String name = dataSource.getName();
         Long lastSuccessTime = SUCCESS_TIMES.get(dataSource.getName());
         Long lastCheckTime = lastCheckTimes.get(dataSource.getName());
         long currentTime = System.currentTimeMillis();
-        LOG.debug("Connection=" + key + ", lastSuccessTime=" + lastSuccessTime
+        LOG.debug("DataSource=" + name + ", lastSuccessTime=" + lastSuccessTime
                 + ", lastCheckTime=" + lastCheckTime + ", currentTime=" + currentTime);
         return lastSuccessTime != null && lastCheckTime != null
                 && (currentTime - lastSuccessTime) <= checkingIntervalSeconds * 1000
                 && (currentTime - lastCheckTime) <= 5 * checkingIntervalSeconds * 1000
-                && (!errorCounts.containsKey(key) || errorCounts.get(key) < 1);
+                && (!errorCounts.containsKey(name) || errorCounts.get(name) < 1);
     }
 
-    private boolean check(String name, DruidDataSource dataSource) {
+    private boolean check(DruidDataSource dataSource) {
         boolean result = true;
+        String name = dataSource.getName();
         Driver driver = dataSource.getRawDriver();
         Properties info = new Properties(dataSource.getConnectProperties());
         String username = dataSource.getUsername();
@@ -193,7 +233,7 @@ public class RandomDataSourceValidateThread implements Runnable {
             info.setProperty("password", password);
         }
         try {
-            LOG.debug("Validating " + name + " every " + checkingIntervalSeconds + " seconds.");
+            LOG.debug("[RandomDataSourceValidateThread@" + this.hashCode() + "] Validating " + name + " every " + checkingIntervalSeconds + " seconds.");
             conn = driver.connect(url, info);
             sleepBeforeValidation();
             dataSource.validateConnection(conn);
