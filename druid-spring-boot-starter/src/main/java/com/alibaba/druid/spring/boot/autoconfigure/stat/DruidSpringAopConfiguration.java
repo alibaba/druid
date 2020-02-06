@@ -42,6 +42,7 @@ public class DruidSpringAopConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(name = "spring.aop.auto",havingValue = "false")
     public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         advisorAutoProxyCreator.setProxyTargetClass(true);
