@@ -137,6 +137,9 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
         if (poolUpdater != null) {
             poolUpdater.destroy();
         }
+        if (selector != null) {
+            selector.destroy();
+        }
         if (dataSourceMap == null || dataSourceMap.isEmpty()) {
             return;
         }

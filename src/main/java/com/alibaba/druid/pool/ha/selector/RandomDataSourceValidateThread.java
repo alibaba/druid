@@ -44,12 +44,15 @@ import com.alibaba.druid.util.StringUtils;
  * @author DigitalSonic
  */
 public class RandomDataSourceValidateThread implements Runnable {
-    private final static Log LOG = LogFactory.getLog(RandomDataSourceValidateThread.class);
-    private final static Map<String, Long> SUCCESS_TIMES = new ConcurrentHashMap<String, Long>();
+    public static final int DEFAULT_CHECKING_INTERVAL_SECONDS = 10;
+    public static final int DEFAULT_BLACKLIST_THRESHOLD = 3;
 
-    private int checkingIntervalSeconds = 10; // This value should NOT be too small.
+    private final static Log LOG = LogFactory.getLog(RandomDataSourceValidateThread.class);
+    private static Map<String, Long> successTimes = new ConcurrentHashMap<String, Long>();
+
+    private int checkingIntervalSeconds = DEFAULT_CHECKING_INTERVAL_SECONDS; // This value should NOT be too small.
     private int validationSleepSeconds = 0;
-    private int blacklistThreshold = 3;
+    private int blacklistThreshold = DEFAULT_BLACKLIST_THRESHOLD;
     private RandomDataSourceSelector selector;
     private ExecutorService checkExecutor = Executors.newFixedThreadPool(5);
     private Map<String, Integer> errorCounts = new ConcurrentHashMap<String, Integer>();
@@ -63,11 +66,12 @@ public class RandomDataSourceValidateThread implements Runnable {
             String name = dataSource.getName();
             long time = System.currentTimeMillis();
             LOG.debug("Log successTime [" + time + "] for " + name);
-            SUCCESS_TIMES.put(name, time);
+            successTimes.put(name, time);
         }
     }
 
     public RandomDataSourceValidateThread(RandomDataSourceSelector selector) {
+        LOG.debug("Create a RandomDataSourceValidateThread, hashCode=" + this.hashCode());
         this.selector = selector;
     }
 
@@ -78,6 +82,8 @@ public class RandomDataSourceValidateThread implements Runnable {
                 checkAllDataSources();
                 maintainBlacklist();
                 cleanup();
+            } else {
+                break;
             }
             sleepForNextValidation();
         }
@@ -97,7 +103,8 @@ public class RandomDataSourceValidateThread implements Runnable {
             newSleepSeconds = 1;
         }
         try {
-            LOG.debug("Sleep " + newSleepSeconds + " second(s) until next checking.");
+            LOG.debug("[RandomDataSourceValidateThread@" + hashCode() + "] Sleep " + newSleepSeconds
+                    + " second(s) until next checking.");
             Thread.sleep(newSleepSeconds * 1000);
         } catch (InterruptedException e) {
             // ignore
@@ -112,7 +119,7 @@ public class RandomDataSourceValidateThread implements Runnable {
                 dataSources.add(((DruidDataSource) ds).getName());
             }
         }
-        cleanupMap(SUCCESS_TIMES, dataSources);
+        cleanupMap(successTimes, dataSources);
         cleanupMap(errorCounts, dataSources);
         cleanupMap(lastCheckTimes, dataSources);
     }
@@ -205,7 +212,7 @@ public class RandomDataSourceValidateThread implements Runnable {
 
     private boolean isSkipChecking(DruidDataSource dataSource) {
         String name = dataSource.getName();
-        Long lastSuccessTime = SUCCESS_TIMES.get(dataSource.getName());
+        Long lastSuccessTime = successTimes.get(dataSource.getName());
         Long lastCheckTime = lastCheckTimes.get(dataSource.getName());
         long currentTime = System.currentTimeMillis();
         LOG.debug("DataSource=" + name + ", lastSuccessTime=" + lastSuccessTime
@@ -282,5 +289,13 @@ public class RandomDataSourceValidateThread implements Runnable {
 
     public void setBlacklistThreshold(int blacklistThreshold) {
         this.blacklistThreshold = blacklistThreshold;
+    }
+
+    public RandomDataSourceSelector getSelector() {
+        return selector;
+    }
+
+    public void setSelector(RandomDataSourceSelector selector) {
+        this.selector = selector;
     }
 }

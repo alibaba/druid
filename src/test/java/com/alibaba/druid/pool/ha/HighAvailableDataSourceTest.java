@@ -22,6 +22,7 @@ public class HighAvailableDataSourceTest {
         haDataSource.init();
         haDataSource.setTargetDataSource("foo");
         assertNotNull(haDataSource.getConnection());
+        haDataSource.destroy();
     }
 
     @Test
@@ -43,5 +44,6 @@ public class HighAvailableDataSourceTest {
         }
         assertTrue(count[0] > 0);
         assertTrue(count[1] > 0);
+        haDataSource.destroy();
     }
 }

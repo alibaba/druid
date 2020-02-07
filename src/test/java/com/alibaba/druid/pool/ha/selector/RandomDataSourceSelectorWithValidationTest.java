@@ -20,6 +20,7 @@ public class RandomDataSourceSelectorWithValidationTest {
         highAvailableDataSource = new HighAvailableDataSource();
         String file = "/com/alibaba/druid/pool/ha/ha-datasource.properties";
         highAvailableDataSource.setDataSourceFile(file);
+        initSelector(highAvailableDataSource);
         highAvailableDataSource.init();
     }
 
@@ -31,7 +32,7 @@ public class RandomDataSourceSelectorWithValidationTest {
 
     @Test
     public void testOneDataSourceFailAndRecover() throws Exception {
-        RandomDataSourceSelector selector = initSelector();
+        RandomDataSourceSelector selector = (RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector();
 
         DruidDataSource dataSource = (DruidDataSource) highAvailableDataSource.getAvailableDataSourceMap().get("foo");
         dataSource.setValidationQuery("select xxx from yyy");
@@ -40,7 +41,6 @@ public class RandomDataSourceSelectorWithValidationTest {
         for (int i = 0; i < 100; i++) {
             assertNotEquals(dataSource, selector.get());
         }
-
         dataSource.setValidationQuery(null);
         Thread.sleep(4 * 1000);
         assertFalse(dataSource.isTestOnReturn());
@@ -55,8 +55,7 @@ public class RandomDataSourceSelectorWithValidationTest {
 
     @Test
     public void testAllDataSourceFail() throws Exception {
-        initSelector();
-        RandomDataSourceSelector selector = ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector());
+        RandomDataSourceSelector selector = (RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector();
 
         DruidDataSource foo = (DruidDataSource) highAvailableDataSource.getAvailableDataSourceMap().get("foo");
         DruidDataSource bar = (DruidDataSource) highAvailableDataSource.getAvailableDataSourceMap().get("bar");
@@ -80,15 +79,16 @@ public class RandomDataSourceSelectorWithValidationTest {
         assertTrue(count[1] > 0);
     }
 
-    private RandomDataSourceSelector initSelector() {
-        RandomDataSourceSelector selector = ((RandomDataSourceSelector) highAvailableDataSource.getDataSourceSelector());
+    private RandomDataSourceSelector initSelector(HighAvailableDataSource dataSource) {
+        RandomDataSourceSelector selector = new RandomDataSourceSelector(dataSource);
         RandomDataSourceValidateThread validateThread = new RandomDataSourceValidateThread(selector);
         RandomDataSourceRecoverThread recoverThread = new RandomDataSourceRecoverThread(selector);
         validateThread.setCheckingIntervalSeconds(3);
-        recoverThread.setSleepSeconds(3);
+        recoverThread.setRecoverIntervalSeconds(3);
         selector.setValidateThread(validateThread);
         selector.setRecoverThread(recoverThread);
         selector.init();
+        dataSource.setDataSourceSelector(selector);
         return selector;
     }
 }

@@ -65,7 +65,7 @@ public class RandomDataSourceSelectorWithFilterTest {
         Thread.sleep(1000);
         assertEquals(initValue, checker.getCountValue(url));
 
-        Thread.sleep(2500);
+        Thread.sleep(3000);
         int value = checker.getCountValue(url);
         LOG.info("URL: " + url + " Value: " + value + " Init: " + initValue);
         assertEquals(initValue + 1, value);

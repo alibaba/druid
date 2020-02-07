@@ -41,6 +41,10 @@ public class NamedDataSourceSelector implements DataSourceSelector {
     }
 
     @Override
+    public void destroy() {
+    }
+
+    @Override
     public String getName() {
         return DataSourceSelectorEnum.BY_NAME.getName();
     }

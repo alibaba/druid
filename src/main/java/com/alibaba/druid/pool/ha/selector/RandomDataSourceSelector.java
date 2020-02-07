@@ -53,10 +53,10 @@ public class RandomDataSourceSelector implements DataSourceSelector {
     private Thread runningValidateThread;
     private Thread runningRecoverThread;
 
-    private int checkingIntervalSeconds = 15;
-    private int recoveryIntervalSeconds = 120;
+    private int checkingIntervalSeconds = RandomDataSourceValidateThread.DEFAULT_CHECKING_INTERVAL_SECONDS;
+    private int recoveryIntervalSeconds = RandomDataSourceRecoverThread.DEFAULT_RECOVER_INTERVAL_SECONDS;
     private int validationSleepSeconds = 0;
-    private int blacklistThreshold = 3;
+    private int blacklistThreshold = RandomDataSourceValidateThread.DEFAULT_BLACKLIST_THRESHOLD;
 
     public RandomDataSourceSelector(HighAvailableDataSource highAvailableDataSource) {
         this.highAvailableDataSource = highAvailableDataSource;
@@ -73,6 +73,21 @@ public class RandomDataSourceSelector implements DataSourceSelector {
             initThreads();
         } else {
             LOG.info("testOnBorrow or testOnReturn has been set to true, ignore validateThread");
+        }
+    }
+
+    /**
+     * Interrupt Threads if needed.
+     */
+    @Override
+    public void destroy() {
+        if (runningValidateThread != null) {
+            runningValidateThread.interrupt();
+            validateThread.setSelector(null);
+        }
+        if (runningRecoverThread != null) {
+            runningRecoverThread.interrupt();
+            recoverThread.setSelector(null);
         }
     }
 
@@ -169,6 +184,8 @@ public class RandomDataSourceSelector implements DataSourceSelector {
             validateThread.setCheckingIntervalSeconds(checkingIntervalSeconds);
             validateThread.setValidationSleepSeconds(validationSleepSeconds);
             validateThread.setBlacklistThreshold(blacklistThreshold);
+        } else {
+            validateThread.setSelector(this);
         }
         if (runningValidateThread != null) {
             runningValidateThread.interrupt();
@@ -178,8 +195,10 @@ public class RandomDataSourceSelector implements DataSourceSelector {
 
         if (recoverThread == null) {
             recoverThread = new RandomDataSourceRecoverThread(this);
-            recoverThread.setSleepSeconds(recoveryIntervalSeconds);
+            recoverThread.setRecoverIntervalSeconds(recoveryIntervalSeconds);
             recoverThread.setValidationSleepSeconds(validationSleepSeconds);
+        } else {
+            recoverThread.setSelector(this);
         }
         if (runningRecoverThread != null) {
             runningRecoverThread.interrupt();

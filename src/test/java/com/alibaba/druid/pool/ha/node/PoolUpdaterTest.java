@@ -31,6 +31,7 @@ public class PoolUpdaterTest {
 
     @After
     public void tearDown() throws Exception {
+        haDataSource.destroy();
         haDataSource = null;
         updater = null;
     }
