@@ -37,7 +37,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * A NodeListner that watches a Zookeeper Path.
+ * A NodeListener that watches a Zookeeper Path.
  * e.g.
  * Path to watch:
  * <pre>

@@ -49,16 +49,9 @@ public class PoolUpdater implements Observer {
     private Lock lock = new ReentrantLock();
     private ScheduledExecutorService executor;
     private int intervalSeconds = DEFAULT_INTERVAL;
-    private boolean inited = false;
+    private volatile boolean inited = false;
 
-    public PoolUpdater() {
-    }
-
-    /**
-     * @see #PoolUpdater()
-     */
     public PoolUpdater(HighAvailableDataSource highAvailableDataSource) {
-        this();
         setHighAvailableDataSource(highAvailableDataSource);
     }
 
@@ -72,6 +65,10 @@ public class PoolUpdater implements Observer {
         synchronized (this) {
             if (inited) {
                 return;
+            }
+            if (intervalSeconds < 10) {
+                LOG.warn("CAUTION: Purge interval has been set to " + intervalSeconds
+                        + ". This value should NOT be too small.");
             }
             if (intervalSeconds <= 0) {
                 intervalSeconds = DEFAULT_INTERVAL;
