@@ -220,29 +220,12 @@ public abstract class ResourceServlet extends HttpServlet {
                  || path.startsWith("/css")//
                  || path.startsWith("/js") //
             || path.startsWith("/img"))) {
-            if (contextPath.equals("") || contextPath.equals("/")) {
-                response.sendRedirect("/druid/login.html");
-            } else {
-                if ("".equals(path)) {
-                    response.sendRedirect("druid/login.html");
-                } else {
-                    response.sendRedirect("login.html");
-                }
-            }
+            response.sendRedirect(uri + "/login.html");
             return;
         }
 
-        if ("".equals(path)) {
-            if (contextPath.equals("") || contextPath.equals("/")) {
-                response.sendRedirect("/druid/index.html");
-            } else {
-                response.sendRedirect("druid/index.html");
-            }
-            return;
-        }
-
-        if ("/".equals(path)) {
-            response.sendRedirect("index.html");
+        if ("".equals(path) || "/".equals(path)) {
+            response.sendRedirect(uri + "/index.html");
             return;
         }
 
