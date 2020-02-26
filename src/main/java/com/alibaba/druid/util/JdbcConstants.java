@@ -117,4 +117,10 @@ public interface JdbcConstants {
 
     String CLICKHOUSE                 = "clickhouse";
     String CLICKHOUSE_DRIVER          = "ru.yandex.clickhouse.ClickHouseDriver";
+
+    /**
+     * Aliyun PolarDB
+     */
+    String POLARDB                    = "polardb";
+    String POLARDB_DRIVER             = "com.aliyun.polardb.Driver";
 }
