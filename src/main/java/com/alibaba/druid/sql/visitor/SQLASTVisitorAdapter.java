@@ -1887,6 +1887,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     @Override
+    public boolean visit(SQLLateralTableSource x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLLateralTableSource x) {
+
+    }
+
+    @Override
     public boolean visit(SQLShowErrorsStatement x) {
         return true;
     }

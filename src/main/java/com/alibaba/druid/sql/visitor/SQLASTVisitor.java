@@ -833,6 +833,9 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLLateralViewTableSource x);
 
+    boolean visit(SQLLateralTableSource x);
+    void endVisit(SQLLateralTableSource x);
+
     boolean visit(SQLShowErrorsStatement x);
     void endVisit(SQLShowErrorsStatement x);
 

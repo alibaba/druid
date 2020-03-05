@@ -1287,6 +1287,9 @@ public class SQLSelectParser extends SQLParser {
                     } else {
                         lexer.reset(mark);
                     }
+                } else if (lexer.identifierEquals(FnvHash.Constants.LATERAL)) {
+                    lexer.nextToken();
+                    rightTableSource = parseLateral();
                 }
 
                 if (rightTableSource == null) {
@@ -1541,6 +1544,22 @@ public class SQLSelectParser extends SQLParser {
             }
             queryBlock.setConnectBy(this.exprParser.expr());
         }
+    }
+
+    protected SQLTableSource parseLateral() {
+        SQLLateralTableSource lateralTableSource = new SQLLateralTableSource();
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            if (lexer.token == Token.SELECT) {
+                lateralTableSource.setSelect(this.select());
+                accept(Token.RPAREN);
+            }
+        } else {
+            lateralTableSource.setMethod((SQLMethodInvokeExpr)this.exprParser.expr());
+        }
+
+        lateralTableSource.setAlias(this.as());
+        return lateralTableSource;
     }
 
     protected SQLTableSource parseLateralView(SQLTableSource tableSource) {
