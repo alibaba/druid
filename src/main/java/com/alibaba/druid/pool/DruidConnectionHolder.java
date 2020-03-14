@@ -51,6 +51,7 @@ public final class DruidConnectionHolder {
     protected final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
     protected final long                          connectTimeMillis;
     protected volatile long                       lastActiveTimeMillis;
+    protected volatile long lastPutTimeMillis;
     protected volatile long                       lastExecTimeMillis;
     protected volatile long                       lastKeepTimeMillis;
     protected volatile long                       lastValidTimeMillis;

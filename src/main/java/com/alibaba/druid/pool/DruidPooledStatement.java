@@ -348,6 +348,10 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
                 lastActiveTimeMillis = holder.lastKeepTimeMillis;
             }
 
+            if (lastActiveTimeMillis < holder.lastPutTimeMillis) {
+                lastActiveTimeMillis = holder.lastPutTimeMillis;
+            }
+
             long idleMillis = currentTimeMillis - lastActiveTimeMillis;
             long lastValidIdleMillis = currentTimeMillis - holder.lastActiveTimeMillis;
 
