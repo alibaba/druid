@@ -4232,13 +4232,15 @@ public class MySqlStatementParser extends SQLStatementParser {
     private SQLAlterCharacter alterTableCharacter() {
         lexer.nextToken();
         accept(Token.SET);
-        accept(Token.EQ);
+        if (lexer.token() == Token.EQ)
+            accept(Token.EQ);
         SQLAlterCharacter item = new SQLAlterCharacter();
         item.setCharacterSet(this.exprParser.primary());
         if (lexer.token() == Token.COMMA) {
             lexer.nextToken();
             acceptIdentifier(COLLATE2);
-            accept(Token.EQ);
+            if (lexer.token() == Token.EQ)
+                accept(Token.EQ);
             item.setCollate(this.exprParser.primary());
         }
         return item;
