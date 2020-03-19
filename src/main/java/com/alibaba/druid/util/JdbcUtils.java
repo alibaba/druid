@@ -493,8 +493,6 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.CLICKHOUSE_DRIVER;
         } else if(rawUrl.startsWith("jdbc:presto:")) {
             return JdbcConstants.PRESTO_DRIVER;
-        }else if(rawUrl.startsWith("jdbc:presto:")) {
-            return JdbcConstants.PRESTO_DRIVER;
         }else if (rawUrl.startsWith("jdbc:inspur:")) {
             return JdbcConstants.KDB_DRIVER;
         }else {
