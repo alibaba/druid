@@ -177,7 +177,8 @@ public class SQLEvalVisitorUtils {
         }
 
         if (JdbcConstants.POSTGRESQL.equals(dbType)
-                || JdbcConstants.ENTERPRISEDB.equals(dbType)) {
+                || JdbcConstants.ENTERPRISEDB.equals(dbType)
+                || JdbcConstants.POLARDB.equals(dbType)) {
             return new PGEvalVisitor();
         }
 

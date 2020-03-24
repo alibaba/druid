@@ -1316,7 +1316,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.validConnectionChecker = new MSSQLValidConnectionChecker();
 
         } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
-                || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)) {
+                || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
+                || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
         }
     }
@@ -1347,7 +1348,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.exceptionSorter = new SybaseExceptionSorter();
 
             } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
-                    || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)) {
+                    || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
+                    || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
                 this.exceptionSorter = new PGExceptionSorter();
 
             } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {

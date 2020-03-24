@@ -82,7 +82,8 @@ public class SQLParserUtils {
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)
+                || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGSQLStatementParser(sql);
         }
 
@@ -129,7 +130,8 @@ public class SQLParserUtils {
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)
+                || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGExprParser(sql);
         }
 
@@ -164,7 +166,8 @@ public class SQLParserUtils {
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)
+                || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGLexer(sql);
         }
 
