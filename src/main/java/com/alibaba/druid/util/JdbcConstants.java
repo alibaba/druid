@@ -120,4 +120,10 @@ public interface JdbcConstants {
 
     String KDB                        = "kdb";
     String KDB_DRIVER                 = "com.inspur.jdbc.KdDriver";
+
+    /**
+     * Aliyun PolarDB
+     */
+    String POLARDB                    = "polardb";
+    String POLARDB_DRIVER             = "com.aliyun.polardb.Driver";
 }

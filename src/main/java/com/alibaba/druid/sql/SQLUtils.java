@@ -899,7 +899,8 @@ public class SQLUtils {
                         return name;
                     }
                 } else if (JdbcConstants.POSTGRESQL.equals(dbType)
-                        || JdbcConstants.ENTERPRISEDB.equals(dbType)) {
+                        || JdbcConstants.ENTERPRISEDB.equals(dbType)
+                        || JdbcConstants.POLARDB.equals(dbType)) {
                     if (PGUtils.isKeyword(normalizeName)) {
                         return name;
                     }
