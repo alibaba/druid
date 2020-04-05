@@ -100,7 +100,7 @@ public class FileNodeListenerTest {
         String file = "/com/alibaba/druid/pool/ha/ha-with-prefix-datasource.properties";
         FileNodeListener listener = new FileNodeListener();
         listener.setFile(file);
-        listener.setPrefix("prefix3");
+        listener.setPrefix("prefix0");
         List<NodeEvent> list = listener.refresh();
 
         assertTrue(listener.getProperties().isEmpty());

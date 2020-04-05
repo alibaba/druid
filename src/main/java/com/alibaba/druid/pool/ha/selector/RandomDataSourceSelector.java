@@ -216,6 +216,8 @@ public class RandomDataSourceSelector implements DataSourceSelector {
             for (DataSource b : blacklist) {
                 dataSourceSet.remove(b);
             }
+            LOG.info(blacklist.size() + " Blacklist DataSource removed, return "
+                    + dataSourceSet.size() + " DataSource(s).");
         }
         return dataSourceSet;
     }
@@ -228,6 +230,7 @@ public class RandomDataSourceSelector implements DataSourceSelector {
             }
         }
         if (!busyDataSourceSet.isEmpty() && busyDataSourceSet.size() < dataSourceSet.size()) {
+            LOG.info("Busy DataSouces: " + busyDataSourceSet.size() + "/" + dataSourceSet.size());
             for (DataSource ds : busyDataSourceSet) {
                 dataSourceSet.remove(ds);
             }
