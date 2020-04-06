@@ -84,7 +84,7 @@ public class SQLParserUtils {
             return new MySqlStatementParser(sql, features);
         }
 
-        if (JdbcUtils.isPgsqlDbType(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)
                 || JdbcUtils.ENTERPRISEDB.equals(dbType)
                 || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGSQLStatementParser(sql);

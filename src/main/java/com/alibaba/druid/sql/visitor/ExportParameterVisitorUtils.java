@@ -75,7 +75,6 @@ public final class ExportParameterVisitorUtils {
             return new MySqlExportParameterVisitor(out);
         }
 
-
         if (JdbcUtils.POSTGRESQL.equals(dbType)
                 || JdbcUtils.ENTERPRISEDB.equals(dbType)
                 || JdbcUtils.POLARDB.equals(dbType)) {
