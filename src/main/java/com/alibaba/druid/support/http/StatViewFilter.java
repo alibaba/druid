@@ -20,20 +20,34 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 public class StatViewFilter implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public final static String PARAM_NAME_PATH         = "path";
+    private String path = "/druid";
 
+    @Override
+    public void init(FilterConfig config) throws ServletException {
+        String path = config.getInitParameter(PARAM_NAME_PATH);
+        if (path != null && !path.isEmpty()) {
+            this.path = path;
+        }
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        request.getRequestDispatcher(((HttpServletRequest) request).getServletPath()).forward(request, response);
+        HttpServletRequest httpReq = (HttpServletRequest) request;
+        String uri = httpReq.getRequestURI();
+        if (uri.startsWith(path)) {
+            RequestDispatcher dispatcher = request.getRequestDispatcher(httpReq.getServletPath());
+            dispatcher.forward(request, response);
+        } else {
+            chain.doFilter(request, response);
+        }
     }
 
     @Override
