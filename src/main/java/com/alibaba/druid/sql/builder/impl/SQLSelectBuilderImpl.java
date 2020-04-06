@@ -81,6 +81,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
         return stmt;
     }
 
+    @Override
     public SQLSelectBuilderImpl select(String... columns) {
         SQLSelectQueryBlock queryBlock = getQueryBlock();
 
@@ -267,6 +268,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
         return new SQLSelectGroupByClause();
     }
 
+    @Override
     public String toString() {
         return SQLUtils.toSQLString(stmt, dbType);
     }

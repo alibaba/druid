@@ -139,6 +139,7 @@ public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
         return new SQLDeleteStatement();
     }
 
+    @Override
     public String toString() {
         return SQLUtils.toSQLString(stmt, dbType);
     }
