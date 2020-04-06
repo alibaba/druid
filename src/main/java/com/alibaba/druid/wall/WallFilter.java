@@ -129,28 +129,26 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             dbType = JdbcUtils.getDbType(dataSource.getUrl(), null);
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType) || //
-            JdbcUtils.MARIADB.equals(dbType) || //
-            JdbcUtils.H2.equals(dbType)||
+        if (JdbcUtils.isMysqlDbType(dbType) || //
             JdbcUtils.PRESTO.equals(dbType)) {
             if (config == null) {
                 config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
             }
 
             provider = new MySqlWallProvider(config);
-        } else if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
+        } else if (JdbcUtils.isOracleDbType(dbType)) {
             if (config == null) {
                 config = new WallConfig(OracleWallProvider.DEFAULT_CONFIG_DIR);
             }
 
             provider = new OracleWallProvider(config);
-        } else if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
+        } else if (JdbcUtils.isSqlserverDbType(dbType)) {
             if (config == null) {
                 config = new WallConfig(SQLServerWallProvider.DEFAULT_CONFIG_DIR);
             }
 
             provider = new SQLServerWallProvider(config);
-        } else if (JdbcUtils.POSTGRESQL.equals(dbType)
+        } else if (JdbcUtils.isPgsqlDbType(dbType)
                 || JdbcUtils.ENTERPRISEDB.equals(dbType)
                 || JdbcUtils.POLARDB.equals(dbType)) {
             if (config == null) {

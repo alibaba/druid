@@ -69,13 +69,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.MySqlUtils;
-import com.alibaba.druid.util.OracleUtils;
-import com.alibaba.druid.util.PGUtils;
-import com.alibaba.druid.util.StringUtils;
-import com.alibaba.druid.util.Utils;
+import com.alibaba.druid.util.*;
 
 public class SQLUtils {
     private final static SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
@@ -400,7 +394,7 @@ public class SQLUtils {
     public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out, //
                                                                 List<SQLStatement> statementList, //
                                                                 String dbType) {
-        if (JdbcConstants.ORACLE.equals(dbType) || JdbcConstants.ALI_ORACLE.equals(dbType)) {
+        if (JdbcUtils.isOracleDbType(dbType)) {
             if (statementList == null || statementList.size() == 1) {
                 return new OracleOutputVisitor(out, false);
             } else {
@@ -408,16 +402,19 @@ public class SQLUtils {
             }
         }
 
-        if (JdbcConstants.MYSQL.equals(dbType) //
-                || JdbcConstants.MARIADB.equals(dbType)) {
+        if (JdbcConstants.H2.equals(dbType)) {
+            return new H2OutputVisitor(out);
+        }
+
+        if (JdbcUtils.isMysqlDbType(dbType)) {
             return new MySqlOutputVisitor(out);
         }
 
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
             return new PGOutputVisitor(out);
         }
 
-        if (JdbcConstants.SQL_SERVER.equals(dbType) || JdbcConstants.JTDS.equals(dbType)) {
+        if (JdbcUtils.isSqlserverDbType(dbType)) {
             return new SQLServerOutputVisitor(out);
         }
 
@@ -427,10 +424,6 @@ public class SQLUtils {
 
         if (JdbcConstants.ODPS.equals(dbType)) {
             return new OdpsOutputVisitor(out);
-        }
-
-        if (JdbcConstants.H2.equals(dbType)) {
-            return new H2OutputVisitor(out);
         }
 
         if (JdbcConstants.HIVE.equals(dbType)) {
@@ -450,20 +443,23 @@ public class SQLUtils {
     }
 
     public static SchemaStatVisitor createSchemaStatVisitor(String dbType) {
-        if (JdbcConstants.ORACLE.equals(dbType) || JdbcConstants.ALI_ORACLE.equals(dbType)) {
+        if (JdbcUtils.isOracleDbType(dbType)) {
             return new OracleSchemaStatVisitor();
         }
 
-        if (JdbcConstants.MYSQL.equals(dbType) || //
-                JdbcConstants.MARIADB.equals(dbType)) {
+        if (JdbcConstants.H2.equals(dbType)) {
+            return new H2SchemaStatVisitor();
+        }
+
+        if (JdbcUtils.isMysqlDbType(dbType)) {
             return new MySqlSchemaStatVisitor();
         }
 
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
             return new PGSchemaStatVisitor();
         }
 
-        if (JdbcConstants.SQL_SERVER.equals(dbType) || JdbcConstants.JTDS.equals(dbType)) {
+        if (JdbcUtils.isSqlserverDbType(dbType)) {
             return new SQLServerSchemaStatVisitor();
         }
 
@@ -475,9 +471,6 @@ public class SQLUtils {
             return new OdpsSchemaStatVisitor();
         }
 
-        if (JdbcConstants.H2.equals(dbType)) {
-            return new H2SchemaStatVisitor();
-        }
 
         if (JdbcConstants.HIVE.equals(dbType)) {
             return new HiveSchemaStatVisitor();
@@ -543,10 +536,10 @@ public class SQLUtils {
         if (StringUtils.isEmpty(columnName)) return "";
         if (StringUtils.isEmpty(dbType)) dbType = JdbcConstants.MYSQL;
         String formatMethod = "";
-        if (JdbcConstants.MYSQL.equalsIgnoreCase(dbType)) {
+        if (JdbcUtils.isMysqlDbType(dbType)) {
             formatMethod = "STR_TO_DATE";
             if (StringUtils.isEmpty(pattern)) pattern = "%Y-%m-%d %H:%i:%s";
-        } else if (JdbcConstants.ORACLE.equalsIgnoreCase(dbType)) {
+        } else if (JdbcUtils.isOracleDbType(dbType)) {
             formatMethod = "TO_DATE";
             if (StringUtils.isEmpty(pattern)) pattern = "yyyy-mm-dd hh24:mi:ss";
         } else {
@@ -890,15 +883,15 @@ public class SQLUtils {
                     normalizeName = normalizeName.replaceAll("`\\.`", ".");
                 }
 
-                if (JdbcConstants.ORACLE.equals(dbType)) {
+                if (JdbcUtils.isOracleDbType(dbType)) {
                     if (OracleUtils.isKeyword(normalizeName)) {
                         return name;
                     }
-                } else if (JdbcConstants.MYSQL.equals(dbType)) {
+                } else if (JdbcUtils.isMysqlDbType(dbType)) {
                     if (MySqlUtils.isKeyword(normalizeName)) {
                         return name;
                     }
-                } else if (JdbcConstants.POSTGRESQL.equals(dbType)
+                } else if (JdbcUtils.isPgsqlDbType(dbType)
                         || JdbcConstants.ENTERPRISEDB.equals(dbType)
                         || JdbcConstants.POLARDB.equals(dbType)) {
                     if (PGUtils.isKeyword(normalizeName)) {

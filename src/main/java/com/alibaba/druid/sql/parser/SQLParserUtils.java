@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsExprParser;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsLexer;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
@@ -36,9 +37,11 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixExprParser;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixLexer;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixStatementParser;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGLexer;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerExprParser;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerLexer;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
@@ -69,32 +72,28 @@ public class SQLParserUtils {
     }
 
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType, SQLParserFeature... features) {
-        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
+        if (JdbcUtils.isOracleDbType(dbType)) {
             return new OracleStatementParser(sql);
-        }
-
-        if (JdbcUtils.MYSQL.equals(dbType) || JdbcUtils.ALIYUN_DRDS.equals(dbType)) {
-            return new MySqlStatementParser(sql, features);
-        }
-
-        if (JdbcUtils.MARIADB.equals(dbType)) {
-            return new MySqlStatementParser(sql, features);
-        }
-
-        if (JdbcUtils.POSTGRESQL.equals(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)
-                || JdbcUtils.POLARDB.equals(dbType)) {
-            return new PGSQLStatementParser(sql);
-        }
-
-        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
-            return new SQLServerStatementParser(sql);
         }
 
         if (JdbcUtils.H2.equals(dbType)) {
             return new H2StatementParser(sql);
         }
-        
+
+        if (JdbcUtils.isMysqlDbType(dbType)) {
+            return new MySqlStatementParser(sql, features);
+        }
+
+        if (JdbcUtils.isPgsqlDbType(dbType)
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)
+                || JdbcUtils.POLARDB.equals(dbType)) {
+            return new PGSQLStatementParser(sql);
+        }
+
+        if (JdbcUtils.isSqlserverDbType(dbType)) {
+            return new SQLServerStatementParser(sql);
+        }
+
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2StatementParser(sql);
         }
@@ -119,23 +118,21 @@ public class SQLParserUtils {
     }
 
     public static SQLExprParser createExprParser(String sql, String dbType) {
-        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
+        if (JdbcUtils.isOracleDbType(dbType)) {
             return new OracleExprParser(sql);
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType) || //
-            JdbcUtils.MARIADB.equals(dbType) || //
-            JdbcUtils.H2.equals(dbType)) {
+        if (JdbcUtils.isMysqlDbType(dbType)) {
             return new MySqlExprParser(sql);
         }
 
-        if (JdbcUtils.POSTGRESQL.equals(dbType)
+        if (JdbcUtils.isPgsqlDbType(dbType)
                 || JdbcUtils.ENTERPRISEDB.equals(dbType)
                 || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGExprParser(sql);
         }
 
-        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
+        if (JdbcUtils.isSqlserverDbType(dbType)) {
             return new SQLServerExprParser(sql);
         }
         
@@ -155,23 +152,21 @@ public class SQLParserUtils {
     }
 
     public static Lexer createLexer(String sql, String dbType) {
-        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
+        if (JdbcUtils.isOracleDbType(dbType)) {
             return new OracleLexer(sql);
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType) || //
-                JdbcUtils.MARIADB.equals(dbType) || //
-                JdbcUtils.H2.equals(dbType)) {
+        if (JdbcUtils.isMysqlDbType(dbType)) {
             return new MySqlLexer(sql);
         }
 
-        if (JdbcUtils.POSTGRESQL.equals(dbType)
+        if (JdbcUtils.isPgsqlDbType(dbType)
                 || JdbcUtils.ENTERPRISEDB.equals(dbType)
                 || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGLexer(sql);
         }
 
-        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
+        if (JdbcUtils.isSqlserverDbType(dbType)) {
             return new SQLServerLexer(sql);
         }
 
@@ -191,28 +186,29 @@ public class SQLParserUtils {
     }
 
     public static SQLSelectQueryBlock createSelectQueryBlock(String dbType) {
-        if (JdbcConstants.MYSQL.equals(dbType)) {
-            return new MySqlSelectQueryBlock();
-        }
-
-        if (JdbcConstants.ORACLE.equals(dbType)) {
+        if (JdbcUtils.isOracleDbType(dbType)) {
             return new OracleSelectQueryBlock();
         }
 
-        if (JdbcConstants.DB2.equals(dbType)) {
+        if (JdbcUtils.isMysqlDbType(dbType)) {
+            return new MySqlSelectQueryBlock();
+        }
+
+        if (JdbcUtils.POSTGRESQL.equals(dbType)
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
+            return new PGSelectQueryBlock();
+        }
+
+        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
+            return new SQLServerSelectQueryBlock();
+        }
+
+        if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2SelectQueryBlock();
         }
 
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
-            return new DB2SelectQueryBlock();
-        }
-
-        if (JdbcConstants.ODPS.equals(dbType)) {
-            return new DB2SelectQueryBlock();
-        }
-
-        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
-            return new DB2SelectQueryBlock();
+        if (JdbcUtils.ODPS.equals(dbType)) {
+            return new OdpsSelectQueryBlock();
         }
 
         return new SQLSelectQueryBlock();

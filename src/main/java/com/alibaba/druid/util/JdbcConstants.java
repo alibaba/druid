@@ -77,7 +77,9 @@ public interface JdbcConstants {
     String XUGU_DRIVER                = "com.xugu.cloudjdbc.Driver";
 
     String OCEANBASE                  = "oceanbase";
-    String OCEANBASE_DRIVER           = "com.mysql.jdbc.Driver";
+    String OCEANBASE_ORACLE           = "oceanbase_oracle";
+    String OCEANBASE_DRIVER           = "com.alipay.oceanbase.jdbc.Driver";
+
     String INFORMIX                   = "informix";
     
     /**

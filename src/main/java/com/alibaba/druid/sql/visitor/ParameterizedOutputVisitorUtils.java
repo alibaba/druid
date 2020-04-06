@@ -265,23 +265,22 @@ public class ParameterizedOutputVisitorUtils {
     }
 
     public static ParameterizedVisitor createParameterizedOutputVisitor(Appendable out, String dbType) {
-        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
+        if (JdbcUtils.isOracleDbType(dbType)) {
             return new OracleParameterizedOutputVisitor(out);
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType)
-            || JdbcUtils.MARIADB.equals(dbType)
-            || JdbcUtils.H2.equals(dbType)) {
+        if (JdbcUtils.isMysqlDbType(dbType)) {
             return new MySqlOutputVisitor(out, true);
         }
 
-        if (JdbcUtils.POSTGRESQL.equals(dbType)
+
+        if (JdbcUtils.isPgsqlDbType(dbType)
                 || JdbcUtils.ENTERPRISEDB.equals(dbType)
                 || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGOutputVisitor(out, true);
         }
 
-        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
+        if (JdbcUtils.isSqlserverDbType(dbType)) {
             return new SQLServerOutputVisitor(out, true);
         }
 
