@@ -436,7 +436,21 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:hsqldb:")) {
             return "org.hsqldb.jdbcDriver";
         } else if (rawUrl.startsWith("jdbc:db2:")) {
-            return DB2_DRIVER;
+            // Resolve the DB2 driver from JDBC URL
+            // Type2 COM.ibm.db2.jdbc.app.DB2Driver, url = jdbc:db2:databasename
+            // Type3 COM.ibm.db2.jdbc.net.DB2Driver, url = jdbc:db2:ServerIP:6789:databasename
+            // Type4 8.1+ com.ibm.db2.jcc.DB2Driver, url = jdbc:db2://ServerIP:50000/databasename
+            String prefix = "jdbc:db2:";
+            if (rawUrl.startsWith(prefix + "//")) { // Type4
+                return DB2_DRIVER; // "com.ibm.db2.jcc.DB2Driver";
+            } else {
+                String suffix = rawUrl.substring(prefix.length());
+                if (suffix.indexOf(':') > 0) { // Type3
+                    return DB2_DRIVER3; // COM.ibm.db2.jdbc.net.DB2Driver
+                } else { // Type2
+                    return DB2_DRIVER2; // COM.ibm.db2.jdbc.app.DB2Driver
+                }
+            }
         } else if (rawUrl.startsWith("jdbc:sqlite:")) {
             return SQLITE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:ingres:")) {
