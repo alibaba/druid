@@ -168,7 +168,9 @@ public class SQLEvalVisitorUtils {
             return new OracleEvalVisitor();
         }
 
-        if (JdbcUtils.isPgsqlDbType(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)
+                || JdbcConstants.ENTERPRISEDB.equals(dbType)
+                || JdbcConstants.POLARDB.equals(dbType)) {
             return new PGEvalVisitor();
         }
 

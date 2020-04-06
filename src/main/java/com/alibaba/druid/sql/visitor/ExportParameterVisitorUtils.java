@@ -75,6 +75,16 @@ public final class ExportParameterVisitorUtils {
             return new MySqlExportParameterVisitor(out);
         }
 
+
+        if (JdbcUtils.POSTGRESQL.equals(dbType)
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)
+                || JdbcUtils.POLARDB.equals(dbType)) {
+            return new PGExportParameterVisitor(out);
+        }
+
+        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
+            return new MSSQLServerExportParameterVisitor(out);
+        }
        return new ExportParameterizedOutputVisitor(out);
     }
 

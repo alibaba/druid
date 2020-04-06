@@ -273,7 +273,10 @@ public class ParameterizedOutputVisitorUtils {
             return new MySqlOutputVisitor(out, true);
         }
 
-        if (JdbcUtils.isPgsqlDbType(dbType)) {
+
+        if (JdbcUtils.isPgsqlDbType(dbType)
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)
+                || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGOutputVisitor(out, true);
         }
 

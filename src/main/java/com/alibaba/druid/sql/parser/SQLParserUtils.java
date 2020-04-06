@@ -85,6 +85,8 @@ public class SQLParserUtils {
         }
 
         if (JdbcUtils.isPgsqlDbType(dbType)) {
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)
+                || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGSQLStatementParser(sql);
         }
 
@@ -124,7 +126,9 @@ public class SQLParserUtils {
             return new MySqlExprParser(sql);
         }
 
-        if (JdbcUtils.isPgsqlDbType(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)
+                || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGExprParser(sql);
         }
 
@@ -156,7 +160,9 @@ public class SQLParserUtils {
             return new MySqlLexer(sql);
         }
 
-        if (JdbcUtils.isPgsqlDbType(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)
+                || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGLexer(sql);
         }
 

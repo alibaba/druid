@@ -28,4 +28,8 @@ public class JdbcUtilsTest2 extends TestCase {
     public void test_xugu_driver() throws Exception {
         assertEquals(JdbcConstants.XUGU_DRIVER, JdbcUtils.getDriverClassName("jdbc:xugu:"));
     }
+
+    public void test_kdb() throws Exception {
+        assertEquals(JdbcConstants.KDB_DRIVER, JdbcUtils.getDriverClassName("jdbc:inspur:"));
+    }
 }
