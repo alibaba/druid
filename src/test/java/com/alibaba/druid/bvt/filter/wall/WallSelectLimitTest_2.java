@@ -82,5 +82,14 @@ public class WallSelectLimitTest_2 extends TestCase {
         assertEquals("SELECT *\n" +
                 "FROM t\n" +
                 "WHERE ROWNUM <= 10", resultSql);
+
+        sql = PagerUtils.limit("select * from t", JdbcConstants.OCEANBASE_ORACLE, 0, 10);
+        provider = new OracleWallProvider(config);
+        checkResult = provider.check(sql);
+        resultSql = checkResult.getSql();
+        System.out.println(resultSql);
+        assertEquals("SELECT *\n" +
+                "FROM t\n" +
+                "WHERE ROWNUM <= 10", resultSql);
     }
 }

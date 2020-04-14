@@ -47,12 +47,22 @@ public final class ExportParameterVisitorUtils {
 
     public static ExportParameterVisitor createExportParameterVisitor(final  Appendable out ,final String dbType) {
         
-        if (JdbcUtils.MYSQL.equals(dbType)) {
+        if (JdbcUtils.isMysqlDbType(dbType)) {
             return new MySqlExportParameterVisitor(out);
         }
-        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
+
+        if (JdbcUtils.isOracleDbType(dbType)) {
             return new OracleExportParameterVisitor(out);
         }
+
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
+            return new PGExportParameterVisitor(out);
+        }
+
+        if (JdbcUtils.isSqlserverDbType(dbType)) {
+            return new MSSQLServerExportParameterVisitor(out);
+        }
+
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2ExportParameterVisitor(out);
         }
@@ -66,7 +76,8 @@ public final class ExportParameterVisitorUtils {
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)
+                || JdbcUtils.POLARDB.equals(dbType)) {
             return new PGExportParameterVisitor(out);
         }
 

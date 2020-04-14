@@ -417,6 +417,8 @@ public final class JdbcUtils implements JdbcConstants {
             return ORACLE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
             return ALI_ORACLE_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:oceanbase:")) {
+            return OCEANBASE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:microsoft:")) {
             return "com.microsoft.jdbc.sqlserver.SQLServerDriver";
         } else if (rawUrl.startsWith("jdbc:sqlserver:")) {
@@ -436,7 +438,21 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:hsqldb:")) {
             return "org.hsqldb.jdbcDriver";
         } else if (rawUrl.startsWith("jdbc:db2:")) {
-            return DB2_DRIVER;
+            // Resolve the DB2 driver from JDBC URL
+            // Type2 COM.ibm.db2.jdbc.app.DB2Driver, url = jdbc:db2:databasename
+            // Type3 COM.ibm.db2.jdbc.net.DB2Driver, url = jdbc:db2:ServerIP:6789:databasename
+            // Type4 8.1+ com.ibm.db2.jcc.DB2Driver, url = jdbc:db2://ServerIP:50000/databasename
+            String prefix = "jdbc:db2:";
+            if (rawUrl.startsWith(prefix + "//")) { // Type4
+                return DB2_DRIVER; // "com.ibm.db2.jcc.DB2Driver";
+            } else {
+                String suffix = rawUrl.substring(prefix.length());
+                if (suffix.indexOf(':') > 0) { // Type3
+                    return DB2_DRIVER3; // COM.ibm.db2.jdbc.net.DB2Driver
+                } else { // Type2
+                    return DB2_DRIVER2; // COM.ibm.db2.jdbc.app.DB2Driver
+                }
+            }
         } else if (rawUrl.startsWith("jdbc:sqlite:")) {
             return SQLITE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:ingres:")) {
@@ -493,7 +509,11 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.CLICKHOUSE_DRIVER;
         } else if(rawUrl.startsWith("jdbc:presto:")) {
             return JdbcConstants.PRESTO_DRIVER;
-        }else {
+        } else if (rawUrl.startsWith("jdbc:inspur:")) {
+            return JdbcConstants.KDB_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:polardb")) {
+            return JdbcConstants.POLARDB_DRIVER;
+        } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }
     }
@@ -514,6 +534,10 @@ public final class JdbcUtils implements JdbcConstants {
             return ORACLE;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
             return ALI_ORACLE;
+        } else if (rawUrl.startsWith("jdbc:oceanbase:")) {
+            return OCEANBASE;
+        } else if (rawUrl.startsWith("jdbc:oceanbase:oracle:")) {
+            return OCEANBASE_ORACLE;
         } else if (rawUrl.startsWith("jdbc:microsoft:") || rawUrl.startsWith("jdbc:log4jdbc:microsoft:")) {
             return SQL_SERVER;
         } else if (rawUrl.startsWith("jdbc:sqlserver:") || rawUrl.startsWith("jdbc:log4jdbc:sqlserver:")) {
@@ -586,8 +610,12 @@ public final class JdbcUtils implements JdbcConstants {
             return ELASTIC_SEARCH;
         } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
             return CLICKHOUSE;
-        }else if (rawUrl.startsWith("jdbc:presto:")) {
+        } else if (rawUrl.startsWith("jdbc:presto:")) {
             return PRESTO;
+        } else if (rawUrl.startsWith("jdbc:inspur:")) {
+            return JdbcConstants.KDB;
+        } else if (rawUrl.startsWith("jdbc:polardb")) {
+            return POLARDB;
         } else {
             return null;
         }
@@ -826,11 +854,11 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static List<String> showTables(Connection conn, String dbType) throws SQLException {
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcConstants.MYSQL.equals(dbType) || JdbcConstants.OCEANBASE.equals(dbType)) {
             return MySqlUtils.showTables(conn);
         }
 
-        if (JdbcConstants.ORACLE.equals(dbType)) {
+        if (JdbcConstants.ORACLE.equals(dbType) || JdbcConstants.OCEANBASE_ORACLE.equals(dbType)) {
             return OracleUtils.showTables(conn);
         }
 
@@ -845,11 +873,11 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static String getCreateTableScript(Connection conn, String dbType, boolean sorted, boolean simplify) throws SQLException {
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcConstants.MYSQL.equals(dbType) || JdbcConstants.OCEANBASE.equals(dbType)) {
             return MySqlUtils.getCreateTableScript(conn, sorted, simplify);
         }
 
-        if (JdbcConstants.ORACLE.equals(dbType)) {
+        if (JdbcConstants.ORACLE.equals(dbType) || JdbcConstants.OCEANBASE_ORACLE.equals(dbType)) {
             return OracleUtils.getCreateTableScript(conn, sorted, simplify);
         }
 
@@ -861,4 +889,29 @@ public final class JdbcUtils implements JdbcConstants {
                 || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)
                 || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_REPLICATE);
     }
+
+    public static boolean isOracleDbType(String dbType) {
+        return JdbcUtils.ORACLE.equals(dbType) || //
+                JdbcUtils.OCEANBASE_ORACLE.equals(dbType) || //
+                JdbcUtils.ALI_ORACLE.equals(dbType);
+    }
+
+    public static boolean isMysqlDbType(String dbType) {
+        return JdbcUtils.MYSQL.equals(dbType) || //
+                JdbcUtils.OCEANBASE.equals(dbType) || //
+                JdbcUtils.ALIYUN_DRDS.equals(dbType) || //
+                JdbcUtils.MARIADB.equals(dbType) ||
+                JdbcUtils.H2.equals(dbType); // H2 SchemaStatVisitor & SQLASTOutputVisitor should specify
+    }
+
+    public static boolean isPgsqlDbType(String dbType) {
+        return JdbcUtils.POSTGRESQL.equals(dbType) || //
+                JdbcUtils.ENTERPRISEDB.equals(dbType);
+    }
+
+    public static boolean isSqlserverDbType(String dbType) {
+        return JdbcUtils.SQL_SERVER.equals(dbType) || //
+                JdbcUtils.JTDS.equals(dbType);
+    }
+
 }

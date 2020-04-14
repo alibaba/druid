@@ -25,7 +25,9 @@ public interface JdbcConstants {
 
     String DB2                        = "db2";
 
-    String DB2_DRIVER                 = "com.ibm.db2.jcc.DB2Driver";
+    String DB2_DRIVER                 = "com.ibm.db2.jcc.DB2Driver"; // Type4
+    String DB2_DRIVER2                = "COM.ibm.db2.jdbc.app.DB2Driver"; // Type2
+    String DB2_DRIVER3                = "COM.ibm.db2.jdbc.net.DB2Driver"; // Type3
 
     String POSTGRESQL                 = "postgresql";
     String POSTGRESQL_DRIVER          = "org.postgresql.Driver";
@@ -75,7 +77,9 @@ public interface JdbcConstants {
     String XUGU_DRIVER                = "com.xugu.cloudjdbc.Driver";
 
     String OCEANBASE                  = "oceanbase";
-    String OCEANBASE_DRIVER           = "com.mysql.jdbc.Driver";
+    String OCEANBASE_ORACLE           = "oceanbase_oracle";
+    String OCEANBASE_DRIVER           = "com.alipay.oceanbase.jdbc.Driver";
+
     String INFORMIX                   = "informix";
     
     /**
@@ -117,4 +121,13 @@ public interface JdbcConstants {
 
     String CLICKHOUSE                 = "clickhouse";
     String CLICKHOUSE_DRIVER          = "ru.yandex.clickhouse.ClickHouseDriver";
+
+    String KDB                        = "kdb";
+    String KDB_DRIVER                 = "com.inspur.jdbc.KdDriver";
+
+    /**
+     * Aliyun PolarDB
+     */
+    String POLARDB                    = "polardb";
+    String POLARDB_DRIVER             = "com.aliyun.polardb.Driver";
 }

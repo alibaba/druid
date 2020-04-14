@@ -61,6 +61,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * Created by wenshao on 03/06/2017.
@@ -78,9 +79,9 @@ public class SchemaRepository {
     public SchemaRepository(String dbType) {
         this.dbType = dbType;
 
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcConstants.MYSQL.equals(dbType) || JdbcConstants.OCEANBASE.equals(dbType)) {
             consoleVisitor = new MySqlConsoleSchemaVisitor();
-        } else if (JdbcConstants.ORACLE.equals(dbType)) {
+        } else if (JdbcConstants.ORACLE.equals(dbType) || JdbcConstants.OCEANBASE_ORACLE.equals(dbType)) {
             consoleVisitor = new OracleConsoleSchemaVisitor();
         } else {
             consoleVisitor = new DefaultConsoleSchemaVisitor();
@@ -281,21 +282,20 @@ public class SchemaRepository {
         int optionsValue = SchemaResolveVisitor.Option.of(options);
 
         SchemaResolveVisitor resolveVisitor;
-        if (JdbcConstants.MYSQL.equals(dbType)
-                || JdbcConstants.SQLITE.equals(dbType)) {
+        if (JdbcUtils.isMysqlDbType(dbType) || JdbcConstants.SQLITE.equals(dbType)) {
             resolveVisitor = new SchemaResolveVisitorFactory.MySqlResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.ORACLE.equals(dbType)) {
+        } else if (JdbcUtils.isOracleDbType(dbType)) {
             resolveVisitor = new SchemaResolveVisitorFactory.OracleResolveVisitor(this, optionsValue);
+        } else if (JdbcUtils.isPgsqlDbType(dbType)) {
+            resolveVisitor = new SchemaResolveVisitorFactory.PGResolveVisitor(this, optionsValue);
+        } else if (JdbcUtils.isSqlserverDbType(dbType)) {
+            resolveVisitor = new SchemaResolveVisitorFactory.SQLServerResolveVisitor(this, optionsValue);
         } else if (JdbcConstants.DB2.equals(dbType)) {
             resolveVisitor = new SchemaResolveVisitorFactory.DB2ResolveVisitor(this, optionsValue);
         } else if (JdbcConstants.ODPS.equals(dbType)) {
             resolveVisitor = new SchemaResolveVisitorFactory.OdpsResolveVisitor(this, optionsValue);
         } else if (JdbcConstants.HIVE.equals(dbType)) {
             resolveVisitor = new SchemaResolveVisitorFactory.HiveResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.POSTGRESQL.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.PGResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.SQL_SERVER.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.SQLServerResolveVisitor(this, optionsValue);
         } else {
             resolveVisitor = new SchemaResolveVisitorFactory.SQLResolveVisitor(this, optionsValue);
         }
