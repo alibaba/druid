@@ -1335,7 +1335,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
                     || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
                 this.exceptionSorter = new OracleExceptionSorter();
-            } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)) {
+            } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)) { // 写一个真实的 TestCase
                 if (JdbcUtils.OCEANBASE_ORACLE.equalsIgnoreCase(dbType)) {
                     this.exceptionSorter = new OceanBaseOracleExceptionSorter();
                 } else {
