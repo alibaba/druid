@@ -50,6 +50,7 @@ public class PoolUpdater implements Observer {
     private ScheduledExecutorService executor;
     private int intervalSeconds = DEFAULT_INTERVAL;
     private volatile boolean inited = false;
+    private boolean allowEmptyPool = false;
 
     public PoolUpdater(HighAvailableDataSource highAvailableDataSource) {
         setHighAvailableDataSource(highAvailableDataSource);
@@ -213,6 +214,11 @@ public class PoolUpdater implements Observer {
         if (nodeName == null || nodeName.isEmpty() || !map.containsKey(nodeName)) {
             return;
         }
+        map = highAvailableDataSource.getAvailableDataSourceMap();
+        if (!allowEmptyPool && map.size() == 1 && map.containsKey(nodeName)) {
+            LOG.warn(nodeName + " is the only DataSource left, don't remove it.");
+            return;
+        }
         blacklistNode(nodeName);
     }
 
@@ -246,5 +252,13 @@ public class PoolUpdater implements Observer {
 
     public void setIntervalSeconds(int intervalSeconds) {
         this.intervalSeconds = intervalSeconds;
+    }
+
+    public boolean isAllowEmptyPool() {
+        return allowEmptyPool;
+    }
+
+    public void setAllowEmptyPool(boolean allowEmptyPool) {
+        this.allowEmptyPool = allowEmptyPool;
     }
 }

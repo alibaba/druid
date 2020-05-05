@@ -97,6 +97,7 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     private String dataSourceFile = DEFAULT_DATA_SOURCE_FILE;
     private String propertyPrefix = "";
     private int poolPurgeIntervalSeconds = PoolUpdater.DEFAULT_INTERVAL;
+    private boolean allowEmptyPoolWhenUpdate = false;
 
     private volatile boolean inited = false;
 
@@ -113,6 +114,7 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
             }
             if (dataSourceMap == null || dataSourceMap.isEmpty()) {
                 poolUpdater.setIntervalSeconds(poolPurgeIntervalSeconds);
+                poolUpdater.setAllowEmptyPool(allowEmptyPoolWhenUpdate);
                 poolUpdater.init();
                 createNodeMap();
             }
@@ -302,6 +304,14 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
         nodeListener.setObserver(poolUpdater);
         nodeListener.init();
         nodeListener.update(); // Do update in the current Thread at the startup
+    }
+
+    public boolean isAllowEmptyPoolWhenUpdate() {
+        return allowEmptyPoolWhenUpdate;
+    }
+
+    public void setAllowEmptyPoolWhenUpdate(boolean allowEmptyPoolWhenUpdate) {
+        this.allowEmptyPoolWhenUpdate = allowEmptyPoolWhenUpdate;
     }
 
     // Getters & Setters

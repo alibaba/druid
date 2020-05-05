@@ -56,10 +56,11 @@ public class ZookeeperNodeListenerTest {
 
         // 2. Register one Node
         ZookeeperNodeRegister register = registerNodeAndReturnRegister();
+        ZookeeperNodeRegister register2 = registerAnotherNodeAndReturnRegister();
 
         Thread.sleep(3000); // Wait for the Node to be created.
         assertFalse(dataSource.getDataSourceMap().isEmpty());
-        assertEquals(1, dataSource.getAvailableDataSourceMap().size());
+        assertEquals(2, dataSource.getAvailableDataSourceMap().size());
         DruidDataSource ds = (DruidDataSource) dataSource.getAvailableDataSourceMap().get("foo.test-foo");
         assertEquals("jdbc:derby:memory:foo;create=true", ds.getUrl());
         assertNotNull(dataSource.getConnection());
@@ -70,15 +71,16 @@ public class ZookeeperNodeListenerTest {
         for (int i = 0; i < 10; i++) {
             Thread.sleep(500);
             if (dataSource.isInBlackList("foo.test-foo")) {
-                assertTrue(dataSource.getAvailableDataSourceMap().isEmpty());
+                assertEquals(1, dataSource.getAvailableDataSourceMap().size());
                 assertFalse(dataSource.getDataSourceMap().isEmpty());
-                assertNull(dataSource.getConnection());
+                assertNotNull(dataSource.getConnection());
                 checkBlackList = true;
                 break;
             }
         }
         assertTrue(checkBlackList);
-
+        register2.destroy();
+        Thread.sleep(3000); // Wait for the destory to be finished
         dataSource.destroy();
     }
 
@@ -184,6 +186,25 @@ public class ZookeeperNodeListenerTest {
         node.setPassword("");
         payload.add(node);
         register.register("test-foo", payload);
+        return register;
+    }
+
+    private ZookeeperNodeRegister registerAnotherNodeAndReturnRegister() {
+        ZookeeperNodeRegister register = new ZookeeperNodeRegister();
+        register.setZkConnectString(server.getConnectString());
+        register.setPath(PATH);
+        register.init();
+
+        List<ZookeeperNodeInfo> payload = new ArrayList<ZookeeperNodeInfo>();
+        ZookeeperNodeInfo node = new ZookeeperNodeInfo();
+        node.setPrefix("bar");
+        node.setHost("127.0.0.1");
+        node.setPort(5678);
+        node.setDatabase("bar");
+        node.setUsername("sa");
+        node.setPassword("");
+        payload.add(node);
+        register.register("test-bar", payload);
         return register;
     }
 

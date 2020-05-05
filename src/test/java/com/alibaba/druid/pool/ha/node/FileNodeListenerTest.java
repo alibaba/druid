@@ -55,11 +55,11 @@ public class FileNodeListenerTest {
         DruidDataSource foo = (DruidDataSource) dataSource.getAvailableDataSourceMap().get("foo");
         assertEquals("jdbc:derby:memory:foo;create=true", foo.getUrl());
 
-        // Remove all
+        // try to emove all but we have to keep one left
         writePropertiesFile(file, new Properties());
 
         Thread.sleep(6000);
-        assertTrue(dataSource.getAvailableDataSourceMap().isEmpty());
+        assertEquals(1, dataSource.getAvailableDataSourceMap().size());
 
         dataSource.destroy();
     }

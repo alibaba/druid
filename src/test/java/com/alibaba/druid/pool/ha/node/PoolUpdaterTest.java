@@ -39,6 +39,7 @@ public class PoolUpdaterTest {
     @Test
     public void testUpdate() {
         haDataSource.getDataSourceMap().put("foo", new MockDataSource("foo"));
+        haDataSource.getDataSourceMap().put("bar", new MockDataSource("bar"));
 
         NodeEvent event = new NodeEvent();
         event.setNodeName("foo");
@@ -92,6 +93,18 @@ public class PoolUpdaterTest {
     }
 
     @Test
+    public void testUpdate_onlyOneLeftToRemove() {
+        haDataSource.getDataSourceMap().put("foo", new MockDataSource("foo"));
+
+        NodeEvent event = new NodeEvent();
+        event.setNodeName("foo");
+        event.setType(NodeEventTypeEnum.DELETE);
+
+        updater.update(new FileNodeListener(), new NodeEvent[] { event });
+        assertTrue(haDataSource.getDataSourceMap().containsKey("foo"));
+    }
+
+    @Test
     public void testAddNode() {
         String url = "jdbc:derby:memory:foo;create=true";
         String name = "foo";
@@ -127,6 +140,7 @@ public class PoolUpdaterTest {
     @Test
     public void testDeleteNode() {
         haDataSource.getDataSourceMap().put("foo", new MockDataSource("foo"));
+        haDataSource.getDataSourceMap().put("bar", new MockDataSource("bar"));
 
         NodeEvent event = new NodeEvent();
         event.setNodeName("foo");
