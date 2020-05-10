@@ -271,7 +271,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         }
 
         if(condition != null){
-            x.setCondition(condition);
+            x.setCondition(condition.clone());
         }
 
         for (SQLExpr item : using) {
