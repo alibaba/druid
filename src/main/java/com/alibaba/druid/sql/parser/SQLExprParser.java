@@ -2716,6 +2716,17 @@ public class SQLExprParser extends SQLParser {
             }
         }
 
+        if (typeNameHashCode == FnvHash.Constants.NATIONAL) {
+            if (lexer.token == Token.IDENTIFIER) {
+                String nationalName = lexer.stringVal();
+                if ("varchar".equalsIgnoreCase(nationalName) || "char"
+                        .equalsIgnoreCase(nationalName)) {
+                    typeName = (" n" + lexer.stringVal().toLowerCase());
+                    lexer.nextToken();
+                }
+            }
+        }
+
         if (isCharType(typeName)) {
             SQLCharacterDataType charType = new SQLCharacterDataType(typeName);
 
