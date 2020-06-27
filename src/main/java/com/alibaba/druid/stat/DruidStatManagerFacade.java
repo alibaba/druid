@@ -204,6 +204,14 @@ public final class DruidStatManagerFacade {
         //
     }
 
+    /**
+     * @deprecated
+     * @return
+     */
+    public static Map mergWallStat(Map mapA, Map mapB) {
+        return mergeWallStat(mapA, mapB);
+    }
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Map mergeWallStat(Map mapA, Map mapB) {
         if (mapA == null || mapA.size() == 0) {
