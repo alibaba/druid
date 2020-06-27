@@ -86,7 +86,7 @@ public class ZookeeperNodeListenerTest {
 
     @Test
     public void testAddOneNode() throws Exception {
-        CountDownLatch cdl = new CountDownLatch(1);
+        final CountDownLatch cdl = new CountDownLatch(1);
         ZookeeperNodeListener listener = new ZookeeperNodeListener();
         listener.setZkConnectString(server.getConnectString());
         listener.setPath(PATH);
@@ -132,8 +132,8 @@ public class ZookeeperNodeListenerTest {
         ZookeeperNodeRegister register = registerNodeAndReturnRegister();
         Thread.sleep(2000); // Wait for the Node to be created.
 
-        CountDownLatch addCDL = new CountDownLatch(1);
-        CountDownLatch removeCDL = new CountDownLatch(1);
+        final CountDownLatch addCDL = new CountDownLatch(1);
+        final CountDownLatch removeCDL = new CountDownLatch(1);
         ZookeeperNodeListener listener = new ZookeeperNodeListener();
         listener.setZkConnectString(server.getConnectString());
         listener.setPath(PATH);
