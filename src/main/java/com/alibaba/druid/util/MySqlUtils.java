@@ -15,24 +15,18 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+
+import javax.sql.XAConnection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.sql.XAConnection;
-
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 
 public class MySqlUtils {
     static Class<?>       utilClass;
@@ -375,13 +369,13 @@ public class MySqlUtils {
         if (class_connectionImpl == null && !class_connectionImpl_Error) {
             try {
                 class_connectionImpl = Utils.loadClass("com.mysql.jdbc.MySQLConnection");
-                if(null == class_connectionImpl){
+                if (class_connectionImpl == null) {
                     class_connectionImpl = Utils.loadClass("com.mysql.cj.MysqlConnection");
-                    if(null != class_connectionImpl){
+                    if (class_connectionImpl != null) {
                         mysqlJdbcVersion6 = true;
                     }
                 }
-            } catch (Throwable error){
+            } catch (Throwable error) {
                 class_connectionImpl_Error = true;
             }
         }
@@ -391,13 +385,15 @@ public class MySqlUtils {
         }
 
         if(mysqlJdbcVersion6){
-            if(null == classJdbc) {
+            if (classJdbc == null) {
                 classJdbc = Utils.loadClass("com.mysql.cj.jdbc.JdbcConnection");
             }
-            if(null == classJdbc){
+
+            if (classJdbc == null) {
                 return -1;
             }
-            if(null == getIdleFor && !getIdleForError) {
+
+            if (getIdleFor == null && !getIdleForError) {
                 try {
                     getIdleFor = classJdbc.getMethod("getIdleFor");
                     getIdleFor.setAccessible(true);
@@ -405,23 +401,25 @@ public class MySqlUtils {
                     getIdleForError = true;
                 }
             }
+
             if (getIdleFor == null) {
                 return -1;
             }
+
             try {
                 Object connImpl = conn.unwrap(class_connectionImpl);
                 if (connImpl == null) {
                     return -1;
                 }
-                Long ms = (long)getIdleFor.invoke(connImpl);
-                return 0 == ms.longValue()?System.currentTimeMillis() : System.currentTimeMillis()-ms.longValue();
-            } catch (IllegalAccessException e) {
-                throw new SQLException("getIdleFor error", e);
-            } catch (InvocationTargetException e) {
+
+                return System.currentTimeMillis()
+                        - ((Long)
+                            getIdleFor.invoke(connImpl))
+                        .longValue();
+            } catch (Exception e) {
                 throw new SQLException("getIdleFor error", e);
             }
-        }else {
-
+        } else {
             if (method_getIO == null && !method_getIO_error) {
                 try {
                     method_getIO = class_connectionImpl.getMethod("getIO");
@@ -467,13 +465,8 @@ public class MySqlUtils {
                 }
 
                 Object mysqlio = method_getIO.invoke(connImpl);
-                Long ms = (Long)method_getLastPacketReceivedTimeMs.invoke(mysqlio);
-                return ms.longValue();
-            } catch (IllegalArgumentException e) {
-                throw new SQLException("getLastPacketReceivedTimeMs error", e);
-            } catch (IllegalAccessException e) {
-                throw new SQLException("getLastPacketReceivedTimeMs error", e);
-            } catch (InvocationTargetException e) {
+                return (Long) method_getLastPacketReceivedTimeMs.invoke(mysqlio);
+            } catch (Exception e) {
                 throw new SQLException("getLastPacketReceivedTimeMs error", e);
             }
         }
