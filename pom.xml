@@ -527,7 +527,12 @@
 			<version>2.5.3</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>4.2.0</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!--
 			test dependences
@@ -695,5 +700,11 @@
             <systemPath>${project.basedir}/lib/openjdk-1.8-jconsole.jar</systemPath>
         </dependency>
 
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-test</artifactId>
+			<version>4.2.0</version>
+			<scope>test</scope>
+		</dependency>
     </dependencies>
 </project>

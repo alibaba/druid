@@ -30,9 +30,11 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author DigitalSonic
  */
 public class RandomDataSourceRecoverThread implements Runnable {
+    public static final int DEFAULT_RECOVER_INTERVAL_SECONDS = 120;
     private final static Log LOG = LogFactory.getLog(RandomDataSourceRecoverThread.class);
+
     private RandomDataSourceSelector selector;
-    private int sleepSeconds = 120;
+    private int recoverIntervalSeconds = DEFAULT_RECOVER_INTERVAL_SECONDS;
     private int validationSleepSeconds = 0;
 
     public RandomDataSourceRecoverThread(RandomDataSourceSelector selector) {
@@ -51,6 +53,8 @@ public class RandomDataSourceRecoverThread implements Runnable {
                     }
                     tryOneDataSource((DruidDataSource) dataSource);
                 }
+            } else if (selector == null) {
+                break;
             }
             sleep();
         }
@@ -88,18 +92,18 @@ public class RandomDataSourceRecoverThread implements Runnable {
 
     private void sleep() {
         try {
-            Thread.sleep(sleepSeconds * 1000);
+            Thread.sleep(recoverIntervalSeconds * 1000);
         } catch (InterruptedException e) {
             // ignore
         }
     }
 
-    public int getSleepSeconds() {
-        return sleepSeconds;
+    public int getRecoverIntervalSeconds() {
+        return recoverIntervalSeconds;
     }
 
-    public void setSleepSeconds(int sleepSeconds) {
-        this.sleepSeconds = sleepSeconds;
+    public void setRecoverIntervalSeconds(int recoverIntervalSeconds) {
+        this.recoverIntervalSeconds = recoverIntervalSeconds;
     }
 
     public int getValidationSleepSeconds() {
@@ -108,5 +112,13 @@ public class RandomDataSourceRecoverThread implements Runnable {
 
     public void setValidationSleepSeconds(int validationSleepSeconds) {
         this.validationSleepSeconds = validationSleepSeconds;
+    }
+
+    public RandomDataSourceSelector getSelector() {
+        return selector;
+    }
+
+    public void setSelector(RandomDataSourceSelector selector) {
+        this.selector = selector;
     }
 }
