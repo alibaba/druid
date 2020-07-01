@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -46,9 +46,9 @@ public class OracleGrantTest extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(1, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("p4p_pro")));
 
         Assert.assertEquals(0, visitor.getColumns().size());
 

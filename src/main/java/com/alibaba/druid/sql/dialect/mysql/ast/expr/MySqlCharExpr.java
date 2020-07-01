@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private String            charset;
-    private String            collate;
+    private String charset;
+    private String collate;
 
     public MySqlCharExpr(){
 
@@ -55,15 +53,16 @@ public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
             buf.append(charset);
             buf.append(' ');
         }
-
-        super.output(buf);
+        if (super.text!=null){
+            super.output(buf);
+        }
 
         if (collate != null) {
             buf.append(" COLLATE ");
             buf.append(collate);
         }
     }
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {
@@ -77,5 +76,18 @@ public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
+    }
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        output(buf);
+        return buf.toString();
+    }
+    
+    public MySqlCharExpr clone() {
+    	MySqlCharExpr x = new MySqlCharExpr(text);
+        x.setCharset(charset);
+        x.setCollate(collate);
+        return x;
     }
 }

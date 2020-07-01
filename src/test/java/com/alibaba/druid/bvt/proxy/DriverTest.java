@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,21 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Properties;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class DriverTest extends TestCase {
-
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+    
     public void test_driver() throws Exception {
         String url_0 = "jdbc:wrap-jdbc:filters=default:name=driverTest:jdbc:derby:memory:driverTestDB;create=true";
         String url_1 = "jdbc:wrap-jdbc:filters=counter:name=driverTest:jdbc:derby:memory:driverTestDB;create=true";

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.alibaba.druid.bvt.filter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 
@@ -29,7 +30,7 @@ import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
-import com.alibaba.druid.proxy.jdbc.ClobProxy;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -42,7 +43,7 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-
+        ConnectionProxyImpl conn = new ConnectionProxyImpl(dataSource, null, new Properties(), 0);
         MockCallableStatement mockStmt = new MockCallableStatement(null, "") {
 
             @Override
@@ -52,7 +53,7 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
             }
         };
 
-        statement = new CallableStatementProxyImpl(null, mockStmt, "", 1);
+        statement = new CallableStatementProxyImpl(conn, mockStmt, "", 1);
 
     }
 

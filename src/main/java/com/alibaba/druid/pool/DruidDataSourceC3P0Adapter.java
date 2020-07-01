@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,11 +145,11 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     }
 
     public int getCheckoutTimeout() {
-        return (int) dataSource.getMaxWait() / 1000;
+        return (int) dataSource.getMaxWait();
     }
 
     public void setCheckoutTimeout(int checkoutTimeout) {
-        dataSource.setMaxWait(checkoutTimeout * 1000);
+        dataSource.setMaxWait(checkoutTimeout);
     }
 
     public boolean isAutoCommitOnClose() {

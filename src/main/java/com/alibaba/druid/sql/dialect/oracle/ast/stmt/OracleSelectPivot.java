@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,10 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleSelectPivot extends OracleSelectPivotBase {
 
-    private static final long   serialVersionUID = 1L;
-
     private boolean             xml;
-    private final List<Item>    items            = new ArrayList<Item>();
-    private final List<SQLExpr> pivotFor         = new ArrayList<SQLExpr>();
-    private final List<Item>    pivotIn          = new ArrayList<Item>();
+    private final List<Item>    items    = new ArrayList<Item>();
+    private final List<SQLExpr> pivotFor = new ArrayList<SQLExpr>();
+    private final List<Item>    pivotIn  = new ArrayList<Item>();
 
     public OracleSelectPivot(){
 
@@ -60,6 +58,13 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
     public List<Item> getItems() {
         return this.items;
     }
+    
+    public void addItem(Item item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
+    }
 
     public void setXml(boolean xml) {
         this.xml = xml;
@@ -67,10 +72,8 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
 
     public static class Item extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-
-        private String            alias;
-        private SQLExpr           expr;
+        private String  alias;
+        private SQLExpr expr;
 
         public Item(){
 
@@ -89,6 +92,9 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
         }
 
         public void setExpr(SQLExpr expr) {
+            if (expr != null) {
+                expr.setParent(this);
+            }
             this.expr = expr;
         }
 

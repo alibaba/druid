@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 public class Test_kyline extends TestCase {
 
-    private String url      = "jdbc:mysql://10.20.141.150:8066/amoeba";
+    private String url      = "jdbc:mysql://a.b.c.d:8066/amoeba";
     private String user     = "root";
     private String password = "12345";
     private String driver   = "com.mysql.jdbc.Driver";

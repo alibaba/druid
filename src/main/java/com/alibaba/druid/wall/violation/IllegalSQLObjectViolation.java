@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,26 +19,33 @@ import com.alibaba.druid.wall.Violation;
 
 public class IllegalSQLObjectViolation implements Violation {
 
-    private String sqlPart;
+    private final String message;
+    private final String sqlPart;
+    private final int errorCode;
 
-    public IllegalSQLObjectViolation(){
-
-    }
-
-    public IllegalSQLObjectViolation(String condition){
-        this.sqlPart = condition;
+    public IllegalSQLObjectViolation(int errorCode, String message, String sqlPart){
+        this.errorCode = errorCode;
+        this.message = message;
+        this.sqlPart = sqlPart;
     }
 
     public String getSqlPart() {
         return sqlPart;
     }
 
-    public void setSqlPart(String sqlPart) {
-        this.sqlPart = sqlPart;
-    }
-
     public String toString() {
         return this.sqlPart;
     }
 
+    
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
  * }
  * </pre>
  * 
- * @author yunnysunny<yunnysunny@gmail.com>
+ * @author yunnysunny [yunnysunny@gmail.com]
  * */
 public class DruidDriverPanel extends DruidPanel {
 
@@ -51,7 +51,7 @@ public class DruidDriverPanel extends DruidPanel {
     @Override
     protected void tableDataProcess(ArrayList<LinkedHashMap<String, Object>> data) {
         ColumnData columnData = TableDataProcessor.row2col(data);
-        tableModel = new DruidTableModel(columnData.getDatas());
+        tableModel = new DruidTableModel(columnData.getData());
         table.setModel(tableModel);
         table.getColumnModel().getColumn(0).setCellRenderer(new DruidTableCellRenderer());
 

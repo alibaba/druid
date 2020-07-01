@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,12 +32,14 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class ClobTest extends TestCase {
 
+    protected int dataSourceListSize;
+    
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        dataSourceListSize = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        Assert.assertEquals(dataSourceListSize, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_clob() throws Exception {

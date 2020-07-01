@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
@@ -29,7 +29,7 @@ public class TestActiveTrace extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
 
         dataSource = new DruidDataSource();
         dataSource.setRemoveAbandoned(true);
@@ -47,7 +47,7 @@ public class TestActiveTrace extends TestCase {
     }
 
     public void test_activeTrace() throws Exception {
-        for (int i = 0; i < 1000 * 1000; ++i) {
+        for (int i = 0; i < 1000 * 10; ++i) {
             dataSource.shrink();
 
             Connection conn = dataSource.getConnection();

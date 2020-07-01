@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,12 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.Statement;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.junit.Assert;
+
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 
 public class MergeStatFilterTest3 extends TestCase {
 	private DruidDataSource dataSource;
@@ -41,7 +41,7 @@ public class MergeStatFilterTest3 extends TestCase {
 	}
 
 	public void test_merge() throws Exception {
-		String sqllist = IOUtils.read(new InputStreamReader(this.getClass().getResourceAsStream("/bvt/parser/postgresql.txt")));
+		String sqllist = Utils.read(new InputStreamReader(this.getClass().getResourceAsStream("/bvt/parser/postgresql.txt")));
 		String[] ss = sqllist.split("--");
 		for(String sql:ss)
 		{

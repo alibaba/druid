@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import javax.swing.table.TableModel;
 /**
  * 自定义duird监控数据表格模板类
  * 
- * @author yunnysunny<yunnysunny@gmail.com>
+ * @author yunnysunny[yunnysunny@gmail.com]
  */
 public class DruidTableModel implements TableModel {
 

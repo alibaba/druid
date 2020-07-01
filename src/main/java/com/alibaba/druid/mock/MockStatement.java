@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,8 @@ public class MockStatement extends StatementBase implements MockStatementBase, S
             throw new SQLException();
         }
 
-        if (this.mockConnection != null && this.mockConnection.isClosed()) {
-            throw new MockConnectionClosedException();
+        if (this.mockConnection != null) {
+            mockConnection.checkState();
         }
     }
 
@@ -86,6 +86,7 @@ public class MockStatement extends StatementBase implements MockStatementBase, S
         }
 
         if (mockConnection != null) {
+            mockConnection.setLastSql(sql);
             mockConnection.handleSleep();
         }
 

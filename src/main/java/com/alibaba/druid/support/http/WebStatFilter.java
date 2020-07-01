@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,11 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-import javax.servlet.http.HttpSession;
 
 import com.alibaba.druid.filter.stat.StatFilterContext;
-import com.alibaba.druid.filter.stat.StatFilterContextListenerAdapter;
 import com.alibaba.druid.support.http.stat.WebAppStat;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.http.stat.WebRequestStat;
@@ -52,40 +49,27 @@ import com.alibaba.druid.util.ServletPathMatcher;
 /**
  * 用于配置Web和Druid数据源之间的管理关联监控统计
  * 
- * @author wenshao <szujobs@htomail.com>
- * @author Zhangming Qi <qizhanming@gmail.com>
+ * @author wenshao [szujobs@htomail.com]
+ * @author Zhangming Qi [qizhanming@gmail.com]
  */
-public class WebStatFilter implements Filter {
+public class WebStatFilter extends AbstractWebStatImpl implements Filter {
 
-    private final static Log             LOG                               = LogFactory.getLog(WebStatFilter.class);
+    private final static Log   LOG                               = LogFactory.getLog(WebStatFilter.class);
 
-    public final static String           PARAM_NAME_PORFILE_ENABLE         = "profileEnable";
-    public final static String           PARAM_NAME_SESSION_STAT_ENABLE    = "sessionStatEnable";
-    public final static String           PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
-    public static final String           PARAM_NAME_EXCLUSIONS             = "exclusions";
-    public static final String           PARAM_NAME_PRINCIPAL_SESSION_NAME = "principalSessionName";
-    public static final String           PARAM_NAME_PRINCIPAL_COOKIE_NAME  = "principalCookieName";
+    public final static String PARAM_NAME_PROFILE_ENABLE         = "profileEnable";
+    public final static String PARAM_NAME_SESSION_STAT_ENABLE    = "sessionStatEnable";
+    public final static String PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
+    public static final String PARAM_NAME_EXCLUSIONS             = "exclusions";
+    public static final String PARAM_NAME_PRINCIPAL_SESSION_NAME = "principalSessionName";
+    public static final String PARAM_NAME_PRINCIPAL_COOKIE_NAME  = "principalCookieName";
+    public static final String PARAM_NAME_REAL_IP_HEADER         = "realIpHeader";
 
-    public final static int              DEFAULT_MAX_STAT_SESSION_COUNT    = 1000 * 100;
-
-    private WebAppStat                   webAppStat                        = null;
-    private WebStatFilterContextListener statFilterContextListener         = new WebStatFilterContextListener();
     /**
      * PatternMatcher used in determining which paths to react to for a given request.
      */
-    protected PatternMatcher             pathMatcher                       = new ServletPathMatcher();
+    protected PatternMatcher   pathMatcher                       = new ServletPathMatcher();
 
-    private Set<String>                  excludesPattern;
-
-    private boolean                      sessionStatEnable                 = true;
-    private int                          sessionStatMaxCount               = DEFAULT_MAX_STAT_SESSION_COUNT;
-    private boolean                      createSession                     = false;
-    private boolean                      profileEnable                     = false;
-
-    private String                       contextPath;
-
-    private String                       principalSessionName;
-    private String                       principalCookieName;
+    private Set<String>        excludesPattern;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
@@ -191,93 +175,18 @@ public class WebStatFilter implements Filter {
 
             if (isProfileEnable()) {
                 Profiler.release(nanos);
-                
+
                 Map<ProfileEntryKey, ProfileEntryReqStat> requestStatsMap = Profiler.getStatsMap();
-                uriStat.getProfiletat().record(requestStatsMap);
+                if (uriStat != null) {
+                    uriStat.getProfiletat().record(requestStatsMap);
+                }
                 Profiler.removeLocal();
             }
         }
     }
 
-    public WebSessionStat getSessionStat(HttpServletRequest request) {
-        if (!isSessionStatEnable()) {
-            return null;
-        }
-
-        WebSessionStat sessionStat = null;
-        String sessionId = getSessionId(request);
-        if (sessionId != null) {
-            sessionStat = webAppStat.getSessionStat(sessionId, true);
-        }
-
-        if (sessionStat != null) {
-            long currentMillis = System.currentTimeMillis();
-
-            String userAgent = request.getHeader("user-agent");
-
-            if (sessionStat.getCreateTimeMillis() == -1L) {
-                HttpSession session = request.getSession(false);
-
-                if (session != null) {
-                    sessionStat.setCreateTimeMillis(session.getCreationTime());
-                } else {
-                    sessionStat.setCreateTimeMillis(currentMillis);
-                }
-
-                webAppStat.computeUserAgent(userAgent);
-                webAppStat.incrementSessionCount();
-            }
-
-            sessionStat.setUserAgent(userAgent);
-
-            String ip = DruidWebUtils.getRemoteAddr(request);
-
-            sessionStat.addRemoteAddress(ip);
-        }
-
-        return sessionStat;
-    }
-
-    public String getSessionId(HttpServletRequest httpRequest) {
-        String sessionId = null;
-
-        HttpSession session = httpRequest.getSession(createSession);
-        if (session != null) {
-            sessionId = session.getId();
-        }
-
-        return sessionId;
-    }
-
-    public String getPrincipal(HttpServletRequest httpRequest) {
-        if (principalSessionName != null) {
-            HttpSession session = httpRequest.getSession(createSession);
-            if (session == null) {
-                return null;
-            }
-
-            Object sessionValue = session.getAttribute(principalSessionName);
-
-            if (sessionValue == null) {
-                return null;
-            }
-
-            return sessionValue.toString();
-        }
-
-        if (principalCookieName != null) {
-            for (Cookie cookie : httpRequest.getCookies()) {
-                if (principalCookieName.equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-
-        return null;
-    }
-
     public boolean isExclusion(String requestURI) {
-        if (excludesPattern == null) {
+        if (excludesPattern == null || requestURI == null) {
             return false;
         }
 
@@ -295,18 +204,6 @@ public class WebStatFilter implements Filter {
         }
 
         return false;
-    }
-
-    public String getRequestURI(HttpServletRequest request) {
-        return request.getRequestURI();
-    }
-
-    public String getPrincipalSessionName() {
-        return principalSessionName;
-    }
-
-    public String getPrincipalCookieName() {
-        return principalCookieName;
     }
 
     @Override
@@ -353,7 +250,7 @@ public class WebStatFilter implements Filter {
         }
 
         {
-            String param = config.getInitParameter(PARAM_NAME_PORFILE_ENABLE);
+            String param = config.getInitParameter(PARAM_NAME_PROFILE_ENABLE);
             if (param != null && param.trim().length() != 0) {
                 param = param.trim();
                 if ("true".equals(param)) {
@@ -361,7 +258,7 @@ public class WebStatFilter implements Filter {
                 } else if ("false".equals(param)) {
                     this.profileEnable = false;
                 } else {
-                    LOG.error("WebStatFilter Parameter '" + PARAM_NAME_PORFILE_ENABLE + "' config error");
+                    LOG.error("WebStatFilter Parameter '" + PARAM_NAME_PROFILE_ENABLE + "' config error");
                 }
             }
         }
@@ -377,11 +274,23 @@ public class WebStatFilter implements Filter {
             }
         }
 
+        // realIpHeader
+        {
+            String param = config.getInitParameter(PARAM_NAME_REAL_IP_HEADER);
+            if (param != null) {
+                param = param.trim();
+                if (param.length() != 0) {
+                    this.realIpHeader = param;
+                }
+            }
+        }
+
         StatFilterContext.getInstance().addContextListener(statFilterContextListener);
 
         this.contextPath = DruidWebUtils.getContextPath(config.getServletContext());
-        webAppStat = new WebAppStat(contextPath, this.sessionStatMaxCount);
-
+        if (webAppStat == null) {
+            webAppStat = new WebAppStat(contextPath, this.sessionStatMaxCount);
+        }
         WebAppStatManager.getInstance().addWebAppStatSet(webAppStat);
     }
 
@@ -394,127 +303,21 @@ public class WebStatFilter implements Filter {
         }
     }
 
-    public boolean isSessionStatEnable() {
-        return sessionStatEnable;
-    }
-
-    public void setSessionStatEnable(boolean sessionStatEnable) {
-        this.sessionStatEnable = sessionStatEnable;
-    }
-
-    public boolean isProfileEnable() {
-        return profileEnable;
-    }
-
-    public void setProfileEnable(boolean profileEnable) {
-        this.profileEnable = profileEnable;
+    public void setWebAppStat(WebAppStat webAppStat) {
+        this.webAppStat = webAppStat;
     }
 
     public WebAppStat getWebAppStat() {
         return webAppStat;
     }
 
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    public int getSessionStatMaxCount() {
-        return sessionStatMaxCount;
-    }
-
     public WebStatFilterContextListener getStatFilterContextListener() {
         return statFilterContextListener;
     }
 
-    class WebStatFilterContextListener extends StatFilterContextListenerAdapter {
-
-        @Override
-        public void addUpdateCount(int updateCount) {
-            WebRequestStat reqStat = WebRequestStat.current();
-            if (reqStat != null) {
-                reqStat.addJdbcUpdateCount(updateCount);
-            }
-        }
-
-        @Override
-        public void addFetchRowCount(int fetchRowCount) {
-            WebRequestStat reqStat = WebRequestStat.current();
-            if (reqStat != null) {
-                reqStat.addJdbcFetchRowCount(fetchRowCount);
-            }
-        }
-
-        @Override
-        public void executeBefore(String sql, boolean inTransaction) {
-            WebRequestStat reqStat = WebRequestStat.current();
-            if (reqStat != null) {
-                reqStat.incrementJdbcExecuteCount();
-            }
-        }
-
-        @Override
-        public void executeAfter(String sql, long nanos, Throwable error) {
-            WebRequestStat reqStat = WebRequestStat.current();
-            if (reqStat != null) {
-                reqStat.addJdbcExecuteTimeNano(nanos);
-                if (error != null) {
-                    reqStat.incrementJdbcExecuteErrorCount();
-                }
-            }
-        }
-
-        @Override
-        public void commit() {
-            WebRequestStat reqStat = WebRequestStat.current();
-            if (reqStat != null) {
-                reqStat.incrementJdbcCommitCount();
-            }
-        }
-
-        @Override
-        public void rollback() {
-            WebRequestStat reqStat = WebRequestStat.current();
-            if (reqStat != null) {
-                reqStat.incrementJdbcRollbackCount();
-            }
-        }
-
-        @Override
-        public void pool_connect() {
-            WebRequestStat reqStat = WebRequestStat.current();
-            if (reqStat != null) {
-                reqStat.incrementJdbcPoolConnectCount();
-            }
-        }
-
-        @Override
-        public void pool_close(long nanos) {
-            WebRequestStat reqStat = WebRequestStat.current();
-            if (reqStat != null) {
-                reqStat.incrementJdbcPoolCloseCount();
-            }
-        }
-
-        @Override
-        public void resultSet_open() {
-            WebRequestStat reqStat = WebRequestStat.current();
-            if (reqStat != null) {
-                reqStat.incrementJdbcResultSetOpenCount();
-            }
-        }
-
-        @Override
-        public void resultSet_close(long nanos) {
-            WebRequestStat reqStat = WebRequestStat.current();
-            if (reqStat != null) {
-                reqStat.incrementJdbcResultSetCloseCount();
-            }
-        }
-    }
-
     public final static class StatHttpServletResponseWrapper extends HttpServletResponseWrapper implements HttpServletResponse {
-
-        private int status;
+        //初始值应该设置为：HttpServletResponse.SC_OK，而不是 0。
+        private int status = HttpServletResponse.SC_OK;
 
         public StatHttpServletResponseWrapper(HttpServletResponse response){
             super(response);
@@ -525,6 +328,7 @@ public class WebStatFilter implements Filter {
             this.status = statusCode;
         }
 
+        @SuppressWarnings("deprecation")
         public void setStatus(int statusCode, String statusMessage) {
             super.setStatus(statusCode, statusMessage);
             this.status = statusCode;

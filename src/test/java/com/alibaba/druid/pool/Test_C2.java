@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,11 @@
 package com.alibaba.druid.pool;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.concurrent.CountDownLatch;
-
-import org.junit.Assert;
 
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.Assert;
 
 public class Test_C2 extends TestCase {
 
@@ -37,7 +34,7 @@ public class Test_C2 extends TestCase {
 
     protected void setUp() throws Exception {
         // jdbcUrl =
-        // "jdbc:mysql://10.20.129.146/dragoon_v25masterdb?useUnicode=true&characterEncoding=UTF-8";
+        // "jdbc:mysql://a.b.c.d/dragoon_v25masterdb?useUnicode=true&characterEncoding=UTF-8";
         // user = "dragoon25";
         // password = "dragoon25";
         // driverClass = "com.mysql.jdbc.Driver";

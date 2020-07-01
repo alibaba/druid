@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.pool.DruidDataSource;
-
 public class ConcurrentTest extends TestCase {
 
     private String jdbcUrl;
@@ -36,7 +34,7 @@ public class ConcurrentTest extends TestCase {
 
     protected void setUp() throws Exception {
         // jdbcUrl =
-        // "jdbc:mysql://10.20.129.146/dragoon_v25masterdb?useUnicode=true&characterEncoding=UTF-8";
+        // "jdbc:mysql://a.b.c.d/dragoon_v25masterdb?useUnicode=true&characterEncoding=UTF-8";
         // user = "dragoon25";
         // password = "dragoon25";
         // driverClass = "com.mysql.jdbc.Driver";

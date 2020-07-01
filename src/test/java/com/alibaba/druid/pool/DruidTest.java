@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
-
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidTest {
 
@@ -78,7 +76,7 @@ public class DruidTest {
 
     public static void main(String[] args) throws IOException, SQLException {
 
-        DruidTest db = new DruidTest("jdbc:mysql://10.20.141.150:8066/amoeba");
+        DruidTest db = new DruidTest("jdbc:mysql://a.b.c.d:8066/amoeba");
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;

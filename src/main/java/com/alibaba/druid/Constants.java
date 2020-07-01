@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,5 +17,7 @@ package com.alibaba.druid;
 
 public interface Constants {
 
-    public final static String DRUID_STAT_SQL_MAX_SIZE = "druid.stat.sql.MaxSize";
+    public final static String DRUID_STAT_SQL_MAX_SIZE             = "druid.stat.sql.MaxSize";
+
+    public final static String DRUID_TIME_BETWEEN_LOG_STATS_MILLIS = "druid.timeBetweenLogStatsMillis";
 }

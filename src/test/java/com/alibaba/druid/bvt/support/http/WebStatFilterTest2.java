@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.bvt.support.http;
 
+import junit.framework.TestCase;
+
 import org.junit.Assert;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockFilterConfig;
@@ -25,8 +27,6 @@ import org.springframework.mock.web.MockServletContext;
 
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.alibaba.druid.support.http.stat.WebAppStat;
-
-import junit.framework.TestCase;
 
 public class WebStatFilterTest2 extends TestCase {
 

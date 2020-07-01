@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,12 @@ public class TestSqlServer extends TestCase {
     private String SQL;
 
     protected void setUp() throws Exception {
-        // jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+        // jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
         // user = "alibaba";
         // password = "ccbuauto";
         // SQL = "SELECT * FROM WP_ORDERS WHERE ID = ?";
 
-        jdbcUrl = "jdbc:jtds:sqlserver://10.16.16.28:1433/druid_db";
+        jdbcUrl = "jdbc:jtds:sqlserver://a.b.c.d:1433/druid_db";
         user = "sa";
         password = "hello123";
         SQL = "SELECT * FROM AV_INFO WHERE ID = ?";

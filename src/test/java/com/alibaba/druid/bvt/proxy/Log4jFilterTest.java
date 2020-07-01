@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,23 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.junit.Assert;
 
 import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class Log4jFilterTest extends TestCase {
-
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+    
     public void test_logger() throws Exception {
         Log4jFilter filter = new Log4jFilter();
 

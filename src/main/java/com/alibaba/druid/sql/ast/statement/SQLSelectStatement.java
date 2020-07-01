@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,34 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.Collections;
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectStatement extends SQLStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    protected SQLSelect         select;
+    protected SQLSelect select;
 
     public SQLSelectStatement(){
 
     }
 
-    public SQLSelectStatement(SQLSelect select){
+    public SQLSelectStatement(String dbType){
+        super (dbType);
+    }
 
-        this.select = select;
+    public SQLSelectStatement(SQLSelect select){
+        this.setSelect(select);
+    }
+
+    public SQLSelectStatement(SQLSelect select, String dbType){
+        this(dbType);
+        this.setSelect(select);
     }
 
     public SQLSelect getSelect() {
@@ -38,6 +50,9 @@ public class SQLSelectStatement extends SQLStatementImpl {
     }
 
     public void setSelect(SQLSelect select) {
+        if (select != null) {
+            select.setParent(this);
+        }
         this.select = select;
     }
 
@@ -50,5 +65,29 @@ public class SQLSelectStatement extends SQLStatementImpl {
             acceptChild(visitor, this.select);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLSelectStatement clone() {
+        SQLSelectStatement x = new SQLSelectStatement();
+        if (select != null) {
+            x.setSelect(select.clone());
+        }
+        if (headHints != null) {
+            for (SQLCommentHint h : headHints) {
+                SQLCommentHint h2 = h.clone();
+                h2.setParent(x);
+                x.headHints.add(h2);
+            }
+        }
+        return x;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(select);
+    }
+
+    public boolean addWhere(SQLExpr where) {
+        return select.addWhere(where);
     }
 }

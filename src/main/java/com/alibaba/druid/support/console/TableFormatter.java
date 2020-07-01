@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,16 @@ import java.util.List;
 public class TableFormatter {
 
 	public static String format(List<String[]> rows) {
-		String[] titlerow  = rows.get(0);
-		int[] maxLens = new int[titlerow.length];
-		for (int i=0; i<rows.size(); i++) {
-			String[] row = rows.get(i);
-			for (int j=0; j<row.length; j++) {
-				int len = displayLen(row[j]);
-				if ( len > maxLens[j]) {
-					maxLens[j] = len;
-				}
-			}
-		}
+		String[] titleRow  = rows.get(0);
+		int[] maxLens = new int[titleRow.length];
+        for (String[] row : rows) {
+            for (int j = 0; j < row.length; j++) {
+                int len = displayLen(row[j]);
+                if (len > maxLens[j]) {
+                    maxLens[j] = len;
+                }
+            }
+        }
 		StringBuilder sb = new StringBuilder();
 		sb.append(makeSplitLine(maxLens));
 		for (int i=0; i<rows.size(); i++) {
@@ -71,12 +70,12 @@ public class TableFormatter {
 		if (old == null ) {
 		    return "";
 		}
-		int vlen = displayLen(old);
-		if (vlen > length) {
+		int vLen = displayLen(old);
+		if (vLen > length) {
 		    return old;
 		}
-		StringBuffer sb = new StringBuffer(old);
-		for (int i=0; i< length -vlen ; i++) {
+		StringBuilder sb = new StringBuilder(old);
+		for (int i=0; i< length -vLen ; i++) {
 			sb.append(" ");
 		}
 		return sb.toString();

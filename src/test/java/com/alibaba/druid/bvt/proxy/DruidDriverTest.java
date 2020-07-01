@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,23 @@ package com.alibaba.druid.bvt.proxy;
 
 import java.util.Properties;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class DruidDriverTest extends TestCase {
-
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+    
     public static class PublicJdbcFilterAdapter extends FilterAdapter {
 
         public PublicJdbcFilterAdapter(){
@@ -70,8 +76,14 @@ public class DruidDriverTest extends TestCase {
     }
 
     public void test_getRawDriverClassName() throws Exception {
-        Assert.assertEquals("com.mysql.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:mysql:"));
-        Assert.assertEquals("oracle.jdbc.driver.OracleDriver", JdbcUtils.getDriverClassName("jdbc:oracle:"));
+        String className = JdbcUtils.getDriverClassName("jdbc:mysql:");
+        if (className.equals("com.mysql.jdbc.Driver")) {
+            assertEquals("com.mysql.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:mysql:"));
+        } else {
+            assertEquals("com.mysql.cj.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:mysql:"));
+        }
+
+        Assert.assertEquals("oracle.jdbc.OracleDriver", JdbcUtils.getDriverClassName("jdbc:oracle:"));
         Assert.assertEquals("com.microsoft.jdbc.sqlserver.SQLServerDriver",
                             JdbcUtils.getDriverClassName("jdbc:microsoft:"));
         Assert.assertEquals("org.postgresql.Driver", JdbcUtils.getDriverClassName("jdbc:postgresql:xx"));

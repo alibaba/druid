@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class OnlineOracleTest3 extends TestCase {
     private DruidDataSource dataSource;
 
     public void setUp() throws Exception {
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.18:1521:emdb";
+        jdbcUrl = "jdbc:oracle:thin:@xx.xx.xx.xx:1521:emdb";
         user = "wardon";
         password = "wardon";
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import com.alibaba.druid.mock.MockResultSetMetaData;
 import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
@@ -43,7 +44,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
@@ -120,7 +120,7 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
     }
 
     public ResultSet executeQueryFromDual(MockStatementBase statement, SQLSelectQueryBlock query) throws SQLException {
-        MockResultSet rs = new MockResultSet(statement);
+        MockResultSet rs = statement.getConnection().getDriver().createMockResultSet(statement);
         MockResultSetMetaData metaData = rs.getMockMetaData();
 
         Object[] row = new Object[query.getSelectList().size()];
@@ -142,8 +142,8 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
             } else if (expr instanceof SQLNCharExpr) {
                 row[i] = ((SQLNCharExpr) expr).getText();
                 column.setColumnType(Types.NVARCHAR);
-            } else if (expr instanceof MySqlBooleanExpr) {
-                row[i] = ((MySqlBooleanExpr) expr).getValue();
+            } else if (expr instanceof SQLBooleanExpr) {
+                row[i] = ((SQLBooleanExpr) expr).getBooleanValue();
                 column.setColumnType(Types.NVARCHAR);
             } else if (expr instanceof SQLNullExpr) {
                 row[i] = null;

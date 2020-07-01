@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.SQLException;
 import java.sql.Wrapper;
 
 public class WrapperAdapter implements Wrapper {
@@ -24,21 +23,14 @@ public class WrapperAdapter implements Wrapper {
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        if (iface == null) {
-            return false;
-        }
+    public boolean isWrapperFor(Class<?> iface) {
+        return iface != null && iface.isInstance(this);
 
-        if (iface.isInstance(this)) {
-            return true;
-        }
-
-        return false;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
+    public <T> T unwrap(Class<T> iface) {
         if (iface == null) {
             return null;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,15 @@ public class User {
     private long   id;
     private String name;
 
+    public User(){
+
+    }
+
+    public User(long id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
     public long getId() {
         return id;
     }
@@ -36,5 +45,4 @@ public class User {
         this.name = name;
     }
 
-    
 }

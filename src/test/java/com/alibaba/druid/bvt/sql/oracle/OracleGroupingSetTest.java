@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -35,18 +35,17 @@ public class OracleGroupingSetTest extends TestCase {
                      + "GROUP BY GROUPING SETS((channel_desc, calendar_month_desc, co.country_id), (channel_desc, co.country_id), "
                      + "( calendar_month_desc, co.country_id) );\n";
 
-        String expected = "SELECT channel_desc, calendar_month_desc, co.country_id, " //
-                          + "TO_CHAR(SUM(amount_sold), '9,999,999,999') AS SALES$\n" //
-                          + "FROM sales, customers, times, channels, countries co\n" //
-                          + "WHERE sales.time_id = times.time_id" //
-                          + "\n\tAND sales.cust_id = customers.cust_id" //
-                          + "\n\tAND sales.channel_id = channels.channel_id" //
-                          + "\n\tAND customers.country_id = co.country_id" //
-                          + "\n\tAND channels.channel_desc IN ('Direct Sales', 'Internet')" //
-                          + "\n\tAND times.calendar_month_desc IN ('2000-09', '2000-10')"
-                          + "\n\tAND co.country_id IN ('UK', 'US')\n"
-                          + "GROUP BY GROUPING SETS ((channel_desc, calendar_month_desc, co.country_id), (channel_desc, co.country_id), "
-                          + "(calendar_month_desc, co.country_id));\n";
+        String expected = "SELECT channel_desc, calendar_month_desc, co.country_id\n" +
+                "\t, TO_CHAR(sum(amount_sold), '9,999,999,999') AS SALES$\n" +
+                "FROM sales, customers, times, channels, countries co\n" +
+                "WHERE sales.time_id = times.time_id\n" +
+                "\tAND sales.cust_id = customers.cust_id\n" +
+                "\tAND sales.channel_id = channels.channel_id\n" +
+                "\tAND customers.country_id = co.country_id\n" +
+                "\tAND channels.channel_desc IN ('Direct Sales', 'Internet')\n" +
+                "\tAND times.calendar_month_desc IN ('2000-09', '2000-10')\n" +
+                "\tAND co.country_id IN ('UK', 'US')\n" +
+                "GROUP BY GROUPING SETS ((channel_desc, calendar_month_desc, co.country_id), (channel_desc, co.country_id), (calendar_month_desc, co.country_id));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

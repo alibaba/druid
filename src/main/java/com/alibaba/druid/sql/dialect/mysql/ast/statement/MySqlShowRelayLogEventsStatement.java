@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,14 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlShowRelayLogEventsStatement extends MySqlStatementImpl {
+public class MySqlShowRelayLogEventsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           logName;
-    private SQLExpr           from;
-    private Limit             limit;
+    private SQLExpr logName;
+    private SQLExpr from;
+    private SQLLimit limit;
 
     public SQLExpr getLogName() {
         return logName;
@@ -43,11 +41,11 @@ public class MySqlShowRelayLogEventsStatement extends MySqlStatementImpl {
         this.from = from;
     }
 
-    public Limit getLimit() {
+    public SQLLimit getLimit() {
         return limit;
     }
 
-    public void setLimit(Limit limit) {
+    public void setLimit(SQLLimit limit) {
         this.limit = limit;
     }
 

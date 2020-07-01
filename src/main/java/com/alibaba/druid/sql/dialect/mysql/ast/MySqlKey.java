@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,24 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.statement.SQLConstaintImpl;
-import com.alibaba.druid.sql.ast.statement.SQLTableConstaint;
+import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
-@SuppressWarnings("serial")
-public class MySqlKey extends SQLConstaintImpl implements SQLUniqueConstraint, SQLTableConstaint {
+public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTableConstraint {
 
-    private List<SQLExpr> columns = new ArrayList<SQLExpr>();
-    private String        indexType;
+    private String  indexType;
+
+    private boolean hasConstaint;
+
+    private SQLExpr keyBlockSize;
 
     public MySqlKey(){
-
+        dbType = JdbcConstants.MYSQL;
     }
 
     @Override
@@ -46,13 +46,9 @@ public class MySqlKey extends SQLConstaintImpl implements SQLUniqueConstraint, S
         if (visitor.visit(this)) {
             acceptChild(visitor, this.getName());
             acceptChild(visitor, this.getColumns());
+            acceptChild(visitor, name);
         }
         visitor.endVisit(this);
-    }
-
-    @Override
-    public List<SQLExpr> getColumns() {
-        return columns;
     }
 
     public String getIndexType() {
@@ -63,4 +59,37 @@ public class MySqlKey extends SQLConstaintImpl implements SQLUniqueConstraint, S
         this.indexType = indexType;
     }
 
+    public boolean isHasConstaint() {
+        return hasConstaint;
+    }
+
+    public void setHasConstaint(boolean hasConstaint) {
+        this.hasConstaint = hasConstaint;
+    }
+
+    public void cloneTo(MySqlKey x) {
+        super.cloneTo(x);
+        x.indexType = indexType;
+        x.hasConstaint = hasConstaint;
+        if (keyBlockSize != null) {
+            this.setKeyBlockSize(keyBlockSize.clone());
+        }
+    }
+
+    public MySqlKey clone() {
+        MySqlKey x = new MySqlKey();
+        cloneTo(x);
+        return x;
+    }
+
+    public SQLExpr getKeyBlockSize() {
+        return keyBlockSize;
+    }
+
+    public void setKeyBlockSize(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.keyBlockSize = x;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,8 @@ public class IPRangeTest extends TestCase {
         assertTrue(rang.isIPAddressInRange(new IPAddress("128.242.127.2")));
 
         assertFalse(rang.isIPAddressInRange(new IPAddress("128.242.126.2")));
-
+        
+        rang.toString();
     }
 
     public void test_ipRange_1() throws Exception {

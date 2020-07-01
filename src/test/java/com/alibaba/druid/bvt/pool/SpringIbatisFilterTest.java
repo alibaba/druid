@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,16 @@ package com.alibaba.druid.bvt.pool;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.sql.DataSource;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.junit.Assert;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -34,11 +36,13 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.spring.IUserService;
 import com.alibaba.druid.spring.User;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.DruidStatService;
+import com.alibaba.druid.support.json.JSONUtils;
 
 public class SpringIbatisFilterTest extends TestCase {
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
     }
 
     protected void tearDown() throws Exception {
@@ -56,14 +60,14 @@ public class SpringIbatisFilterTest extends TestCase {
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            stmt.execute("CREATE TABLE sequence_seed (value INTEGER, name VARCHAR(50))");
+            stmt.execute("CREATE TABLE sequence_seed (value INTEGER, name VARCHAR(50) PRIMARY KEY)");
             stmt.close();
             conn.close();
         }
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            stmt.execute("CREATE TABLE t_User (id BIGINT, name VARCHAR(50))");
+            stmt.execute("CREATE TABLE t_User (id BIGINT PRIMARY KEY, name VARCHAR(50))");
             stmt.close();
             conn.close();
         }
@@ -101,6 +105,11 @@ public class SpringIbatisFilterTest extends TestCase {
             conn.close();
         }
 
+        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        
+        Map<String, Object> wallStats = DruidStatService.getInstance().getWallStatMap(Collections.<String, String>emptyMap());
+        
+        System.out.println("wall-stats : " + JSONUtils.toJSONString(wallStats));
         
         context.close();
 

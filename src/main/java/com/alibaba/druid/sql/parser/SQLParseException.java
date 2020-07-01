@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,9 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.DruidRuntimeException;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
+@SuppressWarnings("serial")
+@Deprecated
 public class SQLParseException extends DruidRuntimeException {
-
-    private static final long serialVersionUID = 1L;
-
-    public SQLParseException(){
-        super();
-    }
-
-    public SQLParseException(String message){
-        super(message);
-    }
-
-    public SQLParseException(String message, Throwable cause){
-        super(message, cause);
-    }
 }

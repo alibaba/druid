@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,8 +90,6 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
             if (invoking > max) {
                 if (concurrentMax.compareAndSet(max, invoking)) {
                     break;
-                } else {
-                    continue;
                 }
             } else {
                 break;
@@ -201,27 +199,5 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
 
     public void incrementStatementCloseCounter() {
         closeCount.incrementAndGet();
-    }
-
-    public static class Entry {
-
-        private long   lastExecuteStartNano;
-        private String lastExecuteSql;
-
-        public long getLastExecuteStartNano() {
-            return lastExecuteStartNano;
-        }
-
-        public void setLastExecuteStartNano(long lastExecuteStartNano) {
-            this.lastExecuteStartNano = lastExecuteStartNano;
-        }
-
-        public String getLastExecuteSql() {
-            return lastExecuteSql;
-        }
-
-        public void setLastExecuteSql(String lastExecuteSql) {
-            this.lastExecuteSql = lastExecuteSql;
-        }
     }
 }

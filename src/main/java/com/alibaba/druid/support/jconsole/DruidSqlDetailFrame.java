@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,7 +133,7 @@ import com.alibaba.druid.support.logging.LogFactory;
         }
     }
  * </pre>
- * @author yunnysunny<yunnysunny@gmail.com>
+ * @author yunnysunny [yunnysunny@gmail.com]
  * */
 public class DruidSqlDetailFrame extends JFrame {
 
@@ -347,7 +347,7 @@ public class DruidSqlDetailFrame extends JFrame {
 
         ColumnData colData = TableDataProcessor.row2col(data);
         JTable table = new JTable();
-        DruidTableModel tableModel = new DruidTableModel(colData.getDatas());
+        DruidTableModel tableModel = new DruidTableModel(colData.getData());
         table.setModel(tableModel);
 
         TableColumn col = table.getColumnModel().getColumn(0);

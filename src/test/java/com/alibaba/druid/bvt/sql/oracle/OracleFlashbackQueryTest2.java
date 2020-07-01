@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
+import org.junit.Assert;
+import junit.framework.TestCase;
+
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class OracleFlashbackQueryTest2 extends TestCase {
 
@@ -31,8 +31,8 @@ public class OracleFlashbackQueryTest2 extends TestCase {
 
         String expect = "SELECT salary\n"
                         + "FROM employees\n"
-                        + "VERSIONS BETWEEN TIMESTAMP SYSTIMESTAMP - INTERVAL '10' MINUTE AND SYSTIMESTAMP - INTERVAL '1' MINUTE\n"
-                        + "WHERE last_name = 'Chung';\n";
+                        + "VERSIONS BETWEEN TIMESTAMP (SYSTIMESTAMP - INTERVAL '10' MINUTE) AND SYSTIMESTAMP - INTERVAL '1' MINUTE\n"
+                        + "WHERE last_name = 'Chung';";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

@@ -1,8 +1,9 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
+import java.sql.Savepoint;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -26,7 +27,9 @@ public class DruidPooledConnectionTest extends TestCase {
     public void test_rollback() throws Exception {
         Connection conn = dataSource.getConnection();
         conn.rollback();
-        conn.rollback(null);
+        
+        Savepoint savepoint = conn.setSavepoint("xx");
+        conn.rollback(savepoint);
         
         conn.close();
     }

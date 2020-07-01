@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,10 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.NotAllowCommentException;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
 public class HiveLexer extends Lexer {
-
     public final static Keywords DEFAULT_HIVE_KEYWORDS;
 
     static {
@@ -32,14 +31,25 @@ public class HiveLexer extends Lexer {
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
-        map.put("WITH", Token.WITH);
+        map.put("OF", Token.OF);
+        map.put("CONCAT", Token.CONCAT);
+        map.put("CONTINUE", Token.CONTINUE);
+        map.put("MERGE", Token.MERGE);
+        map.put("MATCHED", Token.MATCHED);
+        map.put("USING", Token.USING);
+
+        map.put("ROW", Token.ROW);
+        map.put("LIMIT", Token.LIMIT);
+        map.put("PARTITIONED", Token.PARTITIONED);
+        map.put("PARTITION", Token.PARTITION);
+        map.put("OVERWRITE", Token.OVERWRITE);
+        map.put("SORT", Token.SORT);
+        map.put("IF", Token.IF);
+        map.put("TRUE", Token.TRUE);
+        map.put("FALSE", Token.FALSE);
+        map.put("RLIKE", Token.RLIKE);
 
         DEFAULT_HIVE_KEYWORDS = new Keywords(map);
-    }
-
-    public HiveLexer(char[] input, int inputLength, boolean skipComment){
-        super(input, inputLength, skipComment);
-        super.keywods = DEFAULT_HIVE_KEYWORDS;
     }
 
     public HiveLexer(String input){
@@ -47,94 +57,11 @@ public class HiveLexer extends Lexer {
         super.keywods = DEFAULT_HIVE_KEYWORDS;
     }
 
-    public void scanComment() {
-        if (ch != '/') {
-            throw new IllegalStateException();
-        }
-
-        np = bp;
-        sp = 0;
-        scanChar();
-        sp++;
-
-        // /*+ */
-        if (ch == '*') {
-            scanChar();
-            sp++;
-
-            while (ch == ' ') {
-                scanChar();
-                sp++;
-            }
-
-            boolean isHint = false;
-            int startHintSp = sp + 1;
-            if (ch == '+') {
-                isHint = true;
-                scanChar();
-                sp++;
-            }
-
-            for (;;) {
-                if (ch == '*' && buf[bp + 1] == '/') {
-                    sp += 2;
-                    scanChar();
-                    scanChar();
-                    break;
-                }
-
-                scanChar();
-                sp++;
-            }
-
-            if (isHint) {
-                stringVal = new String(buf, np + startHintSp, (sp - startHintSp) - 2).trim();
-                token = Token.HINT;
-            } else {
-                stringVal = new String(buf, np, sp);
-                token = Token.MULTI_LINE_COMMENT;
-            }
-
-            if (token != Token.HINT && !isAllowComment()) {
-                throw new NotAllowCommentException();
-            }
-
-            return;
-        }
-
-        if (!isAllowComment()) {
-            throw new NotAllowCommentException();
-        }
-
-        if (ch == '/') {
-            scanChar();
-            sp++;
-
-            for (;;) {
-                if (ch == '\r') {
-                    if (buf[bp + 1] == '\n') {
-                        sp += 2;
-                        scanChar();
-                        break;
-                    }
-                    sp++;
-                    break;
-                }
-
-                if (ch == '\r') {
-                    scanChar();
-                    sp++;
-                    break;
-                }
-
-                scanChar();
-                sp++;
-            }
-
-            stringVal = new String(buf, np + 1, sp);
-            token = Token.LINE_COMMENT;
-            return;
+    public HiveLexer(String input, SQLParserFeature... features){
+        super(input);
+        super.keywods = DEFAULT_HIVE_KEYWORDS;
+        for (SQLParserFeature feature : features) {
+            config(feature, true);
         }
     }
-
 }

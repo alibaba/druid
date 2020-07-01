@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,17 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlShowCharacterSetStatement extends MySqlStatementImpl {
+public class MySqlShowCharacterSetStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           where;
-    private SQLExpr           pattern;
+    private SQLExpr where;
+    private SQLExpr pattern;
 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -47,6 +49,11 @@ public class MySqlShowCharacterSetStatement extends MySqlStatementImpl {
 
     public void setPattern(SQLExpr pattern) {
         this.pattern = pattern;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Arrays.<SQLObject>asList(this.where, pattern);
     }
 
 }

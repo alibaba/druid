@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
+import junit.framework.TestCase;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
-
-import junit.framework.TestCase;
 
 public class OracleFormatTest2 extends TestCase {
 
@@ -27,6 +27,8 @@ public class OracleFormatTest2 extends TestCase {
 
         String formatedText = SQLUtils.format(text, JdbcUtils.ORACLE);
         System.out.println(formatedText);
+        String formatedText1 = SQLUtils.format(text, JdbcUtils.OCEANBASE_ORACLE);
+        System.out.println(formatedText1);
         String formatedText2 = SQLUtils.format(text, JdbcUtils.ALI_ORACLE);
         System.out.println(formatedText2);
     }

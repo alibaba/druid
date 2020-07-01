@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -27,10 +27,12 @@ public class MybatisTest2 extends TestCase {
 
     public void test_mysql() throws Exception {
         Assert.assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, JdbcUtils.MYSQL));
+        Assert.assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, JdbcUtils.OCEANBASE));
     }
 
     public void test_oracle() throws Exception {
         Assert.assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, JdbcUtils.ORACLE));
+        Assert.assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, JdbcUtils.OCEANBASE_ORACLE));
         Assert.assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, JdbcUtils.ALI_ORACLE));
     }
 

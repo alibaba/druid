@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.cobar;
 
+import junit.framework.TestCase;
+
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-
-import junit.framework.TestCase;
 
 
 public class DMLReplaceParserTest extends TestCase {
@@ -59,7 +59,7 @@ public class DMLReplaceParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("REPLACE LOW_PRIORITY INTO t1\nVALUES (0.12), (?)", output);
+        Assert.assertEquals("REPLACE LOW_PRIORITY INTO t1\nVALUES (12e-2), (?)", output);
     }
     
     public void testReplace_4() throws Exception {
@@ -122,6 +122,8 @@ public class DMLReplaceParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("REPLACE LOW_PRIORITY INTO t1 (col1)\n\tSELECT id\n\tFROM t3", output);
+        Assert.assertEquals("REPLACE LOW_PRIORITY INTO t1 (col1)\n" +
+                "\t(SELECT id\n" +
+                "\tFROM t3)", output);
     }
 }

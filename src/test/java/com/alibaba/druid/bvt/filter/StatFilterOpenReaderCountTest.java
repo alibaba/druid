@@ -1,15 +1,14 @@
 package com.alibaba.druid.bvt.filter;
 
-import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.nutz.lang.stream.StringReader;
-
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
+
+import org.nutz.lang.stream.StringReader;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;

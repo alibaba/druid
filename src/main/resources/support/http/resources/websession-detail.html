@@ -5,9 +5,11 @@
 		<link href='css/bootstrap.min.css' rel="stylesheet" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
     	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 	</head>
 	<body>
+		
     	<div class="container-fluid">
       		<div class="row-fluid">
         		<div class="span12">
@@ -17,73 +19,90 @@
           				</h3>
 						<table id="dataTable" class="table table-bordered" style="background-color: #fff">
 							<tr>
-					          <td class='td_lable' width='130'> SESSIONID</td>
-					          <td id="SESSIONID"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> UserAgent</td>
-					          <td id="UserAgent"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> Principal</td>
-					          <td id="Principal"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> CreateTime</td>
-					          <td id="CreateTime"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> LastAccessTime</td>
-					          <td id="LastAccessTime"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> RemoteAddress</td>
-					          <td id="RemoteAddress"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> RequestCount</td>
-					          <td id="RequestCount"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> RequestTimeMillisTotal</td>
-					          <td id="RequestTimeMillisTotal"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> RequestInterval</td>
-					          <td id="RequestInterval"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> RunningCount</td>
-					          <td id="RunningCount"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> ConcurrentMax</td>
-					          <td id="ConcurrentMax"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> JdbcExecuteCount</td>
-					          <td id="JdbcExecuteCount"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> JdbcExecuteTimeMillis</td>
-					          <td id="JdbcExecuteTimeMillis"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> JdbcCommitCount</td>
-					          <td id="JdbcCommitCount"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> JdbcRollbackCount</td>
-					          <td id="JdbcRollbackCount"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> JdbcFetchRowCount</td>
-					          <td id="JdbcFetchRowCount"></td>
-					        </tr>
-					        <tr>
-					          <td class='td_lable'> JdbcUpdateCount</td>
-					          <td id="JdbcUpdateCount"></td>
-					        </tr>
+								<td  class="td_lable lang" langKey="SESSIONID" width='130'> SESSIONID </td>
+								<td id="SESSIONID"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="UserAgent"> UserAgent </td>
+								<td id="UserAgent"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="Principal"> Principal </td>
+								<td id="Principal"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="CreateTime"> CreateTime </td>
+								<td id="CreateTime"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="LastAccessTime"> LastAccessTime </td>
+								<td id="LastAccessTime"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="RemoteAddress"> RemoteAddress </td>
+								<td id="RemoteAddress"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="RequestCount"> RequestCount </td>
+								<td id="RequestCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="RequestTimeMillisTotal"> RequestTimeMillisTotal </td>
+								<td id="RequestTimeMillisTotal"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="RequestInterval"> RequestInterval </td>
+								<td id="RequestInterval"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="RunningCount"> RunningCount </td>
+								<td id="RunningCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="ConcurrentMax"> ConcurrentMax </td>
+								<td id="ConcurrentMax"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcExecuteCount"> JdbcExecuteCount </td>
+								<td id="JdbcExecuteCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcExecuteTimeMillis"> JdbcExecuteTimeMillis </td>
+								<td id="JdbcExecuteTimeMillis"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcCommitCount"> JdbcCommitCount </td>
+								<td id="JdbcCommitCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcRollbackCount"> JdbcRollbackCount </td>
+								<td id="JdbcRollbackCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcFetchRowCount"> JdbcFetchRowCount </td>
+								<td id="JdbcFetchRowCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcUpdateCount"> JdbcUpdateCount </td>
+								<td id="JdbcUpdateCount"></td>
+								<td></td>
+							</tr>
 				      	</table>
 				      	<div class="container">
 				      		<a class="btn btn-primary" href="javascript:window.close();">Close</a>
@@ -97,7 +116,7 @@
     		var sessionId = druid.common.getUrlVar("sessionId");
     		return  {
     			init : function() {
-    				druid.common.buildHead(5);
+    				druid.common.buildHead(6);
     				this.ajaxRequestForBasicInfo();
     				$("#viewJsonApi").attr("href", 'websession-' + sessionId + '.json');
     			},

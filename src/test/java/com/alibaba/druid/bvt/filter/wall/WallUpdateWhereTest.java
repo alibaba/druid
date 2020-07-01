@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,22 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景，检测可疑的Having条件
+ * 
  * @author wenshao
- *
  */
 public class WallUpdateWhereTest extends TestCase {
-    private String sql = "UPDATE T SET F1 = 0 WHERE 1 = 1";
+
+    private String sql  = "UPDATE T SET F1 = 0 WHERE 1 = 1";
+    private String sql2 = "UPDATE T SET F1 = 0 WHERE id=0 and 1 = 1";
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+        Assert.assertTrue(WallUtils.isValidateMySql(sql));
+        Assert.assertFalse(WallUtils.isValidateMySql(sql2));
     }
-    
+
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        Assert.assertFalse(WallUtils.isValidateOracle(sql2));
     }
+
 }

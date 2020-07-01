@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatement {
 
-    private static final long  serialVersionUID = 1L;
 
-    private PGWithClause       with;
-    private List<ValuesClause> valuesList       = new ArrayList<ValuesClause>();
-    private SQLExpr            returning;
+    private List<ValuesClause>     valuesList = new ArrayList<ValuesClause>();
+    private SQLExpr                returning;
+    private boolean			       defaultValues = false;
+
+    private List<SQLExpr>          onConflictTarget;
+    private SQLName                onConflictConstraint;
+    private SQLExpr                onConflictWhere;
+    private boolean                onConflictDoNothing;
+    private List<SQLUpdateSetItem> onConflictUpdateSetItems;
+
+    public PGInsertStatement() {
+        dbType = JdbcConstants.POSTGRESQL;
+    }
+
+    public void cloneTo(PGInsertStatement x) {
+        super.cloneTo(x);
+        for (ValuesClause v : valuesList) {
+            ValuesClause v2 = v.clone();
+            v2.setParent(x);
+            x.valuesList.add(v2);
+        }
+        if (returning != null) {
+            x.setReturning(returning.clone());
+        }
+        x.defaultValues = defaultValues;
+    }
 
     public SQLExpr getReturning() {
         return returning;
@@ -40,13 +64,6 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
         this.returning = returning;
     }
 
-    public PGWithClause getWith() {
-        return with;
-    }
-
-    public void setWith(PGWithClause with) {
-        this.with = with;
-    }
 
     public ValuesClause getValues() {
         if (valuesList.size() == 0) {
@@ -67,7 +84,20 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
         return valuesList;
     }
 
-    protected void accept0(SQLASTVisitor visitor) {
+    public void addValueCause(ValuesClause valueClause) {
+        valueClause.setParent(this);
+        valuesList.add(valueClause);
+    }
+
+    public boolean isDefaultValues() {
+		return defaultValues;
+	}
+
+	public void setDefaultValues(boolean defaultValues) {
+		this.defaultValues = defaultValues;
+	}
+
+	protected void accept0(SQLASTVisitor visitor) {
         accept0((PGASTVisitor) visitor);
     }
 
@@ -83,5 +113,62 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
         }
 
         visitor.endVisit(this);
+    }
+
+    public PGInsertStatement clone() {
+        PGInsertStatement x = new PGInsertStatement();
+        cloneTo(x);
+        return x;
+    }
+
+    public List<SQLExpr> getOnConflictTarget() {
+        return onConflictTarget;
+    }
+
+    public void setOnConflictTarget(List<SQLExpr> onConflictTarget) {
+        this.onConflictTarget = onConflictTarget;
+    }
+
+    public boolean isOnConflictDoNothing() {
+        return onConflictDoNothing;
+    }
+
+    public void setOnConflictDoNothing(boolean onConflictDoNothing) {
+        this.onConflictDoNothing = onConflictDoNothing;
+    }
+
+    public List<SQLUpdateSetItem> getOnConflictUpdateSetItems() {
+        return onConflictUpdateSetItems;
+    }
+
+    public void addConflicUpdateItem(SQLUpdateSetItem item) {
+        if (onConflictUpdateSetItems == null) {
+            onConflictUpdateSetItems = new ArrayList<SQLUpdateSetItem>();
+        }
+
+        item.setParent(this);
+        onConflictUpdateSetItems.add(item);
+    }
+
+    public SQLName getOnConflictConstraint() {
+        return onConflictConstraint;
+    }
+
+    public void setOnConflictConstraint(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.onConflictConstraint = x;
+    }
+
+    public SQLExpr getOnConflictWhere() {
+        return onConflictWhere;
+    }
+
+    public void setOnConflictWhere(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.onConflictWhere = x;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,33 @@
  */
 package com.alibaba.druid.wall;
 
+import com.alibaba.druid.wall.spi.DB2WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
-import com.alibaba.druid.wall.spi.SQLServerProvider;
+import com.alibaba.druid.wall.spi.PGWallProvider;
+import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 public class WallUtils {
+    public static boolean isValidateDB2(String sql) {
+        DB2WallProvider provider = new DB2WallProvider();
+        return provider.checkValid(sql);
+    }
 
+    public static boolean isValidateDB2(String sql, WallConfig config) {
+        DB2WallProvider provider = new DB2WallProvider(config);
+        return provider.checkValid(sql);
+    }
+    
+    public static boolean isValidatePostgres(String sql) {
+        PGWallProvider provider = new PGWallProvider();
+        return provider.checkValid(sql);
+    }
+
+    public static boolean isValidatePostgres(String sql, WallConfig config) {
+        PGWallProvider provider = new PGWallProvider(config);
+        return provider.checkValid(sql);
+    }
+    
     public static boolean isValidateMySql(String sql) {
         MySqlWallProvider provider = new MySqlWallProvider();
         return provider.checkValid(sql);
@@ -42,12 +63,12 @@ public class WallUtils {
     }
     
     public static boolean isValidateSqlServer(String sql) {
-        SQLServerProvider provider = new SQLServerProvider();
+        SQLServerWallProvider provider = new SQLServerWallProvider();
         return provider.checkValid(sql);
     }
     
     public static boolean isValidateSqlServer(String sql, WallConfig config) {
-        SQLServerProvider provider = new SQLServerProvider(config);
+        SQLServerWallProvider provider = new SQLServerWallProvider(config);
         return provider.checkValid(sql);
     }
 }

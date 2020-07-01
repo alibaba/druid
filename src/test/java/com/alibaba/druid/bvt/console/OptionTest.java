@@ -1,13 +1,14 @@
 package com.alibaba.druid.bvt.console;
 
-import org.junit.runner.notification.Failure;
+import org.junit.Assert;
+import junit.framework.TestCase;
+
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import com.alibaba.druid.support.console.OptionParseException;
-import com.alibaba.druid.support.console.Option;
+import org.junit.runner.notification.Failure;
 
-import junit.framework.TestCase;
-import junit.framework.Assert;
+import com.alibaba.druid.support.console.Option;
+import com.alibaba.druid.support.console.OptionParseException;
 
 public class OptionTest extends TestCase {
 

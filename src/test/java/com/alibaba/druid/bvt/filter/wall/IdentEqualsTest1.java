@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.alibaba.druid.wall.WallUtils;
 
 public class IdentEqualsTest1 extends TestCase {
 
-    private String     sql    = "select * from t where not (id != id)";
+    private String     sql    = "select * from t where FID = 1 OR not (id != id)";
 
     private WallConfig config = new WallConfig();
 

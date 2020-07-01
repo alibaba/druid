@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.Map;
 import com.alibaba.druid.stat.JdbcSqlStat;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public interface StatementProxy extends Statement, WrapperProxy {
 
@@ -42,10 +42,18 @@ public interface StatementProxy extends Statement, WrapperProxy {
 
     String getLastExecuteSql();
     
+    long getLastExecuteStartNano();
+    void setLastExecuteStartNano(long lastExecuteStartNano);
+    void setLastExecuteStartNano();
+    
     long getLastExecuteTimeNano();
     void setLastExecuteTimeNano(long nano);
+    void setLastExecuteTimeNano();
     
     Map<Integer, JdbcParameter> getParameters();
+    
+    int getParametersSize();
+    JdbcParameter getParameter(int i);
     
     boolean isFirstResultSet();
 }

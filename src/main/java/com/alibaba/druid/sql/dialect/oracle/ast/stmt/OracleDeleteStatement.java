@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +23,17 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleDeleteStatement extends SQLDeleteStatement {
 
-    private static final long      serialVersionUID = 1L;
 
-    private boolean                only             = false;
-    
-    private final List<SQLHint> hints            = new ArrayList<SQLHint>();
-    private OracleReturningClause  returning        = null;
+
+    private final List<SQLHint>   hints     = new ArrayList<SQLHint>();
+    private OracleReturningClause returning = null;
 
     public OracleDeleteStatement(){
-
+        super (JdbcConstants.ORACLE);
     }
 
     public OracleReturningClause getReturning() {
@@ -64,13 +63,20 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
         visitor.endVisit(this);
     }
 
-    public boolean isOnly() {
-        return this.only;
+    public OracleDeleteStatement clone() {
+        OracleDeleteStatement x = new OracleDeleteStatement();
+        cloneTo(x);
+
+        for (SQLHint hint : hints) {
+            SQLHint hint2 = hint.clone();
+            hint2.setParent(x);
+            x.hints.add(hint2);
+        }
+        if (returning != null) {
+            x.setReturning(returning.clone());
+        }
+
+        return x;
     }
 
-    public void setOnly(boolean only) {
-        this.only = only;
-    }
-
- 
 }

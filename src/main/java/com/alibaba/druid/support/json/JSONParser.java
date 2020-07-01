@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.alibaba.druid.sql.parser.CharTypes;
 
 public class JSONParser {
 
@@ -69,17 +71,17 @@ public class JSONParser {
         if (token == Token.LBRACKET) {
             return parseArray();
         }
-        
+
         if (token == Token.TRUE) {
             nextToken();
             return true;
         }
-        
+
         if (token == Token.FALSE) {
             nextToken();
             return false;
         }
-        
+
         if (token == Token.NULL) {
             nextToken();
             return null;
@@ -150,7 +152,7 @@ public class JSONParser {
             return;
         }
 
-        throw new IllegalArgumentException("illegal token : " + token + ", expect " + token);
+        throw new IllegalArgumentException("illegal token : " + this.token + ", expect " + token);
     }
 
     final void nextToken() {
@@ -160,7 +162,7 @@ public class JSONParser {
         }
 
         for (;;) {
-            if (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t') {
+            if (CharTypes.isWhitespace(ch)) {
                 nextChar();
                 continue;
             }
@@ -206,7 +208,7 @@ public class JSONParser {
                     scanDigit();
                     return;
                 }
-                
+
                 if (text.startsWith("null", index)) {
                     token = Token.NULL;
                     index += 3;
@@ -220,7 +222,7 @@ public class JSONParser {
                     nextChar();
                     return;
                 }
-                
+
                 if (text.startsWith("false", index)) {
                     token = Token.FALSE;
                     index += 4;
@@ -299,6 +301,17 @@ public class JSONParser {
                     strBuf.append('\f');
                 } else if (ch == 't') {
                     strBuf.append('\t');
+                } else if (ch == 'u') {
+                    nextChar();
+                    char c1 = ch;
+                    nextChar();
+                    char c2 = ch;
+                    nextChar();
+                    char c3 = ch;
+                    nextChar();
+                    char c4 = ch;
+                    int val = Integer.parseInt(new String(new char[] { c1, c2, c3, c4 }), 16);
+                    strBuf.append((char) val);
                 } else {
                     throw new IllegalArgumentException("illegal string : " + strBuf);
                 }

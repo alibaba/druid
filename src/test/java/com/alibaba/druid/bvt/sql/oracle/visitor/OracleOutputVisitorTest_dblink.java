@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -44,12 +44,12 @@ public class OracleOutputVisitorTest_dblink extends TestCase {
         Assert.assertEquals(true, visitor.containsTable("master@emp"));
 
         Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("master@emp", "salary")));
+        Assert.assertEquals(true, visitor.containsColumn("master@emp", "salary"));
 
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
-        Assert.assertEquals("SELECT salary\nFROM master@emp;\n", buf.toString());
+        Assert.assertEquals("SELECT salary\nFROM master@emp", buf.toString());
 
     }
 }

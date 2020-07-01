@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,10 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.MysqlTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
@@ -33,18 +34,28 @@ public class MySqlDeleteTest_1 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-        print(statementList);
+        SQLStatement stmt = statementList.get(0);
+        
+        Assert.assertEquals("DELETE FROM a1, a2\n" +
+                "USING t1 a1\n" +
+                "\tINNER JOIN t2 a2\n" +
+                "WHERE a1.id = a2.id;", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("delete from a1, a2\n" +
+                "using t1 a1\n" +
+                "\tinner join t2 a2\n" +
+                "where a1.id = a2.id;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());
 
+        System.out.println(stmt.toString());
+
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());

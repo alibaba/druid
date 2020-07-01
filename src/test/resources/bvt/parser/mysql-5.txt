@@ -8,7 +8,7 @@ ORDER BY e.word_alias,a.createtime DESC
 
 
 ---------------------------
-SELECT COUNT(*)
+SELECT /*+ use_hash(a b e) index(e)*/ COUNT(*)
 FROM q_matchrelation a, q_offerdetail b, q_keyword e, Q_ADCREATIVE f
 WHERE a.offerid = b.offerid
 	AND a.keywordid = e.keywordid

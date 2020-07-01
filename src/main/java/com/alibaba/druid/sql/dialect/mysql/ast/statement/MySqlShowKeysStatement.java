@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,10 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlShowKeysStatement extends MySqlStatementImpl {
+public class MySqlShowKeysStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLName           table;
-    private SQLName           database;
+    private SQLName table;
+    private SQLName database;
 
     public SQLName getTable() {
         return table;

@@ -1,5 +1,0 @@
-sp_executesql
-user_name
-is_srvrolemember
-DB_NAME
-HOST_NAME

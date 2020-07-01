@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,48 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateDatabaseStatement extends SQLStatementImpl {
+public class SQLCreateDatabaseStatement extends SQLStatementImpl implements SQLCreateStatement {
 
-    private static final long serialVersionUID = 1L;
+    private SQLName              name;
 
-    private SQLName           name;
+    private String               characterSet;
+    private String               collate;
 
-    private String            characterSet;
-    private String            collate;
+    private List<SQLCommentHint> hints;
+    
+    protected boolean            ifNotExists = false;
 
     public SQLCreateDatabaseStatement(){
     }
     
+    public SQLCreateDatabaseStatement(String dbType){
+        super (dbType);
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (name != null) {
+            children.add(name);
+        }
+        return children;
     }
 
     public SQLName getName() {
@@ -61,6 +81,22 @@ public class SQLCreateDatabaseStatement extends SQLStatementImpl {
 
     public void setCollate(String collate) {
         this.collate = collate;
+    }
+
+    public List<SQLCommentHint> getHints() {
+        return hints;
+    }
+
+    public void setHints(List<SQLCommentHint> hints) {
+        this.hints = hints;
+    }
+    
+    public boolean isIfNotExists() {
+        return ifNotExists;
+    }
+    
+    public void setIfNotExists(boolean ifNotExists) {
+        this.ifNotExists = ifNotExists;
     }
 
 }

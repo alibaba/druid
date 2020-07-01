@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class TestOnlineSQLTest3 extends TestCase {
 
-    private String       url      = "jdbc:mysql://10.20.144.27/dragoon_v25_masterdb";
+    private String       url      = "jdbc:mysql://a.b.c.d/dragoon_v25_masterdb";
     private String       user     = "dragoon_test";
     private String       password = "dragoon_test";
 

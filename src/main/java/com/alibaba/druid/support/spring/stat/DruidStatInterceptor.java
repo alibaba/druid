@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,13 @@ import com.alibaba.druid.support.logging.LogFactory;
 
 public class DruidStatInterceptor implements MethodInterceptor, InitializingBean, DisposableBean {
 
-    public static final String          PROP_NAME_PORFILE   = "druid.profile";
+    public static final String          PROP_NAME_PROFILE   = "druid.profile";
 
     private final static Log            LOG                 = LogFactory.getLog(DruidStatInterceptor.class);
 
     private static SpringStat           springStat          = new SpringStat();
 
-    private SpringMethodContextListener statContextlistener = new SpringMethodContextListener();
+    private SpringMethodContextListener statContextListener = new SpringMethodContextListener();
 
     public DruidStatInterceptor(){
 
@@ -46,12 +46,12 @@ public class DruidStatInterceptor implements MethodInterceptor, InitializingBean
     public void afterPropertiesSet() throws Exception {
         SpringStatManager.getInstance().addSpringStat(springStat);
 
-        StatFilterContext.getInstance().addContextListener(statContextlistener);
+        StatFilterContext.getInstance().addContextListener(statContextListener);
     }
 
     @Override
     public void destroy() throws Exception {
-        StatFilterContext.getInstance().removeContextListener(statContextlistener);
+        StatFilterContext.getInstance().removeContextListener(statContextListener);
     }
 
     @Override
@@ -70,9 +70,7 @@ public class DruidStatInterceptor implements MethodInterceptor, InitializingBean
 
         Throwable error = null;
         try {
-            Object returnObject = invocation.proceed();
-
-            return returnObject;
+            return invocation.proceed();
         } catch (Throwable e) {
             error = e;
             throw e;

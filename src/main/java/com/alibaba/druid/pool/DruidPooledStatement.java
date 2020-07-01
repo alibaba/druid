@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.pool;
 
+import java.net.SocketTimeoutException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,12 +25,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import com.alibaba.druid.VERSION;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.MySqlUtils;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
@@ -37,15 +41,23 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     private final Statement         stmt;
     protected DruidPooledConnection conn;
-    protected final List<ResultSet> resultSetTrace = new ArrayList<ResultSet>();
+    protected List<ResultSet>       resultSetTrace;
     protected boolean               closed         = false;
     protected int                   fetchRowPeak   = -1;
+    protected int                   exceptionCount = 0;
 
     public DruidPooledStatement(DruidPooledConnection conn, Statement stmt){
         super(stmt);
 
         this.conn = conn;
         this.stmt = stmt;
+    }
+
+    protected void addResultSetTrace(ResultSet resultSet) {
+        if (resultSetTrace == null) {
+            resultSetTrace = new ArrayList<ResultSet>(1);
+        }
+        resultSetTrace.add(resultSet);
     }
 
     protected void recordFetchRowCount(int fetchRowCount) {
@@ -59,7 +71,94 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     protected SQLException checkException(Throwable error) throws SQLException {
-        return conn.handleException(error);
+        String sql = null;
+        if (this instanceof DruidPooledPreparedStatement) {
+            sql = ((DruidPooledPreparedStatement) this).getSql();
+        }
+
+        handleSocketTimeout(error);
+
+        exceptionCount++;
+        return conn.handleException(error, sql);
+    }
+
+    protected SQLException checkException(Throwable error, String sql) throws SQLException {
+        handleSocketTimeout(error);
+
+        exceptionCount++;
+        return conn.handleException(error, sql);
+    }
+
+    protected void handleSocketTimeout(Throwable error) throws SQLException {
+        if (this.conn == null
+                || this.conn.transactionInfo != null
+                || this.conn.holder == null) {
+            return;
+        }
+
+        DruidDataSource dataSource = null;
+
+        final DruidConnectionHolder holder = this.conn.holder;
+        if (holder.dataSource instanceof DruidDataSource) {
+            dataSource = (DruidDataSource) holder.dataSource;
+        }
+        if (dataSource == null) {
+            return;
+        }
+
+        if (!dataSource.killWhenSocketReadTimeout) {
+            return;
+        }
+
+        SQLException sqlException = null;
+        if (error instanceof SQLException) {
+            sqlException = (SQLException) error;
+        }
+
+        if (sqlException == null) {
+            return;
+        }
+
+
+        Throwable cause = error.getCause();
+        boolean socketReadTimeout = cause instanceof SocketTimeoutException
+                && "Read timed out".equals(cause.getMessage());
+        if (!socketReadTimeout) {
+            return;
+        }
+
+        if (!JdbcConstants.MYSQL.equals(dataSource.dbType)) {
+            return;
+        }
+
+        String killQuery = MySqlUtils.buildKillQuerySql(this.conn.getConnection(), (SQLException) error);
+
+        if (killQuery == null) {
+            return;
+        }
+
+        DruidPooledConnection killQueryConn = null;
+        Statement killQueryStmt = null;
+
+
+        try {
+            killQueryConn = dataSource.getConnection(1000);
+            if (killQueryConn == null) {
+                return;
+            }
+
+            killQueryStmt = killQueryConn.createStatement();
+            killQueryStmt.execute(killQuery);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(killQuery + " success.");
+            }
+        } catch (Exception ex) {
+            LOG.warn(killQuery + " error.", ex);
+        } finally {
+            JdbcUtils.close(killQueryStmt);
+            JdbcUtils.close(killQueryConn);
+        }
     }
 
     public DruidPooledConnection getPoolableConnection() {
@@ -72,11 +171,24 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     protected void checkOpen() throws SQLException {
         if (closed) {
-            throw new SQLException("statement is closed");
+            Throwable disableError = null;
+            if (this.conn != null) {
+                disableError = this.conn.getDisableError();
+            }
+
+            if (disableError != null) {
+                throw new SQLException("statement is closed", disableError);
+            } else {
+                throw new SQLException("statement is closed");
+            }
         }
     }
 
     protected void clearResultSet() {
+        if (resultSetTrace == null) {
+            return;
+        }
+
         for (ResultSet rs : resultSetTrace) {
             try {
                 if (!rs.isClosed()) {
@@ -90,7 +202,83 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     public void incrementExecuteCount() {
-        this.getPoolableConnection().getConnectionHolder().getDataSource().incrementExecuteCount();
+        final DruidPooledConnection conn = this.getPoolableConnection();
+        if (conn == null) {
+            return;
+        }
+
+        final DruidConnectionHolder holder = conn.getConnectionHolder();
+        if (holder == null) {
+            return;
+        }
+
+        final DruidAbstractDataSource dataSource = holder.getDataSource();
+        if (dataSource == null) {
+            return;
+        }
+
+        dataSource.incrementExecuteCount();
+    }
+
+    public void incrementExecuteBatchCount() {
+        final DruidPooledConnection conn = this.getPoolableConnection();
+        if (conn == null) {
+            return;
+        }
+
+        final DruidConnectionHolder holder = conn.getConnectionHolder();
+        if (holder == null) {
+            return;
+        }
+
+        if (holder.getDataSource() == null) {
+            return;
+        }
+
+        final DruidAbstractDataSource dataSource = holder.getDataSource();
+        if (dataSource == null) {
+            return;
+        }
+
+        dataSource.incrementExecuteBatchCount();
+    }
+
+    public void incrementExecuteUpdateCount() {
+        final DruidPooledConnection conn = this.getPoolableConnection();
+        if (conn == null) {
+            return;
+        }
+
+        final DruidConnectionHolder holder = conn.getConnectionHolder();
+        if (holder == null) {
+            return;
+        }
+
+        final DruidAbstractDataSource dataSource = holder.getDataSource();
+        if (dataSource == null) {
+            return;
+        }
+
+        dataSource.incrementExecuteUpdateCount();
+    }
+
+    public void incrementExecuteQueryCount() {
+        final DruidPooledConnection conn = this.getPoolableConnection();
+        if (conn == null) {
+            return;
+        }
+
+        final DruidConnectionHolder holder = conn.getConnectionHolder();
+        if (holder == null) {
+            return;
+        }
+
+        final DruidAbstractDataSource dataSource = holder.getDataSource();
+        if (dataSource == null) {
+            return;
+        }
+
+        dataSource.incrementExecuteQueryCount();
     }
 
     protected void transactionRecord(String sql) throws SQLException {
@@ -101,23 +289,25 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     public final ResultSet executeQuery(String sql) throws SQLException {
         checkOpen();
 
-        incrementExecuteCount();
+        incrementExecuteQueryCount();
         transactionRecord(sql);
 
         conn.beforeExecute();
         try {
             ResultSet rs = stmt.executeQuery(sql);
-            
+
             if (rs == null) {
                 return rs;
             }
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
 
             return poolableResultSet;
         } catch (Throwable t) {
-            throw checkException(t);
+            errorCheck(t);
+
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -127,16 +317,55 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     public final int executeUpdate(String sql) throws SQLException {
         checkOpen();
 
-        incrementExecuteCount();
+        incrementExecuteUpdateCount();
         transactionRecord(sql);
 
         conn.beforeExecute();
         try {
             return stmt.executeUpdate(sql);
         } catch (Throwable t) {
-            throw checkException(t);
+            errorCheck(t);
+
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
+        }
+    }
+
+    protected final void errorCheck(Throwable t) {
+        String errorClassName = t.getClass().getName();
+        if (errorClassName.endsWith(".CommunicationsException")
+                && conn.holder != null
+                && conn.holder.dataSource.testWhileIdle)
+        {
+            DruidConnectionHolder holder = conn.holder;
+            DruidAbstractDataSource dataSource = holder.dataSource;
+
+            long currentTimeMillis = System.currentTimeMillis();
+            long lastActiveTimeMillis = holder.lastActiveTimeMillis;
+
+            if (lastActiveTimeMillis < holder.lastKeepTimeMillis) {
+                lastActiveTimeMillis = holder.lastKeepTimeMillis;
+            }
+
+            long idleMillis = currentTimeMillis - lastActiveTimeMillis;
+            long lastValidIdleMillis = currentTimeMillis - holder.lastActiveTimeMillis;
+
+            String errorMsg = "CommunicationsException, druid version " + VERSION.getVersionNumber()
+                    + ", jdbcUrl : " + dataSource.jdbcUrl
+                    + ", testWhileIdle " + dataSource.testWhileIdle
+                    + ", idle millis " + idleMillis
+                    + ", minIdle " + dataSource.minIdle
+                    + ", poolingCount " + dataSource.getPoolingCount()
+                    + ", timeBetweenEvictionRunsMillis " + dataSource.timeBetweenEvictionRunsMillis
+                    + ", lastValidIdleMillis " + lastValidIdleMillis
+                    + ", driver " + dataSource.driver.getClass().getName();
+
+            if (dataSource.exceptionSorter != null) {
+                errorMsg += ", exceptionSorter " + dataSource.exceptionSorter.getClass().getName();
+            }
+
+            LOG.error(errorMsg);
         }
     }
 
@@ -144,14 +373,16 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     public final int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
         checkOpen();
 
-        incrementExecuteCount();
+        incrementExecuteUpdateCount();
         transactionRecord(sql);
 
         conn.beforeExecute();
         try {
             return stmt.executeUpdate(sql, autoGeneratedKeys);
         } catch (Throwable t) {
-            throw checkException(t);
+            errorCheck(t);
+
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -161,14 +392,16 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     public final int executeUpdate(String sql, int columnIndexes[]) throws SQLException {
         checkOpen();
 
-        incrementExecuteCount();
+        incrementExecuteUpdateCount();
         transactionRecord(sql);
 
         conn.beforeExecute();
         try {
             return stmt.executeUpdate(sql, columnIndexes);
         } catch (Throwable t) {
-            throw checkException(t);
+            errorCheck(t);
+
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -178,14 +411,16 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     public final int executeUpdate(String sql, String columnNames[]) throws SQLException {
         checkOpen();
 
-        incrementExecuteCount();
+        incrementExecuteUpdateCount();
         transactionRecord(sql);
 
         conn.beforeExecute();
         try {
             return stmt.executeUpdate(sql, columnNames);
         } catch (Throwable t) {
-            throw checkException(t);
+            errorCheck(t);
+
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -202,7 +437,9 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         try {
             return stmt.execute(sql, autoGeneratedKeys);
         } catch (Throwable t) {
-            throw checkException(t);
+            errorCheck(t);
+
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -219,7 +456,9 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         try {
             return stmt.execute(sql, columnIndexes);
         } catch (Throwable t) {
-            throw checkException(t);
+            errorCheck(t);
+
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -236,7 +475,9 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         try {
             return stmt.execute(sql, columnNames);
         } catch (Throwable t) {
-            throw checkException(t);
+            errorCheck(t);
+
+            throw checkException(t, sql);
         } finally {
             conn.afterExecute();
         }
@@ -252,14 +493,22 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             throw checkException(t);
         }
     }
-    
+
     @Override
     public void close() throws SQLException {
-        if (!this.closed) {
-            clearResultSet();
+        if (this.closed) {
+            return;
+        }
+
+        clearResultSet();
+        if (stmt != null) {
             stmt.close();
-            this.closed = true;
-            conn.getConnectionHolder().removeTrace(this);
+        }
+        this.closed = true;
+
+        DruidConnectionHolder connHolder = conn.getConnectionHolder();
+        if (connHolder != null) {
+            connHolder.removeTrace(this);
         }
     }
 
@@ -383,7 +632,9 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         try {
             return stmt.execute(sql);
         } catch (Throwable t) {
-            throw checkException(t);
+            errorCheck(t);
+
+            throw checkException(t, sql);
         }
     }
 
@@ -398,7 +649,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             }
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
 
             return poolableResultSet;
         } catch (Throwable t) {
@@ -422,7 +673,17 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         checkOpen();
 
         try {
-            return stmt.getMoreResults();
+            boolean moreResults = stmt.getMoreResults();
+
+            if (resultSetTrace != null && resultSetTrace.size() > 0) {
+                ResultSet lastResultSet = resultSetTrace.get(resultSetTrace.size() - 1);
+                if (lastResultSet instanceof DruidPooledResultSet) {
+                    DruidPooledResultSet pooledResultSet = ((DruidPooledResultSet) lastResultSet);
+                    pooledResultSet.closed = true;
+                }
+            }
+
+            return moreResults;
         } catch (Throwable t) {
             throw checkException(t);
         }
@@ -503,13 +764,15 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         try {
             stmt.addBatch(sql);
         } catch (Throwable t) {
-            throw checkException(t);
+            throw checkException(t, sql);
         }
     }
 
     @Override
     public final void clearBatch() throws SQLException {
-        checkOpen();
+        if (closed) {
+            return;
+        }
 
         try {
             stmt.clearBatch();
@@ -522,12 +785,14 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     public int[] executeBatch() throws SQLException {
         checkOpen();
 
-        incrementExecuteCount();
+        incrementExecuteBatchCount();
 
         conn.beforeExecute();
         try {
             return stmt.executeBatch();
         } catch (Throwable t) {
+            errorCheck(t);
+
             throw checkException(t);
         } finally {
             conn.afterExecute();
@@ -546,7 +811,17 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         checkOpen();
 
         try {
-            return stmt.getMoreResults(current);
+            boolean results = stmt.getMoreResults(current);
+
+            if (resultSetTrace != null && resultSetTrace.size() > 0) {
+                ResultSet lastResultSet = resultSetTrace.get(resultSetTrace.size() - 1);
+                if (lastResultSet instanceof DruidPooledResultSet) {
+                    DruidPooledResultSet pooledResultSet = ((DruidPooledResultSet) lastResultSet);
+                    pooledResultSet.closed = true;
+                }
+            }
+
+            return results;
         } catch (Throwable t) {
             throw checkException(t);
         }
@@ -561,7 +836,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
 
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
 
             return poolableResultSet;
         } catch (Throwable t) {
@@ -604,22 +879,10 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     public void closeOnCompletion() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        stmt.closeOnCompletion();
     }
 
     public boolean isCloseOnCompletion() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == Statement.class) {
-            if (stmt instanceof StatementProxy) {
-                return stmt.unwrap(iface);
-            }
-            return (T) stmt;
-        }
-
-        return super.unwrap(iface);
+        return stmt.isCloseOnCompletion();
     }
 }

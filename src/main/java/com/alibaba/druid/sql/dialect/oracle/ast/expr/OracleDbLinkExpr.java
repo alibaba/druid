@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,31 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-    private SQLExpr           expr;
-    private String            dbLink;
+    private SQLExpr expr;
+    private String  dbLink;
+
+    private long    dbLinkHashCode64;
+    private long    hashCode64;
+
 
     public OracleDbLinkExpr(){
 
     }
-    
-    public String getSimleName() {
+
+    public String getSimpleName() {
         return dbLink;
     }
 
@@ -71,12 +79,14 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
     }
 
     @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.expr);
+    }
+
+    @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((dbLink == null) ? 0 : dbLink.hashCode());
-        result = prime * result + ((expr == null) ? 0 : expr.hashCode());
-        return result;
+        long value = hashCode64();
+        return (int)(value ^ (value >>> 32));
     }
 
     @Override
@@ -91,20 +101,47 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
             return false;
         }
         OracleDbLinkExpr other = (OracleDbLinkExpr) obj;
-        if (dbLink == null) {
-            if (other.dbLink != null) {
-                return false;
-            }
-        } else if (!dbLink.equals(other.dbLink)) {
-            return false;
+        return this.hashCode64() == other.hashCode64();
+    }
+
+    public OracleDbLinkExpr clone() {
+        OracleDbLinkExpr x = new OracleDbLinkExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
         }
-        if (expr == null) {
-            if (other.expr != null) {
-                return false;
-            }
-        } else if (!expr.equals(other.expr)) {
-            return false;
+        x.dbLink = dbLink;
+        return x;
+    }
+
+    public long nameHashCode64() {
+        if (dbLinkHashCode64 == 0
+                && dbLink != null) {
+            dbLinkHashCode64 = FnvHash.hashCode64(dbLink);
         }
-        return true;
+        return dbLinkHashCode64;
+    }
+
+    @Override
+    public long hashCode64() {
+        if (hashCode64 == 0) {
+            long hash;
+            if (expr instanceof SQLName) {
+                hash = ((SQLName) expr).hashCode64();
+
+                hash ^= '@';
+                hash *= FnvHash.PRIME;
+            } else if (expr == null){
+                hash = FnvHash.BASIC;
+            } else {
+                hash = FnvHash.fnv1a_64_lower(expr.toString());
+
+                hash ^= '@';
+                hash *= FnvHash.PRIME;
+            }
+            hash = FnvHash.hashCode64(hash, dbLink);
+            hashCode64 = hash;
+        }
+
+        return hashCode64;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class SpringStat {
 
-    private ConcurrentMap<SpringMethodInfo, SpringMethodStat> methodStats = new ConcurrentHashMap<SpringMethodInfo, SpringMethodStat>();
+    private ConcurrentMap<SpringMethodInfo, SpringMethodStat> methodStats = new ConcurrentHashMap<SpringMethodInfo, SpringMethodStat>(16, 0.75f, 1);
 
     public SpringStat(){
 
@@ -48,6 +48,22 @@ public class SpringStat {
 
         return methodStat;
     }
+    
+    public List<SpringMethodStatValue> getStatList(boolean reset) {
+        List<SpringMethodStatValue> statValueList = new ArrayList<SpringMethodStatValue>(this.methodStats.size());
+        
+        for (SpringMethodStat methodStat : this.methodStats.values()) {
+            SpringMethodStatValue statValue = methodStat.getStatValue(reset);
+            
+            if (statValue.getRunningCount() == 0 && statValue.getExecuteCount() == 0) {
+                continue;
+            }
+            
+            statValueList.add(statValue);
+        }
+        
+        return statValueList;
+    }
 
     public List<Map<String, Object>> getMethodStatDataList() {
         List<Map<String, Object>> methodStatDataList = new ArrayList<Map<String, Object>>(this.methodStats.size());
@@ -69,7 +85,8 @@ public class SpringStat {
     public Map<String, Object> getMethodStatData(String clazz, String method) {
         for (SpringMethodStat methodStat : this.methodStats.values()) {
             SpringMethodInfo methodInfo = methodStat.getMethodInfo();
-            if (methodInfo.getClassName().equals(clazz) && methodInfo.getSignature().equals(method)) {
+            if (methodInfo.getClassName().equals(clazz)
+                    && methodInfo.getSignature().equals(method)) {
                 return methodStat.getStatData();
             }
         }

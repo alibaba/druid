@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -48,7 +48,27 @@ public class Kill_Test extends TestCase {
     	Assert.assertEquals("KILL CONNECTION 233;", text);
     }
 
+    public void test_2() throws Exception {
+        String sql = "KILL 233";
+        
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        
+        String text = output(stmtList);
+        
+        Assert.assertEquals("KILL 233;", text);
+    }
 
+    public void test_3() throws Exception {
+        String sql = "KILL 233,234";
+        
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        
+        String text = output(stmtList);
+        
+        Assert.assertEquals("KILL 233, 234;", text);
+    }
     private String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
 

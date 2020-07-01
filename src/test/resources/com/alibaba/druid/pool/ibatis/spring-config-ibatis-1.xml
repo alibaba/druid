@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+	default-lazy-init="false">
+
+	<bean
+		class="com.alibaba.druid.support.ibatis.SpringIbatisBeanNameAutoProxyCreator">
+		<property name="proxyBeanNames">
+			<list>
+				<value>master-sqlMapClient</value>
+				<!-- config error test -->
+				<value>sequence-dao</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		id="master-sqlMapClient">
+		<property name="configLocation"
+			value="com/alibaba/druid/pool/ibatis/ibatis-config-druid-test.xml" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="sequence-dao" class="com.alibaba.druid.spring.SequenceDao">
+		<property name="sqlMapClient" ref="master-sqlMapClient" />
+	</bean>
+	<bean id="sequence-service" class="com.alibaba.druid.spring.SequenceService">
+		<property name="dao" ref="sequence-dao" />
+	</bean>
+
+	<bean id="user-dao" class="com.alibaba.druid.spring.UserDao">
+		<property name="sqlMapClient" ref="master-sqlMapClient" />
+	</bean>
+	<bean id="user-service" class="com.alibaba.druid.spring.UserService">
+		<property name="dao" ref="user-dao" />
+		<property name="sequenceService" ref="sequence-service" />
+	</bean>
+
+	<import resource="classpath:com/alibaba/druid/pool/dataSource.xml" />
+</beans>

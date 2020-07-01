@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
  * }
  * </pre>
  * 
- * @author yunnysunny<yunnysunny@gmail.com>
+ * @author yunnysunny [yunnysunny@gmail.com]
  * */
 public class DruidDataSourcePanel extends DruidPanel {
 
@@ -73,7 +73,7 @@ public class DruidDataSourcePanel extends DruidPanel {
     }
 
     private void addTable(ColumnData columnData) {
-        ArrayList<ArrayList<LinkedHashMap<String, Object>>> data = columnData.getTableDatas();
+        ArrayList<ArrayList<LinkedHashMap<String, Object>>> data = columnData.getTableData();
 
         int i = 0;
         ArrayList<String> ids = columnData.getNames();
@@ -98,7 +98,7 @@ public class DruidDataSourcePanel extends DruidPanel {
 
     @Override
     protected void tableDataProcess(ArrayList<LinkedHashMap<String, Object>> data) {
-        ColumnData columnData = TableDataProcessor.mutilRow2col(data, KEY_WORD_IDENTITY);
+        ColumnData columnData = TableDataProcessor.multiRow2Col(data, KEY_WORD_IDENTITY);
         contentPanel = new JPanel(new GridLayout(0, 1));
         addTable(columnData);
 

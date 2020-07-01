@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import java.io.Writer;
 
 import junit.framework.TestCase;
 
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 
 public class TestReplaceLicense extends TestCase {
 
@@ -36,7 +36,7 @@ public class TestReplaceLicense extends TestCase {
     protected void setUp() throws Exception {
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("License.txt");
         Reader reader = new InputStreamReader(is);
-        license = IOUtils.read(reader);
+        license = Utils.read(reader);
         reader.close();
         System.out.println(license);
 
@@ -65,7 +65,7 @@ public class TestReplaceLicense extends TestCase {
     public void listJavaFile(File file) throws Exception {
         FileInputStream in = new FileInputStream(file);
         InputStreamReader reader = new InputStreamReader(in, "utf-8");
-        String content = IOUtils.read(reader);
+        String content = Utils.read(reader);
         reader.close();
 
         if (!content.startsWith(license)) {

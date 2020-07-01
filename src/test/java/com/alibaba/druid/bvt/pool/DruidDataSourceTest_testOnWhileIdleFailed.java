@@ -10,12 +10,12 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 
 /**
  * 这个场景测试defaultAutoCommit
  * 
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_testOnWhileIdleFailed extends TestCase {
 
@@ -30,7 +30,7 @@ public class DruidDataSourceTest_testOnWhileIdleFailed extends TestCase {
         dataSource.setTestWhileIdle(true);
         dataSource.setTimeBetweenEvictionRunsMillis(20);
         dataSource.setValidationQuery("select 'x'");
-        dataSource.setValidConnectionChecker(new ValidConnectionChecker() {
+        dataSource.setValidConnectionChecker(new ValidConnectionCheckerAdapter() {
 
             @Override
             public boolean isValidConnection(Connection c, String query, int validationQueryTimeout) {

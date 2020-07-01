@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
+import junit.framework.TestCase;
+
+import org.junit.Assert;
+
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class OracleIsASetTest extends TestCase {
 
@@ -33,7 +34,7 @@ public class OracleIsASetTest extends TestCase {
         String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT customer_id, cust_address_ntab\n" + "FROM customers_demo\n"
-                            + "WHERE cust_address_ntab IS A SET;\n", text);
+                            + "WHERE cust_address_ntab IS A SET;", text);
 
         System.out.println(text);
     }

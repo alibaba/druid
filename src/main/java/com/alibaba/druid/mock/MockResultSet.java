@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,16 @@ import com.alibaba.druid.util.jdbc.ResultSetBase;
 
 public class MockResultSet extends ResultSetBase implements ResultSet {
 
-    private int                   rowIndex = -1;
-    private List<Object[]>        rows     = new ArrayList<Object[]>();
+    private int            rowIndex = -1;
+    private List<Object[]> rows;
 
     public MockResultSet(Statement statement){
+        this(statement, new ArrayList<Object[]>());
+    }
+
+    public MockResultSet(Statement statement, List<Object[]> rows){
         super(statement);
+        this.rows = rows;
         super.metaData = new MockResultSetMetaData();
     }
 
@@ -51,7 +56,6 @@ public class MockResultSet extends ResultSetBase implements ResultSet {
         return false;
     }
 
-  
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
         if (closed) {

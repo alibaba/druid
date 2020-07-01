@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,15 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.Properties;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.util.Utils;
 
 public class WrapImplTest extends TestCase {
 
@@ -54,9 +56,12 @@ public class WrapImplTest extends TestCase {
         Assert.assertEquals(url, dataSource.getUrl());
         Assert.assertEquals("jdbc:derby:classpath:petstore-db", dataSource.getRawUrl());
         Assert.assertEquals(10, dataSource.getRawDriverMajorVersion());
-        Assert.assertEquals(8, dataSource.getRawDriverMinorVersion());
+        Assert.assertEquals(12, dataSource.getRawDriverMinorVersion());
 
-        Assert.assertFalse(connection.isWrapperFor(com.mysql.jdbc.Connection.class));
+        Class<?> mysql5ConnectionClass = Utils.loadClass("com.mysql.jdbc.Connection");
+        if (mysql5ConnectionClass != null) {
+            Assert.assertFalse(connection.isWrapperFor(mysql5ConnectionClass));
+        }
         Assert.assertTrue(connection.isWrapperFor(ConnectionProxyImpl.class));
         Assert.assertTrue(connection.isWrapperFor(org.apache.derby.impl.jdbc.EmbedConnection.class));
         Assert.assertNotNull(connection.unwrap(ConnectionProxyImpl.class));
@@ -66,7 +71,9 @@ public class WrapImplTest extends TestCase {
         Assert.assertNotNull(derbyConnection);
 
         Statement statement = connection.createStatement();
-        Assert.assertFalse(statement.isWrapperFor(com.mysql.jdbc.Statement.class));
+        if (mysql5ConnectionClass != null) {
+            Assert.assertFalse(statement.isWrapperFor(Class.forName("com.mysql.jdbc.Statement")));
+        }
         Assert.assertFalse(statement.isWrapperFor(null));
         Assert.assertTrue(statement.isWrapperFor(org.apache.derby.impl.jdbc.EmbedStatement.class));
 
@@ -75,4 +82,8 @@ public class WrapImplTest extends TestCase {
         statement.close();
     }
 
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
 }

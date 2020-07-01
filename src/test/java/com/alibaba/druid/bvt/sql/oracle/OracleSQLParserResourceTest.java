@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleSQLParserResourceTest extends TestCase {
@@ -45,7 +45,7 @@ public class OracleSQLParserResourceTest extends TestCase {
 
         is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
         Reader reader = new InputStreamReader(is, "UTF-8");
-        String input = IOUtils.read(reader);
+        String input = Utils.read(reader);
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,51 +19,65 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareConditionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareHandlerStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterEventStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterLogFileGroupStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterServerStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAlterColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTablespaceStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlChecksumTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateAddLogFileGroupStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateEventStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateServerStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableSpaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlEventSchedule;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlFlushStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlOptimizeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
@@ -78,6 +92,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateProcedur
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTriggerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateViewStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasePartitionStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
@@ -103,27 +118,19 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveHostsStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface MySqlASTVisitor extends SQLASTVisitor {
-
-    boolean visit(MySqlBooleanExpr x);
-
-    void endVisit(MySqlBooleanExpr x);
-
-    boolean visit(MySqlSelectQueryBlock.Limit x);
-
-    void endVisit(MySqlSelectQueryBlock.Limit x);
-
     boolean visit(MySqlTableIndex x);
 
     void endVisit(MySqlTableIndex x);
@@ -136,9 +143,13 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlPrimaryKey x);
 
-    void endVisit(MySqlIntervalExpr x);
+    boolean visit(MySqlUnique x);
 
-    boolean visit(MySqlIntervalExpr x);
+    void endVisit(MySqlUnique x);
+
+    boolean visit(MysqlForeignKey x);
+
+    void endVisit(MysqlForeignKey x);
 
     void endVisit(MySqlExtractExpr x);
 
@@ -148,15 +159,15 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     boolean visit(MySqlMatchAgainstExpr x);
 
-    void endVisit(MySqlBinaryExpr x);
-
-    boolean visit(MySqlBinaryExpr x);
-
     void endVisit(MySqlPrepareStatement x);
 
     boolean visit(MySqlPrepareStatement x);
 
     void endVisit(MySqlExecuteStatement x);
+
+    boolean visit(MysqlDeallocatePrepareStatement x);
+
+    void endVisit(MysqlDeallocatePrepareStatement x);
 
     boolean visit(MySqlExecuteStatement x);
 
@@ -176,33 +187,9 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     boolean visit(MySqlLoadXmlStatement x);
 
-    void endVisit(MySqlReplaceStatement x);
-
-    boolean visit(MySqlReplaceStatement x);
-
-    void endVisit(MySqlSelectGroupBy x);
-
-    boolean visit(MySqlSelectGroupBy x);
-
-    void endVisit(MySqlStartTransactionStatement x);
-
-    boolean visit(MySqlStartTransactionStatement x);
-
-    void endVisit(MySqlCommitStatement x);
-
-    boolean visit(MySqlCommitStatement x);
-
-    void endVisit(MySqlRollbackStatement x);
-
-    boolean visit(MySqlRollbackStatement x);
-
     void endVisit(MySqlShowColumnsStatement x);
 
     boolean visit(MySqlShowColumnsStatement x);
-
-    void endVisit(MySqlShowTablesStatement x);
-
-    boolean visit(MySqlShowTablesStatement x);
 
     void endVisit(MySqlShowDatabasesStatement x);
 
@@ -236,10 +223,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     boolean visit(MySqlResetStatement x);
 
-    void endVisit(MySqlDropUser x);
-
-    boolean visit(MySqlDropUser x);
-
     void endVisit(MySqlCreateUserStatement x);
 
     boolean visit(MySqlCreateUserStatement x);
@@ -247,10 +230,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(MySqlCreateUserStatement.UserSpecification x);
 
     boolean visit(MySqlCreateUserStatement.UserSpecification x);
-
-    void endVisit(MySqlDropTableStatement x);
-
-    boolean visit(MySqlDropTableStatement x);
 
     void endVisit(MySqlPartitionByKey x);
 
@@ -264,25 +243,17 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlOutFileExpr x);
 
-    boolean visit(MySqlDescribeStatement x);
+    boolean visit(MySqlExplainStatement x);
 
-    void endVisit(MySqlDescribeStatement x);
+    void endVisit(MySqlExplainStatement x);
 
     boolean visit(MySqlUpdateStatement x);
 
     void endVisit(MySqlUpdateStatement x);
 
-    boolean visit(MySqlSetTransactionIsolationLevelStatement x);
+    boolean visit(MySqlSetTransactionStatement x);
 
-    void endVisit(MySqlSetTransactionIsolationLevelStatement x);
-
-    boolean visit(MySqlSetNamesStatement x);
-
-    void endVisit(MySqlSetNamesStatement x);
-
-    boolean visit(MySqlSetCharSetStatement x);
-
-    void endVisit(MySqlSetCharSetStatement x);
+    void endVisit(MySqlSetTransactionStatement x);
 
     boolean visit(MySqlShowBinaryLogsStatement x);
 
@@ -436,83 +407,185 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlShowVariantsStatement x);
 
-    boolean visit(MySqlAlterTableStatement x);
-
-    void endVisit(MySqlAlterTableStatement x);
-
-    boolean visit(MySqlAlterTableAddColumn x);
-
-    void endVisit(MySqlAlterTableAddColumn x);
-
-    boolean visit(MySqlCreateIndexStatement x);
-
-    void endVisit(MySqlCreateIndexStatement x);
-
     boolean visit(MySqlRenameTableStatement.Item x);
 
     void endVisit(MySqlRenameTableStatement.Item x);
-    
+
     boolean visit(MySqlRenameTableStatement x);
-    
+
     void endVisit(MySqlRenameTableStatement x);
-    
-    boolean visit(MySqlDropViewStatement x);
-    
-    void endVisit(MySqlDropViewStatement x);
-    
-    boolean visit(MySqlUnionQuery x);
-    
-    void endVisit(MySqlUnionQuery x);
-    
+
     boolean visit(MySqlUseIndexHint x);
-    
+
     void endVisit(MySqlUseIndexHint x);
-    
+
     boolean visit(MySqlIgnoreIndexHint x);
-    
+
     void endVisit(MySqlIgnoreIndexHint x);
-    
+
     boolean visit(MySqlLockTableStatement x);
-    
+
     void endVisit(MySqlLockTableStatement x);
-    
+
+    boolean visit(MySqlLockTableStatement.Item x);
+
+    void endVisit(MySqlLockTableStatement.Item x);
+
     boolean visit(MySqlUnlockTablesStatement x);
-    
+
     void endVisit(MySqlUnlockTablesStatement x);
-    
+
     boolean visit(MySqlForceIndexHint x);
-    
+
     void endVisit(MySqlForceIndexHint x);
-    
+
     boolean visit(MySqlAlterTableChangeColumn x);
-    
+
     void endVisit(MySqlAlterTableChangeColumn x);
-    
-    boolean visit(MySqlAlterTableCharacter x);
-    
-    void endVisit(MySqlAlterTableCharacter x);
-    
-    boolean visit(MySqlAlterTableAddIndex x);
-    
-    void endVisit(MySqlAlterTableAddIndex x);
-    
+
     boolean visit(MySqlAlterTableOption x);
-    
+
     void endVisit(MySqlAlterTableOption x);
-    
+
     boolean visit(MySqlCreateTableStatement x);
-    
+
     void endVisit(MySqlCreateTableStatement x);
-    
+
     boolean visit(MySqlHelpStatement x);
-    
+
     void endVisit(MySqlHelpStatement x);
-    
+
     boolean visit(MySqlCharExpr x);
-    
+
     void endVisit(MySqlCharExpr x);
-    
-    boolean visit(MySqlAlterTableAddUnique x);
-    
-    void endVisit(MySqlAlterTableAddUnique x);
-}
+
+    boolean visit(MySqlAlterTableModifyColumn x);
+
+    void endVisit(MySqlAlterTableModifyColumn x);
+
+    boolean visit(MySqlAlterTableDiscardTablespace x);
+
+    void endVisit(MySqlAlterTableDiscardTablespace x);
+
+    boolean visit(MySqlAlterTableImportTablespace x);
+
+    void endVisit(MySqlAlterTableImportTablespace x);
+
+    boolean visit(MySqlCreateTableStatement.TableSpaceOption x);
+
+    void endVisit(MySqlCreateTableStatement.TableSpaceOption x);
+
+    boolean visit(MySqlAnalyzeStatement x);
+
+    void endVisit(MySqlAnalyzeStatement x);
+
+    boolean visit(MySqlAlterUserStatement x);
+
+    void endVisit(MySqlAlterUserStatement x);
+
+    boolean visit(MySqlOptimizeStatement x);
+
+    void endVisit(MySqlOptimizeStatement x);
+
+    boolean visit(MySqlHintStatement x);
+
+    void endVisit(MySqlHintStatement x);
+
+    boolean visit(MySqlOrderingExpr x);
+
+    void endVisit(MySqlOrderingExpr x);
+
+    boolean visit(MySqlCaseStatement x);
+
+    void endVisit(MySqlCaseStatement x);
+
+    boolean visit(MySqlDeclareStatement x);
+
+    void endVisit(MySqlDeclareStatement x);
+
+    boolean visit(MySqlSelectIntoStatement x);
+
+    void endVisit(MySqlSelectIntoStatement x);
+
+    boolean visit(MySqlWhenStatement x);
+
+    void endVisit(MySqlWhenStatement x);
+
+    boolean visit(MySqlLeaveStatement x);
+
+    void endVisit(MySqlLeaveStatement x);
+
+    boolean visit(MySqlIterateStatement x);
+
+    void endVisit(MySqlIterateStatement x);
+
+    boolean visit(MySqlRepeatStatement x);
+
+    void endVisit(MySqlRepeatStatement x);
+
+    boolean visit(MySqlCursorDeclareStatement x);
+
+    void endVisit(MySqlCursorDeclareStatement x);
+
+    boolean visit(MySqlUpdateTableSource x);
+
+    void endVisit(MySqlUpdateTableSource x);
+
+    boolean visit(MySqlAlterTableAlterColumn x);
+
+    void endVisit(MySqlAlterTableAlterColumn x);
+
+    boolean visit(MySqlSubPartitionByKey x);
+
+    void endVisit(MySqlSubPartitionByKey x);
+
+    boolean visit(MySqlSubPartitionByList x);
+
+    void endVisit(MySqlSubPartitionByList x);
+
+    boolean visit(MySqlDeclareHandlerStatement x);
+
+    void endVisit(MySqlDeclareHandlerStatement x);
+
+    boolean visit(MySqlDeclareConditionStatement x);
+
+    void endVisit(MySqlDeclareConditionStatement x);
+
+    boolean visit(MySqlFlushStatement x);
+
+    void endVisit(MySqlFlushStatement x);
+
+    boolean visit(MySqlEventSchedule x);
+    void endVisit(MySqlEventSchedule x);
+
+    boolean visit(MySqlCreateEventStatement x);
+    void endVisit(MySqlCreateEventStatement x);
+
+    boolean visit(MySqlCreateAddLogFileGroupStatement x);
+    void endVisit(MySqlCreateAddLogFileGroupStatement x);
+
+    boolean visit(MySqlCreateServerStatement x);
+    void endVisit(MySqlCreateServerStatement x);
+
+    boolean visit(MySqlCreateTableSpaceStatement x);
+    void endVisit(MySqlCreateTableSpaceStatement x);
+
+    boolean visit(MySqlAlterEventStatement x);
+    void endVisit(MySqlAlterEventStatement x);
+
+    boolean visit(MySqlAlterLogFileGroupStatement x);
+    void endVisit(MySqlAlterLogFileGroupStatement x);
+
+    boolean visit(MySqlAlterServerStatement x);
+    void endVisit(MySqlAlterServerStatement x);
+
+    boolean visit(MySqlAlterTablespaceStatement x);
+    void endVisit(MySqlAlterTablespaceStatement x);
+
+    boolean visit(MySqlShowDatabasePartitionStatusStatement x);
+    void endVisit(MySqlShowDatabasePartitionStatusStatement x);
+
+    boolean visit(MySqlChecksumTableStatement x);
+    void endVisit(MySqlChecksumTableStatement x);
+
+} //

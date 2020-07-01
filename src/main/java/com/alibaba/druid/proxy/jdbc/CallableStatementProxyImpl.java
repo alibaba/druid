@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import java.sql.SQLXML;
 import java.util.Calendar;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class CallableStatementProxyImpl extends PreparedStatementProxyImpl implements CallableStatementProxy {
 
@@ -603,11 +603,11 @@ public class CallableStatementProxyImpl extends PreparedStatementProxyImpl imple
     }
 
     public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return statement.getObject(parameterIndex, type);
     }
 
     public <T> T getObject(String parameterName, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return statement.getObject(parameterName, type);
     }
 
     @SuppressWarnings("unchecked")

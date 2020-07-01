@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,11 @@ package com.alibaba.druid.bvt.pool.basic;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
-import junit.framework.Assert;
+import com.alibaba.druid.PoolTestCase;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -29,13 +31,13 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
 
-public class ConnectionTest3 extends TestCase {
+public class ConnectionTest3 extends PoolTestCase {
 
     private MockDriver      driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
 
         driver = new MockDriver();
 
@@ -63,6 +65,8 @@ public class ConnectionTest3 extends TestCase {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         JdbcStatManager.getInstance().setStatContext(null);
+
+        super.tearDown();
     }
 
     public void test_basic() throws Exception {
@@ -90,8 +94,24 @@ public class ConnectionTest3 extends TestCase {
         conn.setSavepoint();
         conn.setSavepoint("savepoint");
         conn.rollback();
-        conn.rollback(null);
-        conn.releaseSavepoint(null);
+        {
+            Exception error = null;
+            try {
+                conn.rollback(null);
+            } catch (SQLException e) {
+                error = e;
+            }
+            Assert.assertNotNull(error);
+        }
+        {
+            Exception error = null;
+            try {
+                conn.releaseSavepoint(null);
+            } catch (SQLException e) {
+                error = e;
+            }
+            Assert.assertNotNull(error);
+        }
         conn.createBlob();
         conn.createClob();
         conn.createNClob();

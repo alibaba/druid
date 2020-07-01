@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -38,14 +40,43 @@ public class LoadDataInFileSyntaxTest extends TestCase {
         Assert.assertEquals("LOAD DATA INFILE 'data.txt' INTO TABLE db2.my_table;", text);
     }
 
+    public void test_1() throws Exception {
+        String sql = "LOAD DATA INFILE '/tmp/test.txt' INTO TABLE test FIELDS TERMINATED BY ','  LINES STARTING BY 'xxx';";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("LOAD DATA INFILE '/tmp/test.txt' INTO TABLE test COLUMNS TERMINATED BY ',' LINES STARTING BY 'xxx';",
+                            text);
+    }
+
+    public void test_2() throws Exception {
+        String sql = "LOAD DATA INFILE '/home/Order.txt' INTO TABLE Orders (Order_Number, Order_Date, Customer_ID);";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("LOAD DATA INFILE '/home/Order.txt' INTO TABLE Orders (Order_Number, Order_Date, Customer_ID);",
+                            text);
+    }
+
+    public void test_3() throws Exception {
+        String sql = "LOAD DATA INFILE 'data.txt' INTO TABLE tbl_name FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES;";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("LOAD DATA INFILE 'data.txt' INTO TABLE tbl_name COLUMNS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES;",
+                            text);
+    }
+
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

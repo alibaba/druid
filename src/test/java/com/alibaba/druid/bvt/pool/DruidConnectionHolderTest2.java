@@ -2,7 +2,8 @@ package com.alibaba.druid.bvt.pool;
 
 import java.sql.SQLException;
 
-import junit.framework.Assert;
+import com.alibaba.druid.PoolTestCase;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -11,11 +12,13 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.GetConnectionTimeoutException;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 
-public class DruidConnectionHolderTest2 extends TestCase {
+public class DruidConnectionHolderTest2 extends PoolTestCase {
 
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        super.setUp();
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
@@ -32,6 +35,8 @@ public class DruidConnectionHolderTest2 extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+
+        super.tearDown();
     }
 
     public void test_mysqlSyntaxError() throws Exception {

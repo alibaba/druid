@@ -1,11 +1,9 @@
 package com.alibaba.druid;
 
-import java.beans.PropertyVetoException;
-import java.sql.SQLException;
-
-import junit.framework.Assert;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,11 +15,11 @@ import org.nutz.dao.impl.NutDao;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import java.beans.PropertyVetoException;
+import java.sql.SQLException;
 
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,17 +39,17 @@ public class TestRollBack {
 	static Dao dao_c3p0;
 	static Dao dao_druid;
 	
-//	static String url = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+//	static String url = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
 //	static String user = "alibaba";
 //	static String password = "ccbuauto";
 //	static String driver = "oracle.jdbc.driver.OracleDriver";
 	        
-	static String url = "jdbc:jtds:sqlserver://10.16.16.30:1433/druid_db";
+	static String url = "jdbc:jtds:sqlserver://a.b.c.d:1433/druid_db";
 	static String user = "sa";
 	static String password = "hello123";
 	static String driver = "net.sourceforge.jtds.jdbc.Driver";
 	
-//  jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+//  jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
 //  user = "alibaba";
 //  password = "ccbuauto";
 
@@ -79,7 +77,7 @@ public class TestRollBack {
 	}
 
 	@AfterClass
-	public static void destory() {
+	public static void destroy() {
 		c3p0.close();
 		druid.close();
 	}

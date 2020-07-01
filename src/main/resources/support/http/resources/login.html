@@ -55,7 +55,7 @@
                       	  		The username or password you entered is incorrect.
 						  	</div>
                           	<div class="clearfix">
-                              	<input type="text" placeholder="用户名" name="loginUsername" >
+                              	<input type="text" placeholder="用户名" name="loginUsername" autofocus="autofocus">
                           	</div>
                           	<div class="clearfix">
                               	<input type="password" placeholder="密码" name="loginPassword">
@@ -83,16 +83,29 @@
 	  					else {
 	  						$("#alertInfo").show();
 	  						$("#loginForm")[0].reset();
+							$("input[name=loginUsername]").focus();
 	  					}
 	  				  },
 	  				  dataType: "text"
 	  				});
-	  			}
+	  			},
+				unamecr : function(e) {
+					if(e.which == 13) { // enter key event
+						$("input[name=loginPassword]").focus();
+					}
+				},
+				upasscr : function(e) {
+					if(e.which == 13) { // enter key event
+						$("#loginBtn").click();
+					}
+				}
    			}
   		}();
 
   		$(document).ready(function() {
   			$("#loginBtn").click(druid.login.login);
+  			$("input[name=loginUsername]").keypress(druid.login.unamecr);
+  			$("input[name=loginPassword]").keypress(druid.login.upasscr);
  		});
   	</script>
 </body>

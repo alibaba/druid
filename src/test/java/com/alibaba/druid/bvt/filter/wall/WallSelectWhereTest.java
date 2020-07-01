@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import com.alibaba.druid.wall.WallUtils;
  *
  */
 public class WallSelectWhereTest extends TestCase {
-    private String sql = "SELECT F1, F2 WHERE 1 = 1";
+    private String sql = "SELECT F1, F2  from t WHERE 1 = 1";
 
     public void testMySql() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(sql));

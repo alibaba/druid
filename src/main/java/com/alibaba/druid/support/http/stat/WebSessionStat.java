@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package com.alibaba.druid.support.http.stat;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
@@ -154,14 +154,6 @@ public class WebSessionStat {
         return createTimeMillis;
     }
 
-    public Date getCreateTime() {
-        if (createTimeMillis == -1L) {
-            return null;
-        }
-
-        return new Date(createTimeMillis);
-    }
-
     public String getPrincipal() {
         return principal;
     }
@@ -176,14 +168,6 @@ public class WebSessionStat {
 
     public long getLastAccessTimeMillis() {
         return lastAccessTimeMillis;
-    }
-
-    public Date getLastAccessTime() {
-        if (lastAccessTimeMillis < 0L) {
-            return null;
-        }
-
-        return new Date(lastAccessTimeMillis);
     }
 
     public String getRemoteAddress() {
@@ -230,8 +214,6 @@ public class WebSessionStat {
             if (running > max) {
                 if (concurrentMaxUpdater.compareAndSet(this, max, running)) {
                     break;
-                } else {
-                    continue;
                 }
             } else {
                 break;
@@ -280,7 +262,6 @@ public class WebSessionStat {
         }
 
         if (remoteAddresses.length() > 256) {
-            LOG.error("sessoin ip change too many");
             return;
         }
 
@@ -305,10 +286,6 @@ public class WebSessionStat {
 
     public long getRequestTimeNano() {
         return requestTimeNano;
-    }
-
-    public long getRequestTimeMillis() {
-        return getRequestTimeNano() / (1000 * 1000);
     }
 
     public void addJdbcFetchRowCount(long delta) {
@@ -337,10 +314,6 @@ public class WebSessionStat {
 
     public long getJdbcExecuteCount() {
         return jdbcExecuteCount;
-    }
-
-    public long getJdbcExecuteTimeMillis() {
-        return getJdbcExecuteTimeNano() / (1000 * 1000);
     }
 
     public long getJdbcExecuteTimeNano() {
@@ -391,30 +364,41 @@ public class WebSessionStat {
     }
 
     public Map<String, Object> getStatData() {
-        Map<String, Object> data = new LinkedHashMap<String, Object>();
+        return getValue(false).getStatData();
+    }
 
-        data.put("SESSIONID", this.getSessionId());
-        data.put("Principal", this.getPrincipal());
-        data.put("RunningCount", this.getRunningCount());
-        data.put("ConcurrentMax", this.getConcurrentMax());
-        data.put("RequestCount", this.getRequestCount());
-        data.put("RequestTimeMillisTotal", this.getRequestTimeMillis());
-        data.put("CreateTime", this.getCreateTime());
-        data.put("LastAccessTime", this.getLastAccessTime());
-        data.put("RemoteAddress", this.getRemoteAddress());
-        data.put("Principal", this.getPrincipal());
+    public WebSessionStatValue getValue(boolean reset) {
+        WebSessionStatValue val = new WebSessionStatValue();
 
-        data.put("JdbcCommitCount", this.getJdbcCommitCount());
-        data.put("JdbcRollbackCount", this.getJdbcRollbackCount());
+        val.sessionId = sessionId;
+        val.runningCount = this.getRunningCount();
+        val.concurrentMax = get(this, concurrentMaxUpdater, reset);
+        val.requestCount = get(this, requestCountUpdater, reset);
+        val.requestErrorCount = get(this, requestErrorCountUpdater, reset);
+        val.requestTimeNano = get(this, requestTimeNanoUpdater, reset);
+        val.jdbcFetchRowCount = get(this, jdbcFetchRowCountUpdater, reset);
+        val.jdbcUpdateCount = get(this, jdbcUpdateCountUpdater, reset);
+        val.jdbcExecuteCount = get(this, jdbcExecuteCountUpdater, reset);
+        val.jdbcExecuteTimeNano = get(this, jdbcExecuteTimeNanoUpdater, reset);
+        val.jdbcCommitCount = get(this, jdbcCommitCountUpdater, reset);
+        val.jdbcRollbackCount = get(this, jdbcRollbackCountUpdater, reset);
+        val.createTimeMillis = createTimeMillis;
+        val.lastAccessTimeMillis = lastAccessTimeMillis;
+        val.remoteAddress = remoteAddresses;
+        val.principal = principal;
+        val.userAgent = userAgent;
 
-        data.put("JdbcExecuteCount", this.getJdbcExecuteCount());
-        data.put("JdbcExecuteTimeMillis", this.getJdbcExecuteTimeMillis());
-        data.put("JdbcFetchRowCount", this.getJdbcFetchRowCount());
-        data.put("JdbcUpdateCount", this.getJdbcUpdateCount());
+        val.requestIntervalHistogram_0_1 = get(this, requestIntervalHistogram_0_1_Updater, reset);
+        val.requestIntervalHistogram_1_10 = get(this, requestIntervalHistogram_1_10_Updater, reset);
+        val.requestIntervalHistogram_10_100 = get(this, requestIntervalHistogram_10_100_Updater, reset);
+        val.requestIntervalHistogram_100_1000 = get(this, requestIntervalHistogram_100_1000_Updater, reset);
+        val.requestIntervalHistogram_1000_10000 = get(this, requestIntervalHistogram_1000_10000_Updater, reset);
+        val.requestIntervalHistogram_10000_100000 = get(this, requestIntervalHistogram_10000_100000_Updater, reset);
+        val.requestIntervalHistogram_100000_1000000 = get(this, requestIntervalHistogram_100000_1000000_Updater, reset);
+        val.requestIntervalHistogram_1000000_10000000 = get(this, requestIntervalHistogram_1000000_10000000_Updater,
+                                                            reset);
+        val.requestIntervalHistogram_10000000_more = get(this, requestIntervalHistogram_10000000_more_Updater, reset);
 
-        data.put("UserAgent", this.getUserAgent());
-        data.put("RequestInterval", this.getRequestInterval());
-
-        return data;
+        return val;
     }
 }

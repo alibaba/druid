@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,12 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
@@ -33,7 +36,16 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
 
     public SQLUnaryExpr(SQLUnaryOperator operator, SQLExpr expr){
         this.operator = operator;
-        this.expr = expr;
+        this.setExpr(expr);
+    }
+
+    public SQLUnaryExpr clone() {
+        SQLUnaryExpr x = new SQLUnaryExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        x.operator = operator;
+        return x;
     }
 
     public SQLUnaryOperator getOperator() {
@@ -49,13 +61,10 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
         this.expr = expr;
-    }
-
-    @Override
-    public void output(StringBuffer buf) {
-        buf.append(" NOT ");
-        this.expr.output(buf);
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -64,6 +73,11 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.expr);
     }
 
     @Override

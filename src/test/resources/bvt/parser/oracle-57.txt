@@ -1,0 +1,6 @@
+select pro.product_num||''||trim(tochar(pro.primitive_product_amount,'999999999999999999999999999990.99'))||''||trim(tochar(pro.primitive_fare_amount,'999999999999999999999999999990.99')) as changefields
+
+from mt_product_order pro 
+where pro.mt_product_order_id in ( ? ) 
+order by pro.id asc	 			 		 	
+---------------------------

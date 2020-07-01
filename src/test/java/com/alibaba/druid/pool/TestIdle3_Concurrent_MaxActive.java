@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,13 @@
  */
 package com.alibaba.druid.pool;
 
-import java.lang.management.ManagementFactory;
 import java.sql.Connection;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
-import javax.management.ObjectName;
-
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class TestIdle3_Concurrent_MaxActive extends TestCase {
 

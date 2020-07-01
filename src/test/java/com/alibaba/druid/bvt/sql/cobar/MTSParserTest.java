@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.cobar;
 
+import org.junit.Assert;
+import junit.framework.TestCase;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class MTSParserTest extends TestCase {
 
@@ -94,7 +94,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("LOCK TABLES t1 READ", output);
+        Assert.assertEquals("LOCK TABLES t1 READ;", output);
     }
     
     public void test_lockTable_1() throws Exception {
@@ -103,7 +103,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("LOCK TABLES t2 READ LOCAL", output);
+        Assert.assertEquals("LOCK TABLES t2 READ LOCAL;", output);
     }
     
     public void test_unlockTable() throws Exception {

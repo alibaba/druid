@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class TestOracle extends TestCase {
     private String password;
 
     public void setUp() throws Exception {
-        jdbcUrl = "jdbc:wrap-jdbc:filters=default:name=oracleTest:jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+        jdbcUrl = "jdbc:wrap-jdbc:filters=default:name=oracleTest:jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
         // jdbcUrl = "jdbc:wrap-jdbc:filters=default:name=oracleTest:jdbc:mock:xx";
         user = "alibaba";
         password = "ccbuauto";

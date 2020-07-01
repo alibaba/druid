@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcConstants;
+
 public class TableStat {
 
     int selectCount      = 0;
@@ -31,6 +38,24 @@ public class TableStat {
     int createCount      = 0;
     int alterCount       = 0;
     int createIndexCount = 0;
+    int dropIndexCount   = 0;
+    int referencedCount  = 0;
+
+    public int getReferencedCount() {
+        return referencedCount;
+    }
+
+    public void incrementReferencedCount() {
+        referencedCount++;
+    }
+
+    public int getDropIndexCount() {
+        return dropIndexCount;
+    }
+
+    public void incrementDropIndexCount() {
+        this.dropIndexCount++;
+    }
 
     public int getCreateIndexCount() {
         return createIndexCount;
@@ -153,16 +178,24 @@ public class TableStat {
         if (createIndexCount > 0) {
             buf.append("CreateIndex");
         }
+        if (dropIndexCount > 0) {
+            buf.append("DropIndex");
+        }
 
         return buf.toString();
     }
 
     public static class Name {
-
-        private String name;
+        private final String name;
+        private final long   hashCode64;
 
         public Name(String name){
-            this.name = name;
+            this(name, FnvHash.hashCode64(name));
+        }
+
+        public Name(String name, long hashCode64){
+            this.name  = name;
+            this.hashCode64 = hashCode64;
         }
 
         public String getName() {
@@ -170,7 +203,12 @@ public class TableStat {
         }
 
         public int hashCode() {
-            return this.name.toLowerCase().hashCode();
+            long value = hashCode64();
+            return (int)(value ^ (value >>> 32));
+        }
+
+        public long hashCode64() {
+            return hashCode64;
         }
 
         public boolean equals(Object o) {
@@ -179,43 +217,35 @@ public class TableStat {
             }
 
             Name other = (Name) o;
-
-            return this.name.equalsIgnoreCase(other.name);
+            return this.hashCode64 == other.hashCode64;
         }
 
         public String toString() {
-            return this.name;
+            return SQLUtils.normalize(this.name);
         }
     }
 
     public static class Relationship {
-
         private Column left;
         private Column right;
         private String operator;
 
-        public Column getLeft() {
-            return left;
+        public Relationship(Column left, Column right, String operator) {
+            this.left = left;
+            this.right = right;
+            this.operator = operator;
         }
 
-        public void setLeft(Column left) {
-            this.left = left;
+        public Column getLeft() {
+            return left;
         }
 
         public Column getRight() {
             return right;
         }
 
-        public void setRight(Column right) {
-            this.right = right;
-        }
-
         public String getOperator() {
             return operator;
-        }
-
-        public void setOperator(String operator) {
-            this.operator = operator;
         }
 
         @Override
@@ -273,29 +303,29 @@ public class TableStat {
 
     public static class Condition {
 
-        private Column       column;
-        private String       operator;
+        private final Column       column;
+        private final String       operator;
+        private final List<Object> values = new ArrayList<Object>();
 
-        private List<Object> values = new ArrayList<Object>();
+        public Condition(Column column, String operator) {
+            this.column = column;
+            this.operator = operator;
+        }
 
         public Column getColumn() {
             return column;
-        }
-
-        public void setColumn(Column column) {
-            this.column = column;
         }
 
         public String getOperator() {
             return operator;
         }
 
-        public void setOperator(String operator) {
-            this.operator = operator;
-        }
-
         public List<Object> getValues() {
             return values;
+        }
+
+        public void addValue(Object value) {
+            this.values.add(value);
         }
 
         @Override
@@ -337,7 +367,7 @@ public class TableStat {
         }
 
         public String toString() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append(this.column.toString());
             buf.append(' ');
             buf.append(this.operator);
@@ -351,7 +381,13 @@ public class TableStat {
                     if (i != 0) {
                         buf.append(", ");
                     }
-                    buf.append(String.valueOf(values.get(i)));
+                    Object val = values.get(i);
+                    if (val instanceof String) {
+                        String jsonStr = JSONUtils.toJSONString(val);
+                        buf.append(jsonStr);
+                    } else {
+                        buf.append(String.valueOf(val));
+                    }
                 }
                 buf.append(")");
             }
@@ -362,34 +398,147 @@ public class TableStat {
 
     public static class Column {
 
-        private String              table;
-        private String              name;
+        private final String              table;
+        private final String              name;
+        protected final long              hashCode64;
+
+        private boolean             where;
+        private boolean             select;
+        private boolean             groupBy;
+        private boolean             having;
+        private boolean             join;
+
+        private boolean             primaryKey; // for ddl
+        private boolean             unique; //
 
         private Map<String, Object> attributes = new HashMap<String, Object>();
 
-        public Column(){
+        private transient String    fullName;
 
-        }
+        /**
+         * @since 1.0.20
+         */
+        private String              dataType;
 
         public Column(String table, String name){
             this.table = table;
             this.name = name;
+
+            int p = table.indexOf('.');
+            if (p != -1) {
+                String dbType = null;
+                if (table.indexOf('`') != -1) {
+                    dbType = JdbcConstants.MYSQL;
+                } else if (table.indexOf('[') != -1) {
+                    dbType = JdbcConstants.SQL_SERVER;
+                } else if (table.indexOf('@') != -1) {
+                    dbType = JdbcConstants.ORACLE;
+                }
+                SQLExpr owner = SQLUtils.toSQLExpr(table, dbType);
+                hashCode64 = new SQLPropertyExpr(owner, name).hashCode64();
+            } else {
+                hashCode64 = FnvHash.hashCode64(table, name);
+            }
+        }
+
+        public Column(String table, String name, long hashCode64){
+            this.table = table;
+            this.name = name;
+            this.hashCode64 = hashCode64;
         }
 
         public String getTable() {
             return table;
         }
 
-        public void setTable(String table) {
-            this.table = table;
+        public String getFullName() {
+            if (fullName == null) {
+                if (table == null) {
+                    fullName = name;
+                } else {
+                    fullName = table + '.' + name;
+                }
+            }
+
+            return fullName;
+        }
+
+        public long hashCode64() {
+            return hashCode64;
+        }
+
+        public boolean isWhere() {
+            return where;
+        }
+
+        public void setWhere(boolean where) {
+            this.where = where;
+        }
+
+        public boolean isSelect() {
+            return select;
+        }
+
+        public void setSelec(boolean select) {
+            this.select = select;
+        }
+
+        public boolean isGroupBy() {
+            return groupBy;
+        }
+
+        public void setGroupBy(boolean groupBy) {
+            this.groupBy = groupBy;
+        }
+
+        public boolean isHaving() {
+            return having;
+        }
+
+        public boolean isJoin() {
+            return join;
+        }
+
+        public void setJoin(boolean join) {
+            this.join = join;
+        }
+
+        public void setHaving(boolean having) {
+            this.having = having;
+        }
+
+        public boolean isPrimaryKey() {
+            return primaryKey;
+        }
+
+        public void setPrimaryKey(boolean primaryKey) {
+            this.primaryKey = primaryKey;
+        }
+
+        public boolean isUnique() {
+            return unique;
+        }
+
+        public void setUnique(boolean unique) {
+            this.unique = unique;
         }
 
         public String getName() {
             return name;
         }
+        
+        /**
+         * @since 1.0.20
+         */
+        public String getDataType() {
+            return dataType;
+        }
 
-        public void setName(String name) {
-            this.name = name;
+        /**
+         * @since 1.0.20
+         */
+        public void setDataType(String dataType) {
+            this.dataType = dataType;
         }
 
         public Map<String, Object> getAttributes() {
@@ -401,49 +550,41 @@ public class TableStat {
         }
 
         public int hashCode() {
-            int tableHashCode = table != null ? table.toLowerCase().hashCode() : 0;
-            int nameHashCode = name != null ? name.toLowerCase().hashCode() : 0;
-
-            return tableHashCode + nameHashCode;
+            long hash = hashCode64();
+            return (int)(hash ^ (hash >>> 32));
         }
 
         public String toString() {
             if (table != null) {
-                return table + "." + name;
+                return SQLUtils.normalize(table) + "." + SQLUtils.normalize(name);
             }
 
-            return name;
+            return SQLUtils.normalize(name);
         }
 
         public boolean equals(Object obj) {
+            if (!(obj instanceof Column)) {
+                return false;
+            }
+
             Column column = (Column) obj;
-
-            if (table == null) {
-                if (column.getTable() != null) {
-                    return false;
-                }
-            } else {
-                if (!table.equalsIgnoreCase(column.getTable())) {
-                    return false;
-                }
-            }
-
-            if (name == null) {
-                if (column.getName() != null) {
-                    return false;
-                }
-            } else {
-                if (!name.equalsIgnoreCase(column.getName())) {
-                    return false;
-                }
-            }
-
-            return true;
+            return hashCode64 == column.hashCode64;
         }
     }
 
     public static enum Mode {
-        Insert(1), Update(2), Delete(4), Select(8), Merge(16), Truncate(32);
+                             Insert(1), //
+                             Update(2), //
+                             Delete(4), //
+                             Select(8), //
+                             Merge(16), //
+                             Truncate(32), //
+                             Alter(64), //
+                             Drop(128), //
+                             DropIndex(256), //
+                             CreateIndex(512), //
+                             Replace(1024),
+        ; //
 
         public final int mark;
 

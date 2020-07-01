@@ -1,9 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.SQLException;
+import java.util.Properties;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ExceptionSorter;
@@ -18,7 +20,6 @@ public class DruidDataSourceTest4 extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setInitialSize(1);
-
     }
 
     protected void tearDown() throws Exception {
@@ -38,7 +39,7 @@ public class DruidDataSourceTest4 extends TestCase {
     }
 
     public void test_getTransactionHistogramRanges_1() {
-        Assert.assertEquals(5, dataSource.getTransactionHistogramRanges().length);
+        Assert.assertEquals(6, dataSource.getTransactionHistogramRanges().length);
     }
 
     public void test_setValidConnectionCheckerClassName() throws Exception {
@@ -96,6 +97,12 @@ public class DruidDataSourceTest4 extends TestCase {
         @Override
         public boolean isExceptionFatal(SQLException e) {
             return false;
+        }
+
+        @Override
+        public void configFromProperties(Properties properties) {
+            // TODO Auto-generated method stub
+            
         }
 
     }

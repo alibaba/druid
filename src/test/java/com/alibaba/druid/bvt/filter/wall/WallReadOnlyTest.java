@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class WallReadOnlyTest extends TestCase {
     private WallConfig config = new WallConfig();
     
     protected void setUp() throws Exception {
-        config.getReadOnlyTables().add("members");
+        config.addReadOnlyTable("members");
     }
     private String sql = "SELECT F1, F2 members";
     private String insert_sql = "INSERT INTO members (FID, FNAME) VALUES (?, ?)";

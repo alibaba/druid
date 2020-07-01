@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class DruidXADataSource extends DruidDataSource implements XADataSource {
 
         Connection physicalConn = conn.unwrap(Connection.class);
 
-        XAConnection rawXAConnection = createPhysicalXAConnetion(physicalConn);
+        XAConnection rawXAConnection = createPhysicalXAConnection(physicalConn);
 
         return new DruidPooledXAConnection(conn, rawXAConnection);
     }
@@ -59,7 +59,7 @@ public class DruidXADataSource extends DruidDataSource implements XADataSource {
         }
     }
 
-    private XAConnection createPhysicalXAConnetion(Connection physicalConn) throws SQLException {
+    private XAConnection createPhysicalXAConnection(Connection physicalConn) throws SQLException {
         if (JdbcUtils.ORACLE.equals(dbType)) {
             try {
                 return OracleUtils.OracleXAConnection(physicalConn);
@@ -69,8 +69,8 @@ public class DruidXADataSource extends DruidDataSource implements XADataSource {
             }
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType)) {
-            return MySqlUtils.createXAConnection(physicalConn);
+        if (JdbcUtils.MYSQL.equals(dbType) || JdbcUtils.MARIADB.equals(dbType)) {
+            return MySqlUtils.createXAConnection(driver, physicalConn);
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {

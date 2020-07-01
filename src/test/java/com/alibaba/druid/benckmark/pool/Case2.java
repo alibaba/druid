@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
 import java.sql.Connection;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.sql.DataSource;
 
@@ -47,7 +50,7 @@ public class Case2 extends TestCase {
     private String  validationQuery = "SELECT 1";
     private int     threadCount     = 100;
     private int     executeCount    = 4;
-    final int       LOOP_COUNT      = (1000 * 1000) / executeCount;
+    final int       LOOP_COUNT      = (1000 * 100) / executeCount;
     private boolean testOnBorrow    = true;
 
     protected void setUp() throws Exception {
@@ -131,6 +134,9 @@ public class Case2 extends TestCase {
 
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);
+        final AtomicLong blockedStat = new AtomicLong();
+        final AtomicLong waitedStat = new AtomicLong();
+
         for (int i = 0; i < threadCount; ++i) {
             Thread thread = new Thread() {
 
@@ -138,10 +144,25 @@ public class Case2 extends TestCase {
                     try {
                         startLatch.await();
 
+                        long threadId = Thread.currentThread().getId();
+
+                        long startBlockedCount, startWaitedCount;
+                        {
+                            ThreadInfo threadInfo = ManagementFactory.getThreadMXBean().getThreadInfo(threadId);
+                            startBlockedCount = threadInfo.getBlockedCount();
+                            startWaitedCount = threadInfo.getWaitedCount();
+                        }
                         for (int i = 0; i < LOOP_COUNT; ++i) {
                             Connection conn = dataSource.getConnection();
                             conn.close();
                         }
+
+                        ThreadInfo threadInfo = ManagementFactory.getThreadMXBean().getThreadInfo(threadId);
+                        long blockedCount = threadInfo.getBlockedCount() - startBlockedCount;
+                        long waitedCount = threadInfo.getWaitedCount() - startWaitedCount;
+
+                        blockedStat.addAndGet(blockedCount);
+                        waitedStat.addAndGet(waitedCount);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -161,6 +182,7 @@ public class Case2 extends TestCase {
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
         System.out.println("thread " + threadCount + " " + name + " millis : "
-                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC
+                           + " blockedCount " + blockedStat.get() + " waitedCount " + waitedStat.get());
     }
 }

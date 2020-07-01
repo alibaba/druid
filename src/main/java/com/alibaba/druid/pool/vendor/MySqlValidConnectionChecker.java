@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,50 +22,74 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
 
-public class MySqlValidConnectionChecker implements ValidConnectionChecker, Serializable {
+public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
-    private static final long serialVersionUID    = 1L;
-    private static final Log  LOG                 = LogFactory.getLog(MySqlValidConnectionChecker.class);
+    public static final int DEFAULT_VALIDATION_QUERY_TIMEOUT = 1;
+    public static final String DEFAULT_VALIDATION_QUERY = "SELECT 1";
 
-    private Class<?>          clazz;
-    private Method            ping;
-    private boolean           driverHasPingMethod = false;
+    private static final long serialVersionUID = 1L;
+    private static final Log  LOG              = LogFactory.getLog(MySqlValidConnectionChecker.class);
+
+    private Class<?> clazz;
+    private Method   ping;
+    private boolean  usePingMethod = false;
 
     public MySqlValidConnectionChecker(){
         try {
-            clazz = JdbcUtils.loadDriverClass("com.mysql.jdbc.Connection");
-            ping = clazz.getMethod("ping");
+            clazz = Utils.loadClass("com.mysql.jdbc.MySQLConnection");
+            if (clazz == null) {
+                clazz = Utils.loadClass("com.mysql.cj.jdbc.ConnectionImpl");
+            }
+
+            if (clazz != null) {
+                ping = clazz.getMethod("pingInternal", boolean.class, int.class);
+            }
+
             if (ping != null) {
-                driverHasPingMethod = true;
+                usePingMethod = true;
             }
         } catch (Exception e) {
-            LOG.warn("Cannot resolve com.mysq.jdbc.Connection.ping method.  Will use 'SELECT 1' instead.", e);
+            LOG.warn("Cannot resolve com.mysql.jdbc.Connection.ping method.  Will use 'SELECT 1' instead.", e);
+        }
+
+        configFromProperties(System.getProperties());
+    }
+
+    @Override
+    public void configFromProperties(Properties properties) {
+        String property = properties.getProperty("druid.mysql.usePingMethod");
+        if ("true".equals(property)) {
+            setUsePingMethod(true);
+        } else if ("false".equals(property)) {
+            setUsePingMethod(false);
         }
     }
 
-    public boolean isValidConnection(Connection conn, String valiateQuery, int validationQueryTimeout) {
-        try {
-            if (conn.isClosed()) {
-                return false;
-            }
-        } catch (SQLException ex) {
-            // skip
+    public boolean isUsePingMethod() {
+        return usePingMethod;
+    }
+
+    public void setUsePingMethod(boolean usePingMethod) {
+        this.usePingMethod = usePingMethod;
+    }
+
+    public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
+        if (conn.isClosed()) {
             return false;
         }
 
-        if (valiateQuery == null) {
-            return true;
-        }
-
-        if (driverHasPingMethod) {
+        if (usePingMethod) {
             if (conn instanceof DruidPooledConnection) {
                 conn = ((DruidPooledConnection) conn).getConnection();
             }
@@ -75,22 +99,26 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
             }
 
             if (clazz.isAssignableFrom(conn.getClass())) {
+                if (validationQueryTimeout <= 0) {
+                    validationQueryTimeout = DEFAULT_VALIDATION_QUERY_TIMEOUT;
+                }
+
                 try {
-                    ping.invoke(conn);
-                    return true;
+                    ping.invoke(conn, true, validationQueryTimeout * 1000);
                 } catch (InvocationTargetException e) {
                     Throwable cause = e.getCause();
                     if (cause instanceof SQLException) {
-                        return false;
+                        throw (SQLException) cause;
                     }
-                    
-                    LOG.warn("Unexpected error in ping", e);
-                    return false;
-                } catch (Exception e) {
-                    LOG.warn("Unexpected error in ping", e);
-                    return false;
+                    throw e;
                 }
+                return true;
             }
+        }
+
+        String query = validateQuery;
+        if (validateQuery == null || validateQuery.isEmpty()) {
+            query = DEFAULT_VALIDATION_QUERY;
         }
 
         Statement stmt = null;
@@ -100,13 +128,8 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
             if (validationQueryTimeout > 0) {
                 stmt.setQueryTimeout(validationQueryTimeout);
             }
-            rs = stmt.executeQuery(valiateQuery);
+            rs = stmt.executeQuery(query);
             return true;
-        } catch (SQLException e) {
-            return false;
-        } catch (Exception e) {
-            LOG.warn("Unexpected error in ping", e);
-            return false;
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);

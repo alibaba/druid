@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,12 +88,23 @@ public class SQLSelectTest extends TestCase {
 
         output(stmtList);
     }
+    
+    public void test_select_7() throws Exception {
+        String sql = "select * from ((select * from test1) UNION (select * from test2) UNION (select * from test3)) where t1='温高铁';";
 
-    private void output(List<SQLStatement> stmtList) {
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        output(stmtList);
+    }
+
+    private String output(List<SQLStatement> stmtList) {
+        StringBuilder out = new StringBuilder();
         for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(System.out));
-            System.out.println(";");
-            System.out.println();
+            stmt.accept(new MySqlOutputVisitor(out));
+//            System.out.println(";");
+//            System.out.println();
         }
+        return out.toString();
     }
 }

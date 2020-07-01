@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallUtils;
 
 public class WallMultiLineCommentTest extends TestCase {
-    private String sql = "select f1 from t /* xx */ ";
+    private String sql = "select f1 from t where a=1 /* and b=1 */";
     
     public void testOracle() throws Exception {
         Assert.assertFalse(WallUtils.isValidateOracle(sql));

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.alibaba.druid.benckmark.proxy.BenchmarkCase;
 import com.alibaba.druid.benckmark.proxy.SQLExecutor;

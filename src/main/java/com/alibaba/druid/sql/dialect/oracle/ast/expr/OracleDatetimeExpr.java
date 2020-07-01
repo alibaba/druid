@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleDatetimeExpr extends OracleSQLObjectImpl implements SQLExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           expr;
-    private SQLExpr           timeZone;
+    private SQLExpr expr;
+    private SQLExpr timeZone;
 
     public OracleDatetimeExpr(){
 
@@ -60,4 +62,22 @@ public class OracleDatetimeExpr extends OracleSQLObjectImpl implements SQLExpr {
         this.timeZone = timeZone;
     }
 
+    public OracleDatetimeExpr clone() {
+        OracleDatetimeExpr x = new OracleDatetimeExpr();
+
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+
+        if (timeZone != null) {
+            x.setTimeZone(timeZone.clone());
+        }
+
+        return x;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Arrays.<SQLObject>asList(this.expr, this.timeZone);
+    }
 }

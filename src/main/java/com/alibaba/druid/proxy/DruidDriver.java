@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package com.alibaba.druid.proxy;
 
 import java.lang.management.ManagementFactory;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -43,17 +45,18 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDriver implements Driver, DruidDriverMBean {
 
-    private final static Log                                        LOG                      = LogFactory.getLog(DruidDriver.class);
+    private static Log                                              LOG; // lazy init
 
     private final static DruidDriver                                instance                 = new DruidDriver();
 
-    private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources         = new ConcurrentHashMap<String, DataSourceProxyImpl>();
+    private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources         = new ConcurrentHashMap<String, DataSourceProxyImpl>(16, 0.75f, 1);
     private final static AtomicInteger                              dataSourceIdSeed         = new AtomicInteger(0);
     private final static AtomicInteger                              sqlStatIdSeed            = new AtomicInteger(0);
 
@@ -75,7 +78,13 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     private final static String                                     MBEAN_NAME               = "com.alibaba.druid:type=DruidDriver";
 
     static {
-        registerDriver(instance);
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            @Override
+            public Object run() {
+                registerDriver(instance);
+                return null;
+            }
+        });
     }
 
     public static boolean registerDriver(Driver driver) {
@@ -89,19 +98,26 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                 if (!mbeanServer.isRegistered(objectName)) {
                     mbeanServer.registerMBean(instance, objectName);
                 }
-            } catch (Exception ex) {
-                LOG.error("register druid-driver mbean error", ex);
+            } catch (Throwable ex) {
+                if (LOG == null) {
+                    LOG = LogFactory.getLog(DruidDriver.class);
+                }
+                LOG.warn("register druid-driver mbean error", ex);
             }
 
             return true;
         } catch (Exception e) {
+            if (LOG == null) {
+                LOG = LogFactory.getLog(DruidDriver.class);
+            }
+            
             LOG.error("registerDriver error", e);
         }
 
         return false;
     }
 
-    public DruidDriver() {
+    public DruidDriver(){
 
     }
 
@@ -240,7 +256,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     }
 
     public Driver createDriver(String className) throws SQLException {
-        Class<?> rawDriverClass = JdbcUtils.loadDriverClass(className);
+        Class<?> rawDriverClass = Utils.loadClass(className);
 
         if (rawDriverClass == null) {
             throw new SQLException("jdbc-driver's class not found. '" + className + "'");

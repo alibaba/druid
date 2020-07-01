@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import java.util.Calendar;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidPooledCallableStatement extends DruidPooledPreparedStatement implements CallableStatement {
 
@@ -43,7 +43,7 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
 
     public DruidPooledCallableStatement(DruidPooledConnection conn, PreparedStatementHolder holder) throws SQLException{
         super(conn, holder);
-        this.stmt = (CallableStatement) holder.getStatement();
+        this.stmt = (CallableStatement) holder.statement;
     }
 
     public CallableStatement getCallableStatementRaw() {
@@ -210,7 +210,7 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
             ResultSet rs = (ResultSet) obj;
             
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
             
             obj = poolableResultSet;
         }
@@ -1068,11 +1068,11 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
     }
 
     public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return stmt.getObject(parameterIndex, type);
     }
 
     public <T> T getObject(String parameterName, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return stmt.getObject(parameterName, type);
     }
 
     @SuppressWarnings("unchecked")

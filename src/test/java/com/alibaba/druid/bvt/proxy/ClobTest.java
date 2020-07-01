@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class ClobTest extends TestCase {
@@ -44,6 +46,13 @@ public class ClobTest extends TestCase {
         conn.close();
     }
 
+    protected void tearDown() throws Exception {
+        dropTable();
+        
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+
     private void createTable() throws SQLException {
         Connection conn = DriverManager.getConnection(create_url);
         Statement stmt = conn.createStatement();
@@ -58,10 +67,6 @@ public class ClobTest extends TestCase {
         stmt.execute("DROP TABLE T_CLOB");
         stmt.close();
         conn.close();
-    }
-
-    protected void tearDown() throws Exception {
-        dropTable();
     }
 
     public void test_clob() throws Exception {

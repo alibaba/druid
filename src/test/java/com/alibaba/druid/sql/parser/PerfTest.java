@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PerfTest extends TestCase {
@@ -44,7 +44,7 @@ public class PerfTest extends TestCase {
     String loadSql(String resource) throws Exception {
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
         Reader reader = new InputStreamReader(is, "UTF-8");
-        String input = IOUtils.read(reader);
+        String input = Utils.read(reader);
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
         String sql = items[1].trim();

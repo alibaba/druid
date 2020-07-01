@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,9 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleAlterSessionStatement extends OracleStatementImpl {
+public class OracleAlterSessionStatement extends OracleStatementImpl implements OracleAlterStatement {
 
-    private static final long   serialVersionUID = 1L;
-
-    private List<SQLAssignItem> items            = new ArrayList<SQLAssignItem>();
+    private List<SQLAssignItem> items = new ArrayList<SQLAssignItem>();
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

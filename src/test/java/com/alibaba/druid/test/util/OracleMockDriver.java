@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,32 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.mock.MockResultSet;
+import com.alibaba.druid.mock.MockStatementBase;
 
 
 public class OracleMockDriver extends MockDriver {
     public Connection connect(String url, Properties info) throws SQLException {
         return new OracleMockConnection(this, url, info);
+    }
+    
+    @Override
+    public int getMajorVersion() {
+        return 11;
+    }
+
+    @Override
+    public int getMinorVersion() {
+        return 0;
+    }
+    
+    public MockResultSet createMockResultSet(MockStatementBase stmt) {
+        return new OracleMockResultSet(stmt);
+    }
+    
+    public OracleMockPreparedStatement createMockPreparedStatement(MockConnection conn, String sql) {
+        return new OracleMockPreparedStatement((OracleMockConnection) conn, sql);
     }
 }

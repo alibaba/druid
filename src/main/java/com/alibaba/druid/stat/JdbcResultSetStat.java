@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class JdbcResultSetStat implements JdbcResultSetStatMBean {
 
-    private final AtomicInteger openningCount  = new AtomicInteger();
-    private final AtomicInteger opeeningtMax   = new AtomicInteger();
+    private final AtomicInteger openingCount   = new AtomicInteger();
+    private final AtomicInteger openingMax     = new AtomicInteger();
 
     private final AtomicLong    openCount      = new AtomicLong();
     private final AtomicLong    errorCount     = new AtomicLong();
@@ -39,7 +39,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     private final AtomicLong    closeCount     = new AtomicLong(0);  // ResultSet打开的计数
 
     public void reset() {
-        opeeningtMax.set(0);
+        openingMax.set(0);
         openCount.set(0);
         errorCount.set(0);
         aliveNanoTotal.set(0);
@@ -53,15 +53,13 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     }
 
     public void beforeOpen() {
-        int invoking = openningCount.incrementAndGet();
+        int invoking = openingCount.incrementAndGet();
 
         for (;;) {
-            int max = opeeningtMax.get();
+            int max = openingMax.get();
             if (invoking > max) {
-                if (opeeningtMax.compareAndSet(max, invoking)) {
+                if (openingMax.compareAndSet(max, invoking)) {
                     break;
-                } else {
-                    continue;
                 }
             } else {
                 break;
@@ -76,12 +74,12 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
         return errorCount.get();
     }
 
-    public int getOpenningCount() {
-        return openningCount.get();
+    public int getOpeningCount() {
+        return openingCount.get();
     }
 
-    public int getOpenningMax() {
-        return opeeningtMax.get();
+    public int getOpeningMax() {
+        return openingMax.get();
     }
 
     public long getOpenCount() {
@@ -113,7 +111,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     }
 
     public void afterClose(long aliveNano) {
-        openningCount.decrementAndGet();
+        openingCount.decrementAndGet();
 
         aliveNanoTotal.addAndGet(aliveNano);
 
@@ -122,8 +120,6 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
             if (aliveNano > max) {
                 if (aliveNanoMax.compareAndSet(max, aliveNano)) {
                     break;
-                } else {
-                    continue;
                 }
             } else {
                 break;
@@ -135,8 +131,6 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
             if (aliveNano < min) {
                 if (aliveNanoMin.compareAndSet(min, aliveNano)) {
                     break;
-                } else {
-                    continue;
                 }
             } else {
                 break;

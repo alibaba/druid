@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@ package com.alibaba.druid.pool;
 
 import java.sql.Connection;
 
+import junit.framework.TestCase;
+
 import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 import com.alibaba.druid.util.JdbcUtils;
-
-import junit.framework.TestCase;
 
 
 public class CobarTest extends TestCase {
@@ -31,7 +31,7 @@ public class CobarTest extends TestCase {
     private DruidDataSource dataSource;
     
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:mysql://10.20.146.88:8066/pt_dragoon_masterdb_test?useUnicode=true&characterEncoding=UTF-8";
+        jdbcUrl = "jdbc:mysql://a.b.c.d:8066/pt_dragoon_masterdb_test?useUnicode=true&characterEncoding=UTF-8";
         user = "pt_dragoon_test";
         password = "pt_dragoon_test";
         driverClass = "com.mysql.jdbc.Driver";

@@ -1,0 +1,388 @@
+<!doctype html>
+<html>
+<head>
+<title>Druid DataSourceStat</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+<link href='css/bootstrap.min.css' rel="stylesheet" />
+<link href="css/style.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+</head>
+<body>
+
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span12">
+				<h3 class="lang" langKey="WallStat">
+					Wall Stat <a href="wall.json" target="_blank">View JSON API</a>
+				</h3>
+				<table id="dataTable" style="background-color: #fff"
+					class="table table-bordered responsive-utilities">
+					<tr>
+						<td valign="top" class="td_lable lang" langKey="CheckCount">
+							CheckCount</td>
+						<td id="CheckCount"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td valign="top" class="td_lable lang" langKey="HardCheckCount">
+							HardCheckCount</td>
+						<td id="HardCheckCount"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td valign="top" class="td_lable lang" langKey="ViolationCount">
+							ViolationCount</td>
+						<td id="ViolationCount"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td valign="top" class="td_lable lang" langKey="BlackListHitCount">
+							BlackListHitCount</td>
+						<td id="BlackListHitCount"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td valign="top" class="td_lable lang" langKey="BlackListSize">
+							BlackListSize</td>
+						<td id="BlackListSize"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td valign="top" class="td_lable lang" langKey="WhiteListHitCount">
+							WhiteListHitCount</td>
+						<td id="WhiteListHitCount"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td valign="top" class="td_lable lang" langKey="WhiteListSize">
+							WhiteListSize</td>
+						<td id="WhiteListSize"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td valign="top" class="td_lable lang" langKey="SyntaxErrrorCount">
+							SyntaxErrrorCount</td>
+						<td id="SyntaxErrrorCount"></td>
+						<td></td>
+					</tr>
+				</table>
+
+				<h3 class="lang" langKey="TableStat">Table Stat</h3>
+				<table id="dataTable1" style="background-color: #fff"
+					class="table table-bordered table-striped responsive-utilities">
+					<thead>
+						<tr>
+							<th class="td_lable"><a id="th-TableNumber" class="lang"
+								langKey="TableNumber">TableNumber</a></th>
+							<th class="td_lable"><a id="th-tableName" class="lang"
+								langKey="TableName">TableName</a></th>
+							<th class="td_lable"><a id="th-selectCount" class="lang"
+								langKey="SelectCount">SelectCount</a></th>
+							<th class="td_lable"><a id="th-selectIntoCount" class="lang"
+								langKey="SelectIntoCount">SelectCount</a></th>
+							<th class="td_lable"><a id="th-insertCount" class="lang"
+								langKey="InsertCount">InsertCount</a></th>
+							<th class="td_lable"><a id="th-updateCount" class="lang"
+								langKey="UpdateCount">UpdateCount</a></th>
+							<th class="td_lable"><a id="th-deleteCount" class="lang"
+								langKey="DeleteCount">DeleteCount</a></th>
+							<th class="td_lable"><a id="th-truncateCount" class="lang"
+								langKey="TruncateCount">TruncateCount</a></th>
+							<th class="td_lable"><a id="th-createCount" class="lang"
+								langKey="CreateCount">CreateCount</a></th>
+							<th class="td_lable"><a id="th-alterCount" class="lang"
+								langKey="AlterCount">AlterCount</a></th>
+							<th class="td_lable"><a id="th-dropCount" class="lang"
+								langKey="DropCount">DropCount</a></th>
+							<th class="td_lable"><a id="th-replaceCount" class="lang"
+								langKey="ReplaceCount">ReplaceCount</a></th>
+							<th class="td_lable"><a id="th-deleteDataCount" class="lang"
+								langKey="DeleteDataCount">DeleteDataCount</a></th>
+							<th align="left" width="100"><span class="lang" langKey="UpdateHisto">DeleteDataHisto</span> <br />[ 
+								<a id="th-deleteDataCountHistogram[0]" class="langTitle" langKey="delete0" title="count of '0 DeleteCount'" >-</a>
+								<a id="th-deleteDataCountHistogram[1]" class="langTitle" langKey="delete9" title="count of '1-9 DeleteCount'" >-</a>
+								<a id="th-deleteDataCountHistogram[2]" class="langTitle" langKey="delete99" title="count of '10-99 DeleteCount'" >-</a>
+								<a id="th-deleteDataCountHistogram[3]" class="langTitle" langKey="delete999" title="count of '100-999 DeleteCount'" >-</a>
+								<a id="th-deleteDataCountHistogram[4]" class="langTitle" langKey="delete9999" title="count of '1000-9999 DeleteCount'" >-</a>
+								<a id="th-deleteDataCountHistogram[5]" class="langTitle" langKey="delete99999" title="count of '> 9999 DeleteCount'" >-</a> ]
+							</th>
+							<th class="td_lable"><a id="th-UpdateDataCount" class="lang"
+								langKey="UpdateDataCount">UpdateDataCount</a></th>
+							<th align="left" width="100"><span class="lang" langKey="UpdateHisto">UpdateDataHisto</span> <br />[ 
+								<a id="th-updateDataCountHistogram[0]" class="langTitle" langKey="update0" title="count of '0 UpdateCount'" >-</a>
+								<a id="th-updateDataCountHistogram[1]" class="langTitle" langKey="update9" title="count of '1-9 UpdateCount'" >-</a>
+								<a id="th-updateDataCountHistogram[2]" class="langTitle" langKey="update99" title="count of '10-99 UpdateCount'" >-</a>
+								<a id="th-updateDataCountHistogram[3]" class="langTitle" langKey="update999" title="count of '100-999 UpdateCount'" >-</a>
+								<a id="th-updateDataCountHistogram[4]" class="langTitle" langKey="update9999" title="count of '1000-9999 UpdateCount'" >-</a>
+								<a id="th-updateDataCountHistogram[5]" class="langTitle" langKey="update99999" title="count of '> 9999 UpdateCount'" >-</a> ]
+							</th>
+							<th class="td_lable"><a id="th-FetchRowCount" class="lang"
+								langKey="FetchRowCount">FetchRowCount</a></th>
+							<th align="left" width="100"><span class="lang" langKey="FetchRowHisto">FetchRowHisto</span> <br />[ 
+								<a id="th-fetchRowCountHistogram[0]" class="langTitle" langKey="fetch0" title="count of '0 FetchRow'" >-</a>
+								<a id="th-fetchRowCountHistogram[1]" class="langTitle" langKey="fetch9" title="count of '1-9 FetchRow'" >-</a>
+								<a id="th-fetchRowCountHistogram[2]" class="langTitle" langKey="fetch99" title="count of '10-99 FetchRow'" >-</a>
+								<a id="th-fetchRowCountHistogram[3]" class="langTitle" langKey="fetch999" title="count of '100-999 FetchRow'" >-</a>
+								<a id="th-fetchRowCountHistogram[4]" class="langTitle" langKey="fetch9999" title="count of '1000-9999 FetchRow'" >-</a>
+								<a id="th-fetchRowCountHistogram[5]" class="langTitle" langKey="fetch99999" title="count of '> 9999 FetchRow'" >-</a> ]
+							</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+
+				<h3 class="lang" langKey="FunctionStat">Function Stat</h3>
+				<table id="dataTable2" style="background-color: #fff"
+					class="table table-bordered responsive-utilities">
+					<thead>
+						<tr>
+							<th class="td_lable">Function Name</th>
+							<th class="td_lable"><a id="th-invokeCount"
+								href="javascript:void(0);">InvokeCount</a></th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+
+				<h3 class="lang" langKey="SQLStatWhiteList">SQL Stat - White List</h3>
+				<table id="dataTable3" style="background-color: #fff"
+					class="table table-bordered responsive-utilities">
+					<thead>
+						<tr>
+							<th class="td_lable" style="width: 50px;"><span id="WhiteListNumber" class="lang" langKey="TableNumber">TableNumber</span></th>
+							<th class="td_lable">SQL</th>
+							<th class="td_lable" ><span id="WhiteListSample" class="lang" langKey="Sample">Sample</span></th>
+							<th class="td_lable" style="width: 50px;"><span id="WhiteListExecuteCount" class="lang" langKey="ExecuteCount">ExecuteCount</span></th>
+							<th class="td_lable" style="width: 50px;"><span id="WhiteListExecuteErrorCount" class="lang" langKey="ExecuteErrorCount">ExecuteErrorCount</span></th>
+							<th class="td_lable" style="width: 50px;"><span id="WhiteListFetchRowCount" class="lang" langKey="FetchRowCount">FetchRowCount</span></th>
+							<th class="td_lable" style="width: 50px;"><span id="WhiteListUpdateCount" class="lang" langKey="SQLUpdateCount">UpdateCount</span></th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				
+				<h3 class="lang" langKey="SQLStatBlackList">SQL Stat - Black List</h3>
+				<table id="dataTable4" style="background-color: #fff"
+					class="table table-bordered responsive-utilities">
+					<thead>
+						<tr>
+							<th class="td_lable" style="width: 50px;"><span id="BlackListNumber" class="lang" langKey="TableNumber">TableNumber</span></th>
+							<th class="td_lable">SQL</th>
+							<th class="td_lable" ><span id="BlackListSample" class="lang" langKey="Sample">Sample</span></th>
+							<th class="td_lable" style="width: 50px;"><span id="violationMessage" class="lang" langKey="violationMessage">violationMessage</span></th>
+							<th class="td_lable" style="width: 50px;"><span id="BlackListExecuteCount" class="lang" langKey="ExecuteCount">ExecuteCount</span></th>
+							<th class="td_lable" style="width: 50px;"><span id="BlackListFetchRowCount" class="lang" langKey="FetchRowCount">FetchRowCount</span></th>
+							<th class="td_lable" style="width: 50px;"><span id="BlackListUpdateCount" class="lang" langKey="SQLUpdateCount">UpdateCount</span></th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$.namespace("druid.datasource");
+		druid.wall = function() {
+			return {
+				init : function() {
+					$("#dataTable1 th a").click(function(obj) {
+						druid.common.setOrderBy(obj.target.id.substring(3))
+					})
+					$("#dataTable2 th a").click(function(obj) {
+						druid.common.setOrderBy(obj.target.id.substring(3))
+					})
+					druid.common.buildHead(3);
+
+					druid.common.ajaxuri = 'wall.json?';
+					druid.common.handleCallback = druid.wall.handleAjaxResult;
+					druid.common.ajaxRequestForBasicInfo();
+					setInterval("druid.common.ajaxRequestForBasicInfo();", 5000);
+				},
+
+				handleAjaxResult : function(data) {
+					$("#CheckCount").text(replace(data.Content.checkCount))
+					$("#HardCheckCount").text(replace(data.Content.hardCheckCount))
+					$("#ViolationCount").text(replace(data.Content.violationCount))
+					$("#BlackListHitCount")
+							.text(replace(data.Content.blackListHitCount))
+					$("#BlackListSize").text(replace(data.Content.blackListSize))
+					$("#WhiteListHitCount")
+							.text(replace(data.Content.whiteListHitCount))
+					$("#WhiteListSize").text(replace(data.Content.whiteListSize))
+					$("#SyntaxErrrorCount")
+							.text(replace(data.Content.syntaxErrrorCount))
+
+					var html = "";
+					var tables = data.Content.tables;
+					if (tables) {
+						for ( var i = 0; i < tables.length; i++) {
+							var table = tables[i];
+							html += "<tr>";
+							html += "<td>" + (i+1) + "</td>";
+							html += "<td>" + table.name + "</td>";
+							html += "<td>"
+									+ replace(table.selectCount) + "</td>";
+							html += "<td>"
+									+ replace(table.selectIntoCount) + "</td>";
+							html += "<td>"
+									+ replace(table.insertCount) + "</td>";
+							html += "<td>"
+									+ replace(table.updateCount) + "</td>";
+							html += "<td>"
+									+ replace(table.deleteCount) + "</td>";
+							html += "<td>"
+									+ replace(table.truncateCount) + "</td>";
+							html += "<td>"
+									+ replace(table.createCount) + "</td>";
+							html += "<td>"
+									+ replace(table.alterCount)
+									+ "</td>";
+							html += "<td>"
+									+ replace(table.dropCount)
+									+ "</td>";
+							html += "<td>"
+									+ replace(table.replaceCount) + "</td>";
+							html += "<td>" + replace(table.deleteDataCount) + "</td>";
+							if (table.deleteDataCountHistogram === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + '[' + table.deleteDataCountHistogram + ']' + "</td>";
+							}
+							html += "<td>" + replace(table.updateDataCount) + "</td>";
+							if (table.updateDataCountHistogram === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + '[' + table.updateDataCountHistogram + ']' + "</td>";
+							}
+							html += "<td>" + replace(table.fetchRowCount)+ "</td>";
+							if (table.fetchRowCountHistogram === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + '[' + table.fetchRowCountHistogram + ']' + "</td>";
+							}
+		   				
+							html += "</tr>";
+						}
+						$("#dataTable1 tbody").html(html);
+					}
+
+					html = "";
+					var functions = data.Content.functions;
+					if (functions) {
+						for ( var i = 0; i < functions.length; i++) {
+							var fun = functions[i];
+							html += "<tr>";
+							html += "<td>" + fun.name + "</td>";
+							html += "<td>" + fun.invokeCount + "</td>";
+							html += "</tr>";
+						}
+						$("#dataTable2 tbody").html(html);
+					}
+
+					html = "";
+					var whiteList = data.Content.whiteList;
+					if (whiteList) {
+						for ( var i = 0; i < whiteList.length; ++i) {
+							var white = whiteList[i];
+							if (white.sql != null) {
+								white.sql = white.sql.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+							}
+
+							html += "<tr>";
+							html += "<td>"+ (i+1) +"</td>";
+							html += '<td style="word-break:break-all">' + white.sql + "</td>";
+
+							if (white.sample === undefined) {
+								html += "<td></td>";
+							} else {
+								html += '<td style="word-break:break-all">'
+										+ white.sample + "</td>";
+							}
+							
+							if (white.executeCount === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + white.executeCount + "</td>";
+							}
+							
+							if (white.executeErrorCount === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + white.executeErrorCount + "</td>";
+							}
+
+							if (white.fetchRowCount === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + white.fetchRowCount + "</td>";
+							}
+
+							if (white.updateCount === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + white.updateCount + "</td>";
+							}
+							html += "</tr>";
+						}
+						$("#dataTable3 tbody").html(html);
+					}
+
+					html = "";
+					var blackList = data.Content.blackList;
+					if (blackList) {
+						for ( var i = 0; i < blackList.length; ++i) {
+							var black = blackList[i];
+							if (black.sql != null) {
+								black.sql = black.sql.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+							}
+
+							html += "<tr>";
+							html += "<td>"+ (i+1) +"</td>";
+							html += '<td style="word-break:break-all">' + black.sql + "</td>";
+
+							if (black.sample === undefined) {
+								html += "<td></td>";
+							} else {
+								html += '<td style="word-break:break-all">'
+										+ black.sample + "</td>";
+							}
+							
+							if (black.violationMessage === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + black.violationMessage + "</td>";
+							}
+
+							if (black.executeCount === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + black.executeCount + "</td>";
+							}
+
+							if (black.fetchRowCount === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + black.fetchRowCount + "</td>";
+							}
+
+							if (black.updateCount === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + black.updateCount + "</td>";
+							}
+						}
+						$("#dataTable4 tbody").html(html);
+					}
+				}
+			}
+		}();
+
+		$(document).ready(function() {
+			druid.wall.init();
+		});
+	</script>
+</body>
+</html>

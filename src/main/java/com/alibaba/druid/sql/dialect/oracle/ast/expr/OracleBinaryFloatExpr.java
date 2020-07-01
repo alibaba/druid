@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,17 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import java.util.Collections;
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private Float             value;
+    private Float value;
 
     public OracleBinaryFloatExpr(){
 
@@ -32,6 +34,15 @@ public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements Orac
     public OracleBinaryFloatExpr(Float value){
         super();
         this.value = value;
+    }
+
+    public OracleBinaryFloatExpr clone() {
+        return new OracleBinaryFloatExpr(value);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -93,8 +104,8 @@ public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements Orac
             this.setValue(null);
             return;
         }
-        
-        this.setValue(number.floatValue());        
+
+        this.setValue(number.floatValue());
     }
 
 }

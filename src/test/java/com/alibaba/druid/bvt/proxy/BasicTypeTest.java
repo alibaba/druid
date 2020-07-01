@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,11 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.HashMap;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class BasicTypeTest extends TestCase {
@@ -71,6 +73,9 @@ public class BasicTypeTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dropTable();
+        
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     @SuppressWarnings("deprecation")
@@ -191,7 +196,7 @@ public class BasicTypeTest extends TestCase {
             rs.updateRow();
 
             JdbcUtils.close(rs);
-            conn.rollback(point);
+//            conn.rollback(point);
             conn.setAutoCommit(true);
 
             rs = stmt.executeQuery("SELECT F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16, F17 FROM T_BASIC_TYPE");
@@ -212,7 +217,7 @@ public class BasicTypeTest extends TestCase {
             rs.getTimestamp("F11");
             rs.getTimestamp("F11", Calendar.getInstance());
             rs.getBytes("F12");
-            rs.getBlob("F12").free();
+            rs.getBlob("F12");
             rs.getString("F13");
             rs.getAsciiStream("F13");
             rs.getCharacterStream("F14");

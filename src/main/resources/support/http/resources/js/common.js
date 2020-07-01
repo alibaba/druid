@@ -1,8 +1,10 @@
 $.namespace("druid.common");
+
 druid.common = function () {  
 	var statViewOrderBy = '';
 	var statViewOrderBy_old = '';
 	var statViewOrderType = 'asc';
+  var isOrderRequest = false;
 
 	// only one page for now
 	var sqlViewPage = 1;
@@ -11,40 +13,26 @@ druid.common = function () {
 	return  {
 		init : function() {
 			this.buildFooter();
+			druid.lang.init();
 		},
 		
 		buildHead : function(index) {
-			var html = '<div class="navbar navbar-fixed-top">'+
-						'	<div class="navbar-inner">'+
-						'		<div class="container">'+
-						'			<a href="https://github.com/AlibabaTech/druid/wiki" target="_blank" class="brand">Druid Monitor</a>'+
-						'			<div class="nav-collapse">'+
-				      	'				<ul class="nav">'+
-				      	'					<li><a href="index.html">Index</a></li>'+
-				      	'					<li><a href="datasource.html">DataSource</a></li>'+
-				      	'					<li><a href="sql.html">SQL</a></li>'+
-				      	'					<li><a href="webapp.html">WebApp</a></li>'+
-				      	'					<li><a href="weburi.html">WebURI</a></li>'+
-				      	'					<li><a href="websession.html">Web Session</a></li>'+
-				      	'					<li><a href="spring.html">Spring</a></li>'+
-				      	'					<li><a href="api.html">JSON API</a></li>'+
-				      	'				</ul>'+
-				      	'				<a class="btn btn-primary" href="javascript:druid.common.ajaxRequestForReset();">Reset All</a>'+
-				      	'			</div>'+
-				      	'		</div>'+
-				      	'	</div>'+
-						'</div>'; 
-			$(document.body).prepend(html);
-			$(".navbar .nav li").eq(index).addClass("active");
+			$.get('header.html',function(html) {
+				$(document.body).prepend(html);
+				druid.lang.trigger();
+				$(".navbar .nav li").eq(index).addClass("active");
+			},"html");
+						
 		},
 		
 		buildFooter : function() {
-			var html = '<footer class="footer">'+
+
+			var html ='<footer class="footer">'+
 					  '    		<div class="container">'+
-				  	  '	powered by <a href="https://github.com/AlibabaTech/" target="_blank">AlibabaTech</a> & <a href="http://www.sandzhang.com/" target="_blank">sandzhang</a> & <a href="http://melin.iteye.com/" target="_blank">melin</a> & <a href="https://github.com/shrekwang" target="_blank">shrek.wang</a><br/>'+
-				  	  ' <img src="img/logo.jpg" />'
-				  	  '	</div>'+
-					  '</footer>';
+					  '<a href="https://render.alipay.com/p/s/taobaonpm_click/druid_banner_click" target="new"><img src="https://render.alipay.com/p/s/taobaonpm_click/druid_banner"></a><br/>' +
+				  	  '	powered by <a href="https://github.com/alibaba/" target="_blank">Alibaba</a> & sandzhang & <a href="http://melin.iteye.com/" target="_blank">melin</a> & <a href="https://github.com/shrekwang" target="_blank">shrek.wang</a>'+
+				  	  '			</div>'+
+					  ' </footer>';
 			$(document.body).append(html);
 		},
 		
@@ -56,6 +44,23 @@ druid.common = function () {
 			$.ajax({
 				type: 'POST',
 				url: "reset-all.json",
+				success: function(data) {
+					if (data.ResultCode == 1) {
+						alert("already reset all stat");
+					}
+				},
+				dataType: "json"
+			});
+		},
+
+		ajaxRequestForLogAndReset : function() {
+			if(!confirm("Are you sure to reset data source stat? It'll clear and log all stat data !")){
+				return;
+			}
+
+			$.ajax({
+				type: 'POST',
+				url: "log-and-reset.json",
 				success: function(data) {
 					if (data.ResultCode == 1) {
 						alert("already reset all stat");
@@ -107,8 +112,10 @@ druid.common = function () {
 				}
 				divObj.innerHTML = html;
 			}
+      isOrderRequest = true;
 			
 			this.ajaxRequestForBasicInfo();
+			return false;
 		},
 
 		setOrderBy : function(orderBy) {
@@ -131,7 +138,13 @@ druid.common = function () {
 		},
 		
 		ajaxuri : "",
-		handleAjaxResult : null,
+		handleCallback:null,
+		handleAjaxResult : function(data) {
+			druid.common.handleCallback(data);
+      if (!isOrderRequest) {
+        druid.lang.trigger();
+      }
+		},//ajax 处理函数
 		ajaxRequestForBasicInfo : function() {
 			$.ajax({
 				type: 'POST',
@@ -167,7 +180,7 @@ druid.common = function () {
             var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
                 vars[key] = value;
             });
-        		return vars[name];
+        	return vars[name];
         }
 	}
 }();
@@ -175,3 +188,16 @@ druid.common = function () {
 $(document).ready(function() {
 	druid.common.init();
 });
+
+function replace (data) {
+	if((!data)||data === undefined){
+		return '';
+	}else{
+		return format(data);
+	}
+}
+
+function format(s) {
+	var str=s+='';
+	return str.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}

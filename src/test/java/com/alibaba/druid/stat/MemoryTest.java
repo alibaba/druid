@@ -2,7 +2,6 @@ package com.alibaba.druid.stat;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
-import java.util.concurrent.atomic.AtomicLong;
 
 import junit.framework.TestCase;
 

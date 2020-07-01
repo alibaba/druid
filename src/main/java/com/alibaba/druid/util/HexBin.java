@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,75 +15,67 @@
  */
 package com.alibaba.druid.util;
 
-
 /**
- * format validation
- *
- * This class encodes/decodes hexadecimal data
- * 
- * @xerces.internal  
+ * format validation This class encodes/decodes hexadecimal data
  * 
  * @author Jeffrey Rodriguez
  * @version $Id: HexBin.java,v 1.4 2007/07/19 04:38:32 ofung Exp $
  */
-public final class  HexBin {
-    static private final int  BASELENGTH   = 128;
-    static private final int  LOOKUPLENGTH = 16;
-    static final private byte [] hexNumberTable    = new byte[BASELENGTH];
-    static final private char [] lookUpHexAlphabet = new char[LOOKUPLENGTH];
+public final class HexBin {
 
+    static private final int    BASE_LENGTH        = 128;
+    static private final int    LOOKUP_LENGTH      = 16;
+    static final private byte[] HEX_NUMBER_TABLE   = new byte[BASE_LENGTH];
+    static final private char[] UPPER_CHARS        = new char[LOOKUP_LENGTH];
+    static final private char[] LOWER_CHARS        = new char[LOOKUP_LENGTH];
 
     static {
-        for (int i = 0; i < BASELENGTH; i++ ) {
-            hexNumberTable[i] = -1;
+        for (int i = 0; i < BASE_LENGTH; i++) {
+            HEX_NUMBER_TABLE[i] = -1;
         }
-        for ( int i = '9'; i >= '0'; i--) {
-            hexNumberTable[i] = (byte) (i-'0');
+        for (int i = '9'; i >= '0'; i--) {
+            HEX_NUMBER_TABLE[i] = (byte) (i - '0');
         }
-        for ( int i = 'F'; i>= 'A'; i--) {
-            hexNumberTable[i] = (byte) ( i-'A' + 10 );
+        for (int i = 'F'; i >= 'A'; i--) {
+            HEX_NUMBER_TABLE[i] = (byte) (i - 'A' + 10);
         }
-        for ( int i = 'f'; i>= 'a'; i--) {
-           hexNumberTable[i] = (byte) ( i-'a' + 10 );
+        for (int i = 'f'; i >= 'a'; i--) {
+            HEX_NUMBER_TABLE[i] = (byte) (i - 'a' + 10);
         }
 
-        for(int i = 0; i<10; i++ ) {
-            lookUpHexAlphabet[i] = (char)('0'+i);
+        for (int i = 0; i < 10; i++) {
+            UPPER_CHARS[i] = (char) ('0' + i);
+            LOWER_CHARS[i] = (char) ('0' + i);
         }
-        for(int i = 10; i<=15; i++ ) {
-            lookUpHexAlphabet[i] = (char)('A'+i -10);
+        for (int i = 10; i <= 15; i++) {
+            UPPER_CHARS[i] = (char) ('A' + i - 10);
+            LOWER_CHARS[i] = (char) ('a' + i - 10);
         }
     }
+    
+    public static String encode(byte[] bytes) {
+        return encode(bytes, true);
+    }
 
-    /**
-     * Encode a byte array to hex string
-     *
-     * @param binaryData array of byte to encode
-     * @return return encoded string
-     */
-    static public String encode(byte[] binaryData) {
-        if (binaryData == null) {
+    public static String encode(byte[] bytes, boolean upperCase) {
+        if (bytes == null) {
             return null;
         }
-        
-        int lengthData   = binaryData.length;
-        int lengthEncode = lengthData * 2;
-        char[] encodedData = new char[lengthEncode];
-        int temp;
-        for (int i = 0; i < lengthData; i++) {
-            temp = binaryData[i];
-            if (temp < 0) {
-                temp += 256;
-            }
-            encodedData[i*2] = lookUpHexAlphabet[temp >> 4];
-            encodedData[i*2+1] = lookUpHexAlphabet[temp & 0xf];
+
+        final char[] chars = upperCase ? UPPER_CHARS : LOWER_CHARS;
+
+        char[] hex = new char[bytes.length * 2];
+        for (int i = 0; i < bytes.length; i++) {
+            int b = bytes[i] & 0xFF;
+            hex[i * 2] = chars[b >> 4];
+            hex[i * 2 + 1] = chars[b & 0xf];
         }
-        return new String(encodedData);
+        return new String(hex);
     }
 
     /**
      * Decode hex string to a byte array
-     *
+     * 
      * @param encoded encoded string
      * @return return array of byte to encode
      */
@@ -91,7 +83,7 @@ public final class  HexBin {
         if (encoded == null) {
             return null;
         }
-        
+
         int lengthData = encoded.length();
         if (lengthData % 2 != 0) {
             return null;
@@ -102,18 +94,18 @@ public final class  HexBin {
         byte[] decodedData = new byte[lengthDecode];
         byte temp1, temp2;
         char tempChar;
-        for( int i = 0; i<lengthDecode; i++ ){
-            tempChar = binaryData[i*2];
-            temp1 = (tempChar < BASELENGTH) ? hexNumberTable[tempChar] : -1;
+        for (int i = 0; i < lengthDecode; i++) {
+            tempChar = binaryData[i * 2];
+            temp1 = (tempChar < BASE_LENGTH) ? HEX_NUMBER_TABLE[tempChar] : -1;
             if (temp1 == -1) {
                 return null;
             }
-            tempChar = binaryData[i*2+1];
-            temp2 = (tempChar < BASELENGTH) ? hexNumberTable[tempChar] : -1;
+            tempChar = binaryData[i * 2 + 1];
+            temp2 = (tempChar < BASE_LENGTH) ? HEX_NUMBER_TABLE[tempChar] : -1;
             if (temp2 == -1) {
                 return null;
             }
-            decodedData[i] = (byte)((temp1 << 4) | temp2);
+            decodedData[i] = (byte) ((temp1 << 4) | temp2);
         }
         return decodedData;
     }

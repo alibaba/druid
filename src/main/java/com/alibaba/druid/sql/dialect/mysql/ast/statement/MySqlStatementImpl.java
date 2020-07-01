@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,19 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public abstract class MySqlStatementImpl extends SQLStatementImpl implements MySqlStatement {
 
-    private static final long serialVersionUID = 1L;
+    public MySqlStatementImpl() {
+        super(JdbcConstants.MYSQL);
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -33,6 +39,10 @@ public abstract class MySqlStatementImpl extends SQLStatementImpl implements MyS
     }
 
     public void accept0(MySqlASTVisitor visitor) {
+        throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
+    public List<SQLObject> getChildren() {
         throw new UnsupportedOperationException(this.getClass().getName());
     }
 }

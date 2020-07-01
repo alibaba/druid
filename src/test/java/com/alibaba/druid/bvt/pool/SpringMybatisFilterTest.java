@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,12 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.junit.Assert;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.alibaba.druid.spring.User;
@@ -33,7 +34,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 public class SpringMybatisFilterTest extends TestCase {
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
     }
 
     protected void tearDown() throws Exception {
@@ -82,6 +83,10 @@ public class SpringMybatisFilterTest extends TestCase {
         }
         
         {
+            userMapper.errorSelect(1);
+        }
+        
+        {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             stmt.execute("DROP TABLE sequence_seed");
@@ -105,5 +110,8 @@ public class SpringMybatisFilterTest extends TestCase {
 
         @Insert(value = "insert into t_User (id, name) values (#{user.id}, #{user.name})")
         void addUser(@Param("user") User user);
+        
+        @Select(value = "delete from t_User where id = #{id}")
+        void errorSelect(@Param("id") long id);
     }
 }

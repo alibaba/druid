@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ import com.alibaba.druid.support.jconsole.model.RowHeaderTable;
   }
   </pre>
   
-  @author yunnysunny<yunnysunny@gmail.com>
+  @author yunnysunny [yunnysunny@gmail.com]
  * */
 public class DruidSQLPanel extends DruidPanel {
 
@@ -130,7 +130,7 @@ public class DruidSQLPanel extends DruidPanel {
                                                                                   add("FetchRowCountHistogram");
                                                                               }
                                                                           };
-    private static final String            HISOGRAM                       = "Histogram";
+    private static final String            HISTOGRAM                      = "Histogram";
     private static final String            Effected_RowCount_HISOGRAM     = "EffectedRowCountHistogram";
     private static final String            ExecuteAndResult_Hold_HISOGRAM = "ExecuteAndResultHoldTimeHistogram";
     private static final String            FetchRowCount_HISOGRAM         = "FetchRowCountHistogram";
@@ -138,7 +138,7 @@ public class DruidSQLPanel extends DruidPanel {
 
                                                                               private static final long serialVersionUID = 1L;
                                                                               {
-                                                                                  add(HISOGRAM);
+                                                                                  add(HISTOGRAM);
                                                                                   add(Effected_RowCount_HISOGRAM);
                                                                                   add(ExecuteAndResult_Hold_HISOGRAM);
                                                                                   add(FetchRowCount_HISOGRAM);
@@ -164,7 +164,7 @@ public class DruidSQLPanel extends DruidPanel {
 
     private void addGroupData(String keyNow, int index) {
         // System.out.println("keyNow:"+keyNow+"index:"+index);
-        if (HISOGRAM.equals(keyNow)) {
+        if (HISTOGRAM.equals(keyNow)) {
             listHistogram.add(index);
         } else if (Effected_RowCount_HISOGRAM.equals(keyNow)) {
             listEffectedRowCountHistogram.add(index);
@@ -182,7 +182,7 @@ public class DruidSQLPanel extends DruidPanel {
      * @return 最终的处理结果
      */
     private ArrayList<LinkedHashMap<String, Object>> preProcess(ArrayList<LinkedHashMap<String, Object>> data) {
-        groupHistogram = new ColumnGroup(HISOGRAM);
+        groupHistogram = new ColumnGroup(HISTOGRAM);
         groupEffectedRowCountHistogram = new ColumnGroup(Effected_RowCount_HISOGRAM);
         groupExecuteAndResultHoldTimeHistogram = new ColumnGroup(ExecuteAndResult_Hold_HISOGRAM);
         groupFetchRowCountHistogram = new ColumnGroup(FetchRowCount_HISOGRAM);
@@ -237,8 +237,6 @@ public class DruidSQLPanel extends DruidPanel {
                             }
                         }
                     }
-                } else {
-
                 }
 
             }// end of foreach ARRAY_DATA_MAP

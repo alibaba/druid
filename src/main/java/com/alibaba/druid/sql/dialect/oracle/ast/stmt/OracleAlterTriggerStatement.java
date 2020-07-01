@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,13 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleAlterTriggerStatement extends OracleStatementImpl {
+public class OracleAlterTriggerStatement extends OracleStatementImpl implements OracleAlterStatement {
 
-    private static final long serialVersionUID = 1L;
+    private SQLName name;
 
-    private SQLName           name;
+    private Boolean enable;
 
-    private Boolean           enable;
-
-    private boolean           compile;
+    private boolean compile;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
