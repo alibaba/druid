@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,23 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.util.Collections;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockClob;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxyImpl;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Properties;
 
 public class FilterChainTest_Clob extends TestCase {
 
@@ -43,7 +43,9 @@ public class FilterChainTest_Clob extends TestCase {
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-        statement = new StatementProxyImpl(null, null, 1);
+        dataSource.setUrl("jdbc:mock:xxx");
+        ConnectionProxyImpl conn = new ConnectionProxyImpl(dataSource, null, new Properties(), 0);
+        statement = new StatementProxyImpl(conn, null, 1);
 
         mockResultSet = new MockResultSet(null) {
 

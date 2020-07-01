@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
 
 public class FilterManager {
 
     private final static Log                               LOG      = LogFactory.getLog(FilterManager.class);
 
-    private static final ConcurrentHashMap<String, String> aliasMap = new ConcurrentHashMap<String, String>();
+    private static final ConcurrentHashMap<String, String> aliasMap = new ConcurrentHashMap<String, String>(16, 0.75f, 1);
 
     static {
         try {
@@ -45,25 +46,41 @@ public class FilterManager {
                     aliasMap.put(name, (String) entry.getValue());
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOG.error("load filter config error", e);
         }
     }
 
     public static final String getFilter(String alias) {
-        return aliasMap.get(alias);
+        if (alias == null) {
+            return null;
+        }
+
+        String filter = aliasMap.get(alias);
+
+        if (filter == null && alias.length() < 128) {
+            filter = alias;
+        }
+
+        return filter;
     }
 
     public static Properties loadFilterConfig() throws IOException {
         Properties filterProperties = new Properties();
 
         loadFilterConfig(filterProperties, ClassLoader.getSystemClassLoader());
+        loadFilterConfig(filterProperties, FilterManager.class.getClassLoader());
         loadFilterConfig(filterProperties, Thread.currentThread().getContextClassLoader());
+        loadFilterConfig(filterProperties, FilterManager.class.getClassLoader());
 
         return filterProperties;
     }
 
     private static void loadFilterConfig(Properties filterProperties, ClassLoader classLoader) throws IOException {
+        if (classLoader == null) {
+            return;
+        }
+        
         for (Enumeration<URL> e = classLoader.getResources("META-INF/druid-filter.properties"); e.hasMoreElements();) {
             URL url = e.nextElement();
 
@@ -94,7 +111,7 @@ public class FilterManager {
                     continue;
                 }
 
-                Class<?> filterClass = JdbcUtils.loadDriverClass(filterClassName);
+                Class<?> filterClass = Utils.loadClass(filterClassName);
 
                 if (filterClass == null) {
                     LOG.error("load filter error, filter not found : " + filterClassName);
@@ -105,9 +122,14 @@ public class FilterManager {
 
                 try {
                     filter = (Filter) filterClass.newInstance();
+                } catch (ClassCastException e) {
+                    LOG.error("load filter error.", e);
+                    continue;
                 } catch (InstantiationException e) {
                     throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
                 } catch (IllegalAccessException e) {
+                    throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
+                } catch (RuntimeException e) {
                     throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
                 }
 
@@ -121,7 +143,7 @@ public class FilterManager {
             return;
         }
 
-        Class<?> filterClass = JdbcUtils.loadDriverClass(filterName);
+        Class<?> filterClass = Utils.loadClass(filterName);
         if (filterClass == null) {
             LOG.error("load filter error, filter not found : " + filterName);
             return;

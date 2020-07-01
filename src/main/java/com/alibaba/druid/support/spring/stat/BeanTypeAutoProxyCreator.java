@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package com.alibaba.druid.support.spring.stat;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.aop.TargetSource;
@@ -60,8 +60,7 @@ public class BeanTypeAutoProxyCreator extends AbstractAutoProxyCreator implement
      */
     @SuppressWarnings("rawtypes")
     protected Object[] getAdvicesAndAdvisorsForBean(Class beanClass, String beanName, TargetSource targetSource) {
-        for (Iterator<String> it = this.beanNames.iterator(); it.hasNext();) {
-            String mappedName = (String) it.next();
+        for (String mappedName : this.beanNames) {
             if (FactoryBean.class.isAssignableFrom(beanClass)) {
                 if (!mappedName.startsWith(BeanFactory.FACTORY_BEAN_PREFIX)) {
                     continue;
@@ -93,9 +92,7 @@ public class BeanTypeAutoProxyCreator extends AbstractAutoProxyCreator implement
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(targetBeanType, "targetType cannot be null");
         String[] beanNames = context.getBeanNamesForType(targetBeanType);
-        for (String name : beanNames) {
-            this.beanNames.add(name);
-        }
+        Collections.addAll(this.beanNames, beanNames);
     }
 
 }

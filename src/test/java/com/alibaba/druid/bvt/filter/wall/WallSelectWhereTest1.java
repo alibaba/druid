@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,24 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景，检测可疑的Having条件
+ * 
  * @author wenshao
- *
  */
 public class WallSelectWhereTest1 extends TestCase {
-    private String sql = "SELECT F1, F2 WHERE 1 = 1 OR FID = ?";
 
-    public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+    public void testMySql_true() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateMySql("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ?"));
     }
-    
-    public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+
+    public void testORACLE_true() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateOracle("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ?"));
+    }
+
+    public void testMySql_false() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateMySql("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ? OR 1 = 1"));
+    }
+
+    public void testORACLE_false() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ? OR 1 = 1"));
     }
 }

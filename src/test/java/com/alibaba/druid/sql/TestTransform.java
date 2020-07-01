@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import oracle.jdbc.OracleStatement;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -44,7 +44,7 @@ public class TestTransform extends OracleTest {
     private ExecutorService executor = Executors.newFixedThreadPool(10);
 
     public void setUp() throws Exception {
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.18:1521:emdb";
+        jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:emdb";
         user = "wardon";
         password = "wardon";
 

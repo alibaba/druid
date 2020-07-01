@@ -1,0 +1,5 @@
+master
+sys
+sysobjects
+sysdatabases
+information_schema

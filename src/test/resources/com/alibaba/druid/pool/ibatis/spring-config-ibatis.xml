@@ -7,6 +7,9 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
 	default-lazy-init="false">
 	
+	<bean class="com.alibaba.druid.support.ibatis.SpringIbatisBeanTypeAutoProxyCreator" >
+	</bean>
+	
 	<bean class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
 		id="master-sqlMapClient">
 		<property name="configLocation" value="com/alibaba/druid/pool/ibatis/ibatis-config-druid-test.xml" />

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.alibaba.druid.filter.config;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.PublicKey;
@@ -91,15 +92,15 @@ import com.alibaba.druid.util.StringUtils;
  */
 public class ConfigFilter extends FilterAdapter {
 
-    private static Log         LOG                       = LogFactory.getLog(ConfigFilter.class);
+    private static Log         LOG                     = LogFactory.getLog(ConfigFilter.class);
 
-    public static final String CONFIG_FILE               = "config.file";
-    public static final String CONFIG_DECRYPT            = "config.decrypt";
-    public static final String CONFIG_KEY                = "config.decrypt.key";
+    public static final String CONFIG_FILE             = "config.file";
+    public static final String CONFIG_DECRYPT          = "config.decrypt";
+    public static final String CONFIG_KEY              = "config.decrypt.key";
 
-    public static final String SYS_PROP_CONFIG_FILE      = "druid.config.file";
-    public static final String SYS_PROP_CONFIG_DECRYPT   = "druid.config.decrypt";
-    public static final String SYS_PROP_CONFIG_KEY       = "druid.config.decrypt.key";
+    public static final String SYS_PROP_CONFIG_FILE    = "druid.config.file";
+    public static final String SYS_PROP_CONFIG_DECRYPT = "druid.config.decrypt";
+    public static final String SYS_PROP_CONFIG_KEY     = "druid.config.decrypt.key";
 
     public ConfigFilter(){
     }
@@ -110,12 +111,12 @@ public class ConfigFilter extends FilterAdapter {
         }
 
         DruidDataSource dataSource = (DruidDataSource) dataSourceProxy;
-        Properties connectinProperties = dataSource.getConnectProperties();
+        Properties connectionProperties = dataSource.getConnectProperties();
 
-        Properties configFileProperties = loadPropertyFromConfigFile(connectinProperties);
+        Properties configFileProperties = loadPropertyFromConfigFile(connectionProperties);
 
         // 判断是否需要解密，如果需要就进行解密行动
-        boolean decrypt = isDecrypt(connectinProperties, configFileProperties);
+        boolean decrypt = isDecrypt(connectionProperties, configFileProperties);
 
         if (configFileProperties == null) {
             if (decrypt) {
@@ -135,10 +136,8 @@ public class ConfigFilter extends FilterAdapter {
         }
     }
 
-    public boolean isDecrypt(Properties connectinProperties, Properties configFileProperties) {
-        boolean decrypt = false;
-
-        String decrypterId = connectinProperties.getProperty(CONFIG_DECRYPT);
+    public boolean isDecrypt(Properties connectionProperties, Properties configFileProperties) {
+        String decrypterId = connectionProperties.getProperty(CONFIG_DECRYPT);
         if (decrypterId == null || decrypterId.length() == 0) {
             if (configFileProperties != null) {
                 decrypterId = configFileProperties.getProperty(CONFIG_DECRYPT);
@@ -149,15 +148,11 @@ public class ConfigFilter extends FilterAdapter {
             decrypterId = System.getProperty(SYS_PROP_CONFIG_DECRYPT);
         }
 
-        if ("true".equals(decrypterId)) {
-            decrypt = true;
-        }
-
-        return decrypt;
+        return Boolean.valueOf(decrypterId);
     }
 
-    Properties loadPropertyFromConfigFile(Properties connectinProperties) {
-        String configFile = connectinProperties.getProperty(CONFIG_FILE);
+    Properties loadPropertyFromConfigFile(Properties connectionProperties) {
+        String configFile = connectionProperties.getProperty(CONFIG_FILE);
 
         if (configFile == null) {
             configFile = System.getProperty(SYS_PROP_CONFIG_FILE);
@@ -211,11 +206,14 @@ public class ConfigFilter extends FilterAdapter {
         }
     }
 
-    public PublicKey getPublicKey(Properties connectinProperties, Properties configFileProperties) {
-        String key = connectinProperties.getProperty(CONFIG_KEY);
+    public PublicKey getPublicKey(Properties connectionProperties, Properties configFileProperties) {
+        String key = null;
+        if (configFileProperties != null) {
+            key = configFileProperties.getProperty(CONFIG_KEY);
+        }
 
-        if (StringUtils.isEmpty(key) && connectinProperties != null) {
-            key = connectinProperties.getProperty(CONFIG_KEY);
+        if (StringUtils.isEmpty(key) && connectionProperties != null) {
+            key = connectionProperties.getProperty(CONFIG_KEY);
         }
 
         if (StringUtils.isEmpty(key)) {
@@ -231,19 +229,21 @@ public class ConfigFilter extends FilterAdapter {
         InputStream inStream = null;
         try {
             boolean xml = false;
-            if (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("file://")) {
+            if (filePath.startsWith("file://")) {
+                filePath = filePath.substring("file://".length());
+                inStream = getFileAsStream(filePath);
+                xml = filePath.endsWith(".xml");
+            } else if (filePath.startsWith("http://") || filePath.startsWith("https://")) {
                 URL url = new URL(filePath);
                 inStream = url.openStream();
-
                 xml = url.getPath().endsWith(".xml");
+            } else if (filePath.startsWith("classpath:")) {
+                String resourcePath = filePath.substring("classpath:".length());
+                inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
+                // 在classpath下应该也可以配置xml文件吧？
+                xml = resourcePath.endsWith(".xml");
             } else {
-                File file = new File(filePath);
-                if (file.exists()) {
-                    inStream = new FileInputStream(file);
-                } else {
-                    inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
-                }
-
+                inStream = getFileAsStream(filePath);
                 xml = filePath.endsWith(".xml");
             }
 
@@ -265,5 +265,16 @@ public class ConfigFilter extends FilterAdapter {
         } finally {
             JdbcUtils.close(inStream);
         }
+    }
+
+    private InputStream getFileAsStream(String filePath) throws FileNotFoundException {
+        InputStream inStream = null;
+        File file = new File(filePath);
+        if (file.exists()) {
+            inStream = new FileInputStream(file);
+        } else {
+            inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
+        }
+        return inStream;
     }
 }

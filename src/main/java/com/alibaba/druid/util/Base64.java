@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ package com.alibaba.druid.util;
  * 
  * @author Josh Bloch
  * @version %I%, %G%
- * @see Preferences
  * @since 1.4
  */
 public class Base64 {
@@ -46,7 +45,7 @@ public class Base64 {
         int numFullGroups = aLen / 3;
         int numBytesInPartialGroup = aLen - 3 * numFullGroups;
         int resultLen = 4 * ((aLen + 2) / 3);
-        StringBuffer result = new StringBuffer(resultLen);
+        StringBuilder result = new StringBuilder(resultLen);
         char[] intToAlpha = (alternate ? intToAltBase64 : intToBase64);
 
         // Translate all full groups from byte array elements to Base64
@@ -103,8 +102,6 @@ public class Base64 {
 
     /**
      * Translates the specified Base64 string (as per Preferences.get(byte[])) into a byte array.
-     * 
-     * @throw IllegalArgumentException if <tt>s</tt> is not a valid Base64 string.
      */
     public static byte[] base64ToByteArray(String s) {
         return base64ToByteArray(s, false);
@@ -112,9 +109,6 @@ public class Base64 {
 
     /**
      * Translates the specified "alternate representation" Base64 string into a byte array.
-     * 
-     * @throw IllegalArgumentException or ArrayOutOfBoundsException if <tt>s</tt> is not a valid alternate
-     * representation Base64 string.
      */
     public static byte[] altBase64ToByteArray(String s) {
         return base64ToByteArray(s, true);

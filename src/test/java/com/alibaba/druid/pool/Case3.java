@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,14 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class Case3 extends TestCase {
 
     public void test_1() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mysql://10.20.153.104:3306/druid2");
+        dataSource.setUrl("jdbc:mysql://a.b.c.d:3306/druid2");
         dataSource.setUsername("root");
         dataSource.setPassword("root");
 

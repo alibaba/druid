@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 
 public class MockBlob implements Blob {
-
-    private ByteArrayOutputStream out = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
     @Override
     public long length() throws SQLException {
@@ -34,7 +33,8 @@ public class MockBlob implements Blob {
     @Override
     public byte[] getBytes(long pos, int length) throws SQLException {
         byte[] bytes = new byte[length];
-        System.arraycopy(out.toByteArray(), (int) pos, bytes, 0, length);
+        byte[] outBytes = out.toByteArray();
+        System.arraycopy(outBytes, (int) (pos - 1), bytes, 0, length);
         return bytes;
     }
 

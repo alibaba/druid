@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,13 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+
 import junit.framework.TestCase;
 
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcConnectionStat;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class StatisticTest extends TestCase {
 
@@ -29,5 +32,10 @@ public class StatisticTest extends TestCase {
         Assert.assertEquals(1, stat.getActiveMax());
         stat.setActiveCount(2);
         Assert.assertEquals(2, stat.getActiveMax());
+    }
+    
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,30 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIntervalUnit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlExtractExpr extends SQLExprImpl implements MySqlExpr {
 
-    private static final long serialVersionUID = 1L;
-
     private SQLExpr           value;
-    private MySqlIntervalUnit unit;
+    private SQLIntervalUnit unit;
 
     public MySqlExtractExpr(){
+    }
+
+    public MySqlExtractExpr clone() {
+        MySqlExtractExpr x = new MySqlExtractExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        x.unit = unit;
+        return x;
     }
 
     public SQLExpr getValue() {
@@ -35,28 +46,30 @@ public class MySqlExtractExpr extends SQLExprImpl implements MySqlExpr {
     }
 
     public void setValue(SQLExpr value) {
+        if (value != null) {
+            value.setParent(this);
+        }
         this.value = value;
     }
 
-    public MySqlIntervalUnit getUnit() {
+    public SQLIntervalUnit getUnit() {
         return unit;
     }
 
-    public void setUnit(MySqlIntervalUnit unit) {
+    public void setUnit(SQLIntervalUnit unit) {
         this.unit = unit;
-    }
-
-    @Override
-    public void output(StringBuffer buf) {
-        value.output(buf);
-        buf.append(' ');
-        buf.append(unit.name());
     }
 
     protected void accept0(SQLASTVisitor visitor) {
         MySqlASTVisitor mysqlVisitor = (MySqlASTVisitor) visitor;
-        mysqlVisitor.visit(this);
+        if (mysqlVisitor.visit(this)) {
+            acceptChild(visitor, value);
+        }
         mysqlVisitor.endVisit(this);
+    }
+    @Override
+    public List getChildren() {
+        return Collections.singletonList(value);
     }
 
     @Override

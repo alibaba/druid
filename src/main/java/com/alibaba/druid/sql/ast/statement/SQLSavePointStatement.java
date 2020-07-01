@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,25 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSavePointStatement extends SQLStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-    private SQLExpr           name;
+    private SQLExpr name;
+    
+    public SQLSavePointStatement() {
+        
+    }
+    
+    public SQLSavePointStatement(String dbType) {
+        super (dbType);
+    }
 
     public SQLExpr getName() {
         return name;
@@ -38,5 +49,14 @@ public class SQLSavePointStatement extends SQLStatementImpl {
             acceptChild(visitor, name);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (name != null) {
+            children.add(name);
+        }
+        return children;
     }
 }

@@ -6,14 +6,16 @@
 		<link href='css/bootstrap.min.css' rel="stylesheet" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
     	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 		<script>
 			function init() {
-				druid.common.buildHead(7);
+				druid.common.buildHead(8);
 			}
 		</script>
 	</head>
 	<body onload="init();">
+		
 		<div class="container">
           				<h3>
           					JSON API
@@ -48,6 +50,15 @@
 								<td class="td_lable"><a href="sql.json" target="_blank">sql.json</a></td>
 								<td>SqlStat for id={id} ,id is SqlStat.ID<br />
 						Example: druid/sql-1.json</td>
+							</tr>
+							<tr>
+								<td class="td_lable"><a href="wall.json" target="_blank">WallStat.json</a></td>
+								<td>WallStat List</td>
+							</tr>
+							<tr>
+								<td class="td_lable">wall-{id}.json</td>
+								<td>WallStat for id={id},id is DatsSourceStat.ID<br />
+						Example: druid/wall-1.json</td>
 							</tr>
 							<tr>
 								<td class="td_lable"><a href="basic.json" target="_blank">basic.json</a></td>

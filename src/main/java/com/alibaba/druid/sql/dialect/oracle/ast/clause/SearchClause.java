@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class SearchClause extends OracleSQLObjectImpl {
-
-    private static final long serialVersionUID = 1L;
 
     public static enum Type {
         DEPTH, BREADTH
@@ -33,7 +31,7 @@ public class SearchClause extends OracleSQLObjectImpl {
 
     private Type                          type;
 
-    private final List<OracleOrderByItem> items = new ArrayList<OracleOrderByItem>();
+    private final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
 
     private SQLIdentifierExpr             orderingColumn;
 
@@ -45,8 +43,15 @@ public class SearchClause extends OracleSQLObjectImpl {
         this.type = type;
     }
 
-    public List<OracleOrderByItem> getItems() {
+    public List<SQLSelectOrderByItem> getItems() {
         return items;
+    }
+    
+    public void addItem(SQLSelectOrderByItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
 
     public SQLIdentifierExpr getOrderingColumn() {
@@ -54,6 +59,9 @@ public class SearchClause extends OracleSQLObjectImpl {
     }
 
     public void setOrderingColumn(SQLIdentifierExpr orderingColumn) {
+        if (orderingColumn != null) {
+            orderingColumn.setParent(this);
+        }
         this.orderingColumn = orderingColumn;
     }
 
@@ -66,4 +74,21 @@ public class SearchClause extends OracleSQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public SearchClause clone() {
+        SearchClause x = new SearchClause();
+
+        x.type = type;
+
+        for (SQLSelectOrderByItem item : items) {
+            SQLSelectOrderByItem item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+
+        if (orderingColumn != null) {
+            x.setOrderingColumn(orderingColumn.clone());
+        }
+
+        return x;
+    }
 }

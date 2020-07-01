@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,57 +15,94 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
+import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OraclePrimaryKey extends OracleSQLObjectImpl implements SQLPrimaryKey, SQLTableElement {
+public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement, SQLTableConstraint {
 
-    private static final long serialVersionUID = 1L;
+    private OracleUsingIndexClause using;
+    private SQLName                exceptionsInto;
+    private Boolean                enable;
+    private Initially              initially;
+    private Boolean                deferrable;
 
-    private SQLName           name;
-    private List<SQLExpr>     columns          = new ArrayList<SQLExpr>();
-
-    private SQLExpr           usingIndex;
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        this.accept0((OracleASTVisitor) visitor);
+    }
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, columns);
-            acceptChild(visitor, usingIndex);
+            acceptChild(visitor, using);
+            acceptChild(visitor, exceptionsInto);
         }
         visitor.endVisit(this);
     }
 
-    public SQLName getName() {
-        return name;
+    public Boolean getDeferrable() {
+        return deferrable;
     }
 
-    public void setName(SQLName name) {
-        this.name = name;
+    public void setDeferrable(Boolean deferrable) {
+        this.deferrable = deferrable;
     }
 
-    public List<SQLExpr> getColumns() {
-        return columns;
+    public OracleUsingIndexClause getUsing() {
+        return using;
     }
 
-    public void setColumns(List<SQLExpr> columns) {
-        this.columns = columns;
+    public void setUsing(OracleUsingIndexClause using) {
+        this.using = using;
     }
 
-    public SQLExpr getUsingIndex() {
-        return usingIndex;
+    public SQLName getExceptionsInto() {
+        return exceptionsInto;
     }
 
-    public void setUsingIndex(SQLExpr usingIndex) {
-        this.usingIndex = usingIndex;
+    public void setExceptionsInto(SQLName exceptionsInto) {
+        this.exceptionsInto = exceptionsInto;
     }
 
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
+
+    public Initially getInitially() {
+        return initially;
+    }
+
+    public void setInitially(Initially initially) {
+        this.initially = initially;
+    }
+
+    public void cloneTo(OraclePrimaryKey x) {
+        super.cloneTo(x);
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (exceptionsInto != null) {
+            x.setExceptionsInto(exceptionsInto.clone());
+        }
+        x.enable = enable;
+        x.initially = initially;
+        x.deferrable = deferrable;
+    }
+
+    public OraclePrimaryKey clone() {
+        OraclePrimaryKey x = new OraclePrimaryKey();
+        cloneTo(x);
+        return x;
+    }
 }

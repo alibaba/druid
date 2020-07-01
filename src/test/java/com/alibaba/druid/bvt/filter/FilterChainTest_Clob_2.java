@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class FilterChainTest_Clob_2 extends TestCase {
@@ -51,7 +52,7 @@ public class FilterChainTest_Clob_2 extends TestCase {
             }
         };
 
-        statement = new CallableStatementProxyImpl(null, mockStmt, "", 1);
+        statement = new CallableStatementProxyImpl(new ConnectionProxyImpl(null, null, null, 0), mockStmt, "", 1);
 
     }
 
@@ -69,16 +70,15 @@ public class FilterChainTest_Clob_2 extends TestCase {
         Assert.assertTrue(clob instanceof ClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
+
     public void test_getClob_1() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
-        
+
         Clob clob = chain.callableStatement_getClob(statement, "1");
-        
+
         Assert.assertTrue(clob instanceof ClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
 
     public void test_getObject() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
@@ -88,30 +88,30 @@ public class FilterChainTest_Clob_2 extends TestCase {
         Assert.assertTrue(clob instanceof ClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
+
     public void test_getObject_1() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
-        
+
         Clob clob = (Clob) chain.callableStatement_getObject(statement, "1");
-        
+
         Assert.assertTrue(clob instanceof ClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
+
     public void test_getObject_2() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
-        Clob clob = (Clob) chain.callableStatement_getObject(statement, 1, Collections.<String, Class<?>>emptyMap());
+        Clob clob = (Clob) chain.callableStatement_getObject(statement, 1, Collections.<String, Class<?>> emptyMap());
 
         Assert.assertTrue(clob instanceof ClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
+
     public void test_getObject_3() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
-        
-        Clob clob = (Clob) chain.callableStatement_getObject(statement, "1", Collections.<String, Class<?>>emptyMap());
-        
+
+        Clob clob = (Clob) chain.callableStatement_getObject(statement, "1", Collections.<String, Class<?>> emptyMap());
+
         Assert.assertTrue(clob instanceof ClobProxy);
         Assert.assertEquals(1, invokeCount);
     }

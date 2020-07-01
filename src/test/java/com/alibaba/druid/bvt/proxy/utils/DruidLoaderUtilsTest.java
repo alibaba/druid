@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.bvt.proxy.DruidDriverTest.PublicJdbcFilterAdapter;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterManager;
-import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
 
 /**
  * druidLoader util 测试
@@ -94,12 +95,12 @@ public class DruidLoaderUtilsTest extends TestCase {
     }
 
     public void twest_loadClass() throws Exception {
-        Assert.assertEquals(null, JdbcUtils.loadDriverClass(null));
-        Assert.assertEquals(null, JdbcUtils.loadDriverClass("xxx"));
+        Assert.assertEquals(null, Utils.loadClass(null));
+        Assert.assertEquals(null, Utils.loadClass("xxx"));
         Assert.assertEquals(PublicJdbcFilterAdapter.class,
-                            JdbcUtils.loadDriverClass(PublicJdbcFilterAdapter.class.getName()));
-        Assert.assertNull(JdbcUtils.loadDriverClass(null));
-        Assert.assertNull(JdbcUtils.loadDriverClass(""));
+                            Utils.loadClass(PublicJdbcFilterAdapter.class.getName()));
+        Assert.assertNull(Utils.loadClass(null));
+        Assert.assertNull(Utils.loadClass(""));
     }
 
 }

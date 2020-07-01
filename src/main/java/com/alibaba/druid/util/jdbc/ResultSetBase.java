@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -298,11 +298,7 @@ public abstract class ResultSetBase implements ResultSet {
             return false;
         }
 
-        if (iface.isInstance(this)) {
-            return true;
-        }
-
-        return false;
+        return iface.isInstance(this);
     }
 
     @Override
@@ -321,8 +317,8 @@ public abstract class ResultSetBase implements ResultSet {
 
     public Object getObjectInternal(int columnIndex) throws SQLException {
         if (this.getMetaData() != null) {
-            String columName = this.getMetaData().getColumnName(columnIndex);
-            return getObject(columName);
+            String columnName = this.getMetaData().getColumnName(columnIndex);
+            return getObject(columnName);
         }
 
         return null;
@@ -879,7 +875,7 @@ public abstract class ResultSetBase implements ResultSet {
             return false;
         }
 
-        return ((Boolean) obj).booleanValue();
+        return (Boolean) obj;
     }
 
     @Override

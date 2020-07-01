@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 
 public class MockDriver implements Driver, MockDriverMBean {
 
-    private final static Log               LOG                   = LogFactory.getLog(MockDriver.class);
+    private static Log                     LOG;
 
     public final static MockExecuteHandler DEFAULT_HANDLER       = new MySqlMockExecuteHandlerImpl();
 
@@ -73,6 +73,14 @@ public class MockDriver implements Driver, MockDriverMBean {
 
     public boolean isLogExecuteQueryEnable() {
         return logExecuteQueryEnable;
+    }
+
+    private static Log getLog() {
+        if (LOG == null) {
+            LOG = LogFactory.getLog(MockDriver.class);
+        }
+
+        return LOG;
     }
 
     public void setLogExecuteQueryEnable(boolean logExecuteQueryEnable) {
@@ -119,8 +127,8 @@ public class MockDriver implements Driver, MockDriverMBean {
 
         connections.remove(conn);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("conn-" + conn.getId() + " close");
+        if (getLog().isDebugEnabled()) {
+            getLog().debug("conn-" + conn.getId() + " close");
         }
     }
 
@@ -136,12 +144,12 @@ public class MockDriver implements Driver, MockDriverMBean {
                     mbeanServer.registerMBean(instance, objectName);
                 }
             } catch (Exception ex) {
-                LOG.error("register druid-driver mbean error", ex);
+                getLog().warn("register druid-driver mbean error", ex);
             }
 
             return true;
         } catch (Exception e) {
-            LOG.error("registerDriver error", e);
+            getLog().error("registerDriver error", e);
         }
 
         return false;
@@ -175,8 +183,8 @@ public class MockDriver implements Driver, MockDriverMBean {
 
         MockConnection conn = createMockConnection(this, url, info);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("connect, url " + url + ", id " + conn.getId());
+        if (getLog().isDebugEnabled()) {
+            getLog().debug("connect, url " + url + ", id " + conn.getId());
         }
 
         if (url == null) {
@@ -235,9 +243,13 @@ public class MockDriver implements Driver, MockDriverMBean {
         return true;
     }
 
+    public MockResultSet createMockResultSet(MockStatementBase stmt) {
+        return new MockResultSet(stmt);
+    }
+
     public ResultSet executeQuery(MockStatementBase stmt, String sql) throws SQLException {
-        if (logExecuteQueryEnable && LOG.isDebugEnabled()) {
-            LOG.debug("executeQuery " + sql);
+        if (logExecuteQueryEnable && getLog().isDebugEnabled()) {
+            getLog().debug("executeQuery " + sql);
         }
 
         MockConnection conn = stmt.getConnection();
@@ -252,7 +264,7 @@ public class MockDriver implements Driver, MockDriverMBean {
         handleSleep(conn);
 
         if ("SELECT value FROM _int_1000_".equalsIgnoreCase(sql)) {
-            MockResultSet rs = new MockResultSet(stmt);
+            MockResultSet rs = createMockResultSet(stmt);
 
             for (int i = 0; i < 1000; ++i) {
                 rs.getRows().add(new Object[] { i });

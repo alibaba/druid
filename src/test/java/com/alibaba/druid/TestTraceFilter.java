@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcTraceManager;
 import com.alibaba.druid.util.JMXUtils;
 
+@SuppressWarnings("deprecation")
 public class TestTraceFilter extends TestCase {
 
     public void test_loop() throws Exception {
@@ -45,5 +46,6 @@ public class TestTraceFilter extends TestCase {
 
             Thread.sleep(1000);
         }
+        dataSource.close();
     }
 }

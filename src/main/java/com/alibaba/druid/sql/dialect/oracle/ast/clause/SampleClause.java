@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class SampleClause extends OracleSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
+    private boolean       block   = false;
 
-    private boolean           block            = false;
+    private List<SQLExpr> percent = new ArrayList<SQLExpr>();
 
-    private List<SQLExpr>     percent          = new ArrayList<SQLExpr>();
-
-    private SQLExpr           seedValue;
+    private SQLExpr       seedValue;
 
     public boolean isBlock() {
         return block;
@@ -65,4 +63,21 @@ public class SampleClause extends OracleSQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public SampleClause clone() {
+        SampleClause x = new SampleClause();
+
+        x.block = block;
+
+        for (SQLExpr item : percent) {
+            SQLExpr item1 = item.clone();
+            item1.setParent(x);
+            x.percent.add(item1);
+        }
+
+        if (seedValue != null) {
+            x.setSeedValue(seedValue.clone());
+        }
+
+        return x;
+    }
 }

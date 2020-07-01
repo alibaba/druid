@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public class PoolableStatementTest3 extends TestCase {
         DruidPooledStatement stmt = new DruidPooledStatement(null, null) {
 
             public void close() throws SQLException {
-                resultSetTrace.add(rs);
+                addResultSetTrace(rs);
                 clearResultSet();
             }
         };

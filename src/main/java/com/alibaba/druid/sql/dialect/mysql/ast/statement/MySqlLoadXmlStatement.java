@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +20,20 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlLoadXmlStatement extends MySqlStatementImpl {
 
-    private static final long   serialVersionUID = 1L;
-
-    private boolean             lowPriority      = false;
-    private boolean             concurrent       = false;
-    private boolean             local            = false;
+    private boolean             lowPriority = false;
+    private boolean             concurrent  = false;
+    private boolean             local       = false;
 
     private SQLLiteralExpr      fileName;
 
-    private boolean             replicate        = false;
-    private boolean             ignore           = false;
+    private boolean             replicate   = false;
+    private boolean             ignore      = false;
 
     private SQLName             tableName;
 
@@ -44,7 +43,7 @@ public class MySqlLoadXmlStatement extends MySqlStatementImpl {
 
     private SQLExpr             ignoreLinesNumber;
 
-    private final List<SQLExpr> setList          = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> setList     = new ArrayList<SQLExpr>();
 
     public SQLExpr getRowsIdentifiedBy() {
         return rowsIdentifiedBy;
@@ -144,5 +143,24 @@ public class MySqlLoadXmlStatement extends MySqlStatementImpl {
             acceptChild(visitor, setList);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (fileName != null) {
+            children.add(fileName);
+        }
+        if (tableName != null) {
+            children.add(tableName);
+        }
+        if (rowsIdentifiedBy != null) {
+            children.add(rowsIdentifiedBy);
+        }
+        if (ignoreLinesNumber != null) {
+            children.add(ignoreLinesNumber);
+        }
+        children.addAll(this.setList);
+        return children;
     }
 }

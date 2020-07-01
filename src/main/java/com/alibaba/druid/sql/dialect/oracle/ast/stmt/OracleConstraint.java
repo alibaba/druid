@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,41 +16,38 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
+import com.alibaba.druid.sql.ast.statement.SQLConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 
-public abstract class OracleConstraint extends OracleSQLObjectImpl {
+public interface OracleConstraint extends OracleSQLObject, SQLConstraint, SQLTableElement {
 
-    private static final long       serialVersionUID = 1L;
+    SQLName getExceptionsInto();
 
-    protected OracleConstraintState state;
-    protected SQLName               name;
+    void setExceptionsInto(SQLName exceptionsInto);
 
-    public OracleConstraint(){
+    Boolean getDeferrable();
 
+    void setDeferrable(Boolean enable);
+
+    Boolean getEnable();
+
+    void setEnable(Boolean enable);
+
+    Boolean getValidate();
+    void setValidate(Boolean validate);
+
+    Initially getInitially();
+
+    void setInitially(Initially value);
+
+    OracleUsingIndexClause getUsing();
+
+    void setUsing(OracleUsingIndexClause using);
+
+    public static enum Initially {
+        DEFERRED, IMMEDIATE
     }
 
-    public SQLName getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        if (name == null) {
-            this.name = null;
-        } else {
-            this.name = new SQLIdentifierExpr(name);
-        }
-    }
-
-    public void setName(SQLName name) {
-        this.name = name;
-    }
-
-    public OracleConstraintState getState() {
-        return this.state;
-    }
-
-    public void setState(OracleConstraintState state) {
-        this.state = state;
-    }
+    OracleConstraint clone();
 }

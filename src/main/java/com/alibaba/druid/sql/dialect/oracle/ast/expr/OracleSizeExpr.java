@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleSizeExpr extends OracleSQLObjectImpl implements OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           value;
-    private Unit              unit;
+    private SQLExpr value;
+    private Unit    unit;
 
     public OracleSizeExpr(){
 
@@ -42,6 +44,10 @@ public class OracleSizeExpr extends OracleSQLObjectImpl implements OracleExpr {
             acceptChild(visitor, value);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(value);
     }
 
     public SQLExpr getValue() {
@@ -62,5 +68,16 @@ public class OracleSizeExpr extends OracleSQLObjectImpl implements OracleExpr {
 
     public static enum Unit {
         K, M, G, T, P, E
+    }
+
+    public OracleSizeExpr clone() {
+        OracleSizeExpr x = new OracleSizeExpr();
+
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        x.unit = unit;
+
+        return x;
     }
 }

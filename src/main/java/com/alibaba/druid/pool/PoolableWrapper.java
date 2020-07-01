@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,10 @@ package com.alibaba.druid.pool;
 import java.sql.SQLException;
 import java.sql.Wrapper;
 
+import com.alibaba.druid.proxy.jdbc.WrapperProxy;
+
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class PoolableWrapper implements Wrapper {
 
@@ -31,16 +33,28 @@ public class PoolableWrapper implements Wrapper {
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
+
+        if (null == wrapper) {
+            //Best to log error.
+            return false;
+        }
+
         if (iface == null) {
             return false;
         }
 
-        if (iface.isInstance(wrapper)) {
+        if (iface == wrapper.getClass()) {
             return true;
         }
 
-        if (iface.isInstance(this)) {
+        if (iface == this.getClass()) {
             return true;
+        }
+        
+        if (!(wrapper instanceof WrapperProxy)) {
+            if (iface.isInstance(wrapper)) {
+                return true;
+            }
         }
 
         return wrapper.isWrapperFor(iface);
@@ -49,17 +63,30 @@ public class PoolableWrapper implements Wrapper {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
+
+        if (null == wrapper) {
+            //Best to log error.
+            return null;
+        }
+
         if (iface == null) {
             return null;
         }
 
-        if (iface.isInstance(wrapper)) {
+        if (iface == wrapper.getClass()) {
             return (T) wrapper;
         }
 
-        if (iface.isInstance(this)) {
+        if (iface == this.getClass()) {
             return (T) this;
         }
+        
+        if (!(wrapper instanceof WrapperProxy)) {
+            if (iface.isInstance(wrapper)) {
+                return (T) wrapper;
+            }
+        }
+
 
         return wrapper.unwrap(iface);
     }

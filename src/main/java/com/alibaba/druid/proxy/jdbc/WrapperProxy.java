@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import java.sql.Wrapper;
 import java.util.Map;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public interface WrapperProxy extends Wrapper {
 
@@ -27,5 +27,13 @@ public interface WrapperProxy extends Wrapper {
 
     Object getRawObject();
 
+    int getAttributesSize();
+
+    void clearAttributes();
+
     Map<String, Object> getAttributes();
+
+    Object getAttribute(String key);
+
+    void putAttribute(String key, Object value);
 }

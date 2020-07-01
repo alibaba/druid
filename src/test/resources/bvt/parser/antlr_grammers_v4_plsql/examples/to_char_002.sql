@@ -1,0 +1,1 @@
+select TO_CHAR(commission_pct) as "commission" from employees

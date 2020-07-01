@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,18 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
     private int errorCount;
     private int warnCount;
     private int infoCount;
+    private int debugCount;
 
-    public JakartaCommonsLoggingImpl(Class<?> clazz){
-        log = LogFactory.getLog(clazz);
+    /**
+     * @since 0.2.1
+     * @param log
+     */
+    public JakartaCommonsLoggingImpl(Log log){
+        this.log = log;
+    }
+
+    public JakartaCommonsLoggingImpl(String loggerName){
+        log = LogFactory.getLog(loggerName);
     }
 
     public boolean isDebugEnabled() {
@@ -45,10 +54,12 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
     }
 
     public void debug(String s) {
+        debugCount++;
         log.debug(s);
     }
 
     public void debug(String s, Throwable e) {
+        debugCount++;
         log.debug(s, e);
     }
 
@@ -77,6 +88,7 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
         errorCount = 0;
         warnCount = 0;
         infoCount = 0;
+        debugCount++;
     }
 
     @Override
@@ -89,7 +101,7 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
         log.info(msg);
         infoCount++;
     }
-    
+
     @Override
     public int getInfoCount() {
         return infoCount;
@@ -99,4 +111,14 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
     public boolean isWarnEnabled() {
         return log.isWarnEnabled();
     }
+
+    public int getDebugCount() {
+        return debugCount;
+    }
+
+    @Override
+    public boolean isErrorEnabled() {
+        return log.isErrorEnabled();
+    }
+
 }

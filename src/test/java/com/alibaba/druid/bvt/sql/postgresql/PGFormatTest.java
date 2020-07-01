@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.postgresql;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -26,10 +26,10 @@ public class PGFormatTest extends TestCase {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE foo (fooid int, foosubid int, fooname text);";
         String formatedSql = SQLUtils.format(sql, JdbcUtils.POSTGRESQL);
-        Assert.assertEquals("CREATE TABLE foo (\n" + //
-                            "\tfooid int, \n" + //
-                            "\tfoosubid int, \n" + //
-                            "\tfooname text\n" + //
-                            ")", formatedSql);
+        Assert.assertEquals("CREATE TABLE foo (" + //
+                            "\n\tfooid int," + //
+                            "\n\tfoosubid int," + //
+                            "\n\tfooname text" + //
+                            "\n);", formatedSql);
     }
 }

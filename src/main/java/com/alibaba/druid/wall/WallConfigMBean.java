@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,22 +113,22 @@ public interface WallConfigMBean {
 
     void setCommentAllow(boolean commentAllow);
 
-    Set<String> getPermitFunctions();
+    Set<String> getDenyFunctions();
 
-    Set<String> getPermitTables();
+    Set<String> getDenyTables();
 
-    Set<String> getPermitSchemas();
+    Set<String> getDenySchemas();
 
-    Set<String> getPermitVariants();
+    Set<String> getDenyVariants();
 
-    Set<String> getPermitObjects();
+    Set<String> getDenyObjects();
 
     Set<String> getReadOnlyTables();
 
-    boolean isPermitObjects(String name);
+    boolean isDenyObjects(String name);
 
-    boolean isPermitSchema(String name);
+    boolean isDenySchema(String name);
 
-    boolean isPermitFunction(String name);
+    boolean isDenyFunction(String name);
 
 }

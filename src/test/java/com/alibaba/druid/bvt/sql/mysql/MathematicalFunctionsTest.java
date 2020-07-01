@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,15 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
+import junit.framework.TestCase;
+
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class MathematicalFunctionsTest extends TestCase {
 
@@ -200,7 +202,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT COS(PI());", text);
+        Assert.assertEquals("SELECT COS(PI())", text);
     }
 
     public void test_16() throws Exception {
@@ -211,7 +213,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CRC32('MySQL');", text);
+        Assert.assertEquals("SELECT CRC32('MySQL')", text);
     }
 
     public void test_17() throws Exception {
@@ -222,7 +224,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DEGREES(PI());", text);
+        Assert.assertEquals("SELECT DEGREES(PI())", text);
     }
 
     public void test_18() throws Exception {
@@ -233,7 +235,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DEGREES(PI() / 2);", text);
+        Assert.assertEquals("SELECT DEGREES(PI() / 2)", text);
     }
 
     public void test_19() throws Exception {
@@ -244,7 +246,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT MOD(29, 9);", text);
+        Assert.assertEquals("SELECT MOD(29, 9)", text);
     }
 
     public void test_20() throws Exception {
@@ -255,7 +257,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 29 % 9;", text);
+        Assert.assertEquals("SELECT 29 % 9", text);
     }
 
     public void test_21() throws Exception {
@@ -266,7 +268,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT PI() + 0E-18;", text);
+        Assert.assertEquals("SELECT PI() + 0.000000000000000000", text);
     }
 
     public void test_22() throws Exception {
@@ -277,7 +279,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT POW(2, -2);", text);
+        Assert.assertEquals("SELECT POW(2, -2)", text);
     }
 
     public void test_23() throws Exception {
@@ -288,7 +290,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT RADIANS(90);", text);
+        Assert.assertEquals("SELECT RADIANS(90)", text);
     }
 
     public void test_24() throws Exception {
@@ -299,7 +301,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT i, RAND()\nFROM t;", text);
+        Assert.assertEquals("SELECT i, RAND()\nFROM t", text);
     }
 
     public void test_25() throws Exception {
@@ -310,7 +312,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM tbl_name\nORDER BY RAND();", text);
+        Assert.assertEquals("SELECT *\nFROM tbl_name\nORDER BY RAND()", text);
     }
 
     public void test_26() throws Exception {
@@ -321,17 +323,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ROUND(2.5), ROUND(2.5);", text);
+        Assert.assertEquals("SELECT ROUND(2.5), ROUND(25E-1)", text);
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

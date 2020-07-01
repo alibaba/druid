@@ -1,20 +1,17 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DataSourceDisableException;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 
 /**
  * 这个场景测试minIdle > maxActive
  * 
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_enable extends TestCase {
 

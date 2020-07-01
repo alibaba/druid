@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +23,15 @@ import java.util.Map;
 import com.alibaba.druid.filter.FilterChain;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public abstract class WrapperProxyImpl implements WrapperProxy {
 
-    private final Wrapper             raw;
+    private final Wrapper       raw;
 
-    private final long                id;
+    private final long          id;
 
-    private final Map<String, Object> attributes = new HashMap<String, Object>(4); // 不需要线程安全
+    private Map<String, Object> attributes; // 不需要线程安全
 
     public WrapperProxyImpl(Wrapper wrapper, long id){
         this.raw = wrapper;
@@ -54,7 +54,7 @@ public abstract class WrapperProxyImpl implements WrapperProxy {
             return false;
         }
 
-        if (iface.isInstance(this)) {
+        if (iface == this.getClass()) {
             return true;
         }
 
@@ -68,15 +68,49 @@ public abstract class WrapperProxyImpl implements WrapperProxy {
             return null;
         }
 
-        if (iface.isInstance(this)) {
+        if (iface == this.getClass()) {
             return (T) this;
         }
 
         return createChain().unwrap(raw, iface);
     }
-
-    public Map<String, Object> getAttributes() {
-        return this.attributes;
+    
+    public int getAttributesSize() {
+        if (attributes == null) {
+            return 0;
+        }
+        
+        return attributes.size();
+    }
+    
+    public void clearAttributes() {
+        if (this.attributes == null) {
+            return;
+        }
+        
+        this.attributes.clear();
     }
 
+    public Map<String, Object> getAttributes() {
+        if (attributes == null) {
+            attributes = new HashMap<String, Object>(4);
+        }
+        return this.attributes;
+    }
+    
+    public void putAttribute(String key, Object value) {
+        if (attributes == null) {
+            attributes = new HashMap<String, Object>(4);
+        }
+        this.attributes.put(key, value);
+    }
+
+    public Object getAttribute(String key){
+        if (attributes == null) {
+            return null;
+        }
+        
+        return this.attributes.get(key);
+    }
+    
 }

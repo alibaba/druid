@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,25 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.druid.util.Utils;
+
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class Keywords {
 
     private final Map<String, Token> keywords;
 
+    private long[] hashArray;
+    private Token[] tokens;
+
     public final static Keywords     DEFAULT_KEYWORDS;
+
+    public final static Keywords     SQLITE_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -35,6 +43,9 @@ public class Keywords {
         map.put("AND", Token.AND);
         map.put("ANY", Token.ANY);
         map.put("AS", Token.AS);
+
+        map.put("ENABLE", Token.ENABLE);
+        map.put("DISABLE", Token.DISABLE);
 
         map.put("ASC", Token.ASC);
         map.put("BETWEEN", Token.BETWEEN);
@@ -47,12 +58,18 @@ public class Keywords {
         map.put("CREATE", Token.CREATE);
         map.put("DATABASE", Token.DATABASE);
         map.put("DEFAULT", Token.DEFAULT);
+        map.put("COLUMN", Token.COLUMN);
+        map.put("TABLESPACE", Token.TABLESPACE);
+        map.put("PROCEDURE", Token.PROCEDURE);
+        map.put("FUNCTION", Token.FUNCTION);
 
         map.put("DELETE", Token.DELETE);
         map.put("DESC", Token.DESC);
         map.put("DISTINCT", Token.DISTINCT);
         map.put("DROP", Token.DROP);
         map.put("ELSE", Token.ELSE);
+        map.put("EXPLAIN", Token.EXPLAIN);
+        map.put("EXCEPT", Token.EXCEPT);
 
         map.put("END", Token.END);
         map.put("ESCAPE", Token.ESCAPE);
@@ -81,7 +98,6 @@ public class Keywords {
         map.put("LIKE", Token.LIKE);
         map.put("LOCK", Token.LOCK);
         map.put("MINUS", Token.MINUS);
-        map.put("NEW", Token.NEW);
         map.put("NOT", Token.NOT);
 
         map.put("NULL", Token.NULL);
@@ -107,12 +123,51 @@ public class Keywords {
         map.put("UPDATE", Token.UPDATE);
         map.put("VALUES", Token.VALUES);
         map.put("VIEW", Token.VIEW);
+        map.put("SEQUENCE", Token.SEQUENCE);
+        map.put("TRIGGER", Token.TRIGGER);
+        map.put("USER", Token.USER);
 
         map.put("WHEN", Token.WHEN);
         map.put("WHERE", Token.WHERE);
         map.put("XOR", Token.XOR);
 
+        map.put("OVER", Token.OVER);
+        map.put("TO", Token.TO);
+        map.put("USE", Token.USE);
+
+        map.put("REPLACE", Token.REPLACE);
+
+        map.put("COMMENT", Token.COMMENT);
+        map.put("COMPUTE", Token.COMPUTE);
+        map.put("WITH", Token.WITH);
+        map.put("GRANT", Token.GRANT);
+        map.put("REVOKE", Token.REVOKE);
+        
+        // MySql procedure: add by zz
+        map.put("WHILE", Token.WHILE);
+        map.put("DO", Token.DO);
+        map.put("DECLARE", Token.DECLARE);
+        map.put("LOOP", Token.LOOP);
+        map.put("LEAVE", Token.LEAVE);
+        map.put("ITERATE", Token.ITERATE);
+        map.put("REPEAT", Token.REPEAT);
+        map.put("UNTIL", Token.UNTIL);
+        map.put("OPEN", Token.OPEN);
+        map.put("CLOSE", Token.CLOSE);
+        map.put("CURSOR", Token.CURSOR);
+        map.put("FETCH", Token.FETCH);
+        map.put("OUT", Token.OUT);
+        map.put("INOUT", Token.INOUT);
+        map.put("LIMIT", Token.LIMIT);
+
         DEFAULT_KEYWORDS = new Keywords(map);
+
+        Map<String, Token> sqlitemap = new HashMap<String, Token>();
+
+        sqlitemap.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+
+        sqlitemap.put("LIMIT", Token.LIMIT);
+        SQLITE_KEYWORDS = new Keywords(sqlitemap);
     }
 
     public boolean containsValue(Token token) {
@@ -121,11 +176,38 @@ public class Keywords {
 
     public Keywords(Map<String, Token> keywords){
         this.keywords = keywords;
+
+        this.hashArray = new long[keywords.size()];
+        this.tokens = new Token[keywords.size()];
+
+        int index = 0;
+        for (String k : keywords.keySet()) {
+            hashArray[index++] = Utils.fnv_64_lower(k);
+        }
+        Arrays.sort(hashArray);
+        for (Map.Entry<String, Token> entry : keywords.entrySet()) {
+            long k = Utils.fnv_64_lower(entry.getKey());
+            index = Arrays.binarySearch(hashArray, k);
+            tokens[index] = entry.getValue();
+        }
     }
 
+public Token getKeyword(long hash) {
+    int index = Arrays.binarySearch(hashArray, hash);
+    if (index < 0) {
+        return null;
+    }
+    return tokens[index];
+}
+
     public Token getKeyword(String key) {
-        key = key.toUpperCase();
-        return keywords.get(key);
+        long k = Utils.fnv_64_lower(key);
+        int index = Arrays.binarySearch(hashArray, k);
+        if (index < 0) {
+            return null;
+        }
+        return tokens[index];
+//        return keywords.get(key);
     }
 
     public Map<String, Token> getKeywords() {

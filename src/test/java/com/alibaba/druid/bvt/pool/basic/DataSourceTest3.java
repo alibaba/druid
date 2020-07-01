@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,10 @@ import java.util.Properties;
 
 import javax.security.auth.callback.PasswordCallback;
 
-import junit.framework.Assert;
+import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -33,13 +35,13 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
 
-public class DataSourceTest3 extends TestCase {
+public class DataSourceTest3 extends PoolTestCase {
 
     private MockDriver      driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
 
         driver = new MockDriver();
 
@@ -67,6 +69,8 @@ public class DataSourceTest3 extends TestCase {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         JdbcStatManager.getInstance().setStatContext(null);
+
+        super.tearDown();
     }
 
     public void test_prepareStatement_error() throws Exception {
@@ -323,8 +327,9 @@ public class DataSourceTest3 extends TestCase {
     public void test_error_validateConnection_3() throws Exception {
         dataSource.setValidationQuery(null);
         dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());
-        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
         dataSource.validateConnection(conn);
+
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr implements OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private Double            value;
+    private Double value;
 
     public OracleBinaryDoubleExpr(){
 
@@ -93,8 +91,11 @@ public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr implements Ora
             this.setValue(null);
             return;
         }
-        
+
         this.setValue(number.doubleValue());
     }
 
+    public OracleBinaryDoubleExpr clone() {
+        return new OracleBinaryDoubleExpr(value);
+    }
 }

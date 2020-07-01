@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
@@ -31,14 +32,14 @@ public class OraclePivotClauseTest extends TestCase {
 
         String expected = "SELECT *\n" + "FROM pivot_table\n"
                           + "UNPIVOT (yearly_total FOR order_mode IN (store AS 'direct', internet AS 'online'))\n"
-                          + "ORDER BY year, order_mode;\n";
+                          + "ORDER BY year, order_mode;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expected, text);
+        assertEquals(expected, text);
 
         System.out.println(text);
     }
@@ -51,7 +52,7 @@ public class OraclePivotClauseTest extends TestCase {
         String expected = "SELECT *\n"
                           + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS year, order_mode, order_total\n"
                           + "\tFROM orders\n" + ")\n"
-                          + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
+                          + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
@@ -71,7 +72,7 @@ public class OraclePivotClauseTest extends TestCase {
         String expected = "SELECT *\n"
                           + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS year, order_mode, order_total\n"
                           + "\tFROM orders\n" + ")\n"
-                          + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
+                          + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
@@ -90,7 +91,7 @@ public class OraclePivotClauseTest extends TestCase {
 
         String expected = "SELECT *\n" + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS day, order_mode, order_total\n"
                           + "\tFROM orders\n" + ")\n"
-                          + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
+                          + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
@@ -110,7 +111,7 @@ public class OraclePivotClauseTest extends TestCase {
         String expected = "SELECT *\n"
                           + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS day, order_mode AS YEAR, order_total\n"
                           + "\tFROM orders\n" + ")\n"
-                          + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
+                          + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

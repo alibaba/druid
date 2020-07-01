@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -34,7 +34,7 @@ public class CursorTest extends TestCase {
         String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT department_name, CURSOR(\n\t\tSELECT salary, commission_pct\n" + "\t\tFROM employees e\n"
-                            + "\t\tWHERE e.department_id = d.department_id\n\t)\n" + "FROM departments d;\n", text);
+                            + "\t\tWHERE e.department_id = d.department_id\n\t)\n" + "FROM departments d;", text);
 
         System.out.println(text);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -43,7 +41,7 @@ public class OracleUpdateParser extends SQLStatementParser {
 
             parseHints(update);
 
-            if (identifierEquals("ONLY")) {
+            if (lexer.identifierEquals("ONLY")) {
                 update.setOnly(true);
             }
 
@@ -51,11 +49,11 @@ public class OracleUpdateParser extends SQLStatementParser {
             update.setTableSource(tableSource);
 
             if ((update.getAlias() == null) || (update.getAlias().length() == 0)) {
-                update.setAlias(as());
+                update.setAlias(tableAlias());
             }
         }
 
-        parseSet(update);
+        parseUpdateSet(update);
 
         parseWhere(update);
 
@@ -67,13 +65,13 @@ public class OracleUpdateParser extends SQLStatementParser {
     }
 
     private void parseErrorLoging(OracleUpdateStatement update) {
-        if (identifierEquals("LOG")) {
-            throw new ParserException("TODO");
+        if (lexer.identifierEquals("LOG")) {
+            throw new ParserException("TODO. " + lexer.info());
         }
     }
 
     private void parseReturn(OracleUpdateStatement update) {
-        if (identifierEquals("RETURN") || lexer.token() == Token.RETURNING) {
+        if (lexer.identifierEquals("RETURN") || lexer.token() == Token.RETURNING) {
             lexer.nextToken();
 
             for (;;) {
@@ -105,9 +103,7 @@ public class OracleUpdateParser extends SQLStatementParser {
     }
 
     private void parseHints(OracleUpdateStatement update) {
-        if (lexer.token() == Token.HINT) {
-            throw new ParserException("TODO");
-        }
+        this.exprParser.parseHints(update.getHints());
     }
 
     private void parseWhere(OracleUpdateStatement update) {
@@ -117,30 +113,4 @@ public class OracleUpdateParser extends SQLStatementParser {
         }
     }
 
-    private void parseSet(OracleUpdateStatement update) {
-        accept(Token.SET);
-
-        for (;;) {
-            SQLUpdateSetItem item = new SQLUpdateSetItem();
-
-            if (lexer.token() == (Token.LPAREN)) {
-                lexer.nextToken();
-                SQLListExpr list = new SQLListExpr();
-                this.exprParser.exprList(list.getItems());
-                accept(Token.RPAREN);
-                item.setColumn(list);
-            } else {
-                item.setColumn(this.exprParser.primary());
-            }
-            accept(Token.EQ);
-            item.setValue(this.exprParser.expr());
-            update.getItems().add(item);
-
-            if (lexer.token() != Token.COMMA) {
-                break;
-            }
-
-            lexer.nextToken();
-        }
-    }
 }

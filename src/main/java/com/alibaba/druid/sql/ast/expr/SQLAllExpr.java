@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,32 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAllExpr extends SQLExprImpl {
+public final class SQLAllExpr extends SQLExprImpl {
 
-    private static final long serialVersionUID = 1L;
-    public SQLSelect          subQuery;
+    public SQLSelect subQuery;
 
     public SQLAllExpr(){
 
     }
 
     public SQLAllExpr(SQLSelect select){
+        setSubQuery(select);
+    }
 
-        this.subQuery = select;
+    public SQLAllExpr clone() {
+        SQLAllExpr x = new SQLAllExpr();
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+        return x;
     }
 
     public SQLSelect getSubQuery() {
@@ -38,6 +48,9 @@ public class SQLAllExpr extends SQLExprImpl {
     }
 
     public void setSubQuery(SQLSelect subQuery) {
+        if (subQuery != null) {
+            subQuery.setParent(this);
+        }
         this.subQuery = subQuery;
     }
 
@@ -52,6 +65,10 @@ public class SQLAllExpr extends SQLExprImpl {
         }
 
         visitor.endVisit(this);
+    }
+
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.subQuery);
     }
 
     @Override

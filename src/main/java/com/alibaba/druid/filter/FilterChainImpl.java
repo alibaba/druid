@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
@@ -58,13 +59,15 @@ import com.alibaba.druid.proxy.jdbc.NClobProxy;
 import com.alibaba.druid.proxy.jdbc.NClobProxyImpl;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
+import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxy;
+import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxyImpl;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class FilterChainImpl implements FilterChain {
 
@@ -89,6 +92,14 @@ public class FilterChainImpl implements FilterChain {
         return filterSize;
     }
 
+    public int getPos() {
+        return pos;
+    }
+
+    public void reset() {
+        pos = 0;
+    }
+
     @Override
     public FilterChain cloneChain() {
         return new FilterChainImpl(dataSource, pos);
@@ -101,11 +112,12 @@ public class FilterChainImpl implements FilterChain {
     @Override
     public boolean isWrapperFor(Wrapper wrapper, Class<?> iface) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().isWrapperFor(this, wrapper, iface);
+            return nextFilter()
+                    .isWrapperFor(this, wrapper, iface);
         }
 
         // // if driver is for jdbc 3.0
-        if (iface.isAssignableFrom(wrapper.getClass())) {
+        if (iface.isInstance(wrapper)) {
             return true;
         }
 
@@ -116,7 +128,8 @@ public class FilterChainImpl implements FilterChain {
     @Override
     public <T> T unwrap(Wrapper wrapper, Class<T> iface) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().unwrap(this, wrapper, iface);
+            return nextFilter()
+                .unwrap(this, wrapper, iface);
         }
 
         if (iface == null) {
@@ -133,177 +146,240 @@ public class FilterChainImpl implements FilterChain {
 
     public ConnectionProxy connection_connect(Properties info) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_connect(this, info);
+            return nextFilter()
+                    .connection_connect(this, info);
         }
 
         Driver driver = dataSource.getRawDriver();
         String url = dataSource.getRawJdbcUrl();
 
         Connection nativeConnection = driver.connect(url, info);
-        return wrap(nativeConnection, info);
+
+        if (nativeConnection == null) {
+            return null;
+        }
+
+        return new ConnectionProxyImpl(dataSource, nativeConnection, info, dataSource.createConnectionId());
     }
 
     @Override
     public void connection_clearWarnings(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_clearWarnings(this, connection);
+            nextFilter()
+                    .connection_clearWarnings(this, connection);
             return;
         }
 
-        connection.getRawObject().clearWarnings();
+        connection.getRawObject()
+                .clearWarnings();
     }
 
     @Override
     public void connection_close(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_close(this, connection);
+            nextFilter()
+                    .connection_close(this, connection);
             return;
         }
 
-        connection.getRawObject().close();
-        connection.getAttributes().clear();
+        connection.getRawObject()
+                .close();
+        connection.clearAttributes();
     }
 
     @Override
     public void connection_commit(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_commit(this, connection);
+            nextFilter()
+                    .connection_commit(this, connection);
             return;
         }
 
-        connection.getRawObject().commit();
+        connection.getRawObject()
+                .commit();
     }
 
     @Override
     public Array connection_createArrayOf(ConnectionProxy connection, String typeName, Object[] elements)
                                                                                                          throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_createArrayOf(this, connection, typeName, elements);
+            return nextFilter()
+                    .connection_createArrayOf(this, connection, typeName, elements);
         }
 
-        return connection.getRawObject().createArrayOf(typeName, elements);
+        return connection.getRawObject()
+                .createArrayOf(typeName, elements);
 
     }
 
     @Override
     public Blob connection_createBlob(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_createBlob(this, connection);
+            return nextFilter()
+                    .connection_createBlob(this, connection);
         }
 
-        return connection.getRawObject().createBlob();
+        return connection.getRawObject()
+                .createBlob();
     }
 
     @Override
     public Clob connection_createClob(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_createClob(this, connection);
+            return nextFilter()
+                    .connection_createClob(this, connection);
         }
 
-        Clob clob = connection.getRawObject().createClob();
-
-        return wrap(connection, clob);
+        return wrap(connection
+                , connection.getRawObject()
+                    .createClob()
+        );
     }
 
     @Override
     public NClob connection_createNClob(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_createNClob(this, connection);
+            return nextFilter()
+                    .connection_createNClob(this, connection);
         }
 
-        NClob nclob = connection.getRawObject().createNClob();
-
-        return wrap(connection, nclob);
+        return wrap(connection
+                , connection.getRawObject()
+                    .createNClob()
+        );
     }
 
     @Override
     public SQLXML connection_createSQLXML(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_createSQLXML(this, connection);
+            return nextFilter()
+                    .connection_createSQLXML(this, connection);
         }
 
-        return connection.getRawObject().createSQLXML();
+        return connection.getRawObject()
+                .createSQLXML();
     }
 
     @Override
     public StatementProxy connection_createStatement(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_createStatement(this, connection);
+            return nextFilter()
+                    .connection_createStatement(this, connection);
         }
 
-        Statement statement = connection.getRawObject().createStatement();
-        return wrap(connection, statement);
+        Statement statement = connection.getRawObject()
+                .createStatement();
+
+        if (statement == null) {
+            return null;
+        }
+
+        return new StatementProxyImpl(connection
+                , statement
+                , dataSource.createStatementId()
+        );
     }
 
     @Override
-    public StatementProxy connection_createStatement(ConnectionProxy connection, int resultSetType,
-                                                     int resultSetConcurrency) throws SQLException {
+    public StatementProxy connection_createStatement(
+            ConnectionProxy connection,
+            int resultSetType,
+            int resultSetConcurrency) throws SQLException
+    {
         if (this.pos < filterSize) {
-            return nextFilter().connection_createStatement(this, connection, resultSetType, resultSetConcurrency);
+            return nextFilter()
+                    .connection_createStatement(this, connection, resultSetType, resultSetConcurrency);
         }
 
-        Statement statement = connection.getRawObject().createStatement(resultSetType, resultSetConcurrency);
-        return wrap(connection, statement);
+        Statement statement = connection.getRawObject()
+                .createStatement(resultSetType, resultSetConcurrency);
+
+        if (statement == null) {
+            return null;
+        }
+
+        return new StatementProxyImpl(connection, statement, dataSource.createStatementId());
     }
 
     @Override
-    public StatementProxy connection_createStatement(ConnectionProxy connection, int resultSetType,
-                                                     int resultSetConcurrency, int resultSetHoldability)
-                                                                                                        throws SQLException {
+    public StatementProxy connection_createStatement(
+            ConnectionProxy connection,
+            int resultSetType,
+            int resultSetConcurrency,
+            int resultSetHoldability) throws SQLException
+    {
         if (this.pos < filterSize) {
-            return nextFilter().connection_createStatement(this, connection, resultSetType, resultSetConcurrency,
-                                                           resultSetHoldability);
+            return nextFilter()
+                    .connection_createStatement(this, connection, resultSetType, resultSetConcurrency, resultSetHoldability);
         }
 
-        Statement statement = connection.getRawObject().createStatement(resultSetType, resultSetConcurrency,
-                                                                        resultSetHoldability);
-        return wrap(connection, statement);
+        Statement statement = connection.getRawObject()
+                .createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
+        if (statement == null) {
+            return null;
+        }
+        return new StatementProxyImpl(connection
+                , statement
+                , dataSource.createStatementId());
     }
 
     @Override
-    public Struct connection_createStruct(ConnectionProxy connection, String typeName, Object[] attributes)
-                                                                                                           throws SQLException {
+    public Struct connection_createStruct(
+            ConnectionProxy connection,
+            String typeName,
+            Object[] attributes) throws SQLException
+    {
         if (this.pos < filterSize) {
-            return nextFilter().connection_createStruct(this, connection, typeName, attributes);
+            return nextFilter()
+                    .connection_createStruct(this, connection, typeName, attributes);
         }
 
-        return connection.getRawObject().createStruct(typeName, attributes);
+        return connection.getRawObject()
+                .createStruct(typeName, attributes);
     }
 
     @Override
     public boolean connection_getAutoCommit(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_getAutoCommit(this, connection);
+            return nextFilter()
+                    .connection_getAutoCommit(this, connection);
         }
 
-        return connection.getRawObject().getAutoCommit();
+        return connection.getRawObject()
+                .getAutoCommit();
     }
 
     @Override
     public String connection_getCatalog(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_getCatalog(this, connection);
+            return nextFilter()
+                    .connection_getCatalog(this, connection);
         }
 
-        return connection.getRawObject().getCatalog();
+        return connection.getRawObject()
+                .getCatalog();
     }
 
     @Override
     public Properties connection_getClientInfo(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_getClientInfo(this, connection);
+            return nextFilter()
+                    .connection_getClientInfo(this, connection);
         }
 
-        return connection.getRawObject().getClientInfo();
+        return connection.getRawObject()
+                .getClientInfo();
     }
 
     @Override
     public String connection_getClientInfo(ConnectionProxy connection, String name) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_getClientInfo(this, connection, name);
+            return nextFilter()
+                    .connection_getClientInfo(this, connection, name);
         }
 
-        return connection.getRawObject().getClientInfo(name);
+        return connection.getRawObject()
+                .getClientInfo(name);
     }
 
     public List<Filter> getFilters() {
@@ -313,924 +389,1368 @@ public class FilterChainImpl implements FilterChain {
     @Override
     public int connection_getHoldability(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_getHoldability(this, connection);
+            return nextFilter()
+                    .connection_getHoldability(this, connection);
         }
 
-        return connection.getRawObject().getHoldability();
+        return connection.getRawObject()
+                .getHoldability();
     }
 
     @Override
     public DatabaseMetaData connection_getMetaData(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_getMetaData(this, connection);
+            return nextFilter()
+                    .connection_getMetaData(this, connection);
         }
 
-        // DatabaseMetaData
-
-        DatabaseMetaData rawDatabaseMetaData = connection.getRawObject().getMetaData();
-
-        return rawDatabaseMetaData;
+        return connection.getRawObject()
+                .getMetaData();
     }
 
     @Override
     public int connection_getTransactionIsolation(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_getTransactionIsolation(this, connection);
+            return nextFilter()
+                    .connection_getTransactionIsolation(this, connection);
         }
 
-        return connection.getRawObject().getTransactionIsolation();
+        return connection.getRawObject()
+                .getTransactionIsolation();
     }
 
     @Override
     public Map<String, Class<?>> connection_getTypeMap(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_getTypeMap(this, connection);
+            return nextFilter()
+                    .connection_getTypeMap(this, connection);
         }
 
-        return connection.getRawObject().getTypeMap();
+        return connection.getRawObject()
+                .getTypeMap();
     }
 
     @Override
     public SQLWarning connection_getWarnings(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_getWarnings(this, connection);
+            return nextFilter()
+                    .connection_getWarnings(this, connection);
         }
 
-        return connection.getRawObject().getWarnings();
+        return connection.getRawObject()
+                .getWarnings();
     }
 
     @Override
     public boolean connection_isClosed(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_isClosed(this, connection);
+            return nextFilter()
+                    .connection_isClosed(this, connection);
         }
 
-        return connection.getRawObject().isClosed();
+        return connection.getRawObject()
+                .isClosed();
     }
 
     @Override
     public boolean connection_isReadOnly(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_isReadOnly(this, connection);
+            return nextFilter()
+                    .connection_isReadOnly(this, connection);
         }
 
-        return connection.getRawObject().isReadOnly();
+        return connection.getRawObject()
+                .isReadOnly();
     }
 
     @Override
     public boolean connection_isValid(ConnectionProxy connection, int timeout) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_isValid(this, connection, timeout);
+            return nextFilter()
+                    .connection_isValid(this, connection, timeout);
         }
 
-        return connection.getRawObject().isValid(timeout);
+        return connection.getRawObject()
+                .isValid(timeout);
     }
 
     @Override
     public String connection_nativeSQL(ConnectionProxy connection, String sql) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_nativeSQL(this, connection, sql);
+            return nextFilter()
+                    .connection_nativeSQL(this, connection, sql);
         }
 
-        return connection.getRawObject().nativeSQL(sql);
+        return connection.getRawObject()
+                .nativeSQL(sql);
     }
 
     private Filter nextFilter() {
-        Filter filter = getFilters().get(pos++);
-        return filter;
+        return getFilters()
+                .get(pos++);
     }
 
     @Override
     public CallableStatementProxy connection_prepareCall(ConnectionProxy connection, String sql) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_prepareCall(this, connection, sql);
+            return nextFilter()
+                    .connection_prepareCall(this, connection, sql);
         }
 
-        CallableStatement statement = connection.getRawObject().prepareCall(sql);
-        return wrap(connection, statement, sql);
+        CallableStatement statement = connection.getRawObject()
+                .prepareCall(sql);
+
+        if (statement == null) {
+            return null;
+        }
+
+        return new CallableStatementProxyImpl(connection, statement, sql, dataSource.createStatementId());
     }
 
     @Override
-    public CallableStatementProxy connection_prepareCall(ConnectionProxy connection, String sql, int resultSetType,
-                                                         int resultSetConcurrency) throws SQLException {
+    public CallableStatementProxy connection_prepareCall(
+            ConnectionProxy connection,
+            String sql,
+            int resultSetType,
+            int resultSetConcurrency) throws SQLException
+    {
         if (this.pos < filterSize) {
-            return nextFilter().connection_prepareCall(this, connection, sql, resultSetType, resultSetConcurrency);
+            return nextFilter()
+                    .connection_prepareCall(this, connection, sql, resultSetType, resultSetConcurrency);
         }
 
-        CallableStatement statement = connection.getRawObject().prepareCall(sql, resultSetType, resultSetConcurrency);
-        return wrap(connection, statement, sql);
+        CallableStatement statement = connection.getRawObject()
+                .prepareCall(sql, resultSetType, resultSetConcurrency);
+
+        if (statement == null) {
+            return null;
+        }
+
+        return new CallableStatementProxyImpl(connection, statement, sql, dataSource.createStatementId());
     }
 
     @Override
-    public CallableStatementProxy connection_prepareCall(ConnectionProxy connection, String sql, int resultSetType,
-                                                         int resultSetConcurrency, int resultSetHoldability)
-                                                                                                            throws SQLException {
+    public CallableStatementProxy connection_prepareCall(
+            ConnectionProxy connection,
+            String sql,
+            int resultSetType,
+            int resultSetConcurrency,
+            int resultSetHoldability) throws SQLException
+    {
         if (this.pos < filterSize) {
-            return nextFilter().connection_prepareCall(this, connection, sql, resultSetType, resultSetConcurrency,
-                                                       resultSetHoldability);
+            return nextFilter()
+                    .connection_prepareCall(this
+                            , connection
+                            , sql
+                            , resultSetType
+                            , resultSetConcurrency
+                            , resultSetHoldability
+                    );
         }
 
-        CallableStatement statement = connection.getRawObject().prepareCall(sql, resultSetType, resultSetConcurrency,
-                                                                            resultSetHoldability);
-        return wrap(connection, statement, sql);
+        CallableStatement statement = connection.getRawObject()
+                .prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+
+        if (statement == null) {
+            return null;
+        }
+
+        return new CallableStatementProxyImpl(connection, statement, sql, dataSource.createStatementId());
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(ConnectionProxy connection, String sql)
-                                                                                                     throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(
+            ConnectionProxy connection,
+            String sql) throws SQLException
+    {
         if (this.pos < filterSize) {
-            return nextFilter().connection_prepareStatement(this, connection, sql);
+            return nextFilter()
+                    .connection_prepareStatement(this, connection, sql);
         }
 
-        PreparedStatement statement = connection.getRawObject().prepareStatement(sql);
-        return wrap(connection, statement, sql);
+        PreparedStatement statement = connection.getRawObject()
+                .prepareStatement(sql);
+
+        if (statement == null) {
+            return null;
+        }
+
+        return new PreparedStatementProxyImpl(connection, statement, sql, dataSource.createStatementId());
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(ConnectionProxy connection, String sql,
-                                                              int autoGeneratedKeys) throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(
+            ConnectionProxy connection,
+            String sql,
+            int autoGeneratedKeys) throws SQLException
+    {
         if (this.pos < filterSize) {
-            return nextFilter().connection_prepareStatement(this, connection, sql, autoGeneratedKeys);
+            return nextFilter()
+                    .connection_prepareStatement(this, connection, sql, autoGeneratedKeys);
         }
 
         PreparedStatement statement = connection.getRawObject().prepareStatement(sql, autoGeneratedKeys);
-        return wrap(connection, statement, sql);
+
+        if (statement == null) {
+            return null;
+        }
+
+        return new PreparedStatementProxyImpl(connection, statement, sql, dataSource.createStatementId());
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(ConnectionProxy connection, String sql,
-                                                              int resultSetType, int resultSetConcurrency)
-                                                                                                          throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(
+            ConnectionProxy connection,
+            String sql,
+            int resultSetType,
+            int resultSetConcurrency) throws SQLException
+    {
         if (this.pos < filterSize) {
-            return nextFilter().connection_prepareStatement(this, connection, sql, resultSetType, resultSetConcurrency);
+            return nextFilter()
+                    .connection_prepareStatement(this, connection, sql, resultSetType, resultSetConcurrency);
         }
 
-        PreparedStatement statement = connection.getRawObject().prepareStatement(sql, resultSetType,
-                                                                                 resultSetConcurrency);
-        return wrap(connection, statement, sql);
+        PreparedStatement statement
+                = connection.getRawObject()
+                .prepareStatement(sql, resultSetType, resultSetConcurrency);
+
+        if (statement == null) {
+            return null;
+        }
+
+        return new PreparedStatementProxyImpl(connection, statement, sql, dataSource.createStatementId());
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(ConnectionProxy connection, String sql,
-                                                              int resultSetType, int resultSetConcurrency,
-                                                              int resultSetHoldability) throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(
+            ConnectionProxy connection,
+            String sql,
+            int resultSetType,
+            int resultSetConcurrency,
+            int resultSetHoldability) throws SQLException
+    {
         if (this.pos < filterSize) {
-            return nextFilter().connection_prepareStatement(this, connection, sql, resultSetType, resultSetConcurrency,
-                                                            resultSetHoldability);
+            return nextFilter()
+                    .connection_prepareStatement(this, connection, sql, resultSetType, resultSetConcurrency, resultSetHoldability);
         }
 
-        PreparedStatement statement = connection.getRawObject().prepareStatement(sql, resultSetType,
-                                                                                 resultSetConcurrency,
-                                                                                 resultSetHoldability);
-        return wrap(connection, statement, sql);
+        PreparedStatement statement = connection.getRawObject()
+                .prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+
+        if (statement == null) {
+            return null;
+        }
+
+        return new PreparedStatementProxyImpl(connection
+                , statement
+                , sql
+                , dataSource.createStatementId()
+        );
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(ConnectionProxy connection, String sql,
-                                                              int[] columnIndexes) throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(
+            ConnectionProxy connection,
+            String sql,
+            int[] columnIndexes) throws SQLException
+    {
         if (this.pos < filterSize) {
-            return nextFilter().connection_prepareStatement(this, connection, sql, columnIndexes);
+            return nextFilter()
+                    .connection_prepareStatement(this, connection, sql, columnIndexes);
         }
 
-        PreparedStatement statement = connection.getRawObject().prepareStatement(sql, columnIndexes);
-        return wrap(connection, statement, sql);
+        PreparedStatement statement = connection.getRawObject()
+                .prepareStatement(sql, columnIndexes);
+
+        if (statement == null) {
+            return null;
+        }
+
+        return new PreparedStatementProxyImpl(connection
+                , statement
+                , sql
+                , dataSource.createStatementId()
+        );
     }
 
     @Override
     public PreparedStatementProxy connection_prepareStatement(ConnectionProxy connection, String sql,
                                                               String[] columnNames) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_prepareStatement(this, connection, sql, columnNames);
+            return nextFilter()
+                    .connection_prepareStatement(this, connection, sql, columnNames);
         }
 
-        PreparedStatement statement = connection.getRawObject().prepareStatement(sql, columnNames);
-        return wrap(connection, statement, sql);
+        PreparedStatement statement = connection.getRawObject()
+                .prepareStatement(sql, columnNames);
+        if (statement == null) {
+            return null;
+        }
+
+        return new PreparedStatementProxyImpl(connection, statement, sql, dataSource.createStatementId());
     }
 
     @Override
     public void connection_releaseSavepoint(ConnectionProxy connection, Savepoint savepoint) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_releaseSavepoint(this, connection, savepoint);
+            nextFilter()
+                    .connection_releaseSavepoint(this, connection, savepoint);
             return;
         }
 
-        connection.getRawObject().releaseSavepoint(savepoint);
+        connection.getRawObject()
+                .releaseSavepoint(savepoint);
     }
 
     @Override
     public void connection_rollback(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_rollback(this, connection);
+            nextFilter()
+                    .connection_rollback(this, connection);
             return;
         }
 
-        connection.getRawObject().rollback();
+        connection.getRawObject()
+                .rollback();
     }
 
     @Override
     public void connection_rollback(ConnectionProxy connection, Savepoint savepoint) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_rollback(this, connection, savepoint);
+            nextFilter()
+                    .connection_rollback(this, connection, savepoint);
             return;
         }
 
-        connection.getRawObject().rollback(savepoint);
+        connection.getRawObject()
+                .rollback(savepoint);
     }
 
     @Override
     public void connection_setAutoCommit(ConnectionProxy connection, boolean autoCommit) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_setAutoCommit(this, connection, autoCommit);
+            nextFilter()
+                    .connection_setAutoCommit(this, connection, autoCommit);
             return;
         }
 
-        connection.getRawObject().setAutoCommit(autoCommit);
+        connection.getRawObject()
+                .setAutoCommit(autoCommit);
     }
 
     @Override
     public void connection_setCatalog(ConnectionProxy connection, String catalog) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_setCatalog(this, connection, catalog);
+            nextFilter()
+                    .connection_setCatalog(this, connection, catalog);
             return;
         }
 
-        connection.getRawObject().setCatalog(catalog);
+        connection.getRawObject()
+                .setCatalog(catalog);
     }
 
     @Override
-    public void connection_setClientInfo(ConnectionProxy connection, Properties properties)
-                                                                                           throws SQLClientInfoException {
+    public void connection_setClientInfo(
+            ConnectionProxy connection,
+            Properties properties) throws SQLClientInfoException
+    {
         if (this.pos < filterSize) {
-            nextFilter().connection_setClientInfo(this, connection, properties);
+            nextFilter()
+                    .connection_setClientInfo(this, connection, properties);
             return;
         }
 
-        connection.getRawObject().setClientInfo(properties);
+        connection.getRawObject()
+                .setClientInfo(properties);
     }
 
     @Override
-    public void connection_setClientInfo(ConnectionProxy connection, String name, String value)
-                                                                                               throws SQLClientInfoException {
+    public void connection_setClientInfo(
+            ConnectionProxy connection,
+            String name, String value) throws SQLClientInfoException
+    {
         if (this.pos < filterSize) {
-            nextFilter().connection_setClientInfo(this, connection, name, value);
+            nextFilter()
+                    .connection_setClientInfo(this, connection, name, value);
             return;
         }
 
-        connection.getRawObject().setClientInfo(name, value);
+        connection.getRawObject()
+                .setClientInfo(name, value);
     }
 
     @Override
     public void connection_setHoldability(ConnectionProxy connection, int holdability) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_setHoldability(this, connection, holdability);
+            nextFilter()
+                    .connection_setHoldability(this, connection, holdability);
             return;
         }
 
-        connection.getRawObject().setHoldability(holdability);
+        connection.getRawObject()
+                .setHoldability(holdability);
     }
 
     @Override
     public void connection_setReadOnly(ConnectionProxy connection, boolean readOnly) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_setReadOnly(this, connection, readOnly);
+            nextFilter()
+                    .connection_setReadOnly(this, connection, readOnly);
             return;
         }
 
-        connection.getRawObject().setReadOnly(readOnly);
+        connection.getRawObject()
+                .setReadOnly(readOnly);
     }
 
     @Override
     public Savepoint connection_setSavepoint(ConnectionProxy connection) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_setSavepoint(this, connection);
+            return nextFilter()
+                    .connection_setSavepoint(this, connection);
         }
 
-        return connection.getRawObject().setSavepoint();
+        return connection.getRawObject()
+                .setSavepoint();
     }
 
     @Override
     public Savepoint connection_setSavepoint(ConnectionProxy connection, String name) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().connection_setSavepoint(this, connection, name);
+            return nextFilter()
+                    .connection_setSavepoint(this, connection, name);
         }
 
-        return connection.getRawObject().setSavepoint(name);
+        return connection.getRawObject()
+                .setSavepoint(name);
     }
 
     @Override
     public void connection_setTransactionIsolation(ConnectionProxy connection, int level) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_setTransactionIsolation(this, connection, level);
+            nextFilter()
+                    .connection_setTransactionIsolation(this, connection, level);
             return;
         }
 
-        connection.getRawObject().setTransactionIsolation(level);
+        connection.getRawObject()
+                .setTransactionIsolation(level);
     }
 
     @Override
     public void connection_setTypeMap(ConnectionProxy connection, Map<String, Class<?>> map) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().connection_setTypeMap(this, connection, map);
+            nextFilter()
+                    .connection_setTypeMap(this, connection, map);
             return;
         }
 
-        connection.getRawObject().setTypeMap(map);
+        connection.getRawObject()
+                .setTypeMap(map);
+    }
+
+    @Override
+    public String connection_getSchema(ConnectionProxy connection) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .connection_getSchema(this, connection);
+        }
+
+        return connection.getRawObject()
+                .getSchema();
+    }
+
+    @Override
+    public void connection_setSchema(ConnectionProxy connection, String schema) throws SQLException {
+        if (this.pos < filterSize) {
+            nextFilter()
+                    .connection_setSchema(this, connection, schema);
+            return;
+        }
+
+        connection.getRawObject()
+                .setSchema(schema);
+    }
+
+    public void connection_abort(ConnectionProxy conn, Executor executor) throws SQLException {
+        if (this.pos < filterSize) {
+            nextFilter()
+                    .connection_abort(this, conn, executor);
+            return;
+        }
+
+        conn.getRawObject()
+                .abort(executor);
+    }
+
+    public void connection_setNetworkTimeout(ConnectionProxy conn, Executor executor, int milliseconds) throws SQLException {
+        if (this.pos < filterSize) {
+            nextFilter()
+                    .connection_setNetworkTimeout(this, conn, executor, milliseconds);
+            return;
+        }
+
+        conn.getRawObject()
+                .setNetworkTimeout(executor, milliseconds);
+    }
+
+    public int connection_getNetworkTimeout(ConnectionProxy conn) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .connection_getNetworkTimeout(this, conn);
+        }
+
+        return conn.getRawObject().getNetworkTimeout();
     }
 
     // ///////////////////////////////////////
 
     @Override
-    public boolean resultSet_next(ResultSetProxy resultSet) throws SQLException {
+    public boolean resultSet_next(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_next(this, resultSet);
+            return nextFilter()
+                    .resultSet_next(this, rs);
         }
 
-        return resultSet.getResultSetRaw().next();
+        return rs
+                .getResultSetRaw().next();
     }
 
     @Override
-    public void resultSet_close(ResultSetProxy resultSet) throws SQLException {
+    public void resultSet_close(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().resultSet_close(this, resultSet);
+            nextFilter()
+                    .resultSet_close(this, rs);
             return;
         }
-        resultSet.getResultSetRaw().close();
-        resultSet.getAttributes().clear();
+
+        rs.getResultSetRaw()
+                .close();
+        rs.clearAttributes();
     }
 
     @Override
-    public boolean resultSet_wasNull(ResultSetProxy resultSet) throws SQLException {
+    public boolean resultSet_wasNull(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_wasNull(this, resultSet);
+            return nextFilter()
+                    .resultSet_wasNull(this, rs);
         }
-        return resultSet.getResultSetRaw().wasNull();
+
+        return rs.getResultSetRaw().wasNull();
     }
 
     @Override
-    public String resultSet_getString(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public String resultSet_getString(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getString(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getString(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getString(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getString(columnIndex);
     }
 
     @Override
-    public boolean resultSet_getBoolean(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public boolean resultSet_getBoolean(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getBoolean(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getBoolean(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getBoolean(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getBoolean(columnIndex);
     }
 
     @Override
-    public byte resultSet_getByte(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public byte resultSet_getByte(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getByte(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getByte(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getByte(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getByte(columnIndex);
     }
 
     @Override
-    public short resultSet_getShort(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public short resultSet_getShort(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getShort(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getShort(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getShort(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getShort(columnIndex);
     }
 
     @Override
-    public int resultSet_getInt(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public int resultSet_getInt(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getInt(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getInt(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getInt(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getInt(columnIndex);
     }
 
     @Override
-    public long resultSet_getLong(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public long resultSet_getLong(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getLong(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getLong(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getLong(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getLong(columnIndex);
     }
 
     @Override
     public float resultSet_getFloat(ResultSetProxy resultSet, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getFloat(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getFloat(this, resultSet, columnIndex);
         }
-        return resultSet.getResultSetRaw().getFloat(columnIndex);
+
+        return resultSet.getResultSetRaw()
+                .getFloat(columnIndex);
     }
 
     @Override
-    public double resultSet_getDouble(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public double resultSet_getDouble(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getDouble(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getDouble(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getDouble(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getDouble(columnIndex);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public BigDecimal resultSet_getBigDecimal(ResultSetProxy resultSet, int columnIndex, int scale) throws SQLException {
+    public BigDecimal resultSet_getBigDecimal(ResultSetProxy rs, int columnIndex, int scale) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getBigDecimal(this, resultSet, columnIndex, scale);
+            return nextFilter()
+                    .resultSet_getBigDecimal(this, rs, columnIndex, scale);
         }
-        return resultSet.getResultSetRaw().getBigDecimal(columnIndex, scale);
+
+        return rs.getResultSetRaw()
+                .getBigDecimal(columnIndex, scale);
     }
 
     @Override
-    public byte[] resultSet_getBytes(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public byte[] resultSet_getBytes(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getBytes(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getBytes(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getBytes(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getBytes(columnIndex);
     }
 
     @Override
-    public java.sql.Date resultSet_getDate(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public java.sql.Date resultSet_getDate(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getDate(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getDate(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getDate(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getDate(columnIndex);
     }
 
     @Override
-    public java.sql.Time resultSet_getTime(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public java.sql.Time resultSet_getTime(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getTime(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getTime(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getTime(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getTime(columnIndex);
     }
 
     @Override
-    public java.sql.Timestamp resultSet_getTimestamp(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public java.sql.Timestamp resultSet_getTimestamp(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getTimestamp(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getTimestamp(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getTimestamp(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getTimestamp(columnIndex);
     }
 
     @Override
-    public java.io.InputStream resultSet_getAsciiStream(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public java.io.InputStream resultSet_getAsciiStream(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getAsciiStream(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getAsciiStream(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getAsciiStream(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getAsciiStream(columnIndex);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public java.io.InputStream resultSet_getUnicodeStream(ResultSetProxy resultSet, int columnIndex)
+    public java.io.InputStream resultSet_getUnicodeStream(ResultSetProxy rs, int columnIndex)
                                                                                                     throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getUnicodeStream(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getUnicodeStream(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getUnicodeStream(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getUnicodeStream(columnIndex);
     }
 
     @Override
-    public java.io.InputStream resultSet_getBinaryStream(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public java.io.InputStream resultSet_getBinaryStream(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getBinaryStream(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getBinaryStream(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getBinaryStream(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getBinaryStream(columnIndex);
     }
 
     @Override
-    public String resultSet_getString(ResultSetProxy resultSet, String columnLabel) throws SQLException {
+    public String resultSet_getString(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getString(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getString(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getString(columnLabel);
+        return rs.getResultSetRaw()
+                .getString(columnLabel);
     }
 
     @Override
-    public boolean resultSet_getBoolean(ResultSetProxy resultSet, String columnLabel) throws SQLException {
+    public boolean resultSet_getBoolean(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getBoolean(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getBoolean(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getBoolean(columnLabel);
+
+        return rs.getResultSetRaw()
+                .getBoolean(columnLabel);
     }
 
     @Override
-    public byte resultSet_getByte(ResultSetProxy resultSet, String columnLabel) throws SQLException {
+    public byte resultSet_getByte(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getByte(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getByte(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getByte(columnLabel);
+
+        return rs.getResultSetRaw()
+                .getByte(columnLabel);
     }
 
     @Override
-    public short resultSet_getShort(ResultSetProxy resultSet, String columnLabel) throws SQLException {
+    public short resultSet_getShort(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getShort(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getShort(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getShort(columnLabel);
+
+        return rs.getResultSetRaw()
+                .getShort(columnLabel);
     }
 
     @Override
-    public int resultSet_getInt(ResultSetProxy resultSet, String columnLabel) throws SQLException {
+    public int resultSet_getInt(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getInt(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getInt(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getInt(columnLabel);
+
+        return rs.getResultSetRaw()
+                .getInt(columnLabel);
     }
 
     @Override
-    public long resultSet_getLong(ResultSetProxy resultSet, String columnLabel) throws SQLException {
+    public long resultSet_getLong(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getLong(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getLong(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getLong(columnLabel);
+
+        return rs.getResultSetRaw()
+                .getLong(columnLabel);
     }
 
     @Override
-    public float resultSet_getFloat(ResultSetProxy resultSet, String columnLabel) throws SQLException {
+    public float resultSet_getFloat(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getFloat(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getFloat(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getFloat(columnLabel);
+        return rs.getResultSetRaw()
+                .getFloat(columnLabel);
     }
 
     @Override
-    public double resultSet_getDouble(ResultSetProxy resultSet, String columnLabel) throws SQLException {
+    public double resultSet_getDouble(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getDouble(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getDouble(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getDouble(columnLabel);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public BigDecimal resultSet_getBigDecimal(ResultSetProxy resultSet, String columnLabel, int scale)
-                                                                                                      throws SQLException {
-        if (this.pos < filterSize) {
-            return nextFilter().resultSet_getBigDecimal(this, resultSet, columnLabel, scale);
-        }
-        return resultSet.getResultSetRaw().getBigDecimal(columnLabel, scale);
-    }
-
-    @Override
-    public byte[] resultSet_getBytes(ResultSetProxy resultSet, String columnLabel) throws SQLException {
-        if (this.pos < filterSize) {
-            return nextFilter().resultSet_getBytes(this, resultSet, columnLabel);
-        }
-        return resultSet.getResultSetRaw().getBytes(columnLabel);
-    }
-
-    @Override
-    public java.sql.Date resultSet_getDate(ResultSetProxy resultSet, String columnLabel) throws SQLException {
-        if (this.pos < filterSize) {
-            return nextFilter().resultSet_getDate(this, resultSet, columnLabel);
-        }
-        return resultSet.getResultSetRaw().getDate(columnLabel);
-    }
-
-    @Override
-    public java.sql.Time resultSet_getTime(ResultSetProxy resultSet, String columnLabel) throws SQLException {
-        if (this.pos < filterSize) {
-            return nextFilter().resultSet_getTime(this, resultSet, columnLabel);
-        }
-        return resultSet.getResultSetRaw().getTime(columnLabel);
-    }
-
-    @Override
-    public java.sql.Timestamp resultSet_getTimestamp(ResultSetProxy resultSet, String columnLabel) throws SQLException {
-        if (this.pos < filterSize) {
-            return nextFilter().resultSet_getTimestamp(this, resultSet, columnLabel);
-        }
-        return resultSet.getResultSetRaw().getTimestamp(columnLabel);
-    }
-
-    @Override
-    public java.io.InputStream resultSet_getAsciiStream(ResultSetProxy resultSet, String columnLabel)
-                                                                                                     throws SQLException {
-        if (this.pos < filterSize) {
-            return nextFilter().resultSet_getAsciiStream(this, resultSet, columnLabel);
-        }
-        return resultSet.getResultSetRaw().getAsciiStream(columnLabel);
+        return rs.getResultSetRaw()
+                .getDouble(columnLabel);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public java.io.InputStream resultSet_getUnicodeStream(ResultSetProxy resultSet, String columnLabel)
-                                                                                                       throws SQLException {
+    public BigDecimal resultSet_getBigDecimal(ResultSetProxy rs, String columnLabel, int scale) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getUnicodeStream(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getBigDecimal(this, rs, columnLabel, scale);
         }
-        return resultSet.getResultSetRaw().getUnicodeStream(columnLabel);
+
+        return rs.getResultSetRaw()
+                .getBigDecimal(columnLabel, scale);
     }
 
     @Override
-    public java.io.InputStream resultSet_getBinaryStream(ResultSetProxy resultSet, String columnLabel)
-                                                                                                      throws SQLException {
+    public byte[] resultSet_getBytes(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getBinaryStream(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getBytes(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getBinaryStream(columnLabel);
+        return rs.getResultSetRaw().getBytes(columnLabel);
     }
 
     @Override
-    public SQLWarning resultSet_getWarnings(ResultSetProxy resultSet) throws SQLException {
+    public java.sql.Date resultSet_getDate(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getWarnings(this, resultSet);
+            return nextFilter()
+                    .resultSet_getDate(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getWarnings();
+
+        return rs.getResultSetRaw()
+                .getDate(columnLabel);
     }
 
     @Override
-    public void resultSet_clearWarnings(ResultSetProxy resultSet) throws SQLException {
+    public java.sql.Time resultSet_getTime(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().resultSet_clearWarnings(this, resultSet);
+            return nextFilter()
+                    .resultSet_getTime(this, rs, columnLabel);
+        }
+
+        return rs.getResultSetRaw()
+                .getTime(columnLabel);
+    }
+
+    @Override
+    public java.sql.Timestamp resultSet_getTimestamp(ResultSetProxy rs, String columnLabel) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSet_getTimestamp(this, rs, columnLabel);
+        }
+
+        return rs.getResultSetRaw()
+                .getTimestamp(columnLabel);
+    }
+
+    @Override
+    public java.io.InputStream resultSet_getAsciiStream(ResultSetProxy rs, String columnLabel) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSet_getAsciiStream(this, rs, columnLabel);
+        }
+
+        return rs.getResultSetRaw()
+                .getAsciiStream(columnLabel);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public java.io.InputStream resultSet_getUnicodeStream(ResultSetProxy rs, String columnLabel) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSet_getUnicodeStream(this, rs, columnLabel);
+        }
+
+        return rs.getResultSetRaw()
+                .getUnicodeStream(columnLabel);
+    }
+
+    @Override
+    public java.io.InputStream resultSet_getBinaryStream(ResultSetProxy rs, String columnLabel) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSet_getBinaryStream(this, rs, columnLabel);
+        }
+
+        return rs.getResultSetRaw()
+                .getBinaryStream(columnLabel);
+    }
+
+    @Override
+    public SQLWarning resultSet_getWarnings(ResultSetProxy rs) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSet_getWarnings(this, rs);
+        }
+
+        return rs.getResultSetRaw()
+                .getWarnings();
+    }
+
+    @Override
+    public void resultSet_clearWarnings(ResultSetProxy rs) throws SQLException {
+        if (this.pos < filterSize) {
+            nextFilter()
+                    .resultSet_clearWarnings(this, rs);
             return;
         }
-        resultSet.getResultSetRaw().clearWarnings();
+
+        rs.getResultSetRaw()
+                .clearWarnings();
     }
 
     @Override
-    public String resultSet_getCursorName(ResultSetProxy resultSet) throws SQLException {
+    public String resultSet_getCursorName(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getCursorName(this, resultSet);
+            return nextFilter()
+                    .resultSet_getCursorName(this, rs);
         }
-        return resultSet.getResultSetRaw().getCursorName();
+
+        return rs.getResultSetRaw()
+                .getCursorName();
     }
 
     @Override
-    public ResultSetMetaData resultSet_getMetaData(ResultSetProxy resultSet) throws SQLException {
+    public ResultSetMetaData resultSet_getMetaData(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getMetaData(this, resultSet);
+            return nextFilter()
+                    .resultSet_getMetaData(this, rs);
         }
-        return resultSet.getResultSetRaw().getMetaData();
+
+        ResultSetMetaData metaData = rs.getResultSetRaw()
+                .getMetaData();
+        if (metaData == null) {
+            return null;
+        }
+
+        return new ResultSetMetaDataProxyImpl(metaData, dataSource.createMetaDataId(), rs);
     }
 
     @Override
-    public Object resultSet_getObject(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public Object resultSet_getObject(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getObject(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getObject(this, rs, columnIndex);
         }
 
-        Object obj = resultSet.getResultSetRaw().getObject(columnIndex);
+        Object obj = rs.getResultSetRaw().getObject(columnIndex);
 
         if (obj instanceof ResultSet) {
-            return wrap(resultSet.getStatementProxy(), (ResultSet) obj);
+            StatementProxy statement = rs.getStatementProxy();
+            return new ResultSetProxyImpl(statement
+                    , (ResultSet) obj
+                    , dataSource.createResultSetId()
+                    , statement.getLastExecuteSql()
+            );
         }
 
         if (obj instanceof Clob) {
-            return wrap(resultSet.getStatementProxy(), (Clob) obj);
+            return wrap(
+                    rs.getStatementProxy(), (Clob) obj);
         }
 
         return obj;
     }
 
     @Override
-    public Object resultSet_getObject(ResultSetProxy resultSet, String columnLabel) throws SQLException {
+    public <T> T resultSet_getObject(ResultSetProxy rs, int columnIndex, Class<T> type) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getObject(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getObject(this, rs, columnIndex, type);
         }
 
-        Object obj = resultSet.getResultSetRaw().getObject(columnLabel);
+        Object obj = rs.getResultSetRaw().getObject(columnIndex, type);
 
         if (obj instanceof ResultSet) {
-            return wrap(resultSet.getStatementProxy(), (ResultSet) obj);
+            StatementProxy statement = rs.getStatementProxy();
+            return (T) new ResultSetProxyImpl(statement
+                    , (ResultSet) obj
+                    , dataSource.createResultSetId()
+                    , statement.getLastExecuteSql()
+            );
         }
 
         if (obj instanceof Clob) {
-            return wrap(resultSet.getStatementProxy(), (Clob) obj);
+            return (T) wrap(
+                    rs.getStatementProxy(), (Clob) obj);
+        }
+
+        return (T) obj;
+    }
+
+    @Override
+    public Object resultSet_getObject(ResultSetProxy rs, String columnLabel) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSet_getObject(this, rs, columnLabel);
+        }
+
+        Object obj = rs.getResultSetRaw()
+                .getObject(columnLabel);
+
+        if (obj instanceof ResultSet) {
+            StatementProxy stmt = rs.getStatementProxy();
+            return new ResultSetProxyImpl(stmt
+                    , (ResultSet) obj
+                    , dataSource.createResultSetId()
+                    , stmt.getLastExecuteSql()
+            );
+        }
+
+        if (obj instanceof Clob) {
+            return wrap(rs.getStatementProxy(), (Clob) obj);
         }
 
         return obj;
     }
 
     @Override
-    public int resultSet_findColumn(ResultSetProxy resultSet, String columnLabel) throws SQLException {
+    public <T> T resultSet_getObject(ResultSetProxy rs, String columnLabel, Class<T> type) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_findColumn(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getObject(this, rs, columnLabel, type);
         }
-        return resultSet.getResultSetRaw().findColumn(columnLabel);
+
+        T obj = rs.getResultSetRaw()
+                .getObject(columnLabel, type);
+
+        if (obj instanceof ResultSet) {
+            StatementProxy stmt = rs.getStatementProxy();
+            return (T) new ResultSetProxyImpl(stmt
+                    , (ResultSet) obj
+                    , dataSource.createResultSetId()
+                    , stmt.getLastExecuteSql()
+            );
+        }
+
+        if (obj instanceof Clob) {
+            return (T) wrap(rs.getStatementProxy(), (Clob) obj);
+        }
+
+        return obj;
     }
 
     @Override
-    public java.io.Reader resultSet_getCharacterStream(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public int resultSet_findColumn(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getCharacterStream(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_findColumn(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getCharacterStream(columnIndex);
+        return rs.getResultSetRaw()
+                .findColumn(columnLabel);
     }
 
     @Override
-    public java.io.Reader resultSet_getCharacterStream(ResultSetProxy resultSet, String columnLabel)
-                                                                                                    throws SQLException {
+    public java.io.Reader resultSet_getCharacterStream(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getCharacterStream(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getCharacterStream(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getCharacterStream(columnLabel);
+        return rs.getResultSetRaw()
+                .getCharacterStream(columnIndex);
     }
 
     @Override
-    public BigDecimal resultSet_getBigDecimal(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public java.io.Reader resultSet_getCharacterStream(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getBigDecimal(this, resultSet, columnIndex);
+            return nextFilter()
+                    .resultSet_getCharacterStream(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().getBigDecimal(columnIndex);
+
+        return rs.getResultSetRaw()
+                .getCharacterStream(columnLabel);
     }
 
     @Override
-    public BigDecimal resultSet_getBigDecimal(ResultSetProxy resultSet, String columnLabel) throws SQLException {
+    public BigDecimal resultSet_getBigDecimal(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getBigDecimal(this, resultSet, columnLabel);
+            return nextFilter()
+                    .resultSet_getBigDecimal(this, rs, columnIndex);
         }
-        return resultSet.getResultSetRaw().getBigDecimal(columnLabel);
+
+        return rs.getResultSetRaw()
+                .getBigDecimal(columnIndex);
     }
 
     @Override
-    public boolean resultSet_isBeforeFirst(ResultSetProxy resultSet) throws SQLException {
+    public BigDecimal resultSet_getBigDecimal(ResultSetProxy rs, String columnLabel) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_isBeforeFirst(this, resultSet);
+            return nextFilter()
+                    .resultSet_getBigDecimal(this, rs, columnLabel);
         }
-        return resultSet.getResultSetRaw().isBeforeFirst();
+
+        return rs.getResultSetRaw()
+                .getBigDecimal(columnLabel);
     }
 
     @Override
-    public boolean resultSet_isAfterLast(ResultSetProxy resultSet) throws SQLException {
+    public boolean resultSet_isBeforeFirst(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_isAfterLast(this, resultSet);
+            return nextFilter()
+                    .resultSet_isBeforeFirst(this, rs);
         }
-        return resultSet.getResultSetRaw().isAfterLast();
+
+        return rs.getResultSetRaw()
+                .isBeforeFirst();
     }
 
     @Override
-    public boolean resultSet_isFirst(ResultSetProxy resultSet) throws SQLException {
+    public boolean resultSet_isAfterLast(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_isFirst(this, resultSet);
+            return nextFilter()
+                    .resultSet_isAfterLast(this, rs);
         }
-        return resultSet.getResultSetRaw().isFirst();
+
+        return rs.getResultSetRaw()
+                .isAfterLast();
     }
 
     @Override
-    public boolean resultSet_isLast(ResultSetProxy resultSet) throws SQLException {
+    public boolean resultSet_isFirst(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_isLast(this, resultSet);
+            return nextFilter()
+                    .resultSet_isFirst(this, rs);
         }
-        return resultSet.getResultSetRaw().isLast();
+
+        return rs.getResultSetRaw()
+                .isFirst();
     }
 
     @Override
-    public void resultSet_beforeFirst(ResultSetProxy resultSet) throws SQLException {
+    public boolean resultSet_isLast(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().resultSet_beforeFirst(this, resultSet);
+            return nextFilter()
+                    .resultSet_isLast(this, rs);
+        }
+        return rs.getResultSetRaw()
+                .isLast();
+    }
+
+    @Override
+    public void resultSet_beforeFirst(ResultSetProxy rs) throws SQLException {
+        if (this.pos < filterSize) {
+            nextFilter()
+                    .resultSet_beforeFirst(this, rs);
             return;
         }
-        resultSet.getResultSetRaw().beforeFirst();
+        rs.getResultSetRaw()
+                .beforeFirst();
     }
 
     @Override
-    public void resultSet_afterLast(ResultSetProxy resultSet) throws SQLException {
+    public void resultSet_afterLast(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().resultSet_afterLast(this, resultSet);
+            nextFilter()
+                    .resultSet_afterLast(this, rs);
             return;
         }
-        resultSet.getResultSetRaw().afterLast();
+
+        rs.getResultSetRaw()
+                .afterLast();
     }
 
     @Override
-    public boolean resultSet_first(ResultSetProxy resultSet) throws SQLException {
+    public boolean resultSet_first(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_first(this, resultSet);
+            return nextFilter()
+                    .resultSet_first(this, rs);
         }
-        return resultSet.getResultSetRaw().first();
+
+        return rs.getResultSetRaw()
+                .first();
     }
 
     @Override
-    public boolean resultSet_last(ResultSetProxy resultSet) throws SQLException {
+    public boolean resultSet_last(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_last(this, resultSet);
+            return nextFilter()
+                    .resultSet_last(this, rs);
         }
-        return resultSet.getResultSetRaw().last();
+
+        return rs.getResultSetRaw()
+                .last();
     }
 
     @Override
-    public int resultSet_getRow(ResultSetProxy resultSet) throws SQLException {
+    public int resultSet_getRow(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getRow(this, resultSet);
+            return nextFilter()
+                    .resultSet_getRow(this, rs);
         }
-        return resultSet.getResultSetRaw().getRow();
+
+        return rs.getResultSetRaw()
+                .getRow();
     }
 
     @Override
-    public boolean resultSet_absolute(ResultSetProxy resultSet, int row) throws SQLException {
+    public boolean resultSet_absolute(ResultSetProxy rs, int row) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_absolute(this, resultSet, row);
+            return nextFilter()
+                    .resultSet_absolute(this, rs, row);
         }
-        return resultSet.getResultSetRaw().absolute(row);
+
+        return rs.getResultSetRaw()
+                .absolute(row);
     }
 
     @Override
-    public boolean resultSet_relative(ResultSetProxy resultSet, int rows) throws SQLException {
+    public boolean resultSet_relative(ResultSetProxy rs, int rows) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_relative(this, resultSet, rows);
+            return nextFilter()
+                    .resultSet_relative(this, rs, rows);
         }
-        return resultSet.getResultSetRaw().relative(rows);
+        return rs.getResultSetRaw().relative(rows);
     }
 
     @Override
-    public boolean resultSet_previous(ResultSetProxy resultSet) throws SQLException {
+    public boolean resultSet_previous(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_previous(this, resultSet);
+            return nextFilter()
+                    .resultSet_previous(this, rs);
         }
-        return resultSet.getResultSetRaw().previous();
+
+        return rs.getResultSetRaw()
+                .previous();
     }
 
     @Override
-    public void resultSet_setFetchDirection(ResultSetProxy resultSet, int direction) throws SQLException {
+    public void resultSet_setFetchDirection(ResultSetProxy rs, int direction) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().resultSet_setFetchDirection(this, resultSet, direction);
+            nextFilter()
+                    .resultSet_setFetchDirection(this, rs, direction);
             return;
         }
-        resultSet.getResultSetRaw().setFetchDirection(direction);
+
+        rs.getResultSetRaw()
+                .setFetchDirection(direction);
     }
 
     @Override
-    public int resultSet_getFetchDirection(ResultSetProxy resultSet) throws SQLException {
+    public int resultSet_getFetchDirection(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getFetchDirection(this, resultSet);
+            return nextFilter()
+                    .resultSet_getFetchDirection(this, rs);
         }
-        return resultSet.getResultSetRaw().getFetchDirection();
+
+        return rs.getResultSetRaw()
+                .getFetchDirection();
     }
 
     @Override
-    public void resultSet_setFetchSize(ResultSetProxy resultSet, int rows) throws SQLException {
+    public void resultSet_setFetchSize(ResultSetProxy rs, int rows) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().resultSet_setFetchSize(this, resultSet, rows);
+            nextFilter()
+                    .resultSet_setFetchSize(this, rs, rows);
             return;
         }
-        resultSet.getResultSetRaw().setFetchSize(rows);
+
+        rs.getResultSetRaw()
+                .setFetchSize(rows);
     }
 
     @Override
-    public int resultSet_getFetchSize(ResultSetProxy resultSet) throws SQLException {
+    public int resultSet_getFetchSize(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getFetchSize(this, resultSet);
+            return nextFilter()
+                    .resultSet_getFetchSize(this, rs);
         }
-        return resultSet.getResultSetRaw().getFetchSize();
+
+        return rs.getResultSetRaw()
+                .getFetchSize();
     }
 
     @Override
-    public int resultSet_getType(ResultSetProxy resultSet) throws SQLException {
+    public int resultSet_getType(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getType(this, resultSet);
+            return nextFilter()
+                    .resultSet_getType(this, rs);
         }
-        return resultSet.getResultSetRaw().getType();
+
+        return rs.getResultSetRaw()
+                .getType();
     }
 
     @Override
-    public int resultSet_getConcurrency(ResultSetProxy resultSet) throws SQLException {
+    public int resultSet_getConcurrency(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_getConcurrency(this, resultSet);
+            return nextFilter()
+                    .resultSet_getConcurrency(this, rs);
         }
-        return resultSet.getResultSetRaw().getConcurrency();
+
+        return rs.getResultSetRaw()
+                .getConcurrency();
     }
 
     @Override
-    public boolean resultSet_rowUpdated(ResultSetProxy resultSet) throws SQLException {
+    public boolean resultSet_rowUpdated(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_rowUpdated(this, resultSet);
+            return nextFilter()
+                    .resultSet_rowUpdated(this, rs);
         }
-        return resultSet.getResultSetRaw().rowUpdated();
+
+        return rs.getResultSetRaw()
+                .rowUpdated();
     }
 
     @Override
-    public boolean resultSet_rowInserted(ResultSetProxy resultSet) throws SQLException {
+    public boolean resultSet_rowInserted(ResultSetProxy rs) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_rowInserted(this, resultSet);
+            return nextFilter()
+                    .resultSet_rowInserted(this, rs);
         }
-        return resultSet.getResultSetRaw().rowInserted();
+
+        return rs.getResultSetRaw()
+                .rowInserted();
     }
 
     @Override
     public boolean resultSet_rowDeleted(ResultSetProxy resultSet) throws SQLException {
         if (this.pos < filterSize) {
-            return nextFilter().resultSet_rowDeleted(this, resultSet);
+            return nextFilter()
+                    .resultSet_rowDeleted(this, resultSet);
         }
-        return resultSet.getResultSetRaw().rowDeleted();
+
+        return resultSet.getResultSetRaw()
+                .rowDeleted();
     }
 
     @Override
-    public void resultSet_updateNull(ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public void resultSet_updateNull(ResultSetProxy rs, int columnIndex) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().resultSet_updateNull(this, resultSet, columnIndex);
+            nextFilter().resultSet_updateNull(this, rs, columnIndex);
             return;
+
         }
-        resultSet.getResultSetRaw().updateNull(columnIndex);
+
+        rs.getResultSetRaw()
+                .updateNull(columnIndex);
     }
 
     @Override
-    public void resultSet_updateBoolean(ResultSetProxy resultSet, int columnIndex, boolean x) throws SQLException {
+    public void resultSet_updateBoolean(ResultSetProxy rs, int columnIndex, boolean x) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().resultSet_updateBoolean(this, resultSet, columnIndex, x);
+            nextFilter()
+                    .resultSet_updateBoolean(this, rs, columnIndex, x);
             return;
         }
-        resultSet.getResultSetRaw().updateBoolean(columnIndex, x);
+        rs.getResultSetRaw()
+                .updateBoolean(columnIndex, x);
     }
 
     @Override
@@ -1649,7 +2169,9 @@ public class FilterChainImpl implements FilterChain {
         Object obj = resultSet.getResultSetRaw().getObject(columnIndex, map);
 
         if (obj instanceof ResultSet) {
-            return wrap(resultSet.getStatementProxy(), (ResultSet) obj);
+            StatementProxy statement = resultSet.getStatementProxy();
+            return new ResultSetProxyImpl(statement, (ResultSet) obj, dataSource.createResultSetId(),
+                    statement.getLastExecuteSql());
         }
 
         if (obj instanceof Clob) {
@@ -1707,7 +2229,9 @@ public class FilterChainImpl implements FilterChain {
         Object obj = resultSet.getResultSetRaw().getObject(columnLabel, map);
 
         if (obj instanceof ResultSet) {
-            return wrap(resultSet.getStatementProxy(), (ResultSet) obj);
+            StatementProxy statement = resultSet.getStatementProxy();
+            return new ResultSetProxyImpl(statement, (ResultSet) obj, dataSource.createResultSetId(),
+                    statement.getLastExecuteSql());
         }
 
         if (obj instanceof Clob) {
@@ -1839,7 +2363,7 @@ public class FilterChainImpl implements FilterChain {
     }
 
     @Override
-    public void resultSet_updateBlob(ResultSetProxy resultSet, int columnIndex, java.sql.Blob x) throws SQLException {
+    public void resultSet_updateBlob(ResultSetProxy resultSet, int columnIndex, Blob x) throws SQLException {
         if (this.pos < filterSize) {
             nextFilter().resultSet_updateBlob(this, resultSet, columnIndex, x);
             return;
@@ -1848,7 +2372,7 @@ public class FilterChainImpl implements FilterChain {
     }
 
     @Override
-    public void resultSet_updateBlob(ResultSetProxy resultSet, String columnLabel, java.sql.Blob x) throws SQLException {
+    public void resultSet_updateBlob(ResultSetProxy resultSet, String columnLabel, Blob x) throws SQLException {
         if (this.pos < filterSize) {
             nextFilter().resultSet_updateBlob(this, resultSet, columnLabel, x);
             return;
@@ -1857,7 +2381,7 @@ public class FilterChainImpl implements FilterChain {
     }
 
     @Override
-    public void resultSet_updateClob(ResultSetProxy resultSet, int columnIndex, java.sql.Clob x) throws SQLException {
+    public void resultSet_updateClob(ResultSetProxy resultSet, int columnIndex, Clob x) throws SQLException {
         if (this.pos < filterSize) {
             nextFilter().resultSet_updateClob(this, resultSet, columnIndex, x);
             return;
@@ -1866,7 +2390,7 @@ public class FilterChainImpl implements FilterChain {
     }
 
     @Override
-    public void resultSet_updateClob(ResultSetProxy resultSet, String columnLabel, java.sql.Clob x) throws SQLException {
+    public void resultSet_updateClob(ResultSetProxy resultSet, String columnLabel, Clob x) throws SQLException {
         if (this.pos < filterSize) {
             nextFilter().resultSet_updateClob(this, resultSet, columnLabel, x);
             return;
@@ -1944,12 +2468,12 @@ public class FilterChainImpl implements FilterChain {
     }
 
     @Override
-    public void resultSet_updateNString(ResultSetProxy resultSet, int columnIndex, String nString) throws SQLException {
+    public void resultSet_updateNString(ResultSetProxy resultSet, int columnIndex, String x) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().resultSet_updateNString(this, resultSet, columnIndex, nString);
+            nextFilter().resultSet_updateNString(this, resultSet, columnIndex, x);
             return;
         }
-        resultSet.getResultSetRaw().updateNString(columnIndex, nString);
+        resultSet.getResultSetRaw().updateNString(columnIndex, x);
     }
 
     @Override
@@ -1963,21 +2487,22 @@ public class FilterChainImpl implements FilterChain {
     }
 
     @Override
-    public void resultSet_updateNClob(ResultSetProxy resultSet, int columnIndex, NClob nClob) throws SQLException {
+    public void resultSet_updateNClob(ResultSetProxy resultSet, int columnIndex, NClob x) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().resultSet_updateNClob(this, resultSet, columnIndex, nClob);
+            nextFilter().resultSet_updateNClob(this, resultSet, columnIndex, x);
             return;
         }
-        resultSet.getResultSetRaw().updateNClob(columnIndex, nClob);
+        resultSet.getResultSetRaw().updateNClob(columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateNClob(ResultSetProxy resultSet, String columnLabel, NClob nClob) throws SQLException {
+    public void resultSet_updateNClob(ResultSetProxy resultSet, String columnLabel, NClob x) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().resultSet_updateNClob(this, resultSet, columnLabel, nClob);
+            nextFilter().resultSet_updateNClob(this, resultSet, columnLabel, x);
             return;
         }
-        resultSet.getResultSetRaw().updateNClob(columnLabel, nClob);
+        resultSet.getResultSetRaw()
+                .updateNClob(columnLabel, x);
     }
 
     @Override
@@ -1997,7 +2522,8 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSet_getNClob(this, resultSet, columnLabel);
         }
 
-        NClob nclob = resultSet.getResultSetRaw().getNClob(columnLabel);
+        NClob nclob = resultSet.getResultSetRaw()
+                .getNClob(columnLabel);
 
         return wrap(resultSet.getStatementProxy().getConnectionProxy(), nclob);
     }
@@ -2360,7 +2886,8 @@ public class FilterChainImpl implements FilterChain {
             return null;
         }
 
-        return wrap(statement, resultSet);
+        return new ResultSetProxyImpl(statement, resultSet, dataSource.createResultSetId(),
+                statement.getLastExecuteSql());
     }
 
     @Override
@@ -2495,7 +3022,8 @@ public class FilterChainImpl implements FilterChain {
             return null;
         }
 
-        return wrap(statement, resultSet);
+        return new ResultSetProxyImpl(statement, resultSet, dataSource.createResultSetId(),
+                statement.getLastExecuteSql());
     }
 
     @Override
@@ -2613,7 +3141,11 @@ public class FilterChainImpl implements FilterChain {
         }
 
         ResultSet resultSet = statement.getRawObject().getGeneratedKeys();
-        return wrap(statement, resultSet);
+        if (resultSet == null) {
+            return null;
+        }
+        return new ResultSetProxyImpl(statement, resultSet, dataSource.createResultSetId(),
+                statement.getLastExecuteSql());
     }
 
     @Override
@@ -2706,7 +3238,11 @@ public class FilterChainImpl implements FilterChain {
         }
 
         ResultSet resultSet = statement.getRawObject().executeQuery();
-        return wrap(statement, resultSet);
+        if (resultSet == null) {
+            return null;
+        }
+        return new ResultSetProxyImpl(statement, resultSet, dataSource.createResultSetId(),
+                statement.getLastExecuteSql());
     }
 
     @Override
@@ -2961,7 +3497,9 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setBlob(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawObject().setBlob(parameterIndex, x);
+
+        statement.getRawObject()
+                .setBlob(parameterIndex, x);
     }
 
     @Override
@@ -2971,7 +3509,13 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setClob(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawObject().setClob(parameterIndex, x);
+
+        if (x instanceof ClobProxy) {
+            x = ((ClobProxy) x).getRawClob();
+        }
+
+        statement.getRawObject()
+                .setClob(parameterIndex, x);
     }
 
     @Override
@@ -3082,13 +3626,19 @@ public class FilterChainImpl implements FilterChain {
     }
 
     @Override
-    public void preparedStatement_setNClob(PreparedStatementProxy statement, int parameterIndex, NClob value)
+    public void preparedStatement_setNClob(PreparedStatementProxy statement, int parameterIndex, NClob x)
                                                                                                              throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().preparedStatement_setNClob(this, statement, parameterIndex, value);
+            nextFilter().preparedStatement_setNClob(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawObject().setNClob(parameterIndex, value);
+
+        if (x instanceof NClobProxy) {
+            x = ((NClobProxy) x).getRawNClob();
+        }
+
+        statement.getRawObject()
+                .setNClob(parameterIndex, x);
     }
 
     @Override
@@ -3390,7 +3940,8 @@ public class FilterChainImpl implements FilterChain {
         Object obj = statement.getRawObject().getObject(parameterIndex);
 
         if (obj instanceof ResultSet) {
-            return wrap(statement, (ResultSet) obj);
+            return new ResultSetProxyImpl(statement, (ResultSet) obj, dataSource.createResultSetId(),
+                    statement.getLastExecuteSql());
         }
 
         if (obj instanceof Clob) {
@@ -3410,7 +3961,8 @@ public class FilterChainImpl implements FilterChain {
         Object obj = statement.getRawObject().getObject(parameterIndex, map);
 
         if (obj instanceof ResultSet) {
-            return wrap(statement, (ResultSet) obj);
+            return new ResultSetProxyImpl(statement, (ResultSet) obj, dataSource.createResultSetId(),
+                    statement.getLastExecuteSql());
         }
 
         if (obj instanceof Clob) {
@@ -3430,7 +3982,8 @@ public class FilterChainImpl implements FilterChain {
         Object obj = statement.getRawObject().getObject(parameterName);
 
         if (obj instanceof ResultSet) {
-            return wrap(statement, (ResultSet) obj);
+            return new ResultSetProxyImpl(statement, (ResultSet) obj, dataSource.createResultSetId(),
+                    statement.getLastExecuteSql());
         }
 
         if (obj instanceof Clob) {
@@ -3450,7 +4003,8 @@ public class FilterChainImpl implements FilterChain {
         Object obj = statement.getRawObject().getObject(parameterName, map);
 
         if (obj instanceof ResultSet) {
-            return wrap(statement, (ResultSet) obj);
+            return new ResultSetProxyImpl(statement, (ResultSet) obj, dataSource.createResultSetId(),
+                    statement.getLastExecuteSql());
         }
 
         if (obj instanceof Clob) {
@@ -3491,7 +4045,8 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().callableStatement_getClob(this, statement, parameterIndex);
         }
 
-        Clob clob = statement.getRawObject().getClob(parameterIndex);
+        Clob clob = statement.getRawObject()
+                .getClob(parameterIndex);
 
         return wrap(statement, clob);
     }
@@ -3963,7 +4518,8 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().callableStatement_getClob(this, statement, parameterName);
         }
 
-        Clob clob = statement.getRawObject().getClob(parameterName);
+        Clob clob = statement.getRawObject()
+                .getClob(parameterName);
 
         return wrap(statement, clob);
     }
@@ -4059,13 +4615,19 @@ public class FilterChainImpl implements FilterChain {
     }
 
     @Override
-    public void callableStatement_setNClob(CallableStatementProxy statement, String parameterName, NClob value)
+    public void callableStatement_setNClob(CallableStatementProxy statement, String parameterName, NClob x)
                                                                                                                throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().callableStatement_setNClob(this, statement, parameterName, value);
+            nextFilter().callableStatement_setNClob(this, statement, parameterName, x);
             return;
         }
-        statement.getRawObject().setNClob(parameterName, value);
+
+        if (x instanceof NClobProxy) {
+            x = ((NClobProxy) x).getRawNClob();
+        }
+
+        statement.getRawObject()
+                .setNClob(parameterName, x);
     }
 
     @Override
@@ -4104,7 +4666,8 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().callableStatement_getNClob(this, statement, parameterIndex);
         }
 
-        NClob nclob = statement.getRawObject().getNClob(parameterIndex);
+        NClob nclob = statement.getRawObject()
+                .getNClob(parameterIndex);
 
         return wrap(statement.getConnectionProxy(), nclob);
     }
@@ -4115,7 +4678,8 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().callableStatement_getNClob(this, statement, parameterName);
         }
 
-        NClob nclob = statement.getRawObject().getNClob(parameterName);
+        NClob nclob = statement.getRawObject()
+                .getNClob(parameterName);
 
         return wrap(statement.getConnectionProxy(), nclob);
     }
@@ -4218,7 +4782,13 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setClob(this, statement, parameterName, x);
             return;
         }
-        statement.getRawObject().setClob(parameterName, x);
+
+        if (x instanceof ClobProxy) {
+            x = ((ClobProxy) x).getRawClob();
+        }
+
+        statement.getRawObject()
+                .setClob(parameterName, x);
     }
 
     @Override
@@ -4429,47 +4999,6 @@ public class FilterChainImpl implements FilterChain {
 
     // ////////////
 
-    public ConnectionProxy wrap(Connection connection, Properties info) {
-        if (connection == null) {
-            return null;
-        }
-
-        return new ConnectionProxyImpl(dataSource, connection, info, dataSource.createConnectionId());
-    }
-
-    public StatementProxy wrap(ConnectionProxy connection, Statement statement) {
-        if (statement == null) {
-            return null;
-        }
-
-        return new StatementProxyImpl(connection, statement, dataSource.createStatementId());
-    }
-
-    public PreparedStatementProxy wrap(ConnectionProxy connection, PreparedStatement statement, String sql) {
-        if (statement == null) {
-            return null;
-        }
-
-        return new PreparedStatementProxyImpl(connection, statement, sql, dataSource.createStatementId());
-    }
-
-    public CallableStatementProxy wrap(ConnectionProxy connection, CallableStatement statement, String sql) {
-        if (statement == null) {
-            return null;
-        }
-
-        return new CallableStatementProxyImpl(connection, statement, sql, dataSource.createStatementId());
-    }
-
-    public ResultSetProxy wrap(StatementProxy statement, ResultSet resultSet) {
-        if (resultSet == null) {
-            return null;
-        }
-
-        return new ResultSetProxyImpl(statement, resultSet, dataSource.createResultSetId(),
-                                      statement.getLastExecuteSql());
-    }
-    
     public ClobProxy wrap(ConnectionProxy conn, Clob clob) {
         if (clob == null) {
             return null;
@@ -4478,15 +5007,15 @@ public class FilterChainImpl implements FilterChain {
         if (clob instanceof NClob) {
             return wrap(conn, (NClob) clob);
         }
-        
+
         return new ClobProxyImpl(dataSource, conn, clob);
     }
-    
+
     public NClobProxy wrap(ConnectionProxy conn, NClob clob) {
         if (clob == null) {
             return null;
         }
-        
+
         return new NClobProxyImpl(dataSource, conn, clob);
     }
 
@@ -4528,6 +5057,215 @@ public class FilterChainImpl implements FilterChain {
         }
 
         return dataSource.getConnectionDirect(maxWaitMillis);
+    }
+
+    @Override
+    public int resultSetMetaData_getColumnCount(ResultSetMetaDataProxy metaData) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_getColumnCount(this, metaData);
+        }
+
+        return metaData.getResultSetMetaDataRaw().getColumnCount();
+    }
+
+    @Override
+    public boolean resultSetMetaData_isAutoIncrement(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_isAutoIncrement(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw().isAutoIncrement(column);
+    }
+
+    @Override
+    public boolean resultSetMetaData_isCaseSensitive(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_isCaseSensitive(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw().isCaseSensitive(column);
+    }
+
+    @Override
+    public boolean resultSetMetaData_isSearchable(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_isSearchable(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw().isSearchable(column);
+    }
+
+    @Override
+    public boolean resultSetMetaData_isCurrency(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_isCurrency(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw().isCurrency(column);
+    }
+
+    @Override
+    public int resultSetMetaData_isNullable(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_isNullable(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw().isNullable(column);
+    }
+
+    @Override
+    public boolean resultSetMetaData_isSigned(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_isSigned(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw().isSigned(column);
+    }
+
+    @Override
+    public int resultSetMetaData_getColumnDisplaySize(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_getColumnDisplaySize(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw().getColumnDisplaySize(column);
+    }
+
+    @Override
+    public String resultSetMetaData_getColumnLabel(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_getColumnLabel(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw().getColumnLabel(column);
+    }
+
+    @Override
+    public String resultSetMetaData_getColumnName(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_getColumnName(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw().getColumnName(column);
+    }
+
+    @Override
+    public String resultSetMetaData_getSchemaName(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_getSchemaName(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw().getSchemaName(column);
+    }
+
+    @Override
+    public int resultSetMetaData_getPrecision(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().resultSetMetaData_getPrecision(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw()
+                .getPrecision(column);
+    }
+
+    @Override
+    public int resultSetMetaData_getScale(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSetMetaData_getScale(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw()
+                .getScale(column);
+    }
+
+    @Override
+    public String resultSetMetaData_getTableName(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSetMetaData_getTableName(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw()
+                .getTableName(column);
+    }
+
+    @Override
+    public String resultSetMetaData_getCatalogName(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSetMetaData_getCatalogName(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw()
+                .getCatalogName(column);
+    }
+
+    @Override
+    public int resultSetMetaData_getColumnType(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSetMetaData_getColumnType(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw()
+                .getColumnType(column);
+    }
+
+    @Override
+    public String resultSetMetaData_getColumnTypeName(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSetMetaData_getColumnTypeName(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw()
+                .getColumnTypeName(column);
+    }
+
+    @Override
+    public boolean resultSetMetaData_isReadOnly(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSetMetaData_isReadOnly(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw()
+                .isReadOnly(column);
+    }
+
+    @Override
+    public boolean resultSetMetaData_isWritable(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSetMetaData_isWritable(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw()
+                .isWritable(column);
+    }
+
+    @Override
+    public boolean resultSetMetaData_isDefinitelyWritable(ResultSetMetaDataProxy metaData, int column)
+                                                                                                      throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSetMetaData_isDefinitelyWritable(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw()
+                .isDefinitelyWritable(column);
+    }
+
+    @Override
+    public String resultSetMetaData_getColumnClassName(ResultSetMetaDataProxy metaData, int column) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .resultSetMetaData_getColumnClassName(this, metaData, column);
+        }
+
+        return metaData.getResultSetMetaDataRaw()
+                .getColumnClassName(column);
     }
 
 }

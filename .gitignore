@@ -2,5 +2,16 @@
 /.settings
 /.project
 /.classpath
+/.DS_Store
 /1
 /derby.log
+/src/test/resources/pool_config
+/src/test/java/com/alibaba/druid/local_test
+/src/test/java/com/alibaba/druid/pool/mysql/
+# IntelliJ Idea
+.idea/
+out/
+*.ipr
+*.iws
+*.iml
+/bin

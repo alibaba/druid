@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,9 @@ package com.alibaba.druid.util;
 
 /**
  * Interface for components that can match source strings against a specified pattern string.
- * <p/>
  * Different implementations can support different pattern types, for example, Ant style path expressions, or regular
  * expressions, or other types of text based patterns.
  * 
- * @see com.alibaba.druid.util.AntPathMatcher AntPathMatcher
  * @since 0.2.6
  */
 public interface PatternMatcher {

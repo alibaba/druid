@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,39 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleExplainStatement extends OracleStatementImpl {
+public class OracleExplainStatement extends SQLExplainStatement implements OracleStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLCharExpr            statementId;
-    private SQLExpr           into;
-    private SQLStatement      forStatement;
+    private SQLCharExpr statementId;
+    private SQLExpr     into;
+    
+    public OracleExplainStatement() {
+        super (JdbcConstants.ORACLE);
+    }
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, statementId);
             acceptChild(visitor, into);
-            acceptChild(visitor, forStatement);
+            acceptChild(visitor, statement);
         }
         visitor.endVisit(this);
+    }
+
+    protected void accept0(SQLASTVisitor visitor) {
+        accept0((OracleASTVisitor) visitor);
+    }
+
+    public String toString() {
+        return SQLUtils.toOracleString(this);
     }
 
     public SQLCharExpr getStatementId() {
@@ -52,14 +64,6 @@ public class OracleExplainStatement extends OracleStatementImpl {
 
     public void setInto(SQLExpr into) {
         this.into = into;
-    }
-
-    public SQLStatement getForStatement() {
-        return forStatement;
-    }
-
-    public void setForStatement(SQLStatement forStatement) {
-        this.forStatement = forStatement;
     }
 
 }

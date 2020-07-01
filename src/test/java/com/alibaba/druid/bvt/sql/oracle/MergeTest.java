@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
+import junit.framework.TestCase;
+
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
-
-import junit.framework.TestCase;
 
 public class MergeTest extends TestCase {
 
@@ -32,6 +32,7 @@ public class MergeTest extends TestCase {
         String sql = "{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}";
 
         ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.ORACLE);
+        ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.OCEANBASE_ORACLE);
         ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.ALI_ORACLE);
     }
 
@@ -39,5 +40,6 @@ public class MergeTest extends TestCase {
         String sql = "{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}";
 
         ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.MYSQL);
+        ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.OCEANBASE);
     }
 }

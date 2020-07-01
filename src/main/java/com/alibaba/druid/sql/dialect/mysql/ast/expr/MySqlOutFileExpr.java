@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
@@ -22,19 +25,18 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlOutFileExpr extends MySqlObjectImpl implements SQLExpr {
 
-    private static final long serialVersionUID          = 1L;
-    private SQLExpr           file;
-    private String            charset;
+    private SQLExpr        file;
+    private String         charset;
 
-    private SQLLiteralExpr    columnsTerminatedBy;
-    private boolean           columnsEnclosedOptionally = false;
-    private SQLLiteralExpr    columnsEnclosedBy;
-    private SQLLiteralExpr    columnsEscaped;
+    private SQLExpr        columnsTerminatedBy;
+    private boolean        columnsEnclosedOptionally = false;
+    private SQLLiteralExpr columnsEnclosedBy;
+    private SQLLiteralExpr columnsEscaped;
 
-    private SQLLiteralExpr    linesStartingBy;
-    private SQLLiteralExpr    linesTerminatedBy;
+    private SQLLiteralExpr linesStartingBy;
+    private SQLLiteralExpr linesTerminatedBy;
 
-    private SQLExpr           ignoreLinesNumber;
+    private SQLExpr        ignoreLinesNumber;
 
     public MySqlOutFileExpr(){
     }
@@ -49,6 +51,11 @@ public class MySqlOutFileExpr extends MySqlObjectImpl implements SQLExpr {
             acceptChild(visitor, file);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List getChildren() {
+        return Collections.singletonList(file);
     }
 
     public SQLExpr getFile() {
@@ -67,11 +74,11 @@ public class MySqlOutFileExpr extends MySqlObjectImpl implements SQLExpr {
         this.charset = charset;
     }
 
-    public SQLLiteralExpr getColumnsTerminatedBy() {
+    public SQLExpr getColumnsTerminatedBy() {
         return columnsTerminatedBy;
     }
 
-    public void setColumnsTerminatedBy(SQLLiteralExpr columnsTerminatedBy) {
+    public void setColumnsTerminatedBy(SQLExpr columnsTerminatedBy) {
         this.columnsTerminatedBy = columnsTerminatedBy;
     }
 
@@ -121,6 +128,10 @@ public class MySqlOutFileExpr extends MySqlObjectImpl implements SQLExpr {
 
     public void setIgnoreLinesNumber(SQLExpr ignoreLinesNumber) {
         this.ignoreLinesNumber = ignoreLinesNumber;
+    }
+
+    public SQLExpr clone() {
+        throw new UnsupportedOperationException();
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,28 +21,28 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObject;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
-public class PGSelectQueryBlock extends SQLSelectQueryBlock {
+public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObject{
 
-    private static final long serialVersionUID = 1L;
+    private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
+    private WindowClause  window;
 
-    private PGWithClause      with;
-    private List<SQLExpr>     distinctOn       = new ArrayList<SQLExpr>(2);
-    private SQLExpr           limit;
-    private SQLExpr           offset;
-    private WindowClause      window;
-
-    private SQLOrderBy        orderBy;
-    private FetchClause       fetch;
-    private ForClause         forClause;
-    private IntoOption        intoOption;
+    private SQLOrderBy    orderBy;
+    private FetchClause   fetch;
+    private ForClause     forClause;
+    private IntoOption    intoOption;
 
     public static enum IntoOption {
         TEMPORARY, TEMP, UNLOGGED
+    }
+
+    public PGSelectQueryBlock() {
+        dbType = JdbcConstants.POSTGRESQL;
     }
 
     public IntoOption getIntoOption() {
@@ -55,12 +55,16 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((PGASTVisitor) visitor);
+        if (visitor instanceof PGASTVisitor) {
+            accept0((PGASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
-    protected void accept0(PGASTVisitor visitor) {
+    @Override
+    public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.with);
             acceptChild(visitor, this.distinctOn);
             acceptChild(visitor, this.selectList);
             acceptChild(visitor, this.into);
@@ -70,7 +74,6 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.window);
             acceptChild(visitor, this.orderBy);
             acceptChild(visitor, this.limit);
-            acceptChild(visitor, this.offset);
             acceptChild(visitor, this.fetch);
             acceptChild(visitor, this.forClause);
         }
@@ -101,36 +104,12 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
         this.window = window;
     }
 
-    public PGWithClause getWith() {
-        return with;
-    }
-
-    public void setWith(PGWithClause with) {
-        this.with = with;
-    }
-
-    public SQLExpr getLimit() {
-        return limit;
-    }
-
-    public void setLimit(SQLExpr limit) {
-        this.limit = limit;
-    }
-
     public SQLOrderBy getOrderBy() {
         return orderBy;
     }
 
     public void setOrderBy(SQLOrderBy orderBy) {
         this.orderBy = orderBy;
-    }
-
-    public SQLExpr getOffset() {
-        return offset;
-    }
-
-    public void setOffset(SQLExpr offset) {
-        this.offset = offset;
     }
 
     public List<SQLExpr> getDistinctOn() {
@@ -143,9 +122,8 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 
     public static class WindowClause extends PGSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-        private SQLExpr           name;
-        private List<SQLExpr>     definition       = new ArrayList<SQLExpr>(2);
+        private SQLExpr       name;
+        private List<SQLExpr> definition = new ArrayList<SQLExpr>(2);
 
         public SQLExpr getName() {
             return name;
@@ -174,8 +152,6 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
     }
 
     public static class FetchClause extends PGSQLObjectImpl {
-
-        private static final long serialVersionUID = 1L;
 
         public static enum Option {
             FIRST, NEXT
@@ -211,8 +187,6 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
     }
 
     public static class ForClause extends PGSQLObjectImpl {
-
-        private static final long serialVersionUID = 1L;
 
         public static enum Option {
             UPDATE, SHARE
@@ -254,5 +228,7 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
             visitor.endVisit(this);
         }
     }
+
+
 
 }

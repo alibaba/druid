@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,15 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-@SuppressWarnings("serial")
 public class OracleAnalyticWindowing extends SQLObjectImpl implements OracleExpr {
 
     private Type    type;
@@ -58,7 +61,21 @@ public class OracleAnalyticWindowing extends SQLObjectImpl implements OracleExpr
         this.type = type;
     }
 
+    public OracleAnalyticWindowing clone() {
+        OracleAnalyticWindowing x = new OracleAnalyticWindowing();
+        x.type = type;
+        if (expr != null) {
+            this.setExpr(expr.clone());
+        }
+        return x;
+    }
+
     public static enum Type {
         ROWS, RANGE;
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.expr);
     }
 }

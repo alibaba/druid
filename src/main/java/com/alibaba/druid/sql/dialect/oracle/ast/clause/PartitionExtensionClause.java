@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class PartitionExtensionClause extends OracleSQLObjectImpl {
 
-    private static final long   serialVersionUID = 1L;
-
     private boolean             subPartition;
     private SQLName             partition;
-    private final List<SQLName> target           = new ArrayList<SQLName>();
+    private final List<SQLName> target = new ArrayList<SQLName>();
 
     public boolean isSubPartition() {
         return subPartition;
@@ -59,4 +57,20 @@ public class PartitionExtensionClause extends OracleSQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public PartitionExtensionClause clone() {
+        PartitionExtensionClause x = new PartitionExtensionClause();
+
+        x.subPartition = subPartition;
+        if (partition != null) {
+            x.setPartition(partition.clone());
+        }
+
+        for (SQLName item : target) {
+            SQLName item1 = item.clone();
+            item1.setParent(x);
+            x.target.add(item1);
+        }
+
+        return x;
+    }
 }

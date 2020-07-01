@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,21 @@
 package com.alibaba.druid.filter.stat;
 
 public class MergeStatFilter extends StatFilter {
-	public MergeStatFilter() {
-		super.setMergeSql(true);
-	}
+
+    public MergeStatFilter(){
+        super.setMergeSql(true);
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) {
+        return iface == MergeStatFilter.class || iface == StatFilter.class;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) {
+        if (iface == MergeStatFilter.class || iface == StatFilter.class) {
+            return (T) this;
+        }
+        return null;
+    }
 }

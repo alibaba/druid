@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
+import org.junit.Assert;
+import junit.framework.TestCase;
+
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class OracleEXTRACTTest extends TestCase {
 
     public void test_Extract() throws Exception {
         String sql = "SELECT EXTRACT(YEAR FROM DATE '1998-03-07') FROM DUAL;";
 
-        String expect = "SELECT EXTRACT(YEAR FROM DATE '1998-03-07')\n" + "FROM DUAL;\n";
+        String expect = "SELECT EXTRACT(YEAR FROM DATE '1998-03-07')\n" + "FROM DUAL;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

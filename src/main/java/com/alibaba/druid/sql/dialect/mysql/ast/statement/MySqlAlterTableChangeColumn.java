@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,20 +23,40 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlAlterTableChangeColumn extends MySqlObjectImpl implements SQLAlterTableItem {
 
-    private static final long   serialVersionUID = 1L;
-
     private SQLName             columnName;
 
     private SQLColumnDefinition newColumnDefinition;
 
-    private Boolean             first;
+    private boolean             first;
+
+    private SQLName             firstColumn;
+    private SQLName             afterColumn;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, columnName);
             acceptChild(visitor, newColumnDefinition);
+
+            acceptChild(visitor, firstColumn);
+            acceptChild(visitor, afterColumn);
         }
+    }
+
+    public SQLName getFirstColumn() {
+        return firstColumn;
+    }
+
+    public void setFirstColumn(SQLName firstColumn) {
+        this.firstColumn = firstColumn;
+    }
+
+    public SQLName getAfterColumn() {
+        return afterColumn;
+    }
+
+    public void setAfterColumn(SQLName afterColumn) {
+        this.afterColumn = afterColumn;
     }
 
     public SQLName getColumnName() {
@@ -55,11 +75,11 @@ public class MySqlAlterTableChangeColumn extends MySqlObjectImpl implements SQLA
         this.newColumnDefinition = newColumnDefinition;
     }
 
-    public Boolean getFirst() {
+    public boolean isFirst() {
         return first;
     }
 
-    public void setFirst(Boolean first) {
+    public void setFirst(boolean first) {
         this.first = first;
     }
 

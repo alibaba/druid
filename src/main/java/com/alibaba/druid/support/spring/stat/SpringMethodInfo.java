@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class SpringMethodInfo {
             return true;
         }
 
-        if (obj == null) {
+        if (obj == null || !(obj instanceof SpringMethodInfo)) {
             return false;
         }
 
@@ -80,7 +80,7 @@ public class SpringMethodInfo {
     }
 
     public static String getMethodSignature(Method method) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append(method.getName());
         sb.append('(');

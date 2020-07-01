@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import javax.sql.DataSource;
 import junit.framework.TestCase;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.logicalcobwebs.proxool.ProxoolDataSource;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -80,22 +79,7 @@ public class TestLRU extends TestCase {
             System.out.println("--------------------------------------------");
         }
     }
-    
-    public void f_test_proxool() throws Exception {
-        ProxoolDataSource ds = new ProxoolDataSource();
-        ds.setDriver("com.alibaba.druid.mock.MockDriver");
-        ds.setDriverUrl("jdbc:mock:test");
-        ds.setMaximumConnectionCount(10);
-        ds.setMinimumConnectionCount(0);
-        ds.setUser("user");
-        ds.setPassword("password");
-        
-        for (int i = 0; i < 10; ++i) {
-            f(ds, 5);
-            System.out.println("--------------------------------------------");
-        }
-    }
-    
+
 //    public void test_jboss() throws Exception {
 //        LocalTxDataSource ds = new LocalTxDataSource();
 //        ds.setDriverClass("com.alibaba.druid.mock.MockDriver");

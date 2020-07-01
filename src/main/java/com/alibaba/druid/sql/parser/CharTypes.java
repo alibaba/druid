@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package com.alibaba.druid.sql.parser;
+
+import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class CharTypes {
 
@@ -53,9 +55,13 @@ public class CharTypes {
     }
 
     public static boolean isFirstIdentifierChar(char c) {
-        return c > firstIdentifierFlags.length || firstIdentifierFlags[c];
+        if (c <= firstIdentifierFlags.length) {
+            return firstIdentifierFlags[c];
+        }
+        return c != '　' && c != '，';
     }
 
+    private final static String[] stringCache = new String[256];
     private final static boolean[] identifierFlags = new boolean[256];
     static {
         for (char c = 0; c < identifierFlags.length; ++c) {
@@ -71,20 +77,40 @@ public class CharTypes {
         identifierFlags['_'] = true;
         identifierFlags['$'] = true;
         identifierFlags['#'] = true;
+
+        for (int i = 0; i < identifierFlags.length; i++) {
+            if (identifierFlags[i]) {
+                char ch = (char) i;
+                stringCache[i] = Character.toString(ch);
+            }
+        }
     }
 
     public static boolean isIdentifierChar(char c) {
-        return c > identifierFlags.length || identifierFlags[c];
+        if (c <= identifierFlags.length) {
+            return identifierFlags[c];
+        }
+        return c != '　' && c != '，' && c != '）';
+    }
+
+    public static String valueOf(char ch) {
+        if (ch < stringCache.length) {
+            return stringCache[ch];
+        }
+        return null;
     }
 
     private final static boolean[] whitespaceFlags = new boolean[256];
     static {
-        whitespaceFlags[' '] = true;
-        whitespaceFlags['\n'] = true;
-        whitespaceFlags['\r'] = true;
-        whitespaceFlags['\t'] = true;
-        whitespaceFlags['\f'] = true;
-        whitespaceFlags['\b'] = true;
+        for (int i = 0; i <= 32; ++i) {
+            whitespaceFlags[i] = true;
+        }
+        
+        whitespaceFlags[EOI] = false;
+        for (int i = 0x7F; i <= 0xA0; ++i) {
+            whitespaceFlags[i] = true;
+        }
+   
         whitespaceFlags[160] = true; // 特别处理
     }
 
@@ -92,7 +118,8 @@ public class CharTypes {
      * @return false if {@link LayoutCharacters#EOI}
      */
     public static boolean isWhitespace(char c) {
-        return c <= whitespaceFlags.length && whitespaceFlags[c];
+        return (c <= whitespaceFlags.length && whitespaceFlags[c]) //
+               || c == '　'; // Chinese space
     }
 
 }

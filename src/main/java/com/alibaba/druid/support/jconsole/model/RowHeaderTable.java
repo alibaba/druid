@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class RowHeaderTable extends JTable {
      * 为JTable添加RowHeader，
      * 
      * @param refTable 需要添加rowHeader的JTable
-     * @param columnWideth rowHeader的宽度
+     * @param columnWidth rowHeader的宽度
      */
     public RowHeaderTable(JTable refTable, int columnWidth){
         this(null, refTable, columnWidth, 1);
@@ -66,35 +66,35 @@ public class RowHeaderTable extends JTable {
 final class RowHeaderRenderer extends JLabel implements TableCellRenderer, ListSelectionListener {
 
     private static final long serialVersionUID = 1L;
-    private JTable            reftable;              // 需要添加rowHeader的JTable
+    private JTable            refTable;              // 需要添加rowHeader的JTable
     private JTable            tableShow;             // 用于显示rowHeader的JTable
     private ArrayList<String> headerList;
     private int               rowHeightNow;
     private int               rowSpan;
 
-    public RowHeaderRenderer(JTable reftable, JTable tableShow){
-        this(null, reftable, tableShow, 0);
+    public RowHeaderRenderer(JTable refTable, JTable tableShow){
+        this(null, refTable, tableShow, 0);
     }
 
-    public RowHeaderRenderer(ArrayList<String> headerList, JTable reftable, JTable tableShow, int rowSpan){
+    public RowHeaderRenderer(ArrayList<String> headerList, JTable refTable, JTable tableShow, int rowSpan){
         this.headerList = headerList;
-        this.reftable = reftable;
+        this.refTable = refTable;
         this.tableShow = tableShow;
-        // 增加监听器，实现当在reftable中选择行时，RowHeader会发生颜色变化
-        ListSelectionModel listModel = reftable.getSelectionModel();
+        // 增加监听器，实现当在refTable中选择行时，RowHeader会发生颜色变化
+        ListSelectionModel listModel = refTable.getSelectionModel();
         listModel.addListSelectionListener(this);
-        rowHeightNow = reftable.getRowCount() * reftable.getRowHeight();
+        rowHeightNow = refTable.getRowCount() * refTable.getRowHeight();
         this.rowSpan = rowSpan;
         if (rowSpan > 1) {
-            rowHeightNow = rowSpan * reftable.getRowHeight();
+            rowHeightNow = rowSpan * refTable.getRowHeight();
         }
     }
 
     public Component getTableCellRendererComponent(JTable table, Object obj, boolean isSelected, boolean hasFocus,
                                                    int row, int col) {
-        int rowCountNow = reftable.getRowCount() / rowSpan;
+        int rowCountNow = refTable.getRowCount() / rowSpan;
         ((DefaultTableModel) table.getModel()).setRowCount(rowCountNow);
-        JTableHeader header = reftable.getTableHeader();
+        JTableHeader header = refTable.getTableHeader();
         this.setOpaque(true);
         setBorder(UIManager.getBorder("TableHeader.cellBorder"));// 设置为TableHeader的边框类型
         setHorizontalAlignment(CENTER);// 让text居中显示
@@ -135,16 +135,16 @@ final class RowHeaderRenderer extends JLabel implements TableCellRenderer, ListS
     }
 
     private boolean isSelect(int row) {
-        int[] sel = reftable.getSelectedRows();
+        int[] sel = refTable.getSelectedRows();
         if (rowSpan <= 1) {
-            for (int i = 0, len = sel.length; i < len; i++) {
-                if (sel[i] == row) {
+            for (int item : sel) {
+                if (item == row) {
                     return true;
                 }
             }
         } else {
-            for (int i = 0, len = sel.length; i < len; i++) {
-                if (sel[i] / rowSpan == row) {
+            for (int item : sel) {
+                if (item / rowSpan == row) {
                     return true;
                 }
             }

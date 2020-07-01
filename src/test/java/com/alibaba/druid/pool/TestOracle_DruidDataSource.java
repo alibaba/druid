@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.alibaba.druid.pool;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 
 import junit.framework.TestCase;
@@ -34,8 +33,8 @@ public class TestOracle_DruidDataSource extends TestCase {
     private String password;
 
     public void setUp() throws Exception {
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
-        // jdbcUrl = "jdbc:oracle:thin:@20.20.149.85:1521:ocnauto"; // error url
+        jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
+        // jdbcUrl = "jdbc:oracle:thin:@b.c.d.e:1521:ocnauto"; // error url
         user = "alibaba";
         password = "ccbuauto";
     }

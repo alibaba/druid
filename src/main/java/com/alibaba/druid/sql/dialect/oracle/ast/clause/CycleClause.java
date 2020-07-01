@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class CycleClause extends OracleSQLObjectImpl {
 
-    private static final long   serialVersionUID = 1L;
-
-    private final List<SQLExpr> aliases          = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> aliases = new ArrayList<SQLExpr>();
     private SQLExpr             mark;
     private SQLExpr             value;
     private SQLExpr             defaultValue;
@@ -36,6 +34,9 @@ public class CycleClause extends OracleSQLObjectImpl {
     }
 
     public void setMark(SQLExpr mark) {
+        if (mark != null) {
+            mark.setParent(this);
+        }
         this.mark = mark;
     }
 
@@ -44,6 +45,9 @@ public class CycleClause extends OracleSQLObjectImpl {
     }
 
     public void setValue(SQLExpr value) {
+        if (value != null) {
+            value.setParent(this);
+        }
         this.value = value;
     }
 
@@ -52,6 +56,9 @@ public class CycleClause extends OracleSQLObjectImpl {
     }
 
     public void setDefaultValue(SQLExpr defaultValue) {
+        if (defaultValue != null) {
+            defaultValue.setParent(this);
+        }
         this.defaultValue = defaultValue;
     }
 
@@ -70,4 +77,27 @@ public class CycleClause extends OracleSQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public CycleClause clone() {
+        CycleClause x = new CycleClause();
+
+        for (SQLExpr alias : aliases) {
+            SQLExpr alias2 = alias.clone();
+            alias2.setParent(x);
+            x.aliases.add(alias2);
+        }
+
+        if (mark != null) {
+            setMark(mark.clone());
+        }
+
+        if (value != null) {
+            setValue(value.clone());
+        }
+
+        if (defaultValue != null) {
+           setDefaultValue(defaultValue.clone());
+        }
+
+        return x;
+    }
 }

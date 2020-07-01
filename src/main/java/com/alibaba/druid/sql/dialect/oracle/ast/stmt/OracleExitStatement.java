@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleExitStatement extends OracleStatementImpl {
+    private String label;
 
-    private static final long serialVersionUID = 1L;
     private SQLExpr when;
 
     public SQLExpr getWhen() {
@@ -28,6 +28,9 @@ public class OracleExitStatement extends OracleStatementImpl {
     }
 
     public void setWhen(SQLExpr when) {
+        if (when != null) {
+            when.setParent(this);
+        }
         this.when = when;
     }
 
@@ -39,4 +42,11 @@ public class OracleExitStatement extends OracleStatementImpl {
         visitor.endVisit(this);
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

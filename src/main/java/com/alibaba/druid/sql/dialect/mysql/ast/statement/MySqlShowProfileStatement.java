@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlShowProfileStatement extends MySqlStatementImpl {
+public class MySqlShowProfileStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
+    private List<Type> types = new ArrayList<Type>();
 
-    private List<Type>        types            = new ArrayList<Type>();
+    private SQLExpr    forQuery;
 
-    private SQLExpr           forQuery;
-
-    private Limit             limit;
+    private SQLLimit limit;
 
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
@@ -41,10 +39,6 @@ public class MySqlShowProfileStatement extends MySqlStatementImpl {
         return types;
     }
 
-    public void setTypes(List<Type> types) {
-        this.types = types;
-    }
-
     public SQLExpr getForQuery() {
         return forQuery;
     }
@@ -53,11 +47,11 @@ public class MySqlShowProfileStatement extends MySqlStatementImpl {
         this.forQuery = forQuery;
     }
 
-    public Limit getLimit() {
+    public SQLLimit getLimit() {
         return limit;
     }
 
-    public void setLimit(Limit limit) {
+    public void setLimit(SQLLimit limit) {
         this.limit = limit;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.internal.OraclePreparedStatement;
@@ -67,6 +67,7 @@ public class TestOraclePrefetch extends TestCase {
             oracleStmt = stmt.unwrap(OraclePreparedStatement.class);
             Assert.assertEquals(50, oracleStmt.getRowPrefetch());
             
+            Assert.assertTrue(stmt.isWrapperFor(PreparedStatementHolder.class));
             stmtHolder = stmt.unwrap(PreparedStatementHolder.class);
             Assert.assertNotNull(stmtHolder);
             Assert.assertEquals(0, stmtHolder.getHitCount());

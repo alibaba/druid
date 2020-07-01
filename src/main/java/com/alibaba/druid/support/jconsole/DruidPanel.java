@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import com.sun.tools.jconsole.JConsoleContext;
 /**
  * druid面板的抽象类 在类在实现的时候，通过url地址获取数据，解析此数据，然后显示在界面中
  * 
- * @author yunnysunny<yunnysunny@gmail.com>
+ * @author yunnysunny [yunnysunny@gmail.com]
  */
 public abstract class DruidPanel extends JPanel {
 

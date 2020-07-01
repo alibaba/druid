@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,4 +41,16 @@ public class SyntaxErrorViolation implements Violation {
         return sql;
     }
 
+    public String getMessage() {
+        if (exception == null) {
+            return "syntax error";
+        }
+
+        return "syntax error: " + exception.getMessage();
+    }
+
+    @Override
+    public int getErrorCode() {
+        return ErrorCode.SYNTAX_ERROR;
+    }
 }

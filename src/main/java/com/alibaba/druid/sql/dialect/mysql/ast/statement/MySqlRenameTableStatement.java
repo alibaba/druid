@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,24 +18,25 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlRenameTableStatement extends MySqlStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private List<Item>        items            = new ArrayList<Item>(2);
+    private List<Item> items = new ArrayList<Item>(2);
 
     public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void addItem(Item item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
-    
+
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, items);
@@ -45,23 +46,22 @@ public class MySqlRenameTableStatement extends MySqlStatementImpl {
 
     public static class Item extends MySqlObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-        private SQLExpr           name;
-        private SQLExpr           to;
+        private SQLName name;
+        private SQLName to;
 
-        public SQLExpr getName() {
+        public SQLName getName() {
             return name;
         }
 
-        public void setName(SQLExpr name) {
+        public void setName(SQLName name) {
             this.name = name;
         }
 
-        public SQLExpr getTo() {
+        public SQLName getTo() {
             return to;
         }
 
-        public void setTo(SQLExpr to) {
+        public void setTo(SQLName to) {
             this.to = to;
         }
 

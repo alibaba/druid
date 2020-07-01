@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterTableModify extends OracleAlterTableItem {
 
-    private static final long         serialVersionUID = 1L;
-
-    private List<SQLColumnDefinition> columns          = new ArrayList<SQLColumnDefinition>();
+    private List<SQLColumnDefinition> columns = new ArrayList<SQLColumnDefinition>();
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
@@ -39,8 +37,11 @@ public class OracleAlterTableModify extends OracleAlterTableItem {
         return columns;
     }
 
-    public void setColumns(List<SQLColumnDefinition> columns) {
-        this.columns = columns;
+    public void addColumn(SQLColumnDefinition column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
     }
 
 }

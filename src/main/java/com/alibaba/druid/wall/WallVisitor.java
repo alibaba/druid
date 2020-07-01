@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,28 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public interface WallVisitor extends SQLASTVisitor {
 
     WallConfig getConfig();
-    
+
     WallProvider getProvider();
 
     List<Violation> getViolations();
-    
-    boolean isPermitTable(String name);
+
+    void addViolation(Violation violation);
+
+    boolean isDenyTable(String name);
 
     String toSQL(SQLObject obj);
+
+    boolean isSqlModified();
+
+    void setSqlModified(boolean sqlModified);
+    
+    String getDbType();
+    
+    boolean isSqlEndOfComment();
+
+    void setSqlEndOfComment(boolean sqlEndOfComment);
+
+    void addWallUpdateCheckItem(WallUpdateCheckItem item);
+
+    List<WallUpdateCheckItem> getUpdateCheckItems();
 }

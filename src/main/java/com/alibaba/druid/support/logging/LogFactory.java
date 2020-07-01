@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,65 +23,98 @@ public class LogFactory {
     private static Constructor logConstructor;
 
     static {
-        // TODO add slf4j logging
-        
-        //优先选择log4j,而非Apache Common Logging. 因为后者无法设置真实Log调用者的信息
+        String logType= System.getProperty("druid.logType");
+        if(logType != null){
+            if(logType.equalsIgnoreCase("slf4j")){
+                tryImplementation("org.slf4j.Logger", "com.alibaba.druid.support.logging.SLF4JImpl");
+            }else if(logType.equalsIgnoreCase("log4j")){
+                tryImplementation("org.apache.log4j.Logger", "com.alibaba.druid.support.logging.Log4jImpl");
+            }else if(logType.equalsIgnoreCase("log4j2")){
+                tryImplementation("org.apache.logging.log4j.Logger", "com.alibaba.druid.support.logging.Log4j2Impl");
+            }else if(logType.equalsIgnoreCase("commonsLog")){
+                tryImplementation("org.apache.commons.logging.LogFactory",
+                        "com.alibaba.druid.support.logging.JakartaCommonsLoggingImpl");
+            }else if(logType.equalsIgnoreCase("jdkLog")){
+                tryImplementation("java.util.logging.Logger", "com.alibaba.druid.support.logging.Jdk14LoggingImpl");
+            }
+        }
+        // 优先选择log4j,而非Apache Common Logging. 因为后者无法设置真实Log调用者的信息
+        tryImplementation("org.slf4j.Logger", "com.alibaba.druid.support.logging.SLF4JImpl");
         tryImplementation("org.apache.log4j.Logger", "com.alibaba.druid.support.logging.Log4jImpl");
-        tryImplementation("java.util.logging.Logger", "com.alibaba.druid.support.logging.Jdk14LoggingImpl");
+        tryImplementation("org.apache.logging.log4j.Logger", "com.alibaba.druid.support.logging.Log4j2Impl");
         tryImplementation("org.apache.commons.logging.LogFactory",
                           "com.alibaba.druid.support.logging.JakartaCommonsLoggingImpl");
-        tryImplementation("java.lang.Object", "com.alibaba.druid.support.logging.NoLoggingImpl");
-    }
+        tryImplementation("java.util.logging.Logger", "com.alibaba.druid.support.logging.Jdk14LoggingImpl");
 
-    @SuppressWarnings("unchecked")
-    private static void tryImplementation(String testClassName, String implClassName) {
         if (logConstructor == null) {
             try {
-                Resources.classForName(testClassName);
-                Class implClass = Resources.classForName(implClassName);
-                logConstructor = implClass.getConstructor(new Class[] { Class.class });
-            } catch (Throwable t) {
+                logConstructor = NoLoggingImpl.class.getConstructor(String.class);
+            } catch (Exception e) {
+                throw new IllegalStateException(e.getMessage(), e);
             }
         }
     }
 
-    public static Log getLog(Class aClass) {
+    @SuppressWarnings("unchecked")
+    private static void tryImplementation(String testClassName, String implClassName) {
+        if (logConstructor != null) {
+            return;
+        }
+
         try {
-            return (Log) logConstructor.newInstance(new Object[] { aClass });
+            Resources.classForName(testClassName);
+            Class implClass = Resources.classForName(implClassName);
+            logConstructor = implClass.getConstructor(new Class[] { String.class });
+
+            Class<?> declareClass = logConstructor.getDeclaringClass();
+            if (!Log.class.isAssignableFrom(declareClass)) {
+                logConstructor = null;
+            }
+
+            try {
+                if (null != logConstructor) {
+                    logConstructor.newInstance(LogFactory.class.getName());
+                }
+            } catch (Throwable t) {
+                logConstructor = null;
+            }
+
         } catch (Throwable t) {
-            throw new RuntimeException("Error creating logger for class " + aClass + ".  Cause: " + t, t);
+            // skip
         }
     }
 
-    /**
-     * This method will switch the logging implementation to Log4J if Log4J is available on the classpath. This is
-     * useful in situations where you want to use Log4J to log iBATIS activity but commons logging is on the classpath.
-     * Note that this method is only effective for log classes obtained after calling this method. If you intend to use
-     * this method you should call it before calling any other iBATIS method.
-     */
+    public static Log getLog(Class clazz) {
+        return getLog(clazz.getName());
+    }
+
+    public static Log getLog(String loggerName) {
+        try {
+            return (Log) logConstructor.newInstance(loggerName);
+        } catch (Throwable t) {
+            throw new RuntimeException("Error creating logger for logger '" + loggerName + "'.  Cause: " + t, t);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public static synchronized void selectLog4JLogging() {
         try {
             Resources.classForName("org.apache.log4j.Logger");
             Class implClass = Resources.classForName("com.alibaba.druid.support.logging.Log4jImpl");
-            logConstructor = implClass.getConstructor(new Class[] { Class.class });
+            logConstructor = implClass.getConstructor(new Class[] { String.class });
         } catch (Throwable t) {
+            //ignore
         }
     }
 
-    /**
-     * This method will switch the logging implementation to Java native logging if you are running in JRE 1.4 or above.
-     * This is useful in situations where you want to use Java native logging to log iBATIS activity but commons logging
-     * or Log4J is on the classpath. Note that this method is only effective for log classes obtained after calling this
-     * method. If you intend to use this method you should call it before calling any other iBATIS method.
-     */
     @SuppressWarnings("unchecked")
     public static synchronized void selectJavaLogging() {
         try {
             Resources.classForName("java.util.logging.Logger");
             Class implClass = Resources.classForName("com.alibaba.druid.support.logging.Jdk14LoggingImpl");
-            logConstructor = implClass.getConstructor(new Class[] { Class.class });
+            logConstructor = implClass.getConstructor(new Class[] { String.class });
         } catch (Throwable t) {
+            //ignore
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,17 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGAggregateExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAnalytic;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGConnectToStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
@@ -28,8 +34,10 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.Fetc
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVisitor {
@@ -63,39 +71,6 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVi
 
     @Override
     public boolean visit(ForClause x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGWithQuery x) {
-
-    }
-
-    @Override
-    public boolean visit(PGWithQuery x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGWithClause x) {
-
-    }
-
-    @Override
-    public boolean visit(PGWithClause x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGTruncateStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(PGTruncateStatement x) {
 
         return true;
     }
@@ -152,41 +127,152 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVi
     }
 
     @Override
-    public void endVisit(PGAggregateExpr x) {
-    }
-
-    @Override
-    public boolean visit(PGAggregateExpr x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGAnalytic x) {
-    }
-
-    @Override
-    public boolean visit(PGAnalytic x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGParameter x) {
-
-    }
-
-    @Override
-    public boolean visit(PGParameter x) {
-        return true;
-    }
-
-    @Override
     public void endVisit(PGFunctionTableSource x) {
 
     }
 
     @Override
     public boolean visit(PGFunctionTableSource x) {
+        return true;
+    }
+	
+	@Override
+	public boolean visit(PGTypeCastExpr x) {
+	    return true;
+	}
+	
+	@Override
+	public void endVisit(PGTypeCastExpr x) {
+	    
+	}
+
+    @Override
+    public void endVisit(PGValuesQuery x) {
+        
+    }
+
+    @Override
+    public boolean visit(PGValuesQuery x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGExtractExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGExtractExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGBoxExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGBoxExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGPointExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGPointExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGMacAddrExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGMacAddrExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGInetExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGInetExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGCidrExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGCidrExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGPolygonExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGPolygonExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGCircleExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGCircleExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGLineSegmentsExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGLineSegmentsExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(PGShowStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGShowStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(PGStartTransactionStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(PGStartTransactionStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(PGConnectToStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(PGConnectToStatement x) {
         return true;
     }
 

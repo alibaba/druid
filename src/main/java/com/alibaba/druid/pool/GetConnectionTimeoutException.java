@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,12 @@ public class GetConnectionTimeoutException extends SQLException {
 
     private static final long serialVersionUID = 1L;
 
-    public GetConnectionTimeoutException(){
-        super();
-    }
-
     public GetConnectionTimeoutException(String reason){
         super(reason);
     }
 
-    public GetConnectionTimeoutException(Throwable cause){
-        super(cause);
+    public GetConnectionTimeoutException(String message, Throwable cause){
+        super(message, cause);
     }
 
 }

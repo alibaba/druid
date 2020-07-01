@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleOuterExpr extends SQLExprImpl implements OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-    private SQLExpr           expr;
+    private SQLExpr expr;
 
     public OracleOuterExpr(){
 
@@ -32,6 +35,14 @@ public class OracleOuterExpr extends SQLExprImpl implements OracleExpr {
     public OracleOuterExpr(SQLExpr expr){
 
         this.expr = expr;
+    }
+
+    public OracleOuterExpr clone() {
+        OracleOuterExpr x = new OracleOuterExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        return x;
     }
 
     public SQLExpr getExpr() {
@@ -58,6 +69,11 @@ public class OracleOuterExpr extends SQLExprImpl implements OracleExpr {
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>singletonList(this.expr);
     }
 
     @Override

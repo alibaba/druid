@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,31 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAssignItem extends SQLObjectImpl {
+public class SQLAssignItem extends SQLObjectImpl implements SQLReplaceable {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           target;
-    private SQLExpr           value;
+    private SQLExpr target;
+    private SQLExpr value;
 
     public SQLAssignItem(){
     }
 
     public SQLAssignItem(SQLExpr target, SQLExpr value){
-        this.target = target;
-        this.value = value;
+        setTarget(target);
+        setValue(value);
+    }
+
+    public SQLAssignItem clone() {
+        SQLAssignItem x = new SQLAssignItem();
+        if (target != null) {
+            x.setTarget(target.clone());
+        }
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
     }
 
     public SQLExpr getTarget() {
@@ -39,6 +49,9 @@ public class SQLAssignItem extends SQLObjectImpl {
     }
 
     public void setTarget(SQLExpr target) {
+        if (target != null) {
+            target.setParent(this);
+        }
         this.target = target;
     }
 
@@ -47,6 +60,9 @@ public class SQLAssignItem extends SQLObjectImpl {
     }
 
     public void setValue(SQLExpr value) {
+        if (value != null) {
+            value.setParent(this);
+        }
         this.value = value;
     }
 
@@ -65,4 +81,17 @@ public class SQLAssignItem extends SQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.target == expr) {
+            setTarget(target);
+            return true;
+        }
+
+        if (this.value == expr) {
+            setValue(target);
+            return true;
+        }
+        return false;
+    }
 }
