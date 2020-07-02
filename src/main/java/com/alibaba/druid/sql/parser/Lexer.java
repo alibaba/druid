@@ -1533,6 +1533,8 @@ public class Lexer {
 
                 if (ch == '}') {
                     break;
+                } else if (ch == EOI){
+                    throw new ParserException("illegal identifier. " + info());
                 }
 
                 bufPos++;
