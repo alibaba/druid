@@ -88,7 +88,7 @@ public class HiveStatementParser extends SQLStatementParser {
         return new HiveCreateTableParser(this.exprParser);
     }
 
-    public SQLStatement parseInsert() {
+    public SQLStatement parseHiveInsertStmt() {
         if (lexer.token() == Token.FROM) {
             lexer.nextToken();
 
@@ -136,7 +136,7 @@ public class HiveStatementParser extends SQLStatementParser {
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         if (lexer.token() == Token.FROM) {
-            SQLStatement stmt = this.parseInsert();
+            SQLStatement stmt = this.parseHiveInsertStmt();
             statementList.add(stmt);
             return true;
         }
