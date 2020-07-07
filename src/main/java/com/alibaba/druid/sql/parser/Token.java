@@ -354,6 +354,15 @@ public enum Token {
     POUNDGTGT("#>>"),
     MONKEYS_AT_GT("@>"),
     LT_MONKEYS_AT("<@"),
+
+
+    //impala
+    INVALIDATE("INVALIDATE"),
+    METADATA("METADATA"),
+    REFRESH("REFRESH"),
+    STATS("STATS"),
+    INCREMENTAL("INCREMENTAL"),
+
     ;
 
     public final String name;

@@ -122,7 +122,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
+import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsert;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
@@ -411,6 +411,13 @@ public class SQLStatementParser extends SQLParser {
                 }
                 case LEAVE: {
                     SQLStatement stmt = parseLeave();
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
+                case INVALIDATE:
+                case REFRESH:{
+                    SQLStatement stmt = parseMeta();
                     stmt.setParent(parent);
                     statementList.add(stmt);
                     continue;
@@ -714,6 +721,10 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseLeave() {
+        throw new ParserException("not supported. " + lexer.info());
+    }
+
+    public SQLStatement parseMeta(){
         throw new ParserException("not supported. " + lexer.info());
     }
 
@@ -3464,75 +3475,6 @@ public class SQLStatementParser extends SQLParser {
         }
     }
 
-    protected HiveInsertStatement parseHiveInsertStmt() {
-        HiveInsertStatement insert = new HiveInsertStatement();
-
-        if (lexer.isKeepComments() && lexer.hasComment()) {
-            insert.addBeforeComment(lexer.readAndResetComments());
-        }
-
-        SQLSelectParser selectParser = createSQLSelectParser();
-
-        accept(Token.INSERT);
-
-        if (lexer.token() == Token.INTO) {
-            lexer.nextToken();
-        } else {
-            accept(Token.OVERWRITE);
-            insert.setOverwrite(true);
-        }
-
-        accept(Token.TABLE);
-        insert.setTableSource(this.exprParser.name());
-
-        if (lexer.token() == Token.PARTITION) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            for (;;) {
-                SQLAssignItem ptExpr = new SQLAssignItem();
-                ptExpr.setTarget(this.exprParser.name());
-                if (lexer.token() == Token.EQ) {
-                    lexer.nextToken();
-                    SQLExpr ptValue = this.exprParser.expr();
-                    ptExpr.setValue(ptValue);
-                }
-                insert.addPartition(ptExpr);
-                if (!(lexer.token() == (Token.COMMA))) {
-                    break;
-                } else {
-                    lexer.nextToken();
-                }
-            }
-            accept(Token.RPAREN);
-        }
-
-        if (lexer.token() == Token.VALUES) {
-            lexer.nextToken();
-
-            for (;;) {
-                if (lexer.token() == Token.LPAREN) {
-                    lexer.nextToken();
-
-                    SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
-                    this.exprParser.exprList(values.getValues(), values);
-                    insert.addValueCause(values);
-                    accept(Token.RPAREN);
-                }
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                } else {
-                    break;
-                }
-            }
-        } else {
-            SQLSelect query = selectParser.select();
-            insert.setQuery(query);
-        }
-
-        return insert;
-    }
 
     protected HiveInsert parseHiveInsert() {
         HiveInsert insert = new HiveInsert();
@@ -3610,5 +3552,75 @@ public class SQLStatementParser extends SQLParser {
 
     public void setSelectListCache(SQLSelectListCache selectListCache) {
         this.selectListCache = selectListCache;
+    }
+
+    protected ImpalaInsert parseImpalaInsert() {
+        ImpalaInsert insert = new ImpalaInsert();
+
+        if (lexer.isKeepComments() && lexer.hasComment()) {
+            insert.addBeforeComment(lexer.readAndResetComments());
+        }
+
+        SQLSelectParser selectParser = createSQLSelectParser();
+
+        accept(Token.INSERT);
+
+        if (lexer.token() == Token.INTO) {
+            lexer.nextToken();
+        } else {
+            accept(Token.OVERWRITE);
+            insert.setOverwrite(true);
+        }
+
+        accept(Token.TABLE);
+        insert.setTableSource(this.exprParser.name());
+
+        if (lexer.token() == Token.PARTITION) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            for (;;) {
+                SQLAssignItem ptExpr = new SQLAssignItem();
+                ptExpr.setTarget(this.exprParser.name());
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                    SQLExpr ptValue = this.exprParser.expr();
+                    ptExpr.setValue(ptValue);
+                }
+                insert.addPartition(ptExpr);
+                if (!(lexer.token() == (Token.COMMA))) {
+                    break;
+                } else {
+                    lexer.nextToken();
+                }
+            }
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.token() == Token.VALUES) {
+            lexer.nextToken();
+
+            for (;;) {
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+
+                    SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
+                    this.exprParser.exprList(values.getValues(), values);
+                    insert.addValueCause(values);
+                    accept(Token.RPAREN);
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                } else {
+                    break;
+                }
+            }
+        } else {
+            SQLSelect query = selectParser.select();
+            insert.setQuery(query);
+        }
+
+        return insert;
     }
 }

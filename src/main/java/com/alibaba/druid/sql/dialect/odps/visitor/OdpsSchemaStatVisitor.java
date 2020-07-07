@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
@@ -98,6 +99,33 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
         accept(x.getQuery());
 
         return false;
+    }
+
+    @Override
+    public boolean visit(ImpalaInsert x) {
+
+        setMode(x, TableStat.Mode.Insert);
+
+        SQLExprTableSource tableSource = x.getTableSource();
+        SQLExpr tableName = tableSource.getExpr();
+
+        if (tableName instanceof SQLName) {
+            TableStat stat = getTableStat((SQLName) tableName);
+            stat.incrementInsertCount();
+
+        }
+
+        for (SQLAssignItem partition : x.getPartitions()) {
+            partition.accept(this);
+        }
+
+        accept(x.getQuery());
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(ImpalaInsert x) {
     }
 
     @Override

@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
@@ -123,4 +124,8 @@ public interface OdpsASTVisitor extends SQLASTVisitor {
     void endVisit(OdpsValuesTableSource x);
 
     boolean visit(OdpsValuesTableSource x);
+
+    void endVisit(ImpalaInsert x);
+
+    boolean visit(ImpalaInsert x);
 }

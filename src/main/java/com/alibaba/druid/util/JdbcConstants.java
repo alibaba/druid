@@ -130,4 +130,6 @@ public interface JdbcConstants {
      */
     String POLARDB                    = "polardb";
     String POLARDB_DRIVER             = "com.aliyun.polardb.Driver";
+
+    String IMPALA                     = "impala";
 }

@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
@@ -303,6 +304,48 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         return false;
     }
+
+    @Override
+    public boolean visit(ImpalaInsert x) {
+
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+        if (x.isOverwrite()) {
+            print0(ucase ? "INSERT OVERWRITE TABLE " : "insert overwrite table ");
+        } else {
+            print0(ucase ? "INSERT INTO TABLE " : "insert into table ");
+        }
+        x.getTableSource().accept(this);
+
+        int partitions = x.getPartitions().size();
+        if (partitions > 0) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            for (int i = 0; i < partitions; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                }
+
+                SQLAssignItem assign = x.getPartitions().get(i);
+                assign.getTarget().accept(this);
+
+                if (assign.getValue() != null) {
+                    print('=');
+                    assign.getValue().accept(this);
+                }
+            }
+            print(')');
+        }
+        println();
+        x.getQuery().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(ImpalaInsert x) {
+    }
+
 
 //    protected void printSelectList(List<SQLSelectItem> selectList) {
 //        this.indentCount++;

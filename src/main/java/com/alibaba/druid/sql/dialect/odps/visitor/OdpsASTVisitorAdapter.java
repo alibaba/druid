@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
+import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
@@ -88,6 +89,16 @@ public class OdpsASTVisitorAdapter extends SQLASTVisitorAdapter implements OdpsA
     public void endVisit(HiveInsertStatement x) {
 
     }
+
+    @Override
+    public boolean visit(ImpalaInsert x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(ImpalaInsert x) {
+    }
+
 
     @Override
     public boolean visit(HiveInsert x) {

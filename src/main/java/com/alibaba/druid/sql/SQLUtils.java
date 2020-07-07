@@ -46,6 +46,7 @@ import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.impala.visitor.ImpalaOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
@@ -432,6 +433,10 @@ public class SQLUtils {
 
         if (JdbcConstants.ELASTIC_SEARCH.equals(dbType)) {
             return new MySqlOutputVisitor(out);
+        }
+
+        if (JdbcConstants.IMPALA.equals(dbType)){
+            return new ImpalaOutputVisitor(out);
         }
 
         return new SQLASTOutputVisitor(out, dbType);
