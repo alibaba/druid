@@ -131,7 +131,7 @@ public class HiveStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        return parseInsert();
+        return parseHiveInsertStmt();
     }
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
