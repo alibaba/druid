@@ -153,7 +153,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public static enum Type {
-                             GLOBAL_TEMPORARY, LOCAL_TEMPORARY
+                             GLOBAL_TEMPORARY, LOCAL_TEMPORARY, EXTERNAL
     }
 
     public List<SQLTableElement> getTableElementList() {

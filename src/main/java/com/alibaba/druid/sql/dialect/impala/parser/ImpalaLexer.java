@@ -38,6 +38,8 @@ public class ImpalaLexer extends Lexer {
         map.put("STATS",Token.STATS);
         map.put("INCREMENTAL",Token.INCREMENTAL);
         map.put("UPSERT",Token.UPSERT);
+        map.put("HASH",Token.HASH);
+        map.put("RANGE",Token.RANGE);
 
         map.put("OF", Token.OF);
         map.put("CONCAT", Token.CONCAT);

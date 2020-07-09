@@ -18,12 +18,17 @@ package com.alibaba.druid.sql.dialect.impala.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.impala.ast.ImpalaKuduPartition;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaCreateTableStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.JdbcConstants;
+import org.apache.ibatis.jdbc.SQL;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ImpalaCreateTableParser extends SQLCreateTableParser {
+
     public ImpalaCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
     }
@@ -43,23 +48,9 @@ public class ImpalaCreateTableParser extends SQLCreateTableParser {
             accept(Token.CREATE);
         }
 
-        if (lexer.identifierEquals("GLOBAL")) {
+        if (lexer.identifierEquals("EXTERNAL")) {
             lexer.nextToken();
-
-            if (lexer.identifierEquals("TEMPORARY")) {
-                lexer.nextToken();
-                stmt.setType(SQLCreateTableStatement.Type.GLOBAL_TEMPORARY);
-            } else {
-                throw new ParserException("syntax error " + lexer.info());
-            }
-        } else if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("LOCAL")) {
-            lexer.nextToken();
-            if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("TEMPORAY")) {
-                lexer.nextToken();
-                stmt.setType(SQLCreateTableStatement.Type.LOCAL_TEMPORARY);
-            } else {
-                throw new ParserException("syntax error. " + lexer.info());
-            }
+            stmt.setType(SQLCreateTableStatement.Type.EXTERNAL);
         }
 
         accept(Token.TABLE);
@@ -79,11 +70,7 @@ public class ImpalaCreateTableParser extends SQLCreateTableParser {
 
             for (; ; ) {
                 Token token = lexer.token();
-                if (token == Token.IDENTIFIER
-                        && lexer.stringVal().equalsIgnoreCase("SUPPLEMENTAL")
-                        && JdbcConstants.ORACLE.equals(dbType)) {
-                    this.parseCreateTableSupplementalLogingProps(stmt);
-                } else if (token == Token.IDENTIFIER //
+                if (token == Token.IDENTIFIER //
                         || token == Token.LITERAL_ALIAS) {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     stmt.getTableElementList().add(column);
@@ -95,8 +82,6 @@ public class ImpalaCreateTableParser extends SQLCreateTableParser {
                     SQLConstraint constraint = this.exprParser.parseConstaint();
                     constraint.setParent(stmt);
                     stmt.getTableElementList().add((SQLTableElement) constraint);
-                } else if (token == Token.TABLESPACE) {
-                    throw new ParserException("TODO "  + lexer.info());
                 } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     stmt.getTableElementList().add(column);
@@ -134,67 +119,82 @@ public class ImpalaCreateTableParser extends SQLCreateTableParser {
         if (lexer.token() == Token.PARTITIONED) {
             lexer.nextToken();
             accept(Token.BY);
-            accept(Token.LPAREN);
+            if (lexer.token() == Token.LPAREN) {
+                accept(Token.LPAREN);
 
-            for (;;) {
-                if (lexer.token() != Token.IDENTIFIER) {
-                    throw new ParserException("expect identifier. " + lexer.info());
-                }
+                for (; ; ) {
+                    if (lexer.token() != Token.IDENTIFIER) {
+                        throw new ParserException("expect identifier. " + lexer.info());
+                    }
 
-                SQLColumnDefinition column = this.exprParser.parseColumn();
-                stmt.addPartitionColumn(column);
+                    SQLColumnDefinition column = this.exprParser.parseColumn();
+                    stmt.addPartitionColumn(column);
 
-                if (lexer.isKeepComments() && lexer.hasComment()) {
-                    column.addAfterComment(lexer.readAndResetComments());
-                }
-
-                if (lexer.token() != Token.COMMA) {
-                    break;
-                } else {
-                    lexer.nextToken();
                     if (lexer.isKeepComments() && lexer.hasComment()) {
                         column.addAfterComment(lexer.readAndResetComments());
                     }
+
+                    if (lexer.token() != Token.COMMA) {
+                        break;
+                    } else {
+                        lexer.nextToken();
+                        if (lexer.isKeepComments() && lexer.hasComment()) {
+                            column.addAfterComment(lexer.readAndResetComments());
+                        }
+                    }
                 }
+
+                accept(Token.RPAREN);
             }
-
-            accept(Token.RPAREN);
         }
-
-        if (lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
+        if (lexer.token()==Token.PARTITION){
             lexer.nextToken();
             accept(Token.BY);
-            accept(Token.LPAREN);
-            for (; ; ) {
-                SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
-                stmt.addClusteredByItem(item);
-                if (lexer.token() == Token.COMMA) {
+            for(;;) {
+                if (lexer.token() == Token.HASH) {
+                    ImpalaKuduPartition kuduPartition = new ImpalaKuduPartition(lexer.token());
                     lexer.nextToken();
-                    continue;
+                    if (lexer.token() == Token.LPAREN) {
+                        accept(Token.LPAREN);
+                        while (lexer.token() != Token.RPAREN) {
+                            SQLColumnDefinition column = this.exprParser.parseColumn();
+                            kuduPartition.getPartitionColumns().add(column);
+                        }
+                        accept(Token.RPAREN);
+                    }
+                    if (lexer.identifierEquals("PARTITIONS")) {
+                        lexer.nextToken();
+                        kuduPartition.setNumber(lexer.integerValue().intValue());
+                        stmt.getKuduPartitions().add(kuduPartition);
+                        accept(Token.LITERAL_INT);
+                    } else {
+                        throw new ParserException("expect partitions, but get " + lexer.stringVal() + ". " + lexer.info());
+                    }
+                } else if (lexer.token() == Token.RANGE) {
+                    ImpalaKuduPartition kuduPartition = new ImpalaKuduPartition(lexer.token());
+                    accept(Token.RANGE);
+                    accept(Token.LPAREN);
+                    while (lexer.token() != Token.RPAREN) {
+                        SQLColumnDefinition column = this.exprParser.parseColumn();
+                        kuduPartition.getPartitionColumns().add(column);
+                    }
+                    accept(Token.RPAREN);
+                    kuduPartition.getPartitionAssign().addAll(generateStringList());
+                    stmt.getKuduPartitions().add(kuduPartition);
+                } else{
+                    throw new ParserException("error partition type. " + lexer.info());
                 }
-                break;
-            }
-            accept(Token.RPAREN);
-        }
-
-        if (lexer.token() == Token.ROW) {
-            lexer.nextToken();
-            acceptIdentifier("FORMAT");
-
-            if (lexer.identifierEquals(FnvHash.Constants.DELIMITED)) {
-                lexer.nextToken();
-                acceptIdentifier("FIELDS");
-                acceptIdentifier("TERMINATED");
-                accept(Token.BY);
-                SQLExternalRecordFormat format = new SQLExternalRecordFormat();
-                format.setTerminatedBy(this.exprParser.expr());
-                stmt.setRowFormat(format);
-            } else {
-                throw new ParserException("TODO " + lexer.info());
+                if (lexer.token() != Token.COMMA){
+                    break;
+                }
+                accept(Token.COMMA);
             }
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
+
+
+
+        if (lexer.token() == Token.SORT) {
             lexer.nextToken();
             accept(Token.BY);
             accept(Token.LPAREN);
@@ -210,22 +210,24 @@ public class ImpalaCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
-        if (stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) {
-            accept(Token.INTO);
-            if (lexer.token() == Token.LITERAL_INT) {
-                stmt.setBuckets(lexer.integerValue().intValue());
-                lexer.nextToken();
-            } else {
-                throw new ParserException("into buckets must be integer. " + lexer.info());
-            }
-            acceptIdentifier("BUCKETS");
-        }
 
         if (lexer.identifierEquals(FnvHash.Constants.STORED)) {
             lexer.nextToken();
             accept(Token.AS);
             SQLName name = this.exprParser.name();
             stmt.setStoredAs(name);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.LOCATION)) {
+            lexer.nextToken();
+            SQLName name = this.exprParser.name();
+            stmt.setLocation(name);
+        }
+
+        if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+            SQLSelect select = this.createSQLSelectParser().select();
+            stmt.setSelect(select);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
@@ -248,15 +250,40 @@ public class ImpalaCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
-        if (lexer.token() == Token.AS) {
-            lexer.nextToken();
-            SQLSelect select = this.createSQLSelectParser().select();
-            stmt.setSelect(select);
-        }
         return stmt;
     }
 
     protected ImpalaCreateTableStatement newCreateStatement() {
         return new ImpalaCreateTableStatement();
+    }
+
+    private List<String> generateStringList(){
+        List<String> result = new ArrayList<String>();
+        accept(Token.LPAREN);
+        StringBuilder rangeAssgin = new StringBuilder();
+        for (;;) {
+            if (lexer.token() == Token.RPAREN){
+                result.add(rangeAssgin.toString());
+                break;
+            }
+            if (lexer.token() == Token.COMMA) {
+                result.add(rangeAssgin.toString());
+                rangeAssgin = new StringBuilder();
+                accept(Token.COMMA);
+                continue;
+            }
+            if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.LITERAL_CHARS){
+                rangeAssgin.append(lexer.stringVal());
+            }else if (lexer.token() == Token.LITERAL_INT){
+                rangeAssgin.append(lexer.integerValue());
+            }else{
+                rangeAssgin.append(lexer.token().name == null? lexer.token().name():
+                    lexer.token().name);
+            }
+            rangeAssgin.append(" ");
+            lexer.nextToken();
+        }
+        accept(Token.RPAREN);
+        return result;
     }
 }

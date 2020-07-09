@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsert;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsertStatement;
+import com.alibaba.druid.sql.dialect.impala.ast.ImpalaKuduPartition;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaCreateTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaMetaStatement;
@@ -55,10 +56,8 @@ public class ImpalaOutputVisitor extends SQLASTOutputVisitor implements ImpalaAS
         print0(ucase ? "CREATE " : "create ");
 
         final SQLCreateTableStatement.Type tableType = x.getType();
-        if (SQLCreateTableStatement.Type.GLOBAL_TEMPORARY.equals(tableType)) {
-            print0(ucase ? "GLOBAL TEMPORARY " : "global temporary ");
-        } else if (SQLCreateTableStatement.Type.LOCAL_TEMPORARY.equals(tableType)) {
-            print0(ucase ? "LOCAL TEMPORARY " : "local temporary ");
+        if (SQLCreateTableStatement.Type.EXTERNAL.equals(tableType)) {
+            print0(ucase ? "EXTERNAL " : "external ");
         }
         print0(ucase ? "TABLE " : "table ");
 
@@ -70,12 +69,6 @@ public class ImpalaOutputVisitor extends SQLASTOutputVisitor implements ImpalaAS
 
         printTableElements(x.getTableElementList());
 
-        SQLExprTableSource inherits = x.getInherits();
-        if (inherits != null) {
-            print0(ucase ? " INHERITS (" : " inherits (");
-            inherits.accept(this);
-            print(')');
-        }
 
         SQLExpr comment = x.getComment();
         if (comment != null) {
@@ -111,36 +104,56 @@ public class ImpalaOutputVisitor extends SQLASTOutputVisitor implements ImpalaAS
             print(')');
         }
 
-        List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
-        if (clusteredBy.size() > 0) {
-            println();
-            print0(ucase ? "CLUSTERED BY (" : "clustered by (");
-            printAndAccept(clusteredBy, ",");
-            print(')');
-        }
+        List<ImpalaKuduPartition> kuduPartitions = x.getKuduPartitions();
+        if (kuduPartitions.size() > 0){
+            println(ucase ? "PARTITION BY":"partition BY");
+            int kuduPartitionSize = kuduPartitions.size();
+            for (int num=0;num<kuduPartitionSize;num++){
+                ImpalaKuduPartition kuduPartition = kuduPartitions.get(num);
+                print0("  " + kuduPartition.getType().name() + ' ');
+                int partitionColumnsize = kuduPartition.getPartitionColumns().size();
+                if (partitionColumnsize > 0){
+                    print0("(");
+                    for (int i=0;i<partitionColumnsize;i++){
+                        SQLColumnDefinition column = kuduPartition.getPartitionColumns().get(i);
+                        column.accept(this);
 
-        SQLExternalRecordFormat format = x.getRowFormat();
-        if (format != null) {
-            println();
-            print0(ucase ? "ROW FORMAT DELIMITED " : "row format delimited ");
-            visit(format);
+                        if (i != partitionColumnsize - 1) {
+                            print(',');
+                        }
+                    }
+                    print0(") ");
+                }
+                if (kuduPartition.getNumber() > 0){
+                    print(ucase ? "PARTITIONS ":"partitions ");
+                    print(Integer.toString(kuduPartition.getNumber()));
+                }
+
+                List<String> partitionAssign = kuduPartition.getPartitionAssign();
+                if (partitionAssign.size() > 0){
+                    println("(");
+                    int assignSize = partitionAssign.size();
+                    for (int i=0;i<assignSize;i++){
+                        print0("    " + partitionAssign.get(i));
+                        if (i < assignSize - 1){
+                            println(",");
+                        }
+                    }
+                    println(")");
+                }
+                if (num < kuduPartitionSize - 1){
+                    println(",");
+                }
+            }
         }
 
         List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
         if (sortedBy.size() > 0) {
-            println();
-            print0(ucase ? "SORTED BY (" : "sorted by (");
+            print0(ucase ? " SORT BY (" : " sort by (");
             printAndAccept(sortedBy, ", ");
             print(')');
         }
 
-        int buckets = x.getBuckets();
-        if (buckets > 0) {
-            println();
-            print0(ucase ? "INTO " : "into ");
-            print(buckets);
-            print0(ucase ? " BUCKETS" : " buckets");
-        }
 
         SQLName storedAs = x.getStoredAs();
         if (storedAs != null) {
@@ -149,10 +162,19 @@ public class ImpalaOutputVisitor extends SQLASTOutputVisitor implements ImpalaAS
             printExpr(storedAs);
         }
 
+        SQLName location = x.getLocation();
+        if (location != null){
+            println();
+            print0(ucase ? "LOCATION " : "location ");
+            printExpr(location);
+        }
+
+
+
         Map<String, SQLObject> tableOptions = x.getTableOptions();
         if (tableOptions.size() > 0) {
             println();
-            print0(ucase ? "TBLPROPERTIES (" : "tblproperties (");
+            print0(ucase ? " TBLPROPERTIES (" : " tblproperties (");
             int i = 0;
             for (Map.Entry<String, SQLObject> option : tableOptions.entrySet()) {
                 print0(option.getKey());
@@ -342,7 +364,8 @@ public class ImpalaOutputVisitor extends SQLASTOutputVisitor implements ImpalaAS
             x.getTableSource().accept(this);
             int partitions = x.getPartitions().size();
             if (partitions > 0) {
-                print0(ucase ? " PARTITION (" : " partition (");
+                println();
+                print0(ucase ? "PARTITION (" : " partition (");
                 for (int i = 0; i < partitions; ++i) {
                     if (i != 0) {
                         print0(", ");

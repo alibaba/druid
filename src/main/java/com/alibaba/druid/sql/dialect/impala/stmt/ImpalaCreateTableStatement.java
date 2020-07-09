@@ -15,15 +15,23 @@
  */
 package com.alibaba.druid.sql.dialect.impala.stmt;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.impala.ast.ImpalaKuduPartition;
 import com.alibaba.druid.sql.dialect.impala.visitor.ImpalaASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImpalaCreateTableStatement extends SQLCreateTableStatement {
+
+    protected final List<ImpalaKuduPartition> kuduPartitions =
+        new ArrayList<ImpalaKuduPartition>();
+    private SQLName location;
+    protected final List<String> tblProperties = new ArrayList<String>();
 
     public ImpalaCreateTableStatement() {
         this.dbType = JdbcConstants.IMPALA;
@@ -59,5 +67,19 @@ public class ImpalaCreateTableStatement extends SQLCreateTableStatement {
             this.acceptChild(visitor, select);
         }
         visitor.endVisit(this);
+    }
+    public SQLName getLocation() {
+        return location;
+    }
+
+    public void setLocation(SQLName location) {
+        this.location = location;
+    }
+
+    public List<ImpalaKuduPartition> getKuduPartitions() {
+        return kuduPartitions;
+    }
+    public List<String> getTblProperties() {
+        return tblProperties;
     }
 }

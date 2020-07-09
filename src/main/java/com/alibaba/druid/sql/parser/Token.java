@@ -362,6 +362,8 @@ public enum Token {
     REFRESH("REFRESH"),
     STATS("STATS"),
     INCREMENTAL("INCREMENTAL"),
+    HASH("HASH"),
+    RANGE("RANGE"),
 
     ;
 

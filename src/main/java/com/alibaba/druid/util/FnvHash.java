@@ -694,5 +694,7 @@ public final class FnvHash {
         long DIMENSION = fnv1a_64_lower("DIMENSION");
         long KEEP = fnv1a_64_lower("KEEP");
         long PIVOT = fnv1a_64_lower("PIVOT");
+
+        long LOCATION = fnv1a_64_lower("LOCATION");
     }
 }
