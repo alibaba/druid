@@ -416,6 +416,7 @@ public class SQLStatementParser extends SQLParser {
                     statementList.add(stmt);
                     continue;
                 }
+                case COMPUTE:
                 case INVALIDATE:
                 case REFRESH:{
                     SQLStatement stmt = parseMeta();

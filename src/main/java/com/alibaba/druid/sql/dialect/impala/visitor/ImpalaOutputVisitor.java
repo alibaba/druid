@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.impala.visitor;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsert;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsertStatement;
@@ -271,6 +272,31 @@ public class ImpalaOutputVisitor extends SQLASTOutputVisitor implements ImpalaAS
         x.getTableSource().accept(this);
 
         int partitions = x.getPartitions().size();
+        if (x.getColumns().size() > 0){
+            List<SQLExpr> columns = x.getColumns();
+            if (columns.size() > 0) {
+                this.indentCount++;
+                print0(" (");
+                for (int i = 0, size = columns.size(); i < size; ++i) {
+                    if (i != 0) {
+                        if (i % 5 == 0) {
+                            println();
+                        }
+                        print0(", ");
+                    }
+
+                    SQLExpr column = columns.get(i);
+                    if (column instanceof SQLIdentifierExpr) {
+                        print0(((SQLIdentifierExpr) column).getName());
+                    } else {
+                        printExpr(column);
+                    }
+                }
+                print(')');
+                this.indentCount--;
+            }
+        }
+
         if (partitions > 0) {
             print0(ucase ? " PARTITION (" : " partition (");
             for (int i = 0; i < partitions; ++i) {
@@ -360,8 +386,8 @@ public class ImpalaOutputVisitor extends SQLASTOutputVisitor implements ImpalaAS
             if (x.getTableSource() != null){
                 x.getTableSource().accept(this);
             }
-        }else{
-            print0(ucase? "REFRESH " : "refresh ");
+        }else if (x.getMetaType() == Token.REFRESH) {
+            print0(ucase ? "REFRESH " : "refresh ");
             x.getTableSource().accept(this);
             int partitions = x.getPartitions().size();
             if (partitions > 0) {
@@ -383,6 +409,42 @@ public class ImpalaOutputVisitor extends SQLASTOutputVisitor implements ImpalaAS
                 print(')');
             }
             println();
+        }else{
+            print0(ucase ? "COMPUTE " : "compute ");
+            if (x.isIncremental()){
+                print0(ucase ? "INCREMENTAL " : "incremental ");
+            }
+            print0(ucase ? "STATE " : "state ");
+            x.getTableSource().accept(this);
+            if (x.getColumns().size()>0){
+                List<SQLExpr> columns = x.getColumns();
+                if (columns.size() > 0) {
+                    this.indentCount++;
+                    print0(" (");
+                    for (int i = 0, size = columns.size(); i < size; ++i) {
+                        if (i != 0) {
+                            if (i % 5 == 0) {
+                                println();
+                            }
+                            print0(", ");
+                        }
+
+                        SQLExpr column = columns.get(i);
+                        if (column instanceof SQLIdentifierExpr) {
+                            print0(((SQLIdentifierExpr) column).getName());
+                        } else {
+                            printExpr(column);
+                        }
+                    }
+                    print(')');
+                    this.indentCount--;
+                }
+            }
+            if (x.getComputePartition() != null){
+                this.indentCount++;
+                print0(ucase? " PARTITION ":" partition ");
+                x.getComputePartition().accept(this);
+            }
         }
         return false;
     }

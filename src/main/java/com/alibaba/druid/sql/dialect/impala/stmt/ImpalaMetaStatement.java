@@ -15,18 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.impala.stmt;
 
-import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.impala.visitor.ImpalaASTVisitor;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import com.mysql.cj.jdbc.StatementImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +34,19 @@ public class ImpalaMetaStatement extends MySqlStatementImpl {
 
     private List<SQLAssignItem>  partitions = new ArrayList<SQLAssignItem>();
 
+
+    private boolean incremental = false;
+    public SQLExpr getComputePartition() {
+        return computePartition;
+    }
+
+    public void setComputePartition(SQLExpr computePartition) {
+        this.computePartition = computePartition;
+    }
+
+    private SQLExpr computePartition = null;
+
+    private List<SQLExpr> columns = new ArrayList<SQLExpr>();
 
     public ImpalaMetaStatement(Token metaType){
         this.dbType = JdbcConstants.IMPALA;
@@ -99,5 +108,16 @@ public class ImpalaMetaStatement extends MySqlStatementImpl {
         return partitions;
     }
 
+    public List<SQLExpr> getColumns() {
+        return columns;
+    }
+
+    public boolean isIncremental() {
+        return incremental;
+    }
+
+    public void setIncremental(boolean incremental) {
+        this.incremental = incremental;
+    }
 
 }

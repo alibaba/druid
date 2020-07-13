@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.impala.parser;
 
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -27,11 +26,8 @@ import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsertStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaMetaStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaUpdateStatements;
 import com.alibaba.druid.sql.parser.*;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ImpalaStatementParser extends SQLStatementParser {
@@ -62,7 +58,7 @@ public class ImpalaStatementParser extends SQLStatementParser {
             if (lexer.token() != Token.SEMI) {
                 stmt.setTableSource(this.exprParser.name());
             }
-        }else{
+        }else if (lexer.token() == Token.REFRESH){
             accept(Token.REFRESH);
             stmt.setTableSource(this.exprParser.name());
             if (lexer.token() == Token.PARTITION) {
@@ -85,6 +81,66 @@ public class ImpalaStatementParser extends SQLStatementParser {
                 }
                 accept(Token.RPAREN);
             }
+        } else{
+            accept(Token.COMPUTE);
+            if (lexer.token() == Token.INCREMENTAL){
+                accept(Token.INCREMENTAL);
+                stmt.setIncremental(true);
+                accept(Token.STATS);
+                stmt.setTableSource(this.exprParser.name());
+                if (lexer.token() == Token.PARTITION){
+                    accept(Token.PARTITION);
+                    SQLExpr partition = this.exprParser.expr();
+                    stmt.setComputePartition(partition);
+                }
+            }
+            else{
+                accept(Token.STATS);
+                stmt.setTableSource(this.exprParser.name());
+                if (lexer.token() == Token.LPAREN){
+                    lexer.nextToken();
+                    List<SQLExpr> columns = stmt.getColumns();
+                    if (lexer.token() != Token.RPAREN) {
+                        for (; ; ) {
+                            String identName;
+                            long hash;
+
+                            Token token = lexer.token();
+                            if (token == Token.IDENTIFIER) {
+                                identName = lexer.stringVal();
+                                hash = lexer.hash_lower();
+                            } else if (token == Token.LITERAL_CHARS) {
+                                identName = '\'' + lexer.stringVal() + '\'';
+                                hash = 0;
+                            } else {
+                                identName = lexer.stringVal();
+                                hash = 0;
+                            }
+                            lexer.nextTokenComma();
+                            SQLExpr expr = new SQLIdentifierExpr(identName, hash);
+                            while (lexer.token() == Token.DOT) {
+                                lexer.nextToken();
+                                String propertyName = lexer.stringVal();
+                                lexer.nextToken();
+                                expr = new SQLPropertyExpr(expr, propertyName);
+                            }
+
+                            expr.setParent(stmt);
+                            columns.add(expr);
+
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextTokenIdent();
+                                continue;
+                            }
+
+                            break;
+                        }
+                    }
+                    accept(Token.RPAREN);
+                }
+
+            }
+
         }
         return stmt;
     }
