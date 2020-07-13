@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.dialect.impala.ast.ImpalaKuduPartition;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaCreateTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaMetaStatement;
+import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaUpdateStatements;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -388,6 +389,51 @@ public class ImpalaOutputVisitor extends SQLASTOutputVisitor implements ImpalaAS
 
     @Override
     public void endVisit(ImpalaMetaStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(ImpalaUpdateStatements x) {
+        print0(ucase ? "UPDATE " : "update ");
+
+        printTableSource(x.getTableSource());
+
+        print0(ucase ? "SET " : "set ");
+        for (int i = 0, size = x.getItems().size(); i < size; ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            SQLUpdateSetItem item = x.getItems().get(i);
+            visit(item);
+        }
+
+        if (x.getJoin() != null){
+            indentCount++;
+            println();
+            print0(ucase? "FROM ":"from ");
+            printTableSource(x.getJoin().getLeft());
+            print0(ucase? " JOIN ":" join ");
+            printTableSource(x.getJoin().getRight());
+            println();
+            print(ucase?"ON ":"on ");
+            printExpr(x.getJoin().getCondition());
+            indentCount--;
+        }
+
+        SQLExpr where = x.getWhere();
+        if (where != null) {
+            println();
+            indentCount++;
+            print0(ucase ? "WHERE " : "where ");
+            printExpr(where);
+            indentCount--;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(ImpalaUpdateStatements x) {
 
     }
 }

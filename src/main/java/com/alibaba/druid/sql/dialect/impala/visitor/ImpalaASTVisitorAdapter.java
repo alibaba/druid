@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsertStatement;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaCreateTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaMetaStatement;
+import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaUpdateStatements;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class ImpalaASTVisitorAdapter extends SQLASTVisitorAdapter implements ImpalaASTVisitor {
@@ -70,6 +71,16 @@ public class ImpalaASTVisitorAdapter extends SQLASTVisitorAdapter implements Imp
 
     @Override
     public void endVisit(ImpalaMetaStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(ImpalaUpdateStatements x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(ImpalaUpdateStatements x) {
 
     }
 }

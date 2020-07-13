@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsert;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsertStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaCreateTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaMetaStatement;
+import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaUpdateStatements;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
@@ -79,6 +80,16 @@ public class ImpalaSchemaStatVisitor extends SchemaStatVisitor implements Impala
 
     @Override
     public void endVisit(ImpalaMetaStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(ImpalaUpdateStatements x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(ImpalaUpdateStatements x) {
 
     }
 

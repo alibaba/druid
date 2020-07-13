@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsertStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaMetaStatement;
+import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaUpdateStatements;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
@@ -87,6 +88,63 @@ public class ImpalaStatementParser extends SQLStatementParser {
         }
         return stmt;
     }
+
+    public SQLUpdateStatement parseUpdateStatement() {
+        ImpalaUpdateStatements updateStatement = createUpdateStatement();
+
+        if (lexer.token() == Token.UPDATE) {
+            lexer.nextToken();
+
+            SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
+            updateStatement.setTableSource(tableSource);
+        }
+
+        parseUpdateSet(updateStatement);
+
+        if (lexer.token() == Token.FROM){
+            lexer.nextToken();
+            SQLJoinTableSource join = new SQLJoinTableSource();
+
+            SQLExprTableSource tableReference = new SQLExprTableSource();
+            tableReference.setExpr(this.getExprParser().expr());
+            if (lexer.token() != Token.JOIN){
+                tableReference.setAlias(lexer.stringVal());
+                lexer.nextToken();
+            }
+            join.setLeft(tableReference);
+            accept(Token.JOIN);
+            join.setJoinType(SQLJoinTableSource.JoinType.JOIN);
+
+            SQLExprTableSource rightTableReference = new SQLExprTableSource();
+            rightTableReference.setExpr(this.getExprParser().expr());
+
+            if (lexer.token() != Token.ON){
+                rightTableReference.setAlias(lexer.stringVal());
+                lexer.nextToken();
+            }
+            join.setRight(rightTableReference);
+            accept(Token.ON);
+            SQLExpr joinOn = this.exprParser.expr();
+            join.setCondition(joinOn);
+
+            while (lexer.token() == Token.ON) {
+                lexer.nextToken();
+
+                SQLExpr joinOn2 = this.exprParser.expr();
+                join.addCondition(joinOn2);
+            }
+            updateStatement.setJoin(join);
+
+        }
+
+        if (lexer.token() == (Token.WHERE)) {
+            lexer.nextToken();
+            updateStatement.setWhere(this.exprParser.expr());
+        }
+
+        return updateStatement;
+    }
+
 
     public SQLStatement parseMerge() {
         accept(Token.MERGE);
@@ -242,5 +300,9 @@ public class ImpalaStatementParser extends SQLStatementParser {
         }
 
         return false;
+    }
+
+    protected ImpalaUpdateStatements createUpdateStatement() {
+        return new ImpalaUpdateStatements();
     }
 }
