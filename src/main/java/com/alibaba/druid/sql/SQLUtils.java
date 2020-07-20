@@ -47,6 +47,7 @@ import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.impala.visitor.ImpalaOutputVisitor;
+import com.alibaba.druid.sql.dialect.impala.visitor.ImpalaSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
@@ -160,6 +161,10 @@ public class SQLUtils {
 
     public static String formatHive(String sql) {
         return format(sql, JdbcConstants.HIVE);
+    }
+
+    public static String formatImpala(String sql) {
+        return format(sql, JdbcConstants.IMPALA);
     }
 
     public static String formatOdps(String sql, FormatOption option) {
@@ -483,6 +488,10 @@ public class SQLUtils {
 
         if (JdbcConstants.ELASTIC_SEARCH.equals(dbType)) {
             return new MySqlSchemaStatVisitor();
+        }
+
+        if (JdbcConstants.IMPALA.equals(dbType)){
+            return new ImpalaSchemaStatVisitor();
         }
 
         return new SchemaStatVisitor();

@@ -33,7 +33,7 @@ import com.alibaba.druid.util.JdbcConstants;
 public class ImpalaSchemaStatVisitor extends SchemaStatVisitor implements ImpalaASTVisitor {
 
     public ImpalaSchemaStatVisitor() {
-        super (JdbcConstants.HIVE);
+        super (JdbcConstants.IMPALA);
     }
 
     @Override

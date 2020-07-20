@@ -103,7 +103,7 @@ public class ImpalaOutputVisitor extends SQLASTOutputVisitor implements ImpalaAS
             }
             this.indentCount--;
             println();
-            print(')');
+            println(")");
         }
 
         List<ImpalaKuduPartition> kuduPartitions = x.getKuduPartitions();
