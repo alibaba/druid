@@ -4413,6 +4413,14 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.EXISTS);
             stmt.setIfNotExists(true);
         }
+        if (lexer.token() == Token.HINT) {
+            List<SQLCommentHint> hints = stmt.getHints();
+            if (hints == null){
+                hints = new ArrayList<SQLCommentHint>();
+                stmt.setHints(hints);
+            }
+            this.exprParser.parseHints(hints);
+        }
 
         stmt.setName(this.exprParser.name());
 
@@ -4421,7 +4429,12 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.HINT) {
-            stmt.setHints(this.exprParser.parseHints());
+            List<SQLCommentHint> hints = stmt.getHints();
+            if (hints == null){
+                hints = new ArrayList<SQLCommentHint>();
+                stmt.setHints(hints);
+            }
+            this.exprParser.parseHints(hints);
         }
 
         if (lexer.token() == Token.DEFAULT) {
