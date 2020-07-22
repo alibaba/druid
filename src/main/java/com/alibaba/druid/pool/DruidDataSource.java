@@ -2809,7 +2809,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     break;
                 }
                 
-                if (Thread.interrupted()) {
+                if (closing || closed) {
                     break;
                 }
 
