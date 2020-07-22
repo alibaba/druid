@@ -61,4 +61,10 @@ public class DruidDataSourceTestCase {
         assertThat(dataSource.getMinEvictableIdleTimeMillis()).isEqualTo(30001);
         assertThat(dataSource.isAsyncCloseConnectionEnable()).isEqualTo(true);
     }
+
+    @Test
+    public void testDataSourcePasswordCallbackExists() throws Exception {
+        assertThat(dataSource.getPasswordCallback()).isNotNull();
+    }
+
 }

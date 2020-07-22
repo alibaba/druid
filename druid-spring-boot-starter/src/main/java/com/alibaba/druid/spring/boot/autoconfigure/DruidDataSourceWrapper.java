@@ -20,6 +20,9 @@ import java.util.List;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.DruidDataSource;
 
+import com.alibaba.druid.util.DruidPasswordCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -30,8 +33,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties("spring.datasource.druid")
 class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private DataSourceProperties basicProperties;
+
+    @Autowired(required = false)
+    private DruidPasswordCallback druidPasswordCallback;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -48,17 +57,25 @@ class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean
         if (super.getDriverClassName() == null) {
             super.setDriverClassName(basicProperties.getDriverClassName());
         }
+        if (null != druidPasswordCallback) {
+            if (null != super.getPasswordCallback()) {
+                throw new RuntimeException(String.format("DruidDataSource passwordCallback[%s] is not null," +
+                        "please checked your config", super.getPasswordCallback()));
+            }
+            super.setPasswordCallback(druidPasswordCallback);
+            LOGGER.info("init druidPasswordCallback success!");
+        }
     }
 
     @Autowired(required = false)
-    public void autoAddFilters(List<Filter> filters){
+    public void autoAddFilters(List<Filter> filters) {
         super.filters.addAll(filters);
     }
 
     /**
      * Ignore the 'maxEvictableIdleTimeMillis < minEvictableIdleTimeMillis' validate,
      * it will be validated again in {@link DruidDataSource#init()}.
-     *
+     * <p>
      * for fix issue #3084, #2763
      *
      * @since 1.1.14

@@ -13,6 +13,8 @@
     <properties>
         <druid.version>1.1.22</druid.version>
         <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.locales>zh_CN</project.build.locales>
     </properties>
 
     <developers>
