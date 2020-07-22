@@ -2808,6 +2808,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     setFailContinuous(true);
                     break;
                 }
+                
+                if (Thread.interrupted()) {
+                    break;
+                }
 
                 if (connection == null) {
                     continue;
