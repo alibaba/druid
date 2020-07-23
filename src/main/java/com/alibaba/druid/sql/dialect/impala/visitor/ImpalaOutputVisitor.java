@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsert;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsertStatement;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaKuduPartition;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaAlterTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaCreateTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaMetaStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaUpdateStatements;
@@ -496,6 +497,34 @@ public class ImpalaOutputVisitor extends SQLASTOutputVisitor implements ImpalaAS
 
     @Override
     public void endVisit(ImpalaUpdateStatements x) {
+
+    }
+
+    @Override
+    public boolean visit(ImpalaAlterTableStatement x){
+        print0(ucase?"ALTER TABLE ":"alter table ");
+        x.getTableSource().accept(this);
+        print0(" " + x.getAlterType());
+        if (x.isExists()){
+            print0(ucase?" IF EXISTS ":" if exists ");
+        }
+        if (x.isNotExists()){
+            print0(ucase?" IF NOT EXISTS ":" if not exists ");
+        }
+        if (x.getPartitions().size() > 0) {
+            print0("(");
+            for (SQLExpr expr : x.getPartitions().subList(0, x.getPartitions().size()-1)) {
+                expr.accept(this);
+                print0(", ");
+            }
+            x.getPartitions().get(x.getPartitions().size()-1).accept(this);
+            print0(")");
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(ImpalaAlterTableStatement x){
 
     }
 }

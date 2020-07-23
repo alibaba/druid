@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsertStatement;
+import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaAlterTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaMetaStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaUpdateStatements;
 import com.alibaba.druid.sql.parser.*;
@@ -347,6 +348,70 @@ public class ImpalaStatementParser extends SQLStatementParser {
 
         return insert;
     }
+
+
+    public SQLStatement parseAlter() {
+        ImpalaAlterTableStatement stmt = null;
+        accept(Token.ALTER);
+        if (lexer.token() == Token.TABLE){
+            lexer.nextToken();
+            stmt = new ImpalaAlterTableStatement();
+            stmt.setName(this.exprParser.name());
+            if (lexer.token() == Token.RENAME) {
+                accept(Token.RENAME);
+                accept(Token.TO);
+                stmt.setTableSource(new SQLExprTableSource(this.exprParser.name()));
+            }else if (lexer.identifierEquals("ADD")) {
+                stmt.setAlterType("ADD");
+                lexer.nextToken();
+                if (lexer.token() == Token.IF) {
+                    accept(Token.IF);
+                    accept(Token.NOT);
+                    accept(Token.EXISTS);
+                    stmt.setNotExists(true);
+                }
+                parseAlterColumnOrPartition(stmt);
+            }else if (lexer.token() == Token.DROP) {
+                stmt.setAlterType("DROP");
+                lexer.nextToken();
+                if (lexer.token() == Token.IF) {
+                    accept(Token.IF);
+                    accept(Token.EXISTS);
+                    stmt.setExists(true);
+                }
+                parseAlterColumnOrPartition(stmt);
+            }else{
+                    throw new ParserException("sql syntax error, terminated. " + lexer.token());
+            }
+
+
+            }
+
+        return stmt;
+    }
+
+    private void parseAlterColumnOrPartition(ImpalaAlterTableStatement stmt){
+        if (lexer.identifierEquals("COLUMNS")) {
+            lexer.nextToken();
+            SQLAlterTableAddColumn column = parseAlterTableAddColumn();
+            stmt.addItem(column);
+        } else {
+            if (lexer.token() == Token.RANGE) {
+                lexer.nextToken();
+            }
+            lexer.nextToken();
+            lexer.nextTokenLParen();
+            while (lexer.token() != Token.RPAREN) {
+                SQLExpr partition = this.exprParser.expr();
+                stmt.getPartitions().add(partition);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+            accept(Token.RPAREN);
+        }
+    }
+
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         if (lexer.token() == Token.FROM) {

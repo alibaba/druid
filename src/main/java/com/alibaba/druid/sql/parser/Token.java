@@ -364,7 +364,7 @@ public enum Token {
     INCREMENTAL("INCREMENTAL"),
     HASH("HASH"),
     RANGE("RANGE"),
-
+    RENAME("RENAME"),
     ;
 
     public final String name;

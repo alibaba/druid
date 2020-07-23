@@ -40,6 +40,7 @@ public class ImpalaLexer extends Lexer {
         map.put("UPSERT",Token.UPSERT);
         map.put("HASH",Token.HASH);
         map.put("RANGE",Token.RANGE);
+        map.put("RENAME",Token.RENAME);
 
         map.put("OF", Token.OF);
         map.put("CONCAT", Token.CONCAT);

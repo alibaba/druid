@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.impala.visitor;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsert;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsertStatement;
+import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaAlterTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaCreateTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaMetaStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaUpdateStatements;
@@ -41,4 +42,7 @@ public interface ImpalaASTVisitor extends SQLASTVisitor {
 
     boolean visit(ImpalaUpdateStatements x);
     void endVisit(ImpalaUpdateStatements x);
+
+    boolean visit(ImpalaAlterTableStatement x);
+    void endVisit(ImpalaAlterTableStatement x);
 }

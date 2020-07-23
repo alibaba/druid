@@ -17,12 +17,14 @@ package com.alibaba.druid.sql.dialect.impala.visitor;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsert;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaInsertStatement;
+import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaAlterTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaCreateTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaMetaStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaUpdateStatements;
@@ -90,6 +92,16 @@ public class ImpalaSchemaStatVisitor extends SchemaStatVisitor implements Impala
 
     @Override
     public void endVisit(ImpalaUpdateStatements x) {
+
+    }
+
+    @Override
+    public boolean visit(ImpalaAlterTableStatement x) {
+        return super.visit((SQLAlterTableStatement)x);
+    }
+
+    @Override
+    public void endVisit(ImpalaAlterTableStatement x) {
 
     }
 
