@@ -712,7 +712,7 @@ public class SQLEvalVisitorUtils {
             Object conditionValue = item.getConditionExpr().getAttribute(EVAL_VALUE);
 
             if ((x.getValueExpr() != null && eq(value, conditionValue))
-                || (x.getValueExpr() == null && conditionValue instanceof Boolean && (Boolean) conditionValue == Boolean.TRUE)) {
+                || (x.getValueExpr() == null && conditionValue instanceof Boolean && ((Boolean) conditionValue).equals(Boolean.TRUE))) {
                 item.getValueExpr().accept(visitor);
 
                 if (item.getValueExpr().getAttributes().containsKey(EVAL_VALUE)) {

@@ -3969,7 +3969,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLWithSubqueryClause x) {
         print0(ucase ? "WITH " : "with ");
-        if (x.getRecursive() == Boolean.TRUE) {
+        if (x.getRecursive().equals(Boolean.TRUE)) {
             print0(ucase ? "RECURSIVE " : "recursive ");
         }
         this.indentCount++;
@@ -6028,10 +6028,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(x.getMaxtrans());
         }
 
-        if (x.getCompress() == Boolean.FALSE) {
+        if (x.getCompress().equals(Boolean.FALSE)) {
             println();
             print0(ucase ? "NOCOMPRESS" : "nocompress");
-        } else if (x.getCompress() == Boolean.TRUE) {
+        } else if (x.getCompress().equals(Boolean.TRUE)) {
             println();
             print0(ucase ? "COMPRESS" : "compress");
 
@@ -6041,10 +6041,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
-        if (x.getLogging() == Boolean.TRUE) {
+        if (x.getLogging().equals(Boolean.TRUE)) {
             println();
             print0(ucase ? "LOGGING" : "logging");
-        } else if (x.getLogging() == Boolean.FALSE) {
+        } else if (x.getLogging().equals(Boolean.FALSE)) {
             println();
             print0(ucase ? "NOLOGGING" : "nologging");
         }

@@ -1582,7 +1582,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         String alias = x.getAlias();
         SQLWithSubqueryClause with = (SQLWithSubqueryClause) x.getParent();
 
-        if (Boolean.TRUE == with.getRecursive()) {
+        if (Boolean.TRUE.equals(with.getRecursive())) {
             SQLSelect select = x.getSubQuery();
             if (select != null) {
                 select.accept(this);
