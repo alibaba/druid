@@ -921,6 +921,7 @@ public class SQLEvalVisitorUtils {
                         x.putAttribute(EVAL_VALUE, Boolean.TRUE);
                         return false;
                     case NotEqual:
+                    case LessThanOrGreater:
                     case NotLike:
                     case GreaterThan:
                     case LessThan:
@@ -1011,6 +1012,7 @@ public class SQLEvalVisitorUtils {
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case NotEqual:
+            case LessThanOrGreater:
                 value = !eq(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
