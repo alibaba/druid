@@ -672,6 +672,7 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = queryExpr;
                 break;
             case CAST:
+            case TRY_CAST:
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 SQLCastExpr cast = new SQLCastExpr();
