@@ -36,7 +36,7 @@ public class RandomDataSourceSelectorTest extends BaseRandomDataSourceSelectorTe
         assertEquals(60, selector.getValidateThread().getCheckingIntervalSeconds());
 
         assertEquals(120, selector.getRecoveryIntervalSeconds());
-        assertEquals(120, selector.getRecoverThread().getSleepSeconds());
+        assertEquals(120, selector.getRecoverThread().getRecoverIntervalSeconds());
 
         assertEquals(10, selector.getValidationSleepSeconds());
         assertEquals(10, selector.getValidateThread().getValidationSleepSeconds());

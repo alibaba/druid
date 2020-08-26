@@ -29,6 +29,7 @@ public class NamedDataSourceSelectorTest {
     @After
     public void tearDown() {
         dataSourceMap = null;
+        dataSource.destroy();
         dataSource = null;
     }
 

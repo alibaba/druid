@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.1.22</version>
+	<version>1.1.23</version>
 
 
 	<packaging>jar</packaging>
@@ -21,7 +21,7 @@
 		<javadoc.skip>true</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jdk.version>1.8</jdk.version>
+		<jdk.version>1.6</jdk.version>
 	</properties>
 
 	<repositories>
@@ -518,7 +518,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>22.0</version>
+			<version>29.0-jre</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -527,7 +527,12 @@
 			<version>2.5.3</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>4.2.0</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!--
 			test dependences
@@ -650,7 +655,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.67</version>
+			<version>1.2.68</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -695,5 +700,11 @@
             <systemPath>${project.basedir}/lib/openjdk-1.8-jconsole.jar</systemPath>
         </dependency>
 
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-test</artifactId>
+			<version>4.2.0</version>
+			<scope>test</scope>
+		</dependency>
     </dependencies>
 </project>

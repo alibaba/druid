@@ -26,6 +26,7 @@ public class BaseRandomDataSourceSelectorTest {
     @After
     public void tearDown() {
         dataSourceMap = null;
+        dataSource.destroy();
         dataSource = null;
     }
 }

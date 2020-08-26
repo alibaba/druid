@@ -41,6 +41,10 @@ public class NamedDataSourceSelector implements DataSourceSelector {
     }
 
     @Override
+    public void destroy() {
+    }
+
+    @Override
     public String getName() {
         return DataSourceSelectorEnum.BY_NAME.getName();
     }
@@ -51,7 +55,7 @@ public class NamedDataSourceSelector implements DataSourceSelector {
             return null;
         }
 
-        Map<String, DataSource> dataSourceMap = highAvailableDataSource.getDataSourceMap();
+        Map<String, DataSource> dataSourceMap = highAvailableDataSource.getAvailableDataSourceMap();
         if (dataSourceMap == null || dataSourceMap.isEmpty()) {
             return null;
         }
