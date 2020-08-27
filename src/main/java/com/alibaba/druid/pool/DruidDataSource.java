@@ -1115,6 +1115,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
+    /**
+     * 针对druid自定义的一种url格式，进行解析
+     * jdbc:wrap-jdbc:开头，可设置driver、name、jmx等
+     * @throws SQLException
+     */
     private void initFromWrapDriverUrl() throws SQLException {
         if (!jdbcUrl.startsWith(DruidDriver.DEFAULT_PREFIX)) {
             return;
