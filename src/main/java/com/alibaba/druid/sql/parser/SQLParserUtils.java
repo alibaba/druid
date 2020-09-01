@@ -84,9 +84,7 @@ public class SQLParserUtils {
             return new MySqlStatementParser(sql, features);
         }
 
-        if (JdbcUtils.isPgsqlDbType(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)
-                || JdbcUtils.POLARDB.equals(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
             return new PGSQLStatementParser(sql);
         }
 
@@ -126,9 +124,7 @@ public class SQLParserUtils {
             return new MySqlExprParser(sql);
         }
 
-        if (JdbcUtils.isPgsqlDbType(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)
-                || JdbcUtils.POLARDB.equals(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
             return new PGExprParser(sql);
         }
 
@@ -160,9 +156,7 @@ public class SQLParserUtils {
             return new MySqlLexer(sql);
         }
 
-        if (JdbcUtils.isPgsqlDbType(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)
-                || JdbcUtils.POLARDB.equals(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
             return new PGLexer(sql);
         }
 
@@ -194,8 +188,7 @@ public class SQLParserUtils {
             return new MySqlSelectQueryBlock();
         }
 
-        if (JdbcUtils.POSTGRESQL.equals(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
             return new PGSelectQueryBlock();
         }
 
