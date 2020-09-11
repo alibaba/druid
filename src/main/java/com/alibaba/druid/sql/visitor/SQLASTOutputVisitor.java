@@ -5947,15 +5947,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLLimit x) {
         print0(ucase ? "LIMIT " : "limit ");
-        SQLExpr offset = x.getOffset();
-        if (offset != null) {
-            printExpr(offset);
-            print0(", ");
+        if (x.isWithOffsetCause()) {
+            SQLExpr rowCount = x.getRowCount();
+            printExpr(rowCount);
+
+            SQLExpr offset = x.getOffset();
+            if (offset != null) {
+                print0(ucase ? " OFFSET " : " offset ");
+                printExpr(offset);
+            }
+        } else {
+            SQLExpr offset = x.getOffset();
+            if (offset != null) {
+                printExpr(offset);
+                print0(", ");
+            }
+
+            SQLExpr rowCount = x.getRowCount();
+            printExpr(rowCount);
         }
-
-        SQLExpr rowCount = x.getRowCount();
-        printExpr(rowCount);
-
         return false;
     }
 

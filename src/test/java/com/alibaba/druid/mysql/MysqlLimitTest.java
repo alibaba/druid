@@ -1,5 +1,6 @@
 package com.alibaba.druid.mysql;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
@@ -22,7 +23,12 @@ public class MysqlLimitTest extends TestCase{
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("is not a number!"));
         }
+    }
 
-
+    public void testLimitWithOffset() {
+        String sql = "select * from aaa limit ? offset ?";
+        SQLStatementParser statementParser = SQLParserUtils.createSQLStatementParser(sql, "mysql");
+        SQLStatement sqlStatement = statementParser.parseStatement();
+        assertEquals("select * from aaa limit 10 offset 0", SQLUtils.toSQLString(sqlStatement, "mysql", new SQLUtils.FormatOption(false, false)));
     }
 }

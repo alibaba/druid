@@ -39,6 +39,8 @@ public final class SQLLimit extends SQLObjectImpl {
     private SQLExpr rowCount;
     private SQLExpr offset;
 
+    private boolean withOffsetCause;
+
     public SQLExpr getRowCount() {
         return rowCount;
     }
@@ -67,6 +69,14 @@ public final class SQLLimit extends SQLObjectImpl {
             offset.setParent(this);
         }
         this.offset = offset;
+    }
+
+    public boolean isWithOffsetCause(){
+        return withOffsetCause;
+    }
+
+    public void setWithOffsetCause(boolean withOffsetCause) {
+        this.withOffsetCause = withOffsetCause;
     }
 
     @Override
