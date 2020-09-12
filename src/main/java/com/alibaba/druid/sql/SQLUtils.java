@@ -891,9 +891,7 @@ public class SQLUtils {
                     if (MySqlUtils.isKeyword(normalizeName)) {
                         return name;
                     }
-                } else if (JdbcUtils.isPgsqlDbType(dbType)
-                        || JdbcConstants.ENTERPRISEDB.equals(dbType)
-                        || JdbcConstants.POLARDB.equals(dbType)) {
+                } else if (JdbcUtils.isPgsqlDbType(dbType)) {
                     if (PGUtils.isKeyword(normalizeName)) {
                         return name;
                     }
