@@ -3935,7 +3935,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     renameStmt.addItem(item);
 
                     return renameStmt;
-                }   
+                }
             } else if (lexer.token() == Token.ORDER) {
                 throw new ParserException("TODO " + lexer.info());
             } else if (lexer.identifierEquals("CONVERT")) {
@@ -5055,6 +5055,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         accept(Token.WHILE);
 
         accept(Token.SEMI);
+        stmt.setAfterSemi(true);
 
         return stmt;
 
@@ -5085,6 +5086,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         acceptIdentifier(label);
 
         accept(Token.SEMI);
+        stmt.setAfterSemi(true);
 
         return stmt;
 
@@ -5543,7 +5545,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         return stmt;
     }
-    
+
     /**
      * FETCH [[NEXT] FROM] cursor_name INTO var_name [, var_name] ...
      */
