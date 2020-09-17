@@ -2716,18 +2716,33 @@ public class SQLExprParser extends SQLParser {
             }
         }
 
-        if (typeNameHashCode == FnvHash.Constants.NATIONAL) {
-            if (lexer.token == Token.IDENTIFIER) {
-                String nationalName = lexer.stringVal();
-                if ("varchar".equalsIgnoreCase(nationalName) || "char"
-                        .equalsIgnoreCase(nationalName)) {
-                    typeName = (" n" + lexer.stringVal().toLowerCase());
-                    lexer.nextToken();
-                }
+        if (isCharType(typeName)) {
+            SQLCharacterDataType charType = new SQLCharacterDataType(typeName);
+
+            if (lexer.token == Token.LPAREN) {
+                lexer.nextToken();
+                SQLExpr arg = this.expr();
+                arg.setParent(charType);
+                charType.addArgument(arg);
+                accept(Token.RPAREN);
             }
+
+            charType = (SQLCharacterDataType) parseCharTypeRest(charType);
+
+            if (lexer.token == Token.HINT) {
+                List<SQLCommentHint> hints = this.parseHints();
+                charType.setHints(hints);
+            }
+
+            return charType;
         }
 
-        if (isCharType(typeName)) {
+        if ("national".equalsIgnoreCase(typeName) &&
+                (lexer.identifierEquals(FnvHash.Constants.CHAR)
+                        || lexer.identifierEquals(FnvHash.Constants.VARCHAR))) {
+            typeName += ' ' + lexer.stringVal();
+            lexer.nextToken();
+
             SQLCharacterDataType charType = new SQLCharacterDataType(typeName);
 
             if (lexer.token == Token.LPAREN) {

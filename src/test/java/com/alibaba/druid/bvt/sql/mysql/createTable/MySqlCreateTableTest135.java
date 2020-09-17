@@ -26,16 +26,17 @@ public class MySqlCreateTableTest135 extends MysqlTest {
         assertEquals(1, statementList.size());
 
 
-        assertEquals("CREATE TABLE MQ_TOPIC_RECORD (\n"
-                + "\tTOPIC_ID bigint(11) NOT NULL,\n"
-                + "\tBROKENNAME  nvarchar(50),\n"
-                + "\tBROKENNAME2  nchar(50)\n"
-                + ");", stmt.toString());
+        assertEquals("CREATE TABLE MQ_TOPIC_RECORD (\n" +
+                "\tTOPIC_ID bigint(11) NOT NULL,\n" +
+                "\tBROKENNAME national VARCHAR(50),\n" +
+                "\tBROKENNAME2 national CHAR(50)\n" +
+                ");", stmt.toString());
 
-        assertEquals("create table MQ_TOPIC_RECORD (\n"
-                + "\tTOPIC_ID bigint(11) not null,\n"
-                + "\tBROKENNAME  nvarchar(50),\n"
-                + "\tBROKENNAME2  nchar(50)\n" + ");", stmt.toLowerCaseString());
+        assertEquals("create table MQ_TOPIC_RECORD (\n" +
+                "\tTOPIC_ID bigint(11) not null,\n" +
+                "\tBROKENNAME national VARCHAR(50),\n" +
+                "\tBROKENNAME2 national CHAR(50)\n" +
+                ");", stmt.toLowerCaseString());
 
     }
 }
