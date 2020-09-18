@@ -29,6 +29,13 @@ public class JdbcUtils_driver extends TestCase {
         Assert.assertEquals(JdbcConstants.ODPS, JdbcUtils.getDbType(url, className));
     }
 
+    public void test_oceanbase() {
+        assertEquals(JdbcConstants.OCEANBASE
+                , JdbcUtils.getDbType("jdbc:oceanbase://127.1:3306/test?a=b", null));
+        assertEquals(JdbcConstants.OCEANBASE_ORACLE
+                , JdbcUtils.getDbType("jdbc:oceanbase:oracle://127.1:3306/test?a=b", null));
+    }
+
     public void test_log4jdbc_mysql() {
         String jdbcUrl = "jdbc:log4jdbc:mysql://localhost:8066/test";
         String dbType = JdbcUtils.getDbType(jdbcUrl, null);
