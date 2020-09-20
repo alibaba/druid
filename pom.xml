@@ -203,7 +203,7 @@
 		<profile>
 			<id>default-profile</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<!--<activeByDefault>true</activeByDefault>-->
 				<file>
 					<exists>${env.JAVA_HOME}/lib/jconsole.jar</exists>
 				</file>
