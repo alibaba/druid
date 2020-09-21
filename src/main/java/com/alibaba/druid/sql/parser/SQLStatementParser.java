@@ -2474,11 +2474,11 @@ public class SQLStatementParser extends SQLParser {
             stmt.setWhen(condition);
         }
 
-        List<SQLStatement> body = this.parseStatementList();
-        if (body == null || body.isEmpty()) {
+        SQLStatement body = this.parseBlock();
+        if (body == null) {
             throw new ParserException("syntax error");
         }
-        stmt.setBody(body.get(0));
+        stmt.setBody(body);
         return stmt;
     }
 
@@ -3056,7 +3056,7 @@ public class SQLStatementParser extends SQLParser {
     public void setParseValuesSize(int parseValuesSize) {
         this.parseValuesSize = parseValuesSize;
     }
-    
+
     public SQLStatement parseMerge() {
         accept(Token.MERGE);
 
