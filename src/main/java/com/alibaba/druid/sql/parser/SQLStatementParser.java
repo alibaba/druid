@@ -1580,7 +1580,7 @@ public class SQLStatementParser extends SQLParser {
             parseAssignItems(dropPartition.getPartitions(), dropPartition);
 
             accept(Token.RPAREN);
-            
+
             if (lexer.identifierEquals("PURGE")) {
                 lexer.nextToken();
                 dropPartition.setPurge(true);
@@ -1590,7 +1590,7 @@ public class SQLStatementParser extends SQLParser {
             dropPartition.addPartition(partition);
         }
 
-    
+
         return dropPartition;
     }
 
@@ -1894,21 +1894,21 @@ public class SQLStatementParser extends SQLParser {
                 stmt.setCascade(Boolean.FALSE);
                 continue;
             }
-            
+
             if (lexer.token == Token.DROP) {
                 lexer.nextToken();
                 acceptIdentifier("STORAGE");
                 stmt.setDropStorage(true);
                 continue;
             }
-            
+
             if (lexer.identifierEquals("REUSE")) {
                 lexer.nextToken();
                 acceptIdentifier("STORAGE");
                 stmt.setReuseStorage(true);
                 continue;
             }
-            
+
             if (lexer.identifierEquals("IGNORE")) {
                 lexer.nextToken();
                 accept(Token.DELETE);
@@ -1916,7 +1916,7 @@ public class SQLStatementParser extends SQLParser {
                 stmt.setIgnoreDeleteTriggers(true);
                 continue;
             }
-            
+
             if (lexer.identifierEquals("RESTRICT")) {
                 lexer.nextToken();
                 accept(Token.WHEN);
@@ -1925,13 +1925,13 @@ public class SQLStatementParser extends SQLParser {
                 stmt.setRestrictWhenDeleteTriggers(true);
                 continue;
             }
-            
+
             if (lexer.token == Token.CONTINUE) {
                 lexer.nextToken();
                 accept(Token.IDENTITY);
                 continue;
             }
-            
+
             if (lexer.identifierEquals("IMMEDIATE")) {
                 lexer.nextToken();
                 stmt.setImmediate(true);
@@ -2004,7 +2004,7 @@ public class SQLStatementParser extends SQLParser {
                     values.addValue(value);
                     insertStatement.addValueCause(values);
                 }
-                
+
                 if (lexer.token == Token.COMMA) {
                     lexer.nextToken();
                     continue;
@@ -2139,7 +2139,7 @@ public class SQLStatementParser extends SQLParser {
     public SQLStatement parseCreate() {
         char markChar = lexer.current();
         int markBp = lexer.bp();
-        
+
         List<String> comments = null;
         if (lexer.isKeepComments() && lexer.hasComment()) {
             comments = lexer.readAndResetComments();
@@ -2152,11 +2152,11 @@ public class SQLStatementParser extends SQLParser {
         if (token == Token.TABLE || lexer.identifierEquals("GLOBAL")) {
             SQLCreateTableParser createTableParser = getSQLCreateTableParser();
             SQLCreateTableStatement stmt = createTableParser.parseCreateTable(false);
-            
+
             if (comments != null) {
                 stmt.addBeforeComment(comments);
             }
-            
+
             return stmt;
         } else if (token == Token.INDEX //
                    || token == Token.UNIQUE //
@@ -2830,7 +2830,7 @@ public class SQLStatementParser extends SQLParser {
         }
         return item;
     }
-    
+
     public SQLStatement parseStatement() {
         if (lexer.token == Token.SELECT) {
             return this.parseSelect();
@@ -2853,7 +2853,7 @@ public class SQLStatementParser extends SQLParser {
         this.parseStatementList(list, 1, null);
         return list.get(0);
     }
-    
+
     /**
     * @param tryBest  - 为true去解析并忽略之后的错误
     *  强制建议除非明确知道可以忽略才传tryBest=true,
@@ -2976,7 +2976,7 @@ public class SQLStatementParser extends SQLParser {
 
     /**
      * parse cursor open statement
-     * 
+     *
      * @return
      */
     public SQLOpenStatement parseOpen() {
@@ -3056,7 +3056,7 @@ public class SQLStatementParser extends SQLParser {
     public void setParseValuesSize(int parseValuesSize) {
         this.parseValuesSize = parseValuesSize;
     }
-    
+
     public SQLStatement parseMerge() {
         accept(Token.MERGE);
 
@@ -3066,7 +3066,7 @@ public class SQLStatementParser extends SQLParser {
         parseHints(stmt.getHints());
 
         accept(Token.INTO);
-        
+
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
             SQLSelect select = this.createSQLSelectParser().select();
@@ -3076,7 +3076,7 @@ public class SQLStatementParser extends SQLParser {
         } else {
             stmt.setInto(exprParser.name());
         }
-        
+
         stmt.getInto().setAlias(tableAlias());
 
         accept(Token.USING);
@@ -3178,7 +3178,7 @@ public class SQLStatementParser extends SQLParser {
 
         return stmt;
     }
-    
+
     protected SQLErrorLoggingClause parseErrorLoggingClause() {
         if (lexer.identifierEquals("LOG")) {
             SQLErrorLoggingClause errorClause = new SQLErrorLoggingClause();
@@ -3206,7 +3206,7 @@ public class SQLStatementParser extends SQLParser {
         }
         return null;
     }
-    
+
     public void parseHints(List<SQLHint> hints) {
         this.getExprParser().parseHints(hints);
     }
