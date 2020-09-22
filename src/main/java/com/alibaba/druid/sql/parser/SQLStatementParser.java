@@ -513,6 +513,11 @@ public class SQLStatementParser extends SQLParser {
                 }
             }
 
+            if (lexer.token() == Token.ELSEIF
+                    && parent instanceof SQLIfStatement) {
+                break;
+            }
+
             int size = statementList.size();
             if (parseStatementListDialect(statementList)) {
                 if (parent != null) {

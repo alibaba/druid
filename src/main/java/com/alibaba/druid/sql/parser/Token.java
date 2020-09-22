@@ -134,6 +134,7 @@ public enum Token {
     BINARY("BINARY"),
     SHOW("SHOW"),
     REPLACE("REPLACE"),
+    ELSEIF("ELSEIF"),
 
     BITS,
 
