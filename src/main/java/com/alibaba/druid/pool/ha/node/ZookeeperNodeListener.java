@@ -74,6 +74,7 @@ public class ZookeeperNodeListener extends NodeListener {
      * URL Template, e.g.
      * jdbc:mysql://${host}:${port}/${database}?useUnicode=true
      * ${host}, ${port} and ${database} will be replaced by values in ZK
+     * ${} can also be #{}
      */
     private String urlTemplate;
 
@@ -258,12 +259,15 @@ public class ZookeeperNodeListener extends NodeListener {
         String dataPrefix = getPrefix();
         if (properties.containsKey(dataPrefix + ".host")) {
             url = url.replace("${host}", properties.getProperty(dataPrefix + ".host"));
+            url = url.replace("#{host}", properties.getProperty(dataPrefix + ".host"));
         }
         if (properties.containsKey(dataPrefix + ".port")) {
             url = url.replace("${port}", properties.getProperty(dataPrefix + ".port"));
+            url = url.replace("#{port}", properties.getProperty(dataPrefix + ".port"));
         }
         if (properties.containsKey(dataPrefix + ".database")) {
             url = url.replace("${database}", properties.getProperty(dataPrefix + ".database"));
+            url = url.replace("#{database}", properties.getProperty(dataPrefix + ".database"));
         }
         return url;
     }
