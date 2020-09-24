@@ -335,7 +335,7 @@ public class WebAppStat {
                     long fullCount = uriSessionMapFullCount.getAndIncrement();
 
                     if (fullCount == 0) {
-                        LOG.error("sessionStatMap is full");
+                        LOG.warn("sessionStatMap is full");
                     }
                 }
 

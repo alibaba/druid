@@ -3,8 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.1.21_preview_01</version>
-
+	<version>1.1.24</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -17,11 +16,11 @@
 		<junit.version>4.12</junit.version>
 		<jmh.version>1.19</jmh.version>
 
-		<gpg.skip>true</gpg.skip>
-		<javadoc.skip>true</javadoc.skip>
+		<gpg.skip>false</gpg.skip>
+		<javadoc.skip>false</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jdk.version>1.8</jdk.version>
+		<jdk.version>1.6</jdk.version>
 	</properties>
 
 	<repositories>
@@ -443,7 +442,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.2.6</version>
+			<version>42.2.12</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -518,7 +517,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>22.0</version>
+			<version>29.0-jre</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -655,7 +654,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.36</version>
+			<version>1.2.68</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

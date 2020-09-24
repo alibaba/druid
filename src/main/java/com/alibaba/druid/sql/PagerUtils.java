@@ -102,16 +102,16 @@ public class PagerUtils {
     }
 
     public static boolean limit(SQLSelect select, String dbType, int offset, int count, boolean check) {
-        if (JdbcConstants.ORACLE.equals(dbType)) {
+        if (JdbcUtils.isOracleDbType(dbType)) {
             return limitOracle(select, dbType, offset, count, check);
+        }
+
+        if (JdbcUtils.isSqlserverDbType(dbType)) {
+            return limitSQLServer(select, dbType, offset, count, check);
         }
 
         if (JdbcConstants.DB2.equals(dbType)) {
             return limitDB2(select, dbType, offset, count, check);
-        }
-
-        if (JdbcConstants.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
-            return limitSQLServer(select, dbType, offset, count, check);
         }
 
         return limitQueryBlock(select, dbType, offset, count, check);
@@ -125,13 +125,11 @@ public class PagerUtils {
         }
 
         SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
-        if (JdbcConstants.MYSQL.equals(dbType) || //
-            JdbcConstants.MARIADB.equals(dbType) || //
-            JdbcConstants.H2.equals(dbType)) {
+        if (JdbcUtils.isMysqlDbType(dbType)) {
             return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
         }
 
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
             return limitPostgreSQLQueryBlock((PGSelectQueryBlock) queryBlock, dbType, offset, count, check);
         }
         throw new UnsupportedOperationException();
@@ -521,29 +519,19 @@ public class PagerUtils {
     }
 
     private static SQLSelectQueryBlock createQueryBlock(String dbType) {
-        if (JdbcConstants.MYSQL.equals(dbType)
-                || JdbcConstants.MARIADB.equals(dbType)
-                || JdbcConstants.ALIYUN_ADS.equals(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
             return new MySqlSelectQueryBlock();
         }
 
-        if (JdbcConstants.MARIADB.equals(dbType)) {
-            return new MySqlSelectQueryBlock();
-        }
-
-        if (JdbcConstants.H2.equals(dbType)) {
-            return new MySqlSelectQueryBlock();
-        }
-
-        if (JdbcConstants.ORACLE.equals(dbType)) {
+        if (JdbcUtils.isOracleDbType(dbType)) {
             return new OracleSelectQueryBlock();
         }
 
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
             return new PGSelectQueryBlock();
         }
 
-        if (JdbcConstants.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
+        if (JdbcUtils.isSqlserverDbType(dbType)) {
             return new SQLServerSelectQueryBlock();
         }
 
@@ -640,7 +628,7 @@ public class PagerUtils {
     public static boolean hasUnorderedLimit(String sql, String dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcUtils.isMysqlDbType(dbType)) {
 
             MySqlUnorderedLimitDetectVisitor visitor = new MySqlUnorderedLimitDetectVisitor();
 
@@ -651,7 +639,7 @@ public class PagerUtils {
             return visitor.unorderedLimitCount > 0;
         }
 
-        if (JdbcConstants.ORACLE.equals(dbType)) {
+        if (JdbcUtils.isOracleDbType(dbType)) {
 
             OracleUnorderedLimitDetectVisitor visitor = new OracleUnorderedLimitDetectVisitor();
 

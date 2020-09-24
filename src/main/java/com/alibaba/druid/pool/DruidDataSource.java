@@ -67,18 +67,7 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
-import com.alibaba.druid.pool.vendor.DB2ExceptionSorter;
-import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
-import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.MockExceptionSorter;
-import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
-import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.NullExceptionSorter;
-import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
-import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.PGExceptionSorter;
-import com.alibaba.druid.pool.vendor.PGValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.SybaseExceptionSorter;
+import com.alibaba.druid.pool.vendor.*;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
@@ -845,6 +834,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (JdbcConstants.MYSQL.equals(this.dbType)
                     || JdbcConstants.MARIADB.equals(this.dbType)
+                    || JdbcConstants.OCEANBASE.equals(this.dbType)
                     || JdbcConstants.ALIYUN_ADS.equals(this.dbType)) {
                 boolean cacheServerConfigurationSet = false;
                 if (this.connectProperties.containsKey("cacheServerConfiguration")) {
@@ -883,24 +873,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             initFromSPIServiceLoader();
 
-            if (this.driver == null) {
-                if (this.driverClass == null || this.driverClass.isEmpty()) {
-                    this.driverClass = JdbcUtils.getDriverClassName(this.jdbcUrl);
-                }
-
-                if (MockDriver.class.getName().equals(driverClass)) {
-                    driver = MockDriver.instance;
-                } else {
-                    if (jdbcUrl == null && (driverClass == null || driverClass.length() == 0)) {
-                        throw new SQLException("url not set");
-                    }
-                    driver = JdbcUtils.createDriver(driverClassLoader, driverClass);
-                }
-            } else {
-                if (this.driverClass == null) {
-                    this.driverClass = driver.getClass().getName();
-                }
-            }
+            resolveDriver();
 
             initCheck();
 
@@ -1213,6 +1186,27 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         LOG.error(errorMessage + "validationQuery not set");
     }
 
+    protected void resolveDriver() throws SQLException {
+        if (this.driver == null) {
+            if (this.driverClass == null || this.driverClass.isEmpty()) {
+                this.driverClass = JdbcUtils.getDriverClassName(this.jdbcUrl);
+            }
+
+            if (MockDriver.class.getName().equals(driverClass)) {
+                driver = MockDriver.instance;
+            } else {
+                if (jdbcUrl == null && (driverClass == null || driverClass.length() == 0)) {
+                    throw new SQLException("url not set");
+                }
+                driver = JdbcUtils.createDriver(driverClassLoader, driverClass);
+            }
+        } else {
+            if (this.driverClass == null) {
+                this.driverClass = driver.getClass().getName();
+            }
+        }
+    }
+
     protected void initCheck() throws SQLException {
         if (JdbcUtils.ORACLE.equals(this.dbType)) {
             isOracle = true;
@@ -1316,7 +1310,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.validConnectionChecker = new MSSQLValidConnectionChecker();
 
         } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
-                || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)) {
+                || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
+                || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
         }
     }
@@ -1340,6 +1335,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
                     || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
                 this.exceptionSorter = new OracleExceptionSorter();
+            } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)) { // 写一个真实的 TestCase
+                if (JdbcUtils.OCEANBASE_ORACLE.equalsIgnoreCase(dbType)) {
+                    this.exceptionSorter = new OceanBaseOracleExceptionSorter();
+                } else {
+                    this.exceptionSorter = new MySqlExceptionSorter();
+                }
             } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
                 this.exceptionSorter = new InformixExceptionSorter();
 
@@ -1347,7 +1348,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.exceptionSorter = new SybaseExceptionSorter();
 
             } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
-                    || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)) {
+                    || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
+                    || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
                 this.exceptionSorter = new PGExceptionSorter();
 
             } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
@@ -2487,6 +2489,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         lock.lock();
         try {
             if (poolingCount >= maxActive) {
+                if (createScheduler != null) {
+                    clearCreateTask(createTaskId);
+                }
                 return false;
             }
             connections[poolingCount] = holder;

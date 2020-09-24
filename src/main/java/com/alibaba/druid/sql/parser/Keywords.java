@@ -52,6 +52,7 @@ public class Keywords {
         map.put("BY", Token.BY);
         map.put("CASE", Token.CASE);
         map.put("CAST", Token.CAST);
+        map.put("TRY_CAST", Token.TRY_CAST);
 
         map.put("CHECK", Token.CHECK);
         map.put("CONSTRAINT", Token.CONSTRAINT);

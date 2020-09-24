@@ -672,6 +672,7 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = queryExpr;
                 break;
             case CAST:
+            case TRY_CAST:
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 SQLCastExpr cast = new SQLCastExpr();
@@ -1585,11 +1586,7 @@ public class SQLExprParser extends SQLParser {
                 throw new ParserException("error, " + lexer.info());
             }
 
-            if (lexer.token == Token.LITERAL_ALIAS) {
-                name = new SQLPropertyExpr(name, lexer.stringVal());
-            } else {
-                name = new SQLPropertyExpr(name, lexer.stringVal());
-            }
+            name = new SQLPropertyExpr(name, lexer.stringVal());
             lexer.nextToken();
             name = nameRest(name);
         }
@@ -2721,6 +2718,32 @@ public class SQLExprParser extends SQLParser {
         }
 
         if (isCharType(typeName)) {
+            SQLCharacterDataType charType = new SQLCharacterDataType(typeName);
+
+            if (lexer.token == Token.LPAREN) {
+                lexer.nextToken();
+                SQLExpr arg = this.expr();
+                arg.setParent(charType);
+                charType.addArgument(arg);
+                accept(Token.RPAREN);
+            }
+
+            charType = (SQLCharacterDataType) parseCharTypeRest(charType);
+
+            if (lexer.token == Token.HINT) {
+                List<SQLCommentHint> hints = this.parseHints();
+                charType.setHints(hints);
+            }
+
+            return charType;
+        }
+
+        if ("national".equalsIgnoreCase(typeName) &&
+                (lexer.identifierEquals(FnvHash.Constants.CHAR)
+                        || lexer.identifierEquals(FnvHash.Constants.VARCHAR))) {
+            typeName += ' ' + lexer.stringVal();
+            lexer.nextToken();
+
             SQLCharacterDataType charType = new SQLCharacterDataType(typeName);
 
             if (lexer.token == Token.LPAREN) {

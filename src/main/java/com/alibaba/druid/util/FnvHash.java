@@ -415,6 +415,7 @@ public final class FnvHash {
         long GROUP_CONCAT = fnv1a_64_lower("GROUP_CONCAT");
         long DEDUPLICATION = fnv1a_64_lower("DEDUPLICATION");
         long CONVERT = fnv1a_64_lower("CONVERT");
+        long NATIONAL = fnv1a_64_lower("NATIONAL");
         long CHAR = fnv1a_64_lower("CHAR");
         long VARCHAR = fnv1a_64_lower("VARCHAR");
         long VARCHAR2 = fnv1a_64_lower("VARCHAR2");

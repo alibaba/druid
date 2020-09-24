@@ -27,16 +27,20 @@ public class DistinctTest extends TestCase {
 
     public void test_mysql() throws Exception {
         Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.MYSQL));
+        Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.OCEANBASE));
     }
 
     public void test_oracle() throws Exception {
         Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.ORACLE));
+        Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.OCEANBASE_ORACLE));
         Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.ALI_ORACLE));
     }
 
     public void test_oracle_unique() throws Exception {
         Assert.assertEquals("SELECT count(UNIQUE *)\nFROM t",
                             SQLUtils.format("select count(unique *) from t", JdbcUtils.ORACLE));
+        Assert.assertEquals("SELECT count(UNIQUE *)\nFROM t",
+                SQLUtils.format("select count(unique *) from t", JdbcUtils.OCEANBASE_ORACLE));
         Assert.assertEquals("SELECT count(UNIQUE *)\nFROM t",
                             SQLUtils.format("select count(unique *) from t", JdbcUtils.ALI_ORACLE));
     }

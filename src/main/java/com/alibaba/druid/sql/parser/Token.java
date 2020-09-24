@@ -84,6 +84,7 @@ public enum Token {
     ON("ON"), 
     SCHEMA("SCHEMA"), 
     CAST("CAST"),
+    TRY_CAST("TRY_CAST"),
     COLUMN("COLUMN"),
     USE("USE"),
     DATABASE("DATABASE"),

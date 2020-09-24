@@ -539,11 +539,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     protected SQLASTVisitor createOrderByVisitor(SQLOrderBy x) {
         final SQLASTVisitor orderByVisitor;
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcConstants.MYSQL.equals(dbType) || JdbcConstants.OCEANBASE.equals(dbType)) {
             orderByVisitor = new MySqlOrderByStatVisitor(x);
         } else if (JdbcConstants.POSTGRESQL.equals(dbType)) {
             orderByVisitor = new PGOrderByStatVisitor(x);
-        } else if (JdbcConstants.ORACLE.equals(dbType)) {
+        } else if (JdbcConstants.ORACLE.equals(dbType) || JdbcConstants.OCEANBASE_ORACLE.equals(dbType)) {
             orderByVisitor = new OracleOrderByStatVisitor(x);
         } else {
             orderByVisitor = new OrderByStatVisitor(x);

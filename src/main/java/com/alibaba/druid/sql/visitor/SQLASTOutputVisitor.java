@@ -2552,7 +2552,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             boolean newLine = item instanceof SQLForeignKeyConstraint //
                               || item instanceof SQLPrimaryKey //
                               || item instanceof SQLColumnCheck //
-                              || item instanceof SQLColumnCheck //
                               || item.getName() != null;
             if (newLine) {
                 this.indentCount++;

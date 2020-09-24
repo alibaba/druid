@@ -340,11 +340,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public boolean isUseUnfairLock() {
-        return lock.isFair();
+        return !lock.isFair();
     }
 
     public void setUseUnfairLock(boolean useUnfairLock) {
-        if (lock.isFair() == !useUnfairLock) {
+        if (lock.isFair() == !useUnfairLock && this.useUnfairLock != null) {
             return;
         }
 

@@ -27,6 +27,8 @@ public class OracleFormatTest2 extends TestCase {
 
         String formatedText = SQLUtils.format(text, JdbcUtils.ORACLE);
         System.out.println(formatedText);
+        String formatedText1 = SQLUtils.format(text, JdbcUtils.OCEANBASE_ORACLE);
+        System.out.println(formatedText1);
         String formatedText2 = SQLUtils.format(text, JdbcUtils.ALI_ORACLE);
         System.out.println(formatedText2);
     }

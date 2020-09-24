@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLSelectBuilderImpl implements SQLSelectBuilder {
 
@@ -80,6 +81,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
         return stmt;
     }
 
+    @Override
     public SQLSelectBuilderImpl select(String... columns) {
         SQLSelectQueryBlock queryBlock = getQueryBlock();
 
@@ -239,19 +241,19 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
     }
 
     protected SQLSelectQuery createSelectQueryBlock() {
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcUtils.isMysqlDbType(dbType)) {
             return new MySqlSelectQueryBlock();
         }
 
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
             return new PGSelectQueryBlock();
         }
 
-        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
+        if (JdbcUtils.isSqlserverDbType(dbType)) {
             return new SQLServerSelectQueryBlock();
         }
 
-        if (JdbcConstants.ORACLE.equals(dbType)) {
+        if (JdbcUtils.isOracleDbType(dbType)) {
             return new OracleSelectQueryBlock();
         }
 
@@ -266,6 +268,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
         return new SQLSelectGroupByClause();
     }
 
+    @Override
     public String toString() {
         return SQLUtils.toSQLString(stmt, dbType);
     }
