@@ -2017,12 +2017,19 @@ public class OracleStatementParser extends SQLStatementParser {
 
                     name = this.exprParser.name();
 
+                    String typeName = "TABLE OF " + name.toString();
+
                     if (lexer.token() == Token.PERCENT) {
                         lexer.nextToken();
                         acceptIdentifier("TYPE");
+                    }else if(lexer.token() == Token.LPAREN && lexer.stringVal().equalsIgnoreCase("Varchar2")) {
+                        accept(Token.LPAREN);
+                        int len = this.exprParser.acceptInteger();
+                        accept(Token.RPAREN);
+                        typeName += "(" + len + ")";
+                    }else{
+                        typeName += "%TYPE";
                     }
-
-                    String typeName = "TABLE OF " + name.toString() + "%TYPE";
                     dataType = new SQLDataTypeImpl(typeName);
                     dataType.setDbType(dbType);
                 } else if (lexer.identifierEquals("VARRAY")) {
