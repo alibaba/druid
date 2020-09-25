@@ -452,6 +452,12 @@ public class SQLExprParser extends SQLParser {
                             break;
                         }
                     }
+                } else if(JdbcConstants.ORACLE.equals(dbType)) {
+                    lexer.nextTokenValue();
+                    if (lexer.token == Token.BARBAR) {
+                        sqlExpr = additiveRest(sqlExpr);
+                    }
+
                 } else {
                     lexer.nextToken();
                 }
