@@ -3447,4 +3447,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public void endVisit(OracleRunStatement x) {
 
     }
+
+    public boolean visit(SQLWhileStatement x) {
+        x.setAfterSemi(true);
+        return super.visit(x);
+    }
 }
