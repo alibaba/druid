@@ -906,7 +906,8 @@ public final class JdbcUtils implements JdbcConstants {
 
     public static boolean isPgsqlDbType(String dbType) {
         return JdbcUtils.POSTGRESQL.equals(dbType) || //
-                JdbcUtils.ENTERPRISEDB.equals(dbType);
+                JdbcUtils.ENTERPRISEDB.equals(dbType) || //
+                JdbcUtils.POLARDB.equals(dbType);
     }
 
     public static boolean isSqlserverDbType(String dbType) {

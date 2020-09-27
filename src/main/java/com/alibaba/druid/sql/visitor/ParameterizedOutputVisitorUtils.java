@@ -274,9 +274,7 @@ public class ParameterizedOutputVisitorUtils {
         }
 
 
-        if (JdbcUtils.isPgsqlDbType(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)
-                || JdbcUtils.POLARDB.equals(dbType)) {
+        if (JdbcUtils.isPgsqlDbType(dbType)) {
             return new PGOutputVisitor(out, true);
         }
 
