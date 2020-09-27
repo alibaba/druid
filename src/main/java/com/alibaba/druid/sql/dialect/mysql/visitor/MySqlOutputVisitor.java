@@ -3618,6 +3618,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         println();
         x.getSpStatement().accept(this);
         this.indentCount--;
+        x.setAfterSemi(true);
         return false;
     }
 
@@ -4415,5 +4416,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print0(ucase ? "CHECKSUM TABLE " : "checksum table ");
         printAndAccept(x.getTables(), ", ");
         return false;
+    }
+
+    public boolean visit(SQLWhileStatement x) {
+        x.setAfterSemi(true);
+        return super.visit(x);
     }
 } //
