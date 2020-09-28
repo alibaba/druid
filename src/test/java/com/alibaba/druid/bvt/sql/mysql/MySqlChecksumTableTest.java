@@ -41,6 +41,24 @@ public class MySqlChecksumTableTest extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
-        assertEquals("CHECKSUM TABLE TABLE tbl_name", stmt.toString());
+        assertEquals("CHECKSUM TABLE tbl_name ", stmt.toString());
+
+        sql = "CHECKSUM TABLE tbl_name,tb2 QUICK";
+
+        parser = new MySqlStatementParser(sql);
+        statementList = parser.parseStatementList();
+        stmt = statementList.get(0);
+
+        assertEquals(1, statementList.size());
+
+        visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
+
+        assertEquals("CHECKSUM TABLE tbl_name, tb2 QUICK ", stmt.toString());
     }
 }

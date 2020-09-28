@@ -465,7 +465,10 @@ public class MySqlExprParser extends SQLExprParser {
                 throw new ParserException("syntax error. " + lexer.info());
             }
         } else if (lexer.token() == Token.WITH) {
-            throw new ParserException("TODO. " + lexer.info());
+            lexer.nextToken();
+            acceptIdentifier("QUERY");
+            acceptIdentifier("EXPANSION");
+            matchAgainstExpr.setSearchModifier(SearchModifier.WITH_QUERY_EXPANSION);
         }
 
         accept(Token.RPAREN);
@@ -562,6 +565,15 @@ public class MySqlExprParser extends SQLExprParser {
                 lexer.nextToken();
             }
             column.setCharsetExpr(charSetCollateExpr);
+            return parseColumnRest(column);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.COLLATE)) {
+            lexer.nextToken();
+            MySqlCharExpr charSetCollateExpr=new MySqlCharExpr();
+            charSetCollateExpr.setCollate(lexer.stringVal());
+            lexer.nextToken();
+            column.setCollateExpr(charSetCollateExpr);
             return parseColumnRest(column);
         }
 

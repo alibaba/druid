@@ -1002,6 +1002,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else {
             x.accept(this);
         }
+        if (x.hasAfterComment()) {
+            print(' ');
+            printlnComment(x.getAfterCommentsDirect());
+        }
     }
 
     protected void printQuery(SQLSelectQuery x) {
