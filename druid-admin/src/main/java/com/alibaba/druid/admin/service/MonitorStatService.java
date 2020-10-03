@@ -1,10 +1,5 @@
-package com.alibaba.druid.admin.service;
+package com.linchtech.druid.admin.service;
 
-import com.alibaba.druid.admin.config.MonitorProperties;
-import com.alibaba.druid.admin.model.ServiceNode;
-import com.alibaba.druid.admin.model.dto.ConnectionResult;
-import com.alibaba.druid.admin.model.dto.SqlDetailResult;
-import com.alibaba.druid.admin.util.HttpUtil;
 import com.alibaba.druid.stat.DruidStatServiceMBean;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
@@ -14,12 +9,20 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.druid.admin.model.dto.DataSourceResult;
-import com.alibaba.druid.admin.model.dto.SqlListResult;
-import com.alibaba.druid.admin.model.dto.WallResult;
-import com.alibaba.druid.admin.model.dto.WebResult;
+import com.linchtech.druid.admin.config.MonitorProperties;
+import com.linchtech.druid.admin.model.ServiceNode;
+import com.linchtech.druid.admin.model.dto.ConnectionResult;
+import com.linchtech.druid.admin.model.dto.DataSourceResult;
+import com.linchtech.druid.admin.model.dto.SqlDetailResult;
+import com.linchtech.druid.admin.model.dto.SqlListResult;
+import com.linchtech.druid.admin.model.dto.WallResult;
+import com.linchtech.druid.admin.model.dto.WebResult;
+import com.linchtech.druid.admin.util.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,13 +30,16 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author linchtech
  * @date 2020-09-16 11:12
  **/
 @Slf4j
-public abstract class MonitorStatService implements DruidStatServiceMBean {
+@Component
+public class MonitorStatService implements DruidStatServiceMBean {
 
     public final static int RESULT_CODE_SUCCESS = 1;
     public final static int RESULT_CODE_ERROR = -1;
@@ -50,6 +56,9 @@ public abstract class MonitorStatService implements DruidStatServiceMBean {
     public static Map<String, ServiceNode> serviceIdMap = new HashMap<>();
 
     @Autowired
+    private DiscoveryClient discoveryClient;
+
+    @Autowired
     private MonitorProperties monitorProperties;
 
     /**
@@ -57,7 +66,34 @@ public abstract class MonitorStatService implements DruidStatServiceMBean {
      *
      * @return
      */
-    public abstract Map<String, ServiceNode> getAllServiceNodeMap();
+    public Map<String, ServiceNode> getAllServiceNodeMap(){
+        List<String> services = discoveryClient.getServices();
+        List<ServiceNode> serviceNodes = new ArrayList<>();
+        for (String service : services) {
+            List<ServiceInstance> instances = discoveryClient.getInstances(service);
+            for (ServiceInstance instance : instances) {
+                String host = instance.getHost();
+                String instanceId = instance.getInstanceId();
+                if (instanceId == null) {
+                    instanceId = instance.getMetadata().get("nacos.instanceId").replaceAll("#", "-").replaceAll("@@", "-");
+                }
+                int port = instance.getPort();
+                String serviceId = instance.getServiceId();
+                // 根据前端参数采集指定的服务
+                if (monitorProperties.getApplications().contains(serviceId)) {
+                    ServiceNode serviceNode = new ServiceNode();
+                    serviceNode.setId(instanceId);
+                    serviceNode.setPort(port);
+                    serviceNode.setAddress(host);
+                    serviceNode.setServiceName(serviceId);
+                    serviceNodes.add(serviceNode);
+                    serviceIdMap.put(instanceId, serviceNode);
+                }
+            }
+        }
+        return serviceNodes.parallelStream().collect(Collectors.toMap(i -> i.getServiceName() + "-" + i.getAddress() + "-" + i.getPort(),
+                Function.identity(), (v1, v2) -> v2));
+    }
 
     /**
      * 获取指定服务名的所有节点
@@ -65,8 +101,36 @@ public abstract class MonitorStatService implements DruidStatServiceMBean {
      * @param parameters
      * @return
      */
-    public abstract Map<String, ServiceNode> getServiceAllNodeMap(Map<String, String> parameters);
+    public Map<String, ServiceNode> getServiceAllNodeMap(Map<String, String> parameters){
+        String requestServiceName = parameters.get("serviceName");
+        List<String> services = discoveryClient.getServices();
+        List<ServiceNode> serviceNodes = new ArrayList<>();
 
+        for (String service : services) {
+            List<ServiceInstance> instances = discoveryClient.getInstances(service);
+            for (ServiceInstance instance : instances) {
+                String host = instance.getHost();
+                String instanceId = instance.getInstanceId();
+                if (instanceId == null) {
+                    instanceId = instance.getMetadata().get("nacos.instanceId").replaceAll("#", "-").replaceAll("@@", "-");
+                }
+                int port = instance.getPort();
+                String serviceId = instance.getServiceId();
+                // 根据前端参数采集指定的服务
+                if (serviceId.equals(requestServiceName)) {
+                    ServiceNode serviceNode = new ServiceNode();
+                    serviceNode.setId(instanceId);
+                    serviceNode.setPort(port);
+                    serviceNode.setAddress(host);
+                    serviceNode.setServiceName(serviceId);
+                    serviceNodes.add(serviceNode);
+                    serviceIdMap.put(instanceId, serviceNode);
+                }
+            }
+        }
+        return serviceNodes.parallelStream().collect(Collectors.toMap(i -> i.getServiceName() + "-" + i.getAddress() + "-" + i.getPort(),
+                Function.identity(), (v1, v2) -> v2));
+    }
     @Override
     public String service(String url) {
         Map<String, String> parameters = getParameters(url);
