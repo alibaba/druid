@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+	<head>
+		<title class="lang" langKey="xxxx">Druid Stat Index</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href='css/bootstrap.min.css' rel="stylesheet" />
+		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+    	<script type="text/javascript" src="js/jquery.min.js"></script>
+    	<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+	</head>
+	<body>
+		
+    	<div class="container">
+          				<h3>
+          					Stat Index
+          					<a href="basic.json" target="_blank" class="lang" langKey="ViewJSONAPI">View JSON API</a>
+          				</h3>
+						<table id="dataTable" style="background-color: #fff" class="table table-bordered responsive-utilities">
+							<tr >
+								<td valign="top" width="100" class="td_lable lang"  langKey="Version">
+									Version
+								</td>
+								<td id="DruidVersion" width="95%"></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable lang" langKey="Drivers"> Drivers </td>
+								<td id="DruidDrivers"> </td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable lang" langKey="ResetEnable"> ResetEnable </td>
+								<td id="ResetEnable"></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable lang" langKey="ResetCount"> ResetCount </td>
+								<td id="ResetCount"></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable lang" langKey="JavaVersion"> JavaVersion </td>
+								<td id="JavaVersion"></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable lang" langKey="JavaVMName"> JavaVMName </td>
+								<td id="JavaVMName"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable lang" langKey="JavaClassPath"> JavaClassPath </td>
+								<td id="JavaClassPath"></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable lang" langKey="StartTime"> StartTime </td>
+								<td id="StartTime"></td>
+							</tr>
+						</table>
+          			</div>
+		<script type="text/javascript">
+			$.namespace("druid.index");
+			druid.index = function () {  
+				return  {
+					init : function() {
+						druid.common.buildHead(0);
+						this.ajaxRequestForBasicInfo();
+					},
+					
+					ajaxRequestForBasicInfo : function() {
+						$.ajax({
+							type: 'POST',
+							url: "basic.json",
+							success: function(data) {
+								$("#DruidVersion").text(data.Content.Version)
+								var driversList = data.Content.Drivers;
+								if (driversList) {
+									var driverHtml = '';
+									for ( var i = 0; i < driversList.length; i++) {
+										var driver = driversList[i];
+										driverHtml += driver + '<br/>';
+									}
+									$("#DruidDrivers").html(driverHtml);
+								}
+								$("#ResetEnable").text(data.Content.ResetEnable)
+								$("#ResetCount").text(data.Content.ResetCount)
+								$("#JavaVersion").text(data.Content.JavaVersion)
+								$("#JavaVMName").text(data.Content.JavaVMName)
+								$("#JavaClassPath").html(data.Content.JavaClassPath.split(/;|:/).join("<br/>"))
+								$("#StartTime").text(data.Content.StartTime)
+								
+								druid.lang.trigger();
+							},
+							dataType: "json"
+						});
+					}
+				}
+			}();
+			
+			$(document).ready(function() {
+				druid.index.init();
+			});
+		</script>
+	</body>
+</html>

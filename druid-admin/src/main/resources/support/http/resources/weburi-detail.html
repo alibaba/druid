@@ -1,0 +1,226 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Druid Web URI Stat</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href='css/bootstrap.min.css' rel="stylesheet" />
+		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+    	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+	</head>
+	<body>
+		
+    	<div class="container-fluid">
+      		<div class="row-fluid">
+        		<div class="span12">
+          				<h3>
+          					Web URI View
+          					<a id="viewJsonApi" target="_blank">View JSON API</a>
+          				</h3>
+						<table id="dataTable" class="table table-bordered" style="background-color: #fff">
+							<tr>
+								<td  class="td_lable lang" langKey="URI"> URI </td>
+								<td id="URI"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="RequestCount"> RequestCount </td>
+								<td id="RequestCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="RequestTimeMillis"> RequestTimeMillis </td>
+								<td id="RequestTimeMillis"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="LastAccessTime"> LastAccessTime </td>
+								<td id="LastAccessTime"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="RunningCount"> RunningCount </td>
+								<td id="RunningCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="ConcurrentMax"> ConcurrentMax </td>
+								<td id="ConcurrentMax"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcExecuteCount"> JdbcExecuteCount </td>
+								<td id="JdbcExecuteCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcExecuteErrorCount"> JdbcExecuteErrorCount </td>
+								<td id="JdbcExecuteErrorCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcExecutePeak"> JdbcExecutePeak </td>
+								<td id="JdbcExecutePeak"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcExecuteTimeMillis"> JdbcExecuteTimeMillis </td>
+								<td id="JdbcExecuteTimeMillis"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcCommitCount"> JdbcCommitCount </td>
+								<td id="JdbcCommitCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcRollbackCount"> JdbcRollbackCount </td>
+								<td id="JdbcRollbackCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcFetchRowCount"> JdbcFetchRowCount </td>
+								<td id="JdbcFetchRowCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcFetchRowPeak"> JdbcFetchRowPeak </td>
+								<td id="JdbcFetchRowPeak"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcUpdateCount"> JdbcUpdateCount </td>
+								<td id="JdbcUpdateCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcUpdatePeak"> JdbcUpdatePeak </td>
+								<td id="JdbcUpdatePeak"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcPoolConnectionOpenCount"> JdbcPoolConnectionOpenCount </td>
+								<td id="JdbcPoolConnectionOpenCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcPoolConnectionCloseCount"> JdbcPoolConnectionCloseCount </td>
+								<td id="JdbcPoolConnectionCloseCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcResultSetOpenCount"> JdbcResultSetOpenCount </td>
+								<td id="JdbcResultSetOpenCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcResultSetCloseCount"> JdbcResultSetCloseCount </td>
+								<td id="JdbcResultSetCloseCount"></td>
+								<td></td>
+							</tr>
+				      	</table>
+				      	
+          				<h3>Profiles</h3>
+						<table id="profileDataTable" class="table table-bordered table-striped responsive-utilities">
+							<thead>
+								<tr>
+									<th>N</th>
+									<th><a id="th-Name" >Name</a></th>
+									<th>ParentName</th>
+									<th>Type</th>
+									<th>ExecuteCount</th>
+									<th>ExecuteTimeMillis</th>
+								</tr>
+							</thead> 
+							<tbody></tbody>
+						</table>
+				      	<div class="container">
+				      		<a class="btn btn-primary" href="javascript:window.close();">Close</a>
+				      	</div>
+        		</div>
+      		</div> 
+    	</div>
+    	<script type="text/javascript">
+    	$.namespace("druid.weburidetail");
+    	druid.weburidetail = function () {  
+    		var uri = druid.common.getUrlVar("uri");
+    		return  {
+    			init : function() {
+    				druid.common.buildHead(5);
+    				this.ajaxRequestForBasicInfo();
+    				$("#viewJsonApi").attr("href", 'weburi-' + encodeURI(uri) + '.json');
+    			},
+    			
+    			ajaxRequestForBasicInfo : function() {
+    				$.ajax({
+    					type: 'POST',
+    					url: 'weburi-' + encodeURI(uri) + '.json',
+    					success: function(data) {
+    						if (data.Content == null)
+    							return;
+    						$("#URI").text(data.Content.URI);
+    						$("#RequestCount").text(data.Content.RequestCount);
+    						$("#RequestTimeMillis").text(data.Content.RequestTimeMillis);
+    						$("#LastAccessTime").text(data.Content.LastAccessTime);
+    						$("#RunningCount").text(data.Content.RunningCount);
+    						$("#ConcurrentMax").text(data.Content.ConcurrentMax);
+    						$("#JdbcExecuteCount").text(data.Content.JdbcExecuteCount);
+    						$("#JdbcExecuteErrorCount").text(data.Content.JdbcExecuteErrorCount);
+    						$("#JdbcExecutePeak").text(data.Content.JdbcExecutePeak);
+    						$("#JdbcExecuteTimeMillis").text(data.Content.JdbcExecuteTimeMillis);
+    						$("#JdbcCommitCount").text(data.Content.JdbcCommitCount);
+    						$("#JdbcRollbackCount").text(data.Content.JdbcRollbackCount);
+    						$("#JdbcFetchRowCount").text(data.Content.JdbcFetchRowCount);
+    						$("#JdbcFetchRowPeak").text(data.Content.JdbcFetchRowPeak);
+    						$("#JdbcUpdateCount").text(data.Content.JdbcUpdateCount);
+    						$("#JdbcUpdatePeak").text(data.Content.JdbcUpdatePeak);
+    						$("#JdbcPoolConnectionOpenCount").text(data.Content.JdbcPoolConnectionOpenCount);
+    						$("#JdbcPoolConnectionCloseCount").text(data.Content.JdbcPoolConnectionCloseCount);
+    						$("#JdbcResultSetOpenCount").text(data.Content.JdbcResultSetOpenCount);
+    						$("#JdbcResultSetCloseCount").text(data.Content.JdbcResultSetCloseCount);
+    						
+    						var profiles = data.Content.Profiles;
+    						if (profiles == null) {
+    							return;
+    						}
+    						
+    						var profileDataTable = document.getElementById("profileDataTable");
+    	    				while (profileDataTable.rows.length > 1) {
+    	    					profileDataTable.deleteRow(1);
+    	    				}
+    						
+    						var html = "";
+    	    				for ( var i = 0; i < profiles.length; i++) {
+    	    					var stat = profiles[i];
+    	    					var newRow = profileDataTable.insertRow(-1);
+    	    					html += "<tr>";
+    	    					html += "<td>" + (i + 1) + "</td>";
+    	    					html += "<td>" + stat.Name + "</td>";
+    	    					if (stat.Parent == null) {
+    	    						html += "<td> </td>";	
+    	    					} else {
+    	    						html += "<td>" + stat.Parent + "</td>";
+    	    					}
+    	    					
+    	    					html += "<td>" + stat.Type + "</td>";
+    	    					html += "<td>" + stat.ExecuteCount + "</td>";
+    	    					html += "<td>" + stat.ExecuteTimeMillis + "</td>";
+    	    					html += "</tr>";
+    	    				}
+    	    				$("#profileDataTable tbody").html(html);
+    	    				druid.lang.trigger();
+    					},
+    					dataType: "json"
+    				});
+    			}
+    		}
+    	}();
+
+    	$(document).ready(function() {
+    		druid.weburidetail.init();
+    	});
+    	</script>
+	</body>
+</html>
+
