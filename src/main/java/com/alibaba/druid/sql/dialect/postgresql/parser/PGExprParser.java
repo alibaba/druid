@@ -128,6 +128,11 @@ public class PGExprParser extends SQLExprParser {
                 break;
             }
             return values;
+        } else if (lexer.token() == Token.WITH) {
+            SQLQueryExpr queryExpr = new SQLQueryExpr(
+                    createSelectParser()
+                            .select());
+            return queryExpr;
         }
         
         return super.primary();
