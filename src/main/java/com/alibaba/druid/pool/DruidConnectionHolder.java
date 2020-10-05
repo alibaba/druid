@@ -73,6 +73,7 @@ public final class DruidConnectionHolder {
     protected final Map<String, Object>           variables;
     protected final Map<String, Object>           globleVariables;
     final ReentrantLock                           lock                     = new ReentrantLock();
+    protected String                              initSchema;
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo)
                                                                                                           throws SQLException{

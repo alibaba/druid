@@ -1953,6 +1953,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     return;
                 }
             }
+            if (holder.initSchema != null) {
+                holder.conn.setSchema(holder.initSchema);
+                holder.initSchema = null;
+            }
 
             if (!enable) {
                 discardConnection(holder);
