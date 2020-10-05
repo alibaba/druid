@@ -21,13 +21,15 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveMsckRepairStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
+
+import static com.alibaba.druid.sql.parser.Token.OVERWRITE;
 
 public class OdpsStatementParser extends SQLStatementParser {
 
@@ -290,6 +292,13 @@ public class OdpsStatementParser extends SQLStatementParser {
 
         if (lexer.identifierEquals(FnvHash.Constants.KILL)) {
             SQLStatement stmt = parseKill();
+            statementList.add(stmt);
+            return true;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.LOAD)) {
+            HiveLoadDataStatement stmt = parseLoad();
+
             statementList.add(stmt);
             return true;
         }
@@ -820,5 +829,90 @@ public class OdpsStatementParser extends SQLStatementParser {
 
     public SQLCreateFunctionStatement parseCreateFunction() {
         return parseHiveCreateFunction();
+    }
+
+    protected HiveLoadDataStatement parseLoad() {
+        acceptIdentifier("LOAD");
+
+        HiveLoadDataStatement stmt = new HiveLoadDataStatement();
+
+        if (lexer.token() == OVERWRITE) {
+            stmt.setOverwrite(true);
+            lexer.nextToken();
+        }
+
+        accept(Token.TABLE);
+
+        stmt.setInto(this.exprParser.expr());
+
+        if (lexer.token() == Token.PARTITION) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            this.exprParser.exprList(stmt.getPartition(), stmt);
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.LOCAL)) {
+            lexer.nextToken();
+            stmt.setLocal(true);
+        }
+
+        accept(Token.FROM);
+
+        acceptIdentifier("LOCATION");
+
+        SQLExpr inpath = this.exprParser.expr();
+        stmt.setInpath(inpath);
+
+        if (lexer.identifierEquals("STORED")) {
+            lexer.nextToken();
+
+            if (lexer.token() == Token.BY) {
+                lexer.nextToken();
+                stmt.setStoredBy(this.exprParser.expr());
+            } else {
+                accept(Token.AS);
+                stmt.setStoredAs(this.exprParser.expr());
+            }
+        }
+
+        if (lexer.identifierEquals("ROW")) {
+            lexer.nextToken();
+
+            acceptIdentifier("FORMAT");
+            acceptIdentifier("SERDE");
+            stmt.setRowFormat(this.exprParser.expr());
+        }
+
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            acceptIdentifier("SERDEPROPERTIES");
+
+            accept(Token.LPAREN);
+
+            for (;;) {
+                String name = lexer.stringVal();
+                lexer.nextToken();
+                accept(Token.EQ);
+                SQLExpr value = this.exprParser.primary();
+                stmt.getSerdeProperties().put(name, value);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.identifierEquals("STORED")) {
+            lexer.nextToken();
+
+            accept(Token.AS);
+            stmt.setStoredAs(this.exprParser.expr());
+        }
+
+        return stmt;
     }
 }

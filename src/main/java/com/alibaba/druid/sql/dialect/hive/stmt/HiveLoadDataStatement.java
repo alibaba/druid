@@ -6,11 +6,14 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HiveLoadDataStatement extends SQLStatementImpl {
     private boolean local;
@@ -19,6 +22,12 @@ public class HiveLoadDataStatement extends SQLStatementImpl {
     private SQLExprTableSource into;
 
     private final List<SQLExpr> partition  = new ArrayList<SQLExpr>(4);
+
+    private SQLExternalRecordFormat format;
+    private SQLExpr storedBy;
+    private SQLExpr storedAs;
+    private SQLExpr rowFormat;
+    protected Map<String, SQLObject> serdeProperties = new LinkedHashMap<String, SQLObject>();
 
     public HiveLoadDataStatement() {
         super(DbType.hive);
@@ -37,6 +46,9 @@ public class HiveLoadDataStatement extends SQLStatementImpl {
             this.acceptChild(visitor, inpath);
             this.acceptChild(visitor, into);
             this.acceptChild(visitor, partition);
+            this.acceptChild(visitor, storedAs);
+            this.acceptChild(visitor, storedBy);
+            this.acceptChild(visitor, rowFormat);
         }
         visitor.endVisit(this);
     }
@@ -97,5 +109,54 @@ public class HiveLoadDataStatement extends SQLStatementImpl {
             item.setParent(this);
         }
         this.partition.add(item);
+    }
+
+    public SQLExternalRecordFormat getFormat() {
+        return format;
+    }
+
+    public void setFormat(SQLExternalRecordFormat x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.format = x;
+    }
+
+    public SQLExpr getStoredBy() {
+        return storedBy;
+    }
+
+    public void setStoredBy(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedBy = x;
+    }
+
+    public SQLExpr getStoredAs() {
+        return storedAs;
+    }
+
+    public void setStoredAs(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedAs = x;
+    }
+
+    public SQLExpr getRowFormat() {
+        return rowFormat;
+    }
+
+    public void setRowFormat(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+
+        this.rowFormat = x;
+    }
+
+    public Map<String, SQLObject> getSerdeProperties() {
+        return serdeProperties;
     }
 }

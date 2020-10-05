@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 
@@ -1036,5 +1037,53 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     @Override
     public void endVisit(OdpsExstoreStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(HiveLoadDataStatement x) {
+        print0(ucase ? "LOAD " : "load ");
+
+        if (x.isOverwrite()) {
+            print0(ucase ? "OVERWRITE " : "overwrite ");
+        }
+
+        print0(ucase ? "INTO TABLE " : "into table ");
+
+        x.getInto().accept(this);
+
+        if (x.getPartition().size() > 0) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            printAndAccept(x.getPartition(), ", ");
+            print(')');
+        }
+
+        println();
+        print0(ucase ? "LOCATION " : "location ");
+        x.getInpath().accept(this);
+
+        SQLExpr storedBy = x.getStoredBy();
+        if (storedBy != null) {
+            println();
+            print0(ucase ? "STORED BY " : "stored by ");
+            storedBy.accept(this);
+        }
+
+        SQLExpr rowFormat = x.getRowFormat();
+        if (rowFormat != null) {
+            println();
+            print0(ucase ? "ROW FORMAT SERDE " : "row format serde ");
+            rowFormat.accept(this);
+        }
+
+        printSerdeProperties(x.getSerdeProperties());
+
+        SQLExpr storedAs = x.getStoredAs();
+        if (storedAs != null) {
+            println();
+            print0(ucase ? "STORED AS " : "stored as ");
+            storedAs.accept(this);
+        }
+
+        return false;
     }
 }

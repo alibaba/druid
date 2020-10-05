@@ -150,36 +150,7 @@ public class HiveStatementParser extends SQLStatementParser {
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.LOAD)) {
-            lexer.nextToken();
-            acceptIdentifier("DATA");
-
-            HiveLoadDataStatement stmt = new HiveLoadDataStatement();
-            if (lexer.identifierEquals(FnvHash.Constants.LOCAL)) {
-                lexer.nextToken();
-                stmt.setLocal(true);
-            }
-
-            acceptIdentifier("INPATH");
-
-            SQLExpr inpath = this.exprParser.expr();
-            stmt.setInpath(inpath);
-
-            if (lexer.token() == Token.OVERWRITE) {
-                lexer.nextToken();
-                stmt.setOverwrite(true);
-            }
-
-            accept(Token.INTO);
-            accept(Token.TABLE);
-            SQLExpr table = this.exprParser.expr();
-            stmt.setInto(table);
-
-            if (lexer.token() == Token.PARTITION) {
-                lexer.nextToken();
-                accept(Token.LPAREN);
-                this.exprParser.exprList(stmt.getPartition(), stmt);
-                accept(Token.RPAREN);
-            }
+            HiveLoadDataStatement stmt = parseLoad();
 
             statementList.add(stmt);
             return true;
@@ -343,6 +314,40 @@ public class HiveStatementParser extends SQLStatementParser {
         }
 
         return false;
+    }
+
+    protected HiveLoadDataStatement parseLoad() {
+        acceptIdentifier("LOAD");
+        acceptIdentifier("DATA");
+
+        HiveLoadDataStatement stmt = new HiveLoadDataStatement();
+        if (lexer.identifierEquals(FnvHash.Constants.LOCAL)) {
+            lexer.nextToken();
+            stmt.setLocal(true);
+        }
+
+        acceptIdentifier("INPATH");
+
+        SQLExpr inpath = this.exprParser.expr();
+        stmt.setInpath(inpath);
+
+        if (lexer.token() == Token.OVERWRITE) {
+            lexer.nextToken();
+            stmt.setOverwrite(true);
+        }
+
+        accept(Token.INTO);
+        accept(Token.TABLE);
+        SQLExpr table = this.exprParser.expr();
+        stmt.setInto(table);
+
+        if (lexer.token() == Token.PARTITION) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            this.exprParser.exprList(stmt.getPartition(), stmt);
+            accept(Token.RPAREN);
+        }
+        return stmt;
     }
 
     public SQLCreateTableStatement parseCreateTable() {

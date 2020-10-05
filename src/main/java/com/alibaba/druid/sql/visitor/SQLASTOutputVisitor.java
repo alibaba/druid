@@ -10329,41 +10329,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         Map<String, SQLObject> serdeProperties = x.getSerdeProperties();
-        if (serdeProperties.size() > 0) {
-            println();
-            print0(ucase ? "WITH SERDEPROPERTIES (" : "with serdeproperties (");
-            incrementIndent();
-            println();
-            int i = 0;
-            for (Map.Entry<String, SQLObject> option : serdeProperties.entrySet()) {
-                if (i != 0) {
-                    print(",");
-                    println();
-                }
-                String key = option.getKey();
-
-                boolean unquote = false;
-                char c0;
-                if (key.length() > 0 && (c0 = key.charAt(0)) != '"' && c0 != '`' && c0 != '\'') {
-                    unquote = true;
-                }
-
-                if (unquote) {
-                    print('\'');
-                }
-                print0(key);
-                if (unquote) {
-                    print('\'');
-                }
-
-                print0(" = ");
-                option.getValue().accept(this);
-                ++i;
-            }
-            decrementIndent();
-            println();
-            print(')');
-        }
+        printSerdeProperties(serdeProperties);
 
         List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
         if (sortedBy.size() > 0) {
@@ -10431,6 +10397,46 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "LIKE " : "like ");
             like.accept(this);
         }
+    }
+
+    protected void printSerdeProperties(Map<String, SQLObject> serdeProperties) {
+        if (serdeProperties.isEmpty()) {
+            return;
+        }
+
+        println();
+        print0(ucase ? "WITH SERDEPROPERTIES (" : "with serdeproperties (");
+        incrementIndent();
+        println();
+        int i = 0;
+        for (Map.Entry<String, SQLObject> option : serdeProperties.entrySet()) {
+            if (i != 0) {
+                print(",");
+                println();
+            }
+            String key = option.getKey();
+
+            boolean unquote = false;
+            char c0;
+            if (key.length() > 0 && (c0 = key.charAt(0)) != '"' && c0 != '`' && c0 != '\'') {
+                unquote = true;
+            }
+
+            if (unquote) {
+                print('\'');
+            }
+            print0(key);
+            if (unquote) {
+                print('\'');
+            }
+
+            print0(" = ");
+            option.getValue().accept(this);
+            ++i;
+        }
+        decrementIndent();
+        println();
+        print(')');
     }
 
     protected void printTblProperties(HiveCreateTableStatement x) {
