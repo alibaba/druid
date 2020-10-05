@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,15 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.util.FnvHash;
+
+import java.util.Collections;
+import java.util.List;
 
 public class MySqlUserName extends MySqlExprImpl implements SQLName, Cloneable {
 
@@ -43,6 +45,10 @@ public class MySqlUserName extends MySqlExprImpl implements SQLName, Cloneable {
         this.userNameHashCod64 = 0;
     }
 
+    public String getNormalizeUserName() {
+        return SQLUtils.normalize(userName);
+    }
+
     public String getHost() {
         return host;
     }
@@ -61,7 +67,32 @@ public class MySqlUserName extends MySqlExprImpl implements SQLName, Cloneable {
     }
 
     public String getSimpleName() {
-        return userName + '@' + host;
+        StringBuilder buf = new StringBuilder();
+
+        if (userName.length() == 0 || userName.charAt(0) != '\'') {
+            buf.append('\'');
+            buf.append(userName);
+            buf.append('\'');
+        } else {
+            buf.append(userName);
+        }
+
+        buf.append('@');
+
+        if (host.length() == 0 || host.charAt(0) != '\'') {
+            buf.append('\'');
+            buf.append(host);
+            buf.append('\'');
+        } else {
+            buf.append(host);
+        }
+
+        if (identifiedBy != null) {
+            buf.append(" identifiedBy by ");
+            buf.append(identifiedBy);
+        }
+
+        return buf.toString();
     }
 
     public String getIdentifiedBy() {
@@ -79,9 +110,11 @@ public class MySqlUserName extends MySqlExprImpl implements SQLName, Cloneable {
     public MySqlUserName clone() {
         MySqlUserName x = new MySqlUserName();
 
-        x.userName     = userName;
-        x.host         = host;
+        x.userName          = userName;
+        x.host              = host;
         x.identifiedBy = identifiedBy;
+        x.hashCode64        = hashCode64;
+        x.userNameHashCod64 = userNameHashCod64;
 
         return x;
     }
@@ -115,5 +148,10 @@ public class MySqlUserName extends MySqlExprImpl implements SQLName, Cloneable {
         }
 
         return hashCode64;
+    }
+
+    @Override
+    public SQLColumnDefinition getResolvedColumn() {
+        return null;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.phoenix.ast;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
 /**
  * Created by wenshao on 16/9/14.
@@ -26,7 +26,7 @@ import com.alibaba.druid.util.JdbcConstants;
 public abstract class PhoenixStatementImpl extends SQLStatementImpl implements PhoenixObject {
 
     public PhoenixStatementImpl() {
-        super(JdbcConstants.PHOENIX);
+        super(DbType.phoenix);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.bug;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
@@ -12,7 +13,7 @@ import java.util.List;
  * Created by wenshao on 25/06/2017.
  */
 public class Issue1762 extends TestCase {
-    private final String dbType = JdbcConstants.MYSQL;
+    private final DbType dbType = DbType.mysql;
 
     public void test_0() throws Exception {
         String sql = "-- table-name-bean-name:some --\n" +

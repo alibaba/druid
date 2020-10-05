@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlUnique extends MySqlKey {
@@ -35,5 +37,45 @@ public class MySqlUnique extends MySqlKey {
         MySqlUnique x = new MySqlUnique();
         cloneTo(x);
         return x;
+    }
+
+    public SQLExpr getDbPartitionBy() {
+        return indexDefinition.getDbPartitionBy();
+    }
+
+    public void setDbPartitionBy(SQLExpr x) {
+        indexDefinition.setDbPartitionBy(x);
+    }
+
+    public boolean isGlobal() {
+        return indexDefinition.isGlobal();
+    }
+
+    public void setGlobal(boolean global) {
+        indexDefinition.setGlobal(global);
+    }
+
+    public boolean isLocal() {
+        return indexDefinition.isLocal();
+    }
+
+    public void setLocal(boolean local) {
+        indexDefinition.setLocal(local);
+    }
+
+    public SQLExpr getTablePartitions() {
+        return indexDefinition.getTbPartitions();
+    }
+
+    public void setTablePartitions(SQLExpr x) {
+        indexDefinition.setTbPartitions(x);
+    }
+
+    public SQLExpr getTablePartitionBy() {
+        return indexDefinition.getTbPartitionBy();
+    }
+
+    public void setTablePartitionBy(SQLExpr x) {
+        indexDefinition.setTbPartitionBy(x);
     }
 }

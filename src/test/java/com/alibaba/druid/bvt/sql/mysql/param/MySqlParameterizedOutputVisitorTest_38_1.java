@@ -1,15 +1,15 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_38_1 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
         String sql = "SELECT lower(hex(file_md5)) as file_md5,\n" +
                 "        lower(hex(thumb)) as thumb,st\n" +
                 "        FROM t_f_p_thumb\n" +

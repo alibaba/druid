@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,16 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+
+import java.util.List;
 
 public class MySqlCreateTableTest7 extends MysqlTest {
 
@@ -44,7 +43,7 @@ public class MySqlCreateTableTest7 extends MysqlTest {
         MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -54,14 +53,19 @@ public class MySqlCreateTableTest7 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("Orders")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("Orders")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Orders", "O_Id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Orders", "OrderNo")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Orders", "Id_P")));
+        assertTrue(visitor.containsColumn("Orders", "O_Id"));
+        assertTrue(visitor.containsColumn("Orders", "OrderNo"));
+        assertTrue(visitor.containsColumn("Orders", "Id_P"));
+
+        SQLColumnDefinition column = stmt.findColumn("O_id");
+        assertNotNull(column);
+        assertEquals(1, column.getConstraints().size());
+        assertTrue(column.isPrimaryKey());
     }
 }

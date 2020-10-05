@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
 /**
  * @author kiki
@@ -32,7 +32,7 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
     protected Option onDelete;
 
     public MysqlForeignKey() {
-        dbType = JdbcConstants.MYSQL;
+        dbType = DbType.oracle;
     }
 
     public SQLName getIndexName() {
@@ -73,6 +73,10 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
     public MysqlForeignKey clone() {
         MysqlForeignKey x = new MysqlForeignKey();
         cloneTo(x);
+
+        if (indexName != null) {
+            x.setIndexName(indexName.clone());
+        }
 
         x.referenceMatch = referenceMatch;
         x.onUpdate = onUpdate;

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,22 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleRunStatement extends SQLStatementImpl implements OracleStatement {
 
     private SQLExpr     expr;
 
     public OracleRunStatement() {
-        super (JdbcConstants.ORACLE);
+        super (DbType.oracle);
     }
     public OracleRunStatement(SQLExpr expr) {
-        super (JdbcConstants.ORACLE);
+        super (DbType.oracle);
         this.setExpr(expr);
     }
 

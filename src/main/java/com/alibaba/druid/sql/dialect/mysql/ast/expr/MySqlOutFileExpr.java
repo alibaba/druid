@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
 
 public class MySqlOutFileExpr extends MySqlObjectImpl implements SQLExpr {
 
@@ -131,7 +131,41 @@ public class MySqlOutFileExpr extends MySqlObjectImpl implements SQLExpr {
     }
 
     public SQLExpr clone() {
-        throw new UnsupportedOperationException();
+        MySqlOutFileExpr x = new MySqlOutFileExpr();
+
+        if (file != null) {
+            x.setFile(file.clone());
+        }
+
+        x.charset = charset;
+
+        if (columnsTerminatedBy != null) {
+            x.setColumnsTerminatedBy(columnsTerminatedBy.clone());
+        }
+
+        x.columnsEnclosedOptionally = columnsEnclosedOptionally;
+
+        if (columnsEnclosedBy != null) {
+            x.setColumnsEnclosedBy(columnsEnclosedBy.clone());
+        }
+
+        if (columnsEscaped != null) {
+            x.setColumnsEscaped(columnsEscaped.clone());
+        }
+
+        if (linesStartingBy != null) {
+            x.setLinesStartingBy(linesStartingBy.clone());
+        }
+
+        if (linesTerminatedBy != null) {
+            x.setLinesTerminatedBy(linesTerminatedBy.clone());
+        }
+
+        if (ignoreLinesNumber != null) {
+            x.setIgnoreLinesNumber(ignoreLinesNumber.clone());
+        }
+
+        return x;
     }
 
 }

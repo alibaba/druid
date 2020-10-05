@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public class MySqlCreateTableTest90 extends MysqlTest {
                     "\t`platform_code` varchar(45) not null,\n" +
                     "\t`pay_way` varchar(32) not null,\n" +
                     "\tprimary key (`id`),\n" +
-                    "\tunique `uniq_playform_payway` using BTREE (`platform_code`, `pay_way`) COMMENT '平台code和支付方式应该唯一'\n" +
+                    "\tunique `uniq_playform_payway` using BTREE (`platform_code`, `pay_way`) comment '平台code和支付方式应该唯一'\n" +
                     ") engine = InnoDB charset = utf8 comment '配置表'", output);
         }
     }

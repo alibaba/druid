@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_46 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
         String sql = "SELECT COUNT(*) AS count, `ipv_uv_1d_001` AS col FROM ( (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) UNION ALL (SELECT ipv_uv_1d_001 FROM `cbu_da_dihu_16`.`ads_tb_sycm_eff_slr_itm_1d_s015_p033` WHERE `auto_seq_id` > ? LIMIT ?) ) ads_tb_sycm_eff_slr_itm_1d_s015_p033 GROUP BY col ORDER BY col DESC";
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);

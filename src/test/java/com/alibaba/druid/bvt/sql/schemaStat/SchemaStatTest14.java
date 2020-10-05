@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.schemaStat;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -8,7 +9,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.util.Set;
 
@@ -17,11 +17,13 @@ public class SchemaStatTest14 extends TestCase {
     public void test_schemaStat() throws Exception {
         String sql = "delete r from t_res r where id=1 ";
 
-        SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL).get(0);
+        DbType dbType = JdbcConstants.MYSQL;
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
+        SQLStatement stmt = parser.parseStatementList().get(0);
 
         System.out.println(stmt);
 
-        SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
+        SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(dbType);
         stmt.accept(statVisitor);
 
         Set<TableStat.Relationship> relationships = statVisitor.getRelationships();

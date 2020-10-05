@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,25 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateFunctionStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveMsckRepairStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class HiveASTVisitorAdapter extends SQLASTVisitorAdapter implements HiveASTVisitor {
+
     @Override
-    public boolean visit(HiveCreateTableStatement x) {
+    public boolean visit(HiveInsert x) {
         return true;
     }
 
     @Override
-    public void endVisit(HiveCreateTableStatement x) {
+    public void endVisit(HiveInsert x) {
 
     }
 
@@ -53,12 +58,31 @@ public class HiveASTVisitorAdapter extends SQLASTVisitorAdapter implements HiveA
     }
 
     @Override
-    public boolean visit(HiveInsert x) {
+    public boolean visit(HiveCreateFunctionStatement x) {
         return true;
     }
 
     @Override
-    public void endVisit(HiveInsert x) {
+    public void endVisit(HiveCreateFunctionStatement x) {
 
     }
+
+    @Override
+    public boolean visit(HiveLoadDataStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(HiveLoadDataStatement x) {
+
+    }
+
+    @Override public boolean visit(HiveMsckRepairStatement x) {
+        return true;
+    }
+
+    @Override public void endVisit(HiveMsckRepairStatement x) {
+
+    }
+
 }

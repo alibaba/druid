@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.not_support.sql.mysql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -39,14 +40,14 @@ public class MySqlSelectTest_69_mysql8_windows_function extends MysqlTest {
 
         System.out.println(sql);
 
-        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, JdbcConstants.MYSQL, SQLParserFeature.OptimizedForParameterized);
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, DbType.mysql, SQLParserFeature.OptimizedForParameterized);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt);
 
         assertEquals(1, statementList.size());
 
-        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
+        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(DbType.mysql);
         stmt.accept(visitor);
         {
             String output = SQLUtils.toMySqlString(stmt);

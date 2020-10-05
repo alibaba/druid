@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,19 @@
  */
 package com.alibaba.druid.sql.transform;
 
+import com.alibaba.druid.DbType;
+
 public abstract class SQLTranformImpl implements SQLTranform {
-    protected String sourceDbType;
-    protected String targetDbType;
+    protected DbType sourceDbType;
+    protected DbType targetDbType;
 
     @Override
-    public String getSourceDbType() {
+    public DbType getSourceDbType() {
         return sourceDbType;
     }
 
     @Override
-    public String getTargetDbType() {
+    public DbType getTargetDbType() {
         return targetDbType;
     }
 }

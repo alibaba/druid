@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,51 +15,19 @@
  */
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsGrantStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowGrantsStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
+import com.alibaba.druid.sql.dialect.odps.ast.*;
 
-public interface OdpsASTVisitor extends SQLASTVisitor {
+public interface OdpsASTVisitor extends HiveASTVisitor {
 
     void endVisit(OdpsCreateTableStatement x);
 
     boolean visit(OdpsCreateTableStatement x);
 
-    void endVisit(OdpsInsertStatement x);
-
-    boolean visit(OdpsInsertStatement x);
-    
-    void endVisit(HiveInsert x);
-    
-    boolean visit(HiveInsert x);
-    
     void endVisit(OdpsUDTFSQLSelectItem x);
     
     boolean visit(OdpsUDTFSQLSelectItem x);
-    
-    void endVisit(OdpsShowPartitionsStmt x);
-    
-    boolean visit(OdpsShowPartitionsStmt x);
-    
-    void endVisit(OdpsShowStatisticStmt x);
-    
-    boolean visit(OdpsShowStatisticStmt x);
-    
+
     void endVisit(OdpsSetLabelStatement x);
     
     boolean visit(OdpsSetLabelStatement x);
@@ -67,11 +35,7 @@ public interface OdpsASTVisitor extends SQLASTVisitor {
     void endVisit(OdpsSelectQueryBlock x);
     
     boolean visit(OdpsSelectQueryBlock x);
-    
-    void endVisit(OdpsAnalyzeTableStatement x);
-    
-    boolean visit(OdpsAnalyzeTableStatement x);
-    
+
     void endVisit(OdpsAddStatisticStatement x);
     
     boolean visit(OdpsAddStatisticStatement x);
@@ -91,7 +55,11 @@ public interface OdpsASTVisitor extends SQLASTVisitor {
     void endVisit(OdpsStatisticClause.NullValue x);
     
     boolean visit(OdpsStatisticClause.NullValue x);
-    
+
+    void endVisit(OdpsStatisticClause.DistinctValue x);
+
+    boolean visit(OdpsStatisticClause.DistinctValue x);
+
     void endVisit(OdpsStatisticClause.ColumnSum x);
     
     boolean visit(OdpsStatisticClause.ColumnSum x);
@@ -120,7 +88,31 @@ public interface OdpsASTVisitor extends SQLASTVisitor {
     
     boolean visit(OdpsGrantStmt x);
 
-    void endVisit(OdpsValuesTableSource x);
+    boolean visit(OdpsAddTableStatement x);
+    void endVisit(OdpsAddTableStatement x);
 
-    boolean visit(OdpsValuesTableSource x);
+    boolean visit(OdpsAddFileStatement x);
+    void endVisit(OdpsAddFileStatement x);
+
+    boolean visit(OdpsAddUserStatement x);
+    void endVisit(OdpsAddUserStatement x);
+
+    boolean visit(OdpsRemoveUserStatement x);
+    void endVisit(OdpsRemoveUserStatement x);
+
+    boolean visit(OdpsAlterTableSetChangeLogs x);
+    void endVisit(OdpsAlterTableSetChangeLogs x);
+
+    boolean visit(OdpsCountStatement x);
+    void endVisit(OdpsCountStatement x);
+
+    boolean visit(OdpsQueryAliasStatement x);
+    void endVisit(OdpsQueryAliasStatement x);
+
+    boolean visit(OdpsTransformExpr x);
+    void endVisit(OdpsTransformExpr x);
+
+    boolean visit(OdpsExstoreStatement x);
+    void endVisit(OdpsExstoreStatement x);
+
 }

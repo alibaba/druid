@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.odps.ast;
 
-import java.util.ArrayList;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
@@ -26,46 +26,24 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.ArrayList;
 
 public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
-    private SQLOrderBy orderBy;
 
     public OdpsSelectQueryBlock(){
-        dbType = JdbcConstants.ODPS;
+        dbType = DbType.odps;
 
+        clusterBy = new ArrayList<SQLSelectOrderByItem>();
         distributeBy = new ArrayList<SQLSelectOrderByItem>();
         sortBy = new ArrayList<SQLSelectOrderByItem>(2);
     }
 
-    public SQLOrderBy getOrderBy() {
-        return orderBy;
-    }
-
-    public void setOrderBy(SQLOrderBy orderBy) {
-        this.orderBy = orderBy;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((limit == null) ? 0 : limit.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!super.equals(obj)) {
-            return false;
-        }
-
-        OdpsSelectQueryBlock other = (OdpsSelectQueryBlock) obj;
-        if (limit == null) {
-            if (other.limit != null) return false;
-        } else if (!limit.equals(other.limit)) return false;
-        return true;
+    public OdpsSelectQueryBlock clone() {
+        OdpsSelectQueryBlock x = new OdpsSelectQueryBlock();
+        cloneTo(x);
+        return x;
     }
 
     @Override
@@ -86,6 +64,7 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.where);
             acceptChild(visitor, this.groupBy);
             acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.clusterBy);
             acceptChild(visitor, this.distributeBy);
             acceptChild(visitor, this.sortBy);
             acceptChild(visitor, this.limit);

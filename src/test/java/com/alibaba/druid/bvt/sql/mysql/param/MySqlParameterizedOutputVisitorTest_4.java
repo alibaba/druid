@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
-public class MySqlParameterizedOutputVisitorTest_4 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_4 extends MySQLParameterizedTest {
 
     public void test_0() throws Exception {
         String sql = "select user0_.id as id0_, user0_.email as email0_, " //

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,30 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsGrantStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowGrantsStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
-import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
+import com.alibaba.druid.sql.ast.statement.SQLShowStatisticStmt;
+import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitorAdapter;
+import com.alibaba.druid.sql.dialect.odps.ast.*;
 
 
-public class OdpsASTVisitorAdapter extends SQLASTVisitorAdapter implements OdpsASTVisitor {
+public class OdpsASTVisitorAdapter extends HiveASTVisitorAdapter implements OdpsASTVisitor {
 
     @Override
     public void endVisit(OdpsCreateTableStatement x) {
@@ -51,76 +33,12 @@ public class OdpsASTVisitorAdapter extends SQLASTVisitorAdapter implements OdpsA
     }
 
     @Override
-    public void endVisit(OdpsInsertStatement x) {
-        
-    }
-
-    @Override
-    public boolean visit(OdpsInsertStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(HiveInsert x) {
-        
-    }
-
-    public boolean visit(HiveCreateTableStatement x) {
-        return false;
-    }
-
-    public void endVisit(HiveCreateTableStatement x) {
-
-    }
-
-    public boolean visit(HiveMultiInsertStatement x) {
-        return false;
-    }
-
-    public void endVisit(HiveMultiInsertStatement x) {
-
-    }
-
-    public boolean visit(HiveInsertStatement x) {
-        return false;
-    }
-
-    public void endVisit(HiveInsertStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(HiveInsert x) {
-        return true;
-    }
-
-    @Override
     public void endVisit(OdpsUDTFSQLSelectItem x) {
         
     }
 
     @Override
     public boolean visit(OdpsUDTFSQLSelectItem x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OdpsShowPartitionsStmt x) {
-        
-    }
-
-    @Override
-    public boolean visit(OdpsShowPartitionsStmt x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OdpsShowStatisticStmt x) {
-        
-    }
-
-    @Override
-    public boolean visit(OdpsShowStatisticStmt x) {
         return true;
     }
 
@@ -144,16 +62,6 @@ public class OdpsASTVisitorAdapter extends SQLASTVisitorAdapter implements OdpsA
         return true;
     }
     
-    @Override
-    public void endVisit(OdpsAnalyzeTableStatement x) {
-        
-    }
-    
-    @Override
-    public boolean visit(OdpsAnalyzeTableStatement x) {
-        return true;
-    }
-
     @Override
     public void endVisit(OdpsAddStatisticStatement x) {
         
@@ -203,7 +111,17 @@ public class OdpsASTVisitorAdapter extends SQLASTVisitorAdapter implements OdpsA
     public boolean visit(OdpsStatisticClause.NullValue x) {
         return true;
     }
-    
+
+    @Override
+    public void endVisit(OdpsStatisticClause.DistinctValue x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsStatisticClause.DistinctValue x) {
+        return true;
+    }
+
     @Override
     public void endVisit(OdpsStatisticClause.ColumnSum x) {
         
@@ -275,12 +193,93 @@ public class OdpsASTVisitorAdapter extends SQLASTVisitorAdapter implements OdpsA
     }
 
     @Override
-    public void endVisit(OdpsValuesTableSource x) {
+    public boolean visit(OdpsAddTableStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OdpsAddTableStatement x) {
 
     }
 
     @Override
-    public boolean visit(OdpsValuesTableSource x) {
+    public boolean visit(OdpsAddFileStatement x) {
         return true;
     }
+
+    @Override
+    public void endVisit(OdpsAddFileStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsAddUserStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsAddUserStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsRemoveUserStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsRemoveUserStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsAlterTableSetChangeLogs x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsAlterTableSetChangeLogs x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsCountStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsCountStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsQueryAliasStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OdpsQueryAliasStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsTransformExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OdpsTransformExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsExstoreStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OdpsExstoreStatement x) {
+
+    }
+
 }

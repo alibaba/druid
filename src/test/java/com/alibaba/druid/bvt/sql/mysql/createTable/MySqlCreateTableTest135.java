@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import junit.framework.TestCase;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * @author Dagon0577
  * @date 2020/5/14 10:51
  */
-public class MySqlCreateTableTest135 extends MysqlTest {
+public class MySqlCreateTableTest135 extends TestCase {
     public void test_0() throws Exception {
         String sql =
                 "create table MQ_TOPIC_RECORD(\n"

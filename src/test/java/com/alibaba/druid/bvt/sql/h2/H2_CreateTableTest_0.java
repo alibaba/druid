@@ -20,12 +20,11 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
 import org.junit.Assert;
 
 import java.util.List;
 
-public class H2_CreateTableTest_0 extends TestCase {
+public class H2_CreateTableTest_0 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
@@ -33,6 +32,9 @@ public class H2_CreateTableTest_0 extends TestCase {
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.H2);
         SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+
 
         Assert.assertEquals(1, statementList.size());
 

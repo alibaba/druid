@@ -12,12 +12,14 @@ import junit.framework.TestCase;
 public class SchemaStatTest19 extends TestCase {
 
     public void test_schemaStat() throws Exception {
+        SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
+
         String sql = "select * from table1 a left outer join table2 b on a.id=b.id";
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, JdbcConstants.MYSQL);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
-        SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
+        SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(repository);
         stmt.accept(statVisitor);
 
         System.out.println("Tables : " + statVisitor.getTables());

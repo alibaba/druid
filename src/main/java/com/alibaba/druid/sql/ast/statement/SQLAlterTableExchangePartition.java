@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,19 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLPartition;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLAlterTableExchangePartition extends SQLObjectImpl implements SQLAlterTableItem {
-    private SQLName partition;
-    private SQLExprTableSource table;
-    private Boolean validation;
+    private List<SQLExpr>       partitions = new ArrayList<SQLExpr>();
+    private SQLExprTableSource  table;
+    private Boolean             validation;
 
     public SQLAlterTableExchangePartition() {
 
@@ -31,21 +36,21 @@ public class SQLAlterTableExchangePartition extends SQLObjectImpl implements SQL
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, partition);
+            acceptChild(visitor, partitions);
             acceptChild(visitor, table);
         }
         visitor.endVisit(this);
     }
 
-    public SQLName getPartition() {
-        return partition;
+    public List<SQLExpr> getPartitions() {
+        return partitions;
     }
 
-    public void setPartition(SQLName x) {
+    public void addPartition(SQLExpr x) {
         if (x != null) {
             x.setParent(this);
         }
-        this.partition = x;
+        this.partitions.add(x);
     }
 
     public SQLExprTableSource getTable() {

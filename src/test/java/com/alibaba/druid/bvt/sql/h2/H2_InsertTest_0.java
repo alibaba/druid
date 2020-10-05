@@ -17,8 +17,8 @@ public class H2_InsertTest_0 {
     public void test_insertSet() {
         String sql = "insert into tb1 set name='n1',age=12,date='1990-11-11 12:12:12'";
         H2StatementParser parser = new H2StatementParser(sql);
-        List<SQLStatement> sqlStatements = parser.parseStatementList();
-        Assert.assertEquals(1, sqlStatements.size());
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        Assert.assertEquals(1, stmtList.size());
     }
 
 }

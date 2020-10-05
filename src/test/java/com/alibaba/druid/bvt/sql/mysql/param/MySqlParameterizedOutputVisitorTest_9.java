@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -7,7 +8,6 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
 import org.junit.Assert;
 
 import java.util.List;
@@ -15,17 +15,19 @@ import java.util.List;
 /**
  * Created by wenshao on 16/8/22.
  */
-public class MySqlParameterizedOutputVisitorTest_9 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_9 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
 
     public void test_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "select * from t limit 3, 4";
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
-        Assert.assertEquals("SELECT *\n" +
+        String expected = "SELECT *\n" +
                 "FROM t\n" +
-                "LIMIT ?, ?", psql);
+                "LIMIT ?, ?";
+        Assert.assertEquals(expected, psql);
 
+        paramaterizeAST(sql, expected);
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();

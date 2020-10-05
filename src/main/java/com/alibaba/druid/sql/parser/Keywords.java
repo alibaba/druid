@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.util.FnvHash;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.alibaba.druid.util.Utils;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -52,7 +52,6 @@ public class Keywords {
         map.put("BY", Token.BY);
         map.put("CASE", Token.CASE);
         map.put("CAST", Token.CAST);
-        map.put("TRY_CAST", Token.TRY_CAST);
 
         map.put("CHECK", Token.CHECK);
         map.put("CONSTRAINT", Token.CONSTRAINT);
@@ -159,6 +158,7 @@ public class Keywords {
         map.put("FETCH", Token.FETCH);
         map.put("OUT", Token.OUT);
         map.put("INOUT", Token.INOUT);
+
         map.put("LIMIT", Token.LIMIT);
 
         DEFAULT_KEYWORDS = new Keywords(map);
@@ -183,11 +183,11 @@ public class Keywords {
 
         int index = 0;
         for (String k : keywords.keySet()) {
-            hashArray[index++] = Utils.fnv_64_lower(k);
+            hashArray[index++] = FnvHash.fnv1a_64_lower(k);
         }
         Arrays.sort(hashArray);
         for (Map.Entry<String, Token> entry : keywords.entrySet()) {
-            long k = Utils.fnv_64_lower(entry.getKey());
+            long k = FnvHash.fnv1a_64_lower(entry.getKey());
             index = Arrays.binarySearch(hashArray, k);
             tokens[index] = entry.getValue();
         }
@@ -202,7 +202,7 @@ public Token getKeyword(long hash) {
 }
 
     public Token getKeyword(String key) {
-        long k = Utils.fnv_64_lower(key);
+        long k = FnvHash.fnv1a_64_lower(key);
         int index = Arrays.binarySearch(hashArray, k);
         if (index < 0) {
             return null;

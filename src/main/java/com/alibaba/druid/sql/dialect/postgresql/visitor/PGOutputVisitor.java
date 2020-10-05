@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,189 +15,39 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.alibaba.druid.sql.ast.SQLArgument;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLParameter;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
-import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLWindow;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLCheck;
-import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateUserStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
-import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
-import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnique;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
-import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsOfTypeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTreatExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSynonymStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleContinueStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSynonymStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTypeStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExecuteImmediateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePipeRowStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRaiseStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRunStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSupplementalIdKey;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSupplementalLogGrp;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGConnectToStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGStartTransactionStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor, OracleASTVisitor {
 
     public PGOutputVisitor(Appendable appender){
         super(appender);
-        this.dbType = JdbcConstants.POSTGRESQL;
+        this.dbType = DbType.postgresql;
     }
 
     public PGOutputVisitor(Appendable appender, boolean parameterized){
         super(appender, parameterized);
-        this.dbType = JdbcConstants.POSTGRESQL;
-    }
-
-    @Override
-    public void endVisit(WindowClause x) {
-
-    }
-
-    @Override
-    public boolean visit(WindowClause x) {
-        print0(ucase ? "WINDOW " : "window ");
-        x.getName().accept(this);
-        print0(ucase ? " AS " : " as ");
-        for (int i = 0; i < x.getDefinition().size(); ++i) {
-            if (i != 0) {
-                println(", ");
-            }
-            print('(');
-            x.getDefinition().get(i).accept(this);
-            print(')');
-        }
-        return false;
+        this.dbType = DbType.postgresql;
     }
 
     @Override
@@ -247,6 +97,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         return false;
     }
+
 
     public boolean visit(PGSelectQueryBlock x) {
         if ((!isParameterized()) && isPrettyFormat() && x.hasBeforeComment()) {
@@ -485,6 +336,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             } else if ((onConflictUpdateSetItems != null && onConflictUpdateSetItems.size() > 0)) {
                 print0(ucase ? " DO UPDATE SET " : " do update set ");
                 printAndAccept(onConflictUpdateSetItems, ", ");
+                SQLExpr onConflictUpdateWhere = x.getOnConflictUpdateWhere();
+                if (onConflictUpdateWhere != null) {
+                    print0(ucase ? " WHERE " : " where ");
+                    printExpr(onConflictUpdateWhere);
+                }
             }
         }
 
@@ -626,19 +482,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
         print0("::");
         dataType.accept(this);
-        return false;
-    }
-
-    @Override
-    public void endVisit(PGValuesQuery x) {
-        
-    }
-
-    @Override
-    public boolean visit(PGValuesQuery x) {
-        print0(ucase ? "VALUES(" : "values(");
-        printAndAccept(x.getValues(), ", ");
-        print(')');
         return false;
     }
     
@@ -810,6 +653,64 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public void endVisit(PGCreateSchemaStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(PGCreateSchemaStatement x) {
+        printUcase("CREATE SCHEMA ");
+        if (x.isIfNotExists()) {
+            printUcase("IF NOT EXISTS ");
+        }
+
+        if (x.getSchemaName() != null) {
+            x.getSchemaName().accept(this);
+        }
+        if (x.isAuthorization()) {
+            printUcase("AUTHORIZATION ");
+            x.getUserName().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(PGDropSchemaStatement x) {
+        printUcase("DROP SCHEMA ");
+        if (x.isIfExists()) {
+            printUcase("IF EXISTS ");
+        }
+        x.getSchemaName().accept(this);
+    }
+
+    @Override
+    public boolean visit(PGDropSchemaStatement x) {
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(PGAlterSchemaStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(PGAlterSchemaStatement x) {
+        printUcase("ALTER SCHEMA ");
+        x.getSchemaName().accept(this);
+
+        if (x.getNewName() != null) {
+            print0(" RENAME TO ");
+            x.getNewName().accept(this);
+        } else if (x.getNewOwner() != null) {
+            print0(" OWNER TO ");
+            x.getNewOwner().accept(this);
+        }
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLSetStatement x) {
         print0(ucase ? "SET " : "set ");
 
@@ -874,15 +775,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     protected void printGrantPrivileges(SQLGrantStatement x) {
-        List<SQLExpr> privileges = x.getPrivileges();
+        List<SQLPrivilegeItem> privileges = x.getPrivileges();
         int i = 0;
-        for (SQLExpr privilege : privileges) {
+        for (SQLPrivilegeItem privilege : privileges) {
             if (i != 0) {
                 print(", ");
             }
 
-            if (privilege instanceof SQLIdentifierExpr) {
-                String name = ((SQLIdentifierExpr) privilege).getName();
+            SQLExpr action = privilege.getAction();
+            if (action instanceof SQLIdentifierExpr) {
+                String name = ((SQLIdentifierExpr) action).getName();
                 if ("RESOURCE".equalsIgnoreCase(name)) {
                     continue;
                 }
@@ -894,14 +796,17 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(SQLGrantStatement x) {
-        if (x.getOn() == null) {
+        if (x.getResource() == null) {
             print("ALTER ROLE ");
-            x.getTo().accept(this);
+
+            printAndAccept(x.getUsers(), ",");
+
             print(' ');
             Set<SQLIdentifierExpr> pgPrivilegs = new LinkedHashSet<SQLIdentifierExpr>();
-            for (SQLExpr privilege : x.getPrivileges()) {
-                if (privilege instanceof SQLIdentifierExpr) {
-                    String name = ((SQLIdentifierExpr) privilege).getName();
+            for (SQLPrivilegeItem privilege : x.getPrivileges()) {
+                SQLExpr action = privilege.getAction();
+                if (action instanceof SQLIdentifierExpr) {
+                    String name = ((SQLIdentifierExpr) action).getName();
                     if (name.equalsIgnoreCase("CONNECT")) {
                         pgPrivilegs.add(new SQLIdentifierExpr("LOGIN"));
                     }
@@ -1074,17 +979,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public void endVisit(OracleForStatement x) {
-
-    }
-
-    public boolean visit(OracleSizeExpr x) {
-        x.getValue().accept(this);
-        print0(x.getUnit().name());
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleSizeExpr x) {
 
     }
 
@@ -1868,38 +1762,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     }
 
-    @Override
-    public boolean visit(OracleAlterIndexStatement x) {
-        print0(ucase ? "ALTER INDEX " : "alter index ");
-        x.getName().accept(this);
-
-        if (x.getRenameTo() != null) {
-            print0(ucase ? " RENAME TO " : " rename to ");
-            x.getRenameTo().accept(this);
-        }
-
-        if (x.getMonitoringUsage() != null) {
-            print0(ucase ? " MONITORING USAGE" : " monitoring usage");
-        }
-
-        if (x.getRebuild() != null) {
-            print(' ');
-            x.getRebuild().accept(this);
-        }
-
-        if (x.getParallel() != null) {
-            print0(ucase ? " PARALLEL" : " parallel");
-            x.getParallel().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterIndexStatement x) {
-
-    }
-
     public boolean visit(OracleCheck x) {
         visit((SQLCheck) x);
         return false;
@@ -2391,11 +2253,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(ucase ? "MONITORING" : "monitoring");
         }
 
-        SQLPartitionBy partitionBy = x.getPartitioning();
-        if (partitionBy != null) {
+        if (x.getPartitioning() != null) {
             println();
             print0(ucase ? "PARTITION BY " : "partition by ");
-            partitionBy.accept(this);
+            x.getPartitioning().accept(this);
         }
 
         if (x.getCluster() != null) {
@@ -2413,28 +2274,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             println();
             x.getSelect().accept(this);
         }
-
         return false;
     }
 
     @Override
     public void endVisit(OracleCreateTableStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleAlterIndexStatement.Rebuild x) {
-        print0(ucase ? "REBUILD" : "rebuild");
-
-        if (x.getOption() != null) {
-            print(' ');
-            x.getOption().accept(this);
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterIndexStatement.Rebuild x) {
 
     }
 
@@ -2805,6 +2649,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public boolean visit(OracleSelectRestriction.CheckOption x) {
         print0(ucase ? "CHECK OPTION" : "check option");
         if (x.getConstraint() != null) {
+            print0(ucase ? " CONSTRAINT" : " constraint");
             print(' ');
             x.getConstraint().accept(this);
         }
@@ -2814,16 +2659,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(OracleSelectRestriction.ReadOnly x) {
         print0(ucase ? "READ ONLY" : "read only");
-        return false;
-    }
-
-    public boolean visit(OracleDbLinkExpr x) {
-        SQLExpr expr = x.getExpr();
-        if (expr != null) {
-            expr.accept(this);
-            print('@');
+        if (x.getConstraint() != null) {
+            print0(ucase ? " CONSTRAINT" : " constraint");
+            print(' ');
+            x.getConstraint().accept(this);
         }
-        print0(x.getDbLink());
         return false;
     }
 
@@ -2834,10 +2674,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public void endVisit(OracleAnalyticWindowing x) {
-
-    }
-
-    public void endVisit(OracleDbLinkExpr x) {
 
     }
 
@@ -2987,7 +2823,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(OracleAnalytic x) {
-        print0(ucase ? "OVER (" : "over (");
+        print0(ucase ? "(" : "(");
 
         boolean space = false;
         if (x.getPartitionBy().size() > 0) {
@@ -3060,6 +2896,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public void endVisit(OracleRunStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleXmlColumnProperties x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleXmlColumnProperties x) {
 
     }
 
@@ -3143,18 +2989,26 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print(' ');
         }
 
-        print0(ucase ? "INDEX " : "index ");
+        print0(ucase ? "INDEX" : "index");
 
-        x.getName().accept(this);
+        if (x.isConcurrently()) {
+            print0(ucase ? " CONCURRENTLY" : " concurrently");
+        }
+
+        SQLName name = x.getName();
+        if (name != null) {
+            print(' ');
+            name.accept(this);
+        }
+
+        print0(ucase ? " ON " : " on ");
+        x.getTable().accept(this);
 
         if (x.getUsing() != null) {
             print0(ucase ? " USING " : " using ");
             ;
             print0(x.getUsing());
         }
-
-        print0(ucase ? " ON " : " on ");
-        x.getTable().accept(this);
         print0(" (");
         printAndAccept(x.getItems(), ", ");
         print(')');
@@ -3163,6 +3017,60 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (comment != null) {
             print0(ucase ? " COMMENT " : " comment ");
             comment.accept(this);
+        }
+
+        boolean hasOptions = false;
+
+        if (x.getIndexDefinition().hasOptions()) {
+            SQLIndexOptions indexOptions = x.getIndexDefinition().getOptions();
+            if (indexOptions.getKeyBlockSize() != null ||
+                indexOptions.getParserName() != null ||
+                indexOptions.getAlgorithm() != null ||
+                indexOptions.getLock() != null ||
+                indexOptions.getOtherOptions().size() > 0) {
+                hasOptions = true;
+            }
+        }
+
+        if (hasOptions) {
+            print0(ucase ? " WITH (" : " with (");
+            SQLIndexOptions indexOptions = x.getIndexDefinition().getOptions();
+
+            SQLExpr keyBlockSize = indexOptions.getKeyBlockSize();
+            if (keyBlockSize != null) {
+                print0(ucase ? " KEY_BLOCK_SIZE = " : " key_block_size = ");
+                printExpr(keyBlockSize, parameterized);
+            }
+
+            String parserName = indexOptions.getParserName();
+            if (parserName != null) {
+                print0(ucase ? " WITH PARSER " : " with parser ");
+                print0(parserName);
+            }
+
+            String algorithm = indexOptions.getAlgorithm();
+            if (algorithm != null) {
+                print0(ucase ? " ALGORITHM = " : " algorithm = ");
+                print0(algorithm);
+            }
+
+            String lock = indexOptions.getLock();
+            if (lock != null) {
+                print0(ucase ? " LOCK " : " lock ");
+                print0(lock);
+            }
+
+            for (SQLAssignItem option : indexOptions.getOtherOptions()) {
+                option.accept(this);
+            }
+
+            print(')');
+        }
+
+        SQLName tablespace = x.getTablespace();
+        if (tablespace != null) {
+            print0(ucase ? " TABLESPACE " : " tablespace ");
+            tablespace.accept(this);
         }
 
         return false;
@@ -3176,11 +3084,14 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         return false;
     }
 
-    protected void visitAggreateRest(SQLAggregateExpr x) {
-        SQLOrderBy orderBy = x.getWithinGroup();
-        if (orderBy != null) {
-            print(' ');
-            orderBy.accept(this);
-        }
+    @Override
+    public boolean visit(OracleXmlColumnProperties.OracleXMLTypeStorage x) {
+        return false;
     }
+
+    @Override
+    public void endVisit(OracleXmlColumnProperties.OracleXMLTypeStorage x) {
+
+    }
+
 }

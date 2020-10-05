@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,27 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLShowViewsStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
+import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQLServerASTVisitor {
     public SQLServerSchemaStatVisitor() {
-        super(JdbcConstants.SQL_SERVER);
+        super(DbType.sqlserver);
+    }
+
+    public SQLServerSchemaStatVisitor(SchemaRepository repository) {
+        super (repository);
     }
 
     @Override
@@ -147,14 +148,16 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
 	@Override
 	public boolean visit(SQLServerParameter x) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void endVisit(SQLServerParameter x) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
+    @Override
+    public boolean visit(SQLShowViewsStatement x) {
+        return false;
+    }
 }

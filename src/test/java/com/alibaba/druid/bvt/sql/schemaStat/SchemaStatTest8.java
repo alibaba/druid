@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.schemaStat;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -19,7 +20,7 @@ public class SchemaStatTest8 extends TestCase {
                 "WHERE AQLQCAT.MANDT = 'A0' " +
                 "   AND AQLQCATB.NUM = 'A1'";
 
-        String dbType = JdbcConstants.ORACLE;
+        DbType dbType = JdbcConstants.ORACLE;
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
@@ -30,7 +31,7 @@ public class SchemaStatTest8 extends TestCase {
 //        System.out.println(statVisitor.getGroupByColumns()); // group by
         System.out.println("relationships : " + statVisitor.getRelationships()); // group by
 
-        assertEquals(8, statVisitor.getColumns().size());
-        assertEquals(6, statVisitor.getConditions().size());
+        Assert.assertEquals(8, statVisitor.getColumns().size());
+        Assert.assertEquals(6, statVisitor.getConditions().size());
     }
 }

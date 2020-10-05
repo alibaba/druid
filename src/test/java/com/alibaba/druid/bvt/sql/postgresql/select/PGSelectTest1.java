@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.postgresql.select;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -26,6 +22,9 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
+import org.junit.Assert;
+
+import java.util.List;
 
 public class PGSelectTest1 extends PGTest {
 
@@ -37,7 +36,7 @@ public class PGSelectTest1 extends PGTest {
         SQLStatement statemen = statementList.get(0);
 //        print(statementList);
 
-        assertEquals(1, statementList.size());
+        Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
@@ -46,8 +45,8 @@ public class PGSelectTest1 extends PGTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        assertEquals(2, visitor.getColumns().size());
-        assertEquals(2, visitor.getTables().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getTables().size());
     }
     
     public void test_1() throws Exception {
@@ -57,7 +56,7 @@ public class PGSelectTest1 extends PGTest {
          SQLStatement statemen = statementList.get(0);
 //         print(statementList);
 
-		assertEquals(1, statementList.size());
+		Assert.assertEquals(1, statementList.size());
 		assertTrue(statemen instanceof PGSelectStatement);
 		PGSelectStatement select = (PGSelectStatement) statemen;
 		assertTrue(select.getSelect().getQuery() instanceof SQLUnionQuery);

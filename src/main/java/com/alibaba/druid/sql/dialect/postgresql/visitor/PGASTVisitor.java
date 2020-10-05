@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGConnectToStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGStartTransactionStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface PGASTVisitor extends SQLASTVisitor {
@@ -42,10 +24,6 @@ public interface PGASTVisitor extends SQLASTVisitor {
     void endVisit(PGSelectQueryBlock x);
 
     boolean visit(PGSelectQueryBlock x);
-
-    void endVisit(PGSelectQueryBlock.WindowClause x);
-
-    boolean visit(PGSelectQueryBlock.WindowClause x);
 
     void endVisit(PGSelectQueryBlock.FetchClause x);
 
@@ -78,10 +56,6 @@ public interface PGASTVisitor extends SQLASTVisitor {
     void endVisit(PGTypeCastExpr x);
     
     boolean visit(PGTypeCastExpr x);
-    
-    void endVisit(PGValuesQuery x);
-    
-    boolean visit(PGValuesQuery x);
     
     void endVisit(PGExtractExpr x);
     
@@ -128,5 +102,14 @@ public interface PGASTVisitor extends SQLASTVisitor {
 
     void endVisit(PGConnectToStatement x);
     boolean visit(PGConnectToStatement x);
+
+    void endVisit(PGCreateSchemaStatement x);
+    boolean visit(PGCreateSchemaStatement x);
+
+    void endVisit(PGDropSchemaStatement x);
+    boolean visit(PGDropSchemaStatement x);
+
+    void endVisit(PGAlterSchemaStatement x);
+    boolean visit(PGAlterSchemaStatement x);
 
 }

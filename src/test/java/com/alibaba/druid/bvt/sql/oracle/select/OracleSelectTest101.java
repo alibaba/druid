@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ public class OracleSelectTest101 extends OracleTest {
                     "JOIN D0180 b ON a.vip_id = b.vip_id \n" +
                     "JOIN D0160 c ON c.viptype_id = b.viptype_id \n" +
                     "JOIN D0169 d ON d.viptype_id = c.viptype_id\n" +
-                    "AND d.language_id = 'zh-cn' \n" +
+                    "\tAND d.language_id = 'zh-cn' \n" +
                     "\tJOIN area_store_hn e ON a.department_id = e.department_id \n" +
                     "WHERE a.vip_create_date BETWEEN TRUNC(SYSDATE) - 4 - 10 / 24 AND TRUNC(SYSDATE) - 10 / 24 -- --注册日期\n" +
                     "\tAND (a.vip_state = '0'\n" +

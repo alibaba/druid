@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,55 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsObject;
+import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wenshao on 23/02/2017.
  */
-public class SQLValuesTableSource extends SQLTableSourceImpl {
+public class SQLValuesTableSource extends SQLTableSourceImpl implements SQLSelectQuery, SQLReplaceable {
+    private boolean bracket;
     private List<SQLListExpr> values = new ArrayList<SQLListExpr>();
     private List<SQLName> columns = new ArrayList<SQLName>();
+
+    public SQLValuesTableSource() {
+
+    }
 
     public List<SQLListExpr> getValues() {
         return values;
     }
 
+    public void addValue(SQLListExpr row) {
+        if (row == null) {
+            return;
+        }
+
+        row.setParent(this);
+        values.add(row);
+    }
+
     public List<SQLName> getColumns() {
         return columns;
+    }
+
+    public void addColumn(SQLName column) {
+        column.setParent(this);
+        columns.add(column);
+    }
+
+    public void addColumn(String column) {
+        addColumn(new SQLIdentifierExpr(column));
     }
 
     @Override
@@ -45,6 +73,16 @@ public class SQLValuesTableSource extends SQLTableSourceImpl {
             acceptChild(visitor, columns);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public boolean isBracket() {
+        return bracket;
+    }
+
+    @Override
+    public void setBracket(boolean bracket) {
+        this.bracket = bracket;
     }
 
     @Override
@@ -79,5 +117,26 @@ public class SQLValuesTableSource extends SQLTableSourceImpl {
         }
 
         return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        for (int i = 0; i < values.size(); i++) {
+            if (values.get(i) == expr) {
+                target.setParent(this);
+                values.set(i, (SQLListExpr) expr);
+                return true;
+            }
+        }
+
+        for (int i = 0; i < columns.size(); i++) {
+            if (columns.get(i) == expr) {
+                target.setParent(this);
+                columns.set(i, (SQLName) expr);
+                return true;
+            }
+        }
+
+        return false;
     }
 }

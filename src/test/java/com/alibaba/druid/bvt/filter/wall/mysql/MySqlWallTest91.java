@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
@@ -51,6 +51,7 @@ public class MySqlWallTest91 extends TestCase {
         WallProvider provider = initWallProvider();
         {
             String sql = "SELECT t.session_id,t.voip_send,t.voip_rece,t.appid,t.begin_time,substring_index(t1.callbackUrl,':',1) AS servicetype, SUBSTRING_INDEX(substring_index(t1.callbackUrl,'/',3),'/',-1) AS hostname, CASE WHEN SUBSTR(t1.callbackUrl,-2)='**' THEN REPLACE(t1.callbackUrl,'**','OfflineMsgNotify') ELSE t1.callbackUrl END AS url FROM `im_session_info` t INNER JOIN ccp_application t1 ON t.appid=t1.appId WHERE t.end_time IS NULL AND ((DATABASE()='openser' AND t1.`status`=2) OR ((DATABASE()<>'openser') AND t1.`status` IN (1,2,3))) AND INSTR(t1.funInfo,'1004')>0 AND (0=0 OR (0>0 AND t.id<0)) ORDER BY t.id DESC LIMIT 100; ";
+            SQLUtils.parseStatements(sql, DbType.mysql);
             Assert.assertFalse(provider.checkValid(sql));
         }
     }
@@ -74,7 +75,7 @@ public class MySqlWallTest91 extends TestCase {
     public void test_false3() throws Exception {
         WallProvider provider = initWallProvider();
         {
-            String sql = "SELECT * FROM mp_Sites WHERE SiteID = -1 OR -1 = -1 --ORDER BY SiteID LIMIT 1 ";
+            String sql = "SELECT * FROM mp_Sites WHERE SiteID = -1 OR -1 = -1 -- ORDER BY SiteID LIMIT 1 ";
             Assert.assertFalse(provider.checkValid(sql));
         }
     }
@@ -82,7 +83,7 @@ public class MySqlWallTest91 extends TestCase {
     public void test_false4() throws Exception {
         WallProvider provider = initWallProvider();
         {
-            String sql = "select cid,title,id,img,fan from duoduo_mall where cid = cid and 1=1 --order by sort desc limit 17 ";
+            String sql = "select cid,title,id,img,fan from duoduo_mall where cid = cid and 1=1 -- order by sort desc limit 17 ";
             Assert.assertFalse(provider.checkValid(sql));
         }
     }
@@ -98,7 +99,7 @@ public class MySqlWallTest91 extends TestCase {
     public void test_false6() throws Exception {
         WallProvider provider = initWallProvider();
         {
-            String sql = " select pg.*,an1.w36ma_name as create_name, an2.w36ma_name as print_name, an2.w36ma_name as receive_name, an2.w36ma_name as products_name, an2.w36ma_name as warehouse_name from w36ma_picking as pg left join iweb_admin as an1 on pg.create_name_id=an1.id left join iweb_admin as an2 on pg.print_name_id=an2.id left join iweb_admin as an3 on pg.receive_name_id=an3.id left join iweb_admin as an4 on pg.products_name_id=an4.id left join iweb_admin as an5 on pg.warehouse_name_id=an5.id where (pg.picking_no='' or ''='') and (DATE_FORMAT(pg.create_time,'%Y-%m-%d') = '' or ''='') --limit 0,20 ";
+            String sql = " select pg.*,an1.w36ma_name as create_name, an2.w36ma_name as print_name, an2.w36ma_name as receive_name, an2.w36ma_name as products_name, an2.w36ma_name as warehouse_name from w36ma_picking as pg left join iweb_admin as an1 on pg.create_name_id=an1.id left join iweb_admin as an2 on pg.print_name_id=an2.id left join iweb_admin as an3 on pg.receive_name_id=an3.id left join iweb_admin as an4 on pg.products_name_id=an4.id left join iweb_admin as an5 on pg.warehouse_name_id=an5.id where (pg.picking_no='' or ''='') and (DATE_FORMAT(pg.create_time,'%Y-%m-%d') = '' or ''='') -- limit 0,20 ";
             Assert.assertFalse(provider.checkValid(sql));
         }
     }
@@ -216,7 +217,7 @@ public class MySqlWallTest91 extends TestCase {
             Assert.assertTrue(provider.checkValid(sql));
         }
         {
-            String sql = "select col.name, col.column_id, st.name as DT_name, schema_name(st.schema_id) as DT_schema, col.max_length, col.precision, col.scale, bt.name as BT_name, col.collation_name, col.is_nullable, col.is_ansi_padded, col.is_rowguidcol, col.is_identity, case when(idc.column_id is null) then null else CONVERT(nvarchar(40), idc.seed_value) end, case when(idc.column_id is null) then null else CONVERT(nvarchar(40), idc.increment_value) end, CONVERT(bit, case when(cmc.column_id is null) then 0 else 1 end) as is_computed, convert(bit, ColumnProperty(col.object_id, col.name, N'IsIdNotForRepl')) as IsIdNotForRepl, col.is_replicated, col.is_non_sql_subscribed, col.is_merge_published, col.is_dts_replicated, col.rule_object_id, robj.name as Rul_name, schema_name(robj.schema_id) as Rul_schema, col.default_object_id, OBJECTPROPERTY(col.default_object_id, N'IsDefaultCnst') as is_defcnst, dobj.name as def_name, schema_name(dobj.schema_id) as def_schema, CONVERT(bit, case when (ftc.column_id is null) then 0 else 1 end) as is_FullTextCol, col_name(col.object_id, ftc.type_column_id) FT_type_column, ftc.language_id as FT_language_id, case when(cmc.column_id is null) then null else cmc.definition end as formular, case when(cmc.column_id is null) then null else cmc.is_persisted end as is_persisted, defCst.definition, COLUMNPROPERTY(col.object_id, col.name, 'IsDeterministic') as IsDeterministic, xmlcoll.name as xmlSchema_name, schema_name(xmlcoll.schema_id) as xmlSchema_schema, col.is_xml_document, col.is_sparse, col.is_column_set from sys.columns col left outer join sys.types st on st.user_type_id = col.user_type_id left outer join sys.types bt on bt.user_type_id = col.system_type_id left outer join sys.objects robj on robj.object_id = col.rule_object_id and robj.type = 'R' left outer join sys.objects dobj on dobj.object_id = col.default_object_id and dobj.type = 'D' left outer join sys.default_constraints defCst on defCst.parent_object_id = col.object_id and defCst.parent_column_id = col.column_id left outer join sys.identity_columns idc o";
+            String sql = "select col.name, col.column_id, st.name as DT_name, schema_name(st.schema_id) as DT_schema, col.max_length, col.precision, col.scale, bt.name as BT_name, col.collation_name, col.is_nullable, col.is_ansi_padded, col.is_rowguidcol, col.is_identity, case when(idc.column_id is null) then null else CONVERT(nvarchar(40), idc.seed_value) end, case when(idc.column_id is null) then null else CONVERT(nvarchar(40), idc.increment_value) end, CONVERT(bit, case when(cmc.column_id is null) then 0 else 1 end) as is_computed, convertToSqlNode(bit, ColumnProperty(col.object_id, col.name, N'IsIdNotForRepl')) as IsIdNotForRepl, col.is_replicated, col.is_non_sql_subscribed, col.is_merge_published, col.is_dts_replicated, col.rule_object_id, robj.name as Rul_name, schema_name(robj.schema_id) as Rul_schema, col.default_object_id, OBJECTPROPERTY(col.default_object_id, N'IsDefaultCnst') as is_defcnst, dobj.name as def_name, schema_name(dobj.schema_id) as def_schema, CONVERT(bit, case when (ftc.column_id is null) then 0 else 1 end) as is_FullTextCol, col_name(col.object_id, ftc.type_column_id) FT_type_column, ftc.language_id as FT_language_id, case when(cmc.column_id is null) then null else cmc.definition end as formular, case when(cmc.column_id is null) then null else cmc.is_persisted end as is_persisted, defCst.definition, COLUMNPROPERTY(col.object_id, col.name, 'IsDeterministic') as IsDeterministic, xmlcoll.name as xmlSchema_name, schema_name(xmlcoll.schema_id) as xmlSchema_schema, col.is_xml_document, col.is_sparse, col.is_column_set from sys.columns col left outer join sys.types st on st.user_type_id = col.user_type_id left outer join sys.types bt on bt.user_type_id = col.system_type_id left outer join sys.objects robj on robj.object_id = col.rule_object_id and robj.type = 'R' left outer join sys.objects dobj on dobj.object_id = col.default_object_id and dobj.type = 'D' left outer join sys.default_constraints defCst on defCst.parent_object_id = col.object_id and defCst.parent_column_id = col.column_id left outer join sys.identity_columns idc o";
             Assert.assertTrue(provider.checkValid(sql));
         }
         {
@@ -237,7 +238,7 @@ public class MySqlWallTest91 extends TestCase {
             Assert.assertTrue(provider.checkValid(sql));
         }
     }
-    
+
     public void test() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -258,6 +259,7 @@ public class MySqlWallTest91 extends TestCase {
         }
         {
             String sql = "SELECT * FROM `oammxncom2014`.`ecs_free_bank` where id=1 or 1='1' --";
+            SQLUtils.parseStatements(sql, DbType.mysql);
             Assert.assertFalse(provider.checkValid(sql));
         }
 //        {

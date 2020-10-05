@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.sql.repository;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by wenshao on 03/08/2017.
@@ -29,10 +29,12 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public interface SchemaResolveVisitor extends SQLASTVisitor {
 
     boolean isEnabled(Option option);
+    int getOptions();
 
     public static enum Option {
         ResolveAllColumn,
-        ResolveIdentifierAlias
+        ResolveIdentifierAlias,
+        CheckColumnAmbiguous
         ;
         private Option() {
             mask = (1 << ordinal());
@@ -95,6 +97,10 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
         }
 
         public void addTableSource(long alias_hash, SQLTableSource tableSource) {
+            if (tableSourceMap == null) {
+                tableSourceMap = new HashMap<Long, SQLTableSource>();
+            }
+
             tableSourceMap.put(alias_hash, tableSource);
         }
 
@@ -110,6 +116,28 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
                 return null;
             }
             return declares.get(nameHash);
+        }
+
+        protected SQLTableSource findTableSource(long nameHash) {
+            SQLTableSource table = null;
+            if (tableSourceMap != null) {
+                table = tableSourceMap.get(nameHash);
+            }
+
+            return table;
+        }
+
+        protected SQLTableSource findTableSourceRecursive(long nameHash) {
+            for (Context ctx = this; ctx != null; ctx = ctx.parent) {
+                if (ctx.tableSourceMap != null) {
+                    SQLTableSource table = ctx.tableSourceMap.get(nameHash);
+                    if (table != null) {
+                        return table;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

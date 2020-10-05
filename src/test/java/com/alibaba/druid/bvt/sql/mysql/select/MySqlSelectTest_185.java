@@ -86,7 +86,7 @@ public class MySqlSelectTest_185 extends MysqlTest {
                         "\tAND product.status = 1\n" +
                         "\tAND product.more_color BETWEEN (0\n" +
                         "\t\tAND 1)\n" +
-                        "\tAND product.master_color = 1\n" +
+                        "\tAND (product.master_color = 1)\n" +
                         "ORDER BY product.sort ASC", //
                             output);
     }

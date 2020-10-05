@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,29 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+public class SQLListExpr extends SQLExprImpl implements SQLReplaceable  {
 
-public class SQLListExpr extends SQLExprImpl {
+    private final List<SQLExpr> items;
 
-    private final List<SQLExpr> items = new ArrayList<SQLExpr>();
+    public SQLListExpr() {
+        items = new ArrayList<SQLExpr>();
+    }
+
+    public SQLListExpr(SQLExpr... items) {
+        this.items = new ArrayList<SQLExpr>(items.length);
+        for (SQLExpr item : items) {
+            item.setParent(this);
+            this.items.add(item);
+        }
+    }
 
     public List<SQLExpr> getItems() {
         return items;
@@ -40,7 +53,12 @@ public class SQLListExpr extends SQLExprImpl {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, items);
+            for (int i = 0; i < items.size(); i++) {
+                SQLExpr item = items.get(i);
+                if (item != null) {
+                    item.accept(visitor);
+                }
+            }
         }
         visitor.endVisit(this);
     }
@@ -49,7 +67,7 @@ public class SQLListExpr extends SQLExprImpl {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((items == null) ? 0 : items.hashCode());
+        result = prime * result + items.hashCode();
         return result;
     }
 
@@ -65,11 +83,7 @@ public class SQLListExpr extends SQLExprImpl {
             return false;
         }
         SQLListExpr other = (SQLListExpr) obj;
-        if (items == null) {
-            if (other.items != null) {
-                return false;
-            }
-        } else if (!items.equals(other.items)) {
+        if (!items.equals(other.items)) {
             return false;
         }
         return true;
@@ -87,5 +101,17 @@ public class SQLListExpr extends SQLExprImpl {
 
     public List getChildren() {
         return this.items;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i) == expr) {
+                target.setParent(this);
+                items.set(i, target);
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSubPartitionBy;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -25,9 +22,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MySqlSubPartitionByList extends SQLSubPartitionBy implements MySqlObject {
 
-    private SQLExpr       expr;
+    private List<SQLExpr>      keys = new ArrayList<SQLExpr>();
 
     private List<SQLColumnDefinition> columns = new ArrayList<SQLColumnDefinition>();
 
@@ -43,22 +43,22 @@ public class MySqlSubPartitionByList extends SQLSubPartitionBy implements MySqlO
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, expr);
+            acceptChild(visitor, keys);
             acceptChild(visitor, columns);
             acceptChild(visitor, subPartitionsCount);
         }
         visitor.endVisit(this);
     }
 
-    public SQLExpr getExpr() {
-        return expr;
+    public List<SQLExpr> getKeys() {
+        return keys;
     }
 
-    public void setExpr(SQLExpr expr) {
-        if (expr != null) {
-            expr.setParent(this);
+    public void addKey(SQLExpr key) {
+        if (key != null) {
+            key.setParent(this);
         }
-        this.expr = expr;
+        this.keys.add(key);
     }
 
     public List<SQLColumnDefinition> getColumns() {
@@ -74,8 +74,10 @@ public class MySqlSubPartitionByList extends SQLSubPartitionBy implements MySqlO
 
     public void cloneTo(MySqlSubPartitionByList x) {
         super.cloneTo(x);
-        if (expr != null) {
-            x.setExpr(expr.clone());
+        for (SQLExpr key : keys) {
+            SQLExpr k2 = key.clone();
+            k2.setParent(x);
+            x.keys.add(k2);
         }
         for (SQLColumnDefinition column : columns) {
             SQLColumnDefinition c2 = column.clone();

@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.DbType;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -36,7 +37,7 @@ public class ExportAndParameterizedVisitorTestCase extends TestCase {
                 { "update tab01 set d='d1' where a=1 and b='b1'", 3, "d1" },
                 { "delete from tab01 where a=1 and b='b1'", 2, 1.0 } };
 
-        String[] dbTypes = { "mysql", "oracle", "db2" ,JdbcConstants.POSTGRESQL,JdbcUtils.JTDS,"not-found"};
+        String[] dbTypes = { "mysql", "oracle", "db2" ,DbType.postgresql.name(), DbType.jtds.name(), "not-found"};
     // String[]  dbTypes = { JdbcUtils.JTDS};
         for (String dbType : dbTypes) {
 
@@ -46,8 +47,8 @@ public class ExportAndParameterizedVisitorTestCase extends TestCase {
                 final String sql = (String) arr[0];
                 StringBuilder out = new StringBuilder();
 
-                final SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
-                final ParameterizedVisitor pVisitor = (ParameterizedVisitor) ExportParameterVisitorUtils.createExportParameterVisitor(out, dbType);
+                final SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, DbType.of(dbType));
+                final ParameterizedVisitor pVisitor = (ParameterizedVisitor) ExportParameterVisitorUtils.createExportParameterVisitor(out, DbType.of(dbType));
                 final SQLStatement parseStatement = parser.parseStatement();
                 parseStatement.accept(pVisitor);
                 // final ExportParameterVisitor vistor2 = new MySqlExportParameterVisitor();

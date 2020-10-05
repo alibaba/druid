@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,24 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropFunctionStatement extends SQLStatementImpl implements SQLDropStatement {
+public class SQLDropFunctionStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
 
     private SQLName name;
     private boolean ifExists;
-    
+    private boolean temporary;
+
     public SQLDropFunctionStatement() {
         
     }
     
-    public SQLDropFunctionStatement(String dbType) {
+    public SQLDropFunctionStatement(DbType dbType) {
         super (dbType);
     }
 
@@ -57,6 +61,23 @@ public class SQLDropFunctionStatement extends SQLStatementImpl implements SQLDro
 
     public void setIfExists(boolean ifExists) {
         this.ifExists = ifExists;
+    }
+
+    public boolean isTemporary() {
+        return temporary;
+    }
+
+    public void setTemporary(boolean temporary) {
+        this.temporary = temporary;
+    }
+
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (name == expr) {
+            setName((SQLName) target);
+            return true;
+        }
+
+        return false;
     }
 
 }

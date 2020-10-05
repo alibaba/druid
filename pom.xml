@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.1.24</version>
+	<version>1.2.0</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -524,7 +524,7 @@
 		<dependency>
 			<groupId>org.apache.calcite</groupId>
 			<artifactId>calcite-core</artifactId>
-			<version>1.14.0</version>
+			<version>1.18.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -544,6 +544,14 @@
 			<artifactId>curator-recipes</artifactId>
 			<version>4.2.0</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.73</version>
+			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 
 		<!--
@@ -718,5 +726,11 @@
 			<version>4.2.0</version>
 			<scope>test</scope>
 		</dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.68</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
 </project>

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.clause;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleReturningClause extends OracleSQLObjectImpl {
+import java.util.ArrayList;
+import java.util.List;
+
+public class OracleReturningClause extends OracleSQLObjectImpl implements SQLReplaceable {
 
     private List<SQLExpr> items  = new ArrayList<SQLExpr>();
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
@@ -58,6 +59,7 @@ public class OracleReturningClause extends OracleSQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    @Override
     public OracleReturningClause clone() {
         OracleReturningClause x = new OracleReturningClause();
 
@@ -74,5 +76,26 @@ public class OracleReturningClause extends OracleSQLObjectImpl {
         }
 
         return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        for (int i = items.size() - 1; i >= 0; i--) {
+            if (items.get(i) == expr) {
+                target.setParent(this);
+                items.set(i, target);
+                return true;
+            }
+        }
+
+        for (int i = values.size() - 1; i >= 0; i--) {
+            if (values.get(i) == expr) {
+                target.setParent(this);
+                values.set(i, target);
+                return true;
+            }
+        }
+
+        return false;
     }
 }

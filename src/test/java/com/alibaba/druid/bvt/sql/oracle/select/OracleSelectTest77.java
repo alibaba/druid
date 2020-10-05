@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,17 +96,17 @@ public class OracleSelectTest77 extends OracleTest {
                     "\t, d.id AS customer_id, d.name AS customer_name, a.salesrep_id\n" +
                     "FROM tcc_cpr.tcc_cpr_contract_headers a\n" +
                     "LEFT JOIN tcc_cpr.virtual_value2004 b ON a.contract_header_id = b.contract_header_id\n" +
-                    "AND b.template_id = CASE \n" +
-                    "\tWHEN a.contract_category = 'SALES' THEN 1\n" +
-                    "\tWHEN a.contract_category = 'INTERNATIONAL' THEN 49\n" +
-                    "END\n" +
-                    "AND b.enabled_flag = 'Y' \n" +
+                    "\tAND b.template_id = CASE \n" +
+                    "\t\tWHEN a.contract_category = 'SALES' THEN 1\n" +
+                    "\t\tWHEN a.contract_category = 'INTERNATIONAL' THEN 49\n" +
+                    "\tEND\n" +
+                    "\tAND b.enabled_flag = 'Y' \n" +
                     "LEFT JOIN tcc_cpr.tcc_cpr_payment c ON a.contract_header_id = c.contract_header_id\n" +
-                    "AND c.payment_condition_code = 'ZTE_PAYMENT_YUFU'\n" +
-                    "AND c.enabled_flag = 'Y' \n" +
+                    "\tAND c.payment_condition_code = 'ZTE_PAYMENT_YUFU'\n" +
+                    "\tAND c.enabled_flag = 'Y' \n" +
                     "\tLEFT JOIN tcc_cust.tcc_cust_customer d ON a.customer_id = d.id\n" +
-                    "AND (d.enable_flag = 'Y'\n" +
-                    "\tOR d.enable_flag = 'T') \n" +
+                    "\tAND (d.enable_flag = 'Y'\n" +
+                    "\t\tOR d.enable_flag = 'T') \n" +
                     "WHERE a.enabled_flag = 'Y'", text);
         }
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));

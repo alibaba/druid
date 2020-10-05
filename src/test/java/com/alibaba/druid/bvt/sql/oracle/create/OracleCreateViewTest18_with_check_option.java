@@ -1,0 +1,70 @@
+/*
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.druid.bvt.sql.oracle.create;
+
+import com.alibaba.druid.sql.OracleTest;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
+
+public class OracleCreateViewTest18_with_check_option extends OracleTest {
+
+    public void test_types() throws Exception {
+        String sql = "CREATE OR REPLACE VIEW \"ZJ\".\"SMP_SERVICE_GROUP_DEFN\" (\"OWNER\", \"GROUP_NAME\", \"GROUP_TYPE\") AS \n" +
+                "  select OWNER, GROUP_NAME, GROUP_TYPE from SMP_SERVICE_GROUP_DEFN_\n" +
+                "  where USER = OWNER\n" +
+                "  with check option       CONSTRAINT \"SMP_SERVICE_GROUP_DEFN_CNST\";";
+
+        System.out.println(sql);
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+        assertEquals(1, statementList.size());
+
+        assertEquals("CREATE OR REPLACE VIEW \"ZJ\".\"SMP_SERVICE_GROUP_DEFN\" (\n" +
+                        "\t\"OWNER\", \n" +
+                        "\t\"GROUP_NAME\", \n" +
+                        "\t\"GROUP_TYPE\"\n" +
+                        ")\n" +
+                        "AS\n" +
+                        "SELECT OWNER, GROUP_NAME, GROUP_TYPE\n" +
+                        "FROM SMP_SERVICE_GROUP_DEFN_\n" +
+                        "WHERE USER = OWNER\n" +
+                        "WITH CHECK OPTION CONSTRAINT \"SMP_SERVICE_GROUP_DEFN_CNST\";",
+                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("relationships : " + visitor.getRelationships());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+
+        assertEquals(1, visitor.getTables().size());
+
+        assertEquals(4, visitor.getColumns().size());
+
+    }
+}

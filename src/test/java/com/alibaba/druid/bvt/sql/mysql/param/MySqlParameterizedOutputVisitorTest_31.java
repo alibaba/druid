@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_31 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
 
         String sql = "/* 0a67bca314863468702364451e/0.3// */select `udata`.`id` as `id`,`udata`.`gmt_create` as `gmtCreate`,`udata`.`gmt_modified` as `gmtModified`,`udata`.`uid` as `userId`,`udata`.`user_nick` as `userNick`,`udata`.`user_type` as `userType`,`udata`.`aps` as `acPeSe`,`udata`.`rn` as `rn`,`udata`.`start_period_time` as `startPeriodTime`,`udata`.`ept` as `adTm`,`udata`.`status` as `status`,`udata`.`charging_period` as `chargingPeriod`,`udata`.`sn` as `sn`,`udata`.`cpd` as `chargingPeriodDesc`,`udata`.`task_total_num` as `taskTotalNum`,`udata`.`tcn` as `taCoNu`,`udata`.`task_type` as `taskType`,`udata`.`ilbu` as `isLaBiUs`" +

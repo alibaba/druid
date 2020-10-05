@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.wall.spi;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
@@ -34,7 +34,7 @@ public class OracleWallProvider extends WallProvider {
     }
 
     public OracleWallProvider(WallConfig config){
-        super(config, JdbcConstants.ORACLE);
+        super(config, DbType.oracle);
     }
 
     @Override

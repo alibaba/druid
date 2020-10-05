@@ -33,7 +33,7 @@ public class HiveExprParser extends SQLExprParser {
 
     static {
         String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
-                             "ROWNUMBER" };
+                "ROWNUMBER" };
 
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
@@ -147,63 +147,7 @@ public class HiveExprParser extends SQLExprParser {
         return super.primary();
     }
 
-    public SQLExternalRecordFormat parseRowFormat() {
-        lexer.nextToken();
-        acceptIdentifier("FORMAT");
 
-        if (lexer.identifierEquals(FnvHash.Constants.DELIMITED)) {
-            lexer.nextToken();
-        }
-
-        SQLExternalRecordFormat format = new SQLExternalRecordFormat();
-
-        if (lexer.identifierEquals(FnvHash.Constants.FIELDS)) {
-            lexer.nextToken();
-            acceptIdentifier("TERMINATED");
-            accept(Token.BY);
-
-            format.setTerminatedBy(this.expr());
-        } else if (lexer.identifierEquals("FIELD")) {
-            throw new ParserException("syntax error, expect FIELDS, " + lexer.info());
-        }
-
-        if (lexer.token() == Token.ESCAPE || lexer.identifierEquals(FnvHash.Constants.ESCAPED)) {
-            lexer.nextToken();
-            accept(Token.BY);
-            format.setEscapedBy(this.expr());
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.LINES)) {
-            lexer.nextToken();
-            acceptIdentifier("TERMINATED");
-            accept(Token.BY);
-
-            format.setLinesTerminatedBy(this.expr());
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.COLLECTION)) {
-            lexer.nextToken();
-            acceptIdentifier("ITEMS");
-            acceptIdentifier("TERMINATED");
-            accept(Token.BY);
-            format.setCollectionItemsTerminatedBy(this.expr());
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.MAP)) {
-            lexer.nextToken();
-            acceptIdentifier("KEYS");
-            acceptIdentifier("TERMINATED");
-            accept(Token.BY);
-            format.setMapKeysTerminatedBy(this.expr());
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.SERDE)) {
-            lexer.nextToken();
-            format.setSerde(this.expr());
-        }
-
-        return format;
-    }
 
     protected SQLExpr parseAliasExpr(String alias) {
         String chars = alias.substring(1, alias.length() - 1);

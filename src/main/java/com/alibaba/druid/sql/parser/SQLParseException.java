@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.DruidRuntimeException;
+import com.alibaba.druid.FastsqlException;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 @SuppressWarnings("serial")
 @Deprecated
-public class SQLParseException extends DruidRuntimeException {
+public class SQLParseException extends FastsqlException {
 }

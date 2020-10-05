@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.sql.Types;
 import java.util.List;
 
 public class MySqlCreateTableTest112 extends MysqlTest {
@@ -45,6 +46,7 @@ public class MySqlCreateTableTest112 extends MysqlTest {
         assertNotNull(column);
         assertEquals(2, column.getConstraints().size());
         assertTrue(column.isPrimaryKey());
+        assertEquals(Types.INTEGER, column.jdbcType());
     }
 
 }

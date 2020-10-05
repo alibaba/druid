@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,51 +15,51 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
-import com.alibaba.druid.sql.ast.statement.SQLAlterCharacter;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.ast.statement.SQLUnique;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExprImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlShowColumnOutpuVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.StringUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MySqlCreateTableStatement extends SQLCreateTableStatement implements MySqlStatement {
-
-    private Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
     private List<SQLCommentHint>   hints        = new ArrayList<SQLCommentHint>();
     private List<SQLCommentHint>   optionHints  = new ArrayList<SQLCommentHint>();
     private SQLName                tableGroup;
+    protected SQLExpr              dbPartitionBy;//for drds
+    protected SQLExpr              dbPartitions;//for drds
+    protected SQLExpr              tablePartitionBy;//for drds
+    protected SQLExpr              tablePartitions;//for drds
+    protected MySqlExtPartition    exPartition; //for drds
+    protected SQLName              storedBy; // for ads
+    protected SQLName              distributeByType; // for ads
+    protected List<SQLName>        distributeBy = new ArrayList<SQLName>();
+    protected boolean              isBroadCast;
+    protected Map<String, SQLName> with = new HashMap<String, SQLName>(3); // for ads
 
-    protected SQLPartitionBy dbPartitionBy;
-    protected SQLPartitionBy tablePartitionBy;
-    protected SQLExpr        tbpartitions;
+    protected SQLName archiveBy; // adb
+    protected Boolean withData;
 
     public MySqlCreateTableStatement(){
-        super (JdbcConstants.MYSQL);
+        super (DbType.mysql);
     }
-
-
 
     public List<SQLCommentHint> getHints() {
         return hints;
@@ -67,10 +67,6 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public void setHints(List<SQLCommentHint> hints) {
         this.hints = hints;
-    }
-
-    public void setTableOptions(Map<String, SQLObject> tableOptions) {
-        this.tableOptions = tableOptions;
     }
 
     @Deprecated
@@ -87,23 +83,76 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {
             accept0((MySqlASTVisitor) visitor);
+        } else if (visitor instanceof AdsOutputVisitor) {
+            accept0((AdsOutputVisitor) visitor);
         } else {
             super.accept0(visitor);
         }
     }
 
-    public void accept0(MySqlASTVisitor visitor) {
+    public void accept0(AdsOutputVisitor visitor) {
         if (visitor.visit(this)) {
-            this.acceptChild(visitor, getHints());
-            this.acceptChild(visitor, getTableSource());
-            this.acceptChild(visitor, getTableElementList());
-            this.acceptChild(visitor, getLike());
-            this.acceptChild(visitor, getSelect());
+            for (int i = 0; i < hints.size(); i++) {
+                final SQLCommentHint hint = hints.get(i);
+                if (hint != null) {
+                    hint.accept(visitor);
+                }
+            }
+
+            if (tableSource != null) {
+                tableSource.accept(visitor);
+            }
+
+            for (int i = 0; i < tableElementList.size(); i++) {
+                final SQLTableElement element = tableElementList.get(i);
+                if (element != null) {
+                    element.accept(visitor);
+                }
+            }
+
+            if (like != null) {
+                like.accept(visitor);
+            }
+
+            if (select != null) {
+                select.accept(visitor);
+            }
         }
         visitor.endVisit(this);
     }
 
-    public static class TableSpaceOption extends MySqlObjectImpl {
+    public void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            for (int i = 0; i < hints.size(); i++) {
+                final SQLCommentHint hint = hints.get(i);
+                if (hint != null) {
+                    hint.accept(visitor);
+                }
+            }
+
+            if (tableSource != null) {
+                tableSource.accept(visitor);
+            }
+
+            for (int i = 0; i < tableElementList.size(); i++) {
+                final SQLTableElement element = tableElementList.get(i);
+                if (element != null) {
+                    element.accept(visitor);
+                }
+            }
+
+            if (like != null) {
+                like.accept(visitor);
+            }
+
+            if (select != null) {
+                select.accept(visitor);
+            }
+        }
+        visitor.endVisit(this);
+    }
+
+    public static class TableSpaceOption extends MySqlExprImpl {
 
         private SQLName name;
         private SQLExpr storage;
@@ -153,6 +202,11 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             return x;
         }
 
+        @Override
+        public List<SQLObject> getChildren() {
+            return null;
+        }
+
     }
 
     public List<SQLCommentHint> getOptionHints() {
@@ -172,14 +226,43 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         this.tableGroup = tableGroup;
     }
 
+    public void setTableGroup(String tableGroup) {
+        if (StringUtils.isEmpty(tableGroup)) {
+            this.tableGroup = null;
+        } else {
+            this.tableGroup = new SQLIdentifierExpr(tableGroup);
+        }
+    }
+
     @Override
     public void simplify() {
         tableOptions.clear();
+        tblProperties.clear();
         super.simplify();
     }
 
     public void showCoumns(Appendable out) throws IOException {
         this.accept(new MySqlShowColumnOutpuVisitor(out));
+    }
+
+    public List<MySqlKey> getMysqlKeys() {
+        List<MySqlKey> mySqlKeys = new ArrayList<MySqlKey>();
+        for (SQLTableElement element : this.getTableElementList()) {
+            if (element instanceof MySqlKey) {
+                mySqlKeys.add((MySqlKey)element);
+            }
+        }
+        return mySqlKeys;
+    }
+
+    public List<MySqlTableIndex> getMysqlIndexes() {
+        List<MySqlTableIndex> indexList = new ArrayList<MySqlTableIndex>();
+        for (SQLTableElement element : this.getTableElementList()) {
+            if (element instanceof MySqlTableIndex) {
+                indexList.add((MySqlTableIndex)element);
+            }
+        }
+        return indexList;
     }
 
     public boolean apply(MySqlRenameTableStatement x) {
@@ -213,6 +296,20 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     }
 
     public boolean apply(SQLAlterTableAddIndex item) {
+        SQLName name = item.getIndexDefinition().getName();
+        if (name != null) {
+            long nameHashCode = name.nameHashCode64();
+            for (int i = 0; i < tableElementList.size(); i++) {
+                SQLTableElement e = tableElementList.get(i);
+                if (e instanceof MySqlTableIndex) {
+                    SQLName name1 = ((MySqlTableIndex) e).getName();
+                    if (name1 != null && name1.nameHashCode64() == nameHashCode) {
+                        return false;
+                    }
+                }
+            }
+        }
+
         if (item.isUnique()) {
             MySqlUnique x = new MySqlUnique();
             item.cloneTo(x);
@@ -237,19 +334,19 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     }
 
     public boolean apply(MySqlAlterTableOption item) {
-        this.tableOptions.put(item.getName(), item.getValue());
+        addOption(item.getName(), (SQLExpr) item.getValue());
         return true;
     }
 
     public boolean apply(SQLAlterCharacter item) {
         SQLExpr charset = item.getCharacterSet();
         if (charset != null) {
-            this.tableOptions.put("CHARACTER SET", charset);
+            addOption("CHARACTER SET", charset);
         }
 
         SQLExpr collate = item.getCollate();
         if (collate != null) {
-            this.tableOptions.put("COLLATE", collate);
+            addOption("COLLATE", collate);
         }
         return true;
     }
@@ -316,10 +413,10 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         for (int i = 0; i < tableElementList.size(); i++) {
             SQLTableElement e = tableElementList.get(i);
             if(e instanceof MySqlTableIndex) {
-                ((MySqlTableIndex) e).applyColumnRename(columnName, column.getName());
+                ((MySqlTableIndex) e).applyColumnRename(columnName, column);
             } else if (e instanceof SQLUnique) {
                 SQLUnique unique = (SQLUnique) e;
-                unique.applyColumnRename(columnName, column.getName());
+                unique.applyColumnRename(columnName, column);
             }
         }
 
@@ -345,6 +442,10 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             insertIndex = afterIndex + 1;
         }
 
+        if (item.isFirst()) {
+            insertIndex = 0;
+        }
+
         column.setParent(this);
         if (insertIndex == -1 || insertIndex == columnIndex) {
             tableElementList.set(columnIndex, column);
@@ -359,20 +460,23 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             }
         }
 
-        return true;
-    }
+        // Check key length like change.
+        // Just old name -> old name.
+        for (int i = 0; i < tableElementList.size(); i++) {
+            SQLTableElement e = tableElementList.get(i);
+            if(e instanceof MySqlTableIndex) {
+                ((MySqlTableIndex) e).applyColumnRename(columnName, column);
+            } else if (e instanceof SQLUnique) {
+                SQLUnique unique = (SQLUnique) e;
+                unique.applyColumnRename(columnName, column);
+            }
+        }
 
-    public void output(StringBuffer buf) {
-        this.accept(new MySqlOutputVisitor(buf));
+        return true;
     }
 
     public void cloneTo(MySqlCreateTableStatement x) {
         super.cloneTo(x);
-        for (Map.Entry<String, SQLObject> entry : tableOptions.entrySet()) {
-            SQLObject obj = entry.getValue().clone();
-            obj.setParent(x);
-            x.tableOptions.put(entry.getKey(), obj);
-        }
         if (partitioning != null) {
             x.setPartitioning(partitioning.clone());
         }
@@ -392,6 +496,41 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         if (tableGroup != null) {
             x.setTableGroup(tableGroup.clone());
         }
+
+        if (dbPartitionBy != null) {
+            x.setDbPartitionBy(dbPartitionBy.clone());
+        }
+
+        if (dbPartitions != null) {
+            x.setDbPartitionBy(dbPartitions.clone());
+        }
+
+        if (tablePartitionBy != null) {
+            x.setTablePartitionBy(tablePartitionBy.clone());
+        }
+
+        if (tablePartitions != null) {
+            x.setTablePartitions(tablePartitions.clone());
+        }
+
+        if (exPartition != null) {
+            x.setExPartition(exPartition.clone());
+        }
+
+        if (archiveBy != null) {
+            x.setArchiveBy(archiveBy.clone());
+        }
+
+        if (distributeByType != null) {
+            x.setDistributeByType(distributeByType.clone());
+        }
+
+        if (distributeByType != null) {
+            for (SQLName sqlName : distributeBy) {
+                x.getDistributeBy().add(sqlName.clone());
+            }
+        }
+
     }
 
     public MySqlCreateTableStatement clone() {
@@ -400,36 +539,112 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         return x;
     }
 
-    public SQLPartitionBy getDbPartitionBy() {
+    public SQLExpr getDbPartitionBy() {
         return dbPartitionBy;
     }
 
-    public void setDbPartitionBy(SQLPartitionBy x) {
+    public void setDbPartitionBy(SQLExpr x) {
         if (x != null) {
             x.setParent(this);
         }
         this.dbPartitionBy = x;
     }
 
-    public SQLPartitionBy getTablePartitionBy() {
+    public SQLExpr getTablePartitionBy() {
         return tablePartitionBy;
     }
 
-    public void setTablePartitionBy(SQLPartitionBy x) {
+    public void setTablePartitionBy(SQLExpr x) {
         if (x != null) {
             x.setParent(this);
         }
         this.tablePartitionBy = x;
     }
 
-    public SQLExpr getTbpartitions() {
-        return tbpartitions;
+
+    public SQLName getDistributeByType() {
+        return distributeByType;
     }
 
-    public void setTbpartitions(SQLExpr x) {
+    public void setDistributeByType(SQLName distributeByType) {
+        this.distributeByType = distributeByType;
+    }
+
+    public List<SQLName> getDistributeBy() {
+        return distributeBy;
+    }
+
+    public SQLExpr getTbpartitions() {
+        return tablePartitions;
+    }
+
+    public SQLExpr getTablePartitions() {
+        return tablePartitions;
+    }
+
+    public void setTablePartitions(SQLExpr x) {
+        this.tablePartitions = x;
+    }
+
+    public SQLExpr getDbpartitions() {
+        return dbPartitions;
+    }
+
+    public void setDbPartitions(SQLExpr x) {
         if (x != null) {
             x.setParent(this);
         }
-        this.tbpartitions = x;
+        this.dbPartitions = x;
+    }
+
+    public MySqlExtPartition getExtPartition() {
+        return exPartition;
+    }
+
+    public void setExPartition(MySqlExtPartition x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.exPartition = x;
+    }
+
+    public SQLExpr getDbPartitions() {
+        return dbPartitions;
+    }
+
+    public SQLName getStoredBy() {
+        return storedBy;
+    }
+
+    public void setStoredBy(SQLName storedBy) {
+        this.storedBy = storedBy;
+    }
+
+    public Map<String, SQLName> getWith() {
+        return with;
+    }
+
+    public boolean isBroadCast() {
+        return isBroadCast;
+    }
+
+    public void setBroadCast(boolean broadCast) {
+        isBroadCast = broadCast;
+    }
+
+    public SQLName getArchiveBy() {
+        return archiveBy;
+    }
+
+    public void setArchiveBy(SQLName archiveBy) {
+        this.archiveBy = archiveBy;
+    }
+
+    public Boolean getWithData() {
+        return withData;
+    }
+
+    public void setWithData(Boolean withData) {
+        this.withData = withData;
     }
 }

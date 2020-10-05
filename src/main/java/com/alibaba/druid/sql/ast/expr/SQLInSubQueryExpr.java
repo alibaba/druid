@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,18 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
+public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
 
     private static final long serialVersionUID = 1L;
     private boolean           not              = false;
@@ -36,8 +34,20 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
 
     public SQLSelect          subQuery;
 
+    // for ads query hint
+    public SQLCommentHint hint;
+
     public SQLInSubQueryExpr(){
 
+    }
+
+    public SQLInSubQueryExpr(SQLSelect select){
+        setSubQuery(select);
+    }
+
+    public SQLInSubQueryExpr(SQLExpr expr, SQLSelectQueryBlock queryBlock){
+        setExpr(expr);
+        setSubQuery(new SQLSelect(queryBlock));
     }
 
     public SQLInSubQueryExpr clone() {
@@ -71,32 +81,28 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
         this.expr = expr;
     }
 
-    public SQLInSubQueryExpr(SQLSelect select){
-
-        this.subQuery = select;
-    }
 
     public SQLSelect getSubQuery() {
         return this.subQuery;
     }
 
-    public void setSubQuery(SQLSelect subQuery) {
-        if (subQuery != null) {
-            subQuery.setParent(this);
+    public void setSubQuery(SQLSelect x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.subQuery = subQuery;
-    }
-
-    public void output(StringBuffer buf) {
-        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(buf, null);
-        this.accept(visitor);
+        this.subQuery = x;
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor,this.expr);
-            acceptChild(visitor, this.subQuery);
+            if (this.expr != null) {
+                this.expr.accept(visitor);
+            }
+
+            if (this.subQuery != null) {
+                this.subQuery.accept(visitor);
+            }
         }
 
         visitor.endVisit(this);
@@ -149,6 +155,23 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
     }
 
     public SQLDataType computeDataType() {
-        return SQLBooleanExpr.DEFAULT_DATA_TYPE;
+        return SQLBooleanExpr.DATA_TYPE;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.expr == expr) {
+            setExpr(target);
+            return true;
+        }
+        return false;
+    }
+
+    public SQLCommentHint getHint() {
+        return hint;
+    }
+
+    public void setHint(SQLCommentHint hint) {
+        this.hint = hint;
     }
 }

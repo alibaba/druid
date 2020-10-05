@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,15 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class SQLCreateTableParser extends SQLDDLParser {
 
@@ -82,6 +79,11 @@ public class SQLCreateTableParser extends SQLDDLParser {
             }
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.DIMENSION)) {
+            lexer.nextToken();
+            createTable.setDimension(true);
+        }
+
         accept(Token.TABLE);
 
         if (lexer.token() == Token.IF) {
@@ -99,13 +101,15 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
             for (; ; ) {
                 Token token = lexer.token;
-                if (token == Token.IDENTIFIER
-                        && lexer.stringVal().equalsIgnoreCase("SUPPLEMENTAL")
-                        && JdbcConstants.ORACLE.equals(dbType)) {
-                    this.parseCreateTableSupplementalLogingProps(createTable);
+                if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)
+                    && DbType.oracle == dbType) {
+                    SQLTableElement element = this.parseCreateTableSupplementalLogingProps();
+                    element.setParent(createTable);
+                    createTable.getTableElementList().add(element);
                 } else if (token == Token.IDENTIFIER //
-                        || token == Token.LITERAL_ALIAS) {
+                           || token == Token.LITERAL_ALIAS) {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
+                    column.setParent(createTable);
                     createTable.getTableElementList().add(column);
                 } else if (token == Token.PRIMARY //
                         || token == Token.UNIQUE //
@@ -147,37 +151,38 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
         if (lexer.token == Token.AS) {
             lexer.nextToken();
-            SQLSelect select = this.createSQLSelectParser().select();
+
+            SQLSelect select = null;
+            if(DbType.oracle == dbType) {
+                select = new OracleSelectParser(this.exprParser).select();
+            } else {
+                select = this.createSQLSelectParser().select();
+            }
             createTable.setSelect(select);
         }
 
-        if (lexer.token == Token.WITH && JdbcConstants.POSTGRESQL.equals(dbType)) {
+        if (lexer.token == Token.WITH && DbType.postgresql == dbType) {
             lexer.nextToken();
             accept(Token.LPAREN);
-
-            for (;;) {
-                String name = lexer.stringVal();
-                lexer.nextToken();
-                accept(Token.EQ);
-                SQLExpr value = this.exprParser.expr();
-                value.setParent(createTable);
-
-                createTable.getTableOptions().put(name, value);
-
-                if (lexer.token == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-
-                break;
-            }
+            parseAssignItems(createTable.getTableOptions(), createTable, false);
             accept(Token.RPAREN);
+        }
+
+        if (lexer.token == Token.TABLESPACE) {
+            lexer.nextToken();
+            createTable.setTablespace(
+                this.exprParser.name()
+            );
         }
 
         return createTable;
     }
 
-    protected void parseCreateTableSupplementalLogingProps(SQLCreateTableStatement stmt) {
+    public SQLPartitionBy parsePartitionBy() {
+        throw new ParserException("TODO " + lexer.info());
+    }
+
+    protected SQLTableElement parseCreateTableSupplementalLogingProps() {
         throw new ParserException("TODO " + lexer.info());
     }
 

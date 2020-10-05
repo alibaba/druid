@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,8 @@ public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstra
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, name);
-            acceptChild(visitor, columns);
+            acceptChild(visitor, getName());
+            acceptChild(visitor, getColumns());
             acceptChild(visitor, using);
             acceptChild(visitor, exceptionsInto);
         }

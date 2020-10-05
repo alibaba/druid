@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,31 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.statement.SQLAnalyzeTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlAnalyzeStatement extends MySqlStatementImpl {
+import java.util.List;
+
+public class MySqlAnalyzeStatement extends SQLAnalyzeTableStatement implements MySqlStatement {
 
     private boolean                          noWriteToBinlog = false;
     private boolean                          local           = false;
 
-    protected final List<SQLExprTableSource> tableSources    = new ArrayList<SQLExprTableSource>();
+    public MySqlAnalyzeStatement() {
+        super.dbType = DbType.mysql;
+    }
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
+    }
 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {

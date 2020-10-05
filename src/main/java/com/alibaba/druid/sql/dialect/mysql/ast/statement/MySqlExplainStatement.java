@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,29 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlExplainStatement extends SQLExplainStatement implements MySqlStatement {
     private boolean describe;
     private SQLName tableName;
     private SQLName columnName;
     private SQLExpr wild;
-    private String  format;
     private SQLExpr connectionId;
 
+    private boolean distributeInfo = false; // for ads
+
     public MySqlExplainStatement() {
-        super (JdbcConstants.MYSQL);
+        super (DbType.mysql);
     }
 
-       public MySqlExplainStatement(String dbType) {
+    public MySqlExplainStatement(DbType dbType) {
         super (dbType);
     }
 
@@ -45,18 +47,21 @@ public class MySqlExplainStatement extends SQLExplainStatement implements MySqlS
         if (visitor.visit(this)) {
             // tbl_name [col_name | wild]
             if (tableName != null) {
-                acceptChild(visitor, tableName);
+                tableName.accept(visitor);
+
                 if (columnName != null) {
-                    acceptChild(visitor, columnName);
+                    columnName.accept(visitor);
                 } else if (wild != null) {
-                    acceptChild(visitor, wild);
+                    wild.accept(visitor);
                 }
             } else {
                 // {explainable_stmt | FOR CONNECTION connection_id}
                 if (connectionId != null) {
-                    acceptChild(visitor, connectionId);
+                    connectionId.accept(visitor);
                 } else {
-                    acceptChild(visitor, statement);
+                    if (statement != null) {
+                        statement.accept(visitor);
+                    }
                 }
             }
         }
@@ -65,7 +70,11 @@ public class MySqlExplainStatement extends SQLExplainStatement implements MySqlS
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((MySqlASTVisitor) visitor);
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
     public String toString() {
@@ -104,14 +113,6 @@ public class MySqlExplainStatement extends SQLExplainStatement implements MySqlS
         this.wild = wild;
     }
 
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
     public SQLExpr getConnectionId() {
         return connectionId;
     }
@@ -120,4 +121,11 @@ public class MySqlExplainStatement extends SQLExplainStatement implements MySqlS
         this.connectionId = connectionId;
     }
 
+    public boolean isDistributeInfo() {
+        return distributeInfo;
+    }
+
+    public void setDistributeInfo(boolean distributeInfo) {
+        this.distributeInfo = distributeInfo;
+    }
 }

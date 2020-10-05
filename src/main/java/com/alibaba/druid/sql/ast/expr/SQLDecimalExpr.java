@@ -24,13 +24,11 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-public class SQLDecimalExpr
-        extends SQLNumericLiteralExpr implements SQLValuableExpr, Comparable<SQLDecimalExpr>
-{
+public class SQLDecimalExpr extends SQLNumericLiteralExpr implements SQLValuableExpr, Comparable<SQLDecimalExpr> {
     public final static SQLDataType DATA_TYPE = new SQLDataTypeImpl("DECIMAL");
 
-    private BigDecimal value;
-    private transient String literal;
+    private           BigDecimal value;
+    private transient String     literal;
 
     public SQLDecimalExpr(){
 

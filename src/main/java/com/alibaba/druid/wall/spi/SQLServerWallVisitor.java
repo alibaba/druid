@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,56 +15,31 @@
  */
 package com.alibaba.druid.wall.spi;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.wall.Violation;
-import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallProvider;
-import com.alibaba.druid.wall.WallUpdateCheckItem;
-import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.*;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements WallVisitor, SQLServerASTVisitor {
 
-    private final WallConfig      config;
-    private final WallProvider    provider;
+    private final WallConfig config;
+    private final WallProvider provider;
     private final List<Violation> violations      = new ArrayList<Violation>();
     private boolean               sqlModified     = false;
     private boolean               sqlEndOfComment = false;
@@ -76,8 +51,8 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     }
 
     @Override
-    public String getDbType() {
-        return JdbcConstants.SQL_SERVER;
+    public DbType getDbType() {
+        return DbType.sqlserver;
     }
 
     @Override
@@ -193,9 +168,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public boolean visit(SQLUnionQuery x) {
-        WallVisitorUtils.checkUnion(this, x);
-
-        return true;
+        return WallVisitorUtils.checkUnion(this, x);
     }
 
     public void preVisit(SQLObject x) {

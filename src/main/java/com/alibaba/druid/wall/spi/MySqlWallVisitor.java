@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,64 +15,28 @@
  */
 package com.alibaba.druid.wall.spi;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.wall.Violation;
-import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallContext;
-import com.alibaba.druid.wall.WallProvider;
-import com.alibaba.druid.wall.WallSqlTableStat;
-import com.alibaba.druid.wall.WallUpdateCheckItem;
-import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.*;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisitor, MySqlASTVisitor {
 
     private final WallConfig      config;
-    private final WallProvider    provider;
+    private final WallProvider provider;
     private final List<Violation> violations      = new ArrayList<Violation>();
     private boolean               sqlModified     = false;
     private boolean               sqlEndOfComment = false;
@@ -84,8 +48,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     @Override
-    public String getDbType() {
-        return JdbcConstants.MYSQL;
+    public DbType getDbType() {
+        return DbType.mysql;
     }
 
     @Override
@@ -119,42 +83,42 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     public boolean visit(SQLInListExpr x) {
-        WallVisitorUtils.check(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
         return true;
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        return WallVisitorUtils.check(this, x);
+        return com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
     }
 
     @Override
     public boolean visit(SQLSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.checkSelelct(this, x);
 
         return true;
     }
 
     @Override
     public boolean visit(MySqlSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.checkSelelct(this, x);
         return true;
     }
 
     public boolean visit(SQLSelectGroupByClause x) {
-        WallVisitorUtils.checkHaving(this, x.getHaving());
+        com.alibaba.druid.wall.spi.WallVisitorUtils.checkHaving(this, x.getHaving());
         return true;
     }
 
     @Override
     public boolean visit(MySqlDeleteStatement x) {
-        WallVisitorUtils.checkReadOnly(this, x.getFrom());
+        com.alibaba.druid.wall.spi.WallVisitorUtils.checkReadOnly(this, x.getFrom());
 
         return visit((SQLDeleteStatement) x);
     }
 
     @Override
     public boolean visit(SQLDeleteStatement x) {
-        WallVisitorUtils.checkDelete(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.checkDelete(this, x);
         return true;
     }
 
@@ -165,14 +129,14 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLUpdateStatement x) {
-        WallVisitorUtils.initWallTopStatementContext();
-        WallVisitorUtils.checkUpdate(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.initWallTopStatementContext();
+        com.alibaba.druid.wall.spi.WallVisitorUtils.checkUpdate(this, x);
         return true;
     }
 
     @Override
     public void endVisit(SQLUpdateStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
+        com.alibaba.druid.wall.spi.WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -182,14 +146,14 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLInsertStatement x) {
-        WallVisitorUtils.initWallTopStatementContext();
-        WallVisitorUtils.checkInsert(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.initWallTopStatementContext();
+        com.alibaba.druid.wall.spi.WallVisitorUtils.checkInsert(this, x);
         return true;
     }
 
     @Override
     public void endVisit(SQLInsertStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
+        com.alibaba.druid.wall.spi.WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -200,7 +164,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             return false;
         }
 
-        WallVisitorUtils.initWallTopStatementContext();
+        com.alibaba.druid.wall.spi.WallVisitorUtils.initWallTopStatementContext();
 
         int selectLimit = config.getSelectLimit();
         if (selectLimit >= 0) {
@@ -213,7 +177,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public void endVisit(SQLSelectStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
+        com.alibaba.druid.wall.spi.WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -249,11 +213,11 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                 }
 
                 if (!checkVar(x.getParent(), x.getName())) {
-                    boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
+                    boolean isTop = com.alibaba.druid.wall.spi.WallVisitorUtils.isTopNoneFromSelect(this, x);
                     if (!isTop) {
                         boolean allow = true;
                         if (isDeny(varName)
-                            && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(varExpr))) {
+                            && (com.alibaba.druid.wall.spi.WallVisitorUtils.isWhereOrHaving(x) || com.alibaba.druid.wall.spi.WallVisitorUtils.checkSqlExpr(varExpr))) {
                             allow = false;
                         }
 
@@ -268,7 +232,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             }
         }
 
-        WallVisitorUtils.check(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
         return true;
     }
 
@@ -317,16 +281,16 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
         if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
 
-            final WallTopStatementContext topStatementContext = WallVisitorUtils.getWallTopStatementContext();
+            final WallTopStatementContext topStatementContext = com.alibaba.druid.wall.spi.WallVisitorUtils.getWallTopStatementContext();
             if (topStatementContext != null
                 && (topStatementContext.fromSysSchema() || topStatementContext.fromSysTable())) {
                 return false;
             }
 
-            boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
+            boolean isTop = com.alibaba.druid.wall.spi.WallVisitorUtils.isTopNoneFromSelect(this, x);
             if (!isTop) {
                 boolean allow = true;
-                if (isDeny(varName) && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(x))) {
+                if (isDeny(varName) && (com.alibaba.druid.wall.spi.WallVisitorUtils.isWhereOrHaving(x) || com.alibaba.druid.wall.spi.WallVisitorUtils.checkSqlExpr(x))) {
                     allow = false;
                 }
 
@@ -342,13 +306,13 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
-        WallVisitorUtils.checkFunction(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.checkFunction(this, x);
 
         return true;
     }
 
     public boolean visit(SQLExprTableSource x) {
-        WallVisitorUtils.check(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
 
         if (x.getExpr() instanceof SQLName) {
             return false;
@@ -359,7 +323,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(MySqlOutFileExpr x) {
-        if (!config.isSelectIntoOutfileAllow() && !WallVisitorUtils.isTopSelectOutFile(x)) {
+        if (!config.isSelectIntoOutfileAllow() && !com.alibaba.druid.wall.spi.WallVisitorUtils.isTopSelectOutFile(x)) {
             violations.add(new IllegalSQLObjectViolation(ErrorCode.INTO_OUTFILE, "into out file not allow", toSQL(x)));
         }
 
@@ -368,9 +332,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLUnionQuery x) {
-        WallVisitorUtils.checkUnion(this, x);
-
-        return true;
+        return com.alibaba.druid.wall.spi.WallVisitorUtils.checkUnion(this, x);
     }
 
     @Override
@@ -388,34 +350,34 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     public void preVisit(SQLObject x) {
-        WallVisitorUtils.preVisitCheck(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.preVisitCheck(this, x);
     }
 
     @Override
     public boolean visit(SQLSelectItem x) {
-        WallVisitorUtils.check(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
         return true;
     }
 
     @Override
     public boolean visit(SQLCreateTableStatement x) {
-        WallVisitorUtils.check(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
         return false;
     }
 
     @Override
     public boolean visit(MySqlCreateTableStatement x) {
-        WallVisitorUtils.check(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
         return true;
     }
 
     public boolean visit(SQLAlterTableStatement x) {
-        WallVisitorUtils.check(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
         return true;
     }
 
     public boolean visit(SQLDropTableStatement x) {
-        WallVisitorUtils.check(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
         return true;
     }
 
@@ -431,12 +393,15 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLCommentHint x) {
-        WallVisitorUtils.check(this, x);
+        if (x instanceof TDDLHint) {
+            return false;
+        }
+        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
         return true;
     }
 
     @Override
-    public boolean visit(MySqlShowCreateTableStatement x) {
+    public boolean visit(SQLShowCreateTableStatement x) {
         String tableName = ((SQLName) x.getName()).getSimpleName();
         WallContext context = WallContext.current();
         if (context != null) {
@@ -475,7 +440,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     public boolean visit(SQLJoinTableSource x) {
-        WallVisitorUtils.check(this, x);
+        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
         return true;
     }
 }
