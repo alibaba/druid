@@ -4064,6 +4064,9 @@ public class SQLStatementParser extends SQLParser {
             if (lexer.identifierEquals("CLUSTERED")) {
                 lexer.nextToken();
                 stmt.setType("UNIQUE CLUSTERED");
+            } else if (lexer.identifierEquals("NONCLUSTERED")) {
+                stmt.setType("UNIQUE NONCLUSTERED");
+                lexer.nextToken();
             } else {
                 stmt.setType("UNIQUE");
             }
