@@ -62,11 +62,6 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
-        public boolean visit(SQLSelectStatement x) {
-            resolve(this, x.getSelect());
-            return false;
-        }
-
         public boolean visit(MySqlRepeatStatement x) {
             return true;
         }
@@ -87,17 +82,7 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
-        public boolean visit(SQLExprTableSource x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(MySqlSelectQueryBlock x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectQueryBlock x) {
             resolve(this, x);
             return false;
         }
@@ -115,26 +100,6 @@ class SchemaResolveVisitorFactory {
             }
 
             return true;
-        }
-
-        public boolean visit(SQLIdentifierExpr x) {
-            resolveIdent(this, x);
-            return true;
-        }
-
-        public boolean visit(SQLPropertyExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBinaryOpExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAllColumnExpr x) {
-            resolve(this, x);
-            return false;
         }
 
         public boolean visit(MySqlCreateTableStatement x) {
@@ -156,85 +121,9 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
-        public boolean visit(SQLSelect x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLWithSubqueryClause x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(MySqlInsertStatement x) {
             resolve(this, x);
             return false;
-        }
-
-        public boolean visit(SQLInsertStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLReplaceStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMergeStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateProcedureStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateViewStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBlockStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLParameter x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeclareItem x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLOver x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMethodInvokeExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUnionQuery x) {
-            resolveUnion(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCastExpr x) {
-            x.getExpr()
-                    .accept(this);
-            return true;
         }
 
         @Override
@@ -277,26 +166,6 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
-        public boolean visit(SQLForeignKeyImpl x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectStatement x) {
-            resolve(this, x.getSelect());
-            return false;
-        }
-
-        public boolean visit(SQLExprTableSource x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectQueryBlock x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(DB2SelectQueryBlock x) {
             resolve(this, x);
             return false;
@@ -325,96 +194,6 @@ class SchemaResolveVisitorFactory {
 
             resolveIdent(this, x);
             return true;
-        }
-
-        public boolean visit(SQLPropertyExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBinaryOpExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAllColumnExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUpdateStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeleteStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelect x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLWithSubqueryClause x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLInsertStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMergeStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateProcedureStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBlockStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLParameter x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeclareItem x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLOver x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMethodInvokeExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUnionQuery x) {
-            resolveUnion(this, x);
-            return false;
         }
 
         @Override
@@ -456,11 +235,6 @@ class SchemaResolveVisitorFactory {
         public OracleResolveVisitor(SchemaRepository repository, int options) {
             this.repository = repository;
             this.options = options;
-        }
-
-        public boolean visit(SQLSelectStatement x) {
-            resolve(this, x.getSelect());
-            return false;
         }
 
         public boolean visit(OracleCreatePackageStatement x) {
@@ -516,27 +290,7 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
-        public boolean visit(SQLIfStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateFunctionStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(OracleSelectTableReference x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLExprTableSource x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectQueryBlock x) {
             resolve(this, x);
             return false;
         }
@@ -570,32 +324,7 @@ class SchemaResolveVisitorFactory {
             return true;
         }
 
-        public boolean visit(SQLPropertyExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBinaryOpExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAllColumnExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(OracleCreateTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUpdateStatement x) {
             resolve(this, x);
             return false;
         }
@@ -605,27 +334,7 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
-        public boolean visit(SQLDeleteStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(OracleDeleteStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelect x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLWithSubqueryClause x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLInsertStatement x) {
             resolve(this, x);
             return false;
         }
@@ -659,56 +368,6 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(OracleInsertStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMergeStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateProcedureStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBlockStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLParameter x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeclareItem x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLOver x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMethodInvokeExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUnionQuery x) {
-            resolveUnion(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLFetchStatement x) {
             resolve(this, x);
             return false;
         }
@@ -753,26 +412,6 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
-        public boolean visit(SQLForeignKeyImpl x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectStatement x) {
-            resolve(this, x.getSelect());
-            return false;
-        }
-
-        public boolean visit(SQLExprTableSource x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectQueryBlock x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(OdpsSelectQueryBlock x) {
             resolve(this, x);
             return false;
@@ -793,52 +432,7 @@ class SchemaResolveVisitorFactory {
             return true;
         }
 
-        public boolean visit(SQLIdentifierExpr x) {
-            resolveIdent(this, x);
-            return true;
-        }
-
-        public boolean visit(SQLPropertyExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBinaryOpExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAllColumnExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(OdpsCreateTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUpdateStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeleteStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelect x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLWithSubqueryClause x) {
             resolve(this, x);
             return false;
         }
@@ -868,58 +462,8 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
-        public boolean visit(SQLInsertStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(HiveInsertStatement x) {
             resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMergeStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateProcedureStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBlockStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLParameter x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeclareItem x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLOver x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMethodInvokeExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUnionQuery x) {
-            resolveUnion(this, x);
             return false;
         }
 
@@ -963,26 +507,6 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
-        public boolean visit(SQLForeignKeyImpl x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectStatement x) {
-            resolve(this, x.getSelect());
-            return false;
-        }
-
-        public boolean visit(SQLExprTableSource x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectQueryBlock x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(OdpsSelectQueryBlock x) {
             resolve(this, x);
             return false;
@@ -1003,52 +527,7 @@ class SchemaResolveVisitorFactory {
             return true;
         }
 
-        public boolean visit(SQLIdentifierExpr x) {
-            resolveIdent(this, x);
-            return true;
-        }
-
-        public boolean visit(SQLPropertyExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBinaryOpExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAllColumnExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(HiveCreateTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUpdateStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeleteStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelect x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLWithSubqueryClause x) {
             resolve(this, x);
             return false;
         }
@@ -1075,61 +554,6 @@ class SchemaResolveVisitorFactory {
             }
 
             popContext();
-            return false;
-        }
-
-        public boolean visit(SQLInsertStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(HiveInsertStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMergeStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateProcedureStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBlockStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLParameter x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeclareItem x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLOver x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMethodInvokeExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUnionQuery x) {
-            resolveUnion(this, x);
             return false;
         }
 
@@ -1173,26 +597,6 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
-        public boolean visit(SQLForeignKeyImpl x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectStatement x) {
-            resolve(this, x.getSelect());
-            return false;
-        }
-
-        public boolean visit(SQLExprTableSource x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectQueryBlock x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(PGSelectQueryBlock x) {
             resolve(this, x);
             return false;
@@ -1234,37 +638,7 @@ class SchemaResolveVisitorFactory {
             return true;
         }
 
-        public boolean visit(SQLPropertyExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBinaryOpExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAllColumnExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUpdateStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(PGUpdateStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeleteStatement x) {
             resolve(this, x);
             return false;
         }
@@ -1281,68 +655,8 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
-        public boolean visit(SQLSelect x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLWithSubqueryClause x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(PGInsertStatement x) {
             resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLInsertStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMergeStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateProcedureStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBlockStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLParameter x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeclareItem x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLOver x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMethodInvokeExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUnionQuery x) {
-            resolveUnion(this, x);
             return false;
         }
 
@@ -1386,26 +700,6 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
-        public boolean visit(SQLForeignKeyImpl x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectStatement x) {
-            resolve(this, x.getSelect());
-            return false;
-        }
-
-        public boolean visit(SQLExprTableSource x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectQueryBlock x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(SQLServerSelectQueryBlock x) {
             resolve(this, x);
             return false;
@@ -1426,108 +720,13 @@ class SchemaResolveVisitorFactory {
             return true;
         }
 
-        public boolean visit(SQLIdentifierExpr x) {
-            resolveIdent(this, x);
-            return true;
-        }
-
-        public boolean visit(SQLPropertyExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBinaryOpExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAllColumnExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUpdateStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(SQLServerUpdateStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeleteStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelect x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLWithSubqueryClause x) {
             resolve(this, x);
             return false;
         }
 
         public boolean visit(SQLServerInsertStatement x) {
             resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLInsertStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMergeStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateProcedureStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBlockStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLParameter x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeclareItem x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLOver x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMethodInvokeExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUnionQuery x) {
-            resolveUnion(this, x);
             return false;
         }
 
@@ -1571,26 +770,6 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
-        public boolean visit(SQLForeignKeyImpl x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectStatement x) {
-            resolve(this, x.getSelect());
-            return false;
-        }
-
-        public boolean visit(SQLExprTableSource x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelectQueryBlock x) {
-            resolve(this, x);
-            return false;
-        }
-
         public boolean visit(SQLSelectItem x) {
             SQLExpr expr = x.getExpr();
             if (expr instanceof SQLIdentifierExpr) {
@@ -1604,106 +783,6 @@ class SchemaResolveVisitorFactory {
             }
 
             return true;
-        }
-
-        public boolean visit(SQLIdentifierExpr x) {
-            resolveIdent(this, x);
-            return true;
-        }
-
-        public boolean visit(SQLPropertyExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBinaryOpExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAllColumnExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUpdateStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeleteStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLSelect x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLWithSubqueryClause x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLInsertStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMergeStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateProcedureStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLBlockStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLParameter x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLDeclareItem x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLOver x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLReplaceStatement x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLMethodInvokeExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLUnionQuery x) {
-            resolveUnion(this, x);
-            return false;
         }
 
         @Override
@@ -2272,7 +1351,7 @@ class SchemaResolveVisitorFactory {
         }
     }
 
-    private static SQLTableSource unwrapAlias(SchemaResolveVisitor.Context ctx, SQLTableSource tableSource, long identHash) {
+    static SQLTableSource unwrapAlias(SchemaResolveVisitor.Context ctx, SQLTableSource tableSource, long identHash) {
         if (ctx == null) {
             return tableSource;
         }
