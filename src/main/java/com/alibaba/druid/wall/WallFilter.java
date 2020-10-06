@@ -41,6 +41,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
@@ -822,16 +823,32 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         if (violations.size() > 0) {
             Violation firstViolation = violations.get(0);
             if (isLogViolation()) {
-                LOG.error("sql injection violation, " + firstViolation.getMessage() + " : " + sql);
+                LOG.error("sql injection violation, dbType "
+                        + getDbType()
+                        + ", druid-version "
+                        + VERSION.getVersionNumber()
+                        + ", "
+                        + firstViolation.getMessage() + " : " + sql);
             }
 
             if (throwException) {
                 if (violations.get(0) instanceof SyntaxErrorViolation) {
                     SyntaxErrorViolation violation = (SyntaxErrorViolation) violations.get(0);
-                    throw new SQLException("sql injection violation, " + firstViolation.getMessage() + " : " + sql,
+                    throw new SQLException("sql injection violation, dbType "
+                            + getDbType() + ", "
+                            + ", druid-version "
+                            + VERSION.getVersionNumber()
+                            + ", "
+                            + firstViolation.getMessage() + " : " + sql,
                             violation.getException());
                 } else {
-                    throw new SQLException("sql injection violation, " + firstViolation.getMessage() + " : " + sql);
+                    throw new SQLException("sql injection violation, dbType "
+                            + getDbType()
+                            + ", druid-version "
+                            + VERSION.getVersionNumber()
+                            + ", "
+                            + firstViolation.getMessage()
+                            + " : " + sql);
                 }
             }
         }
