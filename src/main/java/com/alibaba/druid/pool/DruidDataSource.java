@@ -2819,6 +2819,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     setFailContinuous(true);
                     break;
                 }
+                
+                if (closing || closed) {
+                    break;
+                }
 
                 if (connection == null) {
                     continue;
