@@ -61,11 +61,7 @@ import com.alibaba.druid.util.ServletPathMatcher;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack.StatementType;
-import com.alibaba.druid.wall.spi.DB2WallProvider;
-import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import com.alibaba.druid.wall.spi.OracleWallProvider;
-import com.alibaba.druid.wall.spi.PGWallProvider;
-import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import com.alibaba.druid.wall.spi.*;
 import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 public class WallFilter extends FilterAdapter implements WallFilterMBean {
@@ -177,6 +173,13 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 }
 
                 provider = new DB2WallProvider(config);
+                break;
+            case sqlite:
+                if (config == null) {
+                    config = new WallConfig(SQLiteWallProvider.DEFAULT_CONFIG_DIR);
+                }
+
+                provider = new SQLiteWallProvider(config);
                 break;
             default:
                 throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
