@@ -18,66 +18,23 @@ package com.alibaba.druid.wall.spi;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 import com.alibaba.druid.wall.*;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements WallVisitor, SQLServerASTVisitor {
-
-    private final WallConfig config;
-    private final WallProvider provider;
-    private final List<Violation> violations      = new ArrayList<Violation>();
-    private boolean               sqlModified     = false;
-    private boolean               sqlEndOfComment = false;
-    private List<WallUpdateCheckItem> updateCheckItems;
+public class SQLServerWallVisitor extends WallVisitorBase implements WallVisitor, SQLServerASTVisitor {
 
     public SQLServerWallVisitor(WallProvider provider){
-        this.config = provider.getConfig();
-        this.provider = provider;
+        super (provider);
     }
 
     @Override
     public DbType getDbType() {
         return DbType.sqlserver;
-    }
-
-    @Override
-    public boolean isSqlModified() {
-        return sqlModified;
-    }
-
-    @Override
-    public void setSqlModified(boolean sqlModified) {
-        this.sqlModified = sqlModified;
-    }
-
-    @Override
-    public WallProvider getProvider() {
-        return provider;
-    }
-
-    @Override
-    public WallConfig getConfig() {
-        return this.config;
-    }
-
-    @Override
-    public void addViolation(Violation violation) {
-        this.violations.add(violation);
-    }
-
-    @Override
-    public List<Violation> getViolations() {
-        return violations;
     }
 
     @Override
@@ -155,26 +112,5 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     @Override
     public boolean visit(SQLServerObjectReferenceExpr x) {
         return false;
-    }
-
-    @Override
-    public boolean isSqlEndOfComment() {
-        return this.sqlEndOfComment;
-    }
-
-    @Override
-    public void setSqlEndOfComment(boolean sqlEndOfComment) {
-        this.sqlEndOfComment = sqlEndOfComment;
-    }
-
-    public void addWallUpdateCheckItem(WallUpdateCheckItem item) {
-        if (updateCheckItems == null) {
-            updateCheckItems = new ArrayList<WallUpdateCheckItem>();
-        }
-        updateCheckItems.add(item);
-    }
-
-    public List<WallUpdateCheckItem> getUpdateCheckItems() {
-        return updateCheckItems;
     }
 }

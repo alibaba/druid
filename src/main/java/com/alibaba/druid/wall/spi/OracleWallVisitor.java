@@ -16,65 +16,24 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
-import com.alibaba.druid.wall.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVisitor {
-
-    private final WallConfig config;
-    private final WallProvider provider;
-    private final List<Violation> violations      = new ArrayList<Violation>();
-    private boolean               sqlModified     = false;
-    private boolean               sqlEndOfComment = false;
-    private List<WallUpdateCheckItem> updateCheckItems;
-
+public class OracleWallVisitor extends WallVisitorBase implements WallVisitor, OracleASTVisitor {
     public OracleWallVisitor(WallProvider provider){
-        this.config = provider.getConfig();
-        this.provider = provider;
+        super (provider);
     }
 
     @Override
     public DbType getDbType() {
         return DbType.oracle;
-    }
-
-    @Override
-    public boolean isSqlModified() {
-        return sqlModified;
-    }
-
-    @Override
-    public void setSqlModified(boolean sqlModified) {
-        this.sqlModified = sqlModified;
-    }
-
-    @Override
-    public WallProvider getProvider() {
-        return provider;
-    }
-
-    @Override
-    public WallConfig getConfig() {
-        return config;
-    }
-
-    @Override
-    public void addViolation(Violation violation) {
-        this.violations.add(violation);
-    }
-
-    @Override
-    public List<Violation> getViolations() {
-        return violations;
     }
 
     public boolean visit(SQLIdentifierExpr x) {
@@ -104,14 +63,12 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         return !this.provider.checkDenyTable(name);
     }
 
-    @Override
     public boolean visit(InsertIntoClause x) {
         WallVisitorUtils.checkInsert(this, x);
 
         return true;
     }
 
-    @Override
     public boolean visit(OracleMultiInsertStatement x) {
         if (!config.isInsertAllow()) {
             this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.INSERT_NOT_ALLOW, "insert not allow",
@@ -123,34 +80,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         return true;
     }
 
-    @Override
     public void endVisit(OracleMultiInsertStatement x) {
         WallVisitorUtils.clearWallTopStatementContext();
-    }
-
-    @Override
-    public boolean isSqlEndOfComment() {
-        return this.sqlEndOfComment;
-    }
-
-    @Override
-    public void setSqlEndOfComment(boolean sqlEndOfComment) {
-        this.sqlEndOfComment = sqlEndOfComment;
-    }
-
-    public void addWallUpdateCheckItem(WallUpdateCheckItem item) {
-        if (updateCheckItems == null) {
-            updateCheckItems = new ArrayList<WallUpdateCheckItem>();
-        }
-        updateCheckItems.add(item);
-    }
-
-    public List<WallUpdateCheckItem> getUpdateCheckItems() {
-        return updateCheckItems;
-    }
-
-    public boolean visit(SQLJoinTableSource x) {
-        WallVisitorUtils.check(this, x);
-        return true;
     }
 }

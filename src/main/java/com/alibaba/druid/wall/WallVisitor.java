@@ -20,9 +20,7 @@ import java.util.List;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
@@ -39,19 +37,9 @@ public interface WallVisitor extends SQLASTVisitor {
 
     List<Violation> getViolations();
 
-    default void addViolation(Violation violation) {
-        this.getViolations().add(violation);
-    }
+    void addViolation(Violation violation);
 
-    default boolean isDenyTable(String name) {
-        if (!getConfig()
-                .isTableCheck()) {
-            return false;
-        }
-
-        return !getProvider()
-                .checkDenyTable(name);
-    }
+    boolean isDenyTable(String name);
 
     default String toSQL(SQLObject obj) {
         return SQLUtils.toSQLString(obj, getDbType());
@@ -240,6 +228,26 @@ public interface WallVisitor extends SQLASTVisitor {
     }
 
     default boolean visit(SQLCallStatement x) {
+        return false;
+    }
+
+    default boolean visit(SQLCommentHint x) {
+        if (x instanceof TDDLHint) {
+            return false;
+        }
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    default boolean visit(SQLShowCreateTableStatement x) {
+        String tableName = (x.getName()).getSimpleName();
+        WallContext context = WallContext.current();
+        if (context != null) {
+            WallSqlTableStat tableStat = context.getTableStat(tableName);
+            if (tableStat != null) {
+                tableStat.incrementShowCount();
+            }
+        }
         return false;
     }
 }

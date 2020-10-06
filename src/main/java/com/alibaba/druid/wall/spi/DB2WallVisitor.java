@@ -16,57 +16,13 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
-import com.alibaba.druid.wall.*;
-import java.util.ArrayList;
-import java.util.List;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.WallVisitor;
 
-public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor {
-
-    private final WallConfig      config;
-    private final WallProvider provider;
-    private final List<Violation> violations      = new ArrayList<Violation>();
-    private boolean               sqlModified     = false;
-    private boolean               sqlEndOfComment = false;
-    private List<WallUpdateCheckItem> updateCheckItems;
-
+public class DB2WallVisitor extends WallVisitorBase implements WallVisitor, DB2ASTVisitor {
     public DB2WallVisitor(WallProvider provider){
-        this.config = provider.getConfig();
-        this.provider = provider;
-    }
-
-    @Override
-    public DbType getDbType() {
-        return DbType.db2;
-    }
-
-    @Override
-    public boolean isSqlModified() {
-        return sqlModified;
-    }
-
-    @Override
-    public void setSqlModified(boolean sqlModified) {
-        this.sqlModified = sqlModified;
-    }
-
-    @Override
-    public WallProvider getProvider() {
-        return provider;
-    }
-
-    @Override
-    public WallConfig getConfig() {
-        return config;
-    }
-
-    @Override
-    public void addViolation(Violation violation) {
-        this.violations.add(violation);
-    }
-
-    public List<Violation> getViolations() {
-        return violations;
+        super (provider);
     }
 
     @Override
@@ -82,24 +38,9 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
         return !this.provider.checkDenyTable(name);
     }
 
-    @Override
-    public boolean isSqlEndOfComment() {
-        return this.sqlEndOfComment;
-    }
 
     @Override
-    public void setSqlEndOfComment(boolean sqlEndOfComment) {
-        this.sqlEndOfComment = sqlEndOfComment;
-    }
-
-    public void addWallUpdateCheckItem(WallUpdateCheckItem item) {
-        if (updateCheckItems == null) {
-            updateCheckItems = new ArrayList<WallUpdateCheckItem>();
-        }
-        updateCheckItems.add(item);
-    }
-
-    public List<WallUpdateCheckItem> getUpdateCheckItems() {
-        return updateCheckItems;
+    public DbType getDbType() {
+        return DbType.db2;
     }
 }

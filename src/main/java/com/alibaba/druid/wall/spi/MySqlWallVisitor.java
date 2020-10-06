@@ -22,27 +22,14 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.wall.*;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisitor, MySqlASTVisitor {
-
-    private final WallConfig      config;
-    private final WallProvider provider;
-    private final List<Violation> violations      = new ArrayList<Violation>();
-    private boolean               sqlModified     = false;
-    private boolean               sqlEndOfComment = false;
-    private List<WallUpdateCheckItem> updateCheckItems;
-
+public class MySqlWallVisitor extends WallVisitorBase implements WallVisitor, MySqlASTVisitor {
     public MySqlWallVisitor(WallProvider provider){
-        this.config = provider.getConfig();
-        this.provider = provider;
+        super (provider);
     }
 
     @Override
@@ -51,38 +38,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     @Override
-    public boolean isSqlModified() {
-        return sqlModified;
-    }
-
-    @Override
-    public void setSqlModified(boolean sqlModified) {
-        this.sqlModified = sqlModified;
-    }
-
-    @Override
-    public WallProvider getProvider() {
-        return provider;
-    }
-
-    @Override
-    public WallConfig getConfig() {
-        return config;
-    }
-
-    @Override
-    public void addViolation(Violation violation) {
-        this.violations.add(violation);
-    }
-
-    @Override
-    public List<Violation> getViolations() {
-        return violations;
-    }
-
-    @Override
     public boolean visit(MySqlSelectQueryBlock x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.checkSelelct(this, x);
+        WallVisitorUtils.checkSelelct(this, x);
         return true;
     }
 
@@ -115,11 +72,11 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                 }
 
                 if (!checkVar(x.getParent(), x.getName())) {
-                    boolean isTop = com.alibaba.druid.wall.spi.WallVisitorUtils.isTopNoneFromSelect(this, x);
+                    boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
                     if (!isTop) {
                         boolean allow = true;
                         if (isDeny(varName)
-                            && (com.alibaba.druid.wall.spi.WallVisitorUtils.isWhereOrHaving(x) || com.alibaba.druid.wall.spi.WallVisitorUtils.checkSqlExpr(varExpr))) {
+                            && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(varExpr))) {
                             allow = false;
                         }
 
@@ -134,7 +91,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             }
         }
 
-        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
+        WallVisitorUtils.check(this, x);
         return true;
     }
 
@@ -183,16 +140,16 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
         if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
 
-            final WallTopStatementContext topStatementContext = com.alibaba.druid.wall.spi.WallVisitorUtils.getWallTopStatementContext();
+            final WallTopStatementContext topStatementContext = WallVisitorUtils.getWallTopStatementContext();
             if (topStatementContext != null
                 && (topStatementContext.fromSysSchema() || topStatementContext.fromSysTable())) {
                 return false;
             }
 
-            boolean isTop = com.alibaba.druid.wall.spi.WallVisitorUtils.isTopNoneFromSelect(this, x);
+            boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
             if (!isTop) {
                 boolean allow = true;
-                if (isDeny(varName) && (com.alibaba.druid.wall.spi.WallVisitorUtils.isWhereOrHaving(x) || com.alibaba.druid.wall.spi.WallVisitorUtils.checkSqlExpr(x))) {
+                if (isDeny(varName) && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(x))) {
                     allow = false;
                 }
 
@@ -208,7 +165,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(MySqlOutFileExpr x) {
-        if (!config.isSelectIntoOutfileAllow() && !com.alibaba.druid.wall.spi.WallVisitorUtils.isTopSelectOutFile(x)) {
+        if (!config.isSelectIntoOutfileAllow() && !WallVisitorUtils.isTopSelectOutFile(x)) {
             violations.add(new IllegalSQLObjectViolation(ErrorCode.INTO_OUTFILE, "into out file not allow", toSQL(x)));
         }
 
@@ -226,60 +183,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(MySqlCreateTableStatement x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
+        WallVisitorUtils.check(this, x);
         return true;
-    }
-
-    @Override
-    public boolean visit(SQLSetStatement x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLCallStatement x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLCommentHint x) {
-        if (x instanceof TDDLHint) {
-            return false;
-        }
-        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLShowCreateTableStatement x) {
-        String tableName = (x.getName()).getSimpleName();
-        WallContext context = WallContext.current();
-        if (context != null) {
-            WallSqlTableStat tableStat = context.getTableStat(tableName);
-            if (tableStat != null) {
-                tableStat.incrementShowCount();
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isSqlEndOfComment() {
-        return this.sqlEndOfComment;
-    }
-
-    @Override
-    public void setSqlEndOfComment(boolean sqlEndOfComment) {
-        this.sqlEndOfComment = sqlEndOfComment;
-    }
-
-    public void addWallUpdateCheckItem(WallUpdateCheckItem item) {
-        if (updateCheckItems == null) {
-            updateCheckItems = new ArrayList<WallUpdateCheckItem>();
-        }
-        updateCheckItems.add(item);
-    }
-
-    public List<WallUpdateCheckItem> getUpdateCheckItems() {
-        return updateCheckItems;
     }
 }
