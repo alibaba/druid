@@ -59,6 +59,10 @@ public class MySqlWallVisitor extends WallVisitorBase implements WallVisitor, My
         return visit((SQLInsertStatement) x);
     }
 
+    public boolean visit(SQLIdentifierExpr x) {
+        return true;
+    }
+
     public boolean visit(SQLPropertyExpr x) {
         if (x.getOwner() instanceof SQLVariantRefExpr) {
             SQLVariantRefExpr varExpr = (SQLVariantRefExpr) x.getOwner();
