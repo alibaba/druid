@@ -2819,10 +2819,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     setFailContinuous(true);
                     break;
                 }
-                
-                if (closing || closed) {
-                    break;
-                }
 
                 if (connection == null) {
                     continue;
@@ -2835,6 +2831,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
 
                 errorCount = 0; // reset errorCount
+
+                if (closing || closed) {
+                    break;
+                }
             }
         }
     }
