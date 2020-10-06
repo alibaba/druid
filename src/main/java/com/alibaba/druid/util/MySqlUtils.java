@@ -122,8 +122,24 @@ public class MySqlUtils {
                     if (class_6_connection == null) {
                         class_6_connection = Class.forName("com.mysql.cj.jdbc.JdbcConnection");
                         method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
-                        method_6_getBooleanReadableProperty = Class.forName("com.mysql.cj.conf.PropertySet").getMethod("getBooleanReadableProperty", String.class);
-                        method_6_getValue = Class.forName("com.mysql.cj.conf.ReadableProperty").getMethod("getValue");
+                        Class<?> propertySetClass = Class.forName("com.mysql.cj.conf.PropertySet");
+
+                        NoSuchMethodException noSuchMethodException = null;
+                        try {
+                            method_6_getBooleanReadableProperty = propertySetClass
+                                    .getMethod("getBooleanReadableProperty", String.class);
+                            method_6_getValue = Class.forName("com.mysql.cj.conf.ReadableProperty")
+                                    .getMethod("getValue");
+                        } catch (NoSuchMethodException error) {
+                            noSuchMethodException = error;
+                        }
+                        if (method_6_getBooleanReadableProperty == null) {
+                            method_6_getBooleanReadableProperty = propertySetClass
+                                    .getMethod("getBooleanProperty", String.class);
+                            method_6_getValue = Class.forName("com.mysql.cj.conf.RuntimeProperty")
+                                    .getMethod("getValue");
+                        }
+
                     }
                     else { 
                         method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
