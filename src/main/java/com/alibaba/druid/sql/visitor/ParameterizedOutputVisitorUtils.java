@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTParameterizedVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
@@ -370,6 +371,11 @@ public class ParameterizedOutputVisitorUtils {
         if (dbType == DbType.mysql) {
             SQLStatement stmt = SQLUtils.parseSingleMysqlStatement(sql);
             MySqlParameterizedVisitor visitor = new MySqlParameterizedVisitor(outParameters);
+            stmt.accept(visitor);
+            return stmt;
+        } else if (dbType == DbType.oracle) {
+            SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.oracle);
+            OracleASTParameterizedVisitor visitor = new OracleASTParameterizedVisitor(outParameters);
             stmt.accept(visitor);
             return stmt;
         } else {

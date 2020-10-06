@@ -47,4 +47,18 @@ public class MySqlParameterizedOutputVisitorTest_80 extends TestCase {
                 "ORDER BY 1;", stmt.toString());
     }
 
+    public void test3()  {
+
+        String sql = "/*test*/ select * from test ;";
+
+        assertEquals("/*test*/\n" +
+                "SELECT *\n" +
+                "FROM test;", ParameterizedOutputVisitorUtils.parameterizeOf(sql, DbType.mysql)
+                .toString());
+
+        assertEquals("/*test*/\n" +
+                "SELECT *\n" +
+                "FROM test;", ParameterizedOutputVisitorUtils.parameterizeOf(sql, DbType.oracle)
+                .toString());
+    }
 }
