@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.alibaba</groupId>
     <artifactId>druid-admin</artifactId>
-    <version>0.0.1</version>
+    <version>1.2.1</version>
     <name>druid-admin</name>
     <description>Demo project for Spring Boot</description>
 
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
-            <version>1.1.10</version>
+            <version>1.2.1</version>
         </dependency>
 
         <dependency>
