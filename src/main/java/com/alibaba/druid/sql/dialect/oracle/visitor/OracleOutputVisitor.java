@@ -622,77 +622,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleAnalytic x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleAnalyticWindowing x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleDeleteStatement x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleIntervalExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(SQLMethodInvokeExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleOuterExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectJoin x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectPivot x) {
-
-    }
-
-    @Override
-    public void endVisit(Item x) {
-
-    }
-
-    @Override
-    public void endVisit(CheckOption x) {
-
-    }
-
-    @Override
-    public void endVisit(ReadOnly x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectSubqueryTableSource x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectUnPivot x) {
-
-    }
-
-
-    @Override
-    public void endVisit(OracleUpdateStatement x) {
-
-    }
-
-    @Override
     public boolean visit(SampleClause x) {
         print0(ucase ? "SAMPLE " : "sample ");
 
@@ -714,16 +643,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(SampleClause x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectTableReference x) {
-
-    }
-
-    @Override
     public boolean visit(PartitionExtensionClause x) {
         if (x.isSubPartition()) {
             print0(ucase ? "SUBPARTITION " : "subpartition ");
@@ -741,11 +660,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(')');
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(PartitionExtensionClause x) {
-
     }
 
 //    @Override
@@ -811,11 +725,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleWithSubqueryEntry x) {
-
-    }
-
-    @Override
     public boolean visit(SearchClause x) {
         print0(ucase ? "SEARCH " : "search ");
         print0(x.getType().name());
@@ -825,11 +734,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getOrderingColumn().accept(this);
 
         return false;
-    }
-
-    @Override
-    public void endVisit(SearchClause x) {
-
     }
 
     @Override
@@ -847,20 +751,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(CycleClause x) {
-
-    }
-
-    @Override
     public boolean visit(OracleBinaryFloatExpr x) {
         print0(x.getValue().toString());
         print('F');
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleBinaryFloatExpr x) {
-
     }
 
     @Override
@@ -871,26 +765,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleBinaryDoubleExpr x) {
-
-    }
-
-
-    @Override
-    public void endVisit(OracleCursorExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OracleIsSetExpr x) {
         x.getNestedTable().accept(this);
         print0(ucase ? " IS A SET" : " is a set");
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleIsSetExpr x) {
-
     }
 
     @Override
@@ -901,11 +779,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "RETURN UPDATED ROWS" : "return updated rows");
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(ReturnRowsClause x) {
-
     }
 
     @Override
@@ -935,11 +808,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(ModelClause x) {
-
-    }
-
-    @Override
     public boolean visit(MainModelClause x) {
         if (x.getMainModelName() != null) {
             print0(ucase ? " MAIN " : " main ");
@@ -961,11 +829,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(MainModelClause x) {
-
-    }
-
-    @Override
     public boolean visit(ModelColumnClause x) {
         if (x.getQueryPartitionClause() != null) {
             x.getQueryPartitionClause().accept(this);
@@ -984,21 +847,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(ModelColumnClause x) {
-
-    }
-
-    @Override
     public boolean visit(QueryPartitionClause x) {
         print0(ucase ? "PARTITION BY (" : "partition by (");
         printAndAccept(x.getExprList(), ", ");
         print(')');
         return false;
-    }
-
-    @Override
-    public void endVisit(QueryPartitionClause x) {
-
     }
 
     @Override
@@ -1009,11 +862,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(x.getAlias());
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(ModelColumn x) {
-
     }
 
     @Override
@@ -1046,11 +894,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(ModelRulesClause x) {
-
-    }
-
-    @Override
     public boolean visit(CellAssignmentItem x) {
         if (x.getOption() != null) {
             print0(x.getOption().name);
@@ -1071,22 +914,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(CellAssignmentItem x) {
-
-    }
-
-    @Override
     public boolean visit(CellAssignment x) {
         x.getMeasureColumn().accept(this);
         print0("[");
         printAndAccept(x.getConditions(), ", ");
         print0("]");
         return false;
-    }
-
-    @Override
-    public void endVisit(CellAssignment x) {
-
     }
 
     @Override
@@ -1097,11 +930,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         printAndAccept(x.getValues(), ", ");
 
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleReturningClause x) {
-
     }
 
     @Override
@@ -1146,11 +974,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleInsertStatement x) {
-        endVisit((SQLInsertStatement) x);
-    }
-
-    @Override
     public boolean visit(InsertIntoClause x) {
         print0(ucase ? "INTO " : "into ");
 
@@ -1188,11 +1011,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(InsertIntoClause x) {
-
-    }
-
-    @Override
     public boolean visit(OracleMultiInsertStatement x) {
         print0(ucase ? "INSERT " : "insert ");
 
@@ -1216,11 +1034,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getSubQuery().accept(this);
 
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleMultiInsertStatement x) {
-
     }
 
     @Override
@@ -1248,11 +1061,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(ConditionalInsertClause x) {
-
-    }
-
-    @Override
     public boolean visit(ConditionalInsertClauseItem x) {
         print0(ucase ? "WHEN " : "when ");
         x.getWhen().accept(this);
@@ -1262,21 +1070,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getThen().accept(this);
         this.indentCount--;
         return false;
-    }
-
-    @Override
-    public void endVisit(ConditionalInsertClauseItem x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectQueryBlock x) {
-
-    }
-
-    @Override
-    public void endVisit(SQLBlockStatement x) {
-
     }
 
     @Override
@@ -1301,20 +1094,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleLockTableStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterSessionStatement x) {
         print0(ucase ? "ALTER SESSION SET " : "alter session set ");
         printAndAccept(x.getItems(), ", ");
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterSessionStatement x) {
-
     }
 
     @Override
@@ -1336,11 +1119,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleDatetimeExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OracleSysdateExpr x) {
         print0(ucase ? "SYSDATE" : "sysdate");
         if (x.getOption() != null) {
@@ -1348,16 +1126,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(x.getOption());
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleSysdateExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleExceptionStatement.Item x) {
-
     }
 
     @Override
@@ -1405,21 +1173,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleExceptionStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleArgumentExpr x) {
         print0(x.getArgumentName());
         print0(" => ");
         x.getValue().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleArgumentExpr x) {
-
     }
 
     @Override
@@ -1436,11 +1194,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             name.accept(this);
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleSetTransactionStatement x) {
-
     }
 
     @Override
@@ -1469,11 +1222,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleExplainStatement x) {
-
-    }
-
-    @Override
     public boolean visit(SQLAlterProcedureStatement x) {
         print0(ucase ? "ALTER PROCEDURE " : "alter procedure ");
         x.getName().accept(this);
@@ -1491,11 +1239,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print0(ucase ? "DROP PARTITION " : "drop partition ");
         x.getName().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableDropPartition x) {
-
     }
 
     @Override
@@ -1536,20 +1279,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleAlterTableTruncatePartition x) {
-
-    }
-
-    @Override
     public boolean visit(TableSpaceItem x) {
         print0(ucase ? "TABLESPACE " : "tablespace ");
         x.getTablespace().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(TableSpaceItem x) {
-
     }
 
     @Override
@@ -1561,11 +1294,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(')');
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(UpdateIndexesClause x) {
-
     }
 
     @Override
@@ -1601,11 +1329,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleAlterTableSplitPartition x) {
-
-    }
-
-    @Override
     public boolean visit(NestedTablePartitionSpec x) {
         print0(ucase ? "PARTITION " : "partition ");
         x.getPartition().accept(this);
@@ -1614,11 +1337,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             item.accept(this);
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(NestedTablePartitionSpec x) {
-
     }
 
     @Override
@@ -1638,11 +1356,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print(')');
 
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableModify x) {
-
     }
 
     @Override
@@ -1747,11 +1460,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleCreateIndexStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleForStatement x) {
         boolean all = x.isAll();
         if (all) {
@@ -1793,11 +1501,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             }
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleForStatement x) {
-
     }
 
     @Override
@@ -1880,11 +1583,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    @Override
-    public void endVisit(OracleRangeExpr x) {
-
-    }
-
     protected void visitColumnDefault(SQLColumnDefinition x) {
         if (x.getParent() instanceof SQLBlockStatement) {
             print0(" := ");
@@ -1961,11 +1659,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             }
         }
         this.indentCount--;
-    }
-
-    @Override
-    public void endVisit(OraclePrimaryKey x) {
-
     }
 
     @Override
@@ -2082,11 +1775,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleCreateTableStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleStorageClause x) {
         print0(ucase ? "STORAGE (" : "storage (");
 
@@ -2180,20 +1868,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleStorageClause x) {
-
-    }
-
-    @Override
     public boolean visit(OracleGotoStatement x) {
         print0(ucase ? "GOTO " : "GOTO ");
         x.getLabel().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleGotoStatement x) {
-
     }
 
     @Override
@@ -2202,11 +1880,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getLabel().accept(this);
         print0(">>");
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleLabelStatement x) {
-
     }
 
     @Override
@@ -2229,11 +1902,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleAlterTriggerStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterSynonymStatement x) {
         print0(ucase ? "ALTER SYNONYM " : "alter synonym ");
         x.getName().accept(this);
@@ -2250,11 +1918,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             }
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterSynonymStatement x) {
-
     }
 
 //    @Override
@@ -2290,20 +1953,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleAlterViewStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTableMoveTablespace x) {
         print0(ucase ? " MOVE TABLESPACE " : " move tablespace ");
         x.getName().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableMoveTablespace x) {
-
     }
 
     @Override
@@ -2325,11 +1978,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleFileSpecification x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTablespaceAddDataFile x) {
         print0(ucase ? "ADD DATAFILE" : "add datafile");
         this.indentCount++;
@@ -2342,22 +1990,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleAlterTablespaceAddDataFile x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTablespaceStatement x) {
         print0(ucase ? "ALTER TABLESPACE " : "alter tablespace ");
         x.getName().accept(this);
         println();
         x.getItem().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTablespaceStatement x) {
-
     }
 
     @Override
@@ -2388,12 +2026,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleExitStatement x) {
-
-    }
-
-
-    @Override
     public boolean visit(OracleContinueStatement x) {
         print0(ucase ? "CONTINUE" : "continue");
 
@@ -2411,11 +2043,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleContinueStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleRaiseStatement x) {
         print0(ucase ? "RAISE" : "raise");
         if (x.getException() != null) {
@@ -2427,16 +2054,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleRaiseStatement x) {
-
-    }
-
-    @Override
-    public void endVisit(SQLRollbackStatement x) {
-
-    }
-
-    @Override
     public boolean visit(SQLSavePointStatement x) {
         print0(ucase ? "SAVEPOINT" : "savepoint");
         if (x.getName() != null) {
@@ -2445,8 +2062,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
         return false;
     }
-
-
 
     @Override
     public boolean visit(SQLCreateFunctionStatement x) {
@@ -2598,11 +2213,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleCreateDatabaseDbLinkStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleDropDbLinkStatement x) {
         print0(ucase ? "DROP " : "drop ");
         if (x.isPublic()) {
@@ -2612,11 +2222,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getName().accept(this);
 
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleDropDbLinkStatement x) {
-
     }
 
     public boolean visit(SQLCharacterDataType x) {
@@ -2650,11 +2255,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleDataTypeIntervalYear x) {
-
-    }
-
-    @Override
     public boolean visit(OracleDataTypeIntervalDay x) {
         print0(x.getName());
         if (x.getArguments().size() > 0) {
@@ -2672,11 +2272,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleDataTypeIntervalDay x) {
-
     }
 
     @Override
@@ -2718,11 +2313,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
 
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleUsingIndexClause x) {
-
     }
 
     @Override
@@ -2794,21 +2384,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleLobStorageClause x) {
-
-    }
-
-    @Override
     public boolean visit(OracleUnique x) {
         visit((SQLUnique) x);
 
         printConstraintState(x);
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleUnique x) {
-
     }
 
     @Override
@@ -2820,21 +2400,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleForeignKey x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCheck x) {
         visit((SQLCheck) x);
 
         printConstraintState(x);
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleCheck x) {
-
     }
 
     @Override
@@ -2900,11 +2470,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleSupplementalIdKey x) {
-
-    }
-
-    @Override
     public boolean visit(OracleSupplementalLogGrp x) {
         print0(ucase ? "SUPPLEMENTAL LOG GROUP " : "supplemental log group ");
         x.getGroup().accept(this);
@@ -2915,11 +2480,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? " ALWAYS" : " always");
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleSupplementalLogGrp x) {
-
     }
 
     public boolean visit(OracleCreateTableStatement.Organization x) {
@@ -2984,10 +2544,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public void endVisit(OracleCreateTableStatement.Organization x) {
-
-    }
-
     public boolean visit(OracleCreateTableStatement.OIDIndex x) {
         print0(ucase ? "OIDINDEX" : "oidindex");
 
@@ -3002,10 +2558,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         println();
         print(")");
         return false;
-    }
-
-    public void endVisit(OracleCreateTableStatement.OIDIndex x) {
-
     }
 
     @Override
@@ -3049,18 +2601,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleCreatePackageStatement x) {
-
-    }
-
-    @Override
     public boolean visit(SQLAssignItem x) {
         x.getTarget().accept(this);
         print0(" := ");
         x.getValue().accept(this);
         return false;
     }
-
 
     @Override
     public boolean visit(OracleExecuteImmediateStatement x) {
@@ -3088,11 +2634,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleExecuteImmediateStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleTreatExpr x) {
         print0(ucase ? "TREAT (" : "treat (");
         x.getExpr().accept(this);
@@ -3103,11 +2644,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getType().accept(this);
         print(')');
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleTreatExpr x) {
-
     }
 
     @Override
@@ -3130,11 +2666,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getObject().accept(this);
 
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateSynonymStatement x) {
-
     }
 
     @Override
@@ -3250,21 +2781,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleCreateTypeStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OraclePipeRowStatement x) {
         print0(ucase ? "PIPE ROW(" : "pipe row(");
         printAndAccept(x.getParameters(), ", ");
         print(')');
         return false;
-    }
-
-    @Override
-    public void endVisit(OraclePipeRowStatement x) {
-
     }
 
     @Override
@@ -3289,20 +2810,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleIsOfTypeExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OracleRunStatement x) {
         print0("@@");
         printExpr(x.getExpr());
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleRunStatement x) {
-
     }
 
     @Override
@@ -3337,18 +2848,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleXmlColumnProperties x) {
-
-    }
-
-    @Override
     public boolean visit(OracleXmlColumnProperties.OracleXMLTypeStorage x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleXmlColumnProperties.OracleXMLTypeStorage x) {
-
     }
 
     public boolean visit(SQLSubPartition x) {

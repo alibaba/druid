@@ -16,10 +16,6 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.PagerUtils;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
@@ -91,68 +87,8 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         return true;
     }
 
-    public boolean visit(SQLPropertyExpr x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    public boolean visit(SQLInListExpr x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    public boolean visit(SQLBinaryOpExpr x) {
-        return WallVisitorUtils.check(this, x);
-    }
-
-    @Override
-    public boolean visit(SQLMethodInvokeExpr x) {
-        WallVisitorUtils.checkFunction(this, x);
-
-        return true;
-    }
-
     public boolean visit(OracleSelectTableReference x) {
         return WallVisitorUtils.check(this, x);
-    }
-
-    public boolean visit(SQLExprTableSource x) {
-        WallVisitorUtils.check(this, x);
-
-        if (x.getExpr() instanceof SQLName) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public boolean visit(SQLSelectGroupByClause x) {
-        WallVisitorUtils.checkHaving(this, x.getHaving());
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLUnionQuery x) {
-        return WallVisitorUtils.checkUnion(this, x);
-    }
-
-    @Override
-    public String toSQL(SQLObject obj) {
-        return SQLUtils.toOracleString(obj);
     }
 
     @Override
@@ -166,57 +102,6 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
             return true;
         }
         return !this.provider.checkDenyTable(name);
-    }
-
-    public void preVisit(SQLObject x) {
-        WallVisitorUtils.preVisitCheck(this, x);
-    }
-
-    @Override
-    public boolean visit(SQLSelectStatement x) {
-        if (!config.isSelelctAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow",
-                                                                   this.toSQL(x)));
-            return false;
-        }
-        WallVisitorUtils.initWallTopStatementContext();
-
-        int selectLimit = config.getSelectLimit();
-        if (selectLimit >= 0) {
-            SQLSelect select = x.getSelect();
-            PagerUtils.limit(select, getDbType(), 0, selectLimit, true);
-            this.sqlModified = true;
-        }
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLSelectStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
-    }
-
-    @Override
-    public boolean visit(OracleInsertStatement x) {
-        return visit((SQLInsertStatement) x);
-    }
-
-    @Override
-    public boolean visit(SQLInsertStatement x) {
-        WallVisitorUtils.initWallTopStatementContext();
-        WallVisitorUtils.checkInsert(this, x);
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleInsertStatement x) {
-        endVisit((SQLInsertStatement) x);
-    }
-
-    @Override
-    public void endVisit(SQLInsertStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -243,85 +128,6 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         WallVisitorUtils.clearWallTopStatementContext();
     }
 
-    @Override
-    public boolean visit(OracleDeleteStatement x) {
-        return visit((SQLDeleteStatement) x);
-    }
-
-    @Override
-    public boolean visit(SQLDeleteStatement x) {
-        WallVisitorUtils.checkDelete(this, x);
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleDeleteStatement x) {
-        endVisit((SQLDeleteStatement) x);
-    }
-
-    @Override
-    public void endVisit(SQLDeleteStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
-    }
-
-    @Override
-    public boolean visit(OracleUpdateStatement x) {
-        return visit((SQLUpdateStatement) x);
-    }
-
-    @Override
-    public boolean visit(SQLUpdateStatement x) {
-        WallVisitorUtils.initWallTopStatementContext();
-        WallVisitorUtils.checkUpdate(this, x);
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLSelectItem x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLCreateTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleCreateTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLAlterTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLDropTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLSetStatement x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLCallStatement x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLCreateTriggerStatement x) {
-        return false;
-    }
-    
     @Override
     public boolean isSqlEndOfComment() {
         return this.sqlEndOfComment;

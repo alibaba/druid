@@ -39,16 +39,6 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     }
 
     @Override
-    public boolean visit(SQLServerSelectQueryBlock x) {
-        return visit((SQLSelectQueryBlock) x);
-    }
-
-    @Override
-    public void endVisit(SQLServerSelectQueryBlock x) {
-        endVisit((SQLSelectQueryBlock) x);
-    }
-
-    @Override
     public boolean visit(SQLServerTop x) {
         return false;
     }
@@ -66,17 +56,6 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     @Override
     public void endVisit(SQLServerObjectReferenceExpr x) {
 
-    }
-
-    @Override
-    public boolean visit(SQLServerInsertStatement x) {
-        this.visit((SQLInsertStatement) x);
-        return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerInsertStatement x) {
-        this.endVisit((SQLInsertStatement) x);
     }
 
     @Override
@@ -155,9 +134,4 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 	public void endVisit(SQLServerParameter x) {
 
 	}
-
-    @Override
-    public boolean visit(SQLShowViewsStatement x) {
-        return false;
-    }
 }

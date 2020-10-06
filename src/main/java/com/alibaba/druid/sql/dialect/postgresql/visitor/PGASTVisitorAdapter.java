@@ -67,32 +67,12 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVi
     }
 
     @Override
-    public void endVisit(PGSelectStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(PGSelectStatement x) {
-        return true;
-    }
-
-    @Override
     public void endVisit(PGUpdateStatement x) {
 
     }
 
     @Override
     public boolean visit(PGUpdateStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGSelectQueryBlock x) {
-
-    }
-
-    @Override
-    public boolean visit(PGSelectQueryBlock x) {
         return true;
     }
 

@@ -98,18 +98,8 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         return false;
     }
 
-    @Override
-    public void endVisit(HiveInsert x) {
-
-    }
-
     public boolean visit(SQLExternalRecordFormat x) {
         return hiveVisit(x);
-    }
-
-    @Override
-    public void endVisit(HiveMultiInsertStatement x) {
-
     }
 
     @Override
@@ -147,11 +137,6 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             insert.accept(this);
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(HiveInsertStatement x) {
-
     }
 
     public boolean visit(HiveInsertStatement x) {
@@ -296,11 +281,6 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
     }
 
     @Override
-    public void endVisit(HiveCreateFunctionStatement x) {
-
-    }
-
-    @Override
     public boolean visit(HiveLoadDataStatement x) {
         print0(ucase ? "LOAD DATA " : "load data ");
 
@@ -327,16 +307,6 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         return false;
     }
 
-    @Override
-    public void endVisit(HiveLoadDataStatement x) {
-
-    }
-
-    @Override
-    public void endVisit(HiveInputOutputFormat x) {
-
-    }
-
     @Override public boolean visit(HiveMsckRepairStatement x) {
         final List<SQLCommentHint> headHints = x.getHeadHintsDirect();
         if (headHints != null) {
@@ -359,10 +329,6 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             table.accept(this);
         }
         return false;
-    }
-
-    @Override public void endVisit(HiveMsckRepairStatement x) {
-
     }
 
     @Override

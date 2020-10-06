@@ -132,41 +132,54 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
         DbType dbType = DbType.of(this.dbTypeName);
 
-        if (JdbcUtils.isMysqlDbType(dbType) || //
-            JdbcUtils.PRESTO.equals(dbType)) {
-            if (config == null) {
-                config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
-            }
+        switch (dbType) {
+            case mysql:
+            case oceanbase:
+            case drds:
+            case mariadb:
+            case h2:
+            case presto:
+                if (config == null) {
+                    config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
+                }
 
-            provider = new MySqlWallProvider(config);
-        } else if (JdbcUtils.isOracleDbType(dbType)) {
-            if (config == null) {
-                config = new WallConfig(OracleWallProvider.DEFAULT_CONFIG_DIR);
-            }
+                provider = new MySqlWallProvider(config);
+                break;
+            case oracle:
+            case ali_oracle:
+            case oceanbase_oracle:
+                if (config == null) {
+                    config = new WallConfig(OracleWallProvider.DEFAULT_CONFIG_DIR);
+                }
 
-            provider = new OracleWallProvider(config);
-        } else if (JdbcUtils.isSqlserverDbType(dbType)) {
-            if (config == null) {
-                config = new WallConfig(SQLServerWallProvider.DEFAULT_CONFIG_DIR);
-            }
+                provider = new OracleWallProvider(config);
+                break;
+            case sqlserver:
+            case jtds:
+                if (config == null) {
+                    config = new WallConfig(SQLServerWallProvider.DEFAULT_CONFIG_DIR);
+                }
 
-            provider = new SQLServerWallProvider(config);
-        } else if (JdbcUtils.isPgsqlDbType(dbType)
-                || DbType.edb == dbType
-                || DbType.polardb == dbType) {
-            if (config == null) {
-                config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
-            }
+                provider = new SQLServerWallProvider(config);
+                break;
+            case postgresql:
+            case edb:
+            case polardb:
+                if (config == null) {
+                    config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
+                }
 
-            provider = new PGWallProvider(config);
-        } else if (JdbcUtils.DB2.equals(dbType)) {
-            if (config == null) {
-                config = new WallConfig(DB2WallProvider.DEFAULT_CONFIG_DIR);
-            }
+                provider = new PGWallProvider(config);
+                break;
+            case db2:
+                if (config == null) {
+                    config = new WallConfig(DB2WallProvider.DEFAULT_CONFIG_DIR);
+                }
 
-            provider = new DB2WallProvider(config);
-        } else {
-            throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
+                provider = new DB2WallProvider(config);
+                break;
+            default:
+                throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }
         
         provider.setName(dataSource.getName());

@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
-import com.alibaba.druid.sql.ast.expr.SQLDbLinkExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSizeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
@@ -34,72 +33,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
 
     public OracleToMySqlOutputVisitor(Appendable appender, boolean parameterized) {
         super(appender, parameterized);
-    }
-
-
-    @Override
-    public void endVisit(OracleAnalytic x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleAnalyticWindowing x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleDeleteStatement x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleIntervalExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleOuterExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectJoin x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectPivot x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectPivot.Item x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectRestriction.CheckOption x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectRestriction.ReadOnly x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectSubqueryTableSource x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectUnPivot x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleUpdateStatement x) {
-
     }
 
     @Override
@@ -173,18 +106,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(SampleClause x) {
-
-    }
-
-    @Override
     public boolean visit(OracleSelectTableReference x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleSelectTableReference x) {
-
     }
 
     @Override
@@ -193,18 +116,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(PartitionExtensionClause x) {
-
-    }
-
-    @Override
     public boolean visit(OracleWithSubqueryEntry x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleWithSubqueryEntry x) {
-
     }
 
     @Override
@@ -213,18 +126,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(SearchClause x) {
-
-    }
-
-    @Override
     public boolean visit(CycleClause x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(CycleClause x) {
-
     }
 
     @Override
@@ -233,18 +136,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleBinaryFloatExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OracleBinaryDoubleExpr x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleBinaryDoubleExpr x) {
-
     }
 
     @Override
@@ -253,18 +146,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleCursorExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OracleIsSetExpr x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleIsSetExpr x) {
-
     }
 
     @Override
@@ -273,18 +156,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(ModelClause.ReturnRowsClause x) {
-
-    }
-
-    @Override
     public boolean visit(ModelClause.MainModelClause x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(ModelClause.MainModelClause x) {
-
     }
 
     @Override
@@ -293,18 +166,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(ModelClause.ModelColumnClause x) {
-
-    }
-
-    @Override
     public boolean visit(ModelClause.QueryPartitionClause x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(ModelClause.QueryPartitionClause x) {
-
     }
 
     @Override
@@ -313,18 +176,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(ModelClause.ModelColumn x) {
-
-    }
-
-    @Override
     public boolean visit(ModelClause.ModelRulesClause x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(ModelClause.ModelRulesClause x) {
-
     }
 
     @Override
@@ -333,18 +186,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(ModelClause.CellAssignmentItem x) {
-
-    }
-
-    @Override
     public boolean visit(ModelClause.CellAssignment x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(ModelClause.CellAssignment x) {
-
     }
 
     @Override
@@ -353,18 +196,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(ModelClause x) {
-
-    }
-
-    @Override
     public boolean visit(OracleReturningClause x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleReturningClause x) {
-
     }
 
     @Override
@@ -373,18 +206,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleInsertStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleMultiInsertStatement.InsertIntoClause x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleMultiInsertStatement.InsertIntoClause x) {
-
     }
 
     @Override
@@ -393,18 +216,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleMultiInsertStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleMultiInsertStatement.ConditionalInsertClause x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleMultiInsertStatement.ConditionalInsertClause x) {
-
     }
 
     @Override
@@ -413,18 +226,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleMultiInsertStatement.ConditionalInsertClauseItem x) {
-
-    }
-
-    @Override
     public boolean visit(OracleSelectQueryBlock x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleSelectQueryBlock x) {
-
     }
 
     @Override
@@ -433,18 +236,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleLockTableStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterSessionStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterSessionStatement x) {
-
     }
 
     @Override
@@ -453,18 +246,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleDatetimeExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OracleSysdateExpr x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleSysdateExpr x) {
-
     }
 
     @Override
@@ -473,18 +256,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleExceptionStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleExceptionStatement.Item x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleExceptionStatement.Item x) {
-
     }
 
     @Override
@@ -493,18 +266,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleArgumentExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OracleSetTransactionStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleSetTransactionStatement x) {
-
     }
 
     @Override
@@ -513,18 +276,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleExplainStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTableDropPartition x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableDropPartition x) {
-
     }
 
     @Override
@@ -533,18 +286,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleAlterTableTruncatePartition x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTableSplitPartition.TableSpaceItem x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableSplitPartition.TableSpaceItem x) {
-
     }
 
     @Override
@@ -553,18 +296,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleAlterTableSplitPartition.UpdateIndexesClause x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTableSplitPartition.NestedTablePartitionSpec x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableSplitPartition.NestedTablePartitionSpec x) {
-
     }
 
     @Override
@@ -573,18 +306,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleAlterTableSplitPartition x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTableModify x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableModify x) {
-
     }
 
     @Override
@@ -593,18 +316,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleCreateIndexStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleForStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleForStatement x) {
-
     }
 
     @Override
@@ -613,18 +326,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleRangeExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OraclePrimaryKey x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OraclePrimaryKey x) {
-
     }
 
     @Override
@@ -633,18 +336,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleCreateTableStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleStorageClause x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleStorageClause x) {
-
     }
 
     @Override
@@ -653,18 +346,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleGotoStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleLabelStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleLabelStatement x) {
-
     }
 
     @Override
@@ -673,18 +356,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleAlterTriggerStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterSynonymStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterSynonymStatement x) {
-
     }
 
     @Override
@@ -693,18 +366,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleAlterViewStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTableMoveTablespace x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableMoveTablespace x) {
-
     }
 
     @Override
@@ -713,18 +376,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(SQLSizeExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OracleFileSpecification x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleFileSpecification x) {
-
     }
 
     @Override
@@ -733,18 +386,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleAlterTablespaceAddDataFile x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTablespaceStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTablespaceStatement x) {
-
     }
 
     @Override
@@ -753,18 +396,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleExitStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleContinueStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleContinueStatement x) {
-
     }
 
     @Override
@@ -773,18 +406,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleRaiseStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCreateDatabaseDbLinkStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateDatabaseDbLinkStatement x) {
-
     }
 
     @Override
@@ -793,18 +416,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleDropDbLinkStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleDataTypeIntervalYear x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleDataTypeIntervalYear x) {
-
     }
 
     @Override
@@ -813,18 +426,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleDataTypeIntervalDay x) {
-
-    }
-
-    @Override
     public boolean visit(OracleUsingIndexClause x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleUsingIndexClause x) {
-
     }
 
     @Override
@@ -833,18 +436,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleLobStorageClause x) {
-
-    }
-
-    @Override
     public boolean visit(OracleUnique x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleUnique x) {
-
     }
 
     @Override
@@ -853,18 +446,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleForeignKey x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCheck x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleCheck x) {
-
     }
 
     @Override
@@ -873,18 +456,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleSupplementalIdKey x) {
-
-    }
-
-    @Override
     public boolean visit(OracleSupplementalLogGrp x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleSupplementalLogGrp x) {
-
     }
 
     @Override
@@ -893,18 +466,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleCreateTableStatement.Organization x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCreateTableStatement.OIDIndex x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateTableStatement.OIDIndex x) {
-
     }
 
     @Override
@@ -913,18 +476,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleCreatePackageStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleExecuteImmediateStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleExecuteImmediateStatement x) {
-
     }
 
     @Override
@@ -933,18 +486,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleTreatExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCreateSynonymStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateSynonymStatement x) {
-
     }
 
     @Override
@@ -953,18 +496,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleCreateTypeStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OraclePipeRowStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OraclePipeRowStatement x) {
-
     }
 
     @Override
@@ -973,18 +506,8 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleIsOfTypeExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OracleRunStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleRunStatement x) {
-
     }
 
     @Override
@@ -993,17 +516,7 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public void endVisit(OracleXmlColumnProperties x) {
-
-    }
-
-    @Override
     public boolean visit(OracleXmlColumnProperties.OracleXMLTypeStorage x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleXmlColumnProperties.OracleXMLTypeStorage x) {
-
     }
 }

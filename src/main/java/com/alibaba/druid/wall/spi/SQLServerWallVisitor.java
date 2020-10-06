@@ -16,16 +16,11 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.PagerUtils;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 import com.alibaba.druid.wall.*;
@@ -94,11 +89,6 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         return !this.provider.checkDenyTable(name);
     }
 
-    @Override
-    public String toSQL(SQLObject obj) {
-        return SQLUtils.toSQLServerString(obj);
-    }
-
     public boolean visit(SQLIdentifierExpr x) {
         // String name = x.getName();
         // name = WallVisitorUtils.form(name);
@@ -109,23 +99,9 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         return true;
     }
 
-    public boolean visit(SQLPropertyExpr x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    public boolean visit(SQLInListExpr x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    public boolean visit(SQLBinaryOpExpr x) {
-        return WallVisitorUtils.check(this, x);
-    }
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
-
         if (x.getParent() instanceof SQLExprTableSource) {
             WallVisitorUtils.checkFunctionInTableSource(this, x);
         }
@@ -138,96 +114,6 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     @Override
     public boolean visit(SQLServerExecStatement x) {
         return false;
-    }
-
-    public boolean visit(SQLExprTableSource x) {
-        WallVisitorUtils.check(this, x);
-
-        return !(x.getExpr() instanceof SQLName);
-
-    }
-
-    public boolean visit(SQLSelectGroupByClause x) {
-        WallVisitorUtils.checkHaving(this, x.getHaving());
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLServerSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLUnionQuery x) {
-        return WallVisitorUtils.checkUnion(this, x);
-    }
-
-    public void preVisit(SQLObject x) {
-        WallVisitorUtils.preVisitCheck(this, x);
-    }
-
-    @Override
-    public boolean visit(SQLSelectStatement x) {
-        if (!config.isSelelctAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "selelct not allow",
-                                                                   this.toSQL(x)));
-            return false;
-        }
-        WallVisitorUtils.initWallTopStatementContext();
-
-        int selectLimit = config.getSelectLimit();
-        if (selectLimit >= 0) {
-            SQLSelect select = x.getSelect();
-            PagerUtils.limit(select, getDbType(), 0, selectLimit, true);
-            this.sqlModified = true;
-        }
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLSelectStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
-    }
-
-    @Override
-    public boolean visit(SQLInsertStatement x) {
-        WallVisitorUtils.initWallTopStatementContext();
-        WallVisitorUtils.checkInsert(this, x);
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLInsertStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
-    }
-
-    @Override
-    public boolean visit(SQLDeleteStatement x) {
-        WallVisitorUtils.checkDelete(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLUpdateStatement x) {
-        WallVisitorUtils.initWallTopStatementContext();
-        WallVisitorUtils.checkUpdate(this, x);
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLUpdateStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     public boolean visit(SQLVariantRefExpr x) {
@@ -272,55 +158,6 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     }
 
     @Override
-    public boolean visit(SQLServerInsertStatement x) {
-        return this.visit((SQLInsertStatement) x);
-    }
-
-    @Override
-    public void endVisit(SQLServerInsertStatement x) {
-        this.endVisit((SQLInsertStatement) x);
-    }
-
-    @Override
-    public boolean visit(SQLSelectItem x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLCreateTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLAlterTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLDropTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLSetStatement x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLCallStatement x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLCreateTriggerStatement x) {
-        return false;
-    }
-    
-    @Override
     public boolean isSqlEndOfComment() {
         return this.sqlEndOfComment;
     }
@@ -339,10 +176,5 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     public List<WallUpdateCheckItem> getUpdateCheckItems() {
         return updateCheckItems;
-    }
-
-    public boolean visit(SQLJoinTableSource x) {
-        WallVisitorUtils.check(this, x);
-        return true;
     }
 }

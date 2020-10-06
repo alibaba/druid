@@ -22,34 +22,4 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class DB2ASTVisitorAdapter extends SQLASTVisitorAdapter implements DB2ASTVisitor {
 
-    @Override
-    public boolean visit(DB2SelectQueryBlock x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(DB2SelectQueryBlock x) {
-
-    }
-    
-    @Override
-    public boolean visit(DB2ValuesStatement x) {
-        return true;
-    }
-    
-    @Override
-    public void endVisit(DB2ValuesStatement x) {
-        
-    }
-
-    @Override
-    public boolean visit(DB2CreateTableStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(DB2CreateTableStatement x) {
-
-    }
-
 }

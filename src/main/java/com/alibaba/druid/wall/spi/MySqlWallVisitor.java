@@ -16,8 +16,6 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.PagerUtils;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -82,44 +80,16 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         return violations;
     }
 
-    public boolean visit(SQLInListExpr x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    public boolean visit(SQLBinaryOpExpr x) {
-        return com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
-    }
-
-    @Override
-    public boolean visit(SQLSelectQueryBlock x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.checkSelelct(this, x);
-
-        return true;
-    }
-
     @Override
     public boolean visit(MySqlSelectQueryBlock x) {
         com.alibaba.druid.wall.spi.WallVisitorUtils.checkSelelct(this, x);
         return true;
     }
 
-    public boolean visit(SQLSelectGroupByClause x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.checkHaving(this, x.getHaving());
-        return true;
-    }
-
     @Override
     public boolean visit(MySqlDeleteStatement x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.checkReadOnly(this, x.getFrom());
-
+        WallVisitorUtils.checkReadOnly(this, x.getFrom());
         return visit((SQLDeleteStatement) x);
-    }
-
-    @Override
-    public boolean visit(SQLDeleteStatement x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.checkDelete(this, x);
-        return true;
     }
 
     @Override
@@ -128,76 +98,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     @Override
-    public boolean visit(SQLUpdateStatement x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.initWallTopStatementContext();
-        com.alibaba.druid.wall.spi.WallVisitorUtils.checkUpdate(this, x);
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLUpdateStatement x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.clearWallTopStatementContext();
-    }
-
-    @Override
     public boolean visit(MySqlInsertStatement x) {
         return visit((SQLInsertStatement) x);
-    }
-
-    @Override
-    public boolean visit(SQLInsertStatement x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.initWallTopStatementContext();
-        com.alibaba.druid.wall.spi.WallVisitorUtils.checkInsert(this, x);
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLInsertStatement x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.clearWallTopStatementContext();
-    }
-
-    @Override
-    public boolean visit(SQLSelectStatement x) {
-        if (!config.isSelelctAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow",
-                                                                   this.toSQL(x)));
-            return false;
-        }
-
-        com.alibaba.druid.wall.spi.WallVisitorUtils.initWallTopStatementContext();
-
-        int selectLimit = config.getSelectLimit();
-        if (selectLimit >= 0) {
-            SQLSelect select = x.getSelect();
-            PagerUtils.limit(select, getDbType(), 0, selectLimit, true);
-            this.sqlModified = true;
-        }
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLSelectStatement x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.clearWallTopStatementContext();
-    }
-
-    @Override
-    public boolean visit(SQLLimit x) {
-        if (x.getRowCount() instanceof SQLNumericLiteralExpr) {
-            WallContext context = WallContext.current();
-
-            int rowCount = ((SQLNumericLiteralExpr) x.getRowCount()).getNumber().intValue();
-            if (rowCount == 0) {
-                if (context != null) {
-                    context.incrementWarnings();
-                }
-
-                if (!provider.getConfig().isLimitZeroAllow()) {
-                    this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.LIMIT_ZERO, "limit row 0",
-                                                                           this.toSQL(x)));
-                }
-            }
-        }
-        return true;
     }
 
     public boolean visit(SQLPropertyExpr x) {
@@ -305,39 +207,12 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     @Override
-    public boolean visit(SQLMethodInvokeExpr x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.checkFunction(this, x);
-
-        return true;
-    }
-
-    public boolean visit(SQLExprTableSource x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
-
-        if (x.getExpr() instanceof SQLName) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
     public boolean visit(MySqlOutFileExpr x) {
         if (!config.isSelectIntoOutfileAllow() && !com.alibaba.druid.wall.spi.WallVisitorUtils.isTopSelectOutFile(x)) {
             violations.add(new IllegalSQLObjectViolation(ErrorCode.INTO_OUTFILE, "into out file not allow", toSQL(x)));
         }
 
         return true;
-    }
-
-    @Override
-    public boolean visit(SQLUnionQuery x) {
-        return com.alibaba.druid.wall.spi.WallVisitorUtils.checkUnion(this, x);
-    }
-
-    @Override
-    public String toSQL(SQLObject obj) {
-        return SQLUtils.toMySqlString(obj);
     }
 
     @Override
@@ -349,34 +224,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         return !this.provider.checkDenyTable(name);
     }
 
-    public void preVisit(SQLObject x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.preVisitCheck(this, x);
-    }
-
-    @Override
-    public boolean visit(SQLSelectItem x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLCreateTableStatement x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
-        return false;
-    }
-
     @Override
     public boolean visit(MySqlCreateTableStatement x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    public boolean visit(SQLAlterTableStatement x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    public boolean visit(SQLDropTableStatement x) {
         com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
         return true;
     }
@@ -402,7 +251,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLShowCreateTableStatement x) {
-        String tableName = ((SQLName) x.getName()).getSimpleName();
+        String tableName = (x.getName()).getSimpleName();
         WallContext context = WallContext.current();
         if (context != null) {
             WallSqlTableStat tableStat = context.getTableStat(tableName);
@@ -410,11 +259,6 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                 tableStat.incrementShowCount();
             }
         }
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLCreateTriggerStatement x) {
         return false;
     }
 
@@ -437,10 +281,5 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     public List<WallUpdateCheckItem> getUpdateCheckItems() {
         return updateCheckItems;
-    }
-
-    public boolean visit(SQLJoinTableSource x) {
-        com.alibaba.druid.wall.spi.WallVisitorUtils.check(this, x);
-        return true;
     }
 }

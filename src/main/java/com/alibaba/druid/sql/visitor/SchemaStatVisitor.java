@@ -1996,9 +1996,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
-    public void endVisit(SQLSelect x) {
-    }
-
     public boolean visit(SQLSelect x) {
         SQLWithSubqueryClause with = x.getWithSubQuery();
         if (with != null) {
@@ -3157,5 +3154,17 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public List<SQLName> getOriginalTables() {
         return originalTables;
+    }
+
+    @Override
+    public boolean visit(SQLUnique x) {
+        for (SQLSelectOrderByItem column : x.getColumns()) {
+            column.accept(this);
+        }
+        return false;
+    }
+
+    public boolean visit(SQLSavePointStatement x) {
+        return false;
     }
 }

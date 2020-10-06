@@ -101,11 +101,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
-    public void endVisit(SQLServerSelectQueryBlock x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerTop x) {
         boolean parameterized = this.parameterized;
         this.parameterized = false;
@@ -134,19 +129,9 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
-    public void endVisit(SQLServerTop x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerObjectReferenceExpr x) {
         print0(x.toString());
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerObjectReferenceExpr x) {
-
     }
 
     @Override
@@ -195,11 +180,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
-    public void endVisit(SQLServerInsertStatement x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerUpdateStatement x) {
         print0(ucase ? "UPDATE " : "update ");
 
@@ -244,11 +224,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         }
 
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerUpdateStatement x) {
-
     }
 
     public boolean visit(SQLExprTableSource x) {
@@ -332,20 +307,10 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
-    public void endVisit(SQLServerExecStatement x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerSetTransactionIsolationLevelStatement x) {
         print0(ucase ? "SET TRANSACTION ISOLATION LEVEL " : "set transaction isolation level ");
         print0(x.getLevel());
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerSetTransactionIsolationLevelStatement x) {
-
     }
 
     @Override
@@ -412,11 +377,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         }
         this.indentCount--;
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerOutput x) {
-
     }
 
     @Override
@@ -532,11 +492,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
-    public void endVisit(SQLServerRollbackStatement x) {
-        
-    }
-
-    @Override
     public boolean visit(SQLServerWaitForStatement x) {
         print0(ucase ? "WAITFOR" : "waitfor");
 
@@ -559,11 +514,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         return false;
     }
 
-    @Override
-    public void endVisit(SQLServerWaitForStatement x) {
-        
-    }
-
 	@Override
 	public boolean visit(SQLServerParameter x) {
 		// TODO Auto-generated method stub
@@ -573,12 +523,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 			print0(ucase ? " OUT" : " out");
 		}
 		return false;
-	}
-
-	@Override
-	public void endVisit(SQLServerParameter x) {
-
-		
 	}
 
     @Override

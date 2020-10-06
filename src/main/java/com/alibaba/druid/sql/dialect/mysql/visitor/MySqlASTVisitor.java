@@ -1,7 +1,9 @@
 /*
  * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License" ) {
+        return true;
+    }
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,685 +17,1418 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
-import com.alibaba.druid.sql.ast.statement.SQLShowColumnsStatement;
-import com.alibaba.druid.sql.ast.statement.SQLShowCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface MySqlASTVisitor extends SQLASTVisitor {
-    boolean visit(MySqlTableIndex x);
+    default boolean visit(MySqlTableIndex x) {
+        return true;
+    }
 
-    void endVisit(MySqlTableIndex x);
+    default void endVisit(MySqlTableIndex x) {
 
-    boolean visit(MySqlKey x);
+    }
 
-    void endVisit(MySqlKey x);
+    default boolean visit(MySqlKey x) {
+        return true;
+    }
 
-    boolean visit(MySqlPrimaryKey x);
+    default void endVisit(MySqlKey x) {
 
-    void endVisit(MySqlPrimaryKey x);
+    }
 
-    boolean visit(MySqlUnique x);
+    default boolean visit(MySqlPrimaryKey x) {
+        return true;
+    }
 
-    void endVisit(MySqlUnique x);
+    default void endVisit(MySqlPrimaryKey x) {
 
-    boolean visit(MysqlForeignKey x);
+    }
 
-    void endVisit(MysqlForeignKey x);
+    default boolean visit(MySqlUnique x) {
+        return true;
+    }
 
-    void endVisit(MySqlPrepareStatement x);
+    default void endVisit(MySqlUnique x) {
 
-    boolean visit(MySqlPrepareStatement x);
+    }
 
-    void endVisit(MySqlExecuteStatement x);
+    default boolean visit(MysqlForeignKey x) {
+        return visit((SQLForeignKeyImpl) x);
+    }
 
-    boolean visit(MysqlDeallocatePrepareStatement x);
+    default void endVisit(MysqlForeignKey x) {
+        endVisit((SQLForeignKeyImpl) x);
+    }
 
-    void endVisit(MysqlDeallocatePrepareStatement x);
+    default void endVisit(MySqlPrepareStatement x) {
 
-    boolean visit(MySqlExecuteStatement x);
+    }
 
-    void endVisit(MySqlDeleteStatement x);
+    default boolean visit(MySqlPrepareStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlDeleteStatement x);
+    default void endVisit(MySqlExecuteStatement x) {
 
-    void endVisit(MySqlInsertStatement x);
+    }
 
-    boolean visit(MySqlInsertStatement x);
+    default boolean visit(MysqlDeallocatePrepareStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlLoadDataInFileStatement x);
+    default void endVisit(MysqlDeallocatePrepareStatement x) {
 
-    boolean visit(MySqlLoadDataInFileStatement x);
+    }
 
-    void endVisit(MySqlLoadXmlStatement x);
+    default boolean visit(MySqlExecuteStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlLoadXmlStatement x);
+    default void endVisit(MySqlDeleteStatement x) {
 
-    void endVisit(SQLShowColumnsStatement x);
+    }
 
-    boolean visit(SQLShowColumnsStatement x);
+    default boolean visit(MySqlDeleteStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowWarningsStatement x);
+    default void endVisit(MySqlInsertStatement x) {
 
-    boolean visit(MySqlShowWarningsStatement x);
+    }
 
-    void endVisit(MySqlShowStatusStatement x);
+    default boolean visit(MySqlInsertStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowStatusStatement x);
+    default void endVisit(MySqlLoadDataInFileStatement x) {
 
-    void endVisit(MySqlShowAuthorsStatement x);
+    }
 
-    boolean visit(MySqlShowAuthorsStatement x);
+    default boolean visit(MySqlLoadDataInFileStatement x) {
+        return true;
+    }
 
-    void endVisit(MysqlShowHtcStatement x);
+    default void endVisit(MySqlLoadXmlStatement x) {
 
-    boolean visit(MysqlShowHtcStatement x);
+    }
 
-    void endVisit(MysqlShowStcStatement x);
+    default boolean visit(MySqlLoadXmlStatement x) {
+        return true;
+    }
 
-    boolean visit(MysqlShowStcStatement x);
+    default void endVisit(MySqlShowWarningsStatement x) {
 
-    void endVisit(CobarShowStatus x);
+    }
 
-    boolean visit(CobarShowStatus x);
+    default boolean visit(MySqlShowWarningsStatement x) {
+        return true;
+    }
 
-    void endVisit(DrdsShowDDLJobs x);
+    default void endVisit(MySqlShowStatusStatement x) {
 
-    boolean visit(DrdsShowDDLJobs x);
+    }
 
-    void endVisit(DrdsCancelDDLJob x);
+    default boolean visit(MySqlShowStatusStatement x) {
+        return true;
+    }
 
-    boolean visit(DrdsCancelDDLJob x);
+    default void endVisit(MySqlShowAuthorsStatement x) {
 
-    void endVisit(DrdsRecoverDDLJob x);
+    }
 
-    boolean visit(DrdsRecoverDDLJob x);
+    default boolean visit(MySqlShowAuthorsStatement x) {
+        return true;
+    }
 
-    void endVisit(DrdsRollbackDDLJob x);
+    default void endVisit(MysqlShowHtcStatement x) {
 
-    boolean visit(DrdsRollbackDDLJob x);
+    }
 
-    void endVisit(DrdsRemoveDDLJob x);
+    default boolean visit(MysqlShowHtcStatement x) {
+        return true;
+    }
 
-    boolean visit(DrdsRemoveDDLJob x);
+    default void endVisit(MysqlShowStcStatement x) {
 
-    void endVisit(DrdsInspectDDLJobCache x);
+    }
 
-    boolean visit(DrdsInspectDDLJobCache x);
+    default boolean visit(MysqlShowStcStatement x) {
+        return true;
+    }
 
-    void endVisit(DrdsClearDDLJobCache x);
+    default void endVisit(CobarShowStatus x) {
 
-    boolean visit(DrdsClearDDLJobCache x);
+    }
 
-    void endVisit(DrdsChangeDDLJob x);
+    default boolean visit(CobarShowStatus x) {
+        return true;
+    }
 
-    boolean visit(DrdsChangeDDLJob x);
+    default void endVisit(DrdsShowDDLJobs x) {
 
-    void endVisit(DrdsBaselineStatement x);
+    }
 
-    boolean visit(DrdsBaselineStatement x);
+    default boolean visit(DrdsShowDDLJobs x) {
+        return true;
+    }
 
-    void endVisit(DrdsShowGlobalIndex x);
+    default void endVisit(DrdsCancelDDLJob x) {
 
-    boolean visit(DrdsShowGlobalIndex x);
+    }
 
-    void endVisit(DrdsShowMetadataLock x);
+    default boolean visit(DrdsCancelDDLJob x) {
+        return true;
+    }
 
-    boolean visit(DrdsShowMetadataLock x);
+    default void endVisit(DrdsRecoverDDLJob x) {
 
-    void endVisit(MySqlBinlogStatement x);
+    }
 
-    boolean visit(MySqlBinlogStatement x);
+    default boolean visit(DrdsRecoverDDLJob x) {
+        return true;
+    }
 
-    void endVisit(MySqlResetStatement x);
+    default void endVisit(DrdsRollbackDDLJob x) {
 
-    boolean visit(MySqlResetStatement x);
+    }
 
-    void endVisit(MySqlCreateUserStatement x);
+    default boolean visit(DrdsRollbackDDLJob x) {
+        return true;
+    }
 
-    boolean visit(MySqlCreateUserStatement x);
+    default void endVisit(DrdsRemoveDDLJob x) {
 
-    void endVisit(MySqlCreateUserStatement.UserSpecification x);
+    }
 
-    boolean visit(MySqlCreateUserStatement.UserSpecification x);
+    default boolean visit(DrdsRemoveDDLJob x) {
+        return true;
+    }
 
-    void endVisit(MySqlPartitionByKey x);
+    default void endVisit(DrdsInspectDDLJobCache x) {
 
-    boolean visit(MySqlPartitionByKey x);
+    }
 
-    void endVisit(MySqlUpdatePlanCacheStatement x);
+    default boolean visit(DrdsInspectDDLJobCache x) {
+        return true;
+    }
 
-    boolean visit(MySqlUpdatePlanCacheStatement x);
+    default void endVisit(DrdsClearDDLJobCache x) {
 
-    void endVisit(MySqlShowPlanCacheStatusStatement x);
+    }
 
-    boolean visit(MySqlShowPlanCacheStatusStatement x);
+    default boolean visit(DrdsClearDDLJobCache x) {
+        return true;
+    }
 
-    void endVisit(MySqlClearPlanCacheStatement x);
+    default void endVisit(DrdsChangeDDLJob x) {
 
-    boolean visit(MySqlClearPlanCacheStatement x);
+    }
 
-    void endVisit(MySqlDisabledPlanCacheStatement x);
+    default boolean visit(DrdsChangeDDLJob x) {
+        return true;
+    }
 
-    boolean visit(MySqlDisabledPlanCacheStatement x);
+    default void endVisit(DrdsBaselineStatement x) {
 
-    void endVisit(MySqlExplainPlanCacheStatement x);
+    }
 
-    boolean visit(MySqlExplainPlanCacheStatement x);
+    default boolean visit(DrdsBaselineStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlSelectQueryBlock x);
+    default void endVisit(DrdsShowGlobalIndex x) {
 
-    void endVisit(MySqlSelectQueryBlock x);
+    }
 
-    boolean visit(MySqlOutFileExpr x);
+    default boolean visit(DrdsShowGlobalIndex x) {
+        return true;
+    }
 
-    void endVisit(MySqlOutFileExpr x);
+    default void endVisit(DrdsShowMetadataLock x) {
 
-    boolean visit(MySqlExplainStatement x);
+    }
 
-    void endVisit(MySqlExplainStatement x);
+    default boolean visit(DrdsShowMetadataLock x) {
+        return true;
+    }
 
-    boolean visit(MySqlUpdateStatement x);
+    default void endVisit(MySqlBinlogStatement x) {
 
-    void endVisit(MySqlUpdateStatement x);
+    }
 
-    boolean visit(MySqlSetTransactionStatement x);
+    default boolean visit(MySqlBinlogStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlSetTransactionStatement x);
+    default void endVisit(MySqlResetStatement x) {
 
-    boolean visit(MySqlShowHMSMetaStatement x);
+    }
 
-    void endVisit(MySqlShowHMSMetaStatement x);
+    default boolean visit(MySqlResetStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowBinaryLogsStatement x);
+    default void endVisit(MySqlCreateUserStatement x) {
 
-    void endVisit(MySqlShowBinaryLogsStatement x);
+    }
 
-    boolean visit(MySqlShowMasterLogsStatement x);
+    default boolean visit(MySqlCreateUserStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowMasterLogsStatement x);
+    default void endVisit(MySqlCreateUserStatement.UserSpecification x) {
 
-    boolean visit(MySqlShowCharacterSetStatement x);
+    }
 
-    void endVisit(MySqlShowCharacterSetStatement x);
+    default boolean visit(MySqlCreateUserStatement.UserSpecification x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowCollationStatement x);
+    default void endVisit(MySqlPartitionByKey x) {
 
-    void endVisit(MySqlShowCollationStatement x);
+    }
 
-    boolean visit(MySqlShowBinLogEventsStatement x);
+    default boolean visit(MySqlPartitionByKey x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowBinLogEventsStatement x);
+    default void endVisit(MySqlUpdatePlanCacheStatement x) {
 
-    boolean visit(MySqlShowContributorsStatement x);
+    }
 
-    void endVisit(MySqlShowContributorsStatement x);
+    default boolean visit(MySqlUpdatePlanCacheStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowCreateDatabaseStatement x);
+    default void endVisit(MySqlShowPlanCacheStatusStatement x) {
 
-    void endVisit(MySqlShowCreateDatabaseStatement x);
+    }
 
-    boolean visit(MySqlShowCreateEventStatement x);
+    default boolean visit(MySqlShowPlanCacheStatusStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowCreateEventStatement x);
+    default void endVisit(MySqlClearPlanCacheStatement x) {
 
-    boolean visit(MySqlShowCreateFunctionStatement x);
+    }
 
-    void endVisit(MySqlShowCreateFunctionStatement x);
+    default boolean visit(MySqlClearPlanCacheStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowCreateProcedureStatement x);
+    default void endVisit(MySqlDisabledPlanCacheStatement x) {
 
-    void endVisit(MySqlShowCreateProcedureStatement x);
+    }
 
-    boolean visit(SQLShowCreateTableStatement x);
+    default boolean visit(MySqlDisabledPlanCacheStatement x) {
+        return true;
+    }
 
-    void endVisit(SQLShowCreateTableStatement x);
+    default void endVisit(MySqlExplainPlanCacheStatement x) {
 
-    boolean visit(MySqlShowCreateTriggerStatement x);
+    }
 
-    void endVisit(MySqlShowCreateTriggerStatement x);
+    default boolean visit(MySqlExplainPlanCacheStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowEngineStatement x);
+    default boolean visit(MySqlSelectQueryBlock x) {
+        return visit((SQLSelectQueryBlock) x);
+    }
 
-    void endVisit(MySqlShowEngineStatement x);
+    default void endVisit(MySqlSelectQueryBlock x) {
+        endVisit((SQLSelectQueryBlock) x);
+    }
 
-    boolean visit(MySqlShowEnginesStatement x);
+    default boolean visit(MySqlOutFileExpr x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowEnginesStatement x);
+    default void endVisit(MySqlOutFileExpr x) {
 
-    boolean visit(MySqlShowErrorsStatement x);
+    }
 
-    void endVisit(MySqlShowErrorsStatement x);
+    default boolean visit(MySqlExplainStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowEventsStatement x);
+    default void endVisit(MySqlExplainStatement x) {
 
-    void endVisit(MySqlShowEventsStatement x);
+    }
 
-    boolean visit(MySqlShowFunctionCodeStatement x);
+    default boolean visit(MySqlUpdateStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowFunctionCodeStatement x);
+    default void endVisit(MySqlUpdateStatement x) {
 
-    boolean visit(MySqlShowFunctionStatusStatement x);
+    }
 
-    void endVisit(MySqlShowFunctionStatusStatement x);
+    default boolean visit(MySqlSetTransactionStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowGrantsStatement x);
+    default void endVisit(MySqlSetTransactionStatement x) {
 
-    void endVisit(MySqlShowGrantsStatement x);
+    }
 
-    boolean visit(MySqlUserName x);
+    default boolean visit(MySqlShowHMSMetaStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlUserName x);
+    default void endVisit(MySqlShowHMSMetaStatement x) {
 
-    boolean visit(MySqlAlterDatabaseSetOption x);
+    }
 
-    void endVisit(MySqlAlterDatabaseSetOption x);
+    default boolean visit(MySqlShowBinaryLogsStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlAlterDatabaseKillJob x);
+    default void endVisit(MySqlShowBinaryLogsStatement x) {
 
-    void endVisit(MySqlAlterDatabaseKillJob x);
+    }
 
-    boolean visit(MySqlShowMasterStatusStatement x);
+    default boolean visit(MySqlShowMasterLogsStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowMasterStatusStatement x);
+    default void endVisit(MySqlShowMasterLogsStatement x) {
 
-    boolean visit(MySqlShowOpenTablesStatement x);
+    }
 
-    void endVisit(MySqlShowOpenTablesStatement x);
+    default boolean visit(MySqlShowCharacterSetStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowPluginsStatement x);
+    default void endVisit(MySqlShowCharacterSetStatement x) {
 
-    void endVisit(MySqlShowPluginsStatement x);
+    }
 
-    boolean visit(MySqlShowPartitionsStatement x);
+    default boolean visit(MySqlShowCollationStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowPartitionsStatement x);
+    default void endVisit(MySqlShowCollationStatement x) {
 
-    boolean visit(MySqlShowPrivilegesStatement x);
+    }
 
-    void endVisit(MySqlShowPrivilegesStatement x);
+    default boolean visit(MySqlShowBinLogEventsStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowProcedureCodeStatement x);
+    default void endVisit(MySqlShowBinLogEventsStatement x) {
 
-    void endVisit(MySqlShowProcedureCodeStatement x);
+    }
 
-    boolean visit(MySqlShowProcedureStatusStatement x);
+    default boolean visit(MySqlShowContributorsStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowProcedureStatusStatement x);
+    default void endVisit(MySqlShowContributorsStatement x) {
 
-    boolean visit(MySqlShowProcessListStatement x);
+    }
 
-    void endVisit(MySqlShowProcessListStatement x);
+    default boolean visit(MySqlShowCreateDatabaseStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowProfileStatement x);
+    default void endVisit(MySqlShowCreateDatabaseStatement x) {
 
-    void endVisit(MySqlShowProfileStatement x);
+    }
 
-    boolean visit(MySqlShowProfilesStatement x);
+    default boolean visit(MySqlShowCreateEventStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowProfilesStatement x);
+    default void endVisit(MySqlShowCreateEventStatement x) {
 
-    boolean visit(MySqlShowRelayLogEventsStatement x);
+    }
 
-    void endVisit(MySqlShowRelayLogEventsStatement x);
+    default boolean visit(MySqlShowCreateFunctionStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowSlaveHostsStatement x);
+    default void endVisit(MySqlShowCreateFunctionStatement x) {
 
-    void endVisit(MySqlShowSlaveHostsStatement x);
+    }
 
-    boolean visit(MySqlShowSequencesStatement x);
+    default boolean visit(MySqlShowCreateProcedureStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowSequencesStatement x);
+    default void endVisit(MySqlShowCreateProcedureStatement x) {
 
-    boolean visit(MySqlShowSlaveStatusStatement x);
+    }
 
-    void endVisit(MySqlShowSlaveStatusStatement x);
+    default boolean visit(MySqlShowCreateTriggerStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowSlowStatement x);
+    default void endVisit(MySqlShowCreateTriggerStatement x) {
 
-    void endVisit(MySqlShowSlowStatement x);
+    }
 
-    boolean visit(MySqlShowTableStatusStatement x);
+    default boolean visit(MySqlShowEngineStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowTableStatusStatement x);
+    default void endVisit(MySqlShowEngineStatement x) {
 
-    boolean visit(MySqlShowTriggersStatement x);
+    }
 
-    void endVisit(MySqlShowTriggersStatement x);
+    default boolean visit(MySqlShowEnginesStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowVariantsStatement x);
+    default void endVisit(MySqlShowEnginesStatement x) {
 
-    void endVisit(MySqlShowVariantsStatement x);
+    }
 
-    boolean visit(MySqlShowTraceStatement x);
+    default boolean visit(MySqlShowErrorsStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowTraceStatement x);
+    default void endVisit(MySqlShowErrorsStatement x) {
 
-    boolean visit(MySqlShowBroadcastsStatement x);
+    }
 
-    void endVisit(MySqlShowBroadcastsStatement x);
+    default boolean visit(MySqlShowEventsStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowRuleStatement x);
+    default void endVisit(MySqlShowEventsStatement x) {
 
-    void endVisit(MySqlShowRuleStatement x);
+    }
 
-    boolean visit(MySqlShowRuleStatusStatement x);
+    default boolean visit(MySqlShowFunctionCodeStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowRuleStatusStatement x);
+    default void endVisit(MySqlShowFunctionCodeStatement x) {
 
-    boolean visit(MySqlShowDsStatement x);
+    }
 
-    void endVisit(MySqlShowDsStatement x);
+    default boolean visit(MySqlShowFunctionStatusStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowDdlStatusStatement x);
+    default void endVisit(MySqlShowFunctionStatusStatement x) {
 
-    void endVisit(MySqlShowDdlStatusStatement x);
+    }
 
-    boolean visit(MySqlShowTopologyStatement x);
+    default boolean visit(MySqlShowGrantsStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlShowTopologyStatement x);
+    default void endVisit(MySqlShowGrantsStatement x) {
 
-    boolean visit(MySqlRenameTableStatement.Item x);
+    }
 
-    void endVisit(MySqlRenameTableStatement.Item x);
+    default boolean visit(MySqlUserName x) {
+        return true;
+    }
 
-    boolean visit(MySqlRenameTableStatement x);
+    default void endVisit(MySqlUserName x) {
 
-    void endVisit(MySqlRenameTableStatement x);
+    }
 
-    boolean visit(MysqlShowDbLockStatement x);
+    default boolean visit(MySqlAlterDatabaseSetOption x) {
+        return true;
+    }
 
-    void endVisit(MysqlShowDbLockStatement x);
+    default void endVisit(MySqlAlterDatabaseSetOption x) {
 
-    boolean visit(MySqlShowDatabaseStatusStatement x);
+    }
 
-    void endVisit(MySqlShowDatabaseStatusStatement x);
+    default boolean visit(MySqlAlterDatabaseKillJob x) {
+        return true;
+    }
 
-    boolean visit(MySqlUseIndexHint x);
+    default void endVisit(MySqlAlterDatabaseKillJob x) {
 
-    void endVisit(MySqlUseIndexHint x);
+    }
 
-    boolean visit(MySqlIgnoreIndexHint x);
+    default boolean visit(MySqlShowMasterStatusStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlIgnoreIndexHint x);
+    default void endVisit(MySqlShowMasterStatusStatement x) {
 
-    boolean visit(MySqlLockTableStatement x);
+    }
 
-    void endVisit(MySqlLockTableStatement x);
+    default boolean visit(MySqlShowOpenTablesStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlLockTableStatement.Item x);
+    default void endVisit(MySqlShowOpenTablesStatement x) {
 
-    void endVisit(MySqlLockTableStatement.Item x);
+    }
 
-    boolean visit(MySqlUnlockTablesStatement x);
+    default boolean visit(MySqlShowPluginsStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlUnlockTablesStatement x);
+    default void endVisit(MySqlShowPluginsStatement x) {
 
-    boolean visit(MySqlForceIndexHint x);
+    }
 
-    void endVisit(MySqlForceIndexHint x);
+    default boolean visit(MySqlShowPartitionsStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlAlterTableChangeColumn x);
+    default void endVisit(MySqlShowPartitionsStatement x) {
 
-    void endVisit(MySqlAlterTableChangeColumn x);
+    }
 
-    boolean visit(MySqlAlterTableOption x);
+    default boolean visit(MySqlShowPrivilegesStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlAlterTableOption x);
+    default void endVisit(MySqlShowPrivilegesStatement x) {
 
-    boolean visit(MySqlCreateTableStatement x);
+    }
 
-    void endVisit(MySqlCreateTableStatement x);
+    default boolean visit(MySqlShowProcedureCodeStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlHelpStatement x);
+    default void endVisit(MySqlShowProcedureCodeStatement x) {
 
-    void endVisit(MySqlHelpStatement x);
+    }
 
-    boolean visit(MySqlCharExpr x);
+    default boolean visit(MySqlShowProcedureStatusStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlCharExpr x);
+    default void endVisit(MySqlShowProcedureStatusStatement x) {
 
-    boolean visit(MySqlAlterTableModifyColumn x);
+    }
 
-    void endVisit(MySqlAlterTableModifyColumn x);
+    default boolean visit(MySqlShowProcessListStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlAlterTableDiscardTablespace x);
+    default void endVisit(MySqlShowProcessListStatement x) {
 
-    void endVisit(MySqlAlterTableDiscardTablespace x);
+    }
 
-    boolean visit(MySqlAlterTableImportTablespace x);
+    default boolean visit(MySqlShowProfileStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlAlterTableImportTablespace x);
+    default void endVisit(MySqlShowProfileStatement x) {
 
-    boolean visit(MySqlCreateTableStatement.TableSpaceOption x);
+    }
 
-    void endVisit(MySqlCreateTableStatement.TableSpaceOption x);
+    default boolean visit(MySqlShowProfilesStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlAnalyzeStatement x);
+    default void endVisit(MySqlShowProfilesStatement x) {
 
-    void endVisit(MySqlAnalyzeStatement x);
+    }
 
-    boolean visit(MySqlCreateExternalCatalogStatement x);
+    default boolean visit(MySqlShowRelayLogEventsStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlCreateExternalCatalogStatement x);
+    default void endVisit(MySqlShowRelayLogEventsStatement x) {
 
-    boolean visit(MySqlAlterUserStatement x);
+    }
 
-    void endVisit(MySqlAlterUserStatement x);
+    default boolean visit(MySqlShowSlaveHostsStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlOptimizeStatement x);
+    default void endVisit(MySqlShowSlaveHostsStatement x) {
 
-    void endVisit(MySqlOptimizeStatement x);
+    }
 
-    boolean visit(MySqlHintStatement x);
+    default boolean visit(MySqlShowSequencesStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlHintStatement x);
+    default void endVisit(MySqlShowSequencesStatement x) {
 
-    boolean visit(MySqlOrderingExpr x);
+    }
 
-    void endVisit(MySqlOrderingExpr x);
+    default boolean visit(MySqlShowSlaveStatusStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlCaseStatement x);
+    default void endVisit(MySqlShowSlaveStatusStatement x) {
 
-    void endVisit(MySqlCaseStatement x);
+    }
 
-    boolean visit(MySqlDeclareStatement x);
+    default boolean visit(MySqlShowSlowStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlDeclareStatement x);
+    default void endVisit(MySqlShowSlowStatement x) {
 
-    boolean visit(MySqlSelectIntoStatement x);
+    }
 
-    void endVisit(MySqlSelectIntoStatement x);
+    default boolean visit(MySqlShowTableStatusStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlWhenStatement x);
+    default void endVisit(MySqlShowTableStatusStatement x) {
 
-    void endVisit(MySqlWhenStatement x);
+    }
 
-    boolean visit(MySqlLeaveStatement x);
+    default boolean visit(MySqlShowTriggersStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlLeaveStatement x);
+    default void endVisit(MySqlShowTriggersStatement x) {
 
-    boolean visit(MySqlIterateStatement x);
+    }
 
-    void endVisit(MySqlIterateStatement x);
+    default boolean visit(MySqlShowVariantsStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlRepeatStatement x);
+    default void endVisit(MySqlShowVariantsStatement x) {
 
-    void endVisit(MySqlRepeatStatement x);
+    }
 
-    boolean visit(MySqlCursorDeclareStatement x);
+    default boolean visit(MySqlShowTraceStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlCursorDeclareStatement x);
+    default void endVisit(MySqlShowTraceStatement x) {
 
-    boolean visit(MySqlUpdateTableSource x);
+    }
 
-    void endVisit(MySqlUpdateTableSource x);
+    default boolean visit(MySqlShowBroadcastsStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlAlterTableAlterColumn x);
+    default void endVisit(MySqlShowBroadcastsStatement x) {
 
-    void endVisit(MySqlAlterTableAlterColumn x);
+    }
 
-    boolean visit(MySqlAlterTableForce x);
+    default boolean visit(MySqlShowRuleStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlAlterTableForce x);
+    default void endVisit(MySqlShowRuleStatement x) {
 
-    boolean visit(MySqlAlterTableLock x);
+    }
 
-    void endVisit(MySqlAlterTableLock x);
+    default boolean visit(MySqlShowRuleStatusStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlAlterTableOrderBy x);
+    default void endVisit(MySqlShowRuleStatusStatement x) {
 
-    void endVisit(MySqlAlterTableOrderBy x);
+    }
 
-    boolean visit(MySqlAlterTableValidation x);
+    default boolean visit(MySqlShowDsStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlAlterTableValidation x);
+    default void endVisit(MySqlShowDsStatement x) {
 
-    boolean visit(MySqlSubPartitionByKey x);
+    }
 
-    void endVisit(MySqlSubPartitionByKey x);
+    default boolean visit(MySqlShowDdlStatusStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlSubPartitionByList x);
+    default void endVisit(MySqlShowDdlStatusStatement x) {
 
-    void endVisit(MySqlSubPartitionByList x);
+    }
 
-    boolean visit(MySqlDeclareHandlerStatement x);
+    default boolean visit(MySqlShowTopologyStatement x) {
+        return true;
+    }
 
-    void endVisit(MySqlDeclareHandlerStatement x);
+    default void endVisit(MySqlShowTopologyStatement x) {
 
-    boolean visit(MySqlDeclareConditionStatement x);
+    }
 
-    void endVisit(MySqlDeclareConditionStatement x);
+    default boolean visit(MySqlRenameTableStatement.Item x) {
+        return true;
+    }
 
-    boolean visit(MySqlFlushStatement x);
+    default void endVisit(MySqlRenameTableStatement.Item x) {
 
-    void endVisit(MySqlFlushStatement x);
+    }
 
-    boolean visit(MySqlEventSchedule x);
-    void endVisit(MySqlEventSchedule x);
+    default boolean visit(MySqlRenameTableStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlCreateEventStatement x);
-    void endVisit(MySqlCreateEventStatement x);
+    default void endVisit(MySqlRenameTableStatement x) {
 
-    boolean visit(MySqlCreateAddLogFileGroupStatement x);
-    void endVisit(MySqlCreateAddLogFileGroupStatement x);
+    }
 
-    boolean visit(MySqlCreateServerStatement x);
-    void endVisit(MySqlCreateServerStatement x);
+    default boolean visit(MysqlShowDbLockStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlCreateTableSpaceStatement x);
-    void endVisit(MySqlCreateTableSpaceStatement x);
+    default void endVisit(MysqlShowDbLockStatement x) {
 
-    boolean visit(MySqlAlterEventStatement x);
-    void endVisit(MySqlAlterEventStatement x);
+    }
 
-    boolean visit(MySqlAlterLogFileGroupStatement x);
-    void endVisit(MySqlAlterLogFileGroupStatement x);
+    default boolean visit(MySqlShowDatabaseStatusStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlAlterServerStatement x);
-    void endVisit(MySqlAlterServerStatement x);
+    default void endVisit(MySqlShowDatabaseStatusStatement x) {
 
-    boolean visit(MySqlAlterTablespaceStatement x);
-    void endVisit(MySqlAlterTablespaceStatement x);
+    }
 
-    boolean visit(MySqlChecksumTableStatement x);
-    void endVisit(MySqlChecksumTableStatement x);
+    default boolean visit(MySqlUseIndexHint x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowDatasourcesStatement x);
-    void endVisit(MySqlShowDatasourcesStatement x);
+    default void endVisit(MySqlUseIndexHint x) {
 
-    boolean visit(MySqlShowNodeStatement x);
-    void endVisit(MySqlShowNodeStatement x);
+    }
 
-    boolean visit(MySqlShowHelpStatement x);
-    void endVisit(MySqlShowHelpStatement x);
+    default boolean visit(MySqlIgnoreIndexHint x) {
+        return true;
+    }
 
-    boolean visit(MySqlFlashbackStatement x);
-    void endVisit(MySqlFlashbackStatement x);
+    default void endVisit(MySqlIgnoreIndexHint x) {
 
-    boolean visit(MySqlShowConfigStatement x);
-    void endVisit(MySqlShowConfigStatement x);
+    }
 
-    boolean visit(MySqlShowPlanCacheStatement x);
-    void endVisit(MySqlShowPlanCacheStatement x);
+    default boolean visit(MySqlLockTableStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowPhysicalProcesslistStatement x);
-    void endVisit(MySqlShowPhysicalProcesslistStatement x);
+    default void endVisit(MySqlLockTableStatement x) {
 
-    boolean visit(MySqlRenameSequenceStatement x);
-    void endVisit(MySqlRenameSequenceStatement x);
+    }
 
-    boolean visit(MySqlCheckTableStatement x);
-    void endVisit(MySqlCheckTableStatement x);
+    default boolean visit(MySqlLockTableStatement.Item x) {
+        return true;
+    }
 
-    boolean visit(MysqlCreateFullTextCharFilterStatement x);
-    void endVisit(MysqlCreateFullTextCharFilterStatement x);
+    default void endVisit(MySqlLockTableStatement.Item x) {
 
-    boolean visit(MysqlShowFullTextStatement x);
-    void endVisit(MysqlShowFullTextStatement x);
+    }
 
-    boolean visit(MysqlShowCreateFullTextStatement x);
-    void endVisit(MysqlShowCreateFullTextStatement x);
+    default boolean visit(MySqlUnlockTablesStatement x) {
+        return true;
+    }
 
-    boolean visit(MysqlAlterFullTextStatement x);
-    void endVisit(MysqlAlterFullTextStatement x);
+    default void endVisit(MySqlUnlockTablesStatement x) {
 
-    boolean visit(MysqlDropFullTextStatement x);
-    void endVisit(MysqlDropFullTextStatement x);
+    }
 
-    boolean visit(MysqlCreateFullTextTokenizerStatement x);
-    void endVisit(MysqlCreateFullTextTokenizerStatement x);
+    default boolean visit(MySqlForceIndexHint x) {
+        return true;
+    }
 
-    boolean visit(MysqlCreateFullTextTokenFilterStatement x);
-    void endVisit(MysqlCreateFullTextTokenFilterStatement x);
+    default void endVisit(MySqlForceIndexHint x) {
 
-    boolean visit(MysqlCreateFullTextAnalyzerStatement x);
-    void endVisit(MysqlCreateFullTextAnalyzerStatement x);
+    }
 
-    boolean visit(MysqlCreateFullTextDictionaryStatement x);
-    void endVisit(MysqlCreateFullTextDictionaryStatement x);
+    default boolean visit(MySqlAlterTableChangeColumn x) {
+        return true;
+    }
 
-    boolean visit(MySqlAlterTableAlterFullTextIndex x);
-    void endVisit(MySqlAlterTableAlterFullTextIndex x);
+    default void endVisit(MySqlAlterTableChangeColumn x) {
 
-    boolean visit(MySqlExecuteForAdsStatement x);
-    void endVisit(MySqlExecuteForAdsStatement x);
+    }
 
-    boolean visit(MySqlManageInstanceGroupStatement x);
-    void endVisit(MySqlManageInstanceGroupStatement x);
+    default boolean visit(MySqlAlterTableOption x) {
+        return true;
+    }
 
-    boolean visit(MySqlRaftMemberChangeStatement x);
-    void endVisit(MySqlRaftMemberChangeStatement x);
+    default void endVisit(MySqlAlterTableOption x) {
 
-    boolean visit(MySqlRaftLeaderTransferStatement x);
-    void endVisit(MySqlRaftLeaderTransferStatement x);
+    }
 
-    boolean visit(MySqlMigrateStatement x);
-    void endVisit(MySqlMigrateStatement x);
+    default boolean visit(MySqlCreateTableStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlShowClusterNameStatement x);
-    void endVisit(MySqlShowClusterNameStatement x);
+    default void endVisit(MySqlCreateTableStatement x) {
 
-    boolean visit(MySqlShowJobStatusStatement x);
-    void endVisit(MySqlShowJobStatusStatement x);
+    }
 
-    boolean visit(MySqlShowMigrateTaskStatusStatement x);
-    void endVisit(MySqlShowMigrateTaskStatusStatement x);
+    default boolean visit(MySqlHelpStatement x) {
+        return true;
+    }
 
-    boolean visit(MySqlSubPartitionByValue x);
-    void endVisit(MySqlSubPartitionByValue x);
+    default void endVisit(MySqlHelpStatement x) {
 
-    boolean visit(MySqlExtPartition x);
+    }
 
-    void endVisit(MySqlExtPartition x);
+    default boolean visit(MySqlCharExpr x) {
+        return true;
+    }
 
-    boolean visit(MySqlExtPartition.Item x);
+    default void endVisit(MySqlCharExpr x) {
 
-    void endVisit(MySqlExtPartition.Item x);
+    }
+
+    default boolean visit(MySqlAlterTableModifyColumn x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTableModifyColumn x) {
+
+    }
+
+    default boolean visit(MySqlAlterTableDiscardTablespace x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTableDiscardTablespace x) {
+
+    }
+
+    default boolean visit(MySqlAlterTableImportTablespace x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTableImportTablespace x) {
+
+    }
+
+    default boolean visit(MySqlCreateTableStatement.TableSpaceOption x) {
+        return true;
+    }
+
+    default void endVisit(MySqlCreateTableStatement.TableSpaceOption x) {
+
+    }
+
+    default boolean visit(MySqlAnalyzeStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAnalyzeStatement x) {
+
+    }
+
+    default boolean visit(MySqlCreateExternalCatalogStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlCreateExternalCatalogStatement x) {
+
+    }
+
+    default boolean visit(MySqlAlterUserStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterUserStatement x) {
+
+    }
+
+    default boolean visit(MySqlOptimizeStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlOptimizeStatement x) {
+
+    }
+
+    default boolean visit(MySqlHintStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlHintStatement x) {
+
+    }
+
+    default boolean visit(MySqlOrderingExpr x) {
+        return true;
+    }
+
+    default void endVisit(MySqlOrderingExpr x) {
+
+    }
+
+    default boolean visit(MySqlCaseStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlCaseStatement x) {
+
+    }
+
+    default boolean visit(MySqlDeclareStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlDeclareStatement x) {
+
+    }
+
+    default boolean visit(MySqlSelectIntoStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlSelectIntoStatement x) {
+
+    }
+
+    default boolean visit(MySqlWhenStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlWhenStatement x) {
+
+    }
+
+    default boolean visit(MySqlLeaveStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlLeaveStatement x) {
+
+    }
+
+    default boolean visit(MySqlIterateStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlIterateStatement x) {
+
+    }
+
+    default boolean visit(MySqlRepeatStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlRepeatStatement x) {
+
+    }
+
+    default boolean visit(MySqlCursorDeclareStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlCursorDeclareStatement x) {
+
+    }
+
+    default boolean visit(MySqlUpdateTableSource x) {
+        return true;
+    }
+
+    default void endVisit(MySqlUpdateTableSource x) {
+
+    }
+
+    default boolean visit(MySqlAlterTableAlterColumn x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTableAlterColumn x) {
+
+    }
+
+    default boolean visit(MySqlAlterTableForce x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTableForce x) {
+
+    }
+
+    default boolean visit(MySqlAlterTableLock x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTableLock x) {
+
+    }
+
+    default boolean visit(MySqlAlterTableOrderBy x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTableOrderBy x) {
+
+    }
+
+    default boolean visit(MySqlAlterTableValidation x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTableValidation x) {
+
+    }
+
+    default boolean visit(MySqlSubPartitionByKey x) {
+        return true;
+    }
+
+    default void endVisit(MySqlSubPartitionByKey x) {
+
+    }
+
+    default boolean visit(MySqlSubPartitionByList x) {
+        return true;
+    }
+
+    default void endVisit(MySqlSubPartitionByList x) {
+
+    }
+
+    default boolean visit(MySqlDeclareHandlerStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlDeclareHandlerStatement x) {
+
+    }
+
+    default boolean visit(MySqlDeclareConditionStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlDeclareConditionStatement x) {
+
+    }
+
+    default boolean visit(MySqlFlushStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlFlushStatement x) {
+
+    }
+
+    default boolean visit(MySqlEventSchedule x) {
+        return true;
+    }
+
+    default void endVisit(MySqlEventSchedule x) {
+
+    }
+
+    default boolean visit(MySqlCreateEventStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlCreateEventStatement x) {
+
+    }
+
+    default boolean visit(MySqlCreateAddLogFileGroupStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlCreateAddLogFileGroupStatement x) {
+
+    }
+
+    default boolean visit(MySqlCreateServerStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlCreateServerStatement x) {
+
+    }
+
+    default boolean visit(MySqlCreateTableSpaceStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlCreateTableSpaceStatement x) {
+
+    }
+
+    default boolean visit(MySqlAlterEventStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterEventStatement x) {
+
+    }
+
+    default boolean visit(MySqlAlterLogFileGroupStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterLogFileGroupStatement x) {
+
+    }
+
+    default boolean visit(MySqlAlterServerStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterServerStatement x) {
+
+    }
+
+    default boolean visit(MySqlAlterTablespaceStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTablespaceStatement x) {
+
+    }
+
+    default boolean visit(MySqlChecksumTableStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlChecksumTableStatement x) {
+
+    }
+
+    default boolean visit(MySqlShowDatasourcesStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlShowDatasourcesStatement x) {
+
+    }
+
+    default boolean visit(MySqlShowNodeStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlShowNodeStatement x) {
+
+    }
+
+    default boolean visit(MySqlShowHelpStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlShowHelpStatement x) {
+
+    }
+
+    default boolean visit(MySqlFlashbackStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlFlashbackStatement x) {
+
+    }
+
+    default boolean visit(MySqlShowConfigStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlShowConfigStatement x) {
+
+    }
+
+    default boolean visit(MySqlShowPlanCacheStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlShowPlanCacheStatement x) {
+
+    }
+
+    default boolean visit(MySqlShowPhysicalProcesslistStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlShowPhysicalProcesslistStatement x) {
+
+    }
+
+    default boolean visit(MySqlRenameSequenceStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlRenameSequenceStatement x) {
+
+    }
+
+    default boolean visit(MySqlCheckTableStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlCheckTableStatement x) {
+
+    }
+
+    default boolean visit(MysqlCreateFullTextCharFilterStatement x) {
+        return true;
+    }
+
+    default void endVisit(MysqlCreateFullTextCharFilterStatement x) {
+
+    }
+
+    default boolean visit(MysqlShowFullTextStatement x) {
+        return true;
+    }
+
+    default void endVisit(MysqlShowFullTextStatement x) {
+
+    }
+
+    default boolean visit(MysqlShowCreateFullTextStatement x) {
+        return true;
+    }
+
+    default void endVisit(MysqlShowCreateFullTextStatement x) {
+
+    }
+
+    default boolean visit(MysqlAlterFullTextStatement x) {
+        return true;
+    }
+
+    default void endVisit(MysqlAlterFullTextStatement x) {
+
+    }
+
+    default boolean visit(MysqlDropFullTextStatement x) {
+        return true;
+    }
+
+    default void endVisit(MysqlDropFullTextStatement x) {
+
+    }
+
+    default boolean visit(MysqlCreateFullTextTokenizerStatement x) {
+        return true;
+    }
+
+    default void endVisit(MysqlCreateFullTextTokenizerStatement x) {
+
+    }
+
+    default boolean visit(MysqlCreateFullTextTokenFilterStatement x) {
+        return true;
+    }
+
+    default void endVisit(MysqlCreateFullTextTokenFilterStatement x) {
+
+    }
+
+    default boolean visit(MysqlCreateFullTextAnalyzerStatement x) {
+        return true;
+    }
+
+    default void endVisit(MysqlCreateFullTextAnalyzerStatement x) {
+
+    }
+
+    default boolean visit(MysqlCreateFullTextDictionaryStatement x) {
+        return true;
+    }
+
+    default void endVisit(MysqlCreateFullTextDictionaryStatement x) {
+
+    }
+
+    default boolean visit(MySqlAlterTableAlterFullTextIndex x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTableAlterFullTextIndex x) {
+
+    }
+
+    default boolean visit(MySqlExecuteForAdsStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlExecuteForAdsStatement x) {
+
+    }
+
+    default boolean visit(MySqlManageInstanceGroupStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlManageInstanceGroupStatement x) {
+
+    }
+
+    default boolean visit(MySqlRaftMemberChangeStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlRaftMemberChangeStatement x) {
+
+    }
+
+    default boolean visit(MySqlRaftLeaderTransferStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlRaftLeaderTransferStatement x) {
+
+    }
+
+    default boolean visit(MySqlMigrateStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlMigrateStatement x) {
+
+    }
+
+    default boolean visit(MySqlShowClusterNameStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlShowClusterNameStatement x) {
+
+    }
+
+    default boolean visit(MySqlShowJobStatusStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlShowJobStatusStatement x) {
+
+    }
+
+    default boolean visit(MySqlShowMigrateTaskStatusStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlShowMigrateTaskStatusStatement x) {
+
+    }
+
+    default boolean visit(MySqlSubPartitionByValue x) {
+        return true;
+    }
+
+    default void endVisit(MySqlSubPartitionByValue x) {
+
+    }
+
+    default boolean visit(MySqlExtPartition x) {
+        return true;
+    }
+
+    default void endVisit(MySqlExtPartition x) {
+
+    }
+
+    default boolean visit(MySqlExtPartition.Item x) {
+        return true;
+    }
+
+    default void endVisit(MySqlExtPartition.Item x) {
+
+    }
 
 
 } //

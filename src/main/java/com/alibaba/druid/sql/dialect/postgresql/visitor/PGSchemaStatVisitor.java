@@ -45,32 +45,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     }
 
     @Override
-    public void endVisit(FetchClause x) {
-
-    }
-
-    @Override
-    public boolean visit(FetchClause x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(ForClause x) {
-
-    }
-
-    @Override
-    public boolean visit(ForClause x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGDeleteStatement x) {
-
-    }
-
-    @Override
     public boolean visit(PGDeleteStatement x) {
         if (repository != null
                 && x.getParent() == null) {
@@ -95,11 +69,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         accept(x.getWhere());
 
         return false;
-    }
-
-    @Override
-    public void endVisit(PGInsertStatement x) {
-
     }
 
     @Override
@@ -171,139 +140,14 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     }
 
     @Override
-    public void endVisit(PGSelectQueryBlock x) {
-        super.endVisit((SQLSelectQueryBlock) x);
-    }
-
-    @Override
-    public boolean visit(PGSelectQueryBlock x) {
-        return this.visit((SQLSelectQueryBlock) x);
-    }
-
-    @Override
-    public void endVisit(PGFunctionTableSource x) {
-
-    }
-
-    @Override
-    public boolean visit(PGFunctionTableSource x) {
-        return true;
-    }
-    
-    @Override
     public boolean visit(PGTypeCastExpr x) {
         x.getExpr().accept(this);
         return false;
     }
-    
-    @Override
-    public void endVisit(PGTypeCastExpr x) {
-        
-    }
 
-    @Override
-    public void endVisit(PGExtractExpr x) {
-        
-    }
-    
-    @Override
-    public boolean visit(PGExtractExpr x) {
-        return true;
-    }
-    
-    @Override
-    public void endVisit(PGBoxExpr x) {
-        
-    }
-    
-    @Override
-    public boolean visit(PGBoxExpr x) {
-        return true;
-    }
-    
-    @Override
-    public void endVisit(PGPointExpr x) {
-        
-    }
-    
-    @Override
-    public boolean visit(PGMacAddrExpr x) {
-        return true;
-    }
-    
-    @Override
-    public void endVisit(PGMacAddrExpr x) {
-        
-    }
-    
-    @Override
-    public boolean visit(PGInetExpr x) {
-        return true;
-    }
-    
-    @Override
-    public void endVisit(PGInetExpr x) {
-        
-    }
-    
-    @Override
-    public boolean visit(PGCidrExpr x) {
-        return true;
-    }
-    
-    @Override
-    public void endVisit(PGCidrExpr x) {
-        
-    }
-    
-    @Override
-    public boolean visit(PGPolygonExpr x) {
-        return true;
-    }
-    
-    @Override
-    public void endVisit(PGPolygonExpr x) {
-        
-    }
-    
-    @Override
-    public boolean visit(PGCircleExpr x) {
-        return true;
-    }
-    
-    @Override
-    public void endVisit(PGCircleExpr x) {
-        
-    }
-    
-    @Override
-    public boolean visit(PGLineSegmentsExpr x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGLineSegmentsExpr x) {
-        
-    }
-    
-    @Override
-    public boolean visit(PGPointExpr x) {
-        return true;
-    }
-    
-    @Override
-    public void endVisit(PGShowStatement x) {
-        
-    }
-    
     @Override
     public boolean visit(PGShowStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(PGStartTransactionStatement x) {
-        
     }
 
     @Override
@@ -312,18 +156,8 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     }
 
     @Override
-    public void endVisit(PGConnectToStatement x) {
-
-    }
-
-    @Override
     public boolean visit(PGConnectToStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(PGCreateSchemaStatement x) {
-
     }
 
     @Override
@@ -332,18 +166,8 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     }
 
     @Override
-    public void endVisit(PGDropSchemaStatement x) {
-
-    }
-
-    @Override
     public boolean visit(PGDropSchemaStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(PGAlterSchemaStatement x) {
-
     }
 
     @Override

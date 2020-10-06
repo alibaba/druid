@@ -231,11 +231,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         return false;
     }
 
-    @Override
-    public void endVisit(OdpsCreateTableStatement x) {
-        super.endVisit((SQLCreateTableStatement) x);
-    }
-
 //    protected void printSelectList(List<SQLSelectItem> selectList) {
 //        this.indentCount++;
 //        for (int i = 0, size = selectList.size(); i < size; ++i) {
@@ -322,11 +317,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsUDTFSQLSelectItem x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsUDTFSQLSelectItem x) {
         x.getExpr().accept(this);
 
@@ -378,11 +368,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsSetLabelStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsSetLabelStatement x) {
         print0(ucase ? "SET LABEL " : "set label ");
         print0(x.getLabel());
@@ -402,11 +387,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         }
 
         return false;
-    }
-
-    @Override
-    public void endVisit(OdpsSelectQueryBlock x) {
-
     }
 
     @Override
@@ -519,11 +499,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsAddStatisticStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsAddStatisticStatement x) {
         print0(ucase ? "ADD STATISTIC " : "add statistic ");
         x.getTable().accept(this);
@@ -531,11 +506,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         x.getStatisticClause().accept(this);
 
         return false;
-    }
-
-    @Override
-    public void endVisit(OdpsRemoveStatisticStatement x) {
-
     }
 
     @Override
@@ -549,19 +519,9 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsStatisticClause.TableCount x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsStatisticClause.TableCount x) {
         print0(ucase ? "TABLE_COUNT" : "table_count");
         return false;
-    }
-
-    @Override
-    public void endVisit(OdpsStatisticClause.ExpressionCondition x) {
-
     }
 
     @Override
@@ -572,20 +532,10 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsStatisticClause.NullValue x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsStatisticClause.NullValue x) {
         print0(ucase ? "NULL_VALUE " : "null_value ");
         x.getColumn().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(OdpsStatisticClause.DistinctValue x) {
-
     }
 
     @Override
@@ -596,20 +546,10 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsStatisticClause.ColumnSum x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsStatisticClause.ColumnSum x) {
         print0(ucase ? "COLUMN_SUM " : "column_sum ");
         x.getColumn().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(OdpsStatisticClause.ColumnMax x) {
-
     }
 
     @Override
@@ -620,20 +560,10 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsStatisticClause.ColumnMin x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsStatisticClause.ColumnMin x) {
         print0(ucase ? "COLUMN_MIN " : "column_min ");
         x.getColumn().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(OdpsReadStatement x) {
-
     }
 
     @Override
@@ -700,11 +630,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsShowGrantsStmt x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsShowGrantsStmt x) {
         if (x.isLabel()) {
             print0(ucase ? "SHOW LABEL GRANTS" : "show label grants");
@@ -735,22 +660,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsListStmt x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsListStmt x) {
         print0(ucase ? "LIST " : "list ");
         if (x.getObject() != null) {
             x.getObject().accept(this);
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(OdpsGrantStmt x) {
-
     }
 
     @Override
@@ -869,12 +784,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsAddTableStatement x) {
-
-    }
-
-
-    @Override
     public boolean visit(OdpsAddFileStatement x) {
         print0(ucase ? "ADD " : "add ");
 
@@ -910,20 +819,10 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsAddFileStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsAddUserStatement x) {
         print0(ucase ? "ADD USER " : "add user ");
         printExpr(x.getUser());
         return false;
-    }
-
-    @Override
-    public void endVisit(OdpsAddUserStatement x) {
-
     }
 
     @Override
@@ -940,21 +839,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsRemoveUserStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsAlterTableSetChangeLogs x) {
         print0(ucase ? "SET CHANGELOGS " : "set changelogs ");
         x.getValue().accept(this);
         return false;
     }
 
-    @Override
-    public void endVisit(OdpsAlterTableSetChangeLogs x) {
-
-    }
     @Override
     public boolean visit(OdpsCountStatement x) {
         print0(ucase ? "COUNT " : "count ");
@@ -970,21 +860,11 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsCountStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsQueryAliasStatement x) {
         print0(x.getVariant());
         print0(" := ");
         x.getStatement().accept(this);
         return false;
-    }
-
-    @Override
-    public void endVisit(OdpsQueryAliasStatement x) {
-
     }
 
     @Override
@@ -1019,11 +899,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public void endVisit(OdpsTransformExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OdpsExstoreStatement x) {
         print0(ucase ? "EXSTORE " : "exstore ");
         x.getTable().accept(this);
@@ -1032,11 +907,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         print(')');
 
         return false;
-    }
-
-    @Override
-    public void endVisit(OdpsExstoreStatement x) {
-
     }
 
     @Override

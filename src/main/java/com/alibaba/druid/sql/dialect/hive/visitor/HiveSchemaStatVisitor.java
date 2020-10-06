@@ -73,15 +73,6 @@ public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTV
         return false;
     }
 
-    @Override
-    public void endVisit(HiveInsert x) {
-
-    }
-
-    @Override
-    public void endVisit(HiveMultiInsertStatement x) {
-
-    }
 
     @Override
     public boolean visit(HiveMultiInsertStatement x) {
@@ -90,12 +81,6 @@ public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTV
             repository.resolve(x);
         }
         return true;
-    }
-
-
-    @Override
-    public void endVisit(HiveInsertStatement x) {
-
     }
 
     @Override
@@ -142,11 +127,6 @@ public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTV
     }
 
     @Override
-    public void endVisit(HiveCreateFunctionStatement x) {
-
-    }
-
-    @Override
     public boolean visit(HiveLoadDataStatement x) {
         TableStat tableStat = getTableStat(x.getInto());
         if (tableStat != null) {
@@ -155,16 +135,8 @@ public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTV
         return false;
     }
 
-    @Override
-    public void endVisit(HiveLoadDataStatement x) {
-
-    }
-
     @Override public boolean visit(HiveMsckRepairStatement x) {
         return false;
     }
 
-    @Override public void endVisit(HiveMsckRepairStatement x) {
-
-    }
 }
