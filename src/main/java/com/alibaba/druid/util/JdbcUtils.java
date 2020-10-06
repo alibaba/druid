@@ -105,7 +105,17 @@ public final class JdbcUtils implements JdbcConstants {
         try {
             x.close();
         } catch (Exception e) {
-            LOG.debug("close statement error", e);
+            boolean printError = true;
+
+            if (e instanceof java.sql.SQLRecoverableException
+                    && "Closed Connection".equals(e.getMessage())
+            ) {
+                printError = false;
+            }
+
+            if (printError) {
+                LOG.debug("close statement error", e);
+            }
         }
     }
 
