@@ -607,6 +607,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.hive;
         } else if (rawUrl.startsWith("jdbc:phoenix:")) {
             return DbType.phoenix;
+        } else if (rawUrl.startsWith("jdbc:kylin:")) {
+            return DbType.kylin;
         } else if (rawUrl.startsWith("jdbc:elastic:")) {
             return DbType.elastic_search;
         } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
