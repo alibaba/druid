@@ -23,14 +23,6 @@
 		<jdk.version>1.8</jdk.version>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>local-file</id>
-			<url>file://${project.basedir}/lib/</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
-
 	<developers>
 		<developer>
 			<id>wenshao</id>
@@ -571,8 +563,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- <dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> <version>4.0.2206.100</version>
-			<scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
