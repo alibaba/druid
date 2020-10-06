@@ -4442,7 +4442,9 @@ public class SQLExprParser extends SQLParser {
             } else if (dbType == DbType.db2) {
             } else if (lexer.token == Token.QUES
                     || lexer.token == Token.LITERAL_CHARS
-                    || lexer.token == Token.LITERAL_ALIAS) {
+                    || lexer.token == Token.LITERAL_ALIAS
+                    || lexer.identifierEquals("utf8mb4")
+            ) {
                 // skip
             } else {
                 accept(Token.EQ);

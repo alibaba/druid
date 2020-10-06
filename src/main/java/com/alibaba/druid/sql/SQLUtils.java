@@ -585,6 +585,9 @@ public class SQLUtils {
         return stmtList.get(0);
     }
 
+    public static SQLStatement parseSingleStatement(String sql, String dbType, SQLParserFeature... features) {
+        return parseSingleStatement(sql, DbType.of(dbType), features);
+    }
 
     public static SQLStatement parseSingleStatement(String sql, DbType dbType, SQLParserFeature... features) {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, features);
