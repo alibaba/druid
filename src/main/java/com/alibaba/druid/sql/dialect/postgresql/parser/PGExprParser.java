@@ -293,8 +293,7 @@ public class PGExprParser extends SQLExprParser {
                     case SUB:
                     case PLUS:
                     case SUBGT:
-                        lexer.nextToken();
-                        return primaryRest(identifierExpr);
+                        break;
                     default:
                         SQLExpr value = this.primary();
                         PGPointExpr point = new PGPointExpr();

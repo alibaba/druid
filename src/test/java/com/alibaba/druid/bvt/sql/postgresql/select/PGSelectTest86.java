@@ -18,11 +18,11 @@ public class PGSelectTest86
 
         assertEquals("SELECT *\n" +
                         "FROM xxx_point point\n" +
-                        "\tINNER JOIN xxx_cc cc ON POINT id = cc.point_id"
+                        "\tINNER JOIN xxx_cc cc ON point.id = cc.point_id"
                 , stmt.toString());
 
         assertEquals("select *\n" +
                 "from xxx_point point\n" +
-                "\tinner join xxx_cc cc on point id = cc.point_id", stmt.toLowerCaseString());
+                "\tinner join xxx_cc cc on point.id = cc.point_id", stmt.toLowerCaseString());
     }
 }
