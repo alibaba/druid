@@ -52,6 +52,7 @@ import javax.sql.DataSource;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.DruidRuntimeException;
+import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterManager;
@@ -1483,9 +1484,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                             discardConnection(holder);
                             String errorMsg = "discard long time none received connection. "
                                     + ", jdbcUrl : " + jdbcUrl
-                                    + ", jdbcUrl : " + jdbcUrl
+                                    + ", version : " + VERSION.getVersionNumber()
                                     + ", lastPacketReceivedIdleMillis : " + mysqlIdleMillis;
-                            LOG.error(errorMsg);
+                            LOG.warn(errorMsg);
                             return false;
                         }
                     }
