@@ -282,10 +282,25 @@ public class PGExprParser extends SQLExprParser {
                 
                 return primaryRest(extract);
             } else if (FnvHash.Constants.POINT == hash) {
-                SQLExpr value = this.primary();
-                PGPointExpr point = new PGPointExpr();
-                point.setValue(value);
-                return primaryRest(point);
+                switch (lexer.token()) {
+                    case DOT:
+                    case EQ:
+                    case LTGT:
+                    case GT:
+                    case GTEQ:
+                    case LT:
+                    case LTEQ:
+                    case SUB:
+                    case PLUS:
+                    case SUBGT:
+                        lexer.nextToken();
+                        return primaryRest(identifierExpr);
+                    default:
+                        SQLExpr value = this.primary();
+                        PGPointExpr point = new PGPointExpr();
+                        point.setValue(value);
+                        return primaryRest(point);
+                }
             } else if (FnvHash.Constants.BOX == hash) {
                 SQLExpr value = this.primary();
                 PGBoxExpr box = new PGBoxExpr();
