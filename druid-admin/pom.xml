@@ -49,48 +49,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
-		<!--各个注册中心依赖-->
+        <!--各个注册中心依赖-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-consul-core</artifactId>
-        </dependency>        
-        <dependency>
-            <groupId>com.ecwid.consul</groupId>
-            <artifactId>consul-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.eureka</groupId>
-            <artifactId>eureka-core</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.eureka</groupId>
-            <artifactId>eureka-client</artifactId>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>jersey-client</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>jersey-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.jersey.contribs</groupId>
-                    <artifactId>jersey-apache-client4</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-nacos-discovery</artifactId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
             <version>2.1.1.RELEASE</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-netflix-eureka-client</artifactId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
