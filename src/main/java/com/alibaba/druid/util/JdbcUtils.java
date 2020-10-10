@@ -545,10 +545,10 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.oracle;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
             return DbType.ali_oracle;
-        } else if (rawUrl.startsWith("jdbc:oceanbase:")) {
-            return DbType.oceanbase;
         } else if (rawUrl.startsWith("jdbc:oceanbase:oracle:")) {
             return DbType.oceanbase_oracle;
+        } else if (rawUrl.startsWith("jdbc:oceanbase:")) {
+            return DbType.oceanbase;
         } else if (rawUrl.startsWith("jdbc:microsoft:") || rawUrl.startsWith("jdbc:log4jdbc:microsoft:")) {
             return DbType.sqlserver;
         } else if (rawUrl.startsWith("jdbc:sqlserver:") || rawUrl.startsWith("jdbc:log4jdbc:sqlserver:")) {
