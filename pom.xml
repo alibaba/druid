@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2_preview_01</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -545,6 +545,12 @@
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.hive</groupId>
+			<artifactId>hive-jdbc</artifactId>
+			<version>3.1.2</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!--
 			test dependences
@@ -662,12 +668,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.68</version>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4</artifactId>
