@@ -70,6 +70,7 @@ public class PGLexer extends Lexer {
         map.put("ILIKE", Token.ILIKE);
         map.put("MERGE", Token.MERGE);
         map.put("MATCHED", Token.MATCHED);
+        map.put("PARTITION", Token.PARTITION);
 
         DEFAULT_PG_KEYWORDS = new Keywords(map);
     }

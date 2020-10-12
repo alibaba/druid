@@ -175,6 +175,11 @@ public class SQLCreateTableParser extends SQLDDLParser {
             );
         }
 
+        if (lexer.token() == Token.PARTITION) {
+            SQLPartitionBy partitionClause = parsePartitionBy();
+            createTable.setPartitioning(partitionClause);
+        }
+
         return createTable;
     }
 
