@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql.hive;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class HiveCreateTableTest_41 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS default.create_test (id int COMMENT '学号', name string COMMENT '姓名');";
 
-        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.hive, SQLParserFeature.KeepComments);
 
         assertEquals("CREATE TABLE IF NOT EXISTS default.create_test (\n" +
                 "\tid int COMMENT '学号',\n" +

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class MySqlCreateTableTest67 extends MysqlTest {
 
@@ -47,7 +46,7 @@ public class MySqlCreateTableTest67 extends MysqlTest {
                     "\ta INT NOT NULL,\n" +
                     "\tPRIMARY KEY (a)\n" +
                     ") ENGINE = InnoDB TABLESPACE ts1\n" +
-                    "PARTITION BY RANGE (a) PARTITIONS 3 (\n" +
+                    "PARTITION BY RANGE COLUMNS (a) PARTITIONS 3 (\n" +
                     "\tPARTITION P1 VALUES LESS THAN (2),\n" +
                     "\tPARTITION P2 VALUES LESS THAN (4)\n" +
                     "\t\tTABLESPACE ts2,\n" +
@@ -61,7 +60,7 @@ public class MySqlCreateTableTest67 extends MysqlTest {
                     "\ta INT not null,\n" +
                     "\tprimary key (a)\n" +
                     ") engine = InnoDB tablespace ts1\n" +
-                    "partition by range (a) partitions 3 (\n" +
+                    "partition by range columns (a) partitions 3 (\n" +
                     "\tpartition P1 values less than (2),\n" +
                     "\tpartition P2 values less than (4)\n" +
                     "\t\ttablespace ts2,\n" +

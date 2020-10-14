@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,38 +15,39 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
+import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
+import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
-import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class If implements Function {
 
     public final static If instance = new If();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        final List<SQLExpr> parameters = x.getParameters();
-        if (parameters.size() == 0) {
+        final List<SQLExpr> arguments = x.getArguments();
+        if (arguments.size() == 0) {
             return EVAL_ERROR;
         }
 
-        SQLExpr condition = parameters.get(0);
+        SQLExpr condition = arguments.get(0);
         condition.accept(visitor);
         Object itemValue = condition.getAttributes().get(EVAL_VALUE);
         if (itemValue == null) {
             return null;
         }
         if (Boolean.TRUE == itemValue || !SQLEvalVisitorUtils.eq(itemValue, 0)) {
-            SQLExpr trueExpr = parameters.get(1);
+            SQLExpr trueExpr = arguments.get(1);
             trueExpr.accept(visitor);
             return trueExpr.getAttributes().get(EVAL_VALUE);
         } else {
-            SQLExpr falseExpr = parameters.get(2);
+            SQLExpr falseExpr = arguments.get(2);
             falseExpr.accept(visitor);
             return falseExpr.getAttributes().get(EVAL_VALUE);
         }

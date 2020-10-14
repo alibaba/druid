@@ -343,6 +343,10 @@ public class StringUtils {
                 // not allowing L with an exponent
                 return foundDigit && !hasExp;
             }
+
+            if (ch == '.') {
+                return true;
+            }
             // last character is illegal
             return false;
         }

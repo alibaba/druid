@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,16 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartition;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OracleCreateIndexStatement extends SQLCreateIndexStatement implements OracleDDLStatement, OracleSegmentAttributes, SQLCreateStatement {
 
@@ -55,6 +51,7 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
 
     private Boolean logging;
     private Boolean sort;
+    private boolean reverse;
 
     protected SQLName tablespace;
     protected SQLObject storage;
@@ -64,7 +61,7 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     private boolean computeStatistics = false;
     
     public OracleCreateIndexStatement() {
-        super (JdbcConstants.ORACLE);
+        super (DbType.oracle);
     }
 
     public SQLExpr getParallel() {
@@ -97,6 +94,14 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
 
     public void setSort(Boolean sort) {
         this.sort = sort;
+    }
+
+    public boolean isReverse() {
+        return reverse;
+    }
+
+    public void setReverse(boolean reverse) {
+        this.reverse = reverse;
     }
 
     private boolean local;

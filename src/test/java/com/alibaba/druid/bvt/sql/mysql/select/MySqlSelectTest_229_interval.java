@@ -39,10 +39,9 @@ public class MySqlSelectTest_229_interval extends MysqlTest {
 
         SQLStatement stmt = statementList.get(0);
 
+        assertEquals("SELECT DATE_ADD(utc_date(), INTERVAL -'5' DAY)", stmt.toString());
 
-        assertEquals("SELECT DATE_ADD(utc_date(), INTERVAL -5 DAY)", stmt.toString());
-
-        assertEquals("select DATE_ADD(utc_date(), interval -5 day)", stmt.clone().toLowerCaseString());
+        assertEquals("select DATE_ADD(utc_date(), interval -'5' day)", stmt.clone().toLowerCaseString());
     }
 
     public void test_1() throws Exception {
@@ -56,7 +55,6 @@ public class MySqlSelectTest_229_interval extends MysqlTest {
         assertEquals(1, statementList.size());
 
         SQLStatement stmt = statementList.get(0);
-
 
         assertEquals("SELECT DATE_ADD(utc_date(), INTERVAL +5 DAY)", stmt.toString());
 

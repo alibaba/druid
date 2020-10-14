@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;

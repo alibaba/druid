@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,16 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.Collections;
 import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /**
  * Created by wenshao on 14/06/2017.
  */
-public class SQLFlashbackExpr extends SQLExprImpl {
+public class SQLFlashbackExpr extends SQLExprImpl implements SQLReplaceable {
     private Type type;
     private SQLExpr expr;
 
@@ -59,9 +57,20 @@ public class SQLFlashbackExpr extends SQLExprImpl {
     }
 
     @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.expr == expr) {
+            setExpr((SQLName) target);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, expr);
+            if (this.expr != null) {
+                this.expr.accept(visitor);
+            }
         }
         visitor.endVisit(this);
     }

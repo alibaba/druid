@@ -2,8 +2,7 @@ package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCurrentTimeExpr
-        extends SQLExprImpl {
+public class SQLCurrentTimeExpr extends SQLExprImpl {
     private final Type type;
 
     public SQLCurrentTimeExpr(Type type) {

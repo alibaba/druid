@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.update;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,22 +22,20 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.Assert;
+
+import java.util.List;
 
 public class MySqlUpdateTest_6 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "/* 6445c36514623747244871009d62f9/0//sub_order_id:1234567890/order_id:123456/ */"
-                + "SELECT id, user_id, item_id, sku_id, flag"
-                + " , sellable_quantity, fff03, status, feature, feature_lock"
-                + " , version, gmt_create, gmt_modified, root_id, parent_id, dist_type, dist_id"
-                + " , occupy_quantity, user_type "
-                + "FROM "
-                + "UPDATE COMMIT_ON_SUCCESS ROLLBACK_ON_FAIL TARGET_AFFECT_ROW ? "
-                + "`table_3966` "
-                + "SET `fff03` = `fff03` + ?"
-                + " , `flag` = `flag` & ~ (1 << 10) & ~ (1 << 11)"
-                + " , `version` = `version` + 3, `gmt_modified` = NOW() "
-                + "WHERE `root_id` = ? AND `status` = 1 AND `id` IN (?, ?) AND `fff03` + ? >= 0";
+        String sql = "SELECT id, user_id, item_id, sku_id, flag, sellable_quantity, fff03, status, feature, feature_lock, version, gmt_create, gmt_modified, root_id, parent_id, dist_type, dist_id, occupy_quantity, user_type\n" +
+                "FROM UPDATE COMMIT_ON_SUCCESS ROLLBACK_ON_FAIL TARGET_AFFECT_ROW ? `table_3966`\n" +
+                "SET `fff03` = `fff03` + ?, `flag` = `flag` & (~(1 << 10)) & ~(1 << 11), `version` = `version` + 3, `gmt_modified` = NOW()\n" +
+                "WHERE `root_id` = ?\n" +
+                "\tAND `status` = 1\n" +
+                "\tAND `id` IN (?, ?)\n" +
+                "\tAND `fff03` + ? >= 0";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -72,23 +66,23 @@ public class MySqlUpdateTest_6 extends MysqlTest {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT id, user_id, item_id, sku_id, flag, sellable_quantity, fff03, status, feature, feature_lock, version, gmt_create, gmt_modified, root_id, parent_id, dist_type, dist_id, occupy_quantity, user_type\n" +
                             "FROM UPDATE COMMIT_ON_SUCCESS ROLLBACK_ON_FAIL TARGET_AFFECT_ROW ? `table_3966`\n" +
-                            "SET `fff03` = `fff03` + ?, `flag` = `flag` & ~(1 << 10) & ~(1 << 11), `version` = `version` + 3, `gmt_modified` = NOW()\n" +
+                            "SET `fff03` = `fff03` + ?, `flag` = `flag` & (~(1 << 10)) & ~(1 << 11), `version` = `version` + 3, `gmt_modified` = NOW()\n" +
                             "WHERE `root_id` = ?\n" +
                             "\tAND `status` = 1\n" +
                             "\tAND `id` IN (?, ?)\n" +
                             "\tAND `fff03` + ? >= 0", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("select id, user_id, item_id, sku_id, flag, sellable_quantity, fff03, status, feature, feature_lock, version, gmt_create, gmt_modified, root_id, parent_id, dist_type, dist_id, occupy_quantity, user_type\n" +
                             "from update commit_on_success rollback_on_fail target_affect_row ? `table_3966`\n" +
-                            "set `fff03` = `fff03` + ?, `flag` = `flag` & ~(1 << 10) & ~(1 << 11), `version` = `version` + 3, `gmt_modified` = NOW()\n" +
+                            "set `fff03` = `fff03` + ?, `flag` = `flag` & (~(1 << 10)) & ~(1 << 11), `version` = `version` + 3, `gmt_modified` = NOW()\n" +
                             "where `root_id` = ?\n" +
                             "\tand `status` = 1\n" +
                             "\tand `id` in (?, ?)\n" +
                             "\tand `fff03` + ? >= 0", //
-                                output);
+                    output);
         }
     }
 }

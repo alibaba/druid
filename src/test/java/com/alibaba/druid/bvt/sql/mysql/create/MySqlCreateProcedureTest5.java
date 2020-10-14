@@ -28,10 +28,10 @@ import com.alibaba.druid.stat.TableStat.Column;
 
 /**
  * 
- * @Description: procedure begin-end, loop, while use label
- * @author zz email:455910092@qq.com
- * @date 2015-9-14
- * @version V1.0
+ * Description: procedure begin-end, loop, while use label
+ * author zz email:455910092@qq.com
+ * date 2015-9-14
+ * version V1.0
  */
 public class MySqlCreateProcedureTest5 extends MysqlTest {
 

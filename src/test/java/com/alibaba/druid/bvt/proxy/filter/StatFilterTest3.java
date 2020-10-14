@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.proxy.filter;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
@@ -18,7 +19,7 @@ public class StatFilterTest3 extends TestCase {
         filter.setMergeSql(true);
         
         Assert.assertTrue(filter.isMergeSql());
-        Assert.assertEquals("mysql", filter.getDbType());
+        Assert.assertEquals(DbType.mysql, filter.getDbType());
         
         Assert.assertEquals("SELECT ?\nLIMIT ?" , filter.mergeSql("select 'x' limit 1"));
     }
@@ -28,7 +29,7 @@ public class StatFilterTest3 extends TestCase {
         filter.setDbType("mysql");
         filter.setMergeSql(true);
         
-        Assert.assertEquals("mysql", filter.getDbType());
+        Assert.assertEquals(DbType.mysql, filter.getDbType());
         
         Assert.assertEquals("sdafawer asf " , filter.mergeSql("sdafawer asf "));
     }
@@ -38,7 +39,7 @@ public class StatFilterTest3 extends TestCase {
         filter.setDbType("mysql");
         filter.setMergeSql(false);
         
-        Assert.assertEquals("mysql", filter.getDbType());
+        Assert.assertEquals(DbType.mysql, filter.getDbType());
         
         Assert.assertEquals("select 'x' limit 1" , filter.mergeSql("select 'x' limit 1"));
     }

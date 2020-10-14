@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,30 +47,29 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
         this(new SQLSelect(query));
     }
 
+    public SQLSubqueryTableSource(SQLSelectQuery query, String alias){
+        this(new SQLSelect(query), alias);
+    }
+
     public SQLSelect getSelect() {
         return this.select;
     }
 
-    public void setSelect(SQLSelect select) {
-        if (select != null) {
-            select.setParent(this);
+    public void setSelect(SQLSelect x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.select = select;
+        this.select = x;
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, select);
-            acceptChild(visitor, columns);
+            if (select != null) {
+                select.accept(visitor);
+            }
         }
         visitor.endVisit(this);
-    }
-
-    public void output(StringBuffer buf) {
-        buf.append("(");
-        this.select.output(buf);
-        buf.append(")");
     }
 
     public void cloneTo(SQLSubqueryTableSource x) {
@@ -78,6 +77,7 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
         if (select != null) {
             x.select = select.clone();
+            x.select.setParent(x);
         }
 
         for (SQLName column : columns) {
@@ -110,7 +110,7 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
         return null;
     }
 
-    public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
+    public SQLTableSource findTableSourceWithColumn(long columnNameHash, String columnName, int option) {
         if (select == null) {
             return null;
         }
@@ -127,15 +127,6 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
         return null;
     }
 
-    public List<SQLName> getColumns() {
-        return columns;
-    }
-
-    public void addColumn(SQLName column) {
-        column.setParent(this);
-        this.columns.add(column);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -149,5 +140,27 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
     @Override
     public int hashCode() {
         return select != null ? select.hashCode() : 0;
+    }
+
+    public List<SQLName> getColumns() {
+        return columns;
+    }
+
+    public void addColumn(SQLName column) {
+        column.setParent(this);
+        this.columns.add(column);
+    }
+
+    public SQLColumnDefinition findColumn(long columnNameHash) {
+        SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+        if (queryBlock != null) {
+            return queryBlock.findColumn(columnNameHash);
+        } else {
+            if (select.getQuery() instanceof SQLUnionQuery && ((SQLUnionQuery) select.getQuery()).getFirstQueryBlock() instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock left = ((SQLUnionQuery) select.getQuery()).getFirstQueryBlock();
+                return ((SQLSelectQueryBlock) left).findColumn(columnNameHash);
+            }
+        }
+        return null;
     }
 }

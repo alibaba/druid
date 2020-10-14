@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectTableReference extends SQLExprTableSource implements OracleSelectTableSource {
@@ -44,6 +45,9 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
     }
 
     public void setPartition(PartitionExtensionClause partition) {
+        if (partition != null) {
+            partition.setParent(this);
+        }
         this.partition = partition;
     }
 
@@ -60,6 +64,9 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
     }
 
     public void setSampleClause(SampleClause sampleClause) {
+        if (sampleClause != null) {
+            sampleClause.setParent(this);
+        }
         this.sampleClause = sampleClause;
     }
 
@@ -68,12 +75,19 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
     }
 
     public void setPivot(OracleSelectPivotBase pivot) {
+        if (pivot != null) {
+            pivot.setParent(this);
+        }
         this.pivot = pivot;
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            this.accept0((OracleASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
     protected void accept0(OracleASTVisitor visitor) {
@@ -84,25 +98,6 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
             acceptChild(visitor, this.pivot);
         }
         visitor.endVisit(this);
-    }
-
-    public void output(StringBuffer buf) {
-        if (this.only) {
-            buf.append("ONLY (");
-            this.expr.output(buf);
-            buf.append(")");
-        } else {
-            this.expr.output(buf);
-        }
-
-        if (this.pivot != null) {
-            buf.append(" ");
-            this.pivot.output(buf);
-        }
-
-        if ((this.alias != null) && (this.alias.length() != 0)) {
-            buf.append(this.alias);
-        }
     }
 
     @Override

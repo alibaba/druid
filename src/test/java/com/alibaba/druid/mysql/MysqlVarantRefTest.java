@@ -1,5 +1,6 @@
 package com.alibaba.druid.mysql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -40,7 +41,7 @@ public class MysqlVarantRefTest {
 
         SQLSetStatement result= (SQLSetStatement)stmtList.get(0);
 
-        String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
+        String text = SQLUtils.toSQLString(stmtList, DbType.mysql);
         Assert.assertEquals("SET @@session.tx_variables = 1, @@session.asdfsa = 2", text);
 
     }

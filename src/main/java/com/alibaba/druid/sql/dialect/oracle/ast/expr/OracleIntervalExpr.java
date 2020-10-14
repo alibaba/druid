@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,19 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, OracleExpr {
+import java.util.Collections;
+import java.util.List;
+
+public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, OracleExpr, SQLReplaceable {
 
     private SQLExpr            value;
     private OracleIntervalType type;
@@ -39,6 +40,7 @@ public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, O
 
     }
 
+    @Override
     public OracleIntervalExpr clone() {
         OracleIntervalExpr x = new OracleIntervalExpr();
         if (value != null) {
@@ -53,6 +55,26 @@ public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, O
     }
 
     @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.value == expr) {
+            setValue(target);
+            return true;
+        }
+
+        if (this.precision == expr) {
+            setPrecision(target);
+            return true;
+        }
+
+        if (this.toFactionalSecondsPrecision == expr) {
+            setToFactionalSecondsPrecision(target);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public List<SQLObject> getChildren() {
         return Collections.<SQLObject>singletonList(this.value);
     }
@@ -62,6 +84,9 @@ public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, O
     }
 
     public void setValue(SQLExpr value) {
+        if (value != null) {
+            value.setParent(this);
+        }
         this.value = value;
     }
 
@@ -120,8 +145,13 @@ public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, O
         this.accept0((OracleASTVisitor) visitor);
     }
 
+    @Override
     public void accept0(OracleASTVisitor visitor) {
-        visitor.visit(this);
+        if (visitor.visit(this)) {
+            this.acceptChild(visitor, value);
+            this.acceptChild(visitor, precision);
+            this.acceptChild(visitor, toFactionalSecondsPrecision);
+        }
         visitor.endVisit(this);
     }
 

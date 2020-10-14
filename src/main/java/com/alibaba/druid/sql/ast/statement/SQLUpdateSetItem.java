@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
@@ -22,6 +23,8 @@ import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.io.IOException;
 
 public class SQLUpdateSetItem extends SQLObjectImpl implements SQLReplaceable {
 
@@ -35,6 +38,25 @@ public class SQLUpdateSetItem extends SQLObjectImpl implements SQLReplaceable {
     public SQLExpr getColumn() {
         return column;
     }
+
+    public void cloneTo(SQLUpdateSetItem x) {
+        if (column != null) {
+            x.column = column.clone();
+            x.column.setParent(x);
+        }
+        if (value != null) {
+            x.value = value.clone();
+            x.value.setParent(x);
+        }
+    }
+
+    @Override
+    public SQLUpdateSetItem clone() {
+        SQLUpdateSetItem x = new SQLUpdateSetItem();
+        cloneTo(x);
+        return x;
+    }
+
 
     public void setColumn(SQLExpr x) {
         if (x != null) {
@@ -54,17 +76,26 @@ public class SQLUpdateSetItem extends SQLObjectImpl implements SQLReplaceable {
         this.value = value;
     }
 
-    public void output(StringBuffer buf) {
-        column.output(buf);
-        buf.append(" = ");
-        value.output(buf);
+    public void output(Appendable buf) {
+        try {
+            column.output(buf);
+            buf.append(" = ");
+            value.output(buf);
+        } catch (IOException ex) {
+            throw new FastsqlException("output error", ex);
+        }
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, column);
-            acceptChild(visitor, value);
+            if (column != null) {
+                column.accept(visitor);
+            }
+
+            if (value != null) {
+                value.accept(visitor);
+            }
         }
 
         visitor.endVisit(this);
@@ -90,14 +121,32 @@ public class SQLUpdateSetItem extends SQLObjectImpl implements SQLReplaceable {
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
         if (expr == this.column) {
-            this.column = target;
+            this.setColumn(target);
             return true;
         }
 
         if (expr == this.value) {
-            this.value = target;
+            setValue(target);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLUpdateSetItem that = (SQLUpdateSetItem) o;
+
+        if (column != null ? !column.equals(that.column) : that.column != null) return false;
+        return value != null ? value.equals(that.value) : that.value == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = column != null ? column.hashCode() : 0;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
     }
 }

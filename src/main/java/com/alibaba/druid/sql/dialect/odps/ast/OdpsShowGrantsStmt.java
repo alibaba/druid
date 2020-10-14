@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OdpsShowGrantsStmt extends SQLStatementImpl {
+    private boolean label;
 
     private SQLExpr user;
 
@@ -59,5 +60,13 @@ public class OdpsShowGrantsStmt extends SQLStatementImpl {
             objectType.setParent(this);
         }
         this.objectType = objectType;
+    }
+
+    public boolean isLabel() {
+        return label;
+    }
+
+    public void setLabel(boolean label) {
+        this.label = label;
     }
 }

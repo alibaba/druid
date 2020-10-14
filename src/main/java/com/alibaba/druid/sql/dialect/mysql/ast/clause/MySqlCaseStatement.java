@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.clause;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -25,6 +22,10 @@ import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 
  * @author zz [455910092@qq.com]
@@ -34,7 +35,7 @@ public class MySqlCaseStatement extends MySqlStatementImpl{
 	//case expr
 	private SQLExpr            		  condition;
 	//when statement list
-	private List<MySqlWhenStatement> whenList = new ArrayList<MySqlCaseStatement.MySqlWhenStatement>();
+	private List<MySqlWhenStatement> whenList = new ArrayList<MySqlWhenStatement>();
 	//else statement
 	private SQLIfStatement.Else        elseItem;
 	
@@ -69,7 +70,6 @@ public class MySqlCaseStatement extends MySqlStatementImpl{
 
 	@Override
 	public void accept0(MySqlASTVisitor visitor) {
-		// TODO Auto-generated method stub
 		if (visitor.visit(this)) {
             acceptChild(visitor, condition);
             acceptChild(visitor, whenList);

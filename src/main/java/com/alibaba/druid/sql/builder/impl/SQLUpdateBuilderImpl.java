@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,7 @@
  */
 package com.alibaba.druid.sql.builder.impl;
 
-import java.util.List;
-import java.util.Map;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -31,19 +29,20 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
+
+import java.util.List;
+import java.util.Map;
 
 public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBuilder {
 
     private SQLUpdateStatement stmt;
-    private String             dbType;
+    private DbType             dbType;
 
-    public SQLUpdateBuilderImpl(String dbType){
+    public SQLUpdateBuilderImpl(DbType dbType){
         this.dbType = dbType;
     }
     
-    public SQLUpdateBuilderImpl(String sql, String dbType){
+    public SQLUpdateBuilderImpl(String sql, DbType dbType){
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.size() == 0) {
@@ -59,7 +58,7 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
         this.dbType = dbType;
     }
 
-    public SQLUpdateBuilderImpl(SQLUpdateStatement stmt, String dbType){
+    public SQLUpdateBuilderImpl(SQLUpdateStatement stmt, DbType dbType){
         this.stmt = stmt;
         this.dbType = dbType;
     }
@@ -119,7 +118,6 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
         return this;
     }
 
-    @Override
     public SQLUpdateBuilderImpl set(String... items) {
         SQLUpdateStatement update = getSQLUpdateStatement();
         for (String item : items) {
@@ -160,26 +158,21 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
     }
 
     public SQLUpdateStatement createSQLUpdateStatement() {
-        if (JdbcUtils.isMysqlDbType(dbType)) {
-            return new MySqlUpdateStatement();    
+        switch (dbType) {
+            case mysql:
+            case mariadb:
+                return new MySqlUpdateStatement();
+            case oracle:
+                return new OracleUpdateStatement();
+            case postgresql:
+                return new PGUpdateStatement();
+            case sqlserver:
+                return new SQLServerUpdateStatement();
+            default:
+                return new SQLUpdateStatement();
         }
-
-        if (JdbcUtils.isOracleDbType(dbType)) {
-            return new OracleUpdateStatement();
-        }
-
-        if (JdbcUtils.isPgsqlDbType(dbType)) {
-            return new PGUpdateStatement();
-        }
-        
-        if (JdbcUtils.isSqlserverDbType(dbType)) {
-            return new SQLServerUpdateStatement();
-        }
-        
-        return new SQLUpdateStatement();
     }
     
-    @Override
     public String toString() {
         return SQLUtils.toSQLString(stmt, dbType);
     }

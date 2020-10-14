@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -373,7 +374,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                     .append(connection.getId());
 
             Connection impl = connection.getRawObject();
-            if (JdbcConstants.MYSQL.equals(dataSource.getDbType())) {
+            if (DbType.mysql == DbType.of(dataSource.getDbType())) {
                 Long procId = MySqlUtils.getId(impl);
                 if (procId != null) {
                     msg.append(",procId-").append(procId);
@@ -575,7 +576,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                     : null);
         }
 
-        String dbType = statement.getConnectionProxy().getDirectDataSource().getDbType();
+        DbType dbType = DbType.of(statement.getConnectionProxy().getDirectDataSource().getDbType());
         String formattedSql = SQLUtils.format(sql, dbType, parameters, this.statementSqlFormatOption);
         statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
                      + formattedSql);
@@ -773,7 +774,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             					? jdbcParam.getValue()
             							: null);
             		}
-            		String dbType = statement.getConnectionProxy().getDirectDataSource().getDbType();
+            		DbType dbType = DbType.of(statement.getConnectionProxy().getDirectDataSource().getDbType());
             		String formattedSql = SQLUtils.format(sql, dbType, parameters, this.statementSqlFormatOption);
 			        statementLogError("{conn-" + statement.getConnectionProxy().getId()
                                 + ", " + stmtId(statement)

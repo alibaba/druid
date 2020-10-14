@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
+import com.alibaba.druid.sql.ast.statement.SQLValuesQuery;
 import com.alibaba.druid.sql.parser.*;
 
 import java.util.List;
@@ -238,7 +239,7 @@ public class PGSelectParser extends SQLSelectParser {
         return queryRest(queryBlock, acceptUnion);
     }
 
-    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
+    public SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if (lexer.token() == Token.AS && tableSource instanceof SQLExprTableSource) {
             lexer.nextToken();
 
@@ -255,7 +256,7 @@ public class PGSelectParser extends SQLSelectParser {
                 if (alias != null) {
                     functionTableSource.setAlias(alias);
                 }
-
+                
                 lexer.nextToken();
                 parserParameters(functionTableSource.getParameters());
                 accept(Token.RPAREN);

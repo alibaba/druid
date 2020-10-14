@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.wall;
 
+import com.alibaba.druid.DbType;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,7 @@ public class WallContext {
     private WallSqlStat                           sqlStat;
     private Map<String, WallSqlTableStat>         tableStats;
     private Map<String, WallSqlFunctionStat>      functionStats;
-    private final String                          dbType;
+    private final DbType                          dbType;
     private int                                   commentCount;
     private int                                   warnings                     = 0;
     private int                                   unionWarnings                = 0;
@@ -37,6 +39,10 @@ public class WallContext {
     private List<WallUpdateCheckItem>             wallUpdateCheckItems;
 
     public WallContext(String dbType){
+        this(DbType.of(dbType));
+    }
+
+    public WallContext(DbType dbType){
         this.dbType = dbType;
     }
 
@@ -79,7 +85,7 @@ public class WallContext {
         return stat;
     }
 
-    public static WallContext createIfNotExists(String dbType) {
+    public static WallContext createIfNotExists(DbType dbType) {
         WallContext context = contextLocal.get();
         if (context == null) {
             context = new WallContext(dbType);
@@ -89,6 +95,10 @@ public class WallContext {
     }
 
     public static WallContext create(String dbType) {
+        return create(DbType.of(dbType));
+    }
+
+    public static WallContext create(DbType dbType) {
         WallContext context = new WallContext(dbType);
         contextLocal.set(context);
         return context;
@@ -122,7 +132,7 @@ public class WallContext {
         return functionStats;
     }
 
-    public String getDbType() {
+    public DbType getDbType() {
         return dbType;
     }
 

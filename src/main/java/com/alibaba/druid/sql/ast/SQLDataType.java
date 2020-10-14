@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package com.alibaba.druid.sql.ast;
+
+import com.alibaba.druid.DbType;
 
 import java.util.List;
 
@@ -35,13 +37,16 @@ public interface SQLDataType extends SQLObject {
 
     SQLDataType clone();
 
-    void setDbType(String dbType);
-    String getDbType();
+    void setDbType(DbType dbType);
+    DbType getDbType();
+
+    int jdbcType();
 
     interface Constants {
         String CHAR = "CHAR";
         String NCHAR = "NCHAR";
         String VARCHAR = "VARCHAR";
+        String VARBINARY = "VARBINARY";
         String DATE = "DATE";
         String TIMESTAMP = "TIMESTAMP";
         String XML = "XML";
@@ -50,6 +55,7 @@ public interface SQLDataType extends SQLObject {
         String NUMBER = "NUMBER";
         String REAL = "REAL";
         String DOUBLE_PRECISION = "DOUBLE PRECISION";
+        String DOUBLE = "DOUBLE";
 
         String TINYINT = "TINYINT";
         String SMALLINT = "SMALLINT";
@@ -58,5 +64,12 @@ public interface SQLDataType extends SQLObject {
         String TEXT = "TEXT";
         String BYTEA = "BYTEA";
         String BOOLEAN = "BOOLEAN";
+
+        String FLOAT = "FLOAT";
     }
+
+    boolean isInt();
+    boolean isNumberic();
+    public boolean isString();
+    public boolean hasKeyLength();
 }

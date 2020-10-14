@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.schemaStat;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -17,7 +18,7 @@ public class SchemaStatTest10 extends TestCase {
     public void test_schemaStat() throws Exception {
         String sql = "select a.id, b.name from table1 a inner join table2 b on a.id = b.id";
 
-        String dbType = JdbcConstants.ORACLE;
+        DbType dbType = JdbcConstants.ORACLE;
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
@@ -29,7 +30,7 @@ public class SchemaStatTest10 extends TestCase {
             System.out.println(relationship); // table1.id = table2.id
         }
 
-//        System.out.println(statVisitor.getColumns());
+        System.out.println(statVisitor.getColumns());
 //        System.out.println(statVisitor.getGroupByColumns()); // group by
         System.out.println("relationships : " + statVisitor.getRelationships()); // group by
 //        System.out.println(statVisitor.getConditions());

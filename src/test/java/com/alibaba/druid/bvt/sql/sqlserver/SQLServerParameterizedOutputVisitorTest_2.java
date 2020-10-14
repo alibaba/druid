@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,22 @@
  */
 package com.alibaba.druid.bvt.sql.sqlserver;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
 public class SQLServerParameterizedOutputVisitorTest_2 extends TestCase {
 
     public void test_0() throws Exception {
         String sql = "CREATE TABLE dbo.AO_B9A0F0_APPLIED_TEMPLATE ( ID INTEGER IDENTITY(1,1) NOT NULL, PROJECT_ID BIGINT CONSTRAINT df_AO_B9A0F0_APPLIED_TEMPLATE_PROJECT_ID DEFAULT 0, PROJECT_TEMPLATE_MODULE_KEY VARCHAR(255), PROJECT_TEMPLATE_WEB_ITEM_KEY VARCHAR(255), CONSTRAINT pk_AO_B9A0F0_APPLIED_TEMPLATE_ID PRIMARY KEY(ID) )";
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
+        assertEquals("CREATE TABLE dbo.AO_B9A0F0_APPLIED_TEMPLATE (\n" +
+                "\tID INTEGER DEFAULT NULL IDENTITY (1, 1),\n" +
+                "\tPROJECT_ID BIGINT DEFAULT 0,\n" +
+                "\tPROJECT_TEMPLATE_MODULE_KEY VARCHAR(255),\n" +
+                "\tPROJECT_TEMPLATE_WEB_ITEM_KEY VARCHAR(255),\n" +
+                "\tCONSTRAINT pk_AO_B9A0F0_APPLIED_TEMPLATE_ID PRIMARY KEY (ID)\n" +
+                ")", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER));
     }
 
 }

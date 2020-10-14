@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,27 +43,27 @@ public class MySqlSelectTest_77_is_unkown extends MysqlTest {
         stmt.accept(visitor);
         {
             String output = SQLUtils.toMySqlString(stmt);
-            assertEquals("SELECT 0 IN (20 = ANY (\n" +
+            assertEquals("SELECT (0 IN (20 = ANY (\n" +
                             "\t\tSELECT col1\n" +
                             "\t\tFROM t1\n" +
-                            "\t)) IS NOT NULL IS NOT unknown AS t;", //
+                            "\t)) IS NOT NULL) IS NOT unknown AS t;", //
                                 output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("select 0 in (20 = any (\n" +
+            assertEquals("select (0 in (20 = any (\n" +
                             "\t\tselect col1\n" +
                             "\t\tfrom t1\n" +
-                            "\t)) is not null is not unknown as t;", //
+                            "\t)) is not null) is not unknown as t;", //
                                 output);
         }
 
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
-            assertEquals("SELECT ? IN (? = ANY (\n" +
+            assertEquals("SELECT (? IN (? = ANY (\n" +
                             "\t\tSELECT col1\n" +
                             "\t\tFROM t1\n" +
-                            "\t)) IS NOT NULL IS NOT unknown AS t;", //
+                            "\t)) IS NOT NULL) IS NOT unknown AS t;", //
                     output);
         }
     }

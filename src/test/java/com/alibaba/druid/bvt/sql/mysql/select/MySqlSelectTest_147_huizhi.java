@@ -45,7 +45,7 @@ public class MySqlSelectTest_147_huizhi extends MysqlTest {
                         "\tAND VARCHAR20 IS NOT NULL\n" +
                         "\tAND MISSIONID = ?\n" +
                         "GROUP BY VARCHAR20"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
+                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
 
         SQLSelectQueryBlock queryBlock = stmt.getQuery().getQueryBlock();
         assertEquals(3, queryBlock.getSelectList().size());

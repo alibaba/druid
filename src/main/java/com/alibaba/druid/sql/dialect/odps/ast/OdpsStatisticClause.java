@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,18 @@ public abstract class OdpsStatisticClause extends OdpsObjectImpl {
             visitor.endVisit(this);
         }
     }
+
+
+    public static class DistinctValue extends ColumnStatisticClause {
+        @Override
+        public void accept0(OdpsASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, column);
+            }
+            visitor.endVisit(this);
+        }
+    }
+
 
     public static class ColumnMax extends ColumnStatisticClause {
         @Override

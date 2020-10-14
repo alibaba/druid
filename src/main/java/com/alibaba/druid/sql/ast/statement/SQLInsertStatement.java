@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,18 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     protected SQLWithSubqueryClause with;
-
-    protected String dbType;
-
     protected boolean upsert = false; // for phoenix
-
-    private boolean afterSemi;
-
-    protected List<SQLCommentHint> headHints;
 
     public SQLInsertStatement(){
 
@@ -92,11 +83,11 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
         this.upsert = upsert;
     }
 
-    public static class ValuesClause extends SQLObjectImpl {
+    public static class ValuesClause extends SQLObjectImpl implements SQLReplaceable {
 
-        private final     List<SQLExpr> values;
-        private transient String        originalString;
-        private transient int           replaceCount;
+        private final     List   values;
+        private transient String originalString;
+        private transient int    replaceCount;
 
         public ValuesClause(){
             this(new ArrayList<SQLExpr>());
@@ -104,10 +95,22 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
         public ValuesClause clone() {
             ValuesClause x = new ValuesClause(new ArrayList<SQLExpr>(this.values.size()));
-            for (SQLExpr v : values) {
+            for (Object v : values) {
                 x.addValue(v);
             }
             return x;
+        }
+
+        public boolean replace(SQLExpr expr, SQLExpr target) {
+            for (int i = 0; i < values.size(); i++) {
+                if (values.get(i) == expr) {
+                    target.setParent(this);
+                    values.set(i, target);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public ValuesClause(List<SQLExpr> values){
@@ -115,6 +118,25 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
             for (int i = 0; i < values.size(); ++i) {
                 values.get(i).setParent(this);
             }
+        }
+
+
+        public ValuesClause(List values, SQLObject parent){
+            this.values = values;
+            for (int i = 0; i < values.size(); ++i) {
+                Object val = values.get(i);
+                if (val instanceof SQLObject) {
+                    ((SQLObject) val).setParent(this);
+                }
+            }
+            this.parent = parent;
+        }
+
+        public void addValue(Object value) {
+            if (value instanceof SQLObject) {
+                ((SQLObject) value).setParent(this);
+            }
+            values.add(value);
         }
 
         public void addValue(SQLExpr value) {
@@ -126,21 +148,16 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
             return values;
         }
 
-        public void output(StringBuffer buf) {
-            buf.append(" VALUES (");
-            for (int i = 0, size = values.size(); i < size; ++i) {
-                if (i != 0) {
-                    buf.append(", ");
-                }
-                values.get(i).output(buf);
-            }
-            buf.append(")");
-        }
-
         @Override
         protected void accept0(SQLASTVisitor visitor) {
             if (visitor.visit(this)) {
-                this.acceptChild(visitor, values);
+                for (int i = 0; i < values.size(); i++) {
+                    Object item = values.get(i);
+                    if (item instanceof SQLObject) {
+                        SQLObject value = (SQLObject) item;
+                        value.accept(visitor);
+                    }
+                }
             }
 
             visitor.endVisit(this);
@@ -164,11 +181,11 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     }
 
     @Override
-    public String getDbType() {
+    public DbType getDbType() {
         return dbType;
     }
     
-    public void setDbType(String dbType) {
+    public void setDbType(DbType dbType) {
         this.dbType = dbType;
     }
 
@@ -196,17 +213,5 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
     public String toString() {
         return SQLUtils.toSQLString(this, dbType);
-    }
-
-    public String toLowerCaseString() {
-        return SQLUtils.toSQLString(this, dbType, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-    }
-
-    public List<SQLCommentHint> getHeadHintsDirect() {
-        return headHints;
-    }
-
-    public void setHeadHints(List<SQLCommentHint> headHints) {
-        this.headHints = headHints;
     }
 }

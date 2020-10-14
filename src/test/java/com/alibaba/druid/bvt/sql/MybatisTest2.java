@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql;
 
+import com.alibaba.druid.DbType;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -41,6 +42,6 @@ public class MybatisTest2 extends TestCase {
     }
 
     public void test_sql92() throws Exception {
-        Assert.assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, null));
+        Assert.assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, (DbType) null));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.postgresql.select;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
@@ -24,7 +25,7 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class PGSelectTest56 extends TestCase {
-    private final String dbType = JdbcConstants.POSTGRESQL;
+    private final DbType dbType = JdbcConstants.POSTGRESQL;
 
     public void test_0() throws Exception {
         String sql = "SELECT to_char((CreateDate || ' ' || CAST (HourArgment AS VARCHAR) || ':00:00') :: TIMESTAMP,'YYYY-MM-DD HH24') \"intoTime \" FROM analyzedata.StatTime AS cs WHERE 1 = 1 AND cs.CreateDate >= to_date( '2017-08-31 00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) AND cs.CreateDate <= to_date( '2017-08-31 23:00:00', 'YYYY-MM-DD HH24:MI:SS' ) GROUP BY to_char(( CreateDate || ' ' || CAST (HourArgment AS VARCHAR) || ':00:00') :: TIMESTAMP, 'YYYY-MM-DD HH24')";

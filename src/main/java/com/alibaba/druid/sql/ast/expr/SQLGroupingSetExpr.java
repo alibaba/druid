@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-public class SQLGroupingSetExpr extends SQLExprImpl {
+public class SQLGroupingSetExpr extends SQLExprImpl implements SQLReplaceable {
 
     private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
 
@@ -64,7 +65,7 @@ public class SQLGroupingSetExpr extends SQLExprImpl {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+        result = prime * result + parameters.hashCode();
         return result;
     }
 
@@ -80,14 +81,21 @@ public class SQLGroupingSetExpr extends SQLExprImpl {
             return false;
         }
         SQLGroupingSetExpr other = (SQLGroupingSetExpr) obj;
-        if (parameters == null) {
-            if (other.parameters != null) {
-                return false;
-            }
-        } else if (!parameters.equals(other.parameters)) {
+        if (!parameters.equals(other.parameters)) {
             return false;
         }
         return true;
     }
 
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        for (int i = 0; i < parameters.size(); i++) {
+            if (parameters.get(i) == expr) {
+                target.setParent(this);
+                parameters.set(i, target);
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,25 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
-import java.math.BigDecimal;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
+
+import java.math.BigDecimal;
+
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Char implements Function {
 
     public final static Char instance = new Char();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getParameters().size() == 0) {
+        if (x.getArguments().size() == 0) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        StringBuffer buf = new StringBuffer(x.getParameters().size());
-        for (SQLExpr param : x.getParameters()) {
+        StringBuffer buf = new StringBuffer(x.getArguments().size());
+        for (SQLExpr param : x.getArguments()) {
             param.accept(visitor);
 
             Object paramValue = param.getAttributes().get(EVAL_VALUE);

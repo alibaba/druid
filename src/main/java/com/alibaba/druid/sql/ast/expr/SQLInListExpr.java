@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,32 +15,43 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public final class SQLInListExpr extends SQLExprImpl implements Serializable {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public final class SQLInListExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
 
     private static final long serialVersionUID = 1L;
-    private boolean           not              = false;
-    private SQLExpr           expr;
-    private List<SQLExpr>     targetList       = new ArrayList<SQLExpr>();
+    private boolean not = false;
+    private SQLExpr expr;
+    private List<SQLExpr> targetList = new ArrayList<SQLExpr>();
 
-    public SQLInListExpr(){
+    //for ads query hint
+    protected SQLCommentHint hint;
+
+    public SQLInListExpr() {
 
     }
 
-    public SQLInListExpr(SQLExpr expr){
+    public SQLInListExpr(SQLExpr expr) {
         this.setExpr(expr);
     }
 
-    public SQLInListExpr(SQLExpr expr, boolean not){
+    public SQLInListExpr(String expr, String... values) {
+        this.setExpr(
+                SQLUtils.toSQLExpr(expr));
+
+        for (String value : values) {
+            targetList.add(new SQLCharExpr(value));
+        }
+    }
+
+    public SQLInListExpr(SQLExpr expr, boolean not) {
         this.setExpr(expr);
         this.not = not;
     }
@@ -75,16 +86,8 @@ public final class SQLInListExpr extends SQLExprImpl implements Serializable {
         if (expr != null) {
             expr.setParent(this);
         }
-        
+
         this.expr = expr;
-    }
-
-    public List<SQLExpr> getTargetList() {
-        return this.targetList;
-    }
-
-    public void setTargetList(List<SQLExpr> targetList) {
-        this.targetList = targetList;
     }
 
     public void addTarget(SQLExpr x) {
@@ -97,10 +100,47 @@ public final class SQLInListExpr extends SQLExprImpl implements Serializable {
         targetList.add(index, x);
     }
 
+    public List<SQLExpr> getTargetList() {
+        return this.targetList;
+    }
+
+    public boolean sortTargetList() {
+        if (targetList.size() < 2) {
+            return true;
+        }
+
+        Class<?> firstClass = targetList.get(0).getClass();
+        for (int i = 1; i < targetList.size(); i++) {
+            if (targetList.get(i).getClass() != firstClass) {
+                return false;
+            }
+        }
+
+        if (!Comparable.class.isAssignableFrom(firstClass)) {
+            return false;
+        }
+
+        Collections.sort((List) targetList);
+        return true;
+    }
+
+    public void setTargetList(List<SQLExpr> targetList) {
+        this.targetList = targetList;
+    }
+
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.expr);
-            acceptChild(visitor, this.targetList);
+            if (expr != null) {
+                expr.accept(visitor);
+            }
+
+            if (targetList != null) {
+                for (SQLExpr item : targetList) {
+                    if (item != null) {
+                        item.accept(visitor);
+                    }
+                }
+            }
         }
 
         visitor.endVisit(this);
@@ -158,6 +198,36 @@ public final class SQLInListExpr extends SQLExprImpl implements Serializable {
     }
 
     public SQLDataType computeDataType() {
-        return SQLBooleanExpr.DEFAULT_DATA_TYPE;
+        return SQLBooleanExpr.DATA_TYPE;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.expr == expr) {
+            setExpr(target);
+            return true;
+        }
+
+        for (int i = targetList.size() - 1; i >= 0; i--) {
+            if (targetList.get(i) == expr) {
+                if (target == null) {
+                    targetList.remove(i);
+                } else {
+                    targetList.set(i, target);
+                    target.setParent(this);
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public SQLCommentHint getHint() {
+        return hint;
+    }
+
+    public void setHint(SQLCommentHint hint) {
+        this.hint = hint;
     }
 }

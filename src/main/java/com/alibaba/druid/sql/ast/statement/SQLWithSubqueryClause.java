@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,11 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLWithSubqueryClause extends SQLObjectImpl {
 
@@ -44,12 +42,12 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
     public List<Entry> getEntries() {
         return entries;
     }
-    
-    public void addEntry(Entry entrie) {
-        if (entrie != null) {
-            entrie.setParent(this);
+
+    public void addEntry(Entry entry) {
+        if (entry != null) {
+            entry.setParent(this);
         }
-        this.entries.add(entrie);
+        this.entries.add(entry);
     }
 
     public Boolean getRecursive() {
@@ -63,16 +61,36 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, entries);
+            for (int i = 0; i < entries.size(); i++) {
+                Entry entry = entries.get(i);
+                if (entry != null) {
+                    entry.accept(visitor);
+                }
+            }
         }
         visitor.endVisit(this);
     }
 
-    public static class Entry extends SQLTableSourceImpl {
+    public static class Entry extends SQLTableSourceImpl implements SQLReplaceable {
 
         protected final List<SQLName> columns = new ArrayList<SQLName>();
         protected SQLSelect           subQuery;
         protected SQLStatement        returningStatement;
+        protected SQLExpr       expr;
+
+        public Entry() {
+
+        }
+
+        public Entry(String alias, SQLSelect select) {
+            this.setAlias(alias);
+            this.setSubQuery(select);
+        }
+
+        public Entry(String alias, SQLExpr expr) {
+            this.setAlias(alias);
+            this.setExpr(expr);
+        }
 
         public void cloneTo(Entry x) {
             for (SQLName column : columns) {
@@ -88,6 +106,26 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
             if (returningStatement != null) {
                 setReturningStatement(returningStatement.clone());
             }
+
+            x.alias = alias;
+            x.expr = expr;
+        }
+
+        @Override
+        public boolean replace(SQLExpr expr, SQLExpr target) {
+            if (flashback == expr) {
+                setFlashback(target);
+                return true;
+            }
+
+            for (int i = 0; i < columns.size(); i++) {
+                if (columns.get(i) == expr) {
+                    target.setParent(this);
+                    columns.set(i, (SQLName) expr);
+                    return true;
+                }
+            }
+            return false;
         }
 
         public Entry clone() {
@@ -96,12 +134,35 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
             return x;
         }
 
+        public SQLExpr getExpr() {
+            return expr;
+        }
+
+        public void setExpr(SQLExpr expr) {
+            this.expr = expr;
+        }
+
         @Override
         protected void accept0(SQLASTVisitor visitor) {
             if (visitor.visit(this)) {
-                acceptChild(visitor, columns);
-                acceptChild(visitor, subQuery);
-                acceptChild(visitor, returningStatement);
+                for (int i = 0; i < columns.size(); i++) {
+                    SQLExpr column = columns.get(i);
+                    if (column != null) {
+                        column.accept(visitor);
+                    }
+                }
+
+                if (subQuery != null) {
+                    subQuery.accept(visitor);
+                }
+
+                if (returningStatement != null) {
+                    returningStatement.accept(visitor);
+                }
+
+                if (expr != null) {
+                    expr.accept(visitor);
+                }
             }
             visitor.endVisit(this);
         }
@@ -132,7 +193,7 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
             return columns;
         }
 
-        public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
+        public SQLTableSource findTableSourceWithColumn(long columnNameHash, String columnName, int option) {
             for (SQLName column : columns) {
                 if (column.nameHashCode64() == columnNameHash) {
                     return this;
@@ -149,6 +210,28 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
             }
             return null;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+
+            Entry entry = (Entry) o;
+
+            if (!columns.equals(entry.columns)) return false;
+            if (subQuery != null ? !subQuery.equals(entry.subQuery) : entry.subQuery != null) return false;
+            return returningStatement != null ? returningStatement.equals(entry.returningStatement) : entry.returningStatement == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + (columns != null ? columns.hashCode() : 0);
+            result = 31 * result + (subQuery != null ? subQuery.hashCode() : 0);
+            result = 31 * result + (returningStatement != null ? returningStatement.hashCode() : 0);
+            return result;
+        }
     }
 
     public Entry findEntry(long alias_hash) {
@@ -163,5 +246,23 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         }
 
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLWithSubqueryClause that = (SQLWithSubqueryClause) o;
+
+        if (recursive != null ? !recursive.equals(that.recursive) : that.recursive != null) return false;
+        return entries.equals(that.entries);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = recursive != null ? recursive.hashCode() : 0;
+        result = 31 * result + entries.hashCode();
+        return result;
     }
 }

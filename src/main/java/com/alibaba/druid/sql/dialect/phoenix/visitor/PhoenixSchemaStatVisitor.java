@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.phoenix.visitor;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
 /**
  * Created by wenshao on 16/9/13.
  */
 public class PhoenixSchemaStatVisitor extends SchemaStatVisitor implements PhoenixASTVisitor {
     public PhoenixSchemaStatVisitor() {
-        super(JdbcConstants.PHOENIX);
+        super(DbType.phoenix);
     }
 }

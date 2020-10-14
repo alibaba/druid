@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,16 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
+
 import java.util.List;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLStatement {
-    protected String               dbType;
+    protected DbType               dbType;
     protected boolean              afterSemi;
     protected List<SQLCommentHint> headHints;
 
@@ -29,15 +32,15 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
 
     }
     
-    public SQLStatementImpl(String dbType){
+    public SQLStatementImpl(DbType dbType){
         this.dbType = dbType;
     }
     
-    public String getDbType() {
+    public DbType getDbType() {
         return dbType;
     }
 
-    public void setDbType(String dbType) {
+    public void setDbType(DbType dbType) {
         this.dbType = dbType;
     }
 
@@ -45,12 +48,25 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
         return SQLUtils.toSQLString(this, dbType);
     }
 
+
+    public String toString(VisitorFeature... features) {
+        return SQLUtils.toSQLString(this, dbType, null, features);
+    }
+
     public String toLowerCaseString() {
         return SQLUtils.toSQLString(this, dbType, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
     }
 
+    public String toUnformattedString() {
+        return SQLUtils.toSQLString(this, dbType, new SQLUtils.FormatOption(true, false));
+    }
+
+    public String toParameterizedString() {
+        return ParameterizedOutputVisitorUtils.parameterize(this, dbType);
+    }
+
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
+    protected void accept0(SQLASTVisitor v) {
         throw new UnsupportedOperationException(this.getClass().getName());
     }
 

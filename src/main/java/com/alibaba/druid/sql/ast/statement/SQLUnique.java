@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,60 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLIndexDefinition;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.List;
+
 public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint, SQLTableElement {
 
-    protected final List<SQLSelectOrderByItem> columns = new ArrayList<SQLSelectOrderByItem>();
+    protected final SQLIndexDefinition indexDefinition = new SQLIndexDefinition();
 
     public SQLUnique(){
+        indexDefinition.setParent(this);
+    }
 
+    // Override name and comment in constraint impl.
+    @Override
+    public SQLName getName() {
+        return indexDefinition.getName();
+    }
+
+    @Override
+    public void setName(SQLName name) {
+        indexDefinition.setName(name);
+    }
+
+    @Override
+    public void setName(String name) {
+        this.setName(new SQLIdentifierExpr(name));
+    }
+
+    @Override
+    public SQLExpr getComment() {
+        if (indexDefinition.hasOptions()) {
+            return indexDefinition.getOptions().getComment();
+        }
+        return null;
+    }
+
+    @Override
+    public void setComment(SQLExpr x) {
+        indexDefinition.getOptions().setComment(x);
+    }
+
+    public SQLIndexDefinition getIndexDefinition() {
+        return indexDefinition;
     }
 
     public List<SQLSelectOrderByItem> getColumns() {
-        return columns;
+        return indexDefinition.getColumns();
     }
     
     public void addColumn(SQLExpr column) {
@@ -49,20 +83,21 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
         if (column != null) {
             column.setParent(this);
         }
-        this.columns.add(column);
+        indexDefinition.getColumns().add(column);
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.getName());
-            acceptChild(visitor, this.getColumns());
+            acceptChild(visitor, getName());
+            acceptChild(visitor, getColumns());
+            acceptChild(visitor, getCovering());
         }
         visitor.endVisit(this);
     }
 
     public boolean containsColumn(String column) {
-        for (SQLSelectOrderByItem item : columns) {
+        for (SQLSelectOrderByItem item : getColumns()) {
             SQLExpr expr = item.getExpr();
             if (expr instanceof SQLIdentifierExpr) {
                 if (SQLUtils.nameEquals(((SQLIdentifierExpr) expr).getName(), column)) {
@@ -74,7 +109,7 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
     }
 
     public boolean containsColumn(long columnNameHash) {
-        for (SQLSelectOrderByItem item : columns) {
+        for (SQLSelectOrderByItem item : getColumns()) {
             SQLExpr expr = item.getExpr();
             if (expr instanceof SQLIdentifierExpr) {
                 if (((SQLIdentifierExpr) expr).nameHashCode64() == columnNameHash) {
@@ -88,11 +123,7 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
     public void cloneTo(SQLUnique x) {
         super.cloneTo(x);
 
-        for (SQLSelectOrderByItem column : columns) {
-            SQLSelectOrderByItem column2 = column.clone();
-            column2.setParent(x);
-            x.columns.add(column2);
-        }
+        indexDefinition.cloneTo(x.indexDefinition);
     }
 
     public SQLUnique clone() {
@@ -104,7 +135,7 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
     public void simplify() {
         super.simplify();
 
-        for (SQLSelectOrderByItem item : columns) {
+        for (SQLSelectOrderByItem item : getColumns()) {
             SQLExpr column = item.getExpr();
             if (column instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) column;
@@ -117,33 +148,59 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
         }
     }
 
-    public boolean applyColumnRename(SQLName columnName, SQLName to) {
-        for (SQLSelectOrderByItem orderByItem : columns) {
+    public boolean applyColumnRename(SQLName columnName, SQLColumnDefinition to) {
+        for (SQLSelectOrderByItem orderByItem : getColumns()) {
             SQLExpr expr = orderByItem.getExpr();
             if (expr instanceof SQLName
                     && SQLUtils.nameEquals((SQLName) expr, columnName)) {
-                orderByItem.setExpr(to.clone());
+                orderByItem.setExpr(to.getName().clone());
                 return true;
+            }
+
+            if (expr instanceof SQLMethodInvokeExpr
+                    && SQLUtils.nameEquals(((SQLMethodInvokeExpr) expr).getMethodName(), columnName.getSimpleName())) {
+                // More complex when with key length.
+                if (1 == ((SQLMethodInvokeExpr) expr).getArguments().size() &&
+                        ((SQLMethodInvokeExpr) expr).getArguments().get(0) instanceof SQLIntegerExpr) {
+                    if (to.getDataType().hasKeyLength() &&
+                            1 == to.getDataType().getArguments().size() &&
+                            to.getDataType().getArguments().get(0) instanceof SQLIntegerExpr) {
+                        int newKeyLength = ((SQLIntegerExpr)to.getDataType().getArguments().get(0)).getNumber().intValue();
+                        int oldKeyLength = ((SQLIntegerExpr)((SQLMethodInvokeExpr) expr).getArguments().get(0)).getNumber().intValue();
+                        if (newKeyLength > oldKeyLength) {
+                            // Change name and keep key length.
+                            ((SQLMethodInvokeExpr) expr).setMethodName(to.getName().getSimpleName());
+                            return true;
+                        }
+                    }
+                    // Remove key length.
+                    orderByItem.setExpr(to.getName().clone());
+                    return true;
+                }
             }
         }
         return false;
     }
 
     public boolean applyDropColumn(SQLName columnName) {
-        for (int i = columns.size() - 1; i >= 0; i--) {
-            SQLExpr expr = columns.get(i).getExpr();
+        for (int i = getColumns().size() - 1; i >= 0; i--) {
+            SQLExpr expr = getColumns().get(i).getExpr();
             if (expr instanceof SQLName
                     && SQLUtils.nameEquals((SQLName) expr, columnName)) {
-                columns.remove(i);
+                getColumns().remove(i);
                 return true;
             }
 
             if (expr instanceof SQLMethodInvokeExpr
                     && SQLUtils.nameEquals(((SQLMethodInvokeExpr) expr).getMethodName(), columnName.getSimpleName())) {
-                columns.remove(i);
+                getColumns().remove(i);
                 return true;
             }
         }
         return false;
+    }
+
+    public List<SQLName> getCovering() {
+        return indexDefinition.getCovering();
     }
 }

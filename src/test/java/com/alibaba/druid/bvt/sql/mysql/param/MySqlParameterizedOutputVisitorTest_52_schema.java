@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_52_schema extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
         String sql = "UPDATE `buyer_0158`.xc_yy_order_1082\n" +
                 "SET `ALIPAY_BUYER_ID` = 1025, `GMT_MODIFIED` = 'aaaa'\n" +
                 "WHERE `PAY_ORDER_ID` = 'kkk'";

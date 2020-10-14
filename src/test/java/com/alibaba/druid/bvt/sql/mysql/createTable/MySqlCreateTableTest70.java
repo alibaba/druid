@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class MySqlCreateTableTest70 extends MysqlTest {
 
@@ -74,7 +73,7 @@ public class MySqlCreateTableTest70 extends MysqlTest {
                     + "\n\tFOREIGN KEY (`customer_info`) REFERENCES `app_customer_info` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,"
                     + "\n\tINDEX `fk_app_customer_info_id` USING BTREE(`customer_info`),"
                     + "\n\tUNIQUE `idx_app_customer_license_deviceId` USING BTREE (`device_id`)"
-                    + "\n) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE utf8_general_ci AUTO_INCREMENT = 1 ROW_FORMAT = DYNAMIC", output);
+                    + "\n) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci AUTO_INCREMENT = 1 ROW_FORMAT = DYNAMIC", output);
         }
         
         {
@@ -92,7 +91,7 @@ public class MySqlCreateTableTest70 extends MysqlTest {
                     + "\n\tforeign key (`customer_info`) references `app_customer_info` (`id`) on delete restrict on update restrict,"
                     + "\n\tindex `fk_app_customer_info_id` using BTREE(`customer_info`),"
                     + "\n\tunique `idx_app_customer_license_deviceId` using BTREE (`device_id`)"
-                    + "\n) engine = InnoDB character set = utf8 collate utf8_general_ci auto_increment = 1 row_format = DYNAMIC", output);
+                    + "\n) engine = InnoDB character set = utf8 collate = utf8_general_ci auto_increment = 1 row_format = DYNAMIC", output);
         }
     }
 }

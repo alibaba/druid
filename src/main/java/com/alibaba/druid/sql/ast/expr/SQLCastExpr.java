@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,25 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.Arrays;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObjectWithDataType;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, SQLReplaceable {
-
+    protected boolean     isTry;
     protected SQLExpr     expr;
     protected SQLDataType dataType;
 
     public SQLCastExpr(){
 
+    }
+
+    public SQLCastExpr(SQLExpr expr, SQLDataType dataType) {
+        setExpr(expr);
+        setDataType(dataType);
     }
 
     public SQLExpr getExpr() {
@@ -49,6 +51,14 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
         return this.dataType;
     }
 
+    public long dateTypeHashCode() {
+        if (this.dataType == null) {
+            return 0;
+        }
+
+        return this.dataType.nameHashCode64();
+    }
+
     public void setDataType(SQLDataType dataType) {
         if (dataType != null) {
             dataType.setParent(this);
@@ -58,20 +68,15 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
 
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.expr);
-            acceptChild(visitor, this.dataType);
+            if (this.expr != null) {
+                this.expr.accept(visitor);
+            }
+
+            if (this.dataType != null) {
+                this.dataType.accept(visitor);
+            }
         }
         visitor.endVisit(this);
-    }
-
-    @Override
-    public boolean replace(SQLExpr expr, SQLExpr target) {
-        if (this.expr == expr) {
-            setExpr(target);
-            return true;
-        }
-
-        return false;
     }
 
     @Override
@@ -80,41 +85,23 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((dataType == null) ? 0 : dataType.hashCode());
-        result = prime * result + ((expr == null) ? 0 : expr.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLCastExpr castExpr = (SQLCastExpr) o;
+
+        if (isTry != castExpr.isTry) return false;
+        if (expr != null ? !expr.equals(castExpr.expr) : castExpr.expr != null) return false;
+        return dataType != null ? dataType.equals(castExpr.dataType) : castExpr.dataType == null;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        SQLCastExpr other = (SQLCastExpr) obj;
-        if (dataType == null) {
-            if (other.dataType != null) {
-                return false;
-            }
-        } else if (!dataType.equals(other.dataType)) {
-            return false;
-        }
-        if (expr == null) {
-            if (other.expr != null) {
-                return false;
-            }
-        } else if (!expr.equals(other.expr)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        int result = (isTry ? 1 : 0);
+        result = 31 * result + (expr != null ? expr.hashCode() : 0);
+        result = 31 * result + (dataType != null ? dataType.hashCode() : 0);
+        return result;
     }
 
     public SQLDataType computeDataType() {
@@ -123,6 +110,7 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
 
     public SQLCastExpr clone() {
         SQLCastExpr x = new SQLCastExpr();
+        x.isTry = isTry;
         if (expr != null) {
             x.setExpr(expr.clone());
         }
@@ -130,5 +118,26 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
             x.setDataType(dataType.clone());
         }
         return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.expr == expr) {
+            setExpr(target);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isTry() {
+        return isTry;
+    }
+
+    public void setTry(boolean aTry) {
+        isTry = aTry;
+    }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this);
     }
 }

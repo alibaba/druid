@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class MySqlSelectTest_58_alias_dot extends MysqlTest {
         
         {
             String output = SQLUtils.toMySqlString(stmt);
-            assertEquals("SELECT m.*, m.icon AS micon, md.uid AS md.uid, md.lastmsg, md.postnum\n" +
+            assertEquals("SELECT m.*, m.icon AS micon, md.uid AS `md.uid`, md.lastmsg, md.postnum\n" +
                             "\t, md.rvrc, md.money, md.credit, md.currency, md.lastvisit\n" +
                             "\t, md.thisvisit, md.onlinetime, md.lastpost, md.todaypost, md.monthpost\n" +
                             "\t, md.onlineip, md.uploadtime, md.uploadnum, md.starttime, md.pwdctime\n" +
@@ -67,7 +67,7 @@ public class MySqlSelectTest_58_alias_dot extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("select m.*, m.icon as micon, md.uid as md.uid, md.lastmsg, md.postnum\n" +
+            assertEquals("select m.*, m.icon as micon, md.uid as `md.uid`, md.lastmsg, md.postnum\n" +
                             "\t, md.rvrc, md.money, md.credit, md.currency, md.lastvisit\n" +
                             "\t, md.thisvisit, md.onlinetime, md.lastpost, md.todaypost, md.monthpost\n" +
                             "\t, md.onlineip, md.uploadtime, md.uploadnum, md.starttime, md.pwdctime\n" +
@@ -83,7 +83,7 @@ public class MySqlSelectTest_58_alias_dot extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
-            assertEquals("SELECT m.*, m.icon AS micon, md.uid AS md.uid, md.lastmsg, md.postnum\n" +
+            assertEquals("SELECT m.*, m.icon AS micon, md.uid AS `md.uid`, md.lastmsg, md.postnum\n" +
                             "\t, md.rvrc, md.money, md.credit, md.currency, md.lastvisit\n" +
                             "\t, md.thisvisit, md.onlinetime, md.lastpost, md.todaypost, md.monthpost\n" +
                             "\t, md.onlineip, md.uploadtime, md.uploadnum, md.starttime, md.pwdctime\n" +

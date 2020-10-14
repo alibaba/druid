@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package com.alibaba.druid.sql;
-
-import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
@@ -48,51 +46,53 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSo
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.util.FnvHash;
 
+import java.util.List;
+
 public class SQLTransformUtils {
     public static SQLExpr transformDecode(SQLMethodInvokeExpr x) {
         if (x == null) {
             return null;
         }
 
-        if (!"decode".equalsIgnoreCase(x.getMethodName())) {
+        if (FnvHash.Constants.DECODE != x.methodNameHashCode64()) {
             throw new IllegalArgumentException(x.getMethodName());
         }
 
-        List<SQLExpr> parameters = x.getParameters();
+        List<SQLExpr> arguments = x.getArguments();
         SQLCaseExpr caseExpr = new SQLCaseExpr();
         caseExpr.setParent(x.getParent());
-        caseExpr.setValueExpr(parameters.get(0));
+        caseExpr.setValueExpr(arguments.get(0));
 
-        if (parameters.size() == 4) {
-            SQLExpr param1 = parameters.get(1);
+        if (arguments.size() == 4) {
+            SQLExpr param1 = arguments.get(1);
 
             x.setMethodName("if");
 
             SQLBinaryOpExpr condition;
             if (param1 instanceof SQLNullExpr) {
-                condition = new SQLBinaryOpExpr(parameters.get(0), SQLBinaryOperator.Is, param1);
+                condition = new SQLBinaryOpExpr(arguments.get(0), SQLBinaryOperator.Is, param1);
             } else {
-                condition = new SQLBinaryOpExpr(parameters.get(0), SQLBinaryOperator.Equality, param1);
+                condition = new SQLBinaryOpExpr(arguments.get(0), SQLBinaryOperator.Equality, param1);
             }
             condition.setParent(x);
-            parameters.set(0, condition);
-            parameters.set(1, parameters.get(2));
-            parameters.set(2, parameters.get(3));
-            parameters.remove(3);
+            arguments.set(0, condition);
+            arguments.set(1, arguments.get(2));
+            arguments.set(2, arguments.get(3));
+            arguments.remove(3);
             return x;
         }
 
-        for (int i = 1; i + 1 < parameters.size(); i += 2) {
+        for (int i = 1; i + 1 < arguments.size(); i += 2) {
             SQLCaseExpr.Item item = new SQLCaseExpr.Item();
-            SQLExpr conditionExpr = parameters.get(i);
+            SQLExpr conditionExpr = arguments.get(i);
 
             item.setConditionExpr(conditionExpr);
 
-            SQLExpr valueExpr = parameters.get(i + 1);
+            SQLExpr valueExpr = arguments.get(i + 1);
 
             if (valueExpr instanceof SQLMethodInvokeExpr) {
                 SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) valueExpr;
-                if ("decode".equalsIgnoreCase(methodInvokeExpr.getMethodName())) {
+                if (FnvHash.Constants.DECODE == methodInvokeExpr.methodNameHashCode64()) {
                     valueExpr = transformDecode(methodInvokeExpr);
                 }
             }
@@ -101,12 +101,12 @@ public class SQLTransformUtils {
             caseExpr.addItem(item);
         }
 
-        if (parameters.size() % 2 == 0) {
-            SQLExpr defaultExpr = parameters.get(parameters.size() - 1);
+        if (arguments.size() % 2 == 0) {
+            SQLExpr defaultExpr = arguments.get(arguments.size() - 1);
 
             if (defaultExpr instanceof SQLMethodInvokeExpr) {
                 SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) defaultExpr;
-                if ("decode".equalsIgnoreCase(methodInvokeExpr.getMethodName())) {
+                if (FnvHash.Constants.DECODE == methodInvokeExpr.methodNameHashCode64()) {
                     defaultExpr = transformDecode(methodInvokeExpr);
                 }
             }
@@ -150,7 +150,7 @@ public class SQLTransformUtils {
 
         } else if (nameHash == FnvHash.Constants.FLOAT
                 || nameHash == FnvHash.Constants.BINARY_FLOAT) {
-                dataType = new SQLDataTypeImpl("float");
+            dataType = new SQLDataTypeImpl("float");
 
         } else if (nameHash == FnvHash.Constants.REAL
                 || nameHash == FnvHash.Constants.BINARY_DOUBLE
@@ -659,7 +659,7 @@ public class SQLTransformUtils {
 
     public static SQLExpr transformOracleToPostgresql(SQLMethodInvokeExpr x) {
         final long nameHashCode64 = x.methodNameHashCode64();
-        List<SQLExpr> parameters = x.getParameters();
+        List<SQLExpr> parameters = x.getArguments();
 
         if (nameHashCode64 == FnvHash.Constants.SYS_GUID) {
             SQLMethodInvokeExpr uuid_generate_v4 = new SQLMethodInvokeExpr("uuid_generate_v4");
@@ -673,9 +673,9 @@ public class SQLTransformUtils {
                 SQLExpr param0 = parameters.get(0);
                 if (param0 instanceof OracleSysdateExpr
                         || (param0 instanceof SQLIdentifierExpr
-                            && ((SQLIdentifierExpr) param0).nameHashCode64() == FnvHash.Constants.CURRENT_TIMESTAMP)) {
+                        && ((SQLIdentifierExpr) param0).nameHashCode64() == FnvHash.Constants.CURRENT_TIMESTAMP)) {
                     SQLMethodInvokeExpr current_timestamp = new SQLMethodInvokeExpr("CURRENT_TIMESTAMP");
-                    current_timestamp.addParameter(new SQLIntegerExpr(0));
+                    current_timestamp.addArgument(new SQLIntegerExpr(0));
 
                     current_timestamp.setParent(x.getParent());
                     return current_timestamp;
@@ -688,9 +688,9 @@ public class SQLTransformUtils {
                 SQLDataType dataType = ((SQLColumnDefinition) x.getParent()).getDataType();
                 if (dataType.nameHashCode64() == FnvHash.Constants.TIMESTAMP
                         && dataType.getArguments().size() == 1) {
-                    x.addParameter(dataType.getArguments().get(0).clone());
+                    x.addArgument(dataType.getArguments().get(0).clone());
                 } else {
-                    x.addParameter(new SQLIntegerExpr(0));
+                    x.addArgument(new SQLIntegerExpr(0));
                 }
                 return x;
             }
@@ -698,14 +698,21 @@ public class SQLTransformUtils {
 
         if (nameHashCode64 == FnvHash.Constants.SYSTIMESTAMP) {
             SQLMethodInvokeExpr xx = x.clone();
-            xx.setMethodName("CURRENT_TIMESTAMP");
+            xx.setMethodName("SYSTIMESTAMP");
+            xx.setParent(x.getParent());
+            return xx;
+        }
+
+        if (nameHashCode64 == FnvHash.Constants.LOCALTIMESTAMP) {
+            SQLMethodInvokeExpr xx = x.clone();
+            xx.setMethodName("LOCALTIMESTAMP");
             xx.setParent(x.getParent());
             return xx;
         }
 
         if (nameHashCode64 == FnvHash.Constants.USERENV) {
-            if (x.getParameters().size() == 1) {
-                SQLExpr param0 = x.getParameters().get(0);
+            if (x.getArguments().size() == 1) {
+                SQLExpr param0 = x.getArguments().get(0);
                 if (param0 instanceof SQLCharExpr) {
                     String text = ((SQLCharExpr) param0).getText();
                     if ("SESSIONID".equalsIgnoreCase(text)) {
@@ -719,8 +726,8 @@ public class SQLTransformUtils {
         }
 
         if (nameHashCode64 == FnvHash.Constants.USERENV) {
-            if (x.getParameters().size() == 1) {
-                SQLExpr param0 = x.getParameters().get(0);
+            if (x.getArguments().size() == 1) {
+                SQLExpr param0 = x.getArguments().get(0);
                 if (param0 instanceof SQLCharExpr) {
                     String text = ((SQLCharExpr) param0).getText();
                     if ("SESSIONID".equalsIgnoreCase(text)) {
@@ -734,9 +741,9 @@ public class SQLTransformUtils {
         }
 
         if (nameHashCode64 == FnvHash.Constants.NUMTODSINTERVAL) {
-            if (x.getParameters().size() == 2) {
-                SQLExpr param0 = x.getParameters().get(0);
-                SQLExpr param1 = x.getParameters().get(1);
+            if (x.getArguments().size() == 2) {
+                SQLExpr param0 = x.getArguments().get(0);
+                SQLExpr param1 = x.getArguments().get(1);
 
                 if (param0 instanceof SQLIntegerExpr && param1 instanceof SQLCharExpr) {
                     String text = ((SQLCharExpr) param1).getText();
@@ -806,5 +813,206 @@ public class SQLTransformUtils {
         }
 
         return x;
+    }
+
+
+    public static SQLDataType transformOracleToPPAS(SQLDataType x) {
+        final String name = x.getName();
+        final long nameHash = x.nameHashCode64();
+
+        if (name == null) {
+            return x;
+        }
+        List<SQLExpr> argumentns = x.getArguments();
+
+        SQLDataType dataType;
+
+        if (nameHash == FnvHash.Constants.UROWID) {
+            int len = 4000;
+            if (argumentns.size() == 1) {
+                SQLExpr arg0 = argumentns.get(0);
+                if (arg0 instanceof SQLIntegerExpr) {
+                    len = ((SQLIntegerExpr) arg0).getNumber().intValue();
+                }
+            }
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.VARCHAR, len);
+        } else if (nameHash == FnvHash.Constants.ROWID) {
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.CHAR, 10);
+
+        } else if (nameHash == FnvHash.Constants.BOOLEAN || nameHash == FnvHash.Constants.SMALLINT) {
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.SMALLINT);
+
+        } else if (nameHash == FnvHash.Constants.INTEGER
+                || nameHash == FnvHash.Constants.INT) {
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.DECIMAL, 38);
+
+        } else if (nameHash == FnvHash.Constants.BINARY_FLOAT) {
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.REAL);
+
+        } else if (nameHash == FnvHash.Constants.BINARY_DOUBLE
+                || nameHash == FnvHash.Constants.FLOAT
+                || nameHash == FnvHash.Constants.DOUBLE
+                || nameHash == FnvHash.Constants.REAL
+                || nameHash == FnvHash.Constants.DOUBLE_PRECISION) {
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.DOUBLE_PRECISION);
+
+        } else if (nameHash == FnvHash.Constants.NUMBER) {
+            dataType = x.clone();
+            if (argumentns.size() > 0) {
+                SQLExpr arg0 = argumentns.get(0);
+                if (arg0 instanceof SQLAllColumnExpr) {
+                    SQLIntegerExpr precisionExpr = new SQLIntegerExpr(38);
+                    dataType.getArguments().set(0, precisionExpr);
+                }
+            }
+
+        } else if (nameHash == FnvHash.Constants.DEC
+                || nameHash == FnvHash.Constants.DECIMAL) {
+            dataType = x.clone();
+            dataType.setName(SQLDataType.Constants.DECIMAL);
+
+            int precision = 0;
+            if (argumentns.size() > 0) {
+                precision = ((SQLIntegerExpr) argumentns.get(0)).getNumber().intValue();
+            }
+
+            int scale = 0;
+            if (argumentns.size() > 1) {
+                scale = ((SQLIntegerExpr) argumentns.get(1)).getNumber().intValue();
+                if (precision < scale) {
+                    ((SQLIntegerExpr) dataType.getArguments().get(1)).setNumber(precision);
+                }
+            }
+
+        } else if (nameHash == FnvHash.Constants.CHARACTER) {
+            if (argumentns.size() == 1) {
+                SQLExpr arg0 = argumentns.get(0);
+
+                int len;
+                if (arg0 instanceof SQLNumericLiteralExpr) {
+                    len = ((SQLNumericLiteralExpr) arg0).getNumber().intValue();
+                } else {
+                    throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
+                }
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR, len);
+            } else if (argumentns.size() == 0) {
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR);
+            } else {
+                throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
+            }
+        } else if (nameHash == FnvHash.Constants.CHAR) {
+            if (argumentns.size() == 1) {
+                SQLExpr arg0 = argumentns.get(0);
+
+                int len;
+                if (arg0 instanceof SQLNumericLiteralExpr) {
+                    len = ((SQLNumericLiteralExpr) arg0).getNumber().intValue();
+                } else {
+                    throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
+                }
+
+                if (len <= 2000) {
+                    dataType = x;
+                    dataType.setName(SQLDataType.Constants.CHAR);
+                } else {
+                    dataType = new SQLCharacterDataType(SQLDataType.Constants.TEXT);
+                }
+            } else if (argumentns.size() == 0) {
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR);
+            } else {
+                throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
+            }
+        } else if (nameHash == FnvHash.Constants.NCHAR) {
+            // no changed
+            dataType = x;
+            dataType.setName(SQLDataType.Constants.NCHAR);
+        } else if (nameHash == FnvHash.Constants.VARCHAR
+                || nameHash == FnvHash.Constants.VARCHAR2) {
+            if (argumentns.size() > 0) {
+                int len;
+                SQLExpr arg0 = argumentns.get(0);
+                if (arg0 instanceof SQLNumericLiteralExpr) {
+                    len = ((SQLNumericLiteralExpr) arg0).getNumber().intValue();
+                } else if (arg0 instanceof SQLVariantRefExpr) {
+                    len = 2000;
+                } else {
+                    throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
+                }
+
+                if (len <= 4000) {
+                    dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR, len);
+                } else {
+                    dataType = new SQLCharacterDataType(SQLDataType.Constants.TEXT);
+                }
+            } else {
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR);
+            }
+
+        } else if (nameHash == FnvHash.Constants.NVARCHAR
+                || nameHash == FnvHash.Constants.NVARCHAR2
+                || nameHash == FnvHash.Constants.NCHAR_VARYING) {
+            if (argumentns.size() > 0) {
+                int len;
+                SQLExpr arg0 = argumentns.get(0);
+                if (arg0 instanceof SQLNumericLiteralExpr) {
+                    len = ((SQLNumericLiteralExpr) arg0).getNumber().intValue();
+                } else {
+                    throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
+                }
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR, len);
+            } else {
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR);
+            }
+
+        } else if (nameHash == FnvHash.Constants.BFILE) {
+            dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR, 255);
+        } else if (nameHash == FnvHash.Constants.DATE) {
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.TIMESTAMP, 0);
+        } else if (nameHash == FnvHash.Constants.TIMESTAMP) {
+            x.setName(SQLDataType.Constants.TIMESTAMP);
+            if (x.isWithLocalTimeZone()) {
+                x.setWithLocalTimeZone(false);
+                x.setWithTimeZone(null);
+            }
+            dataType = x;
+        } else if (nameHash == FnvHash.Constants.DATETIME) {
+            int len = -1;
+            if (argumentns.size() > 0) {
+                SQLExpr arg0 = argumentns.get(0);
+                if (arg0 instanceof SQLNumericLiteralExpr) {
+                    len = ((SQLNumericLiteralExpr) arg0).getNumber().intValue();
+                } else {
+                    throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
+                }
+            }
+
+            if (len > 0) {
+                dataType = new SQLDataTypeImpl(SQLDataType.Constants.TIMESTAMP, len);
+            } else {
+                dataType = new SQLDataTypeImpl(SQLDataType.Constants.TIMESTAMP);
+            }
+        } else if (nameHash == FnvHash.Constants.BLOB
+                || nameHash == FnvHash.Constants.LONG_RAW
+                || nameHash == FnvHash.Constants.RAW) {
+            argumentns.clear();
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.BYTEA);
+
+        } else if (nameHash == FnvHash.Constants.CLOB
+                || nameHash == FnvHash.Constants.NCLOB
+                || nameHash == FnvHash.Constants.LONG) {
+            argumentns.clear();
+            dataType = new SQLCharacterDataType(SQLDataType.Constants.TEXT);
+
+        } else if (nameHash == FnvHash.Constants.XMLTYPE) {
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.XML);
+        } else {
+            dataType = x;
+        }
+
+        if (dataType != x) {
+            dataType.setParent(x.getParent());
+        }
+
+        return dataType;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelectTableSource {
@@ -50,7 +51,11 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            this.accept0((OracleASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
     protected void accept0(OracleASTVisitor visitor) {
@@ -63,29 +68,6 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
         }
 
         visitor.endVisit(this);
-    }
-
-    public void output(StringBuffer buf) {
-        this.left.output(buf);
-        buf.append(JoinType.toString(this.joinType));
-        this.right.output(buf);
-
-        if (this.condition != null) {
-            buf.append(" ON ");
-            this.condition.output(buf);
-        }
-
-        if (this.using.size() > 0) {
-            buf.append(" USING (");
-            int i = 0;
-            for (int size = this.using.size(); i < size; ++i) {
-                if (i != 0) {
-                    buf.append(", ");
-                }
-                ((SQLExpr) this.using.get(i)).output(buf);
-            }
-            buf.append(")");
-        }
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.db2.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2CreateTableStatement;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
@@ -22,14 +24,27 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface DB2ASTVisitor extends SQLASTVisitor {
 
-    boolean visit(DB2SelectQueryBlock x);
+    default boolean visit(DB2SelectQueryBlock x) {
+        return visit((SQLSelectQueryBlock) x);
+    }
 
-    void endVisit(DB2SelectQueryBlock x);
+    default void endVisit(DB2SelectQueryBlock x) {
+        endVisit((SQLSelectQueryBlock) x);
+    }
     
-    boolean visit(DB2ValuesStatement x);
+    default boolean visit(DB2ValuesStatement x) {
+        return true;
+    }
     
-    void endVisit(DB2ValuesStatement x);
+    default void endVisit(DB2ValuesStatement x) {
 
-    boolean visit(DB2CreateTableStatement x);
-    void endVisit(DB2CreateTableStatement x);
+    }
+
+    default boolean visit(DB2CreateTableStatement x) {
+        return visit((SQLCreateTableStatement) x);
+    }
+
+    default void endVisit(DB2CreateTableStatement x) {
+        endVisit((SQLCreateTableStatement) x);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wenshao on 16/08/2017.
@@ -42,6 +43,7 @@ public class MySqlFlushStatement extends MySqlStatementImpl {
     private boolean generalLogs;
     private boolean hots;
     private boolean logs;
+    private boolean master;
     private boolean privileges;
     private boolean optimizerCosts;
     private boolean queryCache;
@@ -51,6 +53,8 @@ public class MySqlFlushStatement extends MySqlStatementImpl {
     private boolean status;
     private boolean userResources;
     private boolean tableOption;
+    private SQLIntegerExpr version; // for ads
+
 
     public boolean isNoWriteToBinlog() {
         return noWriteToBinlog;
@@ -237,5 +241,21 @@ public class MySqlFlushStatement extends MySqlStatementImpl {
         }
         table.setParent(this);
         this.tables.add(table);
+    }
+
+    public SQLIntegerExpr getVersion() {
+        return version;
+    }
+
+    public void setVersion(SQLIntegerExpr version) {
+        this.version = version;
+    }
+
+    public boolean isMaster() {
+        return master;
+    }
+
+    public void setMaster(boolean master) {
+        this.master = master;
     }
 }

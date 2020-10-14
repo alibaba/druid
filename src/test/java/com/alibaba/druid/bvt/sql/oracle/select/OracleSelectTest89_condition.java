@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package com.alibaba.druid.bvt.sql.oracle.select;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
@@ -68,7 +66,7 @@ public class OracleSelectTest89_condition extends OracleTest {
                     "\t\tSELECT DISTINCT rid\n" +
                     "\t\tFROM v.p\n" +
                     "\t)\n" +
-                    "\tAND \"timestamp\" <= 1298505600000", text);
+                    "\tAND TIMESTAMP <= 1298505600000", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());

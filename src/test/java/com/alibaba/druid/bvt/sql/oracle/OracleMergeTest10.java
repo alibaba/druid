@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,10 +47,10 @@ public class OracleMergeTest10 extends OracleTest {
                         "\tFROM employees\n" +
                         ") s ON (employee_id = a) \n" +
                         "WHEN MATCHED THEN UPDATE SET d.bonus = bonus\n" +
-                        "\tWHERE salary > 8000\n" +
+                        "\tDELETE WHERE salary > 8000\n" +
                         "WHEN NOT MATCHED THEN INSERT (d.employee_id, d.bonus) VALUES (s.employee_id, s.salary)\n" +
                         "\tWHERE s.salary <= 8000",
-                            result);
+                result);
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));

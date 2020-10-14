@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,30 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class SQLAlterDatabaseStatement extends SQLStatementImpl implements SQLAlterStatement {
-
-    private SQLName name;
-
-    private boolean upgradeDataDirectoryName;
-
+    private SQLName           name;
+    private boolean           upgradeDataDirectoryName;
     private SQLAlterCharacter character;
+
+    private SQLAlterDatabaseItem item;
+
+    private List<SQLAssignItem> properties = new ArrayList<SQLAssignItem>();
     
     public SQLAlterDatabaseStatement() {
         
     }
     
-    public SQLAlterDatabaseStatement(String dbType) {
+    public SQLAlterDatabaseStatement(DbType dbType) {
         this.setDbType(dbType);
     }
 
@@ -75,6 +78,18 @@ public class SQLAlterDatabaseStatement extends SQLStatementImpl implements SQLAl
             acceptChild(visitor, name);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLAlterDatabaseItem getItem() {
+        return item;
+    }
+
+    public void setItem(SQLAlterDatabaseItem item) {
+        this.item = item;
+    }
+
+    public List<SQLAssignItem> getProperties() {
+        return properties;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
-
-public abstract class SQLInsertInto extends SQLObjectImpl {
+public abstract class SQLInsertInto extends SQLStatementImpl implements SQLReplaceable {
     protected SQLExprTableSource        tableSource;
     protected final List<SQLExpr>       columns = new ArrayList<SQLExpr>();
     protected transient String          columnsString;
     protected transient long            columnsStringHash;
     protected SQLSelect                 query;
     protected final List<ValuesClause>  valuesList = new ArrayList<ValuesClause>();
+    protected boolean                   overwrite  = false;
+    protected List<SQLAssignItem>       partitions;
 
     public SQLInsertInto(){
 
@@ -52,6 +52,40 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
             v2.setParent(x);
             x.valuesList.add(v2);
         }
+
+        if (hint != null) {
+            x.setHint(hint.clone());
+        }
+
+        x.overwrite = overwrite;
+        if (partitions != null) {
+            for (SQLAssignItem item : partitions) {
+                x.addPartition(item.clone());
+            }
+        }
+    }
+
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        for (int i = 0; i < columns.size(); i++) {
+            if (columns.get(i) == expr) {
+                target.setParent(this);
+                columns.set(i, target);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public SQLCommentHint getHint() {
+        return hint;
+    }
+
+    public void setHint(SQLCommentHint x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.hint = x;
     }
 
     public abstract SQLInsertInto clone();
@@ -151,4 +185,29 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
         this.columnsString = columnsString;
         this.columnsStringHash = columnsStringHash;
     }
+
+    public boolean isOverwrite() {
+        return overwrite;
+    }
+
+    public void setOverwrite(boolean overwrite) {
+        this.overwrite = overwrite;
+    }
+
+    public void addPartition(SQLAssignItem partition) {
+        if (partition != null) {
+            partition.setParent(this);
+        }
+
+        if (partitions == null) {
+            partitions = new ArrayList<SQLAssignItem>();
+        }
+
+        this.partitions.add(partition);
+    }
+
+    public List<SQLAssignItem> getPartitions() {
+        return partitions;
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OraclePipeRowStatement extends OracleStatementImpl {
     private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
@@ -34,5 +35,33 @@ public class OraclePipeRowStatement extends OracleStatementImpl {
 
     public List<SQLExpr> getParameters() {
         return parameters;
+    }
+
+    @Override
+    public OraclePipeRowStatement clone() {
+        OraclePipeRowStatement x = new OraclePipeRowStatement();
+
+        x.setAfterSemi(this.afterSemi);
+
+        x.setDbType(this.dbType);
+
+        for (SQLExpr expr : parameters) {
+            SQLExpr expr2 = expr.clone();
+            expr2.setParent(x);
+            x.parameters.add(expr2);
+        }
+
+        if (this.headHints != null) {
+            List<SQLCommentHint> headHintsClone = new ArrayList<SQLCommentHint>(this.headHints.size());
+            for (SQLCommentHint hint : headHints) {
+                SQLCommentHint h2 = hint.clone();
+                h2.setParent(x);
+                headHintsClone.add(h2);
+            }
+            x.setHeadHints(headHintsClone);
+        }
+
+        return x;
+
     }
 }

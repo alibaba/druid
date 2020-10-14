@@ -35,7 +35,8 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
     protected SQLExpr             filter;
     protected SQLOver             over;
     protected SQLName             overRef;
-    protected SQLOrderBy          withinGroup;
+    protected SQLOrderBy          orderBy;
+    protected boolean             withinGroup = false;
     protected Boolean             ignoreNulls      = false;
 
     public SQLAggregateExpr(String methodName){
@@ -58,16 +59,16 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
         }
     }
 
-    public SQLOrderBy getWithinGroup() {
-        return withinGroup;
+    public SQLOrderBy getOrderBy() {
+        return orderBy;
     }
 
-    public void setWithinGroup(SQLOrderBy withinGroup) {
-        if (withinGroup != null) {
-            withinGroup.setParent(this);
+    public void setOrderBy(SQLOrderBy orderBy) {
+        if (orderBy != null) {
+            orderBy.setParent(this);
         }
 
-        this.withinGroup = withinGroup;
+        this.orderBy = orderBy;
     }
 
     public SQLAggregateOption getOption() {
@@ -113,6 +114,20 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
             keep.setParent(this);
         }
         this.keep = keep;
+    }
+
+    public boolean isWithinGroup() {
+        return withinGroup;
+    }
+
+    public void setWithinGroup(boolean withinGroup) {
+        this.withinGroup = withinGroup;
+    }
+
+    //为了兼容之前的逻辑
+    @Deprecated
+    public SQLOrderBy getWithinGroup() {
+        return orderBy;
     }
 
     public boolean isIgnoreNulls() {
@@ -161,8 +176,8 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
                 this.overRef.accept(visitor);
             }
 
-            if (this.withinGroup != null) {
-                this.withinGroup.accept(visitor);
+            if (this.orderBy != null) {
+                this.orderBy.accept(visitor);
             }
         }
 
@@ -179,8 +194,8 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
         if (over != null) {
             children.add(over);
         }
-        if (withinGroup != null) {
-            children.add(withinGroup);
+        if (orderBy != null) {
+            children.add(orderBy);
         }
         return children;
     }
@@ -210,7 +225,7 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
         if (filter != null ? !filter.equals(that.filter) : that.filter != null) return false;
         if (over != null ? !over.equals(that.over) : that.over != null) return false;
         if (overRef != null ? !overRef.equals(that.overRef) : that.overRef != null) return false;
-        if (withinGroup != null ? !withinGroup.equals(that.withinGroup) : that.withinGroup != null) return false;
+        if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) return false;
         return ignoreNulls != null ? ignoreNulls.equals(that.ignoreNulls) : that.ignoreNulls == null;
     }
 
@@ -222,7 +237,7 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
         result = 31 * result + (filter != null ? filter.hashCode() : 0);
         result = 31 * result + (over != null ? over.hashCode() : 0);
         result = 31 * result + (overRef != null ? overRef.hashCode() : 0);
-        result = 31 * result + (withinGroup != null ? withinGroup.hashCode() : 0);
+        result = 31 * result + (orderBy != null ? orderBy.hashCode() : 0);
         result = 31 * result + (ignoreNulls != null ? ignoreNulls.hashCode() : 0);
         return result;
     }
@@ -248,8 +263,8 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
             x.setOverRef(overRef.clone());
         }
 
-        if (withinGroup != null) {
-            x.setWithinGroup(withinGroup.clone());
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
         }
 
         x.ignoreNulls = ignoreNulls;
@@ -275,6 +290,11 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
 
         long hash = methodNameHashCode64();
 
+        if (hash == FnvHash.Constants.COUNT
+                || hash == FnvHash.Constants.ROW_NUMBER) {
+            return SQLIntegerExpr.DATA_TYPE;
+        }
+
         if (arguments.size() > 0) {
             SQLDataType dataType = arguments.get(0)
                     .computeDataType();
@@ -282,6 +302,15 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
                     && (dataType.nameHashCode64() != FnvHash.Constants.BOOLEAN)) {
                 return dataType;
             }
+        }
+
+        if (hash == FnvHash.Constants.SUM) {
+            return SQLNumberExpr.DATA_TYPE_DOUBLE;
+        }
+
+        if (hash == FnvHash.Constants.WM_CONCAT
+                || hash == FnvHash.Constants.GROUP_CONCAT) {
+            return SQLCharExpr.DATA_TYPE;
         }
 
         return null;

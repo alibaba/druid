@@ -1,5 +1,6 @@
 package com.alibaba.druid.not_support.sql.sqlserver;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class AntlrSqlServerTest extends TestCase {
     public void test_for_antlr_examples() throws Exception {
-        SchemaStatVisitor schemaStatVisitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
+        SchemaStatVisitor schemaStatVisitor = SQLUtils.createSchemaStatVisitor(DbType.mysql);
         MySqlWallProvider provider = new MySqlWallProvider();
 
         String path = "bvt/parser/antlr_grammers_v4_tsql/";
@@ -23,7 +24,7 @@ public class AntlrSqlServerTest extends TestCase {
         for (File file : dir.listFiles()) {
             System.out.println(file);
             String sql = FileUtils.readFileToString(file);
-            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
+            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.mysql);
             for (SQLStatement stmt : stmtList) {
                 stmt.toString();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,13 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey {
+public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey, SQLTableConstraint {
+    protected boolean disableNovalidate = false;
     protected boolean clustered         = false; // sql server
+
+    public SQLPrimaryKeyImpl() {
+
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -37,7 +42,16 @@ public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey {
 
     public void cloneTo(SQLPrimaryKeyImpl x) {
         super.cloneTo(x);
+        x.disableNovalidate = disableNovalidate;
         x.clustered = clustered;
+    }
+
+    public boolean isDisableNovalidate() {
+        return disableNovalidate;
+    }
+
+    public void setDisableNovalidate(boolean disableNovalidate) {
+        this.disableNovalidate = disableNovalidate;
     }
 
     public boolean isClustered() {

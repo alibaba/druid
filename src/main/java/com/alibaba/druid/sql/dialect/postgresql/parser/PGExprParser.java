@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,39 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
-import java.util.Arrays;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLValuesExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGDateField;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.Arrays;
 
 public class PGExprParser extends SQLExprParser {
 
@@ -56,7 +35,8 @@ public class PGExprParser extends SQLExprParser {
     public final static long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER" };
+        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER","PERCENTILE_CONT", "PERCENTILE_DISC", "RANK", "DENSE_RANK","PERCENT_RANK","CUME_DIST" };
+
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
@@ -69,20 +49,20 @@ public class PGExprParser extends SQLExprParser {
     public PGExprParser(String sql){
         this(new PGLexer(sql));
         this.lexer.nextToken();
-        this.dbType = JdbcConstants.POSTGRESQL;
+        this.dbType = DbType.postgresql;
     }
 
     public PGExprParser(String sql, SQLParserFeature... features){
         this(new PGLexer(sql));
         this.lexer.nextToken();
-        this.dbType = JdbcConstants.POSTGRESQL;
+        this.dbType = DbType.postgresql;
     }
 
     public PGExprParser(Lexer lexer){
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
-        this.dbType = JdbcConstants.POSTGRESQL;
+        this.dbType = DbType.postgresql;
     }
     
     @Override
@@ -113,7 +93,6 @@ public class PGExprParser extends SQLExprParser {
                 accept(Token.RBRACKET);
                 return primaryRest(array);
             }
-
         } else if (lexer.token() == Token.POUND) {
             lexer.nextToken();
             if (lexer.token() == Token.LBRACE) {
@@ -149,6 +128,11 @@ public class PGExprParser extends SQLExprParser {
                 break;
             }
             return values;
+        } else if (lexer.token() == Token.WITH) {
+            SQLQueryExpr queryExpr = new SQLQueryExpr(
+                    createSelectParser()
+                            .select());
+            return queryExpr;
         }
         
         return super.primary();
@@ -163,6 +147,27 @@ public class PGExprParser extends SQLExprParser {
         }
         intervalExpr.setValue(new SQLCharExpr(lexer.stringVal()));
         lexer.nextToken();
+
+        if (lexer.identifierEquals(FnvHash.Constants.DAY)) {
+            lexer.nextToken();
+            intervalExpr.setUnit(SQLIntervalUnit.DAY);
+        } else if (lexer.identifierEquals(FnvHash.Constants.MONTH)) {
+            lexer.nextToken();
+            intervalExpr.setUnit(SQLIntervalUnit.MONTH);
+        } else if (lexer.identifierEquals(FnvHash.Constants.YEAR)) {
+            lexer.nextToken();
+            intervalExpr.setUnit(SQLIntervalUnit.YEAR);
+        } else if (lexer.identifierEquals(FnvHash.Constants.HOUR)) {
+            lexer.nextToken();
+            intervalExpr.setUnit(SQLIntervalUnit.HOUR);
+        } else if (lexer.identifierEquals(FnvHash.Constants.MINUTE)) {
+            lexer.nextToken();
+            intervalExpr.setUnit(SQLIntervalUnit.MINUTE);
+        } else if (lexer.identifierEquals(FnvHash.Constants.SECOND)) {
+            lexer.nextToken();
+            intervalExpr.setUnit(SQLIntervalUnit.SECOND);
+        }
+
         return intervalExpr;
     }
 
@@ -189,13 +194,15 @@ public class PGExprParser extends SQLExprParser {
         }
         
         if (expr.getClass() == SQLIdentifierExpr.class) {
-            String ident = ((SQLIdentifierExpr)expr).getName();
+            SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
+            String ident = identifierExpr.getName();
+            long hash = identifierExpr.nameHashCode64();
 
             if (lexer.token() == Token.COMMA || lexer.token() == Token.RPAREN) {
                 return super.primaryRest(expr);
             }
 
-            if ("TIMESTAMP".equalsIgnoreCase(ident)) {
+            if (FnvHash.Constants.TIMESTAMP == hash) {
                 if (lexer.token() != Token.LITERAL_ALIAS //
                         && lexer.token() != Token.LITERAL_CHARS //
                         && lexer.token() != Token.WITH) {
@@ -228,7 +235,7 @@ public class PGExprParser extends SQLExprParser {
 
 
                 return primaryRest(timestamp);
-            } else  if ("TIMESTAMPTZ".equalsIgnoreCase(ident)) {
+            } else if (FnvHash.Constants.TIMESTAMPTZ == hash) {
                 if (lexer.token() != Token.LITERAL_ALIAS //
                         && lexer.token() != Token.LITERAL_CHARS //
                         && lexer.token() != Token.WITH) {
@@ -255,7 +262,7 @@ public class PGExprParser extends SQLExprParser {
 
 
                 return primaryRest(timestamp);
-            } else if ("EXTRACT".equalsIgnoreCase(ident)) {
+            } else if (FnvHash.Constants.EXTRACT == hash) {
                 accept(Token.LPAREN);
                 
                 PGExtractExpr extract = new PGExtractExpr();
@@ -273,43 +280,57 @@ public class PGExprParser extends SQLExprParser {
                 
                 accept(Token.RPAREN);
                 
-                return primaryRest(extract);     
-            } else if ("POINT".equalsIgnoreCase(ident)) {
-                SQLExpr value = this.primary();
-                PGPointExpr point = new PGPointExpr();
-                point.setValue(value);
-                return primaryRest(point);
-            } else if ("BOX".equalsIgnoreCase(ident)) {
+                return primaryRest(extract);
+            } else if (FnvHash.Constants.POINT == hash) {
+                switch (lexer.token()) {
+                    case DOT:
+                    case EQ:
+                    case LTGT:
+                    case GT:
+                    case GTEQ:
+                    case LT:
+                    case LTEQ:
+                    case SUB:
+                    case PLUS:
+                    case SUBGT:
+                        break;
+                    default:
+                        SQLExpr value = this.primary();
+                        PGPointExpr point = new PGPointExpr();
+                        point.setValue(value);
+                        return primaryRest(point);
+                }
+            } else if (FnvHash.Constants.BOX == hash) {
                 SQLExpr value = this.primary();
                 PGBoxExpr box = new PGBoxExpr();
                 box.setValue(value);
                 return primaryRest(box);
-            } else if ("macaddr".equalsIgnoreCase(ident)) {
+            } else if (FnvHash.Constants.MACADDR == hash) {
                 SQLExpr value = this.primary();
                 PGMacAddrExpr macaddr = new PGMacAddrExpr();
                 macaddr.setValue(value);
                 return primaryRest(macaddr);
-            } else if ("inet".equalsIgnoreCase(ident)) {
-                SQLExpr value = this.primary();
-                PGInetExpr inet = new PGInetExpr();
-                inet.setValue(value);
-                return primaryRest(inet);
-            } else if ("cidr".equalsIgnoreCase(ident)) {
+            } else if (FnvHash.Constants.INET == hash) {
+                    SQLExpr value = this.primary();
+                    PGInetExpr inet = new PGInetExpr();
+                    inet.setValue(value);
+                    return primaryRest(inet);
+            } else if (FnvHash.Constants.CIDR == hash) {
                 SQLExpr value = this.primary();
                 PGCidrExpr cidr = new PGCidrExpr();
                 cidr.setValue(value);
                 return primaryRest(cidr);
-            } else if ("polygon".equalsIgnoreCase(ident)) {
+            } else if (FnvHash.Constants.POLYGON == hash) {
                 SQLExpr value = this.primary();
                 PGPolygonExpr polygon = new PGPolygonExpr();
                 polygon.setValue(value);
                 return primaryRest(polygon);
-            } else if ("circle".equalsIgnoreCase(ident)) {
+            } else if (FnvHash.Constants.CIRCLE == hash) {
                 SQLExpr value = this.primary();
                 PGCircleExpr circle = new PGCircleExpr();
                 circle.setValue(value);
                 return primaryRest(circle);
-            } else if ("lseg".equalsIgnoreCase(ident)) {
+            } else if (FnvHash.Constants.LSEG == hash) {
                 SQLExpr value = this.primary();
                 PGLineSegmentsExpr lseg = new PGLineSegmentsExpr();
                 lseg.setValue(value);
@@ -344,16 +365,5 @@ public class PGExprParser extends SQLExprParser {
             break;
         }
         return alias;
-    }
-
-    protected void filter(SQLAggregateExpr x) {
-        if (lexer.identifierEquals(FnvHash.Constants.FILTER)) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            accept(Token.WHERE);
-            SQLExpr filter = this.expr();
-            accept(Token.RPAREN);
-            x.setFilter(filter);
-        }
     }
 }

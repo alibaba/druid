@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,12 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLShowTablesStatement extends SQLStatementImpl {
-
+public class SQLShowTablesStatement extends SQLStatementImpl implements SQLShowStatement, SQLReplaceable {
+    private boolean extended = false;
     protected SQLName database;
     protected SQLExpr like;
     
@@ -30,6 +31,10 @@ public class SQLShowTablesStatement extends SQLStatementImpl {
     protected SQLExpr where;
 
     public SQLName getDatabase() {
+        return database;
+    }
+
+    public SQLName getFrom() {
         return database;
     }
 
@@ -75,5 +80,34 @@ public class SQLShowTablesStatement extends SQLStatementImpl {
             acceptChild(visitor, database);
             acceptChild(visitor, like);
         }
+        visitor.endVisit(this);
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (database == expr) {
+            setDatabase((SQLName) target);
+            return true;
+        }
+
+        if (like == expr) {
+            setLike(target);
+            return true;
+        }
+
+        if (where == expr) {
+            setWhere(target);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isExtended() {
+        return extended;
+    }
+
+    public void setExtended(boolean extended) {
+        this.extended = extended;
     }
 }

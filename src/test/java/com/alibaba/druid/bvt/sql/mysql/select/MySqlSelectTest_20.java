@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.select;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.Assert;
+
+import java.util.List;
 
 public class MySqlSelectTest_20 extends MysqlTest {
 
@@ -62,9 +61,9 @@ public class MySqlSelectTest_20 extends MysqlTest {
         
         String output = SQLUtils.toMySqlString(stmt);
         
-        Assert.assertEquals("SELECT bsvariety, max(bsh) AS bsh, min(bsl) AS bsl\n" +
-                "FROM exchange_market_info\n" +
-                "WHERE bsdate > date_sub(now(), INTERVAL 1 DAY)\n" +
-                "GROUP BY bsvariety DESC;", output);
+        Assert.assertEquals("SELECT bsvariety, max(bsh) AS bsh, min(bsl) AS bsl"
+                + "\nFROM exchange_market_info"
+                + "\nWHERE bsdate > date_sub(now(), INTERVAL 1 DAY)"
+                + "\nGROUP BY bsvariety DESC;", output);
     }
 }

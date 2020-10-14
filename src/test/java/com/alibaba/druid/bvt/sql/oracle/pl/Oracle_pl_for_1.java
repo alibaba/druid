@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import java.util.List;
 
 public class Oracle_pl_for_1 extends OracleTest {
 
-    public void test_0() throws Exception {
-        String sql = "DECLARE\n" +
+	public void test_0() throws Exception {
+		String sql = "DECLARE\n" +
 				"  TYPE empcurtyp IS REF CURSOR;\n" +
 				"  TYPE namelist IS TABLE OF employees.last_name%TYPE;\n" +
 				"  TYPE sallist IS TABLE OF employees.salary%TYPE;\n" +
@@ -49,15 +49,15 @@ public class Oracle_pl_for_1 extends OracleTest {
 				"  END LOOP;\n" +
 				"END;"; //
 
-        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
+		List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
 		SQLStatement stmt = statementList.get(0);
 
-        assertEquals(1, statementList.size());
+		assertEquals(1, statementList.size());
 
-        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
-        for (SQLStatement statement : statementList) {
-            statement.accept(visitor);
-        }
+		SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
+		for (SQLStatement statement : statementList) {
+			statement.accept(visitor);
+		}
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
@@ -65,7 +65,7 @@ public class Oracle_pl_for_1 extends OracleTest {
 //        System.out.println("relationships : " + visitor.getRelationships());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals(0, visitor.getTables().size());
+		assertEquals(0, visitor.getTables().size());
 
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
@@ -74,7 +74,7 @@ public class Oracle_pl_for_1 extends OracleTest {
 //        Assert.assertEquals(3, visitor.getConditions().size());
 //        Assert.assertEquals(1, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+		// Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
 		{
 			String output = SQLUtils.toOracleString(stmt);
@@ -111,7 +111,7 @@ public class Oracle_pl_for_1 extends OracleTest {
 							"\tnames namelist;\n" +
 							"\tsals sallist;\n" +
 							"begin\n" +
-							"\topen emp_cvfor \n" +
+							"\topen emp_cv for \n" +
 							"\t\tselect last_name, salary\n" +
 							"\t\tfrom employees\n" +
 							"\t\twhere job_id = 'SA_REP'\n" +

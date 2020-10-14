@@ -1,15 +1,7 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.parser.SQLParserUtils;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by wenshao on 16/8/23.
@@ -21,7 +13,7 @@ public class MySqlParameterizedOutputVisitorTest_restore_0 extends TestCase {
         params = params.replaceAll("''", "'");
         sqlTemplate = SQLUtils.formatMySql(sqlTemplate);
         String table = "[\"`gpo_abi_raw_data`\"]";
-        String formattedSql = ParseUtil.restore(sqlTemplate, table, params);
+        String formattedSql = com.alibaba.druid.bvt.sql.mysql.param.ParseUtil.restore(sqlTemplate, table, params);
         assertEquals("SELECT id, name, x, y, city_code\n" +
                 "FROM `gpo_abi_raw_data` `gpo_abi_raw_data`\n" +
                 "WHERE 1 = 1\n" +

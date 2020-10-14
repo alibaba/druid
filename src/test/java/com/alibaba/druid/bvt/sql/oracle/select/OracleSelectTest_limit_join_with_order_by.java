@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.oracle.select;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
@@ -7,8 +8,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 import java.util.List;
-
-import static com.alibaba.druid.util.JdbcConstants.ORACLE;
 
 public class OracleSelectTest_limit_join_with_order_by extends OracleTest {
 
@@ -21,13 +20,13 @@ public class OracleSelectTest_limit_join_with_order_by extends OracleTest {
                 " left join B b on a.id = b.id " +
                 " where a.id = 10 order by create_time desc";
 
-        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, ORACLE);
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.oracle);
 
         SQLSelectStatement select = ((SQLSelectStatement)statementList.get(0));
 
-        PagerUtils.limit(select.getSelect(), ORACLE, 0, 200, true);
+        PagerUtils.limit(select.getSelect(), DbType.oracle, 0, 200, true);
 
         String expected = "select XX.*, ROWNUM as RN from ( select * from A a left join B b on a.id = b.id  where a.id = 10 order by create_time desc ) XX where ROWNUM <= 200";
-        assertEquals(expected, SQLUtils.format(select.toString(), ORACLE, new SQLUtils.FormatOption(null)));
+        assertEquals(expected, SQLUtils.format(select.toString(), DbType.oracle, new SQLUtils.FormatOption(null)));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
-import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
-import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
+import com.alibaba.druid.sql.parser.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.druid.sql.parser.Keywords;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.NotAllowCommentException;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.Token;
+import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
+import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OracleLexer extends Lexer {
 
@@ -61,7 +56,7 @@ public class OracleLexer extends Lexer {
         map.put("MERGE", Token.MERGE);
 
         map.put("MODE", Token.MODE);
-        map.put("MODEL", Token.MODEL);
+//        map.put("MODEL", Token.MODEL);
         map.put("NOWAIT", Token.NOWAIT);
         map.put("OF", Token.OF);
         map.put("PRIOR", Token.PRIOR);
@@ -80,8 +75,6 @@ public class OracleLexer extends Lexer {
 
         map.put("WAIT", Token.WAIT);
         map.put("WITH", Token.WITH);
-
-        map.put("IDENTIFIED", Token.IDENTIFIED);
 
         map.put("PCTFREE", Token.PCTFREE);
         map.put("INITRANS", Token.INITRANS);
@@ -193,7 +186,7 @@ public class OracleLexer extends Lexer {
             for (; ; ) {
                 ch = charAt(++pos);
 
-                if (!isIdentifierChar(ch)) {
+                if (!isIdentifierChar(ch) && ch != ':') {
                     break;
                 }
 
@@ -339,6 +332,8 @@ public class OracleLexer extends Lexer {
         }
     }
 
+
+
     public void scanNumber() {
         mark = pos;
 
@@ -377,7 +372,7 @@ public class OracleLexer extends Lexer {
             }
         }
 
-        if (ch == 'e' || ch == 'E') {
+        if ((ch == 'e' || ch == 'E') && isDigit2(charAt(pos + 1))) {
             bufPos++;
             ch = charAt(++pos);
 

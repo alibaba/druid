@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,17 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.Collections;
+import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 public class SQLStartTransactionStatement extends SQLStatementImpl {
 
@@ -33,6 +36,17 @@ public class SQLStartTransactionStatement extends SQLStatementImpl {
     private SQLExpr              name;
 
     private List<SQLCommentHint> hints;
+
+    private IsolationLevel IsolationLevel;
+    private boolean readOnly;
+
+    public SQLStartTransactionStatement() {
+
+    }
+
+    public SQLStartTransactionStatement(DbType dbType) {
+        this.dbType = dbType;
+    }
 
     public boolean isConsistentSnapshot() {
         return consistentSnapshot;
@@ -56,6 +70,14 @@ public class SQLStartTransactionStatement extends SQLStatementImpl {
 
     public void setWork(boolean work) {
         this.work = work;
+    }
+
+    public SQLStartTransactionStatement.IsolationLevel getIsolationLevel() {
+        return IsolationLevel;
+    }
+
+    public void setIsolationLevel(SQLStartTransactionStatement.IsolationLevel isolationLevel) {
+        IsolationLevel = isolationLevel;
     }
 
     public void accept0(SQLASTVisitor visitor) {
@@ -90,4 +112,32 @@ public class SQLStartTransactionStatement extends SQLStatementImpl {
         }
         return Collections.emptyList();
     }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    public static enum IsolationLevel{
+        SERIALIZABLE("SERIALIZABLE"),
+        REPEATABLE_READ("REPEATABLE READ"),
+        READ_COMMITTED("READ COMMITTED"),
+        READ_UNCOMMITTED("READ UNCOMMITTED");
+
+        private final String text;
+
+        IsolationLevel(String text)
+        {
+            this.text = text;
+        }
+
+        public String getText()
+        {
+            return text;
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class MySqlCreateEventTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DEFINER = EVENT IF NOT EXISTS someevent ON SCHEDULE AT current_timestamp + INTERVAL 30 MINUTE\n" +
+        Assert.assertEquals("CREATE DEFINER = EVENT IF NOT EXISTS someevent ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 30 MINUTE\n" +
                 "DO\n" +
                 "BEGIN\n" +
                 "\tINSERT INTO test.t1\n" +

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,25 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
-public class MySqlParameterizedOutputVisitorTest_6 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_6 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
 
     public void test_0() throws Exception {
         String sql = "SET autocommit=1";
         String paramSql = "SET autocommit = ?";
         Assert.assertEquals(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), paramSql);
+
+        paramaterizeAST(sql, paramSql);
     }
 
     public void test_1() throws Exception {
         String sql = "SET GLOBAL sort_buffer_size=1000000, SESSION sort_buffer_size=1000000;";
         String paramSql = "SET @@global.sort_buffer_size = ?, @@session.sort_buffer_size = ?;";
         Assert.assertEquals(paramSql, ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
+
+        paramaterizeAST(sql, paramSql);
     }
 }

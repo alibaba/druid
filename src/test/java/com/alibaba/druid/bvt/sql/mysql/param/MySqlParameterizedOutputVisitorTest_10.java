@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
@@ -20,11 +21,11 @@ public class MySqlParameterizedOutputVisitorTest_10 extends TestCase {
          /*String instance = "100.81.152.9"+"_"+3314;
         int urlNum = Math.abs(instance.hashCode()) % 2;
         System.out.println(urlNum);*/
-      /* String formattedSql = SQLUtils.format("select * from ? where id = ?", JdbcConstants.MYSQL,
+      /* String formattedSql = SQLUtils.rowFormat("select * from ? where id = ?", JdbcConstants.MYSQL,
                 Arrays.<Object> asList("abc,a"));
         System.out.println(formattedSql);*/
 
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "SELECT `SURVEY_ANSWER`.`TIME_UPDATED`, `SURVEY_ANSWER`.`ANSWER_VALUE` FROM `S_ANSWER_P0115` `SURVEY_ANSWER` WHERE `SURVEY_ANSWER`.`SURVEY_ID` = 11 AND `SURVEY_ANSWER`.`QUESTION_CODE` = 'qq' ORDER BY `SURVEY_ANSWER`.`TIME_UPDATED` DESC LIMIT 1, 2";
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);

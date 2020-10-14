@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_37 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
         String sql = "insert into fc_sms_0011_201704 (c1, c2, c3) values (1, 'a', 'b')";
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);

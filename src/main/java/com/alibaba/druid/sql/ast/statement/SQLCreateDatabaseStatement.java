@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,30 +15,43 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class SQLCreateDatabaseStatement extends SQLStatementImpl implements SQLCreateStatement {
+    protected SQLName                         name;
+    protected String                          characterSet;
+    protected String                          collate;
+    protected List<SQLCommentHint>            hints;
+    protected boolean                         ifNotExists = false;
+    protected SQLExpr                         comment;
+    protected SQLExpr                         location; // hive
+    protected final List<SQLAssignItem>       dbProperties = new ArrayList<SQLAssignItem>();
+    protected Map<String, SQLExpr>            options = new HashMap<String, SQLExpr>(); // for ads
+    protected String                          user;
 
-    private SQLName              name;
+    protected SQLExpr                         password; // drds
+    protected final List<SQLAssignItem> storedOn = new ArrayList<SQLAssignItem>(); // drds
+    protected final List<List<SQLAssignItem>> storedBy = new ArrayList<List<SQLAssignItem>>(); // drds stored by
+    protected SQLExpr                         storedAs;  // drds
+    protected SQLExpr                         storedIn;  // drds
 
-    private String               characterSet;
-    private String               collate;
+    //adb
+    protected boolean physical;
 
-    private List<SQLCommentHint> hints;
-    
-    protected boolean            ifNotExists = false;
-
-    public SQLCreateDatabaseStatement(){
+    public SQLCreateDatabaseStatement() {
     }
-    
-    public SQLCreateDatabaseStatement(String dbType){
+
+    public SQLCreateDatabaseStatement(DbType dbType){
         super (dbType);
     }
 
@@ -90,13 +103,171 @@ public class SQLCreateDatabaseStatement extends SQLStatementImpl implements SQLC
     public void setHints(List<SQLCommentHint> hints) {
         this.hints = hints;
     }
-    
+
     public boolean isIfNotExists() {
         return ifNotExists;
     }
-    
+
     public void setIfNotExists(boolean ifNotExists) {
         this.ifNotExists = ifNotExists;
     }
 
+    public SQLExpr getComment() {
+        return comment;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setComment(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.comment = x;
+    }
+
+    public SQLExpr getLocation() {
+        return location;
+    }
+
+    public Map<String, SQLExpr> getOptions() {
+        return options;
+    }
+
+    public void setLocation(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.location = x;
+    }
+
+    public List<SQLAssignItem> getDbProperties() {
+        return dbProperties;
+    }
+
+    public void setOptions(Map<String, SQLExpr> options) {
+        this.options = options;
+    }
+
+    public List<SQLAssignItem> getStoredOn() {
+        return storedOn;
+    }
+
+    public List<List<SQLAssignItem>> getStoredBy() {
+        return storedBy;
+    }
+
+    public SQLExpr getStoredAs() {
+        return storedAs;
+    }
+
+    public void setStoredAs(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedAs = x;
+    }
+
+    public SQLExpr getStoredIn() {
+        return storedIn;
+    }
+
+    public void setStoredIn(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedIn = x;
+    }
+
+    public SQLExpr getPassword() {
+        return password;
+    }
+
+    public void setPassword(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.password = x;
+    }
+
+    public String getDatabaseName() {
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLName) {
+            return ((SQLName) name).getSimpleName();
+        }
+
+        return null;
+    }
+
+    public void setDatabase(String database) {
+        SQLExpr expr = SQLUtils.toSQLExpr(database);
+
+        if (expr instanceof SQLIdentifierExpr && name instanceof SQLPropertyExpr) {
+            ((SQLPropertyExpr) this.name).setName(database);
+            return;
+        }
+
+        expr.setParent(this);
+        this.name = (SQLName) expr;
+    }
+
+    public String getServer() {
+        if (name instanceof SQLPropertyExpr) {
+            SQLExpr owner = ((SQLPropertyExpr) name).getOwner();
+            if (owner instanceof SQLIdentifierExpr) {
+                return ((SQLIdentifierExpr) owner).getName();
+            }
+
+            if (owner instanceof SQLPropertyExpr) {
+                return ((SQLPropertyExpr) owner).getName();
+            }
+        }
+
+        return null;
+    }
+
+    public boolean setServer(String server) {
+        if (name == null) {
+            return false;
+        }
+
+        if (name instanceof SQLIdentifierExpr) {
+            SQLPropertyExpr propertyExpr = new SQLPropertyExpr(new SQLIdentifierExpr(server), ((SQLIdentifierExpr) name).getName());
+            propertyExpr.setParent(this);
+            name = propertyExpr;
+            return true;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) name;
+            SQLExpr owner = propertyExpr.getOwner();
+            if (owner instanceof SQLIdentifierExpr) {
+                propertyExpr.setOwner(new SQLIdentifierExpr(server));
+                return true;
+            } else if (owner instanceof SQLPropertyExpr) {
+                ((SQLPropertyExpr) owner).setName(server);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isPhysical() {
+        return physical;
+    }
+
+    public void setPhysical(boolean physical) {
+        this.physical = physical;
+    }
+
+    //    public static class StoredAs
 }

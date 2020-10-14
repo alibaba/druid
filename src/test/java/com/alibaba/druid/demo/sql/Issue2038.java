@@ -1,5 +1,6 @@
 package com.alibaba.druid.demo.sql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
@@ -15,7 +16,7 @@ public class Issue2038 extends TestCase {
     public void test_for_demo() throws Exception {
         String sql = "select * from (select * from t union all select * from t1 union all select * from t3) xx";
 
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.DB2);
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.db2);
 
 
         SQLASTVisitor visitor = new DB2ASTVisitorAdapter() {

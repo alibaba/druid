@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.select;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
+import org.junit.Assert;
+
+import java.util.List;
 
 public class OracleSelectTest46 extends OracleTest {
 
@@ -41,7 +40,7 @@ public class OracleSelectTest46 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        assertEquals(1, statementList.size());
+        Assert.assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -52,21 +51,21 @@ public class OracleSelectTest46 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals(2, visitor.getTables().size());
+        Assert.assertEquals(2, visitor.getTables().size());
 
-        assertEquals(6, visitor.getColumns().size());
+        Assert.assertEquals(6, visitor.getColumns().size());
 
         String text = TestUtils.outputOracle(stmt);
 
-        assertEquals("SELECT *" //
+        Assert.assertEquals("SELECT *" //
                             + "\nFROM MT_PRODUCT_ORDER T1, MT_ORDER T2" //
                             + "\nWHERE T1.MT_ORDER_ID = T2.MT_ORDER_ID" //
                             + "\n\tAND SELLER_SSOID = 1" //
                             + "\n\tAND T1.MT_ORDER_ID = '1'" //
                             + "\n\tAND T1.MT_BATCH_ORDER_ID IN ('1')", text);
 
-        // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 
-        // assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

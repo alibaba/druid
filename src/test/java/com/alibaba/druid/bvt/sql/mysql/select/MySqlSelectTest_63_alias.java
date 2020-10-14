@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
 
     public void test_0() throws Exception {
         String sql =  " SELECT totalNumber, concat(\"\",? , round(memberNumber, 0) , \"\") AS totalDisplay FROM (\n" +
-                "SELECT count(1) AS totalNumber, SUM(memberNumber) AS memberNumber FROM(\n" +
-                "SELECT mmd.office_id AS departID,st.no AS staffNO,st.name AS staffName,COUNT(mmd.id) memberNumber FROM ms_member_def mmd\n" +
+                "SELECT count(1) AS totalNumber, sum(memberNumber) AS memberNumber FROM(\n" +
+                "SELECT mmd.office_id AS departID,st.no AS staffNO,st.name AS staffName,count(mmd.id) memberNumber FROM ms_member_def mmd\n" +
                 "LEFT JOIN sys_user st ON mmd.salesman_id=st.id AND st.del_flag='0'\n" +
                 "WHERE mmd.create_date BETWEEN (?) AND DATE_ADD((?),INTERVAL '23:59:59' HOUR_SECOND) AND mmd.del_flag='0'\n" +
                 "AND ('' IN (?) OR st.no IN (?))\n" +
@@ -55,9 +55,9 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
             assertEquals("SELECT totalNumber\n" +
                             "\t, concat('', ?, round(memberNumber, 0), '') AS totalDisplay\n" +
                             "FROM (\n" +
-                            "\tSELECT count(1) AS totalNumber, SUM(memberNumber) AS memberNumber\n" +
+                            "\tSELECT count(1) AS totalNumber, sum(memberNumber) AS memberNumber\n" +
                             "\tFROM (\n" +
-                            "\t\tSELECT mmd.office_id AS departID, st.no AS staffNO, st.name AS staffName, COUNT(mmd.id) AS memberNumber\n" +
+                            "\t\tSELECT mmd.office_id AS departID, st.no AS staffNO, st.name AS staffName, count(mmd.id) AS memberNumber\n" +
                             "\t\tFROM ms_member_def mmd\n" +
                             "\t\t\tLEFT JOIN sys_user st\n" +
                             "\t\t\tON mmd.salesman_id = st.id\n" +
@@ -102,9 +102,9 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
             assertEquals("SELECT totalNumber\n" +
                             "\t, concat(?, ?, round(memberNumber, ?), ?) AS totalDisplay\n" +
                             "FROM (\n" +
-                            "\tSELECT count(1) AS totalNumber, SUM(memberNumber) AS memberNumber\n" +
+                            "\tSELECT count(1) AS totalNumber, sum(memberNumber) AS memberNumber\n" +
                             "\tFROM (\n" +
-                            "\t\tSELECT mmd.office_id AS departID, st.no AS staffNO, st.name AS staffName, COUNT(mmd.id) AS memberNumber\n" +
+                            "\t\tSELECT mmd.office_id AS departID, st.no AS staffNO, st.name AS staffName, count(mmd.id) AS memberNumber\n" +
                             "\t\tFROM ms_member_def mmd\n" +
                             "\t\t\tLEFT JOIN sys_user st\n" +
                             "\t\t\tON mmd.salesman_id = st.id\n" +

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,46 +15,19 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
-import java.util.Collection;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLDeclareItem;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
-import com.alibaba.druid.sql.ast.statement.SQLConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
-import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
-import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLScriptCommitStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLStartTransactionStatement;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
+
+import java.util.Collection;
+import java.util.List;
 
 public class SQLServerStatementParser extends SQLStatementParser {
 
@@ -99,8 +72,10 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 } else {
                     execStmt.setModuleName(sqlNameName);
                 }
-                
-                this.parseExecParameter(execStmt.getParameters(), execStmt);
+
+                if (lexer.token() != Token.SEMI && lexer.token() != Token.EOF) {
+                    this.parseExecParameter(execStmt.getParameters(), execStmt);
+                }
             }
             statementList.add(execStmt);
             return true;
@@ -371,6 +346,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         return udpateStatement;
     }
     
+    @Override
     public SQLServerExprParser getExprParser() {
         return (SQLServerExprParser) exprParser;
     }
@@ -510,8 +486,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         if (lexer.identifierEquals("TRANSACTION") || lexer.identifierEquals("TRAN")) {
             lexer.nextToken();
 
-            SQLStartTransactionStatement startTrans = new SQLStartTransactionStatement();
-            startTrans.setDbType(dbType);
+            SQLStartTransactionStatement startTrans = new SQLStartTransactionStatement(dbType);
 
             if (lexer.token() == Token.IDENTIFIER) {
                 SQLName name = this.exprParser.name();

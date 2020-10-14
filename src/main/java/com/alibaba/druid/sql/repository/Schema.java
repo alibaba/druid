@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,6 @@
  */
 package com.alibaba.druid.sql.repository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -30,42 +22,73 @@ import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.StringUtils;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by wenshao on 21/07/2017.
  */
 public class Schema {
-    private String name;
+    private         String                  catalog;
+    private         String                  name;
+    protected final Map<Long, SchemaObject> objects    = new ConcurrentHashMap<Long, SchemaObject>(16, 0.75f, 1);
+    protected final Map<Long, SchemaObject> functions  = new ConcurrentHashMap<Long, SchemaObject>(16, 0.75f, 1);
+    private         SchemaRepository        repository;
 
-    protected final Map<Long, SchemaObject> objects = new ConcurrentHashMap<Long, SchemaObject>();
-
-    protected final Map<Long, SchemaObject> functions  = new ConcurrentHashMap<Long, SchemaObject>();
-
-    private SchemaRepository repository;
-
-    public Schema(SchemaRepository repository) {
+    protected Schema(SchemaRepository repository) {
         this(repository, null);
     }
 
-    public Schema(SchemaRepository repository, String name) {
+    protected Schema(SchemaRepository repository, String name) {
         this.repository = repository;
+        this.setName(name);
+    }
+
+    protected Schema(SchemaRepository repository, String catalog, String name) {
+        this.repository = repository;
+        this.catalog = catalog;
         this.name = name;
+    }
+
+    public SchemaRepository getRepository() {
+        return repository;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getSimpleName() {
+        if (name != null) {
+            int p = name.indexOf('.');
+            if (p != -1) {
+                SQLExpr expr = SQLUtils.toSQLExpr(name, repository.dbType);
+                if (expr instanceof SQLPropertyExpr) {
+                    return ((SQLPropertyExpr) expr).getSimpleName();
+                } else {
+                    return name.substring(p + 1);
+                }
+            } else {
+                return name;
+            }
+        }
+        return null;
     }
 
+    public void setName(String name) {
+        this.name = name;
+
+        if (name != null && name.indexOf('.') != -1) {
+            SQLExpr expr = SQLUtils.toSQLExpr(name, repository.dbType);
+            if (expr instanceof SQLPropertyExpr) {
+                catalog = ((SQLPropertyExpr) expr).getOwnernName();
+            }
+        }
+    }
 
     public SchemaObject findTable(String tableName) {
         long hashCode64 = FnvHash.hashCode64(tableName);
@@ -76,6 +99,21 @@ public class Schema {
         SchemaObject object = objects.get(nameHashCode64);
 
         if (object != null && object.getType() == SchemaObjectType.Table) {
+            return object;
+        }
+
+        return null;
+    }
+
+    public SchemaObject findView(String viewName) {
+        long hashCode64 = FnvHash.hashCode64(viewName);
+        return findView(hashCode64);
+    }
+
+    public SchemaObject findView(long nameHashCode64) {
+        SchemaObject object = objects.get(nameHashCode64);
+
+        if (object != null && object.getType() == SchemaObjectType.View) {
             return object;
         }
 
@@ -118,7 +156,7 @@ public class Schema {
 
     public SchemaObject findTable(SQLTableSource tableSource, String alias) {
         if (tableSource instanceof SQLExprTableSource) {
-            if (alias.equalsIgnoreCase(tableSource.computeAlias())) {
+            if (StringUtils.equalsIgnoreCase(alias, tableSource.computeAlias())) {
                 SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
 
                 SchemaObject tableObject = exprTableSource.getSchemaObject();
@@ -321,5 +359,9 @@ public class Schema {
         }
         Collections.sort(tables);
         return tables;
+    }
+
+    public String getCatalog() {
+        return catalog;
     }
 }

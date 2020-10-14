@@ -1,11 +1,10 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -19,7 +18,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_18 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "insert into `t_n_0021` ( " +
                 "`f0`, `f1`, `f2`, `f3`, `f4`" +
@@ -34,9 +33,9 @@ public class MySqlParameterizedOutputVisitorTest_18 extends TestCase {
                 "\t, `f10`, `f11`, `f12`, `f13`, `f14`\n" +
                 "\t, `f15`)\n" +
                 "VALUES (NOW(), NOW(), ?, ?, ?\n" +
-                "\t\t, ?, ?, ?, ?, ?\n" +
-                "\t\t, ?, ?, ?, ?, ?\n" +
-                "\t\t, ?);", psql);
+                "\t, ?, ?, ?, ?, ?\n" +
+                "\t, ?, ?, ?, ?, ?\n" +
+                "\t, ?);", psql);
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();

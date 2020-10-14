@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,52 @@ package com.alibaba.druid.sql.dialect.hive.visitor;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateFunctionStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveMsckRepairStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface HiveASTVisitor extends SQLASTVisitor {
-    boolean visit(HiveCreateTableStatement x);
-    void endVisit(HiveCreateTableStatement x);
+    default boolean visit(HiveInsert x) {
+        return true;
+    }
 
-    boolean visit(HiveMultiInsertStatement x);
-    void endVisit(HiveMultiInsertStatement x);
+    default void endVisit(HiveInsert x) {
+    }
 
-    boolean visit(HiveInsertStatement x);
-    void endVisit(HiveInsertStatement x);
+    default boolean visit(HiveMultiInsertStatement x) {
+        return true;
+    }
 
-    boolean visit(HiveInsert x);
-    void endVisit(HiveInsert x);
+    default void endVisit(HiveMultiInsertStatement x) {
+    }
+
+    default boolean visit(HiveInsertStatement x) {
+        return true;
+    }
+
+    default void endVisit(HiveInsertStatement x) {
+    }
+
+    default boolean visit(HiveCreateFunctionStatement x) {
+        return true;
+    }
+
+    default void endVisit(HiveCreateFunctionStatement x) {
+    }
+
+    default boolean visit(HiveLoadDataStatement x) {
+        return true;
+    }
+
+    default void endVisit(HiveLoadDataStatement x) {
+    }
+
+    default boolean visit(HiveMsckRepairStatement x) {
+        return true;
+    }
+
+    default void endVisit(HiveMsckRepairStatement x) {
+    }
+
 }

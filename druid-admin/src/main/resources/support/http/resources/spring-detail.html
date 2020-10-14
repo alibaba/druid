@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Druid Spring Stat</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href='css/bootstrap.min.css' rel="stylesheet" />
+		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+    	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+	</head>
+	<body>
+		
+    	<div class="container-fluid">
+      		<div class="row-fluid">
+        		<div class="span12">
+          				<h3>
+          					Spring View
+          					<a id="viewJsonApi" target="_blank">View JSON API</a>
+          				</h3>
+          				<table id="dataTable" class="table table-bordered" style="background-color: #fff">
+							<tr>
+								<td class='td_lable lang' langKey="Class"> Class</td>
+								<td id="Class"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="Method"> Method</td>
+								<td id="Method"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="ExecuteCount"> ExecuteCount</td>
+								<td id="ExecuteCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="ExecuteErrorCount"> ExecuteErrorCount</td>
+								<td id="ExecuteErrorCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="ExecuteTimeMillis"> ExecuteTimeMillis</td>
+								<td id="ExecuteTimeMillis"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="RunningCount"> RunningCount</td>
+								<td id="RunningCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="ConcurrentMax"> ConcurrentMax</td>
+								<td id="ConcurrentMax"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="JdbcExecuteCount"> JdbcExecuteCount</td>
+								<td id="JdbcExecuteCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="JdbcExecuteErrorCount"> JdbcExecuteErrorCount</td>
+								<td id="JdbcExecuteErrorCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="JdbcExecuteTimeMillis"> JdbcExecuteTimeMillis</td>
+								<td id="JdbcExecuteTimeMillis"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="JdbcCommitCount"> JdbcCommitCount</td>
+								<td id="JdbcCommitCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="JdbcRollbackCount"> JdbcRollbackCount</td>
+								<td id="JdbcRollbackCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="JdbcFetchRowCount"> JdbcFetchRowCount</td>
+								<td id="JdbcFetchRowCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="JdbcUpdateCount"> JdbcUpdateCount</td>
+								<td id="JdbcUpdateCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="JdbcPoolConnectionOpenCount"> JdbcPoolConnectionOpenCount</td>
+								<td id="JdbcPoolConnectionOpenCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="JdbcPoolConnectionCloseCount"> JdbcPoolConnectionCloseCount</td>
+								<td id="JdbcPoolConnectionCloseCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="JdbcResultSetOpenCount"> JdbcResultSetOpenCount</td>
+								<td id="JdbcResultSetOpenCount"></td>
+							</tr>
+							 <tr>
+								<td class='td_lable lang' langKey="JdbcResultSetCloseCount"> JdbcResultSetCloseCount</td>
+								<td id="JdbcResultSetCloseCount"></td>
+							</tr>
+				      	</table>
+				      	<div class="container">
+				      		<a class="btn btn-primary" href="javascript:window.close();">Close</a>
+				      	</div>
+        		</div>
+      		</div> 
+    	</div>
+    	<script type="text/javascript">
+    	$.namespace("druid.springdetail");
+    	druid.springdetail = function () {  
+    		var clazz = druid.common.getUrlVar("class");
+    		var method = druid.common.getUrlVar("method");
+    		return  {
+    			init : function() {
+    				druid.common.buildHead(7);
+    				this.ajaxRequestForBasicInfo();
+    				$("#viewJsonApi").attr("href", 'spring-detail.json?class=' + clazz + '&method=' + method);
+    			},
+    			
+    			ajaxRequestForBasicInfo : function() {
+    				$.ajax({
+    					type: 'POST',
+    					url: 'spring-detail.json?class=' + clazz + '&method=' + method,
+    					success: function(data) {
+    						var stat = data.Content;
+    						if (stat == null)
+    							return;
+    							
+    						$("#Class").text(stat.Class)
+    						$("#Method").text(stat.Method)
+    						$("#ExecuteCount").text(stat.ExecuteCount)
+    						$("#ExecuteErrorCount").text(stat.ExecuteErrorCount)
+    						$("#ExecuteTimeMillis").text(stat.ExecuteTimeMillis)
+    						$("#RunningCount").text(stat.RunningCount)
+    						$("#ConcurrentMax").text(stat.ConcurrentMax)
+    						$("#JdbcExecuteCount").text(stat.JdbcExecuteCount)
+    						$("#JdbcExecuteErrorCount").text(stat.JdbcExecuteErrorCount)
+    						$("#JdbcExecuteTimeMillis").text(stat.JdbcExecuteTimeMillis)
+    						$("#JdbcCommitCount").text(stat.JdbcCommitCount)
+    						$("#JdbcRollbackCount").text(stat.JdbcRollbackCount)
+    						$("#JdbcFetchRowCount").text(stat.JdbcFetchRowCount)
+    						$("#JdbcUpdateCount").text(stat.JdbcUpdateCount)
+    						
+    						$("#JdbcPoolConnectionOpenCount").text(stat.JdbcPoolConnectionOpenCount)
+    						$("#JdbcPoolConnectionCloseCount").text(stat.JdbcPoolConnectionCloseCount)
+    						$("#JdbcResultSetOpenCount").text(stat.JdbcResultSetOpenCount)
+    						$("#JdbcResultSetCloseCount").text(stat.JdbcResultSetCloseCount)
+    					},
+    					dataType: "json"
+    				});
+    			}
+    		}
+    	}();
+
+    	$(document).ready(function() {
+    		druid.springdetail.init();
+    	});
+    	</script>
+	</body>
+</html>

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
 public class DistinctTest extends TestCase {
 
@@ -27,22 +27,15 @@ public class DistinctTest extends TestCase {
 
     public void test_mysql() throws Exception {
         Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.MYSQL));
-        Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.OCEANBASE));
     }
 
     public void test_oracle() throws Exception {
         Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.ORACLE));
-        Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.OCEANBASE_ORACLE));
-        Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.ALI_ORACLE));
     }
 
     public void test_oracle_unique() throws Exception {
         Assert.assertEquals("SELECT count(UNIQUE *)\nFROM t",
-                            SQLUtils.format("select count(unique *) from t", JdbcUtils.ORACLE));
-        Assert.assertEquals("SELECT count(UNIQUE *)\nFROM t",
-                SQLUtils.format("select count(unique *) from t", JdbcUtils.OCEANBASE_ORACLE));
-        Assert.assertEquals("SELECT count(UNIQUE *)\nFROM t",
-                            SQLUtils.format("select count(unique *) from t", JdbcUtils.ALI_ORACLE));
+                SQLUtils.format("select count(unique *) from t", JdbcUtils.ORACLE));
     }
 
     public void test_postgres() throws Exception {
@@ -50,6 +43,6 @@ public class DistinctTest extends TestCase {
     }
 
     public void test_sql92() throws Exception {
-        Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, null));
+        Assert.assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, (DbType) null));
     }
 }

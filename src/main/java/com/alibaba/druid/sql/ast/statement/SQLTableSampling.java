@@ -5,8 +5,7 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLTableSampling
-        extends SQLObjectImpl implements SQLReplaceable {
+public class SQLTableSampling extends SQLObjectImpl implements SQLReplaceable {
     private SQLExpr bucket;
     private SQLExpr outOf;
     private SQLExpr on;

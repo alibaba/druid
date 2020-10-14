@@ -10,24 +10,24 @@ import java.util.List;
 
 public class HiveCreateTableTest_0 extends TestCase {
     public void test_select() throws Exception {
-        String sql = "CREATE TABLE students (name VARCHAR(64), age INT, gpa DECIMAL(3, 2))\n" +
+        String sql = "CREATE EXTERNAL TABLE students (name VARCHAR(64), age INT, gpa DECIMAL(3, 2))\n" +
                 "  CLUSTERED BY (age) INTO 2 BUCKETS STORED AS ORC;";//
-        assertEquals("CREATE TABLE students (\n" +
+        assertEquals("CREATE EXTERNAL TABLE students (\n" +
                 "\tname VARCHAR(64),\n" +
                 "\tage INT,\n" +
                 "\tgpa DECIMAL(3, 2)\n" +
                 ")\n" +
                 "CLUSTERED BY (age)\n" +
                 "INTO 2 BUCKETS\n" +
-                "STORE AS ORC;", SQLUtils.formatHive(sql));
-        assertEquals("create table students (\n" +
+                "STORED AS ORC;", SQLUtils.formatHive(sql));
+        assertEquals("create external table students (\n" +
                 "\tname VARCHAR(64),\n" +
                 "\tage INT,\n" +
                 "\tgpa DECIMAL(3, 2)\n" +
                 ")\n" +
                 "clustered by (age)\n" +
                 "into 2 buckets\n" +
-                "store as ORC;", SQLUtils.formatHive(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "stored as ORC;", SQLUtils.formatHive(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);

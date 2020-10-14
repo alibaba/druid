@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,8 @@ public class OracleSelectTest99 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT last_name, hire_date, salary, SUM(salary) OVER (ORDER BY hire_date RANGE NUMTOYMINTERVAL(1, 'year') PRECEDING) AS t_sal\n" +
+            assertEquals("SELECT last_name, hire_date, salary\n" +
+                    "\t, SUM(salary) OVER (ORDER BY hire_date RANGE NUMTOYMINTERVAL(1, 'year') PRECEDING) AS t_sal\n" +
                     "FROM employees;", text);
         }
 

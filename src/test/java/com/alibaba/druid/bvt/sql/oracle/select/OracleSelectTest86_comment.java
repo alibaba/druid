@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,8 @@ public class OracleSelectTest86_comment extends OracleTest {
                     "SELECT /*+rule*/ SYS_XMLGEN(VALUE(KU$), XMLFORMAT.createFormat2('TABLE_T', '7'))\n" +
                     "\t, KU$.OBJ_NUM\n" +
                     "FROM SYS.KU$_HTABLE_VIEW KU$\n" +
-                    "WHERE NOT BITAND(KU$.PROPERTY, 8192) = 8192\n" +
-                    "\tAND NOT BITAND(KU$.SCHEMA_OBJ.FLAGS, 128) != 0\n" +
+                    "WHERE (NOT BITAND(KU$.PROPERTY, 8192) = 8192)\n" +
+                    "\tAND (NOT BITAND(KU$.SCHEMA_OBJ.FLAGS, 128) != 0)\n" +
                     "\tAND KU$.SCHEMA_OBJ.NAME = :NAME1\n" +
                     "\tAND KU$.SCHEMA_OBJ.OWNER_NAME = :SCHEMA2", text);
         }
@@ -70,7 +70,7 @@ public class OracleSelectTest86_comment extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(1, visitor.getTables().size());
-        assertEquals(6, visitor.getColumns().size());
+        assertEquals(8, visitor.getColumns().size());
         assertEquals(2, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());

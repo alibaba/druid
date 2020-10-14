@@ -24,8 +24,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-public class SQLSizeExpr
-        extends SQLExprImpl {
+public class SQLSizeExpr extends SQLExprImpl {
 
     private SQLExpr value;
     private Unit    unit;

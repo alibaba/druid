@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class MySqlCreateTableTest85 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("CREATE TABLE `some table $$` (\n" +
-                    "\tid int UNIQUE AUTO_INCREMENT,\n" +
+                    "\tid int PRIMARY KEY AUTO_INCREMENT,\n" +
                     "\tclass varchar(10),\n" +
                     "\tdata binary\n" +
                     ") ENGINE = MYISAM", output);
@@ -50,7 +50,7 @@ public class MySqlCreateTableTest85 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("create table `some table $$` (\n" +
-                    "\tid int unique auto_increment,\n" +
+                    "\tid int primary key auto_increment,\n" +
                     "\tclass varchar(10),\n" +
                     "\tdata binary\n" +
                     ") engine = MYISAM", output);

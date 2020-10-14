@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.sql.h2;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -30,7 +30,7 @@ public class H2_DropDatabaseTest extends MysqlTest {
         String sql = "DROP DATABASE IF EXISTS sonar";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.H2);
-        SQLStatement stmt = statementList.get(0);
+        SQLDropDatabaseStatement stmt = (SQLDropDatabaseStatement) statementList.get(0);
 //        print(statementList);
 
         assertEquals(1, statementList.size());
@@ -41,6 +41,7 @@ public class H2_DropDatabaseTest extends MysqlTest {
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("DROP DATABASE IF EXISTS sonar", //
                             output);
+        assertTrue(stmt.isRestrict());
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());

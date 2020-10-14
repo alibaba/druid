@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.alibaba.druid.DbType;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -43,7 +44,7 @@ public class TestH2 extends TestCase {
     }
 
     public void test_h2() throws Exception {
-        Assert.assertSame(JdbcUtils.H2, dataSource.getDbType());
+        Assert.assertSame(JdbcUtils.H2, DbType.of(dataSource.getDbType()));
         
         Connection conn = dataSource.getConnection();
 

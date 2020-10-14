@@ -1,26 +1,21 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.google.common.collect.Lists;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -106,7 +101,7 @@ public class ParseUtil {
 
     public static String parseSQL(String sql) {
         try {
-            final String dbType = JdbcConstants.MYSQL;
+            final DbType dbType = JdbcConstants.MYSQL;
             return ParameterizedOutputVisitorUtils.parameterize(sql, dbType).toUpperCase();
         } catch (Exception ex) {
             logger.error("parser sql error : " + sql);
@@ -127,14 +122,14 @@ public class ParseUtil {
         }
 
         JSONArray paramsArray = JSON.parseArray(params.replaceAll("''", "'"));
-        String dbType = JdbcConstants.MYSQL;
+        DbType dbType = JdbcConstants.MYSQL;
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         SQLStatement stmt = stmtList.get(0);
 
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(out, dbType);
-        List<Object> paramsList = Lists.newArrayList(paramsArray);
+        List<Object> paramsList = new ArrayList(paramsArray);
         visitor.setParameters(paramsList);
 
         JSONArray srcArray = getSrcArray(sql);

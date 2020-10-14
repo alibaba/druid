@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,15 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
+
+import java.util.List;
+
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Least implements Function {
 
@@ -28,7 +31,7 @@ public class Least implements Function {
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         Object result = null;
-        for (SQLExpr item : x.getParameters()) {
+        for (SQLExpr item : x.getArguments()) {
             item.accept(visitor);
 
             Object itemValue = item.getAttributes().get(EVAL_VALUE);
@@ -42,5 +45,30 @@ public class Least implements Function {
         }
 
         return result;
+    }
+
+    public Object eval(SQLMethodInvokeExpr x) {
+        List<SQLExpr> arguments = x.getArguments();
+
+        if (arguments.size() > 0) {
+            SQLExpr p0 = arguments.get(0);
+            if (p0 instanceof SQLIntegerExpr && ((SQLIntegerExpr) p0).getNumber() instanceof Integer) {
+                int val = ((SQLIntegerExpr) p0).getNumber().intValue();
+                for (int i = 1; i < arguments.size(); i++) {
+                    SQLExpr param = arguments.get(i);
+                    if (param instanceof SQLIntegerExpr && ((SQLIntegerExpr) param).getNumber() instanceof Integer) {
+                        int paramVal = ((SQLIntegerExpr) param).getNumber().intValue();
+                        if (paramVal < val) {
+                            val = paramVal;
+                        }
+                    } else {
+                        return SQLEvalVisitor.EVAL_ERROR;
+                    }
+                }
+                return val;
+            }
+        }
+
+        return SQLEvalVisitor.EVAL_ERROR;
     }
 }

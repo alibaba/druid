@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,8 @@ package com.alibaba.druid.bvt.sql.oracle.select;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -50,8 +48,8 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         SQLMethodInvokeExpr expr = (SQLMethodInvokeExpr) stmt.getSelect().getQueryBlock().getSelectList().get(0).getExpr();
-        SQLMethodInvokeExpr param0 = (SQLMethodInvokeExpr) expr.getParameters().get(0);
-        assertTrue(param0.getParameters().get(0)
+        SQLMethodInvokeExpr param0 = (SQLMethodInvokeExpr) expr.getArguments().get(0);
+        assertTrue(param0.getArguments().get(0)
                 instanceof SQLAggregateExpr);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -102,8 +100,8 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
 
         SQLMethodInvokeExpr nvl = (SQLMethodInvokeExpr) queryBlock.getSelectList()
                 .get(0).getExpr();
-        SQLMethodInvokeExpr toChar =(SQLMethodInvokeExpr) nvl.getParameters().get(0);
-        assertTrue(toChar.getParameters().get(0) instanceof SQLAggregateExpr);
+        SQLMethodInvokeExpr toChar =(SQLMethodInvokeExpr) nvl.getArguments().get(0);
+        assertTrue(toChar.getArguments().get(0) instanceof SQLAggregateExpr);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

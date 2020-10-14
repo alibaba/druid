@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,18 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-public class SQLFetchStatement extends SQLStatementImpl {
+public class SQLFetchStatement extends SQLStatementImpl implements SQLReplaceable {
 
     private SQLName       cursorName;
-
     private boolean       bulkCollect;
-
     private List<SQLExpr> into = new ArrayList<SQLExpr>();
+    private SQLLimit      limit;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -44,8 +41,22 @@ public class SQLFetchStatement extends SQLStatementImpl {
         return cursorName;
     }
 
-    public void setCursorName(SQLName cursorName) {
-        this.cursorName = cursorName;
+    public void setCursorName(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.cursorName = x;
+    }
+
+    public SQLLimit getLimit() {
+        return limit;
+    }
+
+    public void setLimit(SQLLimit x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.limit = x;
     }
 
     public List<SQLExpr> getInto() {
@@ -62,5 +73,14 @@ public class SQLFetchStatement extends SQLStatementImpl {
 
     public void setBulkCollect(boolean bulkCollect) {
         this.bulkCollect = bulkCollect;
+    }
+
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (cursorName == expr) {
+            setCursorName((SQLName) target);
+            return true;
+        }
+
+        return false;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,8 @@ public class OracleSelectTest82_wmsysconcat extends OracleTest {
 
             assertEquals("SELECT supReg.regId, supReg.Title, supReg.Docnum, supReg.Itemtype, supReg.urgent\n" +
                     "\t, supReg.Feedbackdate, supReg.Feedbackperoid, supReg.Feedbackday, supReg.dateSend, supReg.status\n" +
-                    "\t, supReg.analysed, supReg.feedbackWay, t.note, COUNT(DISTINCT supReg.regId) OVER () AS TOTALCOUNT\n" +
+                    "\t, supReg.analysed, supReg.feedbackWay, t.note\n" +
+                    "\t, COUNT(DISTINCT supReg.regId) OVER () AS TOTALCOUNT\n" +
                     "FROM sup_registration supReg\n" +
                     "\tINNER JOIN (\n" +
                     "\t\tSELECT st.regid, to_char(wmsys.WM_CONCAT(DISTINCT so.orgname)) AS note\n" +
@@ -68,7 +69,7 @@ public class OracleSelectTest82_wmsysconcat extends OracleTest {
                     "\t\tGROUP BY st.regid\n" +
                     "\t) t ON t.regid = supReg.regid \n" +
                     "WHERE supReg.status IN (2, 3, 4)\n" +
-                    "\tAND supReg.supType = '0'", text);
+                    "\tAND supType = '0'", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());

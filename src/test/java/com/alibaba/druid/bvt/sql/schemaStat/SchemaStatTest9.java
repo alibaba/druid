@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.schemaStat;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -14,7 +15,7 @@ public class SchemaStatTest9 extends TestCase {
     public void test_schemaStat() throws Exception {
         String sql = "select now() from t";
 
-        String dbType = JdbcConstants.ORACLE;
+        DbType dbType = JdbcConstants.ORACLE;
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         SQLStatement stmt = parser.parseStatementList().get(0);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public class OdpsCreateTableTest6_array extends TestCase {
                 ");";//
 
 
-        
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
@@ -50,11 +50,8 @@ public class OdpsCreateTableTest6_array extends TestCase {
                 "\taint BIGINT,\n" +
                 "\tastring STRING,\n" +
                 "\tlint ARRAY<BIGINT>,\n" +
-                "\tlstring ARRAY<STRING>, -- lintString ARRAY<INTSTRING>\n" +
-                "\tmStringString MAP<STRING, STRING> -- attribute Map<String,Map<String,Map<String,PropValueUnion>>>,\n" +
-                "\t-- unionField1 PropValueUnion,\n" +
-                "\t-- unionField2 PropValueUnion,\n" +
-                "\t-- unionField3 PropValueUnion\n" +
+                "\tlstring ARRAY<STRING>,\n" +
+                "\tmStringString MAP<STRING, STRING>\n" +
                 ");", stmt.toString());
 
         assertEquals("create table src_thrift (\n" +
@@ -69,21 +66,21 @@ public class OdpsCreateTableTest6_array extends TestCase {
                 ");", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
 //        System.out.println("Tables : " + visitor.getTables());
-      System.out.println("fields : " + visitor.getColumns());
+        System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(1, visitor.getTables().size());
         assertEquals(5, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));
-        
+
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
 

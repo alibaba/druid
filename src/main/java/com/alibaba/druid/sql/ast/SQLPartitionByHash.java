@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ public class SQLPartitionByHash extends SQLPartitionBy {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, columns);
             acceptChild(visitor, partitionsCount);
             acceptChild(visitor, getPartitions());
             acceptChild(visitor, subPartitionBy);
@@ -69,4 +70,5 @@ public class SQLPartitionByHash extends SQLPartitionBy {
     public void cloneTo(SQLPartitionByHash x) {
         super.cloneTo(x);
     }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,17 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLReturnStatement extends SQLStatementImpl {
+import java.util.Collections;
+import java.util.List;
+
+public class SQLReturnStatement extends SQLStatementImpl implements SQLReplaceable  {
 
     private SQLExpr expr;
 
@@ -31,7 +33,7 @@ public class SQLReturnStatement extends SQLStatementImpl {
 
     }
 
-    public SQLReturnStatement(String dbType) {
+    public SQLReturnStatement(DbType dbType) {
         super (dbType);
     }
 
@@ -65,5 +67,14 @@ public class SQLReturnStatement extends SQLStatementImpl {
     @Override
     public List<SQLObject> getChildren() {
         return Collections.<SQLObject>singletonList(this.expr);
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.expr == expr) {
+            setExpr(target);
+            return true;
+        }
+        return false;
     }
 }

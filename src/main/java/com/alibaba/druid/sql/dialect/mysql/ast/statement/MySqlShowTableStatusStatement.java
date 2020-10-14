@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,25 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowTableStatusStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private SQLExpr database;
+    private SQLName database;
+    private SQLName tableGroup;
     private SQLExpr like;
     private SQLExpr where;
 
-    public SQLExpr getDatabase() {
+    public MySqlShowTableStatusStatement() {
+
+    }
+
+    public SQLName getDatabase() {
         return database;
     }
 
-    public void setDatabase(SQLExpr database) {
+    public void setDatabase(SQLName database) {
         this.database = database;
     }
 
@@ -51,9 +57,18 @@ public class MySqlShowTableStatusStatement extends MySqlStatementImpl implements
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, database);
+            acceptChild(visitor, tableGroup);
             acceptChild(visitor, like);
             acceptChild(visitor, where);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLName getTableGroup() {
+        return tableGroup;
+    }
+
+    public void setTableGroup(SQLName tableGroup) {
+        this.tableGroup = tableGroup;
     }
 }

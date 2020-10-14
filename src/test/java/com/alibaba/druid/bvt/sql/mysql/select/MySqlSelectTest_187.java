@@ -72,14 +72,16 @@ public class MySqlSelectTest_187 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("SELECT coach_id, tournament_name, tournament_id, season_id, season\n" +
-                        "\t, count(1) AS num, sum(CASE \n" +
+                        "\t, count(1) AS num\n" +
+                        "\t, sum(CASE \n" +
                         "\t\tWHEN wdl = 0 THEN 1\n" +
                         "\t\tELSE 0\n" +
                         "\tEND) AS loss\n" +
                         "\t, sum(CASE \n" +
                         "\t\tWHEN wdl = 1 THEN 1\n" +
                         "\t\tELSE 0\n" +
-                        "\tEND) AS draw, sum(CASE \n" +
+                        "\tEND) AS draw\n" +
+                        "\t, sum(CASE \n" +
                         "\t\tWHEN wdl = 3 THEN 1\n" +
                         "\t\tELSE 0\n" +
                         "\tEND) AS win\n" +

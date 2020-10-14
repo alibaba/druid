@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.db2.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -22,23 +23,18 @@ import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock.Isolation;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLSelectListCache;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.Token;
-import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.sql.parser.*;
 
 public class DB2SelectParser extends SQLSelectParser {
 
     public DB2SelectParser(SQLExprParser exprParser){
         super(exprParser);
-        dbType = JdbcConstants.DB2;
+        dbType = DbType.db2;
     }
 
     public DB2SelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
         super(exprParser, selectListCache);
-        dbType = JdbcConstants.DB2;
+        dbType = DbType.db2;
     }
 
     public DB2SelectParser(String sql){
@@ -97,7 +93,7 @@ public class DB2SelectParser extends SQLSelectParser {
         parseHierachical(queryBlock);
 
         parseGroupBy(queryBlock);
-
+        
         if (lexer.token() == Token.ORDER) {
             SQLOrderBy orderBy = parseOrderBy();
             queryBlock.setOrderBy(orderBy);
@@ -116,7 +112,7 @@ public class DB2SelectParser extends SQLSelectParser {
                 accept(Token.ONLY);
                 continue;
             }
-
+            
             if (lexer.token() == Token.WITH) {
                 lexer.nextToken();
                 if (lexer.identifierEquals("RR")) {
@@ -133,10 +129,10 @@ public class DB2SelectParser extends SQLSelectParser {
                 lexer.nextToken();
                 continue;
             }
-
+            
             if (lexer.token() == Token.FOR) {
                 lexer.nextToken();
-
+                
                 if (lexer.token() == Token.UPDATE) {
                     queryBlock.setForUpdate(true);
                     lexer.nextToken();
@@ -146,11 +142,11 @@ public class DB2SelectParser extends SQLSelectParser {
                     queryBlock.setForReadOnly(true);
                 }
             }
-
+            
             if (lexer.token() == Token.OPTIMIZE) {
                 lexer.nextToken();
                 accept(Token.FOR);
-
+                
                 queryBlock.setOptimizeFor(this.expr());
                 if (lexer.identifierEquals("ROW")) {
                     lexer.nextToken();
@@ -158,7 +154,7 @@ public class DB2SelectParser extends SQLSelectParser {
                     acceptIdentifier("ROWS");
                 }
             }
-
+            
             break;
         }
 

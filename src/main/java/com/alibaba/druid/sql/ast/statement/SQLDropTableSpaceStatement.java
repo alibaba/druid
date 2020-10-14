@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,14 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropTableSpaceStatement extends SQLStatementImpl implements SQLDropStatement {
+public class SQLDropTableSpaceStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
 
     private SQLName name;
     private boolean ifExists;
@@ -30,7 +32,7 @@ public class SQLDropTableSpaceStatement extends SQLStatementImpl implements SQLD
         
     }
     
-    public SQLDropTableSpaceStatement(String dbType) {
+    public SQLDropTableSpaceStatement(DbType dbType) {
         super (dbType);
     }
 
@@ -53,6 +55,18 @@ public class SQLDropTableSpaceStatement extends SQLStatementImpl implements SQLD
         this.name = x;
     }
 
+    public String getTableSpaceName() {
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLName) {
+            return name.getSimpleName();
+        }
+
+        return null;
+    }
+
     public SQLExpr getEngine() {
         return engine;
     }
@@ -72,4 +86,12 @@ public class SQLDropTableSpaceStatement extends SQLStatementImpl implements SQLD
         this.ifExists = ifExists;
     }
 
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (name == expr) {
+            setName((SQLName) target);
+            return true;
+        }
+
+        return false;
+    }
 }

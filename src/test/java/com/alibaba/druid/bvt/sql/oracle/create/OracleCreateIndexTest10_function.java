@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class OracleCreateIndexTest10_function extends OracleTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getColumns().size());
 
 //         assertTrue(visitor.getColumns().contains(new TableStat.Column("xwarehouses", "sales_rep_id")));
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));

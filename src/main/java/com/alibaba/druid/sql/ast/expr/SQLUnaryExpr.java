@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
+public class SQLUnaryExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
 
     private static final long serialVersionUID = 1L;
     private SQLExpr           expr;
@@ -69,7 +67,9 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
 
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.expr);
+            if (this.expr != null) {
+                this.expr.accept(visitor);
+            }
         }
 
         visitor.endVisit(this);
@@ -112,5 +112,26 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.expr == expr) {
+            setExpr(target);
+            return true;
+        }
+        return false;
+    }
+
+    public SQLDataType computeDataType() {
+        switch (operator) {
+            case Plus:
+            case Negative:
+            case Compl:
+            case Not:
+                return expr.computeDataType();
+            default:
+                return null;
+        }
     }
 }

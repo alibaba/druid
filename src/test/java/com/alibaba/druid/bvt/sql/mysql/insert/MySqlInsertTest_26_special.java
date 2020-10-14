@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.insert;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -33,15 +34,15 @@ public class MySqlInsertTest_26_special extends MysqlTest {
 
         {
             List<Object> outParameters = new ArrayList<Object>();
-            String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, outParameters);
+            String psql = ParameterizedOutputVisitorUtils.parameterize(sql, DbType.mysql, outParameters);
             assertEquals("INSERT INTO SUNTEST(ID, NAME)\n" +
                     "VALUES (?, ?)", psql);
 
             assertEquals(2, outParameters.size());
 
-            String rsql = ParameterizedOutputVisitorUtils.restore(psql, JdbcConstants.MYSQL, outParameters);
+            String rsql = ParameterizedOutputVisitorUtils.restore(psql, DbType.mysql, outParameters);
             assertEquals("INSERT INTO SUNTEST (ID, NAME)\n" +
-                    "VALUES (1, '\\\\_ASDFASDF')", rsql);
+                    "VALUES (1, '\\_ASDFASDF')", rsql);
         }
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -51,7 +52,7 @@ public class MySqlInsertTest_26_special extends MysqlTest {
         MySqlInsertStatement insertStmt = (MySqlInsertStatement) stmt;
 
         assertEquals("INSERT INTO SUNTEST (ID, NAME)\n" +
-                "VALUES (1, '\\\\_ASDFASDF')", SQLUtils.toMySqlString(insertStmt));
+                "VALUES (1, '\\_ASDFASDF')", SQLUtils.toMySqlString(insertStmt));
 
 
     }
@@ -83,4 +84,5 @@ public class MySqlInsertTest_26_special extends MysqlTest {
 
 
     }
+
 }

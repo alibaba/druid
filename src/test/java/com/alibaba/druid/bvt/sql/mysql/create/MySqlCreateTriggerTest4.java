@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.util.List;
 public class MySqlCreateTriggerTest4 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "create definer = current_user() trigger trg_my2 after insert on test.t2 for each row insert into log_table values (concat(\"inserted into table test.t2 values: (1c, _) = (\", cast(NEW.col1 as char(100)), \", \", convert(new.`_`, char(100)), \")\"));";
+        String sql = "create definer = current_user() trigger trg_my2 after insert on test.t2 for each row insert into log_table values (concat(\"inserted into table test.t2 values: (1c, _) = (\", cast(NEW.col1 as char(100)), \", \", convertToSqlNode(new.`_`, char(100)), \")\"));";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -39,7 +39,7 @@ public class MySqlCreateTriggerTest4 extends MysqlTest {
                 "\tON test.t2\n" +
                 "\tFOR EACH ROW\n" +
                 "INSERT INTO log_table\n" +
-                "VALUES (concat('inserted into table test.t2 values: (1c, _) = (', CAST(NEW.col1 AS char(100)), ', ', convert(new.`_`, char(100)), ')'));", stmt.toString());
+                "VALUES (concat('inserted into table test.t2 values: (1c, _) = (', CAST(NEW.col1 AS char(100)), ', ', convertToSqlNode(new.`_`, char(100)), ')'));", stmt.toString());
     }
 
 

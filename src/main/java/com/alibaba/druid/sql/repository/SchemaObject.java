@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,115 @@ package com.alibaba.druid.sql.repository;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
+import com.alibaba.druid.util.FnvHash;
 
 /**
  * Created by wenshao on 03/06/2017.
  */
-public interface SchemaObject {
+public class SchemaObject {
+    private final Schema schema;
+    private final String name;
+    private final long   hashCode64;
 
-    SQLStatement getStatement();
+    private final SchemaObjectType type;
+    private SQLStatement statement;
+    private long rowCount = -1;
 
-    SQLColumnDefinition findColumn(String columName);
-    SQLColumnDefinition findColumn(long columNameHash);
+    protected SchemaObject(Schema schema, String name, SchemaObjectType type) {
+        this(schema, name, type, null);
+    }
 
-    boolean matchIndex(String columnName);
+    protected SchemaObject(Schema schema, String name, SchemaObjectType type, SQLStatement statement) {
+        this.schema = schema;
+        this.name = name;
+        this.type = type;
+        this.statement = statement;
 
-    boolean matchKey(String columnName);
+        this.hashCode64 = FnvHash.hashCode64(name);
+    }
 
-    SchemaObjectType getType();
+    public SchemaObject clone() {
+        SchemaObject x = new SchemaObject(schema, name, type);
 
-    String getName();
-    long nameHashCode64();
+        if (statement != null) {
+            x.statement = statement.clone();
+        }
+        x.rowCount = rowCount;
 
-    long getRowCount();
+        return x;
+    }
+
+    public long nameHashCode64() {
+        return hashCode64;
+    }
+
+    public static enum Type {
+        Sequence, Table, View, Index, Function
+    }
+
+    public SQLStatement getStatement() {
+        return statement;
+    }
+
+    public SQLColumnDefinition findColumn(String columName) {
+        long hash = FnvHash.hashCode64(columName);
+        return findColumn(hash);
+    }
+
+    public SQLColumnDefinition findColumn(long columNameHash) {
+        if (statement == null) {
+            return null;
+        }
+
+        if (statement instanceof SQLCreateTableStatement) {
+            return ((SQLCreateTableStatement) statement).findColumn(columNameHash);
+        }
+
+        return null;
+    }
+
+    public boolean matchIndex(String columnName) {
+        if (statement == null) {
+            return false;
+        }
+
+        if (statement instanceof SQLCreateTableStatement) {
+            SQLTableElement index = ((SQLCreateTableStatement) statement).findIndex(columnName);
+            return index != null;
+        }
+
+        return false;
+    }
+
+    public boolean matchKey(String columnName) {
+        if (statement == null) {
+            return false;
+        }
+
+        if (statement instanceof SQLCreateTableStatement) {
+            SQLTableElement index = ((SQLCreateTableStatement) statement).findIndex(columnName);
+            return index instanceof SQLUniqueConstraint;
+        }
+
+        return false;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public SchemaObjectType getType() {
+        return type;
+    }
+
+    public long getRowCount() {
+        return rowCount;
+    }
+
+    public Schema getSchema() {
+        return schema;
+    }
 }

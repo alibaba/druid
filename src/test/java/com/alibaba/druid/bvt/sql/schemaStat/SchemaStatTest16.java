@@ -46,7 +46,7 @@ public class SchemaStatTest16 extends TestCase {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, JdbcConstants.MYSQL);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
-        SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
+        SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(repository);
         stmt.accept(statVisitor);
 
         System.out.println("Tables : " + statVisitor.getTables());

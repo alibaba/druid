@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Druid Web Session Stat</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href='css/bootstrap.min.css' rel="stylesheet" />
+		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+    	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+	</head>
+	<body>
+		
+		<div class="container-fluid">
+      		<div class="row-fluid">
+        		<div class="span12">
+          				<h3>
+          					Web Session Stat
+          					<a href="websession.json" target="_blank">View JSON API</a>
+          					<span class="pull-right" style="font-size: 16px; margin-right: 20px;">
+          						<label class="lang" style="display: inline; cursor: pointer;">
+          							<input type="checkbox" id="principalOnlyCheck" style="margin-top: 0px;">
+          							<span langkey="PrincipalOnly" class="lang">Principal Only</span>
+          							<span> | </span>
+          						</label>
+          						<label langkey="RefreshPeriod" class="lang" style="display: inline;" for="refreshSecondsSelect">Refresh Period</label>
+          						<select id="refreshSecondsSelect" class="refresh-seconds-select btn" style="width:80px;" onchange="javascript:druid.websession.refreshSeconds=parseInt(this.options[this.options.selectedIndex].value);">
+          							<option value="5"selected="selected">5s</option>
+          							<option value="10">10s</option>
+          							<option value="20">20s</option>
+          							<option value="30">30s</option>
+          							<option value="60">60s</option>
+          						</select>
+          						<a id="btnSuspendRefresh" langkey="SuspendRefresh" class="btn btn-primary lang" href="javascript:druid.websession.switchSuspendRefresh();">Suspend Refresh</a>
+          					</span>
+          				</h3>
+						<table id="dataTable" class="table table-bordered table-striped">
+							<thead>
+								<tr>
+									<th>N</th>
+									<th><a id="th-SESSIONID" class="lang" langKey="SESSIONID">SESSIONID</a></th>
+									<th><a id="th-Principal" class="lang" langKey="Principal">Principal</a></th>
+									<th><a id="th-CreateTime" class="lang" langKey="CreateTime">CreateTime</a></th>
+									<th><a id="th-LastAccessTime" class="lang"  langKey="LastAccessTime">LastAccessTime</a></th>
+									<th><a id="th-RemoteAddress" class="lang" langKey="RemoteAddress">RemoteAddress</a></th>
+									<th><a id="th-RequestCount" class="lang" langKey="RequestCount">RequestCount</a></th>
+									<th><a id="th-RequestTimeMillisTotal" class="lang" langKey="RequestTimeMillisTotal">RequestTimeMillisTotal</a></th>
+									<th><a id="th-RunningCount" class="lang" langKey="RunningCount">RunningCount</a></th>
+									<th><a id="th-ConcurrentMax" class="lang" langKey="ConcurrentMax">ConcurrentMax</a></th>
+									<th><a id="th-JdbcExecuteCount" class="lang" langKey="JdbcExecuteCount">JdbcExecuteCount</a></th>
+									<th><a id="th-JdbcExecuteTimeMillis" class="lang" langKey="JdbcExecuteTimeMillis">JdbcExecuteTimeMillis</a></th>
+									<th><a id="th-JdbcCommitCount" class="lang" langKey="JdbcCommitCount">JdbcCommitCount</a></th>
+									<th><a id="th-JdbcRollbackCount" class="lang" langKey="JdbcRollbackCount">JdbcRollbackCount</a></th>
+									<th><a id="th-JdbcFetchRowCount" class="lang" langKey="JdbcFetchRowCount">JdbcFetchRowCount</a></th>
+									<th><a id="th-JdbcUpdateCount" class="lang" langKey="JdbcUpdateCount">JdbcUpdateCount</a></th>									
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+        		</div>
+      		</div> 
+    	</div>
+    	<script type="text/javascript">
+    	$.namespace("druid.websession");
+    	druid.websession = function () {  
+    		return  {
+    			init : function() {
+    				$("#dataTable th a").click(function(obj) {
+    					druid.common.setOrderBy(obj.target.id.substring(3))
+    				})
+    				$("#principalOnlyCheck").change(function(obj) {
+    					druid.common.ajaxRequestForBasicInfo();
+    				});
+    				druid.common.buildHead(6);
+    				druid.common.ajaxuri = 'websession.json?';
+    				druid.common.handleCallback = druid.websession.handleAjaxResult;
+    				druid.websession.controlRefresh();
+    			},
+    			controlRefresh : function() {
+    				var FIVE = 5;
+    				if(!druid.websession.refreshSeconds){
+    					druid.websession.refreshSeconds=FIVE;
+    				}
+    				if(!druid.websession.suspendedSeconds){
+    					druid.websession.suspendedSeconds=0;
+    				}
+    				druid.websession.suspendedSeconds += FIVE;
+    				if(!druid.websession.disableAutoRefresh){
+    					if(druid.websession.suspendedSeconds >= druid.websession.refreshSeconds){
+    						druid.websession.suspendedSeconds = 0;
+    						druid.common.ajaxRequestForBasicInfo();
+    					}
+    				}
+    				setTimeout(druid.websession.controlRefresh, FIVE * 1000);
+    			},
+    			switchSuspendRefresh : function() {
+    				druid.websession.disableAutoRefresh = !druid.websession.disableAutoRefresh;
+    				if(druid.websession.disableAutoRefresh){
+    					$("#btnSuspendRefresh").addClass("btn-warning").removeClass("btn-primary");
+    				} else {
+    					$("#btnSuspendRefresh").addClass("btn-primary").removeClass("btn-warning");
+    				}
+    			},
+    			disableAutoRefresh : false,
+    			refreshSeconds : 5,
+    			suspendedSeconds : 0,
+    			
+    			handleAjaxResult : function(data) {
+    				var statList = data.Content;
+    				if(statList == null) return;
+    				
+    				var sqlStatTable = document.getElementById("dataTable");
+    				while (sqlStatTable.rows.length > 1) {
+    					sqlStatTable.deleteRow(1);
+    				}
+    				
+    				var html = "";
+    				var principalOnlyChecked = document.getElementById("principalOnlyCheck").checked;
+    				for ( var i = 0; i < statList.length; i++) {
+    					var stat = statList[i];
+    					if(principalOnlyChecked && !stat.Principal) {
+    						continue;
+    					}
+    					var newRow = sqlStatTable.insertRow(-1);
+    					html += "<tr>";
+    					html += "<td>" + (i + 1) + "</td>";
+    					html += "<td>" + '<a target="_blank" href="websession-detail.html?sessionId=' + stat.SESSIONID + '">' + stat.SESSIONID + '</a>';
+    					if (stat.Principal) {
+    						html += "<td>" + stat.Principal + "</td>";
+    					} else {
+    						html += "<td></td>";
+    					}
+    					html += "<td>" + replace(stat.CreateTime) + "</td>";
+    					html += "<td>" + replace(stat.LastAccessTime) + "</td>";
+    					html += "<td>" + replace(stat.RemoteAddress) + "</td>";
+    					html += "<td>" + replace(stat.RequestCount) + "</td>";
+    					html += "<td>" + replace(stat.RequestTimeMillisTotal) + "</td>";
+    					html += "<td>" + replace(stat.RunningCount) + "</td>";
+    					html += "<td>" + replace(stat.ConcurrentMax) + "</td>";
+    					html += "<td>" + replace(stat.JdbcExecuteCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcExecuteTimeMillis) + "</td>";
+    					html += "<td>" + replace(stat.JdbcCommitCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcRollbackCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcFetchRowCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcUpdateCount) + "</td>";
+    					html += "</tr>";
+    				}
+    				$("#dataTable tbody").html(html);
+    				druid.common.stripes();
+    			}
+    		}
+    	}();
+
+    	$(document).ready(function() {
+    		druid.websession.init();
+    	});
+    	</script>
+	</body>
+</html>

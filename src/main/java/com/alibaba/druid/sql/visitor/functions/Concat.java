@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,12 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
+
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Concat implements Function {
 
@@ -28,7 +29,7 @@ public class Concat implements Function {
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         StringBuilder buf = new StringBuilder();
 
-        for (SQLExpr item : x.getParameters()) {
+        for (SQLExpr item : x.getArguments()) {
             item.accept(visitor);
 
             Object itemValue = item.getAttribute(EVAL_VALUE);
@@ -36,6 +37,26 @@ public class Concat implements Function {
                 return null;
             }
             buf.append(itemValue.toString());
+        }
+
+        return buf.toString();
+    }
+
+    public Object eval(SQLMethodInvokeExpr x) {
+        StringBuilder buf = new StringBuilder();
+        for (SQLExpr param : x.getArguments()) {
+            if (param instanceof SQLValuableExpr) {
+                Object val = ((SQLValuableExpr) param).getValue();
+                if (val instanceof String) {
+                    buf.append(val);
+                    continue;
+                } else if (val instanceof Integer) {
+                    buf.append(val);
+                    continue;
+                }
+            }
+
+            return SQLEvalVisitor.EVAL_ERROR;
         }
 
         return buf.toString();

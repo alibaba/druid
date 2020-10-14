@@ -1,0 +1,222 @@
+<!doctype html>
+<html>
+<head>
+    <title>Druid SQL Stat</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8"/>
+    <link href='css/bootstrap.min.css' rel="stylesheet"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet"/>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script src="js/lang.js" type="text/javascript" charset="utf8"></script>
+    <script src="js/common.js" type="text/javascript" charset="utf8"></script>
+    <script src="js/bootstrap.min.js" type="text/javascript" charset="utf8"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h3>
+                SQL Stat
+                <a href="sql.json" target="_blank">View JSON API</a>
+                <span class="pull-right" style="font-size: 16px; margin-right: 20px;">
+          						<label langkey="RefreshPeriod" class="lang" style="display: inline;" for="refreshSecondsSelect">Refresh Period</label>
+          						<select id="refreshSecondsSelect" class="refresh-seconds-select btn" style="width:80px;"
+                                        onchange="javascript:druid.sql.refreshSeconds=parseInt(this.options[this.options.selectedIndex].value);">
+          							<option value="5" selected="selected">5s</option>
+          							<option value="10">10s</option>
+          							<option value="20">20s</option>
+          							<option value="30">30s</option>
+          							<option value="60">60s</option>
+          						</select>
+          						<a id="btnSuspendRefresh" langkey="SuspendRefresh" class="btn btn-primary lang"
+                                   href="javascript:druid.sql.switchSuspendRefresh();">Suspend Refresh</a>
+                </span>
+                <span class="pull-right" style="font-size: 16px; margin-right: 20px;">
+          						<label langkey="ServiceList" class="lang" style="display: inline;" for="refreshServiceSelect">ServiceList</label>
+          						<select id="refreshServiceSelect" class="refresh-seconds-select btn" style="width:200px;"
+                                        onchange="javascript:druid.sql.refreshService=this.options[this.options.selectedIndex].value;">
+          						</select>
+                </span>
+            </h3>
+            <table id="dataTable" class="table table-bordered table-striped responsive-utilities">
+                <thead>
+                <tr>
+                    <th>N</th>
+                    <th><a id="th-SQL">SQL</a></th>
+                    <th><a id="th-ServiceName">ServiceName</a></th>
+                    <th><a id="th-address">address</a></th>
+                    <th width="50"><a id="th-ExecuteCount" class="lang" langKey="ExecuteCount">ExecCount</a></th>
+                    <th width="50"><a id="th-TotalTime" class="lang" langKey="ExecuteTimeMillis">ExecTime</a></th>
+                    <th width="50" class="langTitle" langKey="MaxTimespanDesc" title="Execute Time Millis Max"><a id="th-MaxTimespan" class="lang"
+                                                                                                                  langKey="MaxTimespan">ExecMax</a></th>
+                    <th width="50" class="langTitle" langKey="InTransactionCountDesc" title="Execute In Transaction Count"><a id="th-InTransactionCount"
+                                                                                                                              class="lang"
+                                                                                                                              langKey="InTransactionCount">Txn</a>
+                    </th>
+                    <th width="50"><a id="th-ErrorCount" class="lang" langKey="ErrorCount">Error</a></th>
+                    <th width="50"><a id="th-EffectedRowCount" class="lang" langKey="JdbcUpdateCount">Update</a></th>
+                    <th width="50"><a id="th-FetchRowCount" class="lang" langKey="JdbcFetchRowCount">FetchRow</a></th>
+                    <th width="50"><a id="th-RunningCount" class="lang" langKey="RunningCount">Running</a></th>
+                    <th width="50"><a id="th-ConcurrentMax" class="lang" langKey="ConcurrentMax">Concurrent</a></th>
+                    <th align="left" width="100"><span class="lang" langKey="ExecHisto">ExecHisto</span> <br/>[
+                        <a id="th-Histogram[0]" class="langTitle" langKey="count1ms" title="count of '0-1 ms'">-</a>
+                        <a id="th-Histogram[1]" class="langTitle" langKey="count10ms" title="count of '1-10 ms'">-</a>
+                        <a id="th-Histogram[2]" class="langTitle" langKey="count100ms" title="count of '10-100 ms'">-</a>
+                        <a id="th-Histogram[3]" class="langTitle" langKey="count1s" title="count of '100ms-1 s'">-</a>
+                        <a id="th-Histogram[4]" class="langTitle" langKey="count10s" title="count of '1-10 s'">-</a>
+                        <a id="th-Histogram[5]" class="langTitle" langKey="count100s" title="count of '10-100 s'">-</a>
+                        <a id="th-Histogram[6]" class="langTitle" langKey="count1000s" title="count of '100-1000 s'">-</a>
+                        <a id="th-Histogram[7]" class="langTitle" langKey="countBg1000s" title="count of '> 1000 s'">-</a> ]
+                    </th>
+                    <th align="left" width="100"><span class="lang" langKey="ExecRsHisto">ExecRsHisto</span> <br/>[
+                        <a id="th-ExecuteAndResultHoldTimeHistogram[0]" class="langTitle" langKey="count1ms" title="count of '0-1 ms'">-</a>
+                        <a id="th-ExecuteAndResultHoldTimeHistogram[1]" class="langTitle" langKey="count10ms" title="count of '1-10 ms'">-</a>
+                        <a id="th-ExecuteAndResultHoldTimeHistogram[2]" class="langTitle" langKey="count100ms" title="count of '10-100 ms'">-</a>
+                        <a id="th-ExecuteAndResultHoldTimeHistogram[3]" class="langTitle" langKey="count1s" title="count of '100ms-1s'">-</a>
+                        <a id="th-ExecuteAndResultHoldTimeHistogram[4]" class="langTitle" langKey="count10s" title="count of '1-10 s'">-</a>
+                        <a id="th-ExecuteAndResultHoldTimeHistogram[5]" class="langTitle" langKey="count100s" title="count of '10-100 s'">-</a>
+                        <a id="th-ExecuteAndResultHoldTimeHistogram[6]" class="langTitle" langKey="count1000s" title="count of '100-1000 s'">-</a>
+                        <a id="th-ExecuteAndResultHoldTimeHistogram[7]" class="langTitle" langKey="countBg1000s" title="count of '> 1000 s'">-</a> ]
+                    </th>
+                    <th align="left" width="100"><span class="lang" langKey="FetchRowHisto">FetchRowHisto</span> <br/>[
+                        <a id="th-FetchRowCountHistogram[0]" class="langTitle" langKey="fetch0" title="count of '0 FetchRow'">-</a>
+                        <a id="th-FetchRowCountHistogram[1]" class="langTitle" langKey="fetch9" title="count of '1-9 FetchRow'">-</a>
+                        <a id="th-FetchRowCountHistogram[2]" class="langTitle" langKey="fetch99" title="count of '10-99 FetchRow'">-</a>
+                        <a id="th-FetchRowCountHistogram[3]" class="langTitle" langKey="fetch999" title="count of '100-999 FetchRow'">-</a>
+                        <a id="th-FetchRowCountHistogram[4]" class="langTitle" langKey="fetch9999" title="count of '1000-9999 FetchRow'">-</a>
+                        <a id="th-FetchRowCountHistogram[5]" class="langTitle" langKey="fetch99999" title="count of '> 9999 FetchRow'">-</a> ]
+                    </th>
+                    <th align="left" width="100"><span class="lang" langKey="UpdateHisto">UpdateHisto</span> <br/>[
+                        <a id="th-EffectedRowCountHistogram[0]" class="langTitle" langKey="update0" title="count of '0 UpdateCount'">-</a>
+                        <a id="th-EffectedRowCountHistogram[1]" class="langTitle" langKey="update9" title="count of '1-9 UpdateCount'">-</a>
+                        <a id="th-EffectedRowCountHistogram[2]" class="langTitle" langKey="update99" title="count of '10-99 UpdateCount'">-</a>
+                        <a id="th-EffectedRowCountHistogram[3]" class="langTitle" langKey="update999" title="count of '100-999 UpdateCount'">-</a>
+                        <a id="th-EffectedRowCountHistogram[4]" class="langTitle" langKey="update9999" title="count of '1000-9999 UpdateCount'">-</a>
+                        <a id="th-EffectedRowCountHistogram[5]" class="langTitle" langKey="update99999" title="count of '> 9999 UpdateCount'">-</a> ]
+                    </th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $.namespace("druid.sql");
+    druid.sql = function () {
+        var dataSourceId = druid.common.getUrlVar("dataSourceId");
+        return {
+            init: function () {
+                druid.sql.refreshService= $("#refreshServiceSelect option").first().val();
+                var serviceName = druid.sql.refreshService;
+                $("#dataTable th a").click(function (obj) {
+                    druid.common.setOrderBy(obj.target.id.substring(3))
+                })
+                druid.common.buildHead(2);
+                druid.common.ajaxuri = dataSourceId ? 'sql.json?dataSourceId=' + dataSourceId + '&serviceName=' + serviceName + '&'
+                    : 'sql.json?serviceName=' + serviceName + '&';
+                druid.common.handleCallback = druid.sql.handleAjaxResult;
+                druid.common.setOrderBy("SQL");
+                druid.sql.controlRefresh();
+            },
+            controlRefresh: function () {
+                console.log("serviceName:" + druid.sql.refreshService);
+                var serviceName = druid.sql.refreshService;
+                druid.common.ajaxuri = dataSourceId ? 'sql.json?dataSourceId=' + dataSourceId + '&serviceName=' + serviceName + '&'
+                    : 'sql.json?serviceName=' + serviceName + '&';
+                var FIVE = 5;
+                if (!druid.sql.refreshSeconds) {
+                    druid.sql.refreshSeconds = FIVE;
+                }
+                if (!druid.sql.suspendedSeconds) {
+                    druid.sql.suspendedSeconds = 0;
+                }
+                druid.sql.suspendedSeconds += FIVE;
+                if (!druid.sql.disableAutoRefresh) {
+                    if (druid.sql.suspendedSeconds >= druid.sql.refreshSeconds) {
+                        druid.sql.suspendedSeconds = 0;
+                        druid.common.ajaxRequestForBasicInfo();
+                    }
+                }
+                setTimeout(druid.sql.controlRefresh, FIVE * 1000);
+            },
+
+            switchSuspendRefresh: function () {
+                druid.sql.disableAutoRefresh = !druid.sql.disableAutoRefresh;
+                if (druid.sql.disableAutoRefresh) {
+                    $("#btnSuspendRefresh").addClass("btn-warning").removeClass("btn-primary");
+                } else {
+                    $("#btnSuspendRefresh").addClass("btn-primary").removeClass("btn-warning");
+                }
+            },
+            disableAutoRefresh: false,
+            refreshSeconds: 5,
+            refreshService: '',
+            suspendedSeconds: 0,
+
+            handleAjaxResult: function (data) {
+                var sqlStatList = data.Content;
+                if (sqlStatList == null) return;
+
+                var sqlStatTable = document.getElementById("dataTable");
+                while (sqlStatTable.rows.length > 1) {
+                    sqlStatTable.deleteRow(1);
+                }
+
+                var html = "";
+                for (var i = 0; i < sqlStatList.length; i++) {
+                    var stat = sqlStatList[i], statSQL = stat.SQL;
+                    var serviceName = stat.Name;
+                    var serviceId = stat.serviceId;
+                    console.log("==========" + serviceId);
+                    var port = stat.port;
+                    var address = stat.address;
+                    var newStatSQL = statSQL.replace(/\"/g, "'").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    var newRow = sqlStatTable.insertRow(-1);
+                    html += "<tr>";
+                    html += "<td>" + (i + 1) + "</td>";
+                    // html += "<td>" + '<a data-dismiss="alert"  title="'+newStatSQL+'" target="_blank" href="sql-detail.html?sqlId=' + stat.ID + '">' + druid.common.subSqlString(stat.SQL, 25) + '</a>' + "</td>";
+                    html += "<td>" + '<a data-dismiss="alert"  title="' + newStatSQL + '" target="_blank" href="sql-detail.html?serviceId=' + serviceId + '&sqlId=' + stat.ID + '">' + druid.common.subSqlString(stat.SQL, 25) + '</a>' + "</td>";
+                    html += "<td>" + '<a data-dismiss="alert"  title="' + serviceName + '">' + serviceName + '</a>' + "</td>";
+                    html += "<td>" + address +':'+port+ "</td>";
+                    html += "<td>" + replace(stat.ExecuteCount) + "</td>";
+                    html += "<td>" + replace(stat.TotalTime) + "</td>";
+
+                    var lastSlowHtml = stat.MaxTimespan;
+                    if (stat.LastSlowParameters != null && stat.LastSlowParameters.length > 0) {
+                        lastSlowHtml = '<a target="_blank" style="color:red" href="sql-detail.html?sqlId=' + stat.ID + '">' + stat.MaxTimespan + '</a>';
+                    }
+                    html += "<td>" + replace(lastSlowHtml) + "</td>";
+                    html += "<td>" + replace(stat.InTransactionCount) + "</td>";
+                    html += "<td>" + replace(stat.ErrorCount) + "</td>";
+                    html += "<td>" + replace(stat.EffectedRowCount) + "</td>";
+                    html += "<td>" + replace(stat.FetchRowCount) + "</td>";
+                    html += "<td>" + replace(stat.RunningCount) + "</td>";
+                    html += "<td>" + replace(stat.ConcurrentMax) + "</td>";
+                    html += "<td>" + '[' + stat.Histogram + ']' + "</td>";
+                    html += "<td>" + '[' + stat.ExecuteAndResultHoldTimeHistogram + ']' + "</td>";
+                    html += "<td>" + '[' + stat.FetchRowCountHistogram + ']' + "</td>";
+                    html += "<td>" + '[' + stat.EffectedRowCountHistogram + ']' + "</td>";
+                    html += "</tr>";
+                }
+                $("#dataTable tbody").html(html);
+                druid.common.stripes();
+            }
+        }
+    }();
+
+    $(document).ready(function () {
+        druid.common.getService();
+        druid.sql.init();
+    });
+    $("#refreshServiceSelect").on("change",function(){
+        var dataSourceId = druid.common.getUrlVar("dataSourceId");
+        druid.sql.refreshService = $("#refreshServiceSelect option:selected").val();
+        druid.common.ajaxuri = dataSourceId ? 'sql.json?dataSourceId=' + dataSourceId + '&serviceName=' + druid.sql.refreshService + '&'
+            : 'sql.json?serviceName=' + druid.sql.refreshService + '&';
+        druid.common.ajaxRequestForBasicInfo();
+        druid.common.handleCallback = druid.sql.handleAjaxResult;
+    });
+</script>
+</body>
+</html>

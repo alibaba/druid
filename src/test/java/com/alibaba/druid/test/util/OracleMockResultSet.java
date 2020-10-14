@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import oracle.jdbc.OracleDataFactory;
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.ARRAY;
 import oracle.sql.BFILE;
@@ -196,6 +197,16 @@ public class OracleMockResultSet extends MockResultSet implements OracleResultSe
     @Override
     public ORAData getORAData(int arg0, ORADataFactory arg1) throws SQLException {
         // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Object getObject(int i, OracleDataFactory oracleDataFactory) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public Object getObject(String s, OracleDataFactory oracleDataFactory) throws SQLException {
         return null;
     }
 
@@ -491,6 +502,21 @@ public class OracleMockResultSet extends MockResultSet implements OracleResultSe
     public void updateSTRUCT(String arg0, STRUCT arg1) throws SQLException {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public boolean isFromResultSetCache() throws SQLException {
+        return false;
+    }
+
+    @Override
+    public byte[] getCompileKey() throws SQLException {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] getRuntimeKey() throws SQLException {
+        return new byte[0];
     }
 
     @Override

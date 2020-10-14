@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.phoenix;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixSchemaStatVisitor;
@@ -18,7 +19,7 @@ public class PhoenixUpsertTest_std extends TestCase {
     public void test_0() throws Exception {
         String sql = "upsert into t_1 (a,b,c) values (?,?,?)";
 
-        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, null);
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, (DbType) null);
         SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());

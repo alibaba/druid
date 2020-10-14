@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement, SQLObjectWithDataType, SQLReplaceable, SQLDbTypedObject {
-    protected String                          dbType;
+    protected DbType                          dbType;
 
     protected SQLName                         name;
     protected SQLDataType                     dataType;
@@ -64,6 +65,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     protected SQLExpr                         valueType; // for ads3.0 multivalue
     protected boolean                         disableIndex  = false; //for ads
     protected SQLExpr                         jsonIndexAttrsExpr;    // for ads
+    protected SQLAnnIndex                     annIndex;
     private SQLExpr                           unitCount;
     private SQLExpr                           unitIndex;
     private SQLExpr                           step;
@@ -153,14 +155,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     public SQLDataType getDataType() {
         return dataType;
     }
-//
-//    public int jdbcType() {
-//        if (dataType == null) {
-//            return Types.OTHER;
-//        }
-//
-//        return dataType.jdbcType();
-//    }
+
+    public int jdbcType() {
+        if (dataType == null) {
+            return Types.OTHER;
+        }
+
+        return dataType.jdbcType();
+    }
 
     public void setDataType(SQLDataType dataType) {
         if (dataType != null) {
@@ -234,7 +236,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return partitioning.isPartitionByColumn(
                 nameHashCode64());
     }
-
+    
     public void addConstraint(SQLColumnConstraint constraint) {
         if (constraint != null) {
             constraint.setParent(this);
@@ -557,6 +559,10 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             x.setJsonIndexAttrsExpr(jsonIndexAttrsExpr.clone());
         }
 
+        if (annIndex != null) {
+            x.setAnnIndex(annIndex.clone());
+        }
+
         if (mappedBy != null) {
             for (SQLAssignItem item : mappedBy) {
                 SQLAssignItem item2 = item.clone();
@@ -582,11 +588,11 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return x;
     }
 
-    public String getDbType() {
+    public DbType getDbType() {
         return dbType;
     }
 
-    public void setDbType(String dbType) {
+    public void setDbType(DbType dbType) {
         this.dbType = dbType;
     }
 
@@ -703,6 +709,17 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
     public void setJsonIndexAttrsExpr(SQLExpr jsonIndexAttrsExpr) {
         this.jsonIndexAttrsExpr = jsonIndexAttrsExpr;
+    }
+
+    public SQLAnnIndex getAnnIndex() {
+        return annIndex;
+    }
+
+    public void setAnnIndex(SQLAnnIndex x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.annIndex = x;
     }
 
     public AutoIncrementType getSequenceType() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
@@ -49,14 +48,14 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
-//        Assert.assertEquals(1, visitor.getTables().size());
-//        Assert.assertEquals(1, visitor.getColumns().size());
-//        Assert.assertEquals(0, visitor.getConditions().size());
-//        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+//        assertEquals(0, visitor.getConditions().size());
+//        assertEquals(0, visitor.getOrderByColumns().size());
         
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("WITH RECURSIVE cte AS (\n" +
+            assertEquals("WITH RECURSIVE cte AS (\n" +
                             "\t\tSELECT 1 AS n, 1 AS p, -1 AS q\n" +
                             "\t\tUNION ALL\n" +
                             "\t\tSELECT n + 1, q * 2\n" +
@@ -70,7 +69,7 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("with recursive cte as (\n" +
+            assertEquals("with recursive cte as (\n" +
                             "\t\tselect 1 as n, 1 as p, -1 as q\n" +
                             "\t\tunion all\n" +
                             "\t\tselect n + 1, q * 2\n" +
@@ -85,7 +84,7 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
-            Assert.assertEquals("WITH RECURSIVE cte AS (\n" +
+            assertEquals("WITH RECURSIVE cte AS (\n" +
                             "\t\tSELECT ? AS n, ? AS p, ? AS q\n" +
                             "\t\tUNION ALL\n" +
                             "\t\tSELECT n + ?, q * ?\n" +

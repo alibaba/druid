@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import java.util.List;
 
+import com.alibaba.druid.DbType;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class ExportParameterDotNumberTest extends TestCase {
 	*/
 	private static final Logger LOG = LoggerFactory.getLogger(ExportParameterDotNumberTest.class);
 
-	String dbType = JdbcConstants.MYSQL;
+	DbType dbType = JdbcConstants.MYSQL;
 
 	public void test_exportParameter() throws Exception {
 		String[] sqls = { "INSERT INTO test_tab1 (name) VALUES ( 2.0  )",

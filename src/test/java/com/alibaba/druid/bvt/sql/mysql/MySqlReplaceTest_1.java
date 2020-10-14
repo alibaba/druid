@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -169,9 +169,9 @@ public class MySqlReplaceTest_1 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(3, visitor.getTables().size());
-        assertEquals(12, visitor.getColumns().size());
+        assertEquals(13, visitor.getColumns().size());
         assertEquals(6, visitor.getConditions().size());
 
         assertTrue(visitor.containsTable("tb_001"));

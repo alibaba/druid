@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.1.24</version>
+	<version>1.2.2_preview_01</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -20,16 +20,8 @@
 		<javadoc.skip>false</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jdk.version>1.6</jdk.version>
+		<jdk.version>1.8</jdk.version>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>local-file</id>
-			<url>file://${project.basedir}/lib/</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
 
 	<developers>
 		<developer>
@@ -443,7 +435,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.17</version>
+			<version>8.0.21</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -460,9 +452,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3</version>
+			<groupId>com.oracle.ojdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<version>19.3.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -524,7 +516,7 @@
 		<dependency>
 			<groupId>org.apache.calcite</groupId>
 			<artifactId>calcite-core</artifactId>
-			<version>1.14.0</version>
+			<version>1.18.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -546,6 +538,20 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.73</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hive</groupId>
+			<artifactId>hive-jdbc</artifactId>
+			<version>3.1.2</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!--
 			test dependences
 		-->
@@ -563,8 +569,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- <dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> <version>4.0.2206.100</version>
-			<scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -665,12 +669,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.68</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4</artifactId>
 			<version>4.7</version>
@@ -718,5 +716,5 @@
 			<version>4.2.0</version>
 			<scope>test</scope>
 		</dependency>
-    </dependencies>
+	</dependencies>
 </project>

@@ -1,5 +1,6 @@
 package com.alibaba.druid.demo.sql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -17,7 +18,7 @@ import java.util.Map;
 public class MySqlVisitorDemo extends TestCase {
     public void test_for_demo() throws Exception {
         String sql = "select * from mytable a where a.id = 3";
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.mysql);
 
         ExportTableAliasVisitor visitor = new ExportTableAliasVisitor();
         for (SQLStatement stmt : stmtList) {

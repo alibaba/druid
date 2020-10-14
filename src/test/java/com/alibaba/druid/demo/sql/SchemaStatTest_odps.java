@@ -1,5 +1,6 @@
 package com.alibaba.druid.demo.sql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -22,7 +23,7 @@ public class SchemaStatTest_odps extends TestCase {
         File file = new File("/Users/wenshao/Downloads/odps_sql_1.txt");
         String sql = FileUtils.readFileToString(file);
 
-        String dbType = JdbcConstants.ODPS;
+        DbType dbType = DbType.odps;
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();
 

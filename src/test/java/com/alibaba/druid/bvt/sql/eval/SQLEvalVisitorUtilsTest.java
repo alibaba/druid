@@ -177,4 +177,9 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
         Assert.assertEquals(4L, SQLEvalVisitorUtils.eval(JdbcUtils.MYSQL, new SQLBinaryExpr("100"), new ArrayList<Object>()));
         Assert.assertEquals(new BigInteger("36893488147419103231"), SQLEvalVisitorUtils.eval(JdbcUtils.MYSQL, new SQLBinaryExpr("11111111111111111111111111111111111111111111111111111111111111111"), new ArrayList<Object>()));
     }
+
+    public void test_LessThanOrGreater() throws Exception {
+        Assert.assertEquals(false, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "1<>1"));
+        Assert.assertEquals(false, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "?<>?", Arrays.<Object>asList(1, 1)));
+    }
 }

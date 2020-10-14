@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.DbType;
 import junit.framework.TestCase;
 
 /**
@@ -30,13 +31,13 @@ public class JdbcUtilsTest extends TestCase {
     public void testGetDbType() {
         String jdbcUrl = "jdbc:cobar://localhost:8066/test";
         String dbType = JdbcUtils.getDbType(jdbcUrl, null);
-        assertEquals("not support cobar driver, url like jdbc:cobar:...", JdbcConstants.MYSQL, dbType);
+        assertEquals("not support cobar driver, url like jdbc:cobar:...", DbType.mysql, dbType);
     }
     
     public void test_log4jdbc_mysql() {
         String jdbcUrl = "jdbc:log4jdbc:mysql://localhost:8066/test";
         String dbType = JdbcUtils.getDbType(jdbcUrl, null);
-        assertEquals("not support log4jdbc mysql, url like jdbc:log4jdbc:mysql:...", JdbcConstants.MYSQL, dbType);
+        assertEquals("not support log4jdbc mysql, url like jdbc:log4jdbc:mysql:...", DbType.mysql, dbType);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,8 @@ public class OracleSelectTest104 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT /* DS_SVC */ /*+ cursor_sharing_exact dynamic_sampling(0) no_sql_tune no_monitoring optimizer_features_enable(default) */ SUM(C1)\n" +
+            assertEquals("SELECT /* DS_SVC */\n" +
+                    "/*+ cursor_sharing_exact dynamic_sampling(0) no_sql_tune no_monitoring optimizer_features_enable(default) */ SUM(C1)\n" +
                     "FROM (\n" +
                     "\tSELECT /*+ qb_name(\"innerQuery\")  */ 1 AS C1\n" +
                     "\tFROM SYS.\"X$KZSPR\" \"X$KZSPR\"\n" +

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLReplaceStatement extends SQLStatementImpl {
     protected boolean             lowPriority = false;
@@ -33,6 +31,8 @@ public class SQLReplaceStatement extends SQLStatementImpl {
     protected List<SQLInsertStatement.ValuesClause>  valuesList  = new ArrayList<SQLInsertStatement.ValuesClause>();
     protected SQLQueryExpr query;
 
+    protected List<SQLCommentHint>                hints;
+    protected List<SQLAssignItem> partitions;
 
     public SQLName getTableName() {
         if (tableSource == null) {
@@ -100,6 +100,55 @@ public class SQLReplaceStatement extends SQLStatementImpl {
     }
 
     @Override
+    public SQLStatement clone() {
+        SQLReplaceStatement x = new SQLReplaceStatement();
+        x.setDbType(this.dbType);
+
+        if (headHints != null) {
+            for (SQLCommentHint h : headHints) {
+                SQLCommentHint clone = h.clone();
+                clone.setParent(x);
+                x.headHints.add(clone);
+            }
+        }
+
+        if (hints != null && !hints.isEmpty()) {
+            for (SQLCommentHint h : hints) {
+                SQLCommentHint clone = h.clone();
+                clone.setParent(x);
+                x.getHints().add(clone);
+            }
+        }
+
+        x.lowPriority = this.lowPriority;
+        x.delayed = this.delayed;
+
+        if (this.tableSource != null) {
+            x.tableSource = this.tableSource.clone();
+        }
+
+        for (SQLInsertStatement.ValuesClause clause : valuesList) {
+            x.getValuesList().add(clause.clone());
+        }
+
+        for (SQLExpr column : columns) {
+            x.addColumn(column.clone());
+        }
+
+        if (query != null) {
+            x.query = this.query.clone();
+        }
+
+        if (partitions != null) {
+            for (SQLAssignItem partition : partitions) {
+                x.addPartition(partition.clone());
+            }
+        }
+
+        return x;
+    }
+
+    @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, tableSource);
@@ -108,5 +157,40 @@ public class SQLReplaceStatement extends SQLStatementImpl {
             acceptChild(visitor, query);
         }
         visitor.endVisit(this);
+    }
+
+    public int getHintsSize() {
+        if (hints == null) {
+            return 0;
+        }
+
+        return hints.size();
+    }
+
+    public List<SQLCommentHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLCommentHint>(2);
+        }
+        return hints;
+    }
+
+    public void setHints(List<SQLCommentHint> hints) {
+        this.hints = hints;
+    }
+
+    public void addPartition(SQLAssignItem partition) {
+        if (partition != null) {
+            partition.setParent(this);
+        }
+
+        if (partitions == null) {
+            partitions = new ArrayList<SQLAssignItem>();
+        }
+
+        this.partitions.add(partition);
+    }
+
+    public List<SQLAssignItem> getPartitions() {
+        return partitions;
     }
 }

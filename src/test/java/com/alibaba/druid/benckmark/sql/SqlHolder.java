@@ -1,5 +1,6 @@
 package com.alibaba.druid.benckmark.sql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -28,7 +29,7 @@ import java.util.*;
  */
 public class SqlHolder {
     private String text;
-    private String dialect;
+    private DbType dialect;
 
     private boolean parsed;
     public SQLStatement ast;
@@ -72,21 +73,21 @@ public class SqlHolder {
     }
 
     SqlHolder(String text) {
-        this(text, JdbcConstants.MYSQL);
+        this(text, DbType.mysql);
     }
 
-    public SqlHolder(String text, String dbType, boolean isParam) {
+    public SqlHolder(String text, DbType dbType, boolean isParam) {
         this(text, dbType);
         this.isParam = isParam;
     }
 
-    SqlHolder(String text, String dialect) {
-        if (!"mysql".equalsIgnoreCase(dialect)) {
+    SqlHolder(String text, DbType dbType) {
+        if (dbType != DbType.mysql) {
             throw new IllegalArgumentException("only mysql is");
         }
 
         this.text = text;
-        this.dialect = dialect;
+        this.dialect = dbType;
     }
 
     public String format() {

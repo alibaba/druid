@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -26,7 +24,9 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MySqlDeleteStatement extends SQLDeleteStatement {
 
@@ -35,13 +35,16 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
     private boolean              ignore             = false;
     private SQLOrderBy           orderBy;
     private SQLLimit             limit;
-    private List<SQLCommentHint> hints;
     // for petadata
     private boolean              forceAllPartitions = false;
     private SQLName              forcePartition;
 
+    private List<SQLCommentHint> hints;
+
+    private boolean fulltextDictionary = false;
+
     public MySqlDeleteStatement(){
-        super(JdbcConstants.MYSQL);
+        super(DbType.mysql);
     }
 
     public MySqlDeleteStatement clone() {
@@ -51,6 +54,7 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         x.lowPriority = lowPriority;
         x.quick = quick;
         x.ignore = ignore;
+        x.fulltextDictionary = fulltextDictionary;
 
         if (using != null) {
             x.setUsing(using.clone());
@@ -123,6 +127,14 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         this.limit = limit;
     }
 
+    public boolean isFulltextDictionary() {
+        return fulltextDictionary;
+    }
+
+    public void setFulltextDictionary(boolean fulltextDictionary) {
+        this.fulltextDictionary = fulltextDictionary;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {
@@ -132,18 +144,35 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         }
     }
 
-    public void output(StringBuffer buf) {
-        new MySqlOutputVisitor(buf).visit(this);
-    }
-
     protected void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, tableSource);
-            acceptChild(visitor, where);
-            acceptChild(visitor, from);
-            acceptChild(visitor, using);
-            acceptChild(visitor, orderBy);
-            acceptChild(visitor, limit);
+            if (with != null) {
+                with.accept(visitor);
+            }
+
+            if (tableSource != null) {
+                tableSource.accept(visitor);
+            }
+
+            if (where != null) {
+                where.accept(visitor);
+            }
+
+            if (from != null) {
+                from.accept(visitor);
+            }
+
+            if (using != null) {
+                using.accept(visitor);
+            }
+
+            if (orderBy != null) {
+                orderBy.accept(visitor);
+            }
+
+            if (limit != null) {
+                limit.accept(visitor);
+            }
         }
 
         visitor.endVisit(this);

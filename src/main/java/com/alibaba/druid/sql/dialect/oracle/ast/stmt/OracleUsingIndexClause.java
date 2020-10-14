@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,22 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLPartition;
+import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OracleUsingIndexClause extends OracleSegmentAttributesImpl implements OracleSQLObject {
 
-    private SQLName             index;
-
+    private SQLObject           index;
     private Boolean             enable            = null;
 
     private boolean             computeStatistics = false;
@@ -70,12 +72,22 @@ public class OracleUsingIndexClause extends OracleSegmentAttributesImpl implemen
         this.computeStatistics = computeStatistics;
     }
 
-    public SQLName getIndex() {
+    public SQLObject getIndex() {
         return index;
     }
 
-    public void setIndex(SQLName index) {
-        this.index = index;
+    public void setIndex(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.index = x;
+    }
+
+    public void setIndex(SQLCreateIndexStatement x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.index = x;
     }
 
     public boolean isReverse() {
@@ -93,7 +105,9 @@ public class OracleUsingIndexClause extends OracleSegmentAttributesImpl implemen
     public void cloneTo(OracleUsingIndexClause x) {
         super.cloneTo(x);
         if (index != null) {
-            x.setIndex(index.clone());
+            SQLObject idx = index.clone();
+            idx.setParent(x);
+            x.index = idx;
         }
         x.enable = enable;
         x.computeStatistics = computeStatistics;

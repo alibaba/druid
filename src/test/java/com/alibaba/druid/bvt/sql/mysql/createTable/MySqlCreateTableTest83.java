@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,8 @@ public class MySqlCreateTableTest83 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("create table t1 (\n" +
-                    "\tts1 TIMESTAMP on update CURRENT_TIMESTAMP, -- default 0\n" +
-                    "\tts2 TIMESTAMP null on update CURRENT_TIMESTAMP -- default NULL\n" +
+                    "\tts1 TIMESTAMP on update current_timestamp, -- default 0\n" +
+                    "\tts2 TIMESTAMP null on update current_timestamp -- default NULL\n" +
                     ")", output);
         }
     }

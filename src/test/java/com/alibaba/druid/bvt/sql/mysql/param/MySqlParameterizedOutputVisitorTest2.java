@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,56 +15,119 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import java.util.List;
-
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
-
-public class MySqlParameterizedOutputVisitorTest2 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest2 extends MySQLParameterizedTest {
 
     public void test_0() throws Exception {
         String sql = "SELECT * FROM T WHERE ID = ?";
-        for (int i = 0; i < 10000; ++i) {
+        for (int i = 0; i < 100; ++i) {
             sql += " OR ID = ?";
         }
 
         validate(sql, "SELECT *\nFROM T\nWHERE ID = ?");
         validateOracle(sql, "SELECT *\nFROM T\nWHERE ID = ?");
-    }
 
-    void validate(String sql, String expect) {
-
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement stmt = statementList.get(0);
-
-        Assert.assertEquals(1, statementList.size());
-
-        StringBuilder out = new StringBuilder();
-        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out, true);
-        stmt.accept(visitor);
-
-        Assert.assertEquals(expect, out.toString());
-    }
-
-    void validateOracle(String sql, String expect) {
-
-        OracleStatementParser parser = new OracleStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement stmt = statementList.get(0);
-
-        Assert.assertEquals(1, statementList.size());
-
-        StringBuilder out = new StringBuilder();
-        OracleParameterizedOutputVisitor visitor = new OracleParameterizedOutputVisitor(out, false);
-        stmt.accept(visitor);
-
-        Assert.assertEquals(expect, out.toString());
+        paramaterizeAST(sql, "SELECT *\n" +
+                "FROM T\n" +
+                "WHERE ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?\n" +
+                "\tOR ID = ?");
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,11 @@ public enum SQLBinaryOperator {
     LessThan("<", 110), 
     LessThanOrEqual("<=", 110), 
     LessThanOrEqualOrGreaterThan("<=>",110),
-    LessThanOrGreater("<>", 110), 
-    
+    LessThanOrGreater("<>", 110),
+
+    IsDistinctFrom("IS DISTINCT FROM", 110),
+    IsNotDistinctFrom("IS NOT DISTINCT FROM", 110),
+
     Like("LIKE", 110),
     SoudsLike("SOUNDS LIKE", 110),
     NotLike("NOT LIKE", 110),
@@ -72,6 +75,7 @@ public enum SQLBinaryOperator {
     Array_Contains("@>", 110),
     Array_ContainedBy("<@", 110),
     SAME_AS("~=", 110),
+    JSONContains("?", 110),
 
     RLike("RLIKE", 110),
     NotRLike("NOT RLIKE", 110),
@@ -127,6 +131,7 @@ public enum SQLBinaryOperator {
         switch (this) {
             case Equality:
             case Like:
+            case SoudsLike:
             case NotEqual:
             case GreaterThan:
             case GreaterThanOrEqual:

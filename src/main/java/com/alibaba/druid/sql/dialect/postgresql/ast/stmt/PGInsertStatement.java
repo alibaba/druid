@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,17 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatement {
 
@@ -36,11 +37,12 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
     private List<SQLExpr>          onConflictTarget;
     private SQLName                onConflictConstraint;
     private SQLExpr                onConflictWhere;
+    private SQLExpr                onConflictUpdateWhere;
     private boolean                onConflictDoNothing;
     private List<SQLUpdateSetItem> onConflictUpdateSetItems;
 
     public PGInsertStatement() {
-        dbType = JdbcConstants.POSTGRESQL;
+        dbType = DbType.postgresql;
     }
 
     public void cloneTo(PGInsertStatement x) {
@@ -98,7 +100,11 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
 	}
 
 	protected void accept0(SQLASTVisitor visitor) {
-        accept0((PGASTVisitor) visitor);
+        if(visitor instanceof PGASTVisitor) {
+            accept0((PGASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
     @Override
@@ -170,5 +176,21 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
             x.setParent(this);
         }
         this.onConflictWhere = x;
+    }
+
+    public SQLExpr getOnConflictUpdateWhere() {
+        return onConflictUpdateWhere;
+    }
+
+    public void setOnConflictUpdateWhere(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.onConflictUpdateWhere = x;
+    }
+
+    @Override
+    public List<SQLCommentHint> getHeadHintsDirect() {
+        return null;
     }
 }

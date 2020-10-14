@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,9 +54,9 @@ public class MySqlCreateTableTest74 extends MysqlTest {
                     "\tcol1 varchar(45) NULL,\n" +
                     "\tcol2 tinyint(4) NULL,\n" +
                     "\tcol3 datetime NULL,\n" +
-                    "\tcol4 timestamp NULL DEFAULT current_timestamp ON UPDATE current_timestamp,\n" +
+                    "\tcol4 timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n" +
                     "\tPRIMARY KEY (col_key),\n" +
-                    "\tUNIQUE v1_unique (col_key ASC)\n" +
+                    "\tUNIQUE INDEX v1_unique (col_key ASC)\n" +
                     ")", output);
         }
         
@@ -69,7 +69,7 @@ public class MySqlCreateTableTest74 extends MysqlTest {
                     "\tcol3 datetime null,\n" +
                     "\tcol4 timestamp null default current_timestamp on update current_timestamp,\n" +
                     "\tprimary key (col_key),\n" +
-                    "\tunique v1_unique (col_key asc)\n" +
+                    "\tunique index v1_unique (col_key asc)\n" +
                     ")", output);
         }
     }

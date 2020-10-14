@@ -34,7 +34,6 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 
 import oracle.jdbc.OracleParameterMetaData;
-import oracle.jdbc.OracleResultSetCache;
 import oracle.jdbc.dcn.DatabaseChangeRegistration;
 import oracle.sql.ARRAY;
 import oracle.sql.BFILE;
@@ -62,7 +61,8 @@ import oracle.sql.TIMESTAMPTZ;
 
 import com.alibaba.druid.mock.MockPreparedStatement;
 
-public class OracleMockPreparedStatement extends MockPreparedStatement implements oracle.jdbc.internal.OraclePreparedStatement {
+public class OracleMockPreparedStatement
+        extends MockPreparedStatement implements oracle.jdbc.internal.OraclePreparedStatement {
 
     private int executeBatch = 50;
     private int rowPrefetch;
@@ -767,12 +767,6 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
     }
 
     @Override
-    public void setResultSetCache(OracleResultSetCache arg0) throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void setRowPrefetch(int rowPrefetch) throws SQLException {
         this.rowPrefetch = rowPrefetch;
     }
@@ -780,6 +774,11 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
     public long getChecksum() throws SQLException {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    @Override
+    public void registerBindChecksumListener(BindChecksumListener bindChecksumListener) throws SQLException {
+
     }
 
     @Override
@@ -1008,4 +1007,23 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
         
     }
 
+    @Override
+    public long getQueryId() throws SQLException {
+        return 0;
+    }
+
+    @Override
+    public byte[] getCompileKey() throws SQLException {
+        return new byte[0];
+    }
+
+    @Override
+    public void setACProxy(Object o) {
+
+    }
+
+    @Override
+    public Object getACProxy() {
+        return null;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,29 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wenshao on 30/06/2017.
  */
-public class SQLCreateMaterializedViewStatement extends SQLStatementImpl implements OracleSegmentAttributes, SQLCreateStatement {
+public class SQLCreateMaterializedViewStatement extends SQLStatementImpl implements OracleSegmentAttributes, SQLCreateStatement, SQLReplaceable {
     private SQLName name;
     private List<SQLName> columns = new ArrayList<SQLName>();
 
     private boolean refreshFast;
-    private boolean refreshComlete;
+    private boolean refreshComplete;
     private boolean refreshForce;
     private boolean refreshOnCommit;
     private boolean refreshOnDemand;
+    private boolean refreshStartWith;
+    private boolean refreshNext;
 
     private boolean buildImmediate;
     private boolean buildDeferred;
@@ -68,8 +69,18 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
     private Boolean enableQueryRewrite;
 
     private SQLPartitionBy partitionBy;
+    private SQLExpr startWith;
+    private SQLExpr next;
 
     private boolean withRowId;
+
+    // for ADB
+    protected boolean refreshOnOverWrite;
+    protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
+    protected SQLName distributedByType;
+    protected List<SQLName> distributedBy = new ArrayList<SQLName>();
+    protected final List<SQLAssignItem> tableOptions = new ArrayList<SQLAssignItem>();
+    protected SQLExpr comment;
 
     public SQLName getName() {
         return name;
@@ -114,7 +125,7 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
     }
 
     public boolean isRefresh() {
-        return this.refreshFast || refreshComlete || refreshForce || refreshOnDemand || refreshOnCommit;
+        return this.refreshFast || refreshComplete || refreshForce || refreshOnDemand || refreshOnCommit || refreshStartWith || refreshNext;
     }
 
     public boolean isRefreshFast() {
@@ -125,12 +136,12 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
         this.refreshFast = refreshFast;
     }
 
-    public boolean isRefreshComlete() {
-        return refreshComlete;
+    public boolean isRefreshComplete() {
+        return refreshComplete;
     }
 
-    public void setRefreshComlete(boolean refreshComlete) {
-        this.refreshComlete = refreshComlete;
+    public void setRefreshComplete(boolean refreshComplete) {
+        this.refreshComplete = refreshComplete;
     }
 
     public boolean isRefreshForce() {
@@ -155,6 +166,30 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
 
     public void setRefreshOnDemand(boolean refreshOnDemand) {
         this.refreshOnDemand = refreshOnDemand;
+    }
+
+    public boolean isRefreshOnOverWrite() {
+        return refreshOnOverWrite;
+    }
+
+    public void setRefreshOnOverWrite(boolean refreshOnOverWrite) {
+        this.refreshOnOverWrite = refreshOnOverWrite;
+    }
+
+    public boolean isRefreshStartWith() {
+        return refreshStartWith;
+    }
+
+    public void setRefreshStartWith(boolean refreshStartWith) {
+        this.refreshStartWith = refreshStartWith;
+    }
+
+    public boolean isRefreshNext() {
+        return refreshNext;
+    }
+
+    public void setRefreshNext(boolean refreshNext) {
+        this.refreshNext = refreshNext;
     }
 
     public Integer getPctfree() {
@@ -303,6 +338,47 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
         return partitionBy;
     }
 
+    public List<SQLTableElement> getTableElementList() {
+        return tableElementList;
+    }
+
+    public List<SQLName> getDistributedBy() {
+        return distributedBy;
+    }
+
+    public SQLName getDistributedByType() {
+        return distributedByType;
+    }
+
+    public void setDistributedByType(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.distributedByType = x;
+    }
+
+    public SQLExpr getStartWith() {
+        return startWith;
+    }
+
+    public void setStartWith(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.startWith = x;
+    }
+
+    public SQLExpr getNext() {
+        return next;
+    }
+
+    public void setNext(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.next = x;
+    }
+
     public void setPartitionBy(SQLPartitionBy x) {
         if (x != null) {
             x.setParent(this);
@@ -318,6 +394,46 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
         this.withRowId = withRowId;
     }
 
+    public void addOption(String name, SQLExpr value) {
+        SQLAssignItem assignItem = new SQLAssignItem(new SQLIdentifierExpr(name), value);
+        assignItem.setParent(this);
+        tableOptions.add(assignItem);
+    }
+
+    public List<SQLAssignItem> getTableOptions() {
+        return tableOptions;
+    }
+
+    public SQLExpr getOption(String name) {
+        if (name == null) {
+            return null;
+        }
+
+        long hash64 = FnvHash.hashCode64(name);
+
+        for (SQLAssignItem item : tableOptions) {
+            final SQLExpr target = item.getTarget();
+            if (target instanceof SQLIdentifierExpr) {
+                if (((SQLIdentifierExpr) target).hashCode64() == hash64) {
+                    return item.getValue();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public SQLExpr getComment() {
+        return comment;
+    }
+
+    public void setComment(SQLExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
+        this.comment = comment;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -325,7 +441,31 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
             acceptChild(visitor, columns);
             acceptChild(visitor, partitionBy);
             acceptChild(visitor, query);
+            acceptChild(visitor, tableElementList);
+            acceptChild(visitor, distributedBy);
+            acceptChild(visitor, distributedByType);
+            acceptChild(visitor, startWith);
+            acceptChild(visitor, next);
+            acceptChild(visitor, tableOptions);
+            acceptChild(visitor, comment);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == name) {
+            setName((SQLName) target);
+            return true;
+        }
+        if (expr == next) {
+            setNext(target);
+            return true;
+        }
+        if (expr == startWith) {
+            setStartWith(target);
+            return true;
+        }
+        return false;
     }
 }

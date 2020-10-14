@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.odps.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLObjectType;
+import com.alibaba.druid.sql.ast.statement.SQLPrivilegeItem;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OdpsGrantStmt extends SQLGrantStatement {
 
@@ -39,7 +40,7 @@ public class OdpsGrantStmt extends SQLGrantStatement {
     private SQLExpr       expire;
 
     public OdpsGrantStmt(){
-        super(JdbcConstants.ODPS);
+        super(DbType.odps);
     }
 
     @Override
@@ -49,33 +50,10 @@ public class OdpsGrantStmt extends SQLGrantStatement {
 
     protected void accept0(OdpsASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, on);
-            acceptChild(visitor, to);
+            acceptChild(visitor, resource);
+            acceptChild(visitor, users);
         }
         visitor.endVisit(this);
-    }
-
-    public SQLObject getOn() {
-        return on;
-    }
-
-    public void setOn(SQLExpr on) {
-        if (on != null) {
-            on.setParent(this);
-        }
-        this.on = on;
-    }
-
-    public SQLExpr getTo() {
-        return to;
-    }
-
-    public void setTo(SQLExpr to) {
-        this.to = to;
-    }
-
-    public List<SQLExpr> getPrivileges() {
-        return privileges;
     }
 
     public SQLObjectType getSubjectType() {

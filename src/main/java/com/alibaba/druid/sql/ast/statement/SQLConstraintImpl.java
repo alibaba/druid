@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,20 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 
-public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLConstraint {
-    protected String  dbType;
-    protected SQLName name;
+import java.util.List;
+
+public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLConstraint, SQLDbTypedObject {
+    protected DbType  dbType;
+    private SQLName name;
     protected Boolean enable;
     protected Boolean validate;
     protected Boolean rely;
-    protected SQLExpr comment;
+    private SQLExpr comment;
 
     public List<SQLCommentHint> hints;
 
@@ -39,8 +37,8 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
     }
 
     public void cloneTo(SQLConstraintImpl x) {
-        if (name != null) {
-            x.setName(name.clone());
+        if (getName() != null) {
+            x.setName(getName().clone());
         }
 
         x.enable = enable;
@@ -62,6 +60,9 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
     }
 
     public void setName(SQLName name) {
+        if (name != null) {
+            name.setParent(this);
+        }
         this.name = name;
     }
 
@@ -78,8 +79,8 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
     }
 
     public void cloneTo(SQLConstraint x) {
-        if (name != null) {
-            x.setName(name.clone());
+        if (getName() != null) {
+            x.setName(getName().clone());
         }
     }
 
@@ -99,11 +100,11 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
         this.rely = rely;
     }
 
-    public String getDbType() {
+    public DbType getDbType() {
         return dbType;
     }
 
-    public void setDbType(String dbType) {
+    public void setDbType(DbType dbType) {
         this.dbType = dbType;
     }
 
@@ -119,8 +120,8 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
     }
 
     public void simplify() {
-        if (this.name instanceof SQLIdentifierExpr) {
-            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) this.name;
+        if (getName() instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) getName();
             String columnName = identExpr.getName();
 
             String normalized = SQLUtils.normalize(columnName, dbType);
@@ -128,5 +129,18 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
                 this.setName(normalized);
             }
         }
+    }
+
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (getName() == expr) {
+            setName((SQLName) target);
+            return true;
+        }
+
+        if (getComment() == expr) {
+            setComment(target);
+            return true;
+        }
+        return false;
     }
 }

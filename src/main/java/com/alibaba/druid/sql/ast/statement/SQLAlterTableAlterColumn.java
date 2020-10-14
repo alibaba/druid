@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ public class SQLAlterTableAlterColumn extends SQLObjectImpl implements SQLAlterT
     private boolean             dropNotNull;
     private SQLExpr             setDefault;
     private boolean             dropDefault;
+    private SQLName             first;
+    private SQLName             after;
     private SQLDataType         dataType;
 
     @Override
@@ -89,6 +91,28 @@ public class SQLAlterTableAlterColumn extends SQLObjectImpl implements SQLAlterT
             x.setParent(this);
         }
         this.originColumn = x;
+    }
+
+    public SQLName getFirst() {
+        return first;
+    }
+
+    public void setFirst(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.first = x;
+    }
+
+    public SQLName getAfter() {
+        return after;
+    }
+
+    public void setAfter(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.after = x;
     }
 
     public SQLDataType getDataType() {

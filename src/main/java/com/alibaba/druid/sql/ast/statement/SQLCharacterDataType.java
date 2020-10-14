@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,16 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
+
+import java.sql.Types;
+import java.util.List;
 
 public class SQLCharacterDataType extends SQLDataTypeImpl {
 
@@ -99,7 +101,12 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.arguments);
+            for (int i = 0; i < arguments.size(); i++) {
+                SQLExpr arg = arguments.get(i);
+                if (arg != null) {
+                    arg.accept(visitor);
+                }
+            }
         }
 
         visitor.endVisit(this);
@@ -122,5 +129,29 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
     @Override
     public String toString() {
         return SQLUtils.toSQLString(this);
+    }
+
+    public int jdbcType() {
+        long nameNash = nameHashCode64();
+
+        if (nameNash == FnvHash.Constants.NCHAR) {
+            return Types.NCHAR;
+        }
+
+        if (nameNash == FnvHash.Constants.CHAR || nameNash == FnvHash.Constants.JSON) {
+            return Types.CHAR;
+        }
+
+        if (nameNash == FnvHash.Constants.VARCHAR
+                || nameNash == FnvHash.Constants.VARCHAR2
+                || nameNash == FnvHash.Constants.STRING) {
+            return Types.VARCHAR;
+        }
+
+        if (nameNash == FnvHash.Constants.NVARCHAR || nameNash == FnvHash.Constants.NVARCHAR2) {
+            return Types.NVARCHAR;
+        }
+
+        return Types.OTHER;
     }
 }

@@ -142,11 +142,11 @@ public class MySqlCreateTableTest102 extends MysqlTest {
                 "\t`str_ext_c12` varchar(128) DEFAULT NULL COMMENT 'str_ext_c12',\n" +
                 "\t`str_ext_c13` varchar(128) DEFAULT NULL COMMENT 'str_ext_c13',\n" +
                 "\t`str_ext_c14` varchar(128) DEFAULT NULL COMMENT 'str_ext_c14',\n" +
-                "\tPRIMARY KEY (`kd`),\n" +
-                "\tKEY `kdx_time` (`time`),\n" +
-                "\tKEY `kdx_instance_time` (`kp`, `port`, `scope`, `time`),\n" +
-                "\tKEY `kdx_instance_hash` (`kp`, `port`, `hashcode`, `scope`, `time`),\n" +
-                "\tKEY `kdx_instance_all_dim` (`kp`, `port`, `db`, `logical_table`, `physical_table`, `sql_type`, `hashcode`, `scope`, `time`)\n" +
+                "\tPRIMARY KEY (`kd`) COMMENT 'index_key_ins_perf_6519',\n" +
+                "\tKEY `kdx_time` (`time`) COMMENT 'index_perf_time_6519',\n" +
+                "\tKEY `kdx_instance_time` (`kp`, `port`, `scope`, `time`) COMMENT 'index_ins_perf_inst_time_6519',\n" +
+                "\tKEY `kdx_instance_hash` (`kp`, `port`, `hashcode`, `scope`, `time`) COMMENT 'index_ins_perf_hash_6519',\n" +
+                "\tKEY `kdx_instance_all_dim` (`kp`, `port`, `db`, `logical_table`, `physical_table`, `sql_type`, `hashcode`, `scope`, `time`) COMMENT 'index_ins_perf_all_6519'\n" +
                 ") ENGINE = XENGINE AUTO_INCREMENT = 339181584 CHARSET = utf8mb4 COMMENT 'sql_ins_perf'", stmt.toString());
     }
 }

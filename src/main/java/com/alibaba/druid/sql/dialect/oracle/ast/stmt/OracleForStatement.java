@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,57 +15,37 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLForStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleForStatement extends OracleStatementImpl {
+public class OracleForStatement extends SQLForStatement implements OracleStatement {
 
-    private SQLName            index;
-
-    private SQLExpr            range;
-
-    private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
     private boolean            all;
 
     private SQLName           endLabel;
 
     @Override
-    public void accept0(OracleASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, index);
-            acceptChild(visitor, range);
-            acceptChild(visitor, statements);
+    protected void accept0(SQLASTVisitor v) {
+        if (v instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) v);
+            return;
         }
-        visitor.endVisit(this);
+
+        super.accept0(v);
     }
 
-    public SQLName getIndex() {
-        return index;
-    }
-
-    public void setIndex(SQLName index) {
-        this.index = index;
-    }
-
-    public SQLExpr getRange() {
-        return range;
-    }
-
-    public void setRange(SQLExpr range) {
-        if (range != null) {
-            range.setParent(this);
+    @Override
+    public void accept0(OracleASTVisitor v) {
+        if (v.visit(this)) {
+            acceptChild(v, index);
+            acceptChild(v, range);
+            acceptChild(v, statements);
         }
-        this.range = range;
-    }
-
-    public List<SQLStatement> getStatements() {
-        return statements;
+        v.endVisit(this);
     }
 
     public boolean isAll() {

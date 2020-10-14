@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,33 @@ public enum SQLParserFeature {
     KeepComments,
     SkipComments,
     StrictForWall,
-    EnableMultiUnion,
+
+    TDDLHint,
+    DRDSAsyncDDL,
+    DRDSBaseline,
+    InsertReader,
     IgnoreNameQuotes,
-    EnableCurrentUserExpr,
+    KeepNameQuotes,//for ads, presto
+
+    SelectItemGenerateAlias,
 
     PipesAsConcat, // for mysql
+
+    InsertValueCheckType,
+
+    InsertValueNative,
+
+    EnableCurrentTimeExpr,
+    EnableCurrentUserExpr,
+
+    KeepSourceLocation,
+
+    SupportUnicodeCodePoint,
+    PrintSQLWhileParsingFailed,
+    EnableMultiUnion,
+
+    Spark,
+    Presto,
     ;
 
     private SQLParserFeature(){

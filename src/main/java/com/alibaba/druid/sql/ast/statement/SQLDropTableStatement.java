@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,35 +15,39 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropStatement {
     private List<SQLCommentHint> hints;
 
     protected List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>();
-
-    private boolean                    purge;
-
+    protected boolean                  purge;
     protected boolean                  cascade      = false;
     protected boolean                  restrict     = false;
     protected boolean                  ifExists     = false;
     private boolean                    temporary    = false;
+    private boolean                    external     = false;
+    private boolean                    isDropPartition;
+    private SQLExpr                    where;
 
     public SQLDropTableStatement(){
 
     }
     
-    public SQLDropTableStatement(String dbType){
+    public SQLDropTableStatement(DbType dbType){
         super (dbType);
     }
 
-    public SQLDropTableStatement(SQLName name, String dbType){
+    public SQLDropTableStatement(SQLName name, DbType dbType){
         this(new SQLExprTableSource(name), dbType);
     }
     
@@ -55,7 +59,7 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
         this (tableSource, null);
     }
 
-    public SQLDropTableStatement(SQLExprTableSource tableSource, String dbType){
+    public SQLDropTableStatement(SQLExprTableSource tableSource, DbType dbType){
         this (dbType);
         this.tableSources.add(tableSource);
     }
@@ -136,11 +140,38 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
         this.temporary = temporary;
     }
 
+    public boolean isExternal() {
+        return external;
+    }
+
+    public void setExternal(boolean external) {
+        this.external = external;
+    }
+
     public List<SQLCommentHint> getHints() {
         return hints;
     }
 
     public void setHints(List<SQLCommentHint> hints) {
         this.hints = hints;
+    }
+
+    public boolean isDropPartition() {
+        return isDropPartition;
+    }
+
+    public void setDropPartition(boolean dropPartition) {
+        isDropPartition = dropPartition;
+    }
+
+    public SQLExpr getWhere() {
+        return where;
+    }
+
+    public void setWhere(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.where = x;
     }
 }

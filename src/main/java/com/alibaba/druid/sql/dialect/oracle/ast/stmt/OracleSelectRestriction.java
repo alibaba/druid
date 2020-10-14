@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,36 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
 
+    protected SQLName constraint;
+
     public OracleSelectRestriction(){
 
     }
 
-    public static class CheckOption extends OracleSelectRestriction {
+    public SQLName getConstraint() {
+        return constraint;
+    }
 
-        private OracleConstraint constraint;
+    public void setConstraint(SQLName constraint) {
+        if (constraint != null) {
+            constraint.setParent(this);
+        }
+        this.constraint = constraint;
+    }
+
+    public static class CheckOption extends OracleSelectRestriction {
 
         public CheckOption(){
 
         }
 
-        public OracleConstraint getConstraint() {
-            return this.constraint;
-        }
-
-        public void setConstraint(OracleConstraint constraint) {
-            this.constraint = constraint;
-        }
-
+        @Override
         public void accept0(OracleASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, this.constraint);
@@ -48,6 +53,7 @@ public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
             visitor.endVisit(this);
         }
 
+        @Override
         public CheckOption clone() {
             CheckOption x = new CheckOption();
             if (constraint != null) {
@@ -63,12 +69,14 @@ public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
 
         }
 
+        @Override
         public void accept0(OracleASTVisitor visitor) {
             visitor.visit(this);
 
             visitor.endVisit(this);
         }
 
+        @Override
         public ReadOnly clone() {
             ReadOnly x = new ReadOnly();
             return x;

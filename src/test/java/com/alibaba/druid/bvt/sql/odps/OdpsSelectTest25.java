@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,28 +115,28 @@ public class OdpsSelectTest25 extends TestCase {
                 "and tt.ver <> 'all')\n" +
                 "group by tt.os, \n" +
                 "\ttt.ver;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
         System.out.println(stmt);
 
         assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
         System.out.println("Tables : " + visitor.getTables());
-      System.out.println("fields : " + visitor.getColumns());
+        System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(2, visitor.getTables().size());
-        assertEquals(6, visitor.getColumns().size());
+        assertEquals(8, visitor.getColumns().size());
         assertEquals(4, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));
-        
+
         assertTrue(visitor.containsColumn("ids_openapp_dau_d", "dt"));
         assertTrue(visitor.containsColumn("openapp_log_d", "uid"));
         assertTrue(visitor.containsColumn("openapp_log_d", "pv"));

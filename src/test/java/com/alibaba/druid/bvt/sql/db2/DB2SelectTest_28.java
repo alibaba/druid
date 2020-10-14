@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,13 +36,15 @@ public class DB2SelectTest_28 extends DB2Test {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         assertEquals("SELECT a\n" +
-                        "FROM (\n" +
-                        "\tSELECT b\n" +
-                        "\tFROM d\n" +
-                        ")", stmt.getSelect().toString());
+                "FROM (\n" +
+                "\tSELECT b\n" +
+                "\tFROM d\n" +
+                ")", stmt.getSelect().toString());
 
-        assertEquals("(SELECT b\n" +
-                "FROM d)", stmt.getSelect().getQueryBlock().getFrom().toString());
+        assertEquals("(\n" +
+                "\tSELECT b\n" +
+                "\tFROM d\n" +
+                ")", stmt.getSelect().getQueryBlock().getFrom().toString());
 
         Assert.assertEquals(1, statementList.size());
 
@@ -69,13 +71,13 @@ public class DB2SelectTest_28 extends DB2Test {
                         "\tSELECT b\n" +
                         "\tFROM d\n" +
                         ")", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("select a\n" +
                         "from (\n" +
                         "\tselect b\n" +
                         "\tfrom d\n" +
                         ")", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

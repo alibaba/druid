@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.insert;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -28,7 +28,8 @@ import java.util.List;
 public class MySqlInsertTest_43 extends TestCase {
 
     public void test_insert_0() throws Exception {
-        String sql = "insert into adl_indication_ums_warehouse_ebax_a (sys_pk,sys_ds,sys_biztime,sys_gmt_modified,business_type,parcelled_order_num,warehouse_id)\n" +
+        String sql = "/*+engine=MPP, mppNativeInsertFromSelect=true*/\n" +
+                "insert into adl_indication_ums_warehouse_ebax_a (sys_pk,sys_ds,sys_biztime,sys_gmt_modified,business_type,parcelled_order_num,warehouse_id)\n" +
                 "select\n" +
                 "    concat(20190115,'_',ifnull(businessType, '#null#') ,'_',ifnull(warehouseId, '#null#') ) as sys_pk,\n" +
                 "    cast(20190115 as bigint) as sys_ds,\n" +
@@ -81,7 +82,8 @@ public class MySqlInsertTest_43 extends TestCase {
         SQLStatement stmt = statementList.get(0);
 
         MySqlInsertStatement insertStmt = (MySqlInsertStatement) stmt;
-        assertEquals("INSERT INTO adl_indication_ums_warehouse_ebax_a (sys_pk, sys_ds, sys_biztime, sys_gmt_modified, business_type\n" +
+        assertEquals("/*+engine=MPP, mppNativeInsertFromSelect=true*/\n" +
+                "INSERT INTO adl_indication_ums_warehouse_ebax_a (sys_pk, sys_ds, sys_biztime, sys_gmt_modified, business_type\n" +
                 "\t, parcelled_order_num, warehouse_id)\n" +
                 "SELECT concat(20190115, '_', ifnull(businessType, '#null#'), '_', ifnull(warehouseId, '#null#')) AS sys_pk\n" +
                 "\t, CAST(20190115 AS bigint) AS sys_ds, str_to_date('2019-01-15 21:51:00', '%Y-%m-%d %H:%i:%s') AS sys_biztime, now() AS sys_gmt_modified\n" +
@@ -93,7 +95,8 @@ public class MySqlInsertTest_43 extends TestCase {
                 "\t\t\tSELECT t2_1.warehouse_id, t2_1.external_batch_code\n" +
                 "\t\t\t\t, CASE \n" +
                 "\t\t\t\t\tWHEN t2_2.operation_type = 2\n" +
-                "\t\t\t\t\tOR t2_2.operation_type IS NULL THEN '2'\n" +
+                "\t\t\t\t\t\tOR t2_2.operation_type IS NULL\n" +
+                "\t\t\t\t\tTHEN '2'\n" +
                 "\t\t\t\t\tWHEN t2_2.operation_type = 3 THEN '800'\n" +
                 "\t\t\t\t\tWHEN t2_2.operation_type = 1 THEN '900'\n" +
                 "\t\t\t\tEND AS businessType\n" +
@@ -119,7 +122,6 @@ public class MySqlInsertTest_43 extends TestCase {
                 "\tGROUP BY t1.warehouse_id, t2.businessType\n" +
                 ") a", insertStmt.toString());
 
-        ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, null, null);
     }
 
 }

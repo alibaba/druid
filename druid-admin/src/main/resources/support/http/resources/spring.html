@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Druid Spring Stat</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href='css/bootstrap.min.css' rel="stylesheet" />
+		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+    	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+	</head>
+	<body>
+		
+		<div class="container-fluid">
+      		<div class="row-fluid">
+        		<div class="span12">
+          				<h3>
+          					Spring Stat
+          					<a href="spring.json" target="_blank">View JSON API</a>
+          				</h3>
+						<table id="dataTable" class="table table-bordered table-striped responsive-utilities">
+							<thead>
+								<tr>
+									<th>N</th>
+									<th><a id="th-Class" href="javascript:void(0);" class="lang" langKey="Class">Class</a></th>
+									<th><a id="th-Method" href="javascript:void(0);" class="lang" langKey="Method">Method</a></th>
+									<th><a id="th-ExecuteCount" href="javascript:void(0);" class="lang" langKey="ExecuteCount">ExecuteCount</a></th>
+									<th><a id="th-ExecuteTimeMillis" href="javascript:void(0);" class="lang" langKey="ExecuteTimeMillis">ExecuteTimeMillis</a></th>
+									<th><a id="th-RunningCount" href="javascript:void(0);" class="lang" langKey="RunningCount">RunningCount</a></th>
+									<th><a id="th-ConcurrentMax" href="javascript:void(0);" class="lang" langKey="ConcurrentMax">ConcurrentMax</a></th>
+									<th><a id="th-JdbcExecuteCount" href="javascript:void(0);" class="lang" langKey="JdbcExecuteCount">JdbcExecuteCount</a></th>
+									<th><a id="th-JdbcExecuteTimeMillis" href="javascript:void(0);" class="lang" langKey="JdbcExecuteTimeMillis">JdbcExecuteTimeMillis</a></th>
+									<th><a id="th-JdbcCommitCount" href="javascript:void(0);" class="lang" langKey="JdbcCommitCount">JdbcCommitCount</a></th>
+									<th><a id="th-JdbcRollbackCount" href="javascript:void(0);" class="lang" langKey="JdbcRollbackCount">JdbcRollbackCount</a></th>
+									<th><a id="th-JdbcFetchRowCount" href="javascript:void(0);" class="lang" langKey="JdbcFetchRowCount">JdbcFetchRowCount</a></th>
+									<th><a id="th-JdbcUpdateCount" href="javascript:void(0);" class="lang" langKey="JdbcUpdateCount">JdbcUpdateCount</a></th>
+									<th align="left" width="100"><span class="lang" langKey="Histogram">Histogram</span> <br />[ 
+										<a id="th-Histogram[0]" class="langTitle" langKey="count1ms" title="count of '0-1 ms'" >-</a>
+										<a id="th-Histogram[1]" class="langTitle" langKey="count10ms" title="count of '1-10 ms'" >-</a>
+										<a id="th-Histogram[2]" class="langTitle" langKey="count100ms" title="count of '10-100 ms'" >-</a>
+										<a id="th-Histogram[3]" class="langTitle" langKey="count1s" title="count of '100ms-1 s'" >-</a>
+										<a id="th-Histogram[4]" class="langTitle" langKey="count10s" title="count of '1-10 s'" >-</a>
+										<a id="th-Histogram[5]" class="langTitle" langKey="count100s" title="count of '10-100 s'" >-</a>
+										<a id="th-Histogram[6]" class="langTitle" langKey="count1000s" title="count of '100-1000 s'" >-</a>
+										<a id="th-Histogram[7]" class="langTitle" langKey="countBg1000s" title="count of '> 1000 s'" >-</a> ]
+									</th>
+								</tr>
+							</thead> 
+							<tbody></tbody>
+						</table>
+          			</div>
+        		</div>
+    	</div>
+    	<script type="text/javascript">
+	    	$.namespace("druid.spring");
+	    	druid.spring = function () {  
+	    		return  {
+	    			init : function() {
+	    				$("#dataTable th a").click(function(obj) {
+	    					druid.common.setOrderBy(obj.target.id.substring(3))
+	    				})
+	    				druid.common.buildHead(7);
+	    				druid.common.ajaxuri = 'spring.json?';
+	    				druid.common.handleAjaxResult = druid.spring.handleAjaxResult;
+	    				druid.common.ajaxRequestForBasicInfo();
+	    				setInterval("druid.common.ajaxRequestForBasicInfo();",5000);
+	    			},
+	    			
+	    			handleAjaxResult : function(data) {
+	    				var statList = data.Content;
+	    				if(statList==null) return;
+	    				
+	    				var sqlStatTable = document.getElementById("dataTable");
+	    				while (sqlStatTable.rows.length > 1) {
+	    					sqlStatTable.deleteRow(1);
+	    				}
+	    				
+	    				var html = "";
+	    				for ( var i = 0; i < statList.length; i++) {
+	    					var stat = statList[i];
+	    					var newRow = sqlStatTable.insertRow(-1);
+	    					html += "<tr>";
+	    					html += "<td>" + (i + 1) + "</td>";
+	    					html += "<td>" + stat.Class + "</td>";
+	    					html += "<td>" + '<a target="_blank" href="spring-detail.html?class=' + stat.Class + '&method=' + stat.Method + '">' + stat.Method + '</a>' + "</td>";
+	    					html += "<td>" + replace(stat.ExecuteCount) + "</td>";
+	    					html += "<td>" + replace(stat.ExecuteTimeMillis) + "</td>";
+	    					html += "<td>" + replace(stat.RunningCount) + "</td>";
+	    					html += "<td>" + replace(stat.ConcurrentMax) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcExecuteCount) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcExecuteTimeMillis) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcCommitCount) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcRollbackCount) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcFetchRowCount) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcUpdateCount) + "</td>";
+	    					html += "<td>" + '[' + stat.Histogram + ']' + "</td>";
+	    					html += "</tr>";
+	    				}
+	    				$("#dataTable tbody").html(html);
+	    				druid.common.stripes();
+	    			}
+	    		}
+	    	}();
+	
+	    	$(document).ready(function() {
+	    		druid.spring.init();
+	    	});
+		</script>
+	</body>
+</html>

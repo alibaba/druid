@@ -1,7 +1,9 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License") {
+        return true;
+    }
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,112 +17,219 @@
  */
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsGrantStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowGrantsStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
+import com.alibaba.druid.sql.dialect.odps.ast.*;
 
-public interface OdpsASTVisitor extends SQLASTVisitor {
+public interface OdpsASTVisitor extends HiveASTVisitor {
 
-    void endVisit(OdpsCreateTableStatement x);
+    default void endVisit(OdpsCreateTableStatement x) {
+        endVisit((SQLCreateTableStatement) x);
+    }
 
-    boolean visit(OdpsCreateTableStatement x);
+    default boolean visit(OdpsCreateTableStatement x) {
+        return visit((SQLCreateTableStatement) x);
+    }
 
-    void endVisit(OdpsInsertStatement x);
+    default void endVisit(OdpsUDTFSQLSelectItem x) {
 
-    boolean visit(OdpsInsertStatement x);
-    
-    void endVisit(HiveInsert x);
-    
-    boolean visit(HiveInsert x);
-    
-    void endVisit(OdpsUDTFSQLSelectItem x);
-    
-    boolean visit(OdpsUDTFSQLSelectItem x);
-    
-    void endVisit(OdpsShowPartitionsStmt x);
-    
-    boolean visit(OdpsShowPartitionsStmt x);
-    
-    void endVisit(OdpsShowStatisticStmt x);
-    
-    boolean visit(OdpsShowStatisticStmt x);
-    
-    void endVisit(OdpsSetLabelStatement x);
-    
-    boolean visit(OdpsSetLabelStatement x);
-    
-    void endVisit(OdpsSelectQueryBlock x);
-    
-    boolean visit(OdpsSelectQueryBlock x);
-    
-    void endVisit(OdpsAnalyzeTableStatement x);
-    
-    boolean visit(OdpsAnalyzeTableStatement x);
-    
-    void endVisit(OdpsAddStatisticStatement x);
-    
-    boolean visit(OdpsAddStatisticStatement x);
-    
-    void endVisit(OdpsRemoveStatisticStatement x);
-    
-    boolean visit(OdpsRemoveStatisticStatement x);
-    
-    void endVisit(OdpsStatisticClause.TableCount x);
-    
-    boolean visit(OdpsStatisticClause.TableCount x);
-    
-    void endVisit(OdpsStatisticClause.ExpressionCondition x);
-    
-    boolean visit(OdpsStatisticClause.ExpressionCondition x);
-    
-    void endVisit(OdpsStatisticClause.NullValue x);
-    
-    boolean visit(OdpsStatisticClause.NullValue x);
-    
-    void endVisit(OdpsStatisticClause.ColumnSum x);
-    
-    boolean visit(OdpsStatisticClause.ColumnSum x);
-    
-    void endVisit(OdpsStatisticClause.ColumnMax x);
-    
-    boolean visit(OdpsStatisticClause.ColumnMax x);
-    
-    void endVisit(OdpsStatisticClause.ColumnMin x);
-    
-    boolean visit(OdpsStatisticClause.ColumnMin x);
-    
-    void endVisit(OdpsReadStatement x);
-    
-    boolean visit(OdpsReadStatement x);
-    
-    void endVisit(OdpsShowGrantsStmt x);
-    
-    boolean visit(OdpsShowGrantsStmt x);
-    
-    void endVisit(OdpsListStmt x);
-    
-    boolean visit(OdpsListStmt x);
-    
-    void endVisit(OdpsGrantStmt x);
-    
-    boolean visit(OdpsGrantStmt x);
+    }
 
-    void endVisit(OdpsValuesTableSource x);
+    default boolean visit(OdpsUDTFSQLSelectItem x) {
+        return true;
+    }
 
-    boolean visit(OdpsValuesTableSource x);
+    default void endVisit(OdpsSetLabelStatement x) {
+
+    }
+
+    default boolean visit(OdpsSetLabelStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsSelectQueryBlock x) {
+        endVisit((SQLSelectQueryBlock) x);
+    }
+
+    default boolean visit(OdpsSelectQueryBlock x) {
+        return visit((SQLSelectQueryBlock) x);
+    }
+
+    default void endVisit(OdpsAddStatisticStatement x) {
+
+    }
+
+    default boolean visit(OdpsAddStatisticStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsRemoveStatisticStatement x) {
+
+    }
+
+    default boolean visit(OdpsRemoveStatisticStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsStatisticClause.TableCount x) {
+
+    }
+
+    default boolean visit(OdpsStatisticClause.TableCount x) {
+        return true;
+    }
+
+    default void endVisit(OdpsStatisticClause.ExpressionCondition x) {
+
+    }
+
+    default boolean visit(OdpsStatisticClause.ExpressionCondition x) {
+        return true;
+    }
+
+    default void endVisit(OdpsStatisticClause.NullValue x) {
+
+    }
+
+    default boolean visit(OdpsStatisticClause.NullValue x) {
+        return true;
+    }
+
+    default void endVisit(OdpsStatisticClause.DistinctValue x) {
+
+    }
+
+    default boolean visit(OdpsStatisticClause.DistinctValue x) {
+        return true;
+    }
+
+    default void endVisit(OdpsStatisticClause.ColumnSum x) {
+
+    }
+
+    default boolean visit(OdpsStatisticClause.ColumnSum x) {
+        return true;
+    }
+
+    default void endVisit(OdpsStatisticClause.ColumnMax x) {
+
+    }
+
+    default boolean visit(OdpsStatisticClause.ColumnMax x) {
+        return true;
+    }
+
+    default void endVisit(OdpsStatisticClause.ColumnMin x) {
+
+    }
+
+    default boolean visit(OdpsStatisticClause.ColumnMin x) {
+        return true;
+    }
+
+    default void endVisit(OdpsReadStatement x) {
+
+    }
+
+    default boolean visit(OdpsReadStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsShowGrantsStmt x) {
+
+    }
+
+    default boolean visit(OdpsShowGrantsStmt x) {
+        return true;
+    }
+
+    default void endVisit(OdpsListStmt x) {
+
+    }
+
+    default boolean visit(OdpsListStmt x) {
+        return true;
+    }
+
+    default void endVisit(OdpsGrantStmt x) {
+        endVisit((SQLGrantStatement) x);
+    }
+
+    default boolean visit(OdpsGrantStmt x) {
+        return visit((SQLGrantStatement) x);
+    }
+
+    default boolean visit(OdpsAddTableStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsAddTableStatement x) {
+    }
+
+    default boolean visit(OdpsAddFileStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsAddFileStatement x) {
+
+    }
+
+    default boolean visit(OdpsAddUserStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsAddUserStatement x) {
+
+    }
+
+    default boolean visit(OdpsRemoveUserStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsRemoveUserStatement x) {
+
+    }
+
+    default boolean visit(OdpsAlterTableSetChangeLogs x) {
+        return true;
+    }
+
+    default void endVisit(OdpsAlterTableSetChangeLogs x) {
+
+    }
+
+    default boolean visit(OdpsCountStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsCountStatement x) {
+
+    }
+
+    default boolean visit(OdpsQueryAliasStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsQueryAliasStatement x) {
+
+    }
+
+    default boolean visit(OdpsTransformExpr x) {
+        return true;
+    }
+
+    default void endVisit(OdpsTransformExpr x) {
+
+    }
+
+    default boolean visit(OdpsExstoreStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsExstoreStatement x) {
+
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,22 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLLateralViewTableSource extends SQLTableSourceImpl {
 
-    private SQLTableSource      tableSource;
+    private SQLTableSource tableSource;
     private boolean outer;
 
     private SQLMethodInvokeExpr method;
 
-    private List<SQLName>       columns = new ArrayList<SQLName>(2);
+    private List<SQLName> columns = new ArrayList<SQLName>(2);
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -90,7 +91,7 @@ public class SQLLateralViewTableSource extends SQLTableSourceImpl {
         return null;
     }
 
-    public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
+    public SQLTableSource findTableSourceWithColumn(long columnNameHash, String columnName, int option) {
         for (SQLName column : columns) {
             if (column.nameHashCode64() == columnNameHash) {
                 return this;
@@ -98,9 +99,46 @@ public class SQLLateralViewTableSource extends SQLTableSourceImpl {
         }
 
         if (tableSource != null) {
-            return tableSource.findTableSourceWithColumn(columnNameHash);
+            return tableSource.findTableSourceWithColumn(columnNameHash, columnName, option);
         }
         return null;
+    }
+
+    @Override
+    public SQLLateralViewTableSource clone() {
+
+        SQLLateralViewTableSource x = new SQLLateralViewTableSource();
+
+        x.setAlias(this.alias);
+        x.outer = outer;
+
+        if (this.tableSource != null) {
+            x.setTableSource(this.tableSource.clone());
+        }
+
+        if (this.method != null) {
+            x.setMethod(this.method.clone());
+        }
+
+        for (SQLName column : this.columns) {
+            SQLName e2 = column.clone();
+            e2.setParent(x);
+            x.getColumns().add(e2);
+        }
+
+        if (this.flashback != null) {
+            x.setFlashback(this.flashback.clone());
+        }
+
+        if (this.hints != null) {
+            for (SQLHint e : this.hints) {
+                SQLHint e2 = e.clone();
+                e2.setParent(x);
+                x.getHints().add(e2);
+            }
+        }
+
+        return x;
     }
 
     public boolean isOuter() {

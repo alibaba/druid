@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.oceanbase;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.Assert;
+
+import java.util.List;
 
 public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
 
@@ -41,26 +40,26 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE tnrange ("
-                    + "\n\tid INT,"
-                    + "\n\tname VARCHAR(5)"
-                    + "\n)"
-                    + "\nPARTITION BY RANGE (id) ("
-                    + "\n\tPARTITION p1 VALUES LESS THAN (1),"
-                    + "\n\tPARTITION p2 VALUES LESS THAN MAXVALUE"
-                    + "\n);",
-                                result);
+                            + "\n\tid INT,"
+                            + "\n\tname VARCHAR(5)"
+                            + "\n)"
+                            + "\nPARTITION BY RANGE COLUMNS (id) ("
+                            + "\n\tPARTITION p1 VALUES LESS THAN (1),"
+                            + "\n\tPARTITION p2 VALUES LESS THAN MAXVALUE"
+                            + "\n);",
+                    result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table tnrange ("
-                    + "\n\tid INT,"
-                    + "\n\tname VARCHAR(5)"
-                    + "\n)"
-                    + "\npartition by range (id) ("
-                    + "\n\tpartition p1 values less than (1),"
-                    + "\n\tpartition p2 values less than maxvalue"
-                    + "\n);",
-                                result);
+                            + "\n\tid INT,"
+                            + "\n\tname VARCHAR(5)"
+                            + "\n)"
+                            + "\npartition by range columns (id) ("
+                            + "\n\tpartition p1 values less than (1),"
+                            + "\n\tpartition p2 values less than maxvalue"
+                            + "\n);",
+                    result);
         }
 
         Assert.assertEquals(1, stmtList.size());

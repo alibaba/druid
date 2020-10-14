@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,9 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
+import org.junit.Assert;
 
 public class OdpsSelectTest2 extends TestCase {
 
@@ -29,8 +27,9 @@ public class OdpsSelectTest2 extends TestCase {
                 "\t, last_buy_time, md5, my_udf_001('t_datax_odps2ots_resource_tcif_dmp_user_topup_d', md5) AS datax_pt\n" +
                 "FROM mytable_001\n" +
                 "WHERE ds = '20150819'\n" +
-                "DISTRIBUTE BY CAST(datax_pt AS BIGINT) SORT BY md5, user_id, user_flag, cat1_id, wireless_client_type", SQLUtils.formatOdps(sql));
+                "DISTRIBUTE BY CAST(datax_pt AS BIGINT)\n" +
+                "SORT BY md5, user_id, user_flag, cat1_id, wireless_client_type", SQLUtils.formatOdps(sql));
     }
-    
+
 
 }

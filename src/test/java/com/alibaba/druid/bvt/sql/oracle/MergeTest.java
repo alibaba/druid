@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
+import com.alibaba.druid.DbType;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;

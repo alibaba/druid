@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class OracleCreateViewTest13 extends OracleTest {
                         "FROM ktv_epm.ktv_eq_rprboarditem rbi\n" +
                         "JOIN ktv_epm.ktv_eq_rma_header rma ON rma.rma_id = rbi.rma_id \n" +
                         "\tJOIN ktv_epm.ktv_eq_rprsenditem rsi ON rsi.e_rprboardid = rbi.e_rprboardid\n" +
-                        "AND rsi.e_boardid = rbi.e_boardid \n" +
+                        "\tAND rsi.e_boardid = rbi.e_boardid \n" +
                         "WHERE rbi.rma_id > ?\n" +
                         "\tAND rsi.e_rprsendid = ?\n" +
                         "\tAND rsi.e_boardid IN (?)\n" +

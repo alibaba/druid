@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.Assert;
 
 public class MySqlCreateTableTest52 extends MysqlTest {
 
@@ -64,6 +63,6 @@ public class MySqlCreateTableTest52 extends MysqlTest {
     +"\n\t`create_time` datetime NOT NULL COMMENT '授权时间',"//
     +"\n\t`invalid_time` datetime NOT NULL COMMENT '授权失效时间',"//
     +"\n\tPRIMARY KEY (`auth_id`)"
-    +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin COMMENT 'INS_EBAY_AUTH'", output);
+    +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE = utf8_bin COMMENT 'INS_EBAY_AUTH'", output);
     }
 }

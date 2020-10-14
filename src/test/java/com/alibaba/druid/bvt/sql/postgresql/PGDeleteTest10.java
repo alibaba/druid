@@ -47,10 +47,10 @@ public class PGDeleteTest10 extends PGTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("account")));
 
-        assertEquals(2, visitor.getColumns().size() );
-        
+        assertEquals(1, visitor.getColumns().size() );
+
         assertTrue(visitor.containsColumn("account", "id"));
     }
 
-    
+
 }

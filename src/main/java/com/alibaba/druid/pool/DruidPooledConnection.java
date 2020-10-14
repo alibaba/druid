@@ -48,6 +48,7 @@ import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -1190,6 +1191,16 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     }
 
     public void setSchema(String schema) throws SQLException {
+        if (JdbcUtils.isMysqlDbType(holder.dataSource.getDbType())) {
+            if (holder.initSchema == null) {
+                holder.initSchema = conn.getSchema();
+            }
+            conn.setSchema(schema);
+            if (holder.statementPool != null) {
+                holder.clearStatementCache();
+            }
+            return;
+        }
         throw new SQLFeatureNotSupportedException();
     }
 

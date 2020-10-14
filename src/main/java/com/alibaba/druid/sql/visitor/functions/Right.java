@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,24 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
+
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Right implements Function {
 
     public final static Right instance = new Right();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getParameters().size() != 2) {
+        if (x.getArguments().size() != 2) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        SQLExpr param0 = x.getParameters().get(0);
-        SQLExpr param1 = x.getParameters().get(1);
+        SQLExpr param0 = x.getArguments().get(0);
+        SQLExpr param1 = x.getArguments().get(1);
         param0.accept(visitor);
         param1.accept(visitor);
 

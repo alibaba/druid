@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObject;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerInsertStatement extends SQLInsertStatement implements SQLServerObject {
 
@@ -32,7 +32,7 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
     private SQLServerOutput    output;
 
     public SQLServerInsertStatement() {
-        dbType = JdbcConstants.SQL_SERVER;
+        dbType = DbType.sqlserver;
     }
 
     public void cloneTo(SQLServerInsertStatement x) {

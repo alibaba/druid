@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wenshao on 23/05/2017.
@@ -36,7 +36,7 @@ public class OracleCreatePackageStatement extends OracleStatementImpl implements
     private final List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
     public OracleCreatePackageStatement() {
-        super.setDbType(JdbcConstants.ORACLE);
+        super.setDbType(DbType.oracle);
     }
 
     @Override

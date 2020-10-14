@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
-import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
-import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.parser.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.druid.sql.parser.Keywords;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.Token;
-import com.alibaba.druid.util.JdbcConstants;
+import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
+import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class PGLexer extends Lexer {
 
@@ -72,17 +68,18 @@ public class PGLexer extends Lexer {
         map.put("IF", Token.IF);
         map.put("TYPE", Token.TYPE);
         map.put("ILIKE", Token.ILIKE);
-
         map.put("MERGE", Token.MERGE);
         map.put("MATCHED", Token.MATCHED);
+        map.put("PARTITION", Token.PARTITION);
 
         DEFAULT_PG_KEYWORDS = new Keywords(map);
     }
 
     public PGLexer(String input, SQLParserFeature... features){
-        super(input);
+        super(input, true);
+        this.keepComments = true;
         super.keywods = DEFAULT_PG_KEYWORDS;
-        super.dbType = JdbcConstants.POSTGRESQL;
+        super.dbType = DbType.postgresql;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
@@ -120,16 +117,16 @@ public class PGLexer extends Lexer {
                         putChar('"');
                         break;
                     case 'b':
-                        putChar('\b');
+                        putChar('b');
                         break;
                     case 'n':
-                        putChar('\n');
+                        putChar('n');
                         break;
                     case 'r':
-                        putChar('\r');
+                        putChar('r');
                         break;
                     case 't':
-                        putChar('\t');
+                        putChar('t');
                         break;
                     case '\\':
                         putChar('\\');
@@ -150,10 +147,11 @@ public class PGLexer extends Lexer {
                     token = LITERAL_CHARS;
                     break;
                 } else {
-                    initBuff(bufPos);
-                    arraycopy(mark + 1, buf, 0, bufPos);
-                    hasSpecial = true;
-                    putChar('\'');
+                    if (!hasSpecial) {
+                        initBuff(bufPos);
+                        arraycopy(mark + 1, buf, 0, bufPos);
+                        hasSpecial = true;
+                    }
                     putChar('\'');
                     continue;
                 }

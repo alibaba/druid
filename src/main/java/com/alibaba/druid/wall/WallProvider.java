@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -88,7 +89,7 @@ public abstract class WallProvider {
 
     public final WallDenyStat                             commentDeniedStat       = new WallDenyStat();
 
-    protected String                                      dbType                  = null;
+    protected DbType                                      dbType                  = null;
     protected final AtomicLong                            checkCount              = new AtomicLong();
     protected final AtomicLong                            hardCheckCount          = new AtomicLong();
     protected final AtomicLong                            whiteListHitCount       = new AtomicLong();
@@ -102,6 +103,10 @@ public abstract class WallProvider {
     }
 
     public WallProvider(WallConfig config, String dbType){
+        this(config, DbType.of(dbType));
+    }
+
+    public WallProvider(WallConfig config, DbType dbType){
         this.config = config;
         this.dbType = dbType;
     }

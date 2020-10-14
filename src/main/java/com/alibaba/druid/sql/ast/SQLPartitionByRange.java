@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,12 +43,15 @@ public class SQLPartitionByRange extends SQLPartitionBy {
             acceptChild(visitor, interval);
             acceptChild(visitor, storeIn);
             acceptChild(visitor, partitions);
+            acceptChild(visitor, subPartitionBy);
         }
         visitor.endVisit(this);
     }
 
     public SQLPartitionByRange clone() {
         SQLPartitionByRange x = new SQLPartitionByRange();
+
+        this.cloneTo(x);
 
         if (interval != null) {
             x.setInterval(interval.clone());
@@ -61,5 +64,9 @@ public class SQLPartitionByRange extends SQLPartitionBy {
         }
 
         return x;
+    }
+
+    public void cloneTo(SQLPartitionByRange x) {
+        super.cloneTo(x);
     }
 }

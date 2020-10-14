@@ -1,10 +1,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +15,14 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropTriggerStatement extends SQLStatementImpl implements SQLDropStatement {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SQLDropTriggerStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
 
     private SQLName name;
     private boolean ifExists;
@@ -32,7 +31,7 @@ public class SQLDropTriggerStatement extends SQLStatementImpl implements SQLDrop
         
     }
     
-    public SQLDropTriggerStatement(String dbType) {
+    public SQLDropTriggerStatement(DbType dbType) {
         super (dbType);
     }
 
@@ -67,5 +66,14 @@ public class SQLDropTriggerStatement extends SQLStatementImpl implements SQLDrop
 
     public void setIfExists(boolean ifExists) {
         this.ifExists = ifExists;
+    }
+
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (name == expr) {
+            setName((SQLName) target);
+            return true;
+        }
+
+        return false;
     }
 }

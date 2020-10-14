@@ -1,7 +1,6 @@
 package com.alibaba.druid.sql.ast;
 
-public enum AutoIncrementType
-{
+public enum AutoIncrementType {
     GROUP("GROUP"), SIMPLE("SIMPLE"),
     SIMPLE_CACHE("SIMPLE WITH CACHE"), TIME("TIME");
 

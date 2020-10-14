@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ public class MySqlCreateTableTest84 extends MysqlTest {
                     "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
                     "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                     "\tPRIMARY KEY (`id`),\n" +
-                    "\tUNIQUE `uk_a` (`c_tinyint`),\n" +
+                    "\tUNIQUE KEY `uk_a` (`c_tinyint`),\n" +
                     "\tKEY `k_b` (`c_smallint`),\n" +
                     "\tKEY `k_c` (`c_mediumint`, `c_int`)\n" +
                     ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'", output);
@@ -110,7 +110,7 @@ public class MySqlCreateTableTest84 extends MysqlTest {
                     "\t`c_mediumtext` mediumtext comment 'mediumtext',\n" +
                     "\t`c_longblob` longblob comment 'longblob',\n" +
                     "\tprimary key (`id`),\n" +
-                    "\tunique `uk_a` (`c_tinyint`),\n" +
+                    "\tunique key `uk_a` (`c_tinyint`),\n" +
                     "\tkey `k_b` (`c_smallint`),\n" +
                     "\tkey `k_c` (`c_mediumint`, `c_int`)\n" +
                     ") engine = InnoDB auto_increment = 1769503 charset = utf8mb4 comment '10000000'", output);
@@ -137,7 +137,7 @@ public class MySqlCreateTableTest84 extends MysqlTest {
                 "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
                 "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                 "\tPRIMARY KEY (`id`),\n" +
-                "\tUNIQUE `uk_a` (`c_tinyint`),\n" +
+                "\tUNIQUE KEY `uk_a` (`c_tinyint`),\n" +
                 "\tKEY `k_b` (`c_smallint`),\n" +
                 "\tKEY `k_c` (`c_mediumint`, `c_int`)\n" +
                 ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"

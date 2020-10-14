@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +29,12 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
     protected List<SQLName>      storeIn    = new ArrayList<SQLName>();
     protected List<SQLExpr>      columns    = new ArrayList<SQLExpr>();
 
+    protected SQLIntegerExpr lifecycle;
+
     public List<SQLPartition> getPartitions() {
         return partitions;
     }
-    
+
     public void addPartition(SQLPartition partition) {
         if (partition != null) {
             partition.setParent(this);
@@ -54,11 +57,15 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
         return partitionsCount;
     }
 
-    public void setPartitionsCount(SQLExpr partitionsCount) {
-        if (partitionsCount != null) {
-            partitionsCount.setParent(this);
+    public void setPartitionsCount(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.partitionsCount = partitionsCount;
+        this.partitionsCount = x;
+    }
+
+    public void setPartitionsCount(int partitionsCount) {
+        this.partitionsCount = new SQLIntegerExpr(partitionsCount);
     }
 
     public boolean isLinear() {
@@ -102,13 +109,15 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
             name2.setParent(x);
             x.storeIn.add(name2);
         }
+
+        x.lifecycle = lifecycle;
     }
 
     public boolean isPartitionByColumn(long columnNameHashCode64) {
         for (SQLExpr column : columns) {
             if (column instanceof SQLIdentifierExpr
                     && ((SQLIdentifierExpr) column)
-                    .nameHashCode64() == columnNameHashCode64) {
+                        .nameHashCode64() == columnNameHashCode64) {
                 return true;
             }
         }
@@ -117,6 +126,14 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
             return subPartitionBy.isPartitionByColumn(columnNameHashCode64);
         }
         return false;
+    }
+
+    public SQLIntegerExpr getLifecycle() {
+        return lifecycle;
+    }
+
+    public void setLifecycle(SQLIntegerExpr lifecycle) {
+        this.lifecycle = lifecycle;
     }
 
     public abstract SQLPartitionBy clone();

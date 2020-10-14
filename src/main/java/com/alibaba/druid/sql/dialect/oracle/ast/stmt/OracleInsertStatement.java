@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.statement.SQLErrorLoggingClause;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -25,7 +24,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OracleInsertStatement extends SQLInsertStatement implements OracleStatement {
 
@@ -34,7 +35,7 @@ public class OracleInsertStatement extends SQLInsertStatement implements OracleS
     private List<SQLHint>         hints = new ArrayList<SQLHint>();
 
     public OracleInsertStatement() {
-        dbType = JdbcConstants.ORACLE;
+        dbType = DbType.oracle;
     }
 
     public void cloneTo(OracleInsertStatement x) {
@@ -93,14 +94,15 @@ public class OracleInsertStatement extends SQLInsertStatement implements OracleS
 
         visitor.endVisit(this);
     }
-    
-    public void output(StringBuffer buf) {
-    	new OracleOutputVisitor(buf).visit(this);
-    }
 
     public OracleInsertStatement clone() {
         OracleInsertStatement x = new OracleInsertStatement();
         cloneTo(x);
         return x;
+    }
+
+    @Override
+    public List<SQLCommentHint> getHeadHintsDirect() {
+        return null;
     }
 }

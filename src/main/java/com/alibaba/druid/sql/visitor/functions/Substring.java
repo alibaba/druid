@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,21 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
+import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Substring implements Function {
 
     public final static Substring instance = new Substring();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        List<SQLExpr> params = x.getParameters();
+        List<SQLExpr> params = x.getArguments();
         int paramSize = params.size();
 
         SQLExpr param0 = params.get(0);
@@ -88,5 +89,65 @@ public class Substring implements Function {
             return result;
         }
         return result.substring(0, len);
+    }
+
+    public Object eval(SQLMethodInvokeExpr x) {
+        List<SQLExpr> parameters = x.getArguments();
+        for (SQLExpr parameter : parameters) {
+            if (!(parameter instanceof SQLValuableExpr)){
+                return null;
+            }
+        }
+
+        if (parameters.size() == 3) {
+            Object p0 = ((SQLValuableExpr) parameters.get(0)).getValue();
+            Object p1 = ((SQLValuableExpr) parameters.get(1)).getValue();
+            Object p2 = ((SQLValuableExpr) parameters.get(2)).getValue();
+
+            if (p0 instanceof Number) {
+                p0 = p0.toString();
+            }
+
+            if (p0 instanceof String
+                    && p1 instanceof Integer
+                    && p2 instanceof Integer) {
+                String str = (String) p0;
+                int beginIndex = ((Integer) p1).intValue();
+                int len = ((Integer) p2).intValue();
+                if (len < 0) {
+                    return null;
+                }
+
+                int start = beginIndex - 1, end = beginIndex - 1 + len;
+
+                if (start < 0 || start >= str.length()) {
+                    return null;
+                }
+                if (end < 0 || end >= str.length()) {
+                    return null;
+                }
+
+                if (beginIndex > 0 && len > 0) {
+                    return str.substring(start, end);
+                }
+            }
+        } else if (parameters.size() == 2) {
+            Object p0 = ((SQLValuableExpr) parameters.get(0)).getValue();
+            Object p1 = ((SQLValuableExpr) parameters.get(1)).getValue();
+
+            if (p0 instanceof String
+                    && p1 instanceof Integer) {
+                String str = (String) p0;
+                int beginIndex = ((Integer) p1).intValue();
+                if (beginIndex < 0 || beginIndex >= str.length()) {
+                    return null;
+                }
+                if (beginIndex > 0) {
+                    return str.substring(beginIndex - 1);
+                }
+            }
+        }
+
+        return SQLEvalVisitor.EVAL_ERROR;
     }
 }

@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.bug;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class Issue1865 extends TestCase {
     public void test_for_select() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "select * from t where id = 2 and name = 'wenshao'";
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
@@ -41,7 +42,7 @@ public class Issue1865 extends TestCase {
     }
 
     public void test_for_select_group() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "select * from t where id = 2 and name = 'wenshao'";
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, SQLParserFeature.EnableSQLBinaryOpExprGroup);
@@ -62,7 +63,7 @@ public class Issue1865 extends TestCase {
     }
 
     public void test_for_delete() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "delete from t where id = 2 and name = 'wenshao'";
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
@@ -84,7 +85,7 @@ public class Issue1865 extends TestCase {
     }
 
     public void test_for_delete_group() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "delete from t where id = 2 and name = 'wenshao'";
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, SQLParserFeature.EnableSQLBinaryOpExprGroup);
@@ -106,7 +107,7 @@ public class Issue1865 extends TestCase {
     }
 
     public void test_for_update() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "update t set val = ? where id = 2 and name = 'wenshao'";
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
@@ -131,7 +132,7 @@ public class Issue1865 extends TestCase {
     }
 
     public void test_for_update_group() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "update t set val = ? where id = 2 and name = 'wenshao'";
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, SQLParserFeature.EnableSQLBinaryOpExprGroup);

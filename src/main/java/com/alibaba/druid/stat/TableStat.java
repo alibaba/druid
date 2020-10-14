@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,19 @@
  */
 package com.alibaba.druid.stat;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TableStat {
-
     int selectCount      = 0;
     int updateCount      = 0;
     int deleteCount      = 0;
@@ -397,42 +396,46 @@ public class TableStat {
     }
 
     public static class Column {
+        private final     String              table;
+        private final     String              name;
+        private final     long                hashCode64;
 
-        private final String              table;
-        private final String              name;
-        protected final long              hashCode64;
-
-        private boolean             where;
-        private boolean             select;
-        private boolean             groupBy;
-        private boolean             having;
-        private boolean             join;
-
-        private boolean             primaryKey; // for ddl
-        private boolean             unique; //
-
-        private Map<String, Object> attributes = new HashMap<String, Object>();
-
-        private transient String    fullName;
+        private           boolean             where;
+        private           boolean             select;
+        private           boolean             groupBy;
+        private           boolean             having;
+        private           boolean             join;
+        private           boolean             primaryKey; // for ddl
+        private           boolean             unique; //
+        private           boolean             update;
+        private           Map<String, Object> attributes = new HashMap<String, Object>();
+        private transient String              fullName;
 
         /**
          * @since 1.0.20
          */
-        private String              dataType;
+        private           String              dataType;
 
         public Column(String table, String name){
+            this(table, name, null);
+        }
+
+        public Column(String table, String name, DbType dbType){
             this.table = table;
             this.name = name;
 
             int p = table.indexOf('.');
             if (p != -1) {
-                String dbType = null;
-                if (table.indexOf('`') != -1) {
-                    dbType = JdbcConstants.MYSQL;
-                } else if (table.indexOf('[') != -1) {
-                    dbType = JdbcConstants.SQL_SERVER;
-                } else if (table.indexOf('@') != -1) {
-                    dbType = JdbcConstants.ORACLE;
+                if (dbType == null) {
+                    if (table.indexOf('`') != -1) {
+                        dbType = DbType.mysql;
+                    }
+                    else if (table.indexOf('[') != -1) {
+                        dbType = DbType.sqlserver;
+                    }
+                    else if (table.indexOf('@') != -1) {
+                        dbType = DbType.oracle;
+                    }
                 }
                 SQLExpr owner = SQLUtils.toSQLExpr(table, dbType);
                 hashCode64 = new SQLPropertyExpr(owner, name).hashCode64();
@@ -523,10 +526,18 @@ public class TableStat {
             this.unique = unique;
         }
 
+        public boolean isUpdate() {
+            return update;
+        }
+
+        public void setUpdate(boolean update) {
+            this.update = update;
+        }
+
         public String getName() {
             return name;
         }
-        
+
         /**
          * @since 1.0.20
          */
@@ -573,17 +584,17 @@ public class TableStat {
     }
 
     public static enum Mode {
-                             Insert(1), //
-                             Update(2), //
-                             Delete(4), //
-                             Select(8), //
-                             Merge(16), //
-                             Truncate(32), //
-                             Alter(64), //
-                             Drop(128), //
-                             DropIndex(256), //
-                             CreateIndex(512), //
-                             Replace(1024),
+        Insert(1), //
+        Update(2), //
+        Delete(4), //
+        Select(8), //
+        Merge(16), //
+        Truncate(32), //
+        Alter(64), //
+        Drop(128), //
+        DropIndex(256), //
+        CreateIndex(512), //
+        Replace(1024),
         ; //
 
         public final int mark;
