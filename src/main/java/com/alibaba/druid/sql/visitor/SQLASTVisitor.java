@@ -2503,6 +2503,11 @@ public interface SQLASTVisitor {
 
     }
 
+    default boolean visit(SQLLateralTableSource x) { return true; }
+    default void endVisit(SQLLateralTableSource x) {
+
+    }
+
     default boolean visit(SQLAlterTableBlockSize x) {
         return true;
     }
