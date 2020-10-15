@@ -4232,7 +4232,9 @@ public class MySqlStatementParser extends SQLStatementParser {
     private SQLAlterCharacter alterTableCharacter() {
         lexer.nextToken();
         accept(Token.SET);
-        accept(Token.EQ);
+        if (lexer.token() == Token.EQ) {
+            lexer.nextTokenValue();
+        }
         SQLAlterCharacter item = new SQLAlterCharacter();
         item.setCharacterSet(this.exprParser.primary());
         if (lexer.token() == Token.COMMA) {

@@ -109,9 +109,10 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
     }
 
     public void setOrderBy(SQLOrderBy orderBy) {
-        if (orderBy.getParent() == null) {
+        if (orderBy != null) {
             orderBy.setParent(this);
         }
+
         this.orderBy = orderBy;
     }
 
