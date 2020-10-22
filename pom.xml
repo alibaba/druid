@@ -13,7 +13,7 @@
 
 	<properties>
 		<spring.version>4.3.20.RELEASE</spring.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<jmh.version>1.19</jmh.version>
 
 		<gpg.skip>false</gpg.skip>
@@ -549,6 +549,12 @@
 			<groupId>org.apache.hive</groupId>
 			<artifactId>hive-jdbc</artifactId>
 			<version>3.1.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>ru.yandex.clickhouse</groupId>
+			<artifactId>clickhouse-jdbc</artifactId>
+			<version>0.2.4</version>
 			<scope>provided</scope>
 		</dependency>
 
