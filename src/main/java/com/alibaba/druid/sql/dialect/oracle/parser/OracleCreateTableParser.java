@@ -636,9 +636,4 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
     public OracleExprParser getExprParser() {
         return (OracleExprParser) exprParser;
     }
-
-
-    public SQLPartitionBy parsePartitionBy() {
-        return null;
-    }
 }

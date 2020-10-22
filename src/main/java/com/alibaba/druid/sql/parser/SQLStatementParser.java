@@ -3343,6 +3343,9 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.identifierEquals(Constants.RESOURCE)) {
                     lexer.reset(markBp, markChar, Token.CREATE);
                     return parseCreateResourceGroup();
+                } else if (lexer.token() == FOREIGN) {
+                    lexer.reset(markBp, markChar, Token.CREATE);
+                    return parseCreateTable();
                 }
 
                 throw new ParserException("TODO " + lexer.info());

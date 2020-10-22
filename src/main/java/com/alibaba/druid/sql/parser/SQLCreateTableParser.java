@@ -184,7 +184,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
     }
 
     public SQLPartitionBy parsePartitionBy() {
-        throw new ParserException("TODO " + lexer.info());
+        return null;
     }
 
     protected SQLTableElement parseCreateTableSupplementalLogingProps() {
