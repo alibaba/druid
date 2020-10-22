@@ -4239,7 +4239,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isNot()) {
             print0(ucase ? " NOT IN (" : " not in (");
         } else {
-            print0(ucase ? " IN (" : " in (");
+            if (x.isGlobal()) {
+                print0(ucase ? " GLOBAL IN (" : " global in (");
+            } else {
+                print0(ucase ? " IN (" : " in (");
+            }
         }
 
         this.indentCount++;

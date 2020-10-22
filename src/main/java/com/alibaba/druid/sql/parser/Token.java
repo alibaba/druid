@@ -66,12 +66,13 @@ public enum Token {
     
     EXPLAIN("EXPLAIN"), 
     FOR("FOR"), 
-    IF("IF"), 
-   
-   
-   
-    ALL("ALL"), 
-    UNION("UNION"), 
+    IF("IF"),
+
+
+
+    GLOBAL("GLOBAL"),
+    ALL("ALL"),
+    UNION("UNION"),
     EXCEPT("EXCEPT"), 
     INTERSECT("INTERSECT"), 
     MINUS("MINUS"),

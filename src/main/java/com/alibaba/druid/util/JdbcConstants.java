@@ -121,7 +121,7 @@ public interface JdbcConstants {
     
     String ELASTIC_SEARCH_DRIVER      = "com.alibaba.xdriver.elastic.jdbc.ElasticDriver";
 
-    String CLICKHOUSE                 = "clickhouse";
+    DbType CLICKHOUSE                 = DbType.clickhouse;
     String CLICKHOUSE_DRIVER          = "ru.yandex.clickhouse.ClickHouseDriver";
 
     String KDB                        = "kdb";

@@ -1022,6 +1022,7 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLBinaryExpr(strVal);
                 break;
             }
+            case GLOBAL:
             case CONTAINS:
                 sqlExpr = inRest(null);
                 break;
@@ -2580,6 +2581,14 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final SQLExpr inRest(SQLExpr expr) {
+        boolean global = false;
+
+        // for clickhouse
+        if (lexer.token == Token.GLOBAL) {
+            global = true;
+            lexer.nextToken();
+        }
+
         if (lexer.token == Token.IN) {
             lexer.nextTokenLParen();
 
@@ -2675,6 +2684,11 @@ public class SQLExprParser extends SQLParser {
                     inSubQueryExpr.setSubQuery(((SQLQueryExpr) targetExpr).getSubQuery());
 
                     inSubQueryExpr.setHint(inListExpr.getHint());
+
+                    if (global) {
+                        inSubQueryExpr.setGlobal(true);
+                    }
+
                     expr = inSubQueryExpr;
                 }
             }
@@ -3261,6 +3275,7 @@ public class SQLExprParser extends SQLParser {
                 break;
             case IN:
             case CONTAINS:
+            case GLOBAL:
                 expr = inRest(expr);
                 break;
             case EQEQ:

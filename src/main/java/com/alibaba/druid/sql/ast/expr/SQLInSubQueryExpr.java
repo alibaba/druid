@@ -37,6 +37,9 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable, SQLR
     // for ads query hint
     public SQLCommentHint hint;
 
+    // for clickhouse
+    private boolean global;
+
     public SQLInSubQueryExpr(){
 
     }
@@ -53,6 +56,7 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable, SQLR
     public SQLInSubQueryExpr clone() {
         SQLInSubQueryExpr x = new SQLInSubQueryExpr();
         x.not = not;
+        x.global = global;
         if (expr != null) {
             x.setExpr(expr.clone());
         }
@@ -118,6 +122,7 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable, SQLR
         int result = 1;
         result = prime * result + ((expr == null) ? 0 : expr.hashCode());
         result = prime * result + (not ? 1231 : 1237);
+        result = prime * result + (global ? 1231 : 1237);
         result = prime * result + ((subQuery == null) ? 0 : subQuery.hashCode());
         return result;
     }
@@ -142,6 +147,9 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable, SQLR
             return false;
         }
         if (not != other.not) {
+            return false;
+        }
+        if (global != other.global) {
             return false;
         }
         if (subQuery == null) {
@@ -173,5 +181,13 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable, SQLR
 
     public void setHint(SQLCommentHint hint) {
         this.hint = hint;
+    }
+
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        this.global = global;
     }
 }
