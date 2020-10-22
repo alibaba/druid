@@ -638,4 +638,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
     }
 
 
+    public SQLPartitionBy parsePartitionBy() {
+        return null;
+    }
 }
