@@ -571,6 +571,15 @@ public class SQLUtils {
         return stmtList;
     }
 
+    public static List<SQLStatement> parseStatements(String sql, String dbType) {
+        return parseStatements(sql, dbType, new SQLParserFeature[0]);
+    }
+
+
+    public static List<SQLStatement> parseStatements(String sql, DbType dbType) {
+        return parseStatements(sql, dbType, new SQLParserFeature[0]);
+    }
+
     public static SQLStatement parseSingleStatement(String sql, DbType dbType, boolean keepComments) {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, keepComments);
         List<SQLStatement> stmtList = parser.parseStatementList();
