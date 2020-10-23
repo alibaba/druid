@@ -1838,6 +1838,10 @@ public class SQLStatementParser extends SQLParser {
 
                             break;
                         }
+                    } else if (lexer.token == DEFAULT) {
+                        SQLConstraint constraint = this.exprParser.parseConstaint();
+                        SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(constraint);
+                        stmt.addItem(item);
                     } else {
                         throw new ParserException("TODO " + lexer.info());
                     }

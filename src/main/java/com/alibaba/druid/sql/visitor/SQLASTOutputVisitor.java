@@ -5290,6 +5290,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.indentCount++;
         x.getColumn().accept(this);
         this.indentCount--;
+
+        if (x.isWithValues()) {
+            print0(ucase ? " WITH VALUES" : " with values");
+        }
+
         return false;
     }
 

@@ -24,6 +24,7 @@ public class SQLDefault extends SQLConstraintImpl implements SQLTableElement, SQ
 
     private SQLExpr expr;
     private SQLExpr column;
+    private boolean withValues = false;
 
     public SQLDefault(){
 
@@ -71,8 +72,14 @@ public class SQLDefault extends SQLConstraintImpl implements SQLTableElement, SQ
         super.cloneTo(x);
 
         if (expr != null) {
-            expr = expr.clone();
+            x.setExpr(expr.clone());
         }
+
+        if (column != null) {
+            x.setColumn(column.clone());
+        }
+
+        x.setWithValues(x.isWithValues());
     }
 
     public SQLDefault clone() {
@@ -98,5 +105,13 @@ public class SQLDefault extends SQLConstraintImpl implements SQLTableElement, SQ
             return true;
         }
         return false;
+    }
+
+    public boolean isWithValues() {
+        return withValues;
+    }
+
+    public void setWithValues(boolean withValues) {
+        this.withValues = withValues;
     }
 }

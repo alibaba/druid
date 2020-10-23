@@ -4814,6 +4814,12 @@ public class SQLExprParser extends SQLParser {
         accept(Token.FOR);
         sqlDefault.setColumn(this.expr());
 
+        if (lexer.token == Token.WITH) {
+            lexer.nextToken();
+            accept(Token.VALUES);
+            sqlDefault.setWithValues(true);
+        }
+
         return sqlDefault;
     }
 
