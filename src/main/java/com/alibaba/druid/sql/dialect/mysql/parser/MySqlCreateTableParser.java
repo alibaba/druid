@@ -523,6 +523,15 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
+            if (lexer.identifierEquals("FULLTEXT_DICT")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                stmt.addOption("FULLTEXT_DICT", this.exprParser.charExpr());
+                continue;
+            }
+
             if (lexer.token() == Token.INDEX) {
                 lexer.nextToken();
                 acceptIdentifier("DIRECTORY");
