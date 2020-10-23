@@ -132,6 +132,8 @@ public class Lexer {
 
         if (DbType.sqlite == dbType) {
             this.keywods = Keywords.SQLITE_KEYWORDS;
+        } else if (DbType.dm == dbType) {
+            this.keywods = Keywords.DM_KEYWORDS;
         }
     }
 
