@@ -766,6 +766,22 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     protected void handleCondition(SQLExpr expr, String operator, SQLExpr... valueExprs) {
         if (expr instanceof SQLCastExpr) {
             expr = ((SQLCastExpr) expr).getExpr();
+        } else if (expr instanceof SQLMethodInvokeExpr) {
+            SQLMethodInvokeExpr func = (SQLMethodInvokeExpr) expr;
+            List<SQLExpr> arguments = func.getArguments();
+            if (func.methodNameHashCode64() == FnvHash.Constants.COALESCE
+                    && arguments.size() > 0) {
+                boolean allLiteral = true;
+                for (int i = 1; i < arguments.size(); ++i) {
+                    SQLExpr arg = arguments.get(i);
+                    if (!(arg instanceof SQLLiteralExpr)) {
+                        allLiteral = false;
+                    }
+                }
+                if (allLiteral) {
+                    expr = arguments.get(0);
+                }
+            }
         }
         
         Column column = getColumn(expr);
