@@ -1,0 +1,1359 @@
+(SELECT(`SUBQUERY_27`.`SUBQUERY_27_COL_0`) AS `SUBQUERY_28_COL_0`,(`SUBQUERY_27`.`SUBQUERY_27_COL_1`) AS `SUBQUERY_28_COL_1`,(`SUBQUERY_27`.`SUBQUERY_27_COL_2`) AS `SUBQUERY_28_COL_2`,(`SUBQUERY_27`.`SUBQUERY_27_COL_4`) AS `SUBQUERY_28_COL_3`
+  FROM(
+      SELECT(`SUBQUERY_22`.`SUBQUERY_22_COL_0`) AS `SUBQUERY_27_COL_0`,(`SUBQUERY_22`.`SUBQUERY_22_COL_1`) AS `SUBQUERY_27_COL_1`,(`SUBQUERY_22`.`SUBQUERY_22_COL_2`) AS `SUBQUERY_27_COL_2`,(`SUBQUERY_26`.`SUBQUERY_26_COL_0`) AS `SUBQUERY_27_COL_3`,(`SUBQUERY_26`.`SUBQUERY_26_COL_1`) AS `SUBQUERY_27_COL_4`
+      FROM(
+          SELECT(`SUBQUERY_13`.`SUBQUERY_13_COL_0`) AS `SUBQUERY_22_COL_0`,(`SUBQUERY_13`.`SUBQUERY_13_COL_1`) AS `SUBQUERY_22_COL_1`,(`SUBQUERY_13`.`SUBQUERY_13_COL_2`) AS `SUBQUERY_22_COL_2`
+          FROM(
+              SELECT(`SUBQUERY_12`.`SUBQUERY_12_COL_2`) AS `SUBQUERY_13_COL_0`,(`SUBQUERY_12`.`SUBQUERY_12_COL_0`) AS `SUBQUERY_13_COL_1`,(
+                  CASE WHEN(
+                    (
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) > 0.0
+                    )
+                    AND(
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) <= 0.1
+                    )
+                  ) THEN '0-1折' WHEN(
+                    (
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) > 0.1
+                    )
+                    AND(
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) <= 0.2
+                    )
+                  ) THEN '1-2折' WHEN(
+                    (
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) > 0.2
+                    )
+                    AND(
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) <= 0.3
+                    )
+                  ) THEN '2-3折' WHEN(
+                    (
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) > 0.3
+                    )
+                    AND(
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) <= 0.4
+                    )
+                  ) THEN '3-4折' WHEN(
+                    (
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) > 0.4
+                    )
+                    AND(
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) <= 0.5
+                    )
+                  ) THEN '4-5折' WHEN(
+                    (
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) > 0.5
+                    )
+                    AND(
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) <= 0.6
+                    )
+                  ) THEN '5-6折' WHEN(
+                    (
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) > 0.6
+                    )
+                    AND(
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) <= 0.7
+                    )
+                  ) THEN '6-7折' WHEN(
+                    (
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) > 0.7
+                    )
+                    AND(
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) <= 0.8
+                    )
+                  ) THEN '7-8折' WHEN(
+                    (
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) > 0.8
+                    )
+                    AND(
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) <= 0.9
+                    )
+                  ) THEN '8-9折' WHEN(
+                    (
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) > 0.9
+                    )
+                    AND(
+                      ROUND(
+                        (
+                          CAST(
+                            SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_1`) AS DOUBLE
+                          ) / SUM(`SUBQUERY_12`.`SUBQUERY_12_COL_3`)
+                        ),
+                        2
+                      ) <= 1.0
+                    )
+                  ) THEN '9-10折' ELSE '无折扣' END
+                ) AS `SUBQUERY_13_COL_2`
+              FROM(
+                  SELECT(`SUBQUERY_11`.`SUBQUERY_11_COL_2`) AS `SUBQUERY_12_COL_0`,(`SUBQUERY_11`.`SUBQUERY_11_COL_1`) AS `SUBQUERY_12_COL_1`,(`SUBQUERY_11`.`SUBQUERY_11_COL_4`) AS `SUBQUERY_12_COL_2`,(
+                      (
+                        `SUBQUERY_11`.`SUBQUERY_11_COL_5` * CAST(`SUBQUERY_11`.`SUBQUERY_11_COL_0` AS DOUBLE)
+                      )
+                    ) AS `SUBQUERY_12_COL_3`
+                  FROM(
+                      SELECT(`SUBQUERY_7`.`SUBQUERY_7_COL_0`) AS `SUBQUERY_11_COL_0`,(`SUBQUERY_7`.`SUBQUERY_7_COL_1`) AS `SUBQUERY_11_COL_1`,(`SUBQUERY_7`.`SUBQUERY_7_COL_2`) AS `SUBQUERY_11_COL_2`,(`SUBQUERY_7`.`SUBQUERY_7_COL_3`) AS `SUBQUERY_11_COL_3`,(`SUBQUERY_7`.`SUBQUERY_7_COL_4`) AS `SUBQUERY_11_COL_4`,(`SUBQUERY_10`.`SUBQUERY_10_COL_0`) AS `SUBQUERY_11_COL_5`,(`SUBQUERY_10`.`SUBQUERY_10_COL_1`) AS `SUBQUERY_11_COL_6`
+                      FROM(
+                          SELECT(`SUBQUERY_6`.`SUBQUERY_6_COL_0`) AS `SUBQUERY_7_COL_0`,(`SUBQUERY_6`.`SUBQUERY_6_COL_1`) AS `SUBQUERY_7_COL_1`,(`SUBQUERY_6`.`SUBQUERY_6_COL_2`) AS `SUBQUERY_7_COL_2`,(`SUBQUERY_6`.`SUBQUERY_6_COL_4`) AS `SUBQUERY_7_COL_3`,(`SUBQUERY_6`.`SUBQUERY_6_COL_5`) AS `SUBQUERY_7_COL_4`
+                          FROM(
+                              SELECT(`SUBQUERY_2`.`SUBQUERY_2_COL_0`) AS `SUBQUERY_6_COL_0`,(`SUBQUERY_2`.`SUBQUERY_2_COL_1`) AS `SUBQUERY_6_COL_1`,(`SUBQUERY_2`.`SUBQUERY_2_COL_2`) AS `SUBQUERY_6_COL_2`,(`SUBQUERY_2`.`SUBQUERY_2_COL_3`) AS `SUBQUERY_6_COL_3`,(`SUBQUERY_2`.`SUBQUERY_2_COL_4`) AS `SUBQUERY_6_COL_4`,(`SUBQUERY_5`.`SUBQUERY_5_COL_0`) AS `SUBQUERY_6_COL_5`,(`SUBQUERY_5`.`SUBQUERY_5_COL_1`) AS `SUBQUERY_6_COL_6`
+                              FROM(
+                                  SELECT(`SUBQUERY_1`.`数量`) AS `SUBQUERY_2_COL_0`,(`SUBQUERY_1`.`分摊之后的实付金额`) AS `SUBQUERY_2_COL_1`,(`SUBQUERY_1`.`客户ID`) AS `SUBQUERY_2_COL_2`,(`SUBQUERY_1`.`店铺ID`) AS `SUBQUERY_2_COL_3`,(CAST(`SUBQUERY_1`.`系统级SKUID` AS CHAR)) AS `SUBQUERY_2_COL_4`
+                                  FROM(
+                                      SELECT
+                                        *
+                                      FROM(
+                                          SELECT
+                                            *
+                                          FROM(
+                                              select
+                                                *
+                                              from
+                                                (
+                                                  select
+                                                    `id`,
+                                                    `state` as `状态`,
+                                                    `shop_id` as `店铺ID`,
+                                                    `update_time` as `更新时间`,
+                                                    `group_id` as `集团ID`,
+                                                    `sys_trade_id` as `系统内交易号`,
+                                                    `out_order_id` as `子订单编号`,
+                                                    `sys_customer_id` as `客户ID`,
+                                                    `AK_shop_id_sys_customer_id` as `主键列`,
+                                                    `sys_item_id` as `系统商品ID`,
+                                                    `out_item_id` as `外部商品ID`,
+                                                    `outer_id` as `商家编码`,
+                                                    `title` as `标题`,
+                                                    `sku_id`,
+                                                    `sku_properties` as `sku属性`,
+                                                    `order_status` as `交易状态`,
+                                                    `order_from` as `子订单来源`,
+                                                    `order_num` as `数量`,
+                                                    `order_price` as `价格`,
+                                                    `order_total_fee` as `应付金额`,
+                                                    `order_payment` as `子订单实付金额`,
+                                                    `order_discount_fee` as `商品优惠金额`,
+                                                    `order_adjust_fee` as `手工优惠金额`,
+                                                    `order_created` as `下单时间`,
+                                                    `order_paytime` as `付款时间`,
+                                                    `order_endtime` as `交易完成时间`,
+                                                    `order_item_payindex` as `商品购买次数`,
+                                                    `order_item_payperiod` as `商品购买周期`,
+                                                    `out_refund_id` as `退款ID`,
+                                                    `order_refund_status` as `退款状态`,
+                                                    `order_consign_time` as `发货时间`,
+                                                    `order_logistics_company` as `物流公司名称`,
+                                                    `order_logistics_no` as `运单号`,
+                                                    `order_divide_fee` as `分摊之后的实付金额`,
+                                                    `order_type` as `交易类型`,
+                                                    `order_shipping_type` as `物流方式`,
+                                                    `order_cid` as `商品类目ID`,
+                                                    `sku_outer_id` as `SKU级外部商家编码`,
+                                                    `sys_sku_id` as `系统级skuId`
+                                                  from
+                                                    snappy_c804be8db5c0412bbf31a0db9a43fdfe
+                                                ) as __t
+                                            ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                                        ) AS `SUBQUERY_0`
+                                      WHERE(
+                                          (
+                                            (
+                                              (`SUBQUERY_0`.`付款时间` IS NOT NULL)
+                                              AND(
+                                                `SUBQUERY_0`.`付款时间` <= TIMESTAMP('2019-09-16 00:00:00')
+                                              )
+                                            )
+                                            AND(`SUBQUERY_0`.`店铺ID` IS NOT NULL)
+                                          )
+                                          AND(
+                                            CAST(`SUBQUERY_0`.`系统级SKUID` AS CHAR) IS NOT NULL
+                                          )
+                                        )
+                                    ) AS `SUBQUERY_1`
+                                ) AS `SUBQUERY_2`
+                                INNER JOIN(
+                                  SELECT(`SUBQUERY_4`.`VIEWERID`) AS `SUBQUERY_5_COL_0`,(`SUBQUERY_4`.`SHOPID`) AS `SUBQUERY_5_COL_1`
+                                  FROM(
+                                      SELECT
+                                        *
+                                      FROM(
+                                          SELECT
+                                            *
+                                          FROM(
+                                              select
+                                                *
+                                              from
+                                                (
+                                                  select
+                                                    `ID`,
+                                                    `State`,
+                                                    `CreateTime`,
+                                                    `UpdateTime`,
+                                                    `CompanyID`,
+                                                    `ViewerID`,
+                                                    `ShopID`
+                                                  from
+                                                    `mysql_6b426c6ad88f4c44839e908387acd061`
+                                                ) as __t
+                                            ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                                        ) AS `SUBQUERY_3`
+                                      WHERE(
+                                          (
+                                            (
+                                              (`SUBQUERY_3`.`VIEWERID` = 10000082)
+                                              OR(`SUBQUERY_3`.`VIEWERID` = 10000150)
+                                            )
+                                            AND(`SUBQUERY_3`.`SHOPID` IS NOT NULL)
+                                          )
+                                          AND(`SUBQUERY_3`.`VIEWERID` IS NOT NULL)
+                                        )
+                                    ) AS `SUBQUERY_4`
+                                ) AS `SUBQUERY_5` ON(
+                                  `SUBQUERY_2`.`SUBQUERY_2_COL_3` = `SUBQUERY_5`.`SUBQUERY_5_COL_1`
+                                )
+                            ) AS `SUBQUERY_6`
+                        ) AS `SUBQUERY_7`
+                        INNER JOIN(
+                          SELECT(CAST(`SUBQUERY_9`.`TAG_VAL7` AS DOUBLE)) AS `SUBQUERY_10_COL_0`,(CAST(`SUBQUERY_9`.`SYS_SKU_ID` AS CHAR)) AS `SUBQUERY_10_COL_1`
+                          FROM(
+                              SELECT
+                                *
+                              FROM(
+                                  SELECT
+                                    *
+                                  FROM(
+                                      select
+                                        *
+                                      from
+                                        (
+                                          select
+                                            `id`,
+                                            `state`,
+                                            `create_time`,
+                                            `update_time`,
+                                            `group_id`,
+                                            `brand_id`,
+                                            `goods_id`,
+                                            `sys_sku_id`,
+                                            `row_num`,
+                                            `tag_val1`,
+                                            `tag_val2`,
+                                            `tag_val3`,
+                                            `tag_val4`,
+                                            `tag_val5`,
+                                            `tag_val6`,
+                                            `tag_val7`,
+                                            `tag_val8`,
+                                            `tag_val9`,
+                                            `tag_val10`,
+                                            `tag_val11`,
+                                            `tag_val12`,
+                                            `tag_val13`,
+                                            `tag_val14`,
+                                            `tag_val15`,
+                                            `tag_val16`,
+                                            `tag_val17`,
+                                            `tag_val18`,
+                                            `tag_val19`,
+                                            `tag_val20`,
+                                            `tag_val21`,
+                                            `tag_val22`,
+                                            `tag_val23`,
+                                            `tag_val24`,
+                                            `tag_val25`,
+                                            `tag_val26`,
+                                            `tag_val27`,
+                                            `tag_val28`,
+                                            `tag_val29`,
+                                            `tag_val30`,
+                                            `tag_val31`,
+                                            `tag_val32`,
+                                            `tag_val33`,
+                                            `tag_val34`,
+                                            `tag_val35`,
+                                            `tag_val36`,
+                                            `tag_val37`,
+                                            `tag_val38`,
+                                            `tag_val39`,
+                                            `tag_val40`,
+                                            `tag_val41`,
+                                            `tag_val42`,
+                                            `tag_val43`,
+                                            `tag_val44`,
+                                            `tag_val45`,
+                                            `tag_val46`,
+                                            `tag_val47`,
+                                            `tag_val48`,
+                                            `tag_val49`,
+                                            `tag_val50`,
+                                            `tag_val51`,
+                                            `tag_val52`,
+                                            `tag_val53`,
+                                            `tag_val54`,
+                                            `tag_val55`,
+                                            `tag_val56`,
+                                            `tag_val57`,
+                                            `tag_val58`,
+                                            `tag_val59`,
+                                            `tag_val60`,
+                                            `tag_val61`,
+                                            `tag_val62`,
+                                            `tag_val63`,
+                                            `tag_val64`,
+                                            `tag_val65`,
+                                            `tag_val66`,
+                                            `tag_val67`,
+                                            `tag_val68`,
+                                            `tag_val69`,
+                                            `tag_val70`,
+                                            `tag_val71`,
+                                            `tag_val72`,
+                                            `tag_val73`,
+                                            `tag_val74`,
+                                            `tag_val75`,
+                                            `tag_val76`,
+                                            `tag_val77`,
+                                            `tag_val78`,
+                                            `tag_val79`,
+                                            `tag_val80`,
+                                            `tag_val81`,
+                                            `tag_val82`,
+                                            `tag_val83`,
+                                            `tag_val84`,
+                                            `tag_val85`,
+                                            `tag_val86`,
+                                            `tag_val87`,
+                                            `tag_val88`,
+                                            `tag_val89`,
+                                            `tag_val90`,
+                                            `tag_val91`,
+                                            `tag_val92`,
+                                            `tag_val93`,
+                                            `tag_val94`,
+                                            `tag_val95`,
+                                            `tag_val96`,
+                                            `tag_val97`,
+                                            `tag_val98`,
+                                            `tag_val99`,
+                                            `tag_val100`
+                                          from
+                                            `mysql_3b66f5131ff54dd39d1acf7e637b5f2d`
+                                        ) as __t
+                                    ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                                ) AS `SUBQUERY_8`
+                              WHERE(
+                                  (
+                                    (`SUBQUERY_8`.`TAG_VAL7` IS NOT NULL)
+                                    AND(
+                                      CAST(`SUBQUERY_8`.`TAG_VAL7` AS DOUBLE) > 5.0
+                                    )
+                                  )
+                                  AND(
+                                    CAST(`SUBQUERY_8`.`SYS_SKU_ID` AS CHAR) IS NOT NULL
+                                  )
+                                )
+                            ) AS `SUBQUERY_9`
+                        ) AS `SUBQUERY_10` ON(
+                          `SUBQUERY_7`.`SUBQUERY_7_COL_3` = `SUBQUERY_10`.`SUBQUERY_10_COL_1`
+                        )
+                    ) AS `SUBQUERY_11`
+                ) AS `SUBQUERY_12`
+              GROUP BY
+                `SUBQUERY_12`.`SUBQUERY_12_COL_2`,
+                `SUBQUERY_12`.`SUBQUERY_12_COL_0`
+            ) AS `SUBQUERY_13`
+          WHERE
+            NOT EXISTS(
+              SELECT
+                *
+              FROM(
+                  SELECT(`SUBQUERY_20`.`SUBQUERY_20_COL_1`) AS `SUBQUERY_21_COL_0`,(`SUBQUERY_20`.`SUBQUERY_20_COL_2`) AS `SUBQUERY_21_COL_1`,(`SUBQUERY_20`.`SUBQUERY_20_COL_3`) AS `SUBQUERY_21_COL_2`
+                  FROM(
+                      SELECT(`SUBQUERY_16`.`SUBQUERY_16_COL_0`) AS `SUBQUERY_20_COL_0`,(`SUBQUERY_19`.`SUBQUERY_19_COL_0`) AS `SUBQUERY_20_COL_1`,(`SUBQUERY_19`.`SUBQUERY_19_COL_1`) AS `SUBQUERY_20_COL_2`,(`SUBQUERY_19`.`SUBQUERY_19_COL_2`) AS `SUBQUERY_20_COL_3`
+                      FROM(
+                          SELECT(`SUBQUERY_15`.`BRAND_ID`) AS `SUBQUERY_16_COL_0`
+                          FROM(
+                              SELECT
+                                *
+                              FROM(
+                                  SELECT
+                                    *
+                                  FROM(
+                                      select
+                                        *
+                                      from
+                                        (
+                                          select
+                                            `id`,
+                                            `state`,
+                                            `create_time`,
+                                            `update_time`,
+                                            `group_id`,
+                                            `brand_id`,
+                                            `tag_name`,
+                                            `tag_code`,
+                                            `table_name`,
+                                            `col_name`,
+                                            `row_num`,
+                                            `tag_type`,
+                                            `tag_val`,
+                                            `unit`,
+                                            `remark`,
+                                            `is_show`,
+                                            `is_disable`,
+                                            `is_mark`,
+                                            `is_use`
+                                          from
+                                            `mysql_8b6f108bff73485da3084cd91b31a860`
+                                        ) as __t
+                                    ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                                ) AS `SUBQUERY_14`
+                              WHERE(
+                                  (
+                                    (
+                                      (`SUBQUERY_14`.`TAG_NAME` IS NOT NULL)
+                                      AND(`SUBQUERY_14`.`TAG_NAME` = '一年外折扣')
+                                    )
+                                    AND(
+                                      (`SUBQUERY_14`.`BRAND_ID` = 10000082)
+                                      OR(`SUBQUERY_14`.`BRAND_ID` = 10000150)
+                                    )
+                                  )
+                                  AND(`SUBQUERY_14`.`BRAND_ID` IS NOT NULL)
+                                )
+                            ) AS `SUBQUERY_15`
+                        ) AS `SUBQUERY_16`
+                        INNER JOIN(
+                          SELECT(`SUBQUERY_18`.`BRAND_ID`) AS `SUBQUERY_19_COL_0`,(`SUBQUERY_18`.`SYS_CUSTOMER_ID`) AS `SUBQUERY_19_COL_1`,(
+                              IF(
+                                (`SUBQUERY_18`.`BRAND_ID` = 10000082),
+                                `SUBQUERY_18`.`TAG_VAL30`,
+                                `SUBQUERY_18`.`TAG_VAL28`
+                              )
+                            ) AS `SUBQUERY_19_COL_2`
+                          FROM(
+                              SELECT
+                                *
+                              FROM(
+                                  SELECT
+                                    *
+                                  FROM(
+                                      select
+                                        *
+                                      from
+                                        (
+                                          select
+                                            `id`,
+                                            `state`,
+                                            `create_time`,
+                                            `update_time`,
+                                            `group_id`,
+                                            `brand_id`,
+                                            `sys_customer_id`,
+                                            `row_num`,
+                                            `tag_val1`,
+                                            `tag_val2`,
+                                            `tag_val3`,
+                                            `tag_val4`,
+                                            `tag_val5`,
+                                            `tag_val6`,
+                                            `tag_val7`,
+                                            `tag_val8`,
+                                            `tag_val9`,
+                                            `tag_val10`,
+                                            `tag_val11`,
+                                            `tag_val12`,
+                                            `tag_val13`,
+                                            `tag_val14`,
+                                            `tag_val15`,
+                                            `tag_val16`,
+                                            `tag_val17`,
+                                            `tag_val18`,
+                                            `tag_val19`,
+                                            `tag_val20`,
+                                            `tag_val21`,
+                                            `tag_val22`,
+                                            `tag_val23`,
+                                            `tag_val24`,
+                                            `tag_val25`,
+                                            `tag_val26`,
+                                            `tag_val27`,
+                                            `tag_val28`,
+                                            `tag_val29`,
+                                            `tag_val30`,
+                                            `tag_val31`,
+                                            `tag_val32`,
+                                            `tag_val33`,
+                                            `tag_val34`,
+                                            `tag_val35`,
+                                            `tag_val36`,
+                                            `tag_val37`,
+                                            `tag_val38`,
+                                            `tag_val39`,
+                                            `tag_val40`,
+                                            `tag_val41`,
+                                            `tag_val42`,
+                                            `tag_val43`,
+                                            `tag_val44`,
+                                            `tag_val45`,
+                                            `tag_val46`,
+                                            `tag_val47`,
+                                            `tag_val48`,
+                                            `tag_val49`,
+                                            `tag_val50`,
+                                            `tag_val51`,
+                                            `tag_val52`,
+                                            `tag_val53`,
+                                            `tag_val54`,
+                                            `tag_val55`,
+                                            `tag_val56`,
+                                            `tag_val57`,
+                                            `tag_val58`,
+                                            `tag_val59`,
+                                            `tag_val60`,
+                                            `tag_val61`,
+                                            `tag_val62`,
+                                            `tag_val63`,
+                                            `tag_val64`,
+                                            `tag_val65`,
+                                            `tag_val66`,
+                                            `tag_val67`,
+                                            `tag_val68`,
+                                            `tag_val69`,
+                                            `tag_val70`,
+                                            `tag_val71`,
+                                            `tag_val72`,
+                                            `tag_val73`,
+                                            `tag_val74`,
+                                            `tag_val75`,
+                                            `tag_val76`,
+                                            `tag_val77`,
+                                            `tag_val78`,
+                                            `tag_val79`,
+                                            `tag_val80`,
+                                            `tag_val81`,
+                                            `tag_val82`,
+                                            `tag_val83`,
+                                            `tag_val84`,
+                                            `tag_val85`,
+                                            `tag_val86`,
+                                            `tag_val87`,
+                                            `tag_val88`,
+                                            `tag_val89`,
+                                            `tag_val90`,
+                                            `tag_val91`,
+                                            `tag_val92`,
+                                            `tag_val93`,
+                                            `tag_val94`,
+                                            `tag_val95`,
+                                            `tag_val96`,
+                                            `tag_val97`,
+                                            `tag_val98`,
+                                            `tag_val99`,
+                                            `tag_val100`
+                                          from
+                                            snappy_443ac6d424d44ec3b69910b45d67c1b7
+                                        ) as __t
+                                    ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                                ) AS `SUBQUERY_17`
+                              WHERE(
+                                  (
+                                    (
+                                      (
+                                        (
+                                          (`SUBQUERY_17`.`ROW_NUM` IS NOT NULL)
+                                          AND(`SUBQUERY_17`.`ROW_NUM` = 1)
+                                        )
+                                        AND(
+                                          (`SUBQUERY_17`.`BRAND_ID` = 10000082)
+                                          OR(`SUBQUERY_17`.`BRAND_ID` = 10000150)
+                                        )
+                                      )
+                                      AND(
+                                        IF(
+                                          (`SUBQUERY_17`.`BRAND_ID` = 10000082),
+                                          `SUBQUERY_17`.`TAG_VAL30`,
+                                          `SUBQUERY_17`.`TAG_VAL28`
+                                        ) IS NOT NULL
+                                      )
+                                    )
+                                    AND(`SUBQUERY_17`.`BRAND_ID` IS NOT NULL)
+                                  )
+                                  AND(`SUBQUERY_17`.`SYS_CUSTOMER_ID` IS NOT NULL)
+                                )
+                            ) AS `SUBQUERY_18`
+                        ) AS `SUBQUERY_19` ON(
+                          `SUBQUERY_16`.`SUBQUERY_16_COL_0` = `SUBQUERY_19`.`SUBQUERY_19_COL_0`
+                        )
+                    ) AS `SUBQUERY_20`
+                ) AS `SUBQUERY_21`
+              WHERE(
+                  (
+                    (
+                      `SUBQUERY_13`.`SUBQUERY_13_COL_0` = `SUBQUERY_21`.`SUBQUERY_21_COL_0`
+                    )
+                    AND(
+                      `SUBQUERY_13`.`SUBQUERY_13_COL_1` = `SUBQUERY_21`.`SUBQUERY_21_COL_1`
+                    )
+                  )
+                  AND(
+                    `SUBQUERY_13`.`SUBQUERY_13_COL_2` = `SUBQUERY_21`.`SUBQUERY_21_COL_2`
+                  )
+                )
+            )
+        ) AS `SUBQUERY_22`
+        INNER JOIN(
+          SELECT(`SUBQUERY_25`.`BRAND_ID`) AS `SUBQUERY_26_COL_0`,(`SUBQUERY_25`.`TAG_CODE`) AS `SUBQUERY_26_COL_1`
+          FROM(
+              SELECT
+                *
+              FROM(
+                  SELECT
+                    *
+                  FROM(
+                      select
+                        *
+                      from
+                        (
+                          select
+                            `id`,
+                            `state`,
+                            `create_time`,
+                            `update_time`,
+                            `group_id`,
+                            `brand_id`,
+                            `tag_name`,
+                            `tag_code`,
+                            `table_name`,
+                            `col_name`,
+                            `row_num`,
+                            `tag_type`,
+                            `tag_val`,
+                            `unit`,
+                            `remark`,
+                            `is_show`,
+                            `is_disable`,
+                            `is_mark`,
+                            `is_use`
+                          from
+                            `mysql_8b6f108bff73485da3084cd91b31a860`
+                        ) as __t
+                    ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                ) AS `SUBQUERY_24`
+              WHERE(
+                  (
+                    (
+                      (`SUBQUERY_24`.`TAG_NAME` IS NOT NULL)
+                      AND(`SUBQUERY_24`.`TAG_NAME` = '一年外折扣')
+                    )
+                    AND(
+                      (`SUBQUERY_24`.`BRAND_ID` = 10000082)
+                      OR(`SUBQUERY_24`.`BRAND_ID` = 10000150)
+                    )
+                  )
+                  AND(`SUBQUERY_24`.`BRAND_ID` IS NOT NULL)
+                )
+            ) AS `SUBQUERY_25`
+        ) AS `SUBQUERY_26` ON(
+          `SUBQUERY_22`.`SUBQUERY_22_COL_0` = `SUBQUERY_26`.`SUBQUERY_26_COL_0`
+        )
+    ) AS `SUBQUERY_27`
+)
+UNION ALL(SELECT(`SUBQUERY_27`.`SUBQUERY_27_COL_2`) AS `SUBQUERY_28_COL_0`,(`SUBQUERY_27`.`SUBQUERY_27_COL_3`) AS `SUBQUERY_28_COL_1`,('无标签') AS `SUBQUERY_28_COL_2`,(`SUBQUERY_27`.`SUBQUERY_27_COL_1`) AS `SUBQUERY_28_COL_3`
+    FROM(
+        SELECT(`SUBQUERY_2`.`SUBQUERY_2_COL_0`) AS `SUBQUERY_27_COL_0`,(`SUBQUERY_2`.`SUBQUERY_2_COL_1`) AS `SUBQUERY_27_COL_1`,(`SUBQUERY_25`.`SUBQUERY_25_COL_0`) AS `SUBQUERY_27_COL_2`,(`SUBQUERY_25`.`SUBQUERY_25_COL_1`) AS `SUBQUERY_27_COL_3`
+        FROM(
+            SELECT(`SUBQUERY_1`.`BRAND_ID`) AS `SUBQUERY_2_COL_0`,(`SUBQUERY_1`.`TAG_CODE`) AS `SUBQUERY_2_COL_1`
+            FROM(
+                SELECT
+                  *
+                FROM(
+                    SELECT
+                      *
+                    FROM(
+                        select
+                          *
+                        from
+                          (
+                            select
+                              `id`,
+                              `state`,
+                              `create_time`,
+                              `update_time`,
+                              `group_id`,
+                              `brand_id`,
+                              `tag_name`,
+                              `tag_code`,
+                              `table_name`,
+                              `col_name`,
+                              `row_num`,
+                              `tag_type`,
+                              `tag_val`,
+                              `unit`,
+                              `remark`,
+                              `is_show`,
+                              `is_disable`,
+                              `is_mark`,
+                              `is_use`
+                            from
+                              `mysql_8b6f108bff73485da3084cd91b31a860`
+                          ) as __t
+                      ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                  ) AS `SUBQUERY_0`
+                WHERE(
+                    (
+                      (
+                        (`SUBQUERY_0`.`TAG_NAME` IS NOT NULL)
+                        AND(`SUBQUERY_0`.`TAG_NAME` = '一年外折扣')
+                      )
+                      AND(
+                        (`SUBQUERY_0`.`BRAND_ID` = 10000082)
+                        OR(`SUBQUERY_0`.`BRAND_ID` = 10000150)
+                      )
+                    )
+                    AND(`SUBQUERY_0`.`BRAND_ID` IS NOT NULL)
+                  )
+              ) AS `SUBQUERY_1`
+          ) AS `SUBQUERY_2`
+          INNER JOIN(
+            SELECT(`SUBQUERY_5`.`SUBQUERY_5_COL_0`) AS `SUBQUERY_25_COL_0`,(`SUBQUERY_5`.`SUBQUERY_5_COL_1`) AS `SUBQUERY_25_COL_1`
+            FROM(
+                SELECT(`SUBQUERY_4`.`BRAND_ID`) AS `SUBQUERY_5_COL_0`,(`SUBQUERY_4`.`SYS_CUSTOMER_ID`) AS `SUBQUERY_5_COL_1`
+                FROM(
+                    SELECT
+                      *
+                    FROM(
+                        SELECT
+                          *
+                        FROM(
+                            select
+                              *
+                            from
+                              (
+                                select
+                                  `id`,
+                                  `state`,
+                                  `create_time`,
+                                  `update_time`,
+                                  `group_id`,
+                                  `brand_id`,
+                                  `sys_customer_id`,
+                                  `row_num`,
+                                  `tag_val1`,
+                                  `tag_val2`,
+                                  `tag_val3`,
+                                  `tag_val4`,
+                                  `tag_val5`,
+                                  `tag_val6`,
+                                  `tag_val7`,
+                                  `tag_val8`,
+                                  `tag_val9`,
+                                  `tag_val10`,
+                                  `tag_val11`,
+                                  `tag_val12`,
+                                  `tag_val13`,
+                                  `tag_val14`,
+                                  `tag_val15`,
+                                  `tag_val16`,
+                                  `tag_val17`,
+                                  `tag_val18`,
+                                  `tag_val19`,
+                                  `tag_val20`,
+                                  `tag_val21`,
+                                  `tag_val22`,
+                                  `tag_val23`,
+                                  `tag_val24`,
+                                  `tag_val25`,
+                                  `tag_val26`,
+                                  `tag_val27`,
+                                  `tag_val28`,
+                                  `tag_val29`,
+                                  `tag_val30`,
+                                  `tag_val31`,
+                                  `tag_val32`,
+                                  `tag_val33`,
+                                  `tag_val34`,
+                                  `tag_val35`,
+                                  `tag_val36`,
+                                  `tag_val37`,
+                                  `tag_val38`,
+                                  `tag_val39`,
+                                  `tag_val40`,
+                                  `tag_val41`,
+                                  `tag_val42`,
+                                  `tag_val43`,
+                                  `tag_val44`,
+                                  `tag_val45`,
+                                  `tag_val46`,
+                                  `tag_val47`,
+                                  `tag_val48`,
+                                  `tag_val49`,
+                                  `tag_val50`,
+                                  `tag_val51`,
+                                  `tag_val52`,
+                                  `tag_val53`,
+                                  `tag_val54`,
+                                  `tag_val55`,
+                                  `tag_val56`,
+                                  `tag_val57`,
+                                  `tag_val58`,
+                                  `tag_val59`,
+                                  `tag_val60`,
+                                  `tag_val61`,
+                                  `tag_val62`,
+                                  `tag_val63`,
+                                  `tag_val64`,
+                                  `tag_val65`,
+                                  `tag_val66`,
+                                  `tag_val67`,
+                                  `tag_val68`,
+                                  `tag_val69`,
+                                  `tag_val70`,
+                                  `tag_val71`,
+                                  `tag_val72`,
+                                  `tag_val73`,
+                                  `tag_val74`,
+                                  `tag_val75`,
+                                  `tag_val76`,
+                                  `tag_val77`,
+                                  `tag_val78`,
+                                  `tag_val79`,
+                                  `tag_val80`,
+                                  `tag_val81`,
+                                  `tag_val82`,
+                                  `tag_val83`,
+                                  `tag_val84`,
+                                  `tag_val85`,
+                                  `tag_val86`,
+                                  `tag_val87`,
+                                  `tag_val88`,
+                                  `tag_val89`,
+                                  `tag_val90`,
+                                  `tag_val91`,
+                                  `tag_val92`,
+                                  `tag_val93`,
+                                  `tag_val94`,
+                                  `tag_val95`,
+                                  `tag_val96`,
+                                  `tag_val97`,
+                                  `tag_val98`,
+                                  `tag_val99`,
+                                  `tag_val100`
+                                from
+                                  snappy_443ac6d424d44ec3b69910b45d67c1b7
+                              ) as __t
+                          ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                      ) AS `SUBQUERY_3`
+                    WHERE(
+                        (
+                          (
+                            (
+                              (`SUBQUERY_3`.`ROW_NUM` IS NOT NULL)
+                              AND(`SUBQUERY_3`.`ROW_NUM` = 1)
+                            )
+                            AND(
+                              (`SUBQUERY_3`.`BRAND_ID` = 10000082)
+                              OR(`SUBQUERY_3`.`BRAND_ID` = 10000150)
+                            )
+                          )
+                          AND(
+                            IF(
+                              (`SUBQUERY_3`.`BRAND_ID` = 10000082),
+                              `SUBQUERY_3`.`TAG_VAL30`,
+                              `SUBQUERY_3`.`TAG_VAL28`
+                            ) IS NOT NULL
+                          )
+                        )
+                        AND(`SUBQUERY_3`.`BRAND_ID` IS NOT NULL)
+                      )
+                  ) AS `SUBQUERY_4`
+              ) AS `SUBQUERY_5`
+            WHERE
+              NOT EXISTS(
+                SELECT
+                  *
+                FROM(
+                    SELECT(`SUBQUERY_23`.`SUBQUERY_23_COL_0`) AS `SUBQUERY_24_COL_0`,(`SUBQUERY_23`.`SUBQUERY_23_COL_1`) AS `SUBQUERY_24_COL_1`
+                    FROM(
+                        SELECT(`SUBQUERY_19`.`SUBQUERY_19_COL_0`) AS `SUBQUERY_23_COL_0`,(`SUBQUERY_19`.`SUBQUERY_19_COL_1`) AS `SUBQUERY_23_COL_1`,(`SUBQUERY_22`.`SUBQUERY_22_COL_0`) AS `SUBQUERY_23_COL_2`
+                        FROM(
+                            SELECT(`SUBQUERY_18`.`SUBQUERY_18_COL_1`) AS `SUBQUERY_19_COL_0`,(`SUBQUERY_18`.`SUBQUERY_18_COL_0`) AS `SUBQUERY_19_COL_1`
+                            FROM(
+                                SELECT(`SUBQUERY_17`.`SUBQUERY_17_COL_0`) AS `SUBQUERY_18_COL_0`,(`SUBQUERY_17`.`SUBQUERY_17_COL_2`) AS `SUBQUERY_18_COL_1`
+                                FROM(
+                                    SELECT(`SUBQUERY_13`.`SUBQUERY_13_COL_0`) AS `SUBQUERY_17_COL_0`,(`SUBQUERY_13`.`SUBQUERY_13_COL_1`) AS `SUBQUERY_17_COL_1`,(`SUBQUERY_13`.`SUBQUERY_13_COL_2`) AS `SUBQUERY_17_COL_2`,(`SUBQUERY_16`.`SUBQUERY_16_COL_0`) AS `SUBQUERY_17_COL_3`
+                                    FROM(
+                                        SELECT(`SUBQUERY_12`.`SUBQUERY_12_COL_0`) AS `SUBQUERY_13_COL_0`,(`SUBQUERY_12`.`SUBQUERY_12_COL_2`) AS `SUBQUERY_13_COL_1`,(`SUBQUERY_12`.`SUBQUERY_12_COL_3`) AS `SUBQUERY_13_COL_2`
+                                        FROM(
+                                            SELECT(`SUBQUERY_8`.`SUBQUERY_8_COL_0`) AS `SUBQUERY_12_COL_0`,(`SUBQUERY_8`.`SUBQUERY_8_COL_1`) AS `SUBQUERY_12_COL_1`,(`SUBQUERY_8`.`SUBQUERY_8_COL_2`) AS `SUBQUERY_12_COL_2`,(`SUBQUERY_11`.`SUBQUERY_11_COL_0`) AS `SUBQUERY_12_COL_3`,(`SUBQUERY_11`.`SUBQUERY_11_COL_1`) AS `SUBQUERY_12_COL_4`
+                                            FROM(
+                                                SELECT(`SUBQUERY_7`.`客户ID`) AS `SUBQUERY_8_COL_0`,(`SUBQUERY_7`.`店铺ID`) AS `SUBQUERY_8_COL_1`,(CAST(`SUBQUERY_7`.`系统级SKUID` AS CHAR)) AS `SUBQUERY_8_COL_2`
+                                                FROM(
+                                                    SELECT
+                                                      *
+                                                    FROM(
+                                                        SELECT
+                                                          *
+                                                        FROM(
+                                                            select
+                                                              *
+                                                            from
+                                                              (
+                                                                select
+                                                                  `id`,
+                                                                  `state` as `状态`,
+                                                                  `shop_id` as `店铺ID`,
+                                                                  `update_time` as `更新时间`,
+                                                                  `group_id` as `集团ID`,
+                                                                  `sys_trade_id` as `系统内交易号`,
+                                                                  `out_order_id` as `子订单编号`,
+                                                                  `sys_customer_id` as `客户ID`,
+                                                                  `AK_shop_id_sys_customer_id` as `主键列`,
+                                                                  `sys_item_id` as `系统商品ID`,
+                                                                  `out_item_id` as `外部商品ID`,
+                                                                  `outer_id` as `商家编码`,
+                                                                  `title` as `标题`,
+                                                                  `sku_id`,
+                                                                  `sku_properties` as `sku属性`,
+                                                                  `order_status` as `交易状态`,
+                                                                  `order_from` as `子订单来源`,
+                                                                  `order_num` as `数量`,
+                                                                  `order_price` as `价格`,
+                                                                  `order_total_fee` as `应付金额`,
+                                                                  `order_payment` as `子订单实付金额`,
+                                                                  `order_discount_fee` as `商品优惠金额`,
+                                                                  `order_adjust_fee` as `手工优惠金额`,
+                                                                  `order_created` as `下单时间`,
+                                                                  `order_paytime` as `付款时间`,
+                                                                  `order_endtime` as `交易完成时间`,
+                                                                  `order_item_payindex` as `商品购买次数`,
+                                                                  `order_item_payperiod` as `商品购买周期`,
+                                                                  `out_refund_id` as `退款ID`,
+                                                                  `order_refund_status` as `退款状态`,
+                                                                  `order_consign_time` as `发货时间`,
+                                                                  `order_logistics_company` as `物流公司名称`,
+                                                                  `order_logistics_no` as `运单号`,
+                                                                  `order_divide_fee` as `分摊之后的实付金额`,
+                                                                  `order_type` as `交易类型`,
+                                                                  `order_shipping_type` as `物流方式`,
+                                                                  `order_cid` as `商品类目ID`,
+                                                                  `sku_outer_id` as `SKU级外部商家编码`,
+                                                                  `sys_sku_id` as `系统级skuId`
+                                                                from
+                                                                  snappy_c804be8db5c0412bbf31a0db9a43fdfe
+                                                              ) as __t
+                                                          ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                                                      ) AS `SUBQUERY_6`
+                                                    WHERE(
+                                                        (
+                                                          (
+                                                            (
+                                                              (`SUBQUERY_6`.`付款时间` IS NOT NULL)
+                                                              AND(
+                                                                `SUBQUERY_6`.`付款时间` <= TIMESTAMP('2019-09-16 00:00:00')
+                                                              )
+                                                            )
+                                                            AND(`SUBQUERY_6`.`店铺ID` IS NOT NULL)
+                                                          )
+                                                          AND(
+                                                            CAST(`SUBQUERY_6`.`系统级SKUID` AS CHAR) IS NOT NULL
+                                                          )
+                                                        )
+                                                        AND(`SUBQUERY_6`.`客户ID` IS NOT NULL)
+                                                      )
+                                                  ) AS `SUBQUERY_7`
+                                              ) AS `SUBQUERY_8`
+                                              INNER JOIN(
+                                                SELECT(`SUBQUERY_10`.`VIEWERID`) AS `SUBQUERY_11_COL_0`,(`SUBQUERY_10`.`SHOPID`) AS `SUBQUERY_11_COL_1`
+                                                FROM(
+                                                    SELECT
+                                                      *
+                                                    FROM(
+                                                        SELECT
+                                                          *
+                                                        FROM(
+                                                            select
+                                                              *
+                                                            from
+                                                              (
+                                                                select
+                                                                  `ID`,
+                                                                  `State`,
+                                                                  `CreateTime`,
+                                                                  `UpdateTime`,
+                                                                  `CompanyID`,
+                                                                  `ViewerID`,
+                                                                  `ShopID`
+                                                                from
+                                                                  `mysql_6b426c6ad88f4c44839e908387acd061`
+                                                              ) as __t
+                                                          ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                                                      ) AS `SUBQUERY_9`
+                                                    WHERE(
+                                                        (
+                                                          (
+                                                            (`SUBQUERY_9`.`VIEWERID` = 10000082)
+                                                            OR(`SUBQUERY_9`.`VIEWERID` = 10000150)
+                                                          )
+                                                          AND(`SUBQUERY_9`.`SHOPID` IS NOT NULL)
+                                                        )
+                                                        AND(`SUBQUERY_9`.`VIEWERID` IS NOT NULL)
+                                                      )
+                                                  ) AS `SUBQUERY_10`
+                                              ) AS `SUBQUERY_11` ON(
+                                                `SUBQUERY_8`.`SUBQUERY_8_COL_1` = `SUBQUERY_11`.`SUBQUERY_11_COL_1`
+                                              )
+                                          ) AS `SUBQUERY_12`
+                                      ) AS `SUBQUERY_13`
+                                      INNER JOIN(
+                                        SELECT(CAST(`SUBQUERY_15`.`SYS_SKU_ID` AS CHAR)) AS `SUBQUERY_16_COL_0`
+                                        FROM(
+                                            SELECT
+                                              *
+                                            FROM(
+                                                SELECT
+                                                  *
+                                                FROM(
+                                                    select
+                                                      *
+                                                    from
+                                                      (
+                                                        select
+                                                          `id`,
+                                                          `state`,
+                                                          `create_time`,
+                                                          `update_time`,
+                                                          `group_id`,
+                                                          `brand_id`,
+                                                          `goods_id`,
+                                                          `sys_sku_id`,
+                                                          `row_num`,
+                                                          `tag_val1`,
+                                                          `tag_val2`,
+                                                          `tag_val3`,
+                                                          `tag_val4`,
+                                                          `tag_val5`,
+                                                          `tag_val6`,
+                                                          `tag_val7`,
+                                                          `tag_val8`,
+                                                          `tag_val9`,
+                                                          `tag_val10`,
+                                                          `tag_val11`,
+                                                          `tag_val12`,
+                                                          `tag_val13`,
+                                                          `tag_val14`,
+                                                          `tag_val15`,
+                                                          `tag_val16`,
+                                                          `tag_val17`,
+                                                          `tag_val18`,
+                                                          `tag_val19`,
+                                                          `tag_val20`,
+                                                          `tag_val21`,
+                                                          `tag_val22`,
+                                                          `tag_val23`,
+                                                          `tag_val24`,
+                                                          `tag_val25`,
+                                                          `tag_val26`,
+                                                          `tag_val27`,
+                                                          `tag_val28`,
+                                                          `tag_val29`,
+                                                          `tag_val30`,
+                                                          `tag_val31`,
+                                                          `tag_val32`,
+                                                          `tag_val33`,
+                                                          `tag_val34`,
+                                                          `tag_val35`,
+                                                          `tag_val36`,
+                                                          `tag_val37`,
+                                                          `tag_val38`,
+                                                          `tag_val39`,
+                                                          `tag_val40`,
+                                                          `tag_val41`,
+                                                          `tag_val42`,
+                                                          `tag_val43`,
+                                                          `tag_val44`,
+                                                          `tag_val45`,
+                                                          `tag_val46`,
+                                                          `tag_val47`,
+                                                          `tag_val48`,
+                                                          `tag_val49`,
+                                                          `tag_val50`,
+                                                          `tag_val51`,
+                                                          `tag_val52`,
+                                                          `tag_val53`,
+                                                          `tag_val54`,
+                                                          `tag_val55`,
+                                                          `tag_val56`,
+                                                          `tag_val57`,
+                                                          `tag_val58`,
+                                                          `tag_val59`,
+                                                          `tag_val60`,
+                                                          `tag_val61`,
+                                                          `tag_val62`,
+                                                          `tag_val63`,
+                                                          `tag_val64`,
+                                                          `tag_val65`,
+                                                          `tag_val66`,
+                                                          `tag_val67`,
+                                                          `tag_val68`,
+                                                          `tag_val69`,
+                                                          `tag_val70`,
+                                                          `tag_val71`,
+                                                          `tag_val72`,
+                                                          `tag_val73`,
+                                                          `tag_val74`,
+                                                          `tag_val75`,
+                                                          `tag_val76`,
+                                                          `tag_val77`,
+                                                          `tag_val78`,
+                                                          `tag_val79`,
+                                                          `tag_val80`,
+                                                          `tag_val81`,
+                                                          `tag_val82`,
+                                                          `tag_val83`,
+                                                          `tag_val84`,
+                                                          `tag_val85`,
+                                                          `tag_val86`,
+                                                          `tag_val87`,
+                                                          `tag_val88`,
+                                                          `tag_val89`,
+                                                          `tag_val90`,
+                                                          `tag_val91`,
+                                                          `tag_val92`,
+                                                          `tag_val93`,
+                                                          `tag_val94`,
+                                                          `tag_val95`,
+                                                          `tag_val96`,
+                                                          `tag_val97`,
+                                                          `tag_val98`,
+                                                          `tag_val99`,
+                                                          `tag_val100`
+                                                        from
+                                                          `mysql_3b66f5131ff54dd39d1acf7e637b5f2d`
+                                                      ) as __t
+                                                  ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                                              ) AS `SUBQUERY_14`
+                                            WHERE(
+                                                (
+                                                  (`SUBQUERY_14`.`TAG_VAL7` IS NOT NULL)
+                                                  AND(
+                                                    CAST(`SUBQUERY_14`.`TAG_VAL7` AS DOUBLE) > 5.0
+                                                  )
+                                                )
+                                                AND(
+                                                  CAST(`SUBQUERY_14`.`SYS_SKU_ID` AS CHAR) IS NOT NULL
+                                                )
+                                              )
+                                          ) AS `SUBQUERY_15`
+                                      ) AS `SUBQUERY_16` ON(
+                                        `SUBQUERY_13`.`SUBQUERY_13_COL_1` = `SUBQUERY_16`.`SUBQUERY_16_COL_0`
+                                      )
+                                  ) AS `SUBQUERY_17`
+                              ) AS `SUBQUERY_18`
+                            GROUP BY
+                              `SUBQUERY_18`.`SUBQUERY_18_COL_1`,
+                              `SUBQUERY_18`.`SUBQUERY_18_COL_0`
+                          ) AS `SUBQUERY_19`
+                          INNER JOIN(
+                            SELECT(`SUBQUERY_21`.`BRAND_ID`) AS `SUBQUERY_22_COL_0`
+                            FROM(
+                                SELECT
+                                  *
+                                FROM(
+                                    SELECT
+                                      *
+                                    FROM(
+                                        select
+                                          *
+                                        from
+                                          (
+                                            select
+                                              `id`,
+                                              `state`,
+                                              `create_time`,
+                                              `update_time`,
+                                              `group_id`,
+                                              `brand_id`,
+                                              `tag_name`,
+                                              `tag_code`,
+                                              `table_name`,
+                                              `col_name`,
+                                              `row_num`,
+                                              `tag_type`,
+                                              `tag_val`,
+                                              `unit`,
+                                              `remark`,
+                                              `is_show`,
+                                              `is_disable`,
+                                              `is_mark`,
+                                              `is_use`
+                                            from
+                                              `mysql_8b6f108bff73485da3084cd91b31a860`
+                                          ) as __t
+                                      ) AS `SF_CONNECTOR_QUERY_ALIAS`
+                                  ) AS `SUBQUERY_20`
+                                WHERE(
+                                    (
+                                      (
+                                        (`SUBQUERY_20`.`TAG_NAME` IS NOT NULL)
+                                        AND(`SUBQUERY_20`.`TAG_NAME` = '一年外折扣')
+                                      )
+                                      AND(
+                                        (`SUBQUERY_20`.`BRAND_ID` = 10000082)
+                                        OR(`SUBQUERY_20`.`BRAND_ID` = 10000150)
+                                      )
+                                    )
+                                    AND(`SUBQUERY_20`.`BRAND_ID` IS NOT NULL)
+                                  )
+                              ) AS `SUBQUERY_21`
+                          ) AS `SUBQUERY_22` ON(
+                            `SUBQUERY_19`.`SUBQUERY_19_COL_0` = `SUBQUERY_22`.`SUBQUERY_22_COL_0`
+                          )
+                      ) AS `SUBQUERY_23`
+                  ) AS `SUBQUERY_24`
+                WHERE(
+                    (
+                      `SUBQUERY_5`.`SUBQUERY_5_COL_0` = `SUBQUERY_24`.`SUBQUERY_24_COL_0`
+                    )
+                    AND(
+                      `SUBQUERY_5`.`SUBQUERY_5_COL_1` = `SUBQUERY_24`.`SUBQUERY_24_COL_1`
+                    )
+                  )
+              )
+          ) AS `SUBQUERY_25` ON(
+            `SUBQUERY_2`.`SUBQUERY_2_COL_0` = `SUBQUERY_25`.`SUBQUERY_25_COL_0`
+          )
+      ) AS `SUBQUERY_27`
+  )

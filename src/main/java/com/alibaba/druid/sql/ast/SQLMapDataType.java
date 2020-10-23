@@ -1,28 +1,18 @@
-/*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.druid.sql.ast;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
+import java.sql.Types;
+import java.util.Collections;
+import java.util.List;
+
 public class SQLMapDataType extends SQLObjectImpl implements SQLDataType {
-    private String dbType;
+    public static final SQLMapDataType MAP_CHAR_CHAR = new SQLMapDataType(SQLCharExpr.DATA_TYPE, SQLCharExpr.DATA_TYPE);
+
+    private DbType dbType;
     private SQLDataType keyType;
     private SQLDataType valueType;
 
@@ -35,7 +25,7 @@ public class SQLMapDataType extends SQLObjectImpl implements SQLDataType {
         this.setValueType(valueType);
     }
 
-    public SQLMapDataType(SQLDataType keyType, SQLDataType valueType, String dbType) {
+    public SQLMapDataType(SQLDataType keyType, SQLDataType valueType, DbType dbType) {
         this.setKeyType(keyType);
         this.setValueType(valueType);
         this.dbType = dbType;
@@ -82,12 +72,12 @@ public class SQLMapDataType extends SQLObjectImpl implements SQLDataType {
     }
 
     @Override
-    public void setDbType(String dbType) {
-        this.dbType = dbType;
+    public void setDbType(DbType dbType) {
+        dbType = dbType;
     }
 
     @Override
-    public String getDbType() {
+    public DbType getDbType() {
         return dbType;
     }
 
@@ -135,5 +125,29 @@ public class SQLMapDataType extends SQLObjectImpl implements SQLDataType {
             x.setParent(this);
         }
         this.valueType = x;
+    }
+
+    public int jdbcType() {
+        return Types.OTHER;
+    }
+
+    @Override
+    public boolean isInt() {
+        return false;
+    }
+
+    @Override
+    public boolean isNumberic() {
+        return false;
+    }
+
+    @Override
+    public boolean isString() {
+        return false;
+    }
+
+    @Override
+    public boolean hasKeyLength() {
+        return false;
     }
 }

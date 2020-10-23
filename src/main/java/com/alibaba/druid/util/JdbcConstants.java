@@ -15,38 +15,40 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.DbType;
+
 public interface JdbcConstants {
 
-    String JTDS                       = "jtds";
+    DbType JTDS                       = DbType.jtds;
 
     String MOCK                       = "mock";
 
-    String HSQL                       = "hsql";
+    DbType HSQL                       = DbType.hsql;
 
-    String DB2                        = "db2";
+    DbType DB2                        = DbType.db2;
 
     String DB2_DRIVER                 = "com.ibm.db2.jcc.DB2Driver"; // Type4
     String DB2_DRIVER2                = "COM.ibm.db2.jdbc.app.DB2Driver"; // Type2
     String DB2_DRIVER3                = "COM.ibm.db2.jdbc.net.DB2Driver"; // Type3
 
-    String POSTGRESQL                 = "postgresql";
+    DbType POSTGRESQL                 = DbType.postgresql;
     String POSTGRESQL_DRIVER          = "org.postgresql.Driver";
 
-    String SYBASE                     = "sybase";
+    DbType SYBASE                     = DbType.sybase;
 
-    String SQL_SERVER                 = "sqlserver";
+    DbType SQL_SERVER                 = DbType.sqlserver;
     String SQL_SERVER_DRIVER          = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
     String SQL_SERVER_DRIVER_SQLJDBC4 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     String SQL_SERVER_DRIVER_JTDS     = "net.sourceforge.jtds.jdbc.Driver";
 
-    String ORACLE                     = "oracle";
+    DbType ORACLE                     = DbType.oracle;
     String ORACLE_DRIVER              = "oracle.jdbc.OracleDriver";
     String ORACLE_DRIVER2             = "oracle.jdbc.driver.OracleDriver";
 
-    String ALI_ORACLE                 = "AliOracle";
+    DbType ALI_ORACLE                 = DbType.ali_oracle;
     String ALI_ORACLE_DRIVER          = "com.alibaba.jdbc.AlibabaDriver";
 
-    String MYSQL                      = "mysql";
+    DbType MYSQL                      = DbType.mysql;
     String MYSQL_DRIVER               = "com.mysql.jdbc.Driver";
     String MYSQL_DRIVER_6             = "com.mysql.cj.jdbc.Driver";
     String MYSQL_DRIVER_REPLICATE     = "com.mysql.jdbc.";
@@ -54,38 +56,38 @@ public interface JdbcConstants {
     String MARIADB                    = "mariadb";
     String MARIADB_DRIVER             = "org.mariadb.jdbc.Driver";
 
-    String DERBY                      = "derby";
+    DbType DERBY                      = DbType.derby;
 
     String HBASE                      = "hbase";
 
-    String HIVE                       = "hive";
+    DbType HIVE                       = DbType.hive;
     String HIVE_DRIVER                = "org.apache.hive.jdbc.HiveDriver";
 
-    String H2                         = "h2";
+    DbType H2                         = DbType.h2;
     String H2_DRIVER                  = "org.h2.Driver";
 
-    String DM                         = "dm";
+    DbType DM                         = DbType.dm;
     String DM_DRIVER                  = "dm.jdbc.driver.DmDriver";
 
-    String KINGBASE                   = "kingbase";
+    DbType KINGBASE                   = DbType.kingbase;
     String KINGBASE_DRIVER            = "com.kingbase.Driver";
 
-    String GBASE                      = "gbase";
+    DbType GBASE                      = DbType.gbase;
     String GBASE_DRIVER               = "com.gbase.jdbc.Driver";
 
-    String XUGU                       = "xugu";
+    DbType XUGU                       = DbType.xugu;
     String XUGU_DRIVER                = "com.xugu.cloudjdbc.Driver";
 
-    String OCEANBASE                  = "oceanbase";
-    String OCEANBASE_ORACLE           = "oceanbase_oracle";
+    DbType OCEANBASE                  = DbType.oceanbase;
+    DbType OCEANBASE_ORACLE           = DbType.oceanbase_oracle;
     String OCEANBASE_DRIVER           = "com.alipay.oceanbase.jdbc.Driver";
 
-    String INFORMIX                   = "informix";
+    DbType INFORMIX                   = DbType.informix;
     
     /**
      * 阿里云odps
      */
-    String ODPS                       = "odps";
+    DbType ODPS                       = DbType.odps;
     String ODPS_DRIVER                = "com.aliyun.odps.jdbc.OdpsDriver";
 
     String TERADATA                   = "teradata";
@@ -99,7 +101,7 @@ public interface JdbcConstants {
 
     String PHOENIX                    = "phoenix";
     String PHOENIX_DRIVER             = "org.apache.phoenix.jdbc.PhoenixDriver";
-    String ENTERPRISEDB               = "edb";
+    DbType ENTERPRISEDB               = DbType.edb;
     String ENTERPRISEDB_DRIVER        = "com.edb.Driver";
 
     String KYLIN                      = "kylin";
@@ -110,7 +112,7 @@ public interface JdbcConstants {
     String SQLITE_DRIVER              = "org.sqlite.JDBC";
 
     String ALIYUN_ADS                 = "aliyun_ads";
-    String ALIYUN_DRDS                = "aliyun_drds";
+    DbType ALIYUN_DRDS                = DbType.drds;
 
     String PRESTO                     = "presto";
     String PRESTO_DRIVER              = "com.facebook.presto.jdbc.PrestoDriver";
@@ -119,7 +121,7 @@ public interface JdbcConstants {
     
     String ELASTIC_SEARCH_DRIVER      = "com.alibaba.xdriver.elastic.jdbc.ElasticDriver";
 
-    String CLICKHOUSE                 = "clickhouse";
+    DbType CLICKHOUSE                 = DbType.clickhouse;
     String CLICKHOUSE_DRIVER          = "ru.yandex.clickhouse.ClickHouseDriver";
 
     String KDB                        = "kdb";
@@ -128,6 +130,6 @@ public interface JdbcConstants {
     /**
      * Aliyun PolarDB
      */
-    String POLARDB                    = "polardb";
+    DbType POLARDB                    = DbType.polardb;
     String POLARDB_DRIVER             = "com.aliyun.polardb.Driver";
 }

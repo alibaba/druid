@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ public class SQLCommentHint extends SQLObjectImpl implements SQLHint {
     }
 
     public SQLCommentHint(String text){
-
         this.text = text;
     }
 
@@ -48,7 +47,7 @@ public class SQLCommentHint extends SQLObjectImpl implements SQLHint {
         return new SQLCommentHint(text);
     }
 
-    public void output(StringBuffer buf) {
-        new SQLASTOutputVisitor(buf).visit(this);
+    public String toString() {
+        return "/*" + text + "*/";
     }
 }

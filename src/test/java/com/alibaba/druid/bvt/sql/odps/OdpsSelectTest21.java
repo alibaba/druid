@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,27 +30,27 @@ public class OdpsSelectTest21 extends TestCase {
         // 1095288847322
         String sql = "select wm_concat(',', a) from values('abc', 1), (null, 2) t (a, i);";//
         Assert.assertEquals("SELECT wm_concat(',', a)\n" +
-                "FROM VALUES ('abc', 1), (NULL, 2) t (a, i);", SQLUtils.formatOdps(sql));
+                "FROM (VALUES ('abc', 1), (NULL, 2)) AS t (a, i);", SQLUtils.formatOdps(sql));
         Assert.assertEquals("select wm_concat(',', a)\n" +
-                "from values ('abc', 1), (null, 2) t (a, i);", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+                "from (values ('abc', 1), (null, 2)) as t (a, i);", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
 //        System.out.println("Tables : " + visitor.getTables());
-      System.out.println("fields : " + visitor.getColumns());
+        System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
 

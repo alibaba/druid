@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,21 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.FnvHash;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public class SQLSelectListCache {
     private final static Log                LOG             = LogFactory.getLog(SQLSelectListCache.class);
-    private final String                    dbType;
+    private final DbType                    dbType;
     private final List<Entry>               entries         = new CopyOnWriteArrayList<Entry>();
 
-    public SQLSelectListCache(String dbType) {
+    public SQLSelectListCache(DbType dbType) {
         this.dbType = dbType;
     }
 

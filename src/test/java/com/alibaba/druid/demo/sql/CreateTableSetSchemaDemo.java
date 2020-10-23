@@ -1,5 +1,6 @@
 package com.alibaba.druid.demo.sql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -20,7 +21,7 @@ public class CreateTableSetSchemaDemo extends TestCase {
     public void test_schemaStat() throws Exception {
 String sql = "create table t(fid varchar(20))";
 
-String dbType = JdbcConstants.ORACLE;
+DbType dbType = DbType.oracle;
 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
 List<SQLStatement> stmtList = parser.parseStatementList();
 
@@ -30,7 +31,7 @@ for (SQLStatement stmt : stmtList) {
     createTable.setSchema("sc001");
 }
 
-String sql2 = SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
+String sql2 = SQLUtils.toSQLString(stmtList, DbType.oracle);
 System.out.println(sql2);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,37 +15,11 @@
  */
 package com.alibaba.druid.sql;
 
-import java.util.List;
-
-import com.alibaba.druid.DruidRuntimeException;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOver;
-import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
-import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.FastsqlException;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
@@ -55,12 +29,12 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
+
+import java.util.List;
 
 public class PagerUtils {
 
-    public static String count(String sql, String dbType) {
+    public static String count(String sql, DbType dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.size() != 1) {
@@ -77,7 +51,7 @@ public class PagerUtils {
         return count(selectStmt.getSelect(), dbType);
     }
 
-    public static String limit(String sql, String dbType, int offset, int count) {
+    public static String limit(String sql, DbType dbType, int offset, int count) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.size() != 1) {
@@ -95,47 +69,109 @@ public class PagerUtils {
         return limit(selectStmt.getSelect(), dbType, offset, count);
     }
 
-    public static String limit(SQLSelect select, String dbType, int offset, int count) {
+    public static String limit(String sql, DbType dbType, int offset, int count, boolean check) {
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+
+        if (stmtList.size() != 1) {
+            throw new IllegalArgumentException("sql not support count : " + sql);
+        }
+
+        SQLStatement stmt = stmtList.get(0);
+
+        if (!(stmt instanceof SQLSelectStatement)) {
+            throw new IllegalArgumentException("sql not support count : " + sql);
+        }
+
+        SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
+
+        limit(selectStmt.getSelect(), dbType, offset, count, check);
+
+        return selectStmt.toString();
+    }
+
+    public static String limit(SQLSelect select, DbType dbType, int offset, int count) {
         limit(select, dbType, offset, count, false);
 
         return SQLUtils.toSQLString(select, dbType);
     }
 
-    public static boolean limit(SQLSelect select, String dbType, int offset, int count, boolean check) {
-        if (JdbcUtils.isOracleDbType(dbType)) {
-            return limitOracle(select, dbType, offset, count, check);
-        }
-
-        if (JdbcUtils.isSqlserverDbType(dbType)) {
-            return limitSQLServer(select, dbType, offset, count, check);
-        }
-
-        if (JdbcConstants.DB2.equals(dbType)) {
-            return limitDB2(select, dbType, offset, count, check);
-        }
-
-        return limitQueryBlock(select, dbType, offset, count, check);
-    }
-
-    private static boolean limitQueryBlock(SQLSelect select, String dbType, int offset, int count, boolean check) {
+    public static boolean limit(SQLSelect select, DbType dbType, int offset, int count, boolean check) {
         SQLSelectQuery query = select.getQuery();
-        if (query instanceof SQLUnionQuery) {
-            SQLUnionQuery union = (SQLUnionQuery) query;
-            return limitUnion(union, dbType, offset, count, check);
-        }
 
-        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
-        if (JdbcUtils.isMysqlDbType(dbType)) {
-            return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
+        switch (dbType) {
+            case oracle:
+                return limitOracle(select, dbType, offset, count, check);
+            case db2:
+                return limitDB2(select, dbType, offset, count, check);
+            case sqlserver:
+            case jtds:
+                return limitSQLServer(select, dbType, offset, count, check);
+            default:
+                if (query instanceof SQLSelectQueryBlock) {
+                    return limitQueryBlock(select, dbType, offset, count, check);
+                } else if (query instanceof SQLUnionQuery) {
+                    return limitUnion((SQLUnionQuery) query, dbType, offset, count, check);
+                }
+                throw new UnsupportedOperationException();
         }
-
-        if (JdbcUtils.isPgsqlDbType(dbType)) {
-            return limitPostgreSQLQueryBlock((PGSelectQueryBlock) queryBlock, dbType, offset, count, check);
-        }
-        throw new UnsupportedOperationException();
     }
 
-    private static boolean limitPostgreSQLQueryBlock(PGSelectQueryBlock queryBlock, String dbType, int offset, int count, boolean check) {
+    private static boolean limitUnion(SQLUnionQuery queryBlock, DbType dbType, int offset, int count, boolean check) {
+        SQLLimit limit = queryBlock.getLimit();
+        if (limit != null) {
+            if (offset > 0) {
+                limit.setOffset(new SQLIntegerExpr(offset));
+            }
+
+            if (check && limit.getRowCount() instanceof SQLNumericLiteralExpr) {
+                int rowCount = ((SQLNumericLiteralExpr) limit.getRowCount()).getNumber().intValue();
+                if (rowCount <= count && offset <= 0) {
+                    return false;
+                }
+            } else if (check && limit.getRowCount() instanceof SQLVariantRefExpr) {
+                return false;
+            }
+
+            limit.setRowCount(new SQLIntegerExpr(count));
+        }
+
+        if (limit == null) {
+            limit = new SQLLimit();
+            if (offset > 0) {
+                limit.setOffset(new SQLIntegerExpr(offset));
+            }
+            limit.setRowCount(new SQLIntegerExpr(count));
+            queryBlock.setLimit(limit);
+        }
+
+        return true;
+    }
+
+    private static boolean limitQueryBlock(SQLSelect select, DbType dbType, int offset, int count, boolean check) {
+        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) select.getQuery();
+
+        if (dbType == null) {
+            dbType = DbType.other;
+        }
+
+        switch (dbType) {
+            case mysql:
+            case mariadb:
+            case h2:
+            case ads:
+                return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
+            case postgresql:
+            case hive:
+                return limitSQLQueryBlock(queryBlock, dbType, offset, count, check);
+            case oracle:
+            case oceanbase_oracle:
+                return limitOracle(select, dbType, offset, count, check);
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    private static boolean limitSQLQueryBlock(SQLSelectQueryBlock queryBlock, DbType dbType, int offset, int count, boolean check) {
         SQLLimit limit = queryBlock.getLimit();
         if (limit != null) {
             if (offset > 0) {
@@ -161,18 +197,18 @@ public class PagerUtils {
         return true;
     }
 
-    private static boolean limitDB2(SQLSelect select, String dbType, int offset, int count, boolean check) {
+    private static boolean limitDB2(SQLSelect select, DbType dbType, int offset, int count, boolean check) {
         SQLSelectQuery query = select.getQuery();
 
         SQLBinaryOpExpr gt = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                  SQLBinaryOperator.GreaterThan, //
                                                  new SQLNumberExpr(offset), //
-                                                 JdbcConstants.DB2);
+                DbType.db2);
         SQLBinaryOpExpr lteq = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                    SQLBinaryOperator.LessThanOrEqual, //
                                                    new SQLNumberExpr(count + offset), //
-                                                   JdbcConstants.DB2);
-        SQLBinaryOpExpr pageCondition = new SQLBinaryOpExpr(gt, SQLBinaryOperator.BooleanAnd, lteq, JdbcConstants.DB2);
+                DbType.db2);
+        SQLBinaryOpExpr pageCondition = new SQLBinaryOpExpr(gt, SQLBinaryOperator.BooleanAnd, lteq, DbType.db2);
 
         if (query instanceof SQLSelectQueryBlock) {
             DB2SelectQueryBlock queryBlock = (DB2SelectQueryBlock) query;
@@ -240,19 +276,19 @@ public class PagerUtils {
         return true;
     }
 
-    private static boolean limitSQLServer(SQLSelect select, String dbType, int offset, int count, boolean check) {
+    private static boolean limitSQLServer(SQLSelect select, DbType dbType, int offset, int count, boolean check) {
         SQLSelectQuery query = select.getQuery();
 
         SQLBinaryOpExpr gt = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                  SQLBinaryOperator.GreaterThan, //
                                                  new SQLNumberExpr(offset), //
-                                                 JdbcConstants.SQL_SERVER);
+                DbType.sqlserver);
         SQLBinaryOpExpr lteq = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                    SQLBinaryOperator.LessThanOrEqual, //
                                                    new SQLNumberExpr(count + offset), //
-                                                   JdbcConstants.SQL_SERVER);
+                DbType.sqlserver);
         SQLBinaryOpExpr pageCondition = new SQLBinaryOpExpr(gt, SQLBinaryOperator.BooleanAnd, lteq,
-                                                            JdbcConstants.SQL_SERVER);
+                DbType.sqlserver);
 
         if (query instanceof SQLSelectQueryBlock) {
             SQLServerSelectQueryBlock queryBlock = (SQLServerSelectQueryBlock) query;
@@ -320,7 +356,7 @@ public class PagerUtils {
         return true;
     }
 
-    private static boolean limitOracle(SQLSelect select, String dbType, int offset, int count, boolean check) {
+    private static boolean limitOracle(SQLSelect select, DbType dbType, int offset, int count, boolean check) {
         SQLSelectQuery query = select.getQuery();
 
         if (query instanceof SQLSelectQueryBlock) {
@@ -353,14 +389,14 @@ public class PagerUtils {
                 SQLExpr condition = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                         SQLBinaryOperator.LessThanOrEqual, //
                                                         new SQLNumberExpr(count), //
-                                                        JdbcConstants.ORACLE);
+                        DbType.oracle);
                 if (queryBlock.getWhere() == null) {
                     queryBlock.setWhere(condition);
                 } else {
                     queryBlock.setWhere(new SQLBinaryOpExpr(queryBlock.getWhere(), //
                                                             SQLBinaryOperator.BooleanAnd, //
                                                             condition, //
-                                                            JdbcConstants.ORACLE));
+                            DbType.oracle));
                 }
 
                 return true;
@@ -375,7 +411,7 @@ public class PagerUtils {
         countQueryBlock.setWhere(new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                      SQLBinaryOperator.LessThanOrEqual, //
                                                      new SQLNumberExpr(count + offset), //
-                                                     JdbcConstants.ORACLE));
+                DbType.oracle));
 
         select.setOrderBy(null);
         if (offset <= 0) {
@@ -389,48 +425,13 @@ public class PagerUtils {
         offsetQueryBlock.setWhere(new SQLBinaryOpExpr(new SQLIdentifierExpr("RN"), //
                                                       SQLBinaryOperator.GreaterThan, //
                                                       new SQLNumberExpr(offset), //
-                                                      JdbcConstants.ORACLE));
+                DbType.oracle));
 
         select.setQuery(offsetQueryBlock);
         return true;
     }
 
-    private static boolean limitMySqlQueryBlock(SQLSelectQueryBlock queryBlock, String dbType, int offset, int count, boolean check) {
-        SQLLimit limit = queryBlock.getLimit();
-        if (limit != null) {
-            if (offset > 0) {
-                limit.setOffset(new SQLIntegerExpr(offset));
-            } else if (offset == 0) {
-                if (limit.getOffset() != null) {
-                    limit.setOffset(new SQLIntegerExpr(offset));
-                }
-            }
-
-            if (check && limit.getRowCount() instanceof SQLNumericLiteralExpr) {
-                int rowCount = ((SQLNumericLiteralExpr) limit.getRowCount()).getNumber().intValue();
-                if (rowCount <= count && offset <= 0) {
-                    return false;
-                }
-            } else if (check && limit.getRowCount() instanceof SQLVariantRefExpr) {
-                return false;
-            }
-
-            limit.setRowCount(new SQLIntegerExpr(count));
-        }
-
-        if (limit == null) {
-            limit = new SQLLimit();
-            if (offset > 0) {
-                limit.setOffset(new SQLIntegerExpr(offset));
-            }
-            limit.setRowCount(new SQLIntegerExpr(count));
-            queryBlock.setLimit(limit);
-        }
-
-        return true;
-    }
-
-    private static boolean limitUnion(SQLUnionQuery queryBlock, String dbType, int offset, int count, boolean check) {
+    private static boolean limitMySqlQueryBlock(SQLSelectQueryBlock queryBlock, DbType dbType, int offset, int count, boolean check) {
         SQLLimit limit = queryBlock.getLimit();
         if (limit != null) {
             if (offset > 0) {
@@ -461,7 +462,7 @@ public class PagerUtils {
         return true;
     }
 
-    private static String count(SQLSelect select, String dbType) {
+    private static String count(SQLSelect select, DbType dbType) {
         if (select.getOrderBy() != null) {
             select.setOrderBy(null);
         }
@@ -477,6 +478,12 @@ public class PagerUtils {
 
             if (queryBlock.getGroupBy() != null
                     && queryBlock.getGroupBy().getItems().size() > 0) {
+                if (queryBlock.getSelectList().size() == 1
+                        && queryBlock.getSelectList().get(0).getExpr() instanceof SQLAllColumnExpr
+                ) {
+                    queryBlock.getSelectList().clear();
+                    queryBlock.getSelectList().add(new SQLSelectItem(new SQLIntegerExpr(1)));
+                }
                 return createCountUseSubQuery(select, dbType);
             }
             
@@ -502,7 +509,7 @@ public class PagerUtils {
         throw new IllegalStateException();
     }
 
-    private static String createCountUseSubQuery(SQLSelect select, String dbType) {
+    private static String createCountUseSubQuery(SQLSelect select, DbType dbType) {
         SQLSelectQueryBlock countSelectQuery = createQueryBlock(dbType);
 
         SQLSelectItem countItem = createCountItem(dbType);
@@ -518,31 +525,33 @@ public class PagerUtils {
         return SQLUtils.toSQLString(countStmt, dbType);
     }
 
-    private static SQLSelectQueryBlock createQueryBlock(String dbType) {
-        if (JdbcUtils.isPgsqlDbType(dbType)) {
-            return new MySqlSelectQueryBlock();
+    private static SQLSelectQueryBlock createQueryBlock(DbType dbType) {
+        if (dbType == null) {
+            dbType = DbType.other;
         }
 
-        if (JdbcUtils.isOracleDbType(dbType)) {
-            return new OracleSelectQueryBlock();
+        switch (dbType) {
+            case mysql:
+            case mariadb:
+            case ads:
+                return new MySqlSelectQueryBlock();
+            case oracle:
+                return new OracleSelectQueryBlock();
+            case postgresql:
+                return new PGSelectQueryBlock();
+            case sqlserver:
+            case jtds:
+                return new SQLServerSelectQueryBlock();
+            case db2:
+                return new DB2SelectQueryBlock();
+            case odps:
+                return new OdpsSelectQueryBlock();
+            default:
+                return new SQLSelectQueryBlock(dbType);
         }
-
-        if (JdbcUtils.isPgsqlDbType(dbType)) {
-            return new PGSelectQueryBlock();
-        }
-
-        if (JdbcUtils.isSqlserverDbType(dbType)) {
-            return new SQLServerSelectQueryBlock();
-        }
-
-        if (JdbcConstants.DB2.equals(dbType)) {
-            return new DB2SelectQueryBlock();
-        }
-
-        return new SQLSelectQueryBlock();
     }
 
-    private static SQLSelectItem createCountItem(String dbType) {
+    private static SQLSelectItem createCountItem(DbType dbType) {
         SQLAggregateExpr countExpr = new SQLAggregateExpr("COUNT");
 
         countExpr.addArgument(new SQLAllColumnExpr());
@@ -576,7 +585,7 @@ public class PagerUtils {
      * @param dbType
      * @return if not exists limit, return -1;
      */
-    public static int getLimit(String sql, String dbType) {
+    public static int getLimit(String sql, DbType dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.size() != 1) {
@@ -625,10 +634,10 @@ public class PagerUtils {
         return -1;
     }
 
-    public static boolean hasUnorderedLimit(String sql, String dbType) {
+    public static boolean hasUnorderedLimit(String sql, DbType dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
-        if (JdbcUtils.isMysqlDbType(dbType)) {
+        if (DbType.mysql == dbType) {
 
             MySqlUnorderedLimitDetectVisitor visitor = new MySqlUnorderedLimitDetectVisitor();
 
@@ -639,8 +648,7 @@ public class PagerUtils {
             return visitor.unorderedLimitCount > 0;
         }
 
-        if (JdbcUtils.isOracleDbType(dbType)) {
-
+        if (DbType.oracle == dbType) {
             OracleUnorderedLimitDetectVisitor visitor = new OracleUnorderedLimitDetectVisitor();
 
             for (SQLStatement stmt : stmtList) {
@@ -650,7 +658,7 @@ public class PagerUtils {
             return visitor.unorderedLimitCount > 0;
         }
 
-        throw new DruidRuntimeException("not supported. dbType : " + dbType);
+        throw new FastsqlException("not supported. dbType : " + dbType);
     }
 
     private static class MySqlUnorderedLimitDetectVisitor extends MySqlASTVisitorAdapter {

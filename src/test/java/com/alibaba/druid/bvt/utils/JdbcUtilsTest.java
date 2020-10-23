@@ -15,10 +15,14 @@
  */
 package com.alibaba.druid.bvt.utils;
 
+import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.mock.MockConnection;
+import com.alibaba.druid.mock.MockStatement;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -78,5 +82,14 @@ public class JdbcUtilsTest extends TestCase {
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, "select * from user");
             Assert.assertEquals(0, list.size());
         }
-    }   
+    }
+
+    public void test_close() throws Exception {
+        MockStatement stmt = new MockStatement(new MockConnection()) {
+            public void close() throws SQLException {
+                throw new SQLRecoverableException("Closed Connection");
+            }
+        };
+        JdbcUtils.close(stmt);
+    }
 }

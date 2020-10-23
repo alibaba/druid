@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,16 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.FastsqlException;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-public class SQLIntervalExpr extends SQLExprImpl {
+public class SQLIntervalExpr extends SQLExprImpl implements SQLReplaceable {
+    public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("interval");
 
     private SQLExpr           value;
     private SQLIntervalUnit   unit;
@@ -44,12 +46,24 @@ public class SQLIntervalExpr extends SQLExprImpl {
         return x;
     }
 
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.value == expr) {
+            setValue(target);
+            return true;
+        }
+        return false;
+    }
+
     public SQLExpr getValue() {
         return value;
     }
 
-    public void setValue(SQLExpr value) {
-        this.value = value;
+    public void setValue(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.value = x;
     }
 
     public SQLIntervalUnit getUnit() {
@@ -61,18 +75,24 @@ public class SQLIntervalExpr extends SQLExprImpl {
     }
 
     @Override
-    public void output(StringBuffer buf) {
-        buf.append("INTERVAL ");
-        value.output(buf);
-        if (unit != null) {
-            buf.append(' ');
-            buf.append(unit.name());
+    public void output(Appendable buf) {
+        try {
+            buf.append("INTERVAL ");
+            value.output(buf);
+            if (unit != null) {
+                buf.append(' ');
+                buf.append(unit.name());
+            }
+        } catch (IOException ex) {
+            throw new FastsqlException("output error", ex);
         }
     }
 
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.value);
+            if (this.value != null) {
+                this.value.accept(visitor);
+            }
         }
         visitor.endVisit(this);
     }
@@ -114,6 +134,11 @@ public class SQLIntervalExpr extends SQLExprImpl {
             return false;
         }
         return true;
+    }
+
+
+    public SQLDataType computeDataType() {
+        return DATA_TYPE;
     }
 
 }

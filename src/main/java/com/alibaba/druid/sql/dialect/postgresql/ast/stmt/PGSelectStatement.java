@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,20 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
 public class PGSelectStatement extends SQLSelectStatement implements PGSQLStatement {
 
     public PGSelectStatement(){
-        super(JdbcConstants.POSTGRESQL);
+        super(DbType.postgresql);
     }
 
     public PGSelectStatement(SQLSelect select){
-        super(select, JdbcConstants.POSTGRESQL);
+        super(select, DbType.postgresql);
     }
 
     protected void accept0(SQLASTVisitor visitor) {

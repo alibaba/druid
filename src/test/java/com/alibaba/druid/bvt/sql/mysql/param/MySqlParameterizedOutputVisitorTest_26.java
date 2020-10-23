@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_26 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "SELECT `xxx_reverse_od`.`id` from xxx_reverse_od_0446 `xxx_reverse_od` where `xxx_reverse_od`.name=1 limit 1;";
 

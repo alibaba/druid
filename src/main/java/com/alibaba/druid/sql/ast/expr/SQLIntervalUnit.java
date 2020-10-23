@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public enum SQLIntervalUnit {
     YEAR,

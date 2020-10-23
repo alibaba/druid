@@ -27,7 +27,7 @@ public class MySqlCreateTableTest97 extends MysqlTest {
                 "  CONSTRAINT `gsp_order2_details_ibfk_2` FOREIGN KEY (`creator_id`) REFERENCES `gsp_sys_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
                 ") ENGINE=InnoDB AUTO_INCREMENT=84608 DEFAULT CHARSET=utf8";
 
-        System.out.println(sql);
+//        System.out.println(sql);
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

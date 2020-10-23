@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,28 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.Utils;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
+
 public class OneParamFunctions implements Function {
 
     public final static OneParamFunctions instance = new OneParamFunctions();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getParameters().size() == 0) {
+        if (x.getArguments().size() == 0) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        SQLExpr param = x.getParameters().get(0);
+        SQLExpr param = x.getArguments().get(0);
         param.accept(visitor);
 
         Object paramValue = param.getAttributes().get(EVAL_VALUE);

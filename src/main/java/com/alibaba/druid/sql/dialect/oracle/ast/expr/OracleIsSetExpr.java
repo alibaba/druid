@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,17 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleIsSetExpr extends SQLExprImpl implements OracleExpr {
+import java.util.Collections;
+import java.util.List;
+
+public class OracleIsSetExpr extends SQLExprImpl implements OracleExpr, SQLReplaceable {
 
     private SQLExpr nestedTable;
 
@@ -41,6 +42,15 @@ public class OracleIsSetExpr extends SQLExprImpl implements OracleExpr {
             x.setNestedTable(nestedTable.clone());
         }
         return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.nestedTable == expr) {
+            setNestedTable(target);
+            return true;
+        }
+        return false;
     }
 
     public SQLExpr getNestedTable() {

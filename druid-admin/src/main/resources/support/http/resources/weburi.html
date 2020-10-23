@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+<head>
+    <title>Druid Web URI Stat</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8"/>
+    <link href='css/bootstrap.min.css' rel="stylesheet"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet"/>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script src="js/lang.js" type="text/javascript" charset="utf8"></script>
+    <script src="js/common.js" type="text/javascript" charset="utf8"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h3>
+                Web URI Stat
+                <a href="weburi.json" target="_blank">View JSON API</a>
+                <span class="pull-right" style="font-size: 16px; margin-right: 20px;">
+          						<label langkey="RefreshPeriod" class="lang" style="display: inline;" for="refreshSecondsSelect">Refresh Period</label>
+          						<select id="refreshSecondsSelect" class="refresh-seconds-select btn" style="width:80px;"
+                                        onchange="javascript:druid.weburi.refreshSeconds=parseInt(this.options[this.options.selectedIndex].value);">
+          							<option value="5" selected="selected">5s</option>
+          							<option value="10">10s</option>
+          							<option value="20">20s</option>
+          							<option value="30">30s</option>
+          							<option value="60">60s</option>
+          						</select>
+          						<a id="btnSuspendRefresh" langkey="SuspendRefresh" class="btn btn-primary lang"
+                                   href="javascript:druid.weburi.switchSuspendRefresh();">Suspend Refresh</a>
+          					</span>
+                <span class="pull-right" style="font-size: 16px; margin-right: 20px;">
+          						<label langkey="ServiceList" class="lang" style="display: inline;" for="refreshServiceSelect">ServiceList</label>
+          						<select id="refreshServiceSelect" class="refresh-seconds-select btn" style="width:200px;"
+                                        onchange="javascript:druid.weburi.refreshService=this.options[this.options.selectedIndex].value;">
+          						</select>
+                </span>
+            </h3>
+            <table id="dataTable" class="table table-bordered table-striped responsive-utilities">
+                <thead>
+                <tr>
+                    <th>N</th>
+
+                    <th><a id="th-URI" class="lang" langKey="URI">URI</a></th>
+                    <th><a id="th-RequestCount" class="lang" langKey="RequestCount">RequestCount</a></th>
+                    <th><a id="th-RequestTimeMillis" class="lang" langKey="RequestTimeMillis">RequestTimeMillis</a></th>
+                    <th><a id="th-RequestTimeMillisMax" class="lang" langKey="RequestTimeMillisMax">RequestTimeMillisMax</a></th>
+                    <th><a id="th-RunningCount" class="lang" langKey="RunningCount">RunningCount</a></th>
+                    <th><a id="th-ConcurrentMax" class="lang" langKey="ConcurrentMax">ConcurrentMax</a></th>
+                    <th><a id="th-JdbcExecuteCount" class="lang" langKey="JdbcExecuteCount">JdbcExecuteCount</a></th>
+                    <th><a id="th-JdbcExecuteErrorCount" class="lang" langKey="JdbcExecuteErrorCount">JdbcExecuteErrorCount</a></th>
+                    <th><a id="th-JdbcExecuteTimeMillis" class="lang" langKey="JdbcExecuteTimeMillis">JdbcExecuteTimeMillis</a></th>
+                    <th><a id="th-JdbcCommitCount" class="lang" langKey="JdbcCommitCount">JdbcCommitCount</a></th>
+                    <th><a id="th-JdbcRollbackCount" class="lang" langKey="JdbcRollbackCount">JdbcRollbackCount</a></th>
+                    <th><a id="th-JdbcFetchRowCount" class="lang" langKey="JdbcFetchRowCount">JdbcFetchRowCount</a></th>
+                    <th><a id="th-JdbcUpdateCount" class="lang" langKey="JdbcUpdateCount">JdbcUpdateCount</a></th>
+                    <th align="left" width="100"><span class="lang" langKey="Histogram">Histogram</span> <br/>[
+                        <a id="th-Histogram[0]" class="langTitle" langKey="count1ms" title="count of '0-1 ms'">-</a>
+                        <a id="th-Histogram[1]" class="langTitle" langKey="count10ms" title="count of '1-10 ms'">-</a>
+                        <a id="th-Histogram[2]" class="langTitle" langKey="count100ms" title="count of '10-100 ms'">-</a>
+                        <a id="th-Histogram[3]" class="langTitle" langKey="count1s" title="count of '100ms-1 s'">-</a>
+                        <a id="th-Histogram[4]" class="langTitle" langKey="count10s" title="count of '1-10 s'">-</a>
+                        <a id="th-Histogram[5]" class="langTitle" langKey="count100s" title="count of '10-100 s'">-</a>
+                        <a id="th-Histogram[6]" class="langTitle" langKey="count1000s" title="count of '100-1000 s'">-</a>
+                        <a id="th-Histogram[7]" class="langTitle" langKey="countBg1000s" title="count of '> 1000 s'">-</a> ]
+                    </th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $.namespace("druid.weburi");
+    druid.weburi = function () {
+        return {
+            init: function () {
+                druid.weburi.refreshService = $("#refreshServiceSelect option").first().val();
+                var serviceName = druid.weburi.refreshService;
+
+                $("#dataTable th a").click(function (obj) {
+                    druid.common.setOrderBy(obj.target.id.substring(3))
+                })
+                druid.common.buildHead(5);
+                druid.common.ajaxuri = 'weburi.json?serviceName=' + serviceName + '&';
+                druid.common.handleCallback = druid.weburi.handleAjaxResult;
+                druid.common.setOrderBy("URI");
+                druid.weburi.controlRefresh();
+            },
+            controlRefresh: function () {
+                console.log("serviceName:" + druid.weburi.refreshService);
+                var serviceName = druid.weburi.refreshService;
+                druid.common.ajaxuri = 'weburi.json?serviceName=' + serviceName + '&';
+
+                var FIVE = 5;
+                if (!druid.weburi.refreshSeconds) {
+                    druid.weburi.refreshSeconds = FIVE;
+                }
+                if (!druid.weburi.suspendedSeconds) {
+                    druid.weburi.suspendedSeconds = 0;
+                }
+                druid.weburi.suspendedSeconds += FIVE;
+                if (!druid.weburi.disableAutoRefresh) {
+                    if (druid.weburi.suspendedSeconds >= druid.weburi.refreshSeconds) {
+                        druid.weburi.suspendedSeconds = 0;
+                        druid.common.ajaxRequestForBasicInfo();
+                    }
+                }
+                setTimeout(druid.weburi.controlRefresh, FIVE * 1000);
+            },
+            switchSuspendRefresh: function () {
+                druid.weburi.disableAutoRefresh = !druid.weburi.disableAutoRefresh;
+                if (druid.weburi.disableAutoRefresh) {
+                    $("#btnSuspendRefresh").addClass("btn-warning").removeClass("btn-primary");
+                } else {
+                    $("#btnSuspendRefresh").addClass("btn-primary").removeClass("btn-warning");
+                }
+            },
+            disableAutoRefresh: false,
+            refreshSeconds: 5,
+            refreshService: '',
+            suspendedSeconds: 0,
+
+            handleAjaxResult: function (data) {
+                var statList = data.Content;
+                if (statList == null) return;
+
+                var sqlStatTable = document.getElementById("dataTable");
+                while (sqlStatTable.rows.length > 1) {
+                    sqlStatTable.deleteRow(1);
+                }
+
+                var html = "";
+                for (var i = 0; i < statList.length; i++) {
+                    var stat = statList[i];
+                    var newRow = sqlStatTable.insertRow(-1);
+                    html += "<tr>";
+                    html += "<td>" + (i + 1) + "</td>";
+                    html += "<td>" + '<a target="_blank" href="weburi-detail.html?uri=' + encodeURI(stat.URI) + '">' + druid.common.subSqlString(stat.URI, 64) + '</a>' + "</td>";
+                    html += "<td>" + replace(stat.RequestCount) + "</td>";
+                    html += "<td>" + replace(stat.RequestTimeMillis) + "</td>";
+                    html += "<td>" + replace(stat.RequestTimeMillisMax) + "</td>";
+                    html += "<td>" + replace(stat.RunningCount) + "</td>";
+                    html += "<td>" + replace(stat.ConcurrentMax) + "</td>";
+                    html += "<td>" + replace(stat.JdbcExecuteCount) + "</td>";
+                    html += "<td>" + replace(stat.JdbcExecuteErrorCount) + "</td>";
+                    html += "<td>" + replace(stat.JdbcExecuteTimeMillis) + "</td>";
+                    html += "<td>" + replace(stat.JdbcCommitCount) + "</td>";
+                    html += "<td>" + replace(stat.JdbcRollbackCount) + "</td>";
+                    html += "<td>" + replace(stat.JdbcFetchRowCount) + "</td>";
+                    html += "<td>" + replace(stat.JdbcUpdateCount) + "</td>";
+                    html += "<td>" + '[' + stat.Histogram + ']' + "</td>";
+                    html += "</tr>";
+                }
+                $("#dataTable tbody").html(html);
+                druid.common.stripes();
+            }
+        }
+    }();
+
+    $(document).ready(function () {
+        druid.common.getService();
+        druid.weburi.init();
+    });
+    $("#refreshServiceSelect").on("change",function(){
+        druid.weburi.refreshService = $("#refreshServiceSelect option:selected").val();
+        druid.common.ajaxuri = 'weburi.json?serviceName=' + druid.weburi.refreshService + '&';
+        druid.common.ajaxRequestForBasicInfo();
+        druid.common.handleCallback = druid.weburi.handleAjaxResult;
+    });
+</script>
+</body>
+</html>

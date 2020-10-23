@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,11 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLExprStatement extends SQLStatementImpl {
+public class SQLExprStatement extends SQLStatementImpl implements SQLReplaceable {
 
     private SQLExpr expr;
 
@@ -44,8 +45,19 @@ public class SQLExprStatement extends SQLStatementImpl {
         return expr;
     }
 
-    public void setExpr(SQLExpr expr) {
-        this.expr = expr;
+    public void setExpr(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.expr = x;
     }
 
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.expr == expr) {
+            setExpr(target);
+            return true;
+        }
+        return false;
+    }
 }

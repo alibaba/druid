@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,38 +30,38 @@ public class OdpsCreateTableTest7_struct extends TestCase {
         String sql = "CREATE TABLE DEST3(k STRUCT<col1:STRING, col2:STRING>, v BIGINT) STORED AS TEXTFILE;";//
 
 
-        
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
         assertEquals("CREATE TABLE DEST3 (\n" +
-                "\tk STRUCT<col1:STRING>, col2:STRING>>,\n" +
+                "\tk STRUCT<col1:STRING, col2:STRING>,\n" +
                 "\tv BIGINT\n" +
                 ")\n" +
                 "STORED AS TEXTFILE;", stmt.toString());
 
         assertEquals("create table DEST3 (\n" +
-                "\tk struct<col1:string>, col2:string>>,\n" +
+                "\tk struct<col1:string, col2:string>,\n" +
                 "\tv bigint\n" +
                 ")\n" +
                 "stored as TEXTFILE;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
 //        System.out.println("Tables : " + visitor.getTables());
-      System.out.println("fields : " + visitor.getColumns());
+        System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(1, visitor.getTables().size());
         assertEquals(2, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));
-        
+
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,37 +15,23 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.statement.SQLShowProcessListStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlShowProcessListStatement extends MySqlStatementImpl implements MySqlShowStatement {
+public class MySqlShowProcessListStatement extends SQLShowProcessListStatement implements MySqlShowStatement {
 
-    private boolean full = false;
-    private SQLExpr where;
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
+    }
 
     public void accept0(MySqlASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, where);
-        }
+        visitor.visit(this);
         visitor.endVisit(this);
     }
 
-    public boolean isFull() {
-        return full;
-    }
-
-    public void setFull(boolean full) {
-        this.full = full;
-    }
-
-    public SQLExpr getWhere() {
-        return where;
-    }
-
-    public void setWhere(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-        this.where = x;
-    }
 }

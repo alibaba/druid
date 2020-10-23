@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class OracleSelectTest73 extends OracleTest {
 
             assertEquals("SELECT fact_1_id, fact_2_id, SUM(sales_value) AS sales_value\n" +
                     "FROM dimension_tab\n" +
-                    "GROUP BY CUBE (fact_1_id, fact_2_id\n" +
+                    "GROUP BY CUBE (fact_1_id, fact_2_id)\n" +
                     "ORDER BY fact_1_id, fact_2_id;", text);
         }
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));

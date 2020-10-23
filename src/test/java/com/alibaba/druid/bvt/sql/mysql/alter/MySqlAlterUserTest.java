@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.alter;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.Assert;
+
+import java.util.List;
 
 public class MySqlAlterUserTest extends MysqlTest {
 
@@ -33,7 +32,6 @@ public class MySqlAlterUserTest extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -44,18 +42,56 @@ public class MySqlAlterUserTest extends MysqlTest {
         Assert.assertEquals("ALTER USER 'jeffrey'@'localhost' PASSWORD EXPIRE;", //
                             output);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
+    }
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
-        
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
+    public void test_1() throws Exception {
+        String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string'";
+
+        SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
+
+        assertEquals("ALTER USER IF EXISTS user1 IDENTIFIED BY 'auth_string'", statement.toString());
+    }
+
+    public void test_2() throws Exception {
+        String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE";
+
+        SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
+
+        assertEquals("ALTER USER IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE", statement.toString());
+    }
+
+    public void test_3() throws Exception {
+        String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE DEFAULT";
+
+        SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
+
+        assertEquals("ALTER USER IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE DEFAULT", statement.toString());
+    }
+
+    public void test_4() throws Exception {
+        String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE NEVER";
+
+        SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
+
+        assertEquals("ALTER USER IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE NEVER", statement.toString());
+    }
+
+    public void test_5() throws Exception {
+        String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE INTERVAL 5 DAY";
+
+        SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
+
+        assertEquals("ALTER USER IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE INTERVAL 5 DAY", statement.toString());
+    }
+
+    public void test_6() throws Exception {
+        String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string', user2 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE INTERVAL 5 DAY";
+
+        SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
+
+        assertEquals("ALTER USER IF EXISTS user1 IDENTIFIED BY 'auth_string', user2 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE INTERVAL 5 DAY", statement.toString());
     }
 }

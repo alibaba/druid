@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.clause;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OracleLobStorageClause extends OracleSegmentAttributesImpl implements OracleSQLObject {
 
@@ -62,6 +62,48 @@ public class OracleLobStorageClause extends OracleSegmentAttributesImpl implemen
             acceptChild(visitor, tablespace);
         }
         visitor.endVisit(this);
+    }
+
+    public void cloneTo(OracleLobStorageClause x) {
+        super.cloneTo(x);
+
+        if (segementName != null) {
+            x.setSegementName(segementName.clone());
+        }
+
+        for (SQLName item : items) {
+            SQLName item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+
+        x.secureFile = secureFile;
+        x.basicFile = basicFile;
+        x.enable = enable;
+
+        if (chunk != null) {
+            x.setChunk(chunk.clone());
+        }
+
+        x.cache = cache;
+        x.logging = logging;
+        x.compress = compress;
+        x.keepDuplicate = keepDuplicate;
+        x.retention = retention;
+
+        if (storageClause != null) {
+            x.setStorageClause(storageClause.clone());
+        }
+
+        if (pctversion != null) {
+            x.setPctversion(pctversion.clone());
+        }
+    }
+
+    public OracleLobStorageClause clone() {
+        OracleLobStorageClause x = new OracleLobStorageClause();
+        cloneTo(x);
+        return x;
     }
 
     public Boolean getEnable() {

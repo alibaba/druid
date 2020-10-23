@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLSubPartitionBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MySqlSubPartitionByKey extends SQLSubPartitionBy implements MySqlObject {
-
+    private int algorithm = 2;
     private List<SQLName> columns = new ArrayList<SQLName>();
-    private short algorithm = 2;
-
-    public short getAlgorithm() {
-        return algorithm;
-    }
-
-    public void setAlgorithm(short algorithm) {
-        this.algorithm = algorithm;
-    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -73,13 +64,21 @@ public class MySqlSubPartitionByKey extends SQLSubPartitionBy implements MySqlOb
             c2.setParent(x);
             x.columns.add(c2);
         }
-	x.setAlgorithm(algorithm);
+        x.algorithm = algorithm;
     }
 
     public MySqlSubPartitionByKey clone() {
         MySqlSubPartitionByKey x = new MySqlSubPartitionByKey();
         cloneTo(x);
         return x;
+    }
+
+    public int getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(int algorithm) {
+        this.algorithm = algorithm;
     }
 
     public boolean isPartitionByColumn(long columnNameHashCode64) {

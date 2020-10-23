@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
@@ -25,7 +26,7 @@ import java.util.List;
 
 public class SQL_Parser_Parameterize_Test extends TestCase {
     public void test_parameterized() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         List<Object> outParameters = new ArrayList<Object>();
         String sql = "select * from t where id = 101 and age = 102 or name = 'wenshao'";
@@ -43,15 +44,15 @@ public class SQL_Parser_Parameterize_Test extends TestCase {
     }
 
     public void test_parameterized_2() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         List<Object> outParameters = new ArrayList<Object>();
         String sql = "select * from t where id = 101 or id in (1,2,3,4)";
-        String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType, null, outParameters, VisitorFeature.OutputParameterizedQuesUnMergeInList);
+        String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType, outParameters, VisitorFeature.OutputParameterizedQuesUnMergeInList);
         assertEquals("SELECT *\n" +
-                     "FROM t\n" +
-                     "WHERE id = ?\n" +
-                     "\tOR id IN ( ?, ?, ?, ?)", psql);
+                "FROM t\n" +
+                "WHERE id = ?\n" +
+                "\tOR id IN (?, ?, ?, ?)", psql);
 
         assertEquals(5, outParameters.size());
         assertEquals(101, outParameters.get(0));
@@ -59,5 +60,21 @@ public class SQL_Parser_Parameterize_Test extends TestCase {
         assertEquals(2, outParameters.get(2));
         assertEquals(3, outParameters.get(3));
         assertEquals(4, outParameters.get(4));
+    }
+
+    public void test_parameterized_3() throws Exception {
+        final DbType dbType = JdbcConstants.MYSQL;
+
+        List<Object> outParameters = new ArrayList<Object>();
+        String sql = "select * from t where id = 1 or id =2";
+        String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType, outParameters, VisitorFeature.OutputParameterizedQuesUnMergeInList);
+        assertEquals("SELECT *\n" +
+                "FROM t\n" +
+                "WHERE id = ?\n" +
+                "\tOR id = ?", psql);
+
+        assertEquals(2, outParameters.size());
+        assertEquals(1, outParameters.get(0));
+        assertEquals(2, outParameters.get(1));
     }
 }

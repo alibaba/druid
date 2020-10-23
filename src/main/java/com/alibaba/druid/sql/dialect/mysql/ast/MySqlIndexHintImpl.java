@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,26 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class MySqlIndexHintImpl extends MySqlObjectImpl implements MySqlIndexHint {
 
-    private MySqlIndexHint.Option option;
+    private Option option;
 
     private List<SQLName>         indexList = new ArrayList<SQLName>();
 
     @Override
     public abstract void accept0(MySqlASTVisitor visitor);
 
-    public MySqlIndexHint.Option getOption() {
+    public Option getOption() {
         return option;
     }
 
-    public void setOption(MySqlIndexHint.Option option) {
+    public void setOption(Option option) {
         this.option = option;
     }
 

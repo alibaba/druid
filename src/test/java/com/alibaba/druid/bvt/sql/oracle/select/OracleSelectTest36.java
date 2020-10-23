@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.select;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -30,12 +26,15 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.Assert;
+
+import java.util.List;
 
 public class OracleSelectTest36 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "select ID,name from druid_test where (name>=? or name is null) and card_id<?"; //
+        "select ID,name from fastsql_test where (name>=? or name is null) and card_id<?"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -45,13 +44,13 @@ public class OracleSelectTest36 extends OracleTest {
         String result = SQLUtils.toOracleString(stmt);
         String result_lcase = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
         Assert.assertEquals("SELECT ID, name"
-                + "\nFROM druid_test"
+                + "\nFROM fastsql_test"
                 + "\nWHERE (name >= ?"
                 + "\n\t\tOR name IS NULL)"
                 + "\n\tAND card_id < ?", result);
         
         Assert.assertEquals("select ID, name"
-                + "\nfrom druid_test"
+                + "\nfrom fastsql_test"
                 + "\nwhere (name >= ?"
                 + "\n\t\tor name is null)"
                 + "\n\tand card_id < ?", result_lcase);
@@ -85,13 +84,13 @@ public class OracleSelectTest36 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("druid_test")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("fastsql_test")));
 
         Assert.assertEquals(3, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("druid_test", "ID")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("druid_test", "name")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("druid_test", "card_id")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "ID")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "name")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "card_id")));
 
         // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }

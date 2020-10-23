@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_56 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
         String sql = "/* 0b802ab415058233338893940e1882/0.1.2.23//abd5b625/ */select `ktv_resource`.`RESOURCE_ID`,`ktv_resource`.`RESOURCE_PROVIDER`,`ktv_resource`.`KTV_ID`,`ktv_resource`.`RESOURCE_TYPE`,`ktv_resource`.`SUB_RESOURCE_TYPE`,`ktv_resource`.`STATUS`,`ktv_resource`.`START_TIME`,`ktv_resource`.`END_TIME`,`ktv_resource`.`FEATURE`,`ktv_resource`.`GMT_CREATED`,`ktv_resource`.`GMT_MODIFIED`,`ktv_resource`.`source`,`ktv_resource`.`seller_id`,`ktv_resource`.`original_Resource_Id`,`ktv_resource`.`business_unit`,`ktv_resource`.`resource_code`,`ktv_resource`.`OPTIONS`,`ktv_resource`.`AVAILABLE_COUNT`,`ktv_resource`.`TOTAL_COUNT`,`ktv_resource`.`OUT_INSTANCE_ID`,`ktv_resource`.`CONSUME_ID`,`ktv_resource`.`GROUP_ID`,`ktv_resource`.`BUSINESS_ID`,`ktv_resource`.`rule`,`ktv_resource`.`market_place`,`ktv_resource`.`VERSION` from `ktv_resource_0062` `ktv_resource` where ((`ktv_resource`.`KTV_ID` = 880693310) AND (`ktv_resource`.`STATUS` = 1) AND (`ktv_resource`.`START_TIME` <= '2017-09-19 20:15:34.199') AND (`ktv_resource`.`END_TIME` >= '2017-09-19 20:15:34.199') AND (`ktv_resource`.`seller_id` IN (2680068332)) AND (`ktv_resource`.`AVAILABLE_COUNT` IS NULL OR (`ktv_resource`.`AVAILABLE_COUNT` > 0) OR (`ktv_resource`.`AVAILABLE_COUNT` = -1))) limit 0,30";
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
@@ -82,5 +83,4 @@ public class MySqlParameterizedOutputVisitorTest_56 extends TestCase {
         Assert.assertEquals("INSERT INTO t\n" +
                 "VALUES ('a', 'b', 'c')", out.toString());
     }
-
 }

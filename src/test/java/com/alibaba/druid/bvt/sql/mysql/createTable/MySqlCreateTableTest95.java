@@ -25,7 +25,7 @@ public class MySqlCreateTableTest95 extends MysqlTest {
 
         assertEquals("CREATE TABLE `f_product` (\n" +
                 "\t`id` int(200) NOT NULL AUTO_INCREMENT,\n" +
-                "\t`type` enum('market', 'land', 'enterprise') CHARSET utf8  DEFAULT NULL COMMENT 'comment',\n" +
+                "\t`type` enum('market', 'land', 'enterprise') CHARACTER SET utf8 DEFAULT NULL COMMENT 'comment',\n" +
                 "\tPRIMARY KEY (`id`)\n" +
                 ") ENGINE = InnoDB AUTO_INCREMENT = 1DEFAULT CHARSET = utf8mb4", stmt.toString());
     }

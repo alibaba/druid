@@ -15,12 +15,15 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -153,22 +156,26 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
 
 
-    public void output(StringBuffer buf) {
-        if (this.owner != null) {
-            this.owner.output(buf);
-            buf.append(".");
-        }
-
-        buf.append(this.methodName);
-        buf.append("(");
-        for (int i = 0, size = this.arguments.size(); i < size; ++i) {
-            if (i != 0) {
-                buf.append(", ");
+    public void output(Appendable buf) {
+        try {
+            if (this.owner != null) {
+                this.owner.output(buf);
+                buf.append(".");
             }
 
-            this.arguments.get(i).output(buf);
+            buf.append(this.methodName);
+            buf.append("(");
+            for (int i = 0, size = this.arguments.size(); i < size; ++i) {
+                if (i != 0) {
+                    buf.append(", ");
+                }
+
+                this.arguments.get(i).output(buf);
+            }
+            buf.append(")");
+        } catch (IOException ex) {
+            throw new FastsqlException("output error", ex);
         }
-        buf.append(")");
     }
 
     @Override
@@ -365,6 +372,18 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         }
 
         long nameHash = this.methodNameHashCode64();
+        if (nameHash == FnvHash.Constants.TO_DATE
+                || nameHash == FnvHash.Constants.ADD_MONTHS
+                ) {
+            return resolvedReturnDataType = SQLDateExpr.DATA_TYPE;
+        }
+        if (nameHash == FnvHash.Constants.DATE_PARSE) {
+            return resolvedReturnDataType = SQLTimestampExpr.DATA_TYPE;
+        }
+        if (nameHash == FnvHash.Constants.CURRENT_TIME
+                || nameHash == FnvHash.Constants.CURTIME ) {
+            return resolvedReturnDataType = SQLTimeExpr.DATA_TYPE;
+        }
 
         if (nameHash == FnvHash.Constants.BIT_COUNT
                 || nameHash == FnvHash.Constants.ROW_NUMBER) {
@@ -396,11 +415,24 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
                 return param1.computeDataType();
             }
 
+            if (nameHash == FnvHash.Constants.MOD) {
+                return resolvedReturnDataType = SQLIntegerExpr.DATA_TYPE;
+            }
         }
 
 //        if (nameHash == FnvHash.Constants.ROUND) {
 //            return resolvedReturnDataType = SQLDecimalExpr.DATA_TYPE;
 //        }
+
+        if (nameHash == FnvHash.Constants.STDDEV_SAMP) {
+            return resolvedReturnDataType = SQLNumberExpr.DATA_TYPE_DOUBLE;
+        }
+
+        if (nameHash == FnvHash.Constants.CONCAT
+                || nameHash == FnvHash.Constants.SUBSTR
+                || nameHash == FnvHash.Constants.SUBSTRING) {
+            return resolvedReturnDataType = SQLCharExpr.DATA_TYPE;
+        }
 
         if (nameHash == FnvHash.Constants.YEAR
                 || nameHash == FnvHash.Constants.MONTH
@@ -418,10 +450,35 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
             return resolvedReturnDataType = new SQLDataTypeImpl("INT");
         }
 
+        if (nameHash == FnvHash.Constants.JSON_EXTRACT_SCALAR
+                || nameHash == FnvHash.Constants.FORMAT_DATETIME
+                || nameHash == FnvHash.Constants.DATE_FORMAT
+        ) {
+            return resolvedReturnDataType = SQLCharExpr.DATA_TYPE;
+        }
+
+        if (nameHash == FnvHash.Constants.DATE_ADD
+                || nameHash == FnvHash.Constants.DATE_SUB
+                || nameHash == FnvHash.Constants.DATE
+                || nameHash == FnvHash.Constants.STR_TO_DATE
+                || nameHash == FnvHash.Constants.CURRENT_DATE)
+        {
+            return resolvedReturnDataType = SQLDateExpr.DATA_TYPE;
+        }
+
+        if (nameHash == FnvHash.Constants.UNIX_TIMESTAMP ) {
+            return resolvedReturnDataType = SQLIntegerExpr.DATA_TYPE;
+        }
+
         if (nameHash == FnvHash.Constants.TIME) {
             return resolvedReturnDataType = new SQLDataTypeImpl("VARCHAR");
         }
 
+        if (nameHash == FnvHash.Constants.SYSDATE
+                || nameHash == FnvHash.Constants.CURRENT_TIMESTAMP
+                || nameHash == FnvHash.Constants.SYSTIMESTAMP) {
+            return resolvedReturnDataType = SQLTimestampExpr.DATA_TYPE;
+        }
 
 
         return null;

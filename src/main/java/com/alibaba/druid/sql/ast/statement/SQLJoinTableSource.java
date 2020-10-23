@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,18 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.FastsqlColumnAmbiguousException;
+import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.repository.SchemaResolveVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplaceable {
 
@@ -35,9 +35,8 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     protected SQLTableSource      right;
     protected SQLExpr             condition;
     protected final List<SQLExpr> using = new ArrayList<SQLExpr>();
-
-
     protected boolean             natural = false;
+    protected UDJ                 udj; // for maxcompute
 
     public SQLJoinTableSource(String alias){
         super(alias);
@@ -56,13 +55,42 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.left);
-            acceptChild(visitor, this.right);
-            acceptChild(visitor, this.condition);
-            acceptChild(visitor, this.using);
+            if (left != null) {
+                left.accept(visitor);
+            }
+
+            if (right != null) {
+                right.accept(visitor);
+            }
+
+            if (condition != null) {
+                condition.accept(visitor);
+            }
+
+            for (int i = 0; i < using.size(); i++) {
+                SQLExpr item = using.get(i);
+                if (item != null) {
+                    item.accept(visitor);
+                }
+            }
+
+            if (udj != null) {
+                udj.accept(visitor);
+            }
         }
 
         visitor.endVisit(this);
+    }
+
+    public UDJ getUdj() {
+        return udj;
+    }
+
+    public void setUdj(UDJ x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.udj = x;
     }
 
     public JoinType getJoinType() {
@@ -71,6 +99,19 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
     public void setJoinType(JoinType joinType) {
         this.joinType = joinType;
+    }
+
+    public void setImplicitJoinToCross() {
+        if (joinType == JoinType.COMMA) {
+            joinType = JoinType.CROSS_JOIN;
+        }
+        if (left instanceof SQLJoinTableSource) {
+            ((SQLJoinTableSource) left).setImplicitJoinToCross();
+        }
+
+        if (right instanceof SQLJoinTableSource) {
+            ((SQLJoinTableSource) right).setImplicitJoinToCross();
+        }
     }
 
     public SQLTableSource getLeft() {
@@ -136,23 +177,6 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         this.condition = SQLBinaryOpExpr.and(this.condition, condition);
     }
 
-    public void setImplicitJoinToCross() {
-        if (joinType == JoinType.COMMA) {
-            joinType = JoinType.CROSS_JOIN;
-        }
-        if (left instanceof SQLJoinTableSource) {
-            ((SQLJoinTableSource) left).setImplicitJoinToCross();
-        }
-
-        if (right instanceof SQLJoinTableSource) {
-            ((SQLJoinTableSource) right).setImplicitJoinToCross();
-        }
-    }
-
-    public void addConditionn(SQLExpr condition) {
-        this.condition = SQLBinaryOpExpr.and(this.condition, condition);
-    }
-
     public void addConditionnIfAbsent(SQLExpr condition) {
         if (this.containsCondition(condition)) {
             return;
@@ -188,38 +212,55 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         this.natural = natural;
     }
 
-    public void output(StringBuffer buf) {
-        this.left.output(buf);
-        buf.append(' ');
-        buf.append(JoinType.toString(this.joinType));
-        buf.append(' ');
-        this.right.output(buf);
+    public void output(Appendable buf) {
+        try {
+            this.left.output(buf);
+            buf.append(' ');
+            buf.append(JoinType.toString(this.joinType));
+            buf.append(' ');
+            this.right.output(buf);
 
-        if (this.condition != null) {
-            buf.append(" ON ");
-            this.condition.output(buf);
+            if (this.condition != null) {
+                buf.append(" ON ");
+                this.condition.output(buf);
+            }
+        } catch (IOException ex) {
+            throw new FastsqlException("output error", ex);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        SQLJoinTableSource that = (SQLJoinTableSource) o;
-
-        if (natural != that.natural) return false;
-        if (left != null ? !left.equals(that.left) : that.left != null) return false;
-        if (joinType != that.joinType) return false;
-        if (right != null ? !right.equals(that.right) : that.right != null) return false;
-        if (condition != null ? !condition.equals(that.condition) : that.condition != null) return false;
-        return using != null ? using.equals(that.using) : that.using == null;
     }
 
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
         if (condition == expr) {
             setCondition(target);
+            return true;
+        }
+
+        for (int i = 0; i < using.size(); i++) {
+            if (using.get(i) == expr) {
+                target.setParent(this);
+                using.set(i, target);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean replace(SQLTableSource cmp, SQLTableSource target) {
+        if (left == cmp) {
+            if (target == null) {
+                SQLUtils.replaceInParent(this, right);
+            } else {
+                setLeft(target);
+            }
+            return true;
+        } else if (right == cmp) {
+            if (target == null) {
+                SQLUtils.replaceInParent(this, left);
+            } else {
+                setRight(target);
+            }
             return true;
         }
 
@@ -231,8 +272,10 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         JOIN("JOIN"), //
         INNER_JOIN("INNER JOIN"), //
         CROSS_JOIN("CROSS JOIN"), //
-        NATURAL_CROSS_JOIN("NATURAL CROSS JOIN"), //
         NATURAL_JOIN("NATURAL JOIN"), //
+        NATURAL_CROSS_JOIN("NATURAL CROSS JOIN"), //
+        NATURAL_LEFT_JOIN("NATURAL LEFT JOIN"), //
+        NATURAL_RIGHT_JOIN("NATURAL RIGHT JOIN"), //
         NATURAL_INNER_JOIN("NATURAL INNER JOIN"), //
         LEFT_OUTER_JOIN("LEFT JOIN"), //
         LEFT_SEMI_JOIN("LEFT SEMI JOIN"), //
@@ -281,6 +324,10 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         }
 
         x.natural = natural;
+
+        if (udj != null) {
+            x.udj = udj.clone();
+        }
     }
 
     public SQLJoinTableSource clone() {
@@ -448,15 +495,24 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     }
 
     public SQLColumnDefinition findColumn(long columnNameHash) {
+        SQLObject column = resolveColum(columnNameHash);
+        if (column instanceof SQLColumnDefinition) {
+            return (SQLColumnDefinition) column;
+        }
+
+        return null;
+    }
+
+    public SQLObject resolveColum(long columnNameHash) {
         if (left != null) {
-            SQLColumnDefinition column = left.findColumn(columnNameHash);
+            SQLObject column = left.resolveColum(columnNameHash);
             if (column != null) {
                 return column;
             }
         }
 
         if (right != null) {
-            return right.findColumn(columnNameHash);
+            return right.resolveColum(columnNameHash);
         }
 
         return null;
@@ -465,22 +521,61 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     @Override
     public SQLTableSource findTableSourceWithColumn(String columnName) {
         long hash = FnvHash.hashCode64(columnName);
-        return findTableSourceWithColumn(hash);
+        return findTableSourceWithColumn(hash, columnName, 0);
     }
 
-    public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
-        if (left != null) {
-            SQLTableSource tableSource = left.findTableSourceWithColumn(columnNameHash);
-            if (tableSource != null) {
-                return tableSource;
-            }
+
+    public SQLJoinTableSource findTableSourceWithColumn(SQLName a, SQLName b) {
+        if (left.findTableSourceWithColumn(a) != null
+                && right.findTableSourceWithColumn(b) != null) {
+            return this;
         }
 
-        if (right != null) {
-            return right.findTableSourceWithColumn(columnNameHash);
+        if (right.findTableSourceWithColumn(a) != null
+                && left.findTableSourceWithColumn(b) != null) {
+            return this;
+        }
+
+        if (left instanceof SQLJoinTableSource) {
+            return ((SQLJoinTableSource) left).findTableSourceWithColumn(a, b);
+        }
+
+        if (right instanceof SQLJoinTableSource) {
+            return ((SQLJoinTableSource) right).findTableSourceWithColumn(a, b);
         }
 
         return null;
+    }
+
+    public SQLTableSource findTableSourceWithColumn(long columnNameHash, String name, int option) {
+        SQLTableSource leftMatch = null;
+        if (left != null) {
+            leftMatch = left.findTableSourceWithColumn(columnNameHash, name, option);
+        }
+
+        boolean checkColumnAmbiguous = (option & SchemaResolveVisitor.Option.CheckColumnAmbiguous.mask) != 0;
+        if (leftMatch != null && !checkColumnAmbiguous) {
+            return leftMatch;
+        }
+
+        SQLTableSource rightMatch = null;
+        if (right != null) {
+            rightMatch = right.findTableSourceWithColumn(columnNameHash, name, option);
+        }
+
+        if (leftMatch == null) {
+            return rightMatch;
+        }
+
+        if(rightMatch == null) {
+            return leftMatch;
+        }
+
+        if (name != null) {
+            String msg = "Column '" + name + "' is ambiguous";
+            throw new FastsqlColumnAmbiguousException(msg);
+        }
+        throw new FastsqlColumnAmbiguousException();
     }
 
     public boolean match(String alias_a, String alias_b) {
@@ -543,18 +638,112 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         return null;
     }
 
-    public SQLObject resolveColum(long columnNameHash) {
-        if (left != null) {
-            SQLObject column = left.resolveColum(columnNameHash);
-            if (column != null) {
-                return column;
+    @Override
+    public int hashCode() {
+        int result = left != null ? left.hashCode() : 0;
+        result = 31 * result + (joinType != null ? joinType.hashCode() : 0);
+        result = 31 * result + (right != null ? right.hashCode() : 0);
+        result = 31 * result + (condition != null ? condition.hashCode() : 0);
+        result = 31 * result + using.hashCode();
+        result = 31 * result + (natural ? 1 : 0);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLJoinTableSource that = (SQLJoinTableSource) o;
+
+        if (natural != that.natural) return false;
+        if (left != null ? !left.equals(that.left) : that.left != null) return false;
+        if (joinType != that.joinType) return false;
+        if (right != null ? !right.equals(that.right) : that.right != null) return false;
+        if (condition != null ? !condition.equals(that.condition) : that.condition != null) return false;
+        return using.equals(that.using);
+    }
+
+    public void splitTo(List<SQLTableSource> outTableSources, JoinType joinType) {
+        if (joinType == this.joinType) {
+            if (left instanceof SQLJoinTableSource) {
+                ((SQLJoinTableSource) left).splitTo(outTableSources, joinType);
+            } else {
+                outTableSources.add(left);
             }
+
+            if (right instanceof SQLJoinTableSource) {
+                ((SQLJoinTableSource) right).splitTo(outTableSources, joinType);
+            } else {
+                outTableSources.add(right);
+            }
+        } else {
+            outTableSources.add(this);
+        }
+    }
+
+    public static class UDJ extends SQLObjectImpl {
+        protected String function;
+        protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
+        protected String alias;
+        protected final List<SQLName> columns = new ArrayList<SQLName>();
+
+        public UDJ() {
+
         }
 
-        if (right != null) {
-            return right.resolveColum(columnNameHash);
+        @Override
+        protected void accept0(SQLASTVisitor v) {
+            if (v.visit(this)) {
+                acceptChild(v, arguments);
+                acceptChild(v, columns);
+            }
+            v.endVisit(this);
         }
 
-        return null;
+        public UDJ clone() {
+            UDJ x = new UDJ();
+            x.function = function;
+            for (SQLExpr arg : arguments) {
+                SQLExpr t = arg.clone();
+                t.setParent(x);
+                x.arguments.add(t);
+            }
+            x.alias = alias;
+            for (SQLName column : columns) {
+                SQLName t = column.clone();
+                t.setParent(x);
+                x.columns.add(t);
+            }
+            return x;
+        }
+
+        public UDJ(String function) {
+            this.function = function;
+        }
+
+        public String getFunction() {
+            return function;
+        }
+
+        public void setFunction(String function) {
+            this.function = function;
+        }
+
+        public List<SQLExpr> getArguments() {
+            return arguments;
+        }
+
+        public List<SQLName> getColumns() {
+            return columns;
+        }
+
+        public String getAlias() {
+            return alias;
+        }
+
+        public void setAlias(String alias) {
+            this.alias = alias;
+        }
     }
 }

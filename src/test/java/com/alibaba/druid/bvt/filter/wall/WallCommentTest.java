@@ -38,7 +38,7 @@ public class WallCommentTest extends TestCase {
     }
     
     public void testmysql() throws Exception {
-        String sql = "SELECT F1, F2 FROM ABC --test";
+        String sql = "SELECT F1, F2 FROM ABC -- test";
 
         MySqlWallProvider provider = new MySqlWallProvider();
         Assert.assertFalse(provider.checkValid(sql));

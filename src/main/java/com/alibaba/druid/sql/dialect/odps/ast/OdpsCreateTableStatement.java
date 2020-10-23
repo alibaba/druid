@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,26 @@
  */
 package com.alibaba.druid.sql.dialect.odps.ast;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
-public class OdpsCreateTableStatement extends SQLCreateTableStatement {
+import java.util.ArrayList;
+import java.util.List;
 
-    private SQLExprTableSource like;
-
-    protected SQLExpr storedBy;
+public class OdpsCreateTableStatement extends HiveCreateTableStatement {
+    protected final List<SQLExpr> withSerdeproperties = new ArrayList<SQLExpr>();
     protected SQLExpr lifecycle;
+    protected SQLExpr storedBy;
 
     public OdpsCreateTableStatement(){
-        super(JdbcConstants.ODPS);
+        super(DbType.odps);
     }
 
     public SQLExprTableSource getLike() {
@@ -46,6 +49,17 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
         this.like = like;
     }
 
+    public List<SQLColumnDefinition> getPartitionColumns() {
+        return partitionColumns;
+    }
+    
+    public void addPartitionColumn(SQLColumnDefinition column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.partitionColumns.add(column);
+    }
+
     public SQLExpr getLifecycle() {
         return lifecycle;
     }
@@ -55,22 +69,28 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
     }
 
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        accept0((OdpsASTVisitor) visitor);
+    protected void accept0(SQLASTVisitor v) {
+        if (v instanceof OdpsASTVisitor) {
+            accept0((OdpsASTVisitor) v);
+            return;
+        }
+
+        super.accept0(v);
     }
 
-    protected void accept0(OdpsASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            this.acceptChild(visitor, tableSource);
-            this.acceptChild(visitor, tableElementList);
-            this.acceptChild(visitor, partitionColumns);
-            this.acceptChild(visitor, clusteredBy);
-            this.acceptChild(visitor, sortedBy);
-            this.acceptChild(visitor, storedBy);
-            this.acceptChild(visitor, lifecycle);
-            this.acceptChild(visitor, select);
+    protected void accept0(OdpsASTVisitor v) {
+        if (v.visit(this)) {
+            acceptChild(v);
         }
-        visitor.endVisit(this);
+        v.endVisit(this);
+    }
+
+    protected void acceptChild(SQLASTVisitor v) {
+        super.acceptChild(v);
+
+        acceptChild(v, withSerdeproperties);
+        acceptChild(v, lifecycle);
+        acceptChild(v, storedBy);
     }
 
     public SQLExpr getStoredBy() {
@@ -83,4 +103,10 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
         }
         this.storedBy = x;
     }
+
+    public List<SQLExpr> getWithSerdeproperties() {
+        return withSerdeproperties;
+    }
+
+
 }

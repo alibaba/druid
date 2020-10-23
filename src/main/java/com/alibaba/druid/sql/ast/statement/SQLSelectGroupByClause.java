@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,24 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+public class SQLSelectGroupByClause extends SQLObjectImpl implements SQLReplaceable {
 
-public class SQLSelectGroupByClause extends SQLObjectImpl {
-
-    private final List<SQLExpr> items = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> items      = new ArrayList<SQLExpr>();
     private SQLExpr             having;
     private boolean             withRollUp = false;
-    private boolean             withCube = false;
+    private boolean             withCube   = false;
+
     private boolean             distinct   = false;
     private boolean             paren      = false;
 
@@ -36,15 +40,32 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
 
     }
 
+    @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.items);
-            acceptChild(visitor, this.having);
+            for (int i = 0; i < this.items.size(); i++) {
+                SQLExpr item = items.get(i);
+                if (item != null) {
+                    item.accept(visitor);
+                }
+            }
+
+            if (having != null) {
+                having.accept(visitor);
+            }
         }
 
         visitor.endVisit(this);
     }
-    
+
+    public boolean isDistinct() {
+        return distinct;
+    }
+
+    public void setDistinct(boolean distinct) {
+        this.distinct = distinct;
+    }
+
     public boolean isWithRollUp() {
         return withRollUp;
     }
@@ -70,18 +91,41 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
         if (having != null) {
             having.setParent(this);
         }
-        
+
         this.having = having;
+    }
+
+    public void addHaving(SQLExpr condition) {
+        if (condition == null) {
+            return;
+        }
+
+        if (having == null) {
+            having = condition;
+        } else {
+            having = SQLBinaryOpExpr.and(having, condition);
+        }
     }
 
     public List<SQLExpr> getItems() {
         return this.items;
     }
 
+    public boolean containsItem(SQLExpr item) {
+        return this.items.contains(item);
+    }
+
     public void addItem(SQLExpr sqlExpr) {
         if (sqlExpr != null) {
             sqlExpr.setParent(this);
             this.items.add(sqlExpr);
+        }
+    }
+
+    public void addItem(int index, SQLExpr sqlExpr) {
+        if (sqlExpr != null) {
+            sqlExpr.setParent(this);
+            this.items.add(index, sqlExpr);
         }
     }
 
@@ -97,27 +141,40 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
         }
         x.withRollUp = withRollUp;
         x.withCube = withCube;
+        x.distinct = distinct;
+        x.paren = paren;
+        if (hint != null) {
+            x.setHint(hint.clone());
+        }
         return x;
     }
 
-    public void addHaving(SQLExpr condition) {
-        if (condition == null) {
-            return;
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == having) {
+            setHaving(target);
+            return true;
         }
 
-        if (having == null) {
-            having = condition;
-        } else {
-            having = SQLBinaryOpExpr.and(having, condition);
+        for (int i = items.size() - 1; i >= 0; i--) {
+            if (items.get(i) == expr) {
+                if (target instanceof SQLIntegerExpr) {
+                    items.remove(i);
+                } else {
+                    items.set(i, target);
+                }
+                return true;
+            }
         }
+        return false;
     }
 
-    public boolean isDistinct() {
-        return distinct;
+    public SQLCommentHint getHint() {
+        return hint;
     }
 
-    public void setDistinct(boolean distinct) {
-        this.distinct = distinct;
+    public void setHint(SQLCommentHint hint) {
+        this.hint = hint;
     }
 
     public boolean isParen() {
@@ -129,28 +186,48 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object o)
+    {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        SQLSelectGroupByClause group = (SQLSelectGroupByClause) o;
+        SQLSelectGroupByClause that = (SQLSelectGroupByClause) o;
 
-        if (withRollUp != group.withRollUp) return false;
-        if (withCube != group.withCube) return false;
-        if (distinct != group.distinct) return false;
-        if (paren != group.paren) return false;
-        if (!items.equals(group.items)) return false;
-        return having != null ? having.equals(group.having) : group.having == null;
+        if (withRollUp != that.withRollUp) {
+            return false;
+        }
+        if (withCube != that.withCube) {
+            return false;
+        }
+        if (distinct != that.distinct) {
+            return false;
+        }
+        if (paren != that.paren) {
+            return false;
+        }
+        if (items != null ? !items.equals(that.items) : that.items != null) {
+            return false;
+        }
+        if (having != null ? !having.equals(that.having) : that.having != null) {
+            return false;
+        }
+        return hint != null ? hint.equals(that.hint) : that.hint == null;
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int result = items != null ? items.hashCode() : 0;
         result = 31 * result + (having != null ? having.hashCode() : 0);
         result = 31 * result + (withRollUp ? 1 : 0);
         result = 31 * result + (withCube ? 1 : 0);
         result = 31 * result + (distinct ? 1 : 0);
         result = 31 * result + (paren ? 1 : 0);
+        result = 31 * result + (hint != null ? hint.hashCode() : 0);
         return result;
     }
 }

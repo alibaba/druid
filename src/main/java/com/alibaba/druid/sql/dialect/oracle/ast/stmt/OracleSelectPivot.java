@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,22 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OracleSelectPivot extends OracleSelectPivotBase {
 
-    private boolean             xml;
-    private final List<Item>    items    = new ArrayList<Item>();
+    private boolean xml;
+    private final List<Item> items = new ArrayList<Item>();
     private final List<SQLExpr> pivotFor = new ArrayList<SQLExpr>();
-    private final List<Item>    pivotIn  = new ArrayList<Item>();
+    private final List<Item> pivotIn = new ArrayList<Item>();
 
-    public OracleSelectPivot(){
+    public OracleSelectPivot() {
 
     }
 
@@ -58,7 +59,7 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
     public List<Item> getItems() {
         return this.items;
     }
-    
+
     public void addItem(Item item) {
         if (item != null) {
             item.setParent(this);
@@ -72,10 +73,10 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
 
     public static class Item extends OracleSQLObjectImpl {
 
-        private String  alias;
+        private String alias;
         private SQLExpr expr;
 
-        public Item(){
+        public Item() {
 
         }
 
@@ -105,5 +106,46 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
 
             visitor.endVisit(this);
         }
+        @Override
+        public Item clone() {
+            Item x = new Item();
+
+            x.setAlias(this.alias);
+
+            if (this.alias != null) {
+                x.setExpr(this.expr.clone());
+            }
+
+            return x;
+        }
+
+    }
+
+    @Override
+    public OracleSelectPivot clone() {
+
+        OracleSelectPivot x = new OracleSelectPivot();
+
+        x.setXml(this.xml);
+
+        for (Item e : this.items) {
+            Item e2 = e.clone();
+            e2.setParent(x);
+            x.getItems().add(e2);
+        }
+
+        for (SQLExpr e : this.pivotFor) {
+            SQLExpr e2 = e.clone();
+            e2.setParent(x);
+            x.getPivotFor().add(e2);
+        }
+
+        for (Item e : this.pivotIn) {
+            Item e2 = e.clone();
+            e2.setParent(x);
+            x.getPivotIn().add(e2);
+        }
+
+        return x;
     }
 }
