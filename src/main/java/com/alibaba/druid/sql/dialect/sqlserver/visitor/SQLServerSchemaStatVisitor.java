@@ -44,18 +44,8 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     }
 
     @Override
-    public void endVisit(SQLServerTop x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerObjectReferenceExpr x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerObjectReferenceExpr x) {
-
     }
 
     @Override
@@ -71,18 +61,8 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     }
 
     @Override
-    public void endVisit(SQLServerUpdateStatement x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerExecStatement x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerExecStatement x) {
-
     }
 
     @Override
@@ -91,18 +71,8 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     }
 
     @Override
-    public void endVisit(SQLServerSetTransactionIsolationLevelStatement x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerOutput x) {
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerOutput x) {
-
     }
 
     @Override
@@ -111,27 +81,12 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     }
 
     @Override
-    public void endVisit(SQLServerRollbackStatement x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerWaitForStatement x) {
         return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerWaitForStatement x) {
-
     }
 
 	@Override
 	public boolean visit(SQLServerParameter x) {
 		return false;
-	}
-
-	@Override
-	public void endVisit(SQLServerParameter x) {
-
 	}
 }
