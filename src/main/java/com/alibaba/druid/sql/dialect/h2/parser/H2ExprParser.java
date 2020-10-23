@@ -15,9 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.h2.parser;
 
+import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
@@ -50,7 +55,42 @@ public class H2ExprParser extends SQLExprParser {
 
     public H2ExprParser(Lexer lexer){
         super(lexer);
+        dbType = lexer.getDbType();
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
+    }
+
+    public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
+        column = super.parseColumnRest(column);
+
+        if (lexer.identifierEquals(FnvHash.Constants.GENERATED)) {
+            lexer.nextToken();
+            if (lexer.token() == Token.BY) {
+                lexer.nextToken();
+                accept(Token.DEFAULT);
+                column.setGeneratedAlawsAs(new SQLDefaultExpr());
+            } else {
+                acceptIdentifier("ALWAYS");
+                column.setGeneratedAlawsAs(new SQLIdentifierExpr("ALWAYS"));
+            }
+            accept(Token.AS);
+            acceptIdentifier("IDENTITY");
+
+            SQLColumnDefinition.Identity identity = new SQLColumnDefinition.Identity();
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+
+                SQLIntegerExpr seed = (SQLIntegerExpr) this.primary();
+                accept(Token.COMMA);
+                SQLIntegerExpr increment = (SQLIntegerExpr) this.primary();
+                accept(Token.RPAREN);
+
+                identity.setSeed((Integer) seed.getNumber());
+                identity.setIncrement((Integer) increment.getNumber());
+            }
+            column.setIdentity(identity);
+        }
+
+        return column;
     }
 }

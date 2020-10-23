@@ -26,7 +26,7 @@ import java.util.List;
 
 public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor {
     public H2OutputVisitor(Appendable appender) {
-        super(appender);
+        super(appender, DbType.h2);
     }
 
     public H2OutputVisitor(Appendable appender, DbType dbType) {
@@ -35,6 +35,7 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
 
     public H2OutputVisitor(Appendable appender, boolean parameterized) {
         super(appender, parameterized);
+        dbType = DbType.h2;
     }
 
     public boolean visit(SQLReplaceStatement x) {

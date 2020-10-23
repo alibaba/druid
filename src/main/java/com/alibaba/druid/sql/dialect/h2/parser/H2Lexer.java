@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.h2.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -45,12 +46,12 @@ public class H2Lexer extends Lexer {
     }
 
     public H2Lexer(String input){
-        super(input);
+        super(input, null, DbType.h2);
         super.keywods = DEFAULT_H2_KEYWORDS;
     }
 
     public H2Lexer(String input, SQLParserFeature... features){
-        super(input);
+        super(input, null, DbType.h2);
         super.keywods = DEFAULT_H2_KEYWORDS;
         for (SQLParserFeature feature : features) {
             config(feature, true);

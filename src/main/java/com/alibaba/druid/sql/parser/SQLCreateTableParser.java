@@ -33,6 +33,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
     public SQLCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
+        dbType = exprParser.dbType;
     }
 
     public SQLCreateTableStatement parseCreateTable() {
@@ -51,6 +52,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
     public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
         SQLCreateTableStatement createTable = newCreateStatement();
+        createTable.setDbType(getDbType());
 
         if (acceptCreate) {
             if (lexer.hasComment() && lexer.isKeepComments()) {
@@ -108,7 +110,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                     createTable.getTableElementList().add(element);
                 } else if (token == Token.IDENTIFIER //
                            || token == Token.LITERAL_ALIAS) {
-                    SQLColumnDefinition column = this.exprParser.parseColumn();
+                    SQLColumnDefinition column = this.exprParser.parseColumn(createTable);
                     column.setParent(createTable);
                     createTable.getTableElementList().add(column);
                 } else if (token == Token.PRIMARY //
