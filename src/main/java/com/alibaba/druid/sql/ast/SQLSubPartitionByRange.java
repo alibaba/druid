@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,33 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLSubPartitionByRange extends SQLSubPartitionBy {
-    private List<SQLName> columns = new ArrayList<SQLName>();
+import java.util.ArrayList;
+import java.util.List;
 
-    public List<SQLName> getColumns() {
+public class SQLSubPartitionByRange extends SQLSubPartitionBy {
+    private List<SQLExpr> columns = new ArrayList<SQLExpr>();
+
+    public List<SQLExpr> getColumns() {
         return columns;
     }
 
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        
+    protected void accept0(SQLASTVisitor v) {
+        if (v.visit(this)) {
+            acceptChild(v, columns);
+            acceptChild(v, subPartitionsCount);
+        }
+        v.endVisit(this);
     }
 
     public SQLSubPartitionByRange clone() {
         SQLSubPartitionByRange x = new SQLSubPartitionByRange();
 
-        for (SQLName column : columns) {
-            SQLName c2 = column.clone();
+        for (SQLExpr column : columns) {
+            SQLExpr c2 = column.clone();
             c2.setParent(x);
             x.columns.add(c2);
         }

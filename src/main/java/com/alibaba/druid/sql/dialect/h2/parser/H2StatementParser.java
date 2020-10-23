@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.h2.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
@@ -26,7 +27,6 @@ import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import com.alibaba.druid.util.JdbcConstants;
 
 public class H2StatementParser extends SQLStatementParser {
     public H2StatementParser(String sql) {
@@ -45,13 +45,12 @@ public class H2StatementParser extends SQLStatementParser {
         return new H2SelectParser(this.exprParser, selectListCache);
     }
 
-    @Override
     public SQLStatement parseMerge() {
         accept(Token.MERGE);
         accept(Token.INTO);
 
         SQLReplaceStatement stmt = new SQLReplaceStatement();
-        stmt.setDbType(JdbcConstants.H2);
+        stmt.setDbType(DbType.h2);
 
         SQLName tableName = exprParser.name();
         stmt.setTableName(tableName);
@@ -66,7 +65,7 @@ public class H2StatementParser extends SQLStatementParser {
         if (lexer.token() == Token.VALUES || lexer.identifierEquals("VALUE")) {
             lexer.nextToken();
 
-            parseValueClause(stmt.getValuesList(), 0, stmt);
+            parseValueClause(stmt.getValuesList(), null,0, stmt);
         } else if (lexer.token() == Token.SELECT) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
             stmt.setQuery(queryExpr);
@@ -109,5 +108,4 @@ public class H2StatementParser extends SQLStatementParser {
             }
         }
     }
-
 }

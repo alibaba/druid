@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.grant;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.Assert;
+
+import java.util.List;
 
 public class MySqlGrantTest_12 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "GRANT CREATE TEMPORARY TABLE ON mydb.* TO 'someuser'@'somehost';";
+        String sql = "GRANT CREATE TEMPORARY TABLES ON mydb.* TO 'someuser'@'somehost';";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -40,9 +39,9 @@ public class MySqlGrantTest_12 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
         
-        Assert.assertEquals("GRANT CREATE TEMPORARY TABLE ON mydb.* TO 'someuser'@'somehost';", //
+        Assert.assertEquals("GRANT CREATE TEMPORARY TABLES ON mydb.* TO 'someuser'@'somehost';", //
                             SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("grant CREATE TEMPORARY TABLE on mydb.* to 'someuser'@'somehost';", //
+        Assert.assertEquals("grant CREATE TEMPORARY TABLES on mydb.* to 'someuser'@'somehost';", //
                             SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
 //        System.out.println("Tables : " + visitor.getTables());

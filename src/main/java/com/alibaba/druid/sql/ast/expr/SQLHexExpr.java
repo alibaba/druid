@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,13 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.HexBin;
+
+import java.io.IOException;
 
 public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
 
@@ -34,14 +35,18 @@ public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuab
         return hex;
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("0x");
-        buf.append(this.hex);
+    public void output(Appendable buf) {
+        try {
+            buf.append("0x");
+            buf.append(this.hex);
 
-        String charset = (String) getAttribute("USING");
-        if (charset != null) {
-            buf.append(" USING ");
-            buf.append(charset);
+            String charset = (String) getAttribute("USING");
+            if (charset != null) {
+                buf.append(" USING ");
+                buf.append(charset);
+            }
+        } catch (IOException ex) {
+            throw new FastsqlException("output error", ex);
         }
     }
 
@@ -92,8 +97,13 @@ public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuab
         return toBytes();
     }
 
-    @Override
-    public List getChildren() {
-        return Collections.emptyList();
+
+    public SQLCharExpr toCharExpr() {
+        byte[] bytes = toBytes();
+        if (bytes == null) {
+            return null;
+        }
+        String str = new String(bytes, SQLUtils.UTF8);
+        return new SQLCharExpr(str);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,99 +15,26 @@
  */
 package com.alibaba.druid.wall.spi;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.PagerUtils;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.wall.Violation;
-import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallProvider;
-import com.alibaba.druid.wall.WallUpdateCheckItem;
-import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.*;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
-public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements WallVisitor, SQLServerASTVisitor {
-
-    private final WallConfig      config;
-    private final WallProvider    provider;
-    private final List<Violation> violations      = new ArrayList<Violation>();
-    private boolean               sqlModified     = false;
-    private boolean               sqlEndOfComment = false;
-    private List<WallUpdateCheckItem> updateCheckItems;
+public class SQLServerWallVisitor extends WallVisitorBase implements WallVisitor, SQLServerASTVisitor {
 
     public SQLServerWallVisitor(WallProvider provider){
-        this.config = provider.getConfig();
-        this.provider = provider;
+        super (provider);
     }
 
     @Override
-    public String getDbType() {
-        return JdbcConstants.SQL_SERVER;
-    }
-
-    @Override
-    public boolean isSqlModified() {
-        return sqlModified;
-    }
-
-    @Override
-    public void setSqlModified(boolean sqlModified) {
-        this.sqlModified = sqlModified;
-    }
-
-    @Override
-    public WallProvider getProvider() {
-        return provider;
-    }
-
-    @Override
-    public WallConfig getConfig() {
-        return this.config;
-    }
-
-    @Override
-    public void addViolation(Violation violation) {
-        this.violations.add(violation);
-    }
-
-    @Override
-    public List<Violation> getViolations() {
-        return violations;
+    public DbType getDbType() {
+        return DbType.sqlserver;
     }
 
     @Override
@@ -117,11 +44,6 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         }
 
         return !this.provider.checkDenyTable(name);
-    }
-
-    @Override
-    public String toSQL(SQLObject obj) {
-        return SQLUtils.toSQLServerString(obj);
     }
 
     public boolean visit(SQLIdentifierExpr x) {
@@ -134,23 +56,9 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         return true;
     }
 
-    public boolean visit(SQLPropertyExpr x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    public boolean visit(SQLInListExpr x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    public boolean visit(SQLBinaryOpExpr x) {
-        return WallVisitorUtils.check(this, x);
-    }
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
-
         if (x.getParent() instanceof SQLExprTableSource) {
             WallVisitorUtils.checkFunctionInTableSource(this, x);
         }
@@ -163,98 +71,6 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     @Override
     public boolean visit(SQLServerExecStatement x) {
         return false;
-    }
-
-    public boolean visit(SQLExprTableSource x) {
-        WallVisitorUtils.check(this, x);
-
-        return !(x.getExpr() instanceof SQLName);
-
-    }
-
-    public boolean visit(SQLSelectGroupByClause x) {
-        WallVisitorUtils.checkHaving(this, x.getHaving());
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLServerSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLUnionQuery x) {
-        WallVisitorUtils.checkUnion(this, x);
-
-        return true;
-    }
-
-    public void preVisit(SQLObject x) {
-        WallVisitorUtils.preVisitCheck(this, x);
-    }
-
-    @Override
-    public boolean visit(SQLSelectStatement x) {
-        if (!config.isSelelctAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "selelct not allow",
-                                                                   this.toSQL(x)));
-            return false;
-        }
-        WallVisitorUtils.initWallTopStatementContext();
-
-        int selectLimit = config.getSelectLimit();
-        if (selectLimit >= 0) {
-            SQLSelect select = x.getSelect();
-            PagerUtils.limit(select, getDbType(), 0, selectLimit, true);
-            this.sqlModified = true;
-        }
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLSelectStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
-    }
-
-    @Override
-    public boolean visit(SQLInsertStatement x) {
-        WallVisitorUtils.initWallTopStatementContext();
-        WallVisitorUtils.checkInsert(this, x);
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLInsertStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
-    }
-
-    @Override
-    public boolean visit(SQLDeleteStatement x) {
-        WallVisitorUtils.checkDelete(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLUpdateStatement x) {
-        WallVisitorUtils.initWallTopStatementContext();
-        WallVisitorUtils.checkUpdate(this, x);
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLUpdateStatement x) {
-        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     public boolean visit(SQLVariantRefExpr x) {
@@ -296,80 +112,5 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     @Override
     public boolean visit(SQLServerObjectReferenceExpr x) {
         return false;
-    }
-
-    @Override
-    public boolean visit(SQLServerInsertStatement x) {
-        return this.visit((SQLInsertStatement) x);
-    }
-
-    @Override
-    public void endVisit(SQLServerInsertStatement x) {
-        this.endVisit((SQLInsertStatement) x);
-    }
-
-    @Override
-    public boolean visit(SQLSelectItem x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLCreateTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLAlterTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLDropTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLSetStatement x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLCallStatement x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLCreateTriggerStatement x) {
-        return false;
-    }
-    
-    @Override
-    public boolean isSqlEndOfComment() {
-        return this.sqlEndOfComment;
-    }
-
-    @Override
-    public void setSqlEndOfComment(boolean sqlEndOfComment) {
-        this.sqlEndOfComment = sqlEndOfComment;
-    }
-
-    public void addWallUpdateCheckItem(WallUpdateCheckItem item) {
-        if (updateCheckItems == null) {
-            updateCheckItems = new ArrayList<WallUpdateCheckItem>();
-        }
-        updateCheckItems.add(item);
-    }
-
-    public List<WallUpdateCheckItem> getUpdateCheckItems() {
-        return updateCheckItems;
-    }
-
-    public boolean visit(SQLJoinTableSource x) {
-        WallVisitorUtils.check(this, x);
-        return true;
     }
 }

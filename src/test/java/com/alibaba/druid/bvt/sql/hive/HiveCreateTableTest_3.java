@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.sql.hive;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 
@@ -44,7 +44,7 @@ public class HiveCreateTableTest_3 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
 
         {
@@ -59,9 +59,9 @@ public class HiveCreateTableTest_3 extends OracleTest {
                     "\tdate STRING COMMENT '日期',\n" +
                     "\tpos STRING COMMENT '位置'\n" +
                     ")\n" +
-                    "ROW FORMAT DELIMITED \n" +
-                    "FIELDS TERMINATED BY ','\n" +
-                    "STORE AS SEQUENCEFILE", text);
+                    "ROW FORMAT DELIMITED\n" +
+                    "\tFIELDS TERMINATED BY ','\n" +
+                    "STORED AS SEQUENCEFILE", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());

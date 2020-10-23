@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
@@ -30,45 +28,49 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement, OracleSegmentAttributes {
 
-    private boolean                 inMemoryMetadata;
+    private boolean                   inMemoryMetadata;
 
-    private boolean                 cursorSpecificSegment;
+    private boolean                   cursorSpecificSegment;
 
     // NOPARALLEL
-    private Boolean                 parallel;
+    private Boolean                   parallel;
+    private SQLExpr                   parallelValue;
 
-    private OracleStorageClause     storage;
-    private OracleLobStorageClause  lobStorage;
+    private OracleStorageClause       storage;
+    private OracleLobStorageClause    lobStorage;
 
-    private Integer                 pctfree;
-    private Integer                 pctused;
-    private Integer                 initrans;
-    private Integer                 maxtrans;
-    private Integer                 pctincrease;
+    private Integer                   pctfree;
+    private Integer                   pctused;
+    private Integer                   initrans;
+    private Integer                   maxtrans;
+    private Integer                   pctincrease;
 
 
-    private Integer                 compressLevel;
-    private boolean                 compressForOltp;
+    private Integer                   compressLevel;
+    private boolean                   compressForOltp;
 
-    private Boolean                 cache;
+    private Boolean                   cache;
 
-    private DeferredSegmentCreation deferredSegmentCreation;
+    private DeferredSegmentCreation   deferredSegmentCreation;
 
-    private Boolean                 enableRowMovement;
+    private Boolean                   enableRowMovement;
 
-    private List<SQLName>           clusterColumns = new ArrayList<SQLName>();
-    private SQLName                 cluster;
+    private List<SQLName>             clusterColumns = new ArrayList<SQLName>();
+    private SQLName                   cluster;
 
-    private Organization            organization;
+    private Organization              organization;
 
-    private SQLName                 of;
-    private OIDIndex                oidIndex;
-    private boolean                 monitoring;
-
+    private SQLName                   of;
+    private OIDIndex                  oidIndex;
+    private boolean                   monitoring;
+    private List<SQLName>             including = new ArrayList<SQLName>();
+    private OracleXmlColumnProperties xmlTypeColumnProperties;
 
     public void simplify() {
         tablespace = null;
@@ -93,7 +95,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     }
     
     public OracleCreateTableStatement() {
-        super (JdbcConstants.ORACLE);
+        super (DbType.oracle);
     }
 
     public OracleLobStorageClause getLobStorage() {
@@ -184,6 +186,17 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.parallel = parallel;
     }
 
+    public SQLExpr getParallelValue() {
+        return parallelValue;
+    }
+
+    public void setParallelValue(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.parallelValue = x;
+    }
+
     public boolean isCursorSpecificSegment() {
         return cursorSpecificSegment;
     }
@@ -269,11 +282,15 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         return cluster;
     }
 
-    public void setCluster(SQLName cluster) {
-        if (cluster != null) {
-            cluster.setParent(this);
+    public void setCluster(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.cluster = cluster;
+        this.cluster = x;
+    }
+
+    public List<SQLName> getIncluding() {
+        return including;
     }
 
     public Organization getOrganization() {
@@ -290,6 +307,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             this.acceptChild(visitor, tableSource);
+            this.acceptChild(visitor, of);
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, tablespace);
             this.acceptChild(visitor, select);
@@ -373,6 +391,17 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         public List<SQLExpr> getExternalDirectoryLocation() {
             return externalDirectoryLocation;
         }
+    }
+
+    public OracleXmlColumnProperties getXmlTypeColumnProperties() {
+        return xmlTypeColumnProperties;
+    }
+
+    public void setXmlTypeColumnProperties(OracleXmlColumnProperties x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.xmlTypeColumnProperties = x;
     }
 
     public static class OIDIndex extends OracleSegmentAttributesImpl implements OracleSQLObject{

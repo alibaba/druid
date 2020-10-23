@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@ public enum SQLObjectType {
     PROCEDURE("PROCEDURE"), // 
     USER("USER"), //
     DATABASE("DATABASE"), //
-    ROLE("ROLE"), // 
+    SCHEMA("SCHEMA"), //
+    ROLE("ROLE"), //
     PROJECT("PROJECT"), // 
     PACKAGE("PACKAGE"), // 
     RESOURCE("RESOURCE"), // 
@@ -29,6 +30,8 @@ public enum SQLObjectType {
     JOB("JOB"), // 
     VOLUME("VOLUME"), // 
     OfflineModel("OFFLINEMODEL"), // 
+    SYSTEM("SYSTEM"), //
+    GLOBAL("GLOBAL"), //
     XFLOW("XFLOW") // for odps
     ;
     

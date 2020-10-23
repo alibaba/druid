@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class OracleCreateIndexTest20 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "create index idx_id on t2(id) local online;";
+        "create index idx_id on t2(id) local;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -45,7 +45,7 @@ public class OracleCreateIndexTest20 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("CREATE INDEX idx_id ON t2(id) ONLINE LOCAL;"
+        assertEquals("CREATE INDEX idx_id ON t2(id) LOCAL;"
                 , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());

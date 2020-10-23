@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,17 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExprGroup;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceable {
     protected SQLWithSubqueryClause with; // for pg
@@ -42,8 +37,6 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
     protected SQLTableSource               tableSource;
     protected List<SQLExpr>                returning;
 
-    protected List<SQLHint>                hints;
-
     // for mysql
     protected SQLOrderBy orderBy;
 
@@ -51,7 +44,51 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     }
 
-    public SQLUpdateStatement(String dbType){
+    public void cloneTo(SQLUpdateStatement x) {
+        x.dbType = dbType;
+        x.afterSemi = afterSemi;
+
+        if (with != null) {
+            x.setWith(with.clone());
+            x.with.setParent(x);
+        }
+
+        if (where != null) {
+            x.where = where.clone();
+            x.where.setParent(x);
+        }
+        if (tableSource != null) {
+            x.setTableSource(tableSource.clone());
+            x.tableSource.setParent(x);
+        }
+
+        for (SQLUpdateSetItem item : items) {
+            SQLUpdateSetItem clone = item.clone();
+            clone.setParent(x);
+            x.getItems().add(clone);
+        }
+
+        if (returning != null) {
+            for (SQLExpr item : returning) {
+                SQLExpr clone = item.clone();
+                clone.setParent(x);
+                x.getReturning().add(clone);
+            }
+        }
+
+        if (orderBy != null) {
+            x.orderBy = orderBy.clone();
+            x.orderBy.setParent(x);
+        }
+    }
+
+    public SQLUpdateStatement clone() {
+        SQLUpdateStatement x = new SQLUpdateStatement();
+        cloneTo(x);
+        return x;
+    }
+    
+    public SQLUpdateStatement(DbType dbType){
         super (dbType);
     }
 
@@ -98,7 +135,7 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
     public List<SQLUpdateSetItem> getItems() {
         return items;
     }
-
+    
     public void addItem(SQLUpdateSetItem item) {
         this.items.add(item);
         item.setParent(this);
@@ -123,42 +160,38 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         this.from = from;
     }
 
-    public int getHintsSize() {
-        if (hints == null) {
-            return 0;
-        }
-
-        return hints.size();
-    }
-
-    public List<SQLHint> getHints() {
-        if (hints == null) {
-            hints = new ArrayList<SQLHint>(2);
-        }
-        return hints;
-    }
-
-    public void setHints(List<SQLHint> hints) {
-        this.hints = hints;
-    }
-
-    @Override
-    public void output(StringBuffer buf) {
-        SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(buf, dbType);
-        this.accept(visitor);
-    }
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, tableSource);
-            acceptChild(visitor, from);
-            acceptChild(visitor, items);
-            acceptChild(visitor, where);
-            acceptChild(visitor, orderBy);
-            acceptChild(visitor, hints);
+            acceptChild(visitor);
         }
         visitor.endVisit(this);
+    }
+
+    protected void acceptChild(SQLASTVisitor visitor)
+    {
+        if (tableSource != null) {
+            tableSource.accept(visitor);
+        }
+
+        if (from != null) {
+            from.accept(visitor);
+        }
+
+        for (int i = 0; i < items.size(); i++) {
+            SQLUpdateSetItem item = items.get(i);
+            if (item != null) {
+                item.accept(visitor);
+            }
+        }
+
+        if (where != null) {
+            where.accept(visitor);
+        }
+
+        if (orderBy != null) {
+            orderBy.accept(visitor);
+        }
     }
 
     public List<SQLObject> getChildren() {
@@ -185,6 +218,17 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
             setWhere(target);
             return true;
         }
+
+        if (returning != null) {
+            for (int i = 0; i < returning.size(); i++) {
+                if (returning.get(i) == expr) {
+                    target.setParent(this);
+                    returning.set(i, target);
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -297,10 +341,9 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         SQLUpdateStatement that = (SQLUpdateStatement) o;
 
         if (with != null ? !with.equals(that.with) : that.with != null) return false;
-        if (items != null ? !items.equals(that.items) : that.items != null) return false;
+        if (!items.equals(that.items)) return false;
         if (where != null ? !where.equals(that.where) : that.where != null) return false;
         if (from != null ? !from.equals(that.from) : that.from != null) return false;
-        if (hints != null ? !hints.equals(that.hints) : that.hints != null) return false;
         if (tableSource != null ? !tableSource.equals(that.tableSource) : that.tableSource != null) return false;
         if (returning != null ? !returning.equals(that.returning) : that.returning != null) return false;
         return orderBy != null ? orderBy.equals(that.orderBy) : that.orderBy == null;
@@ -309,13 +352,12 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
     @Override
     public int hashCode() {
         int result = with != null ? with.hashCode() : 0;
-        result = 31 * result + (items != null ? items.hashCode() : 0);
+        result = 31 * result + items.hashCode();
         result = 31 * result + (where != null ? where.hashCode() : 0);
         result = 31 * result + (from != null ? from.hashCode() : 0);
         result = 31 * result + (tableSource != null ? tableSource.hashCode() : 0);
         result = 31 * result + (returning != null ? returning.hashCode() : 0);
         result = 31 * result + (orderBy != null ? orderBy.hashCode() : 0);
-        result = 31 * result + (hints != null ? hints.hashCode() : 0);
         return result;
     }
 

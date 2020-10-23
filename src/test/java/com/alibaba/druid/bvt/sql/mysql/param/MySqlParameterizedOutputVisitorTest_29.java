@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_29 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "select `a1`.`id`,`a1`.`gmt_create`,`a1`.`gmt_modified`,`a1`.`push_date`,`a1`.`parent_task_id`" +
                 "   ,`a1`.`parent_task_type`,`a1`.`action_type`,`a1`.`schedule_no`,`a1`.`type`,`a1`.`md5`" +

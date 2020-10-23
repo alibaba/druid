@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_51_schema extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
         String sql = "UPDATE `galicdb_0102`.auction_auctions_0201 SET `starts` = ?, `pict_url` = ?, `category` = ?, `minimum_bid` = ?, `reserve_price` = ?, `city` = ?, `prov` = ?, `ends` = ?, `current_bid` = NULL, `quantity` = ?, `zoo` = ?, `secure_trade_ordinary_post_fee` = ?, `secure_trade_fast_post_fee` = ?, `old_quantity` = ?, `options` = ?, `secure_trade_ems_post_fee` = ?, `property` = ?, `last_modified` = ?, `desc_path` = ?, `postage_id` = ?, `shop_categories_id_lists` = ?, `spu_id` = ?, `sync_version` = ?, `auction_status` = ?, `features` = ?, `feature_cc` = ?, `main_color` = ?, `outer_id` = ?, `auction_sub_status` = ?, `commodity_id` = ? WHERE `auction_id` = ?";
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);

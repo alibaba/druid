@@ -1,12 +1,7 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.SQLParserUtils;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
@@ -17,7 +12,7 @@ import java.util.List;
  * Created by wenshao on 16/8/23.
  */
 public class MySqlParameterizedOutputVisitorTest_58 extends TestCase {
-    final String dbType = JdbcConstants.MYSQL;
+    final DbType dbType = JdbcConstants.MYSQL;
     public void test_for_parameterize() throws Exception {
 
         String sql = "select * from t where id = 101";

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class OracleCreateMaterializedViewTest1 extends OracleTest {
 
         assertEquals(3, visitor.getTables().size());
 
-        assertEquals(7, visitor.getColumns().size());
+        assertEquals(6, visitor.getColumns().size());
 
         assertTrue(visitor.getColumns().contains(new TableStat.Column("times", "calendar_year")));
     }

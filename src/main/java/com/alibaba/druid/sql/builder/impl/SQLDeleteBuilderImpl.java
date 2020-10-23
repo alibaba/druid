@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
  */
 package com.alibaba.druid.sql.builder.impl;
 
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -28,19 +27,19 @@ import com.alibaba.druid.sql.builder.SQLDeleteBuilder;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
+
+import java.util.List;
 
 public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
 
     private SQLDeleteStatement stmt;
-    private String             dbType;
+    private DbType             dbType;
 
-    public SQLDeleteBuilderImpl(String dbType){
+    public SQLDeleteBuilderImpl(DbType dbType){
         this.dbType = dbType;
     }
     
-    public SQLDeleteBuilderImpl(String sql, String dbType){
+    public SQLDeleteBuilderImpl(String sql, DbType dbType){
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.size() == 0) {
@@ -56,7 +55,7 @@ public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
         this.dbType = dbType;
     }
 
-    public SQLDeleteBuilderImpl(SQLDeleteStatement stmt, String dbType){
+    public SQLDeleteBuilderImpl(SQLDeleteStatement stmt, DbType dbType){
         this.stmt = stmt;
         this.dbType = dbType;
     }
@@ -124,22 +123,18 @@ public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
     }
 
     public SQLDeleteStatement createSQLDeleteStatement() {
-        if (JdbcUtils.isOracleDbType(dbType)) {
-            return new OracleDeleteStatement();    
+        switch (dbType) {
+            case oracle:
+                return new OracleDeleteStatement();
+            case mysql:
+                return new MySqlDeleteStatement();
+            case postgresql:
+                return new PGDeleteStatement();
+            default:
+                return new SQLDeleteStatement();
         }
-
-        if (JdbcUtils.isMysqlDbType(dbType)) {
-            return new MySqlDeleteStatement();
-        }
-
-        if (JdbcUtils.isPgsqlDbType(dbType)) {
-            return new PGDeleteStatement();
-        }
-        
-        return new SQLDeleteStatement();
     }
 
-    @Override
     public String toString() {
         return SQLUtils.toSQLString(stmt, dbType);
     }

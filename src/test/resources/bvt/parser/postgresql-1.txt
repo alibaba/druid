@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS test_dim_segment
+(
+aid bigint
+,segment_id bigint
+,segment_name text
+,ds text not null
+)
+PARTITION BY LIST(ds);
+
+---------------------------
+SELECT e1.last_name
+FROM employees e1
+WHERE f(CURSOR((
+	SELECT e2.hire_date
+	FROM employees e2
+	WHERE e1.employee_id = e2.manager_id
+	)), e1.hire_date) = 1
+ORDER BY last_name;

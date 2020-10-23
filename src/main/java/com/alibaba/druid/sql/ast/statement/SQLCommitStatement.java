@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,8 +59,13 @@ public class SQLCommitStatement extends SQLStatementImpl {
 
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, transactionName);
-            acceptChild(visitor, delayedDurability);
+            if (transactionName != null) {
+                transactionName.accept(visitor);
+            }
+
+            if (delayedDurability != null) {
+                delayedDurability.accept(visitor);
+            }
         }
         visitor.endVisit(this);
     }

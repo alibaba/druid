@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.oceanbase;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -24,7 +25,7 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OceanbaseSelectTest_hierarchical_1 extends MysqlTest {
-    protected final String dbType = JdbcConstants.MYSQL;
+    protected final DbType dbType = JdbcConstants.MYSQL;
 
     public void test_0() throws Exception {
         String sql = "SELECT last_name, employee_id, manager_id, LEVEL\n" +

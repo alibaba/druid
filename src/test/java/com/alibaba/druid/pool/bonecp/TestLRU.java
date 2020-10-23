@@ -80,21 +80,6 @@ public class TestLRU extends TestCase {
         }
     }
 
-//    public void test_jboss() throws Exception {
-//        LocalTxDataSource ds = new LocalTxDataSource();
-//        ds.setDriverClass("com.alibaba.druid.mock.MockDriver");
-//        ds.setConnectionURL("jdbc:mock:test");
-//        ds.setMaxSize(10);
-//        ds.setMinSize(0);
-//        ds.setUserName("user");
-//        ds.setPassword("password");
-//        
-//        for (int i = 0; i < 10; ++i) {
-//            f(ds, 5);
-//            System.out.println("--------------------------------------------");
-//        }
-//    }
-
     public static void f(DataSource ds, int count) throws Exception {
         Connection[] connections = new Connection[count];
         for (int i = 0; i < count; ++i) {

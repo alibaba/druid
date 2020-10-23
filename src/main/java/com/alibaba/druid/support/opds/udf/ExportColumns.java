@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,14 @@
  */
 package com.alibaba.druid.support.opds.udf;
 
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.aliyun.odps.udf.UDF;
+
+import java.util.List;
 
 public class ExportColumns extends UDF {
 
@@ -31,8 +32,8 @@ public class ExportColumns extends UDF {
 
     public String evaluate(String sql, String dbType) {
         try {
-            List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
-            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
+            List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.valueOf(dbType));
+            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(DbType.valueOf(dbType));
 
             for (SQLStatement stmt : statementList) {
                 stmt.accept(visitor);
@@ -48,7 +49,7 @@ public class ExportColumns extends UDF {
             }
 
             return buf.toString();
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             System.err.println("error sql : " + sql);
             ex.printStackTrace();
             return null;

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OracleLockTableStatement extends OracleStatementImpl {
 
@@ -30,6 +30,7 @@ public class OracleLockTableStatement extends OracleStatementImpl {
     private LockMode lockMode;
     private boolean  noWait = false;
     private SQLExpr  wait;
+    private SQLExpr  partition;
 
     public boolean isNoWait() {
         return noWait;
@@ -71,10 +72,19 @@ public class OracleLockTableStatement extends OracleStatementImpl {
         this.lockMode = lockMode;
     }
 
+    public SQLExpr getPartition() {
+        return partition;
+    }
+
+    public void setPartition(SQLExpr partition) {
+        this.partition = partition;
+    }
+
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, table);
+            acceptChild(visitor, partition);
             acceptChild(visitor, wait);
         }
         visitor.endVisit(this);
@@ -87,6 +97,9 @@ public class OracleLockTableStatement extends OracleStatementImpl {
         }
         if (wait != null) {
             children.add(wait);
+        }
+        if (partition != null) {
+            children.add(partition);
         }
         return children;
     }

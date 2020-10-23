@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,36 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAssignItem extends SQLObjectImpl implements SQLReplaceable {
+import java.util.List;
+
+public class SQLAssignItem extends SQLExprImpl implements SQLReplaceable {
 
     private SQLExpr target;
     private SQLExpr value;
 
     public SQLAssignItem(){
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLAssignItem that = (SQLAssignItem) o;
+
+        if (target != null ? !target.equals(that.target) : that.target != null) return false;
+        return value != null ? value.equals(that.value) : that.value == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = target != null ? target.hashCode() : 0;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
     }
 
     public SQLAssignItem(SQLExpr target, SQLExpr value){
@@ -44,32 +63,31 @@ public class SQLAssignItem extends SQLObjectImpl implements SQLReplaceable {
         return x;
     }
 
+    @Override
+    public List<SQLObject> getChildren() {
+        return null;
+    }
+
     public SQLExpr getTarget() {
         return target;
     }
 
-    public void setTarget(SQLExpr target) {
-        if (target != null) {
-            target.setParent(this);
+    public void setTarget(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.target = target;
+        this.target = x;
     }
 
     public SQLExpr getValue() {
         return value;
     }
 
-    public void setValue(SQLExpr value) {
-        if (value != null) {
-            value.setParent(this);
+    public void setValue(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.value = value;
-    }
-
-    public void output(StringBuffer buf) {
-        target.output(buf);
-        buf.append(" = ");
-        value.output(buf);
+        this.value = x;
     }
 
     @Override

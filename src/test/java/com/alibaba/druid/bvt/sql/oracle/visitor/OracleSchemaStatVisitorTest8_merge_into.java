@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,17 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleSchemaStatVisitorTest8_merge_into extends TestCase {
-    private final static String dbType = JdbcConstants.ORACLE;
+    private final static DbType dbType = JdbcConstants.ORACLE;
 
     public void test_0() throws Exception {
         String sql = "MERGE INTO (\n" +
@@ -66,7 +64,7 @@ public class OracleSchemaStatVisitorTest8_merge_into extends TestCase {
         assertTrue(visitor.containsTable("KPI_M_CW_INCOME_FACT_BAK"));
         assertTrue(visitor.containsTable("M_HEALTH_APPRAISE_LOAD"));
 //
-        assertEquals(7, visitor.getColumns().size());
+        assertEquals(11, visitor.getColumns().size());
         assertTrue(visitor.containsColumn("M_HEALTH_APPRAISE_LOAD", "*"));
         assertTrue(visitor.containsColumn("M_HEALTH_APPRAISE_LOAD", "THE_DATE"));
         assertTrue(visitor.containsColumn("M_HEALTH_APPRAISE_LOAD", "AREA_LEVEL"));

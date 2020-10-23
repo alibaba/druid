@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,20 @@
  */
 package com.alibaba.druid.sql.repository;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import static com.alibaba.druid.sql.repository.SchemaResolveVisitorFactory.resolve;
+import static com.alibaba.druid.sql.repository.SchemaResolveVisitorFactory.resolveIdent;
+import static com.alibaba.druid.sql.repository.SchemaResolveVisitorFactory.resolveUnion;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by wenshao on 03/08/2017.
@@ -29,10 +36,12 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public interface SchemaResolveVisitor extends SQLASTVisitor {
 
     boolean isEnabled(Option option);
+    int getOptions();
 
     public static enum Option {
         ResolveAllColumn,
-        ResolveIdentifierAlias
+        ResolveIdentifierAlias,
+        CheckColumnAmbiguous
         ;
         private Option() {
             mask = (1 << ordinal());
@@ -95,6 +104,10 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
         }
 
         public void addTableSource(long alias_hash, SQLTableSource tableSource) {
+            if (tableSourceMap == null) {
+                tableSourceMap = new HashMap<Long, SQLTableSource>();
+            }
+
             tableSourceMap.put(alias_hash, tableSource);
         }
 
@@ -111,5 +124,169 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
             }
             return declares.get(nameHash);
         }
+
+        protected SQLTableSource findTableSource(long nameHash) {
+            SQLTableSource table = null;
+            if (tableSourceMap != null) {
+                table = tableSourceMap.get(nameHash);
+            }
+
+            return table;
+        }
+
+        protected SQLTableSource findTableSourceRecursive(long nameHash) {
+            for (Context ctx = this; ctx != null; ctx = ctx.parent) {
+                if (ctx.tableSourceMap != null) {
+                    SQLTableSource table = ctx.tableSourceMap.get(nameHash);
+                    if (table != null) {
+                        return table;
+                    }
+                }
+            }
+
+            return null;
+        }
+    }
+
+    default boolean visit(SQLSelectStatement x) {
+        resolve(this, x.getSelect());
+        return false;
+    }
+
+    default boolean visit(SQLSelect x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLWithSubqueryClause x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLIfStatement x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLCreateFunctionStatement x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLExprTableSource x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLSelectQueryBlock x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLForeignKeyImpl x) {
+        resolve(this, x);
+        return false;
+    }
+
+
+    default boolean visit(SQLIdentifierExpr x) {
+        resolveIdent(this, x);
+        return true;
+    }
+
+    default boolean visit(SQLPropertyExpr x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLBinaryOpExpr x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLAllColumnExpr x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLCreateTableStatement x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLUpdateStatement x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLDeleteStatement x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLAlterTableStatement x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLInsertStatement x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLParameter x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLDeclareItem x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLOver x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLMethodInvokeExpr x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLUnionQuery x) {
+        resolveUnion(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLMergeStatement x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLCreateProcedureStatement x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLBlockStatement x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLReplaceStatement x) {
+        resolve(this, x);
+        return false;
+    }
+
+    default boolean visit(SQLCastExpr x) {
+        x.getExpr()
+                .accept(this);
+        return true;
+    }
+
+    default boolean visit(SQLFetchStatement x) {
+        resolve(this, x);
+        return false;
     }
 }

@@ -22,6 +22,7 @@ import javax.sql.XAConnection;
 import javax.sql.XADataSource;
 import javax.transaction.xa.XAException;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.support.logging.Log;
@@ -54,38 +55,40 @@ public class DruidXADataSource extends DruidDataSource implements XADataSource {
     protected void initCheck() throws SQLException {
         super.initCheck();
 
-        if (JdbcUtils.H2.equals(this.dbType)) {
+        DbType dbType = DbType.of(this.dbTypeName);
+        if (JdbcUtils.H2.equals(dbType)) {
             h2Factory = H2Utils.createJdbcDataSourceFactory();
         }
     }
 
     private XAConnection createPhysicalXAConnection(Connection physicalConn) throws SQLException {
-        if (JdbcUtils.ORACLE.equals(dbType)) {
-            try {
-                return OracleUtils.OracleXAConnection(physicalConn);
-            } catch (XAException xae) {
-                LOG.error("create xaConnection error", xae);
-                return null;
-            }
+        DbType dbType = DbType.of(this.dbTypeName);
+
+        if (dbType == null) {
+            throw new SQLException("xa not support dbType : " + this.dbTypeName);
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType) || JdbcUtils.MARIADB.equals(dbType)) {
-            return MySqlUtils.createXAConnection(driver, physicalConn);
-        }
+        switch (dbType) {
+            case oracle:
+                try {
+                    return OracleUtils.OracleXAConnection(physicalConn);
+                } catch (XAException xae) {
+                    LOG.error("create xaConnection error", xae);
+                    return null;
+                }
+            case mysql:
+            case mariadb:
+                return MySqlUtils.createXAConnection(driver, physicalConn);
+            case postgresql:
+                return PGUtils.createXAConnection(physicalConn);
+            case h2:
+                return H2Utils.createXAConnection(h2Factory, physicalConn);
+            case jtds:
+                return new JtdsXAConnection(physicalConn);
+            default:
+                throw new SQLException("xa not support dbType : " + this.dbTypeName);
 
-        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
-            return PGUtils.createXAConnection(physicalConn);
         }
-
-        if (JdbcUtils.H2.equals(dbType)) {
-            return H2Utils.createXAConnection(h2Factory, physicalConn);
-        }
-
-        if (JdbcUtils.JTDS.equals(dbType)) {
-            return new JtdsXAConnection(physicalConn);
-        }
-
-        throw new SQLException("xa not support dbType : " + this.dbType);
     }
 
     @Override

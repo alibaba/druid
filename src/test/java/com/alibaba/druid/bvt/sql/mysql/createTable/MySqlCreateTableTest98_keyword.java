@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
@@ -117,6 +118,31 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 "\tcreate_time timestamp,\n" +
                 "\tupdate_time timestamp\n" +
                 ")", stmt.toString());
+
+    }
+
+    public void test_4() throws Exception {
+        String sql = "CREATE TABLE test (\n" +
+                "Host char(60) COLLATE utf8_bin NOT NULL DEFAULT '',\n" +
+                "Db char(64) COLLATE utf8_bin NOT NULL DEFAULT '',\n" +
+                "User char(16) COLLATE utf8_bin NOT NULL DEFAULT '',\n" +
+                "PRIMARY KEY (Host,Db,User),\n" +
+                "KEY User (User)\n" +
+                ") ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Database privileges'";
+
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+
+        assertEquals(1, statementList.size());
+        assertEquals(5, stmt.getTableElementList().size());
+
+        assertEquals("CREATE TABLE test (\n" +
+                "\tHost char(60) COLLATE utf8_bin NOT NULL DEFAULT '',\n" +
+                "\tDb char(64) COLLATE utf8_bin NOT NULL DEFAULT '',\n" +
+                "\tUser char(16) COLLATE utf8_bin NOT NULL DEFAULT '',\n" +
+                "\tPRIMARY KEY (Host, Db, User),\n" +
+                "\tKEY User (User)\n" +
+                ") ENGINE = MyISAM CHARSET = utf8 COLLATE = utf8_bin COMMENT 'Database privileges'", stmt.toString());
 
     }
 }

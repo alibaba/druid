@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,28 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLBinaryOpExprGroup extends SQLExprImpl {
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+public class SQLBinaryOpExprGroup extends SQLExprImpl implements SQLReplaceable {
     private final SQLBinaryOperator operator;
-    private final List<SQLExpr> items = new ArrayList<SQLExpr>();
-    private String dbType;
+    private final List<SQLExpr>     items = new ArrayList<SQLExpr>();
+    private DbType                  dbType;
 
     public SQLBinaryOpExprGroup(SQLBinaryOperator operator) {
         this.operator = operator;
     }
 
-    public SQLBinaryOpExprGroup(SQLBinaryOperator operator, String dbType) {
+    public SQLBinaryOpExprGroup(SQLBinaryOperator operator, DbType dbType) {
         this.operator = operator;
         this.dbType = dbType;
     }
@@ -58,7 +62,10 @@ public class SQLBinaryOpExprGroup extends SQLExprImpl {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.items);
+            for (int i = 0; i < this.items.size(); i++) {
+                SQLExpr item = this.items.get(i);
+                item.accept(visitor);
+            }
         }
 
         visitor.endVisit(this);
@@ -83,10 +90,31 @@ public class SQLBinaryOpExprGroup extends SQLExprImpl {
     }
 
     public void add(SQLExpr item) {
+        add(items.size(), item);
+    }
+
+    public void add(int index, SQLExpr item) {
+        if (item instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) item;
+            if (binaryOpExpr.getOperator() == operator) {
+                add(binaryOpExpr.getLeft());
+                add(binaryOpExpr.getRight());
+                return;
+            }
+        } else if (item instanceof SQLBinaryOpExprGroup) {
+            SQLBinaryOpExprGroup group = (SQLBinaryOpExprGroup) item;
+            if (group.operator == this.operator) {
+                for (SQLExpr sqlExpr : group.getItems()) {
+                    add(sqlExpr);
+                }
+                return;
+            }
+        }
+
         if (item != null) {
             item.setParent(this);
         }
-        this.items.add(item);
+        this.items.add(index, item);
     }
 
     public List<SQLExpr> getItems() {
@@ -99,5 +127,62 @@ public class SQLBinaryOpExprGroup extends SQLExprImpl {
 
     public String toString() {
         return SQLUtils.toSQLString(this, dbType);
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        boolean replaced = false;
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i) == expr) {
+                if (target == null) {
+                    items.remove(i);
+                } else {
+                    if (target instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) target).getOperator() == operator) {
+                        items.remove(i);
+                        List<SQLExpr> list = SQLBinaryOpExpr.split(target, operator);
+                        for (int j = 0; j < list.size(); j++) {
+                            SQLExpr o = list.get(j);
+                            o.setParent(this);
+                            items.add(i + j, o);
+                        }
+                    } else {
+                        target.setParent(this);
+                        items.set(i, target);
+                    }
+                }
+                replaced = true;
+            }
+        }
+
+        if (items.size() == 1 && replaced) {
+            SQLUtils.replaceInParent(this, items.get(0));
+        }
+
+        if (items.size() == 0) {
+            SQLUtils.replaceInParent(this, null);
+        }
+
+        return replaced;
+    }
+
+    public void optimize() {
+        List<Integer> dupIndexList = null;
+
+        Set<SQLExpr> itemSet = new LinkedHashSet<SQLExpr>();
+        for (int i = 0; i < items.size(); i++) {
+            if (!itemSet.add(items.get(i))) {
+                if (dupIndexList == null) {
+                    dupIndexList = new ArrayList<Integer>();
+                }
+                dupIndexList.add(i);
+            }
+        }
+
+        if (dupIndexList != null) {
+            for (int i = dupIndexList.size() - 1; i >= 0; i--) {
+                int index = dupIndexList.get(i);
+                items.remove(index);
+            }
+        }
     }
 }

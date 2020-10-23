@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.bug;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 public class Issue1935 extends TestCase {
     public void test_for_issue() throws Exception {
-        String DBTYPE = JdbcConstants.MYSQL;
+        DbType DBTYPE = JdbcConstants.MYSQL;
         //String sql = "select name, course ,scole from student inner join scole on student.id = scole.sd_id where course = '数学' limit 10;";
         //sql = "select name,course,sum(scole) as total from student where student.id in (select sd_id from scole where name='aaa') and scole in (1,2,3) group by name HAVING total <60 order by scole desc limit 10 ,2 ";
         String sql = "select name from  student where id in (select sd_id from scole where scole < 60 order by scole asc) or id = 2 order by name desc";

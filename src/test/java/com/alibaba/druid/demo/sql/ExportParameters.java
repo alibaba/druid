@@ -2,6 +2,7 @@ package com.alibaba.druid.demo.sql;
 
 import java.util.List;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
@@ -14,7 +15,7 @@ public class ExportParameters extends TestCase {
     public void test_export_parameters() throws Exception {
         String sql = "select * from t where id = 3 and name = 'abc'";
         
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.mysql);
         
         StringBuilder out = new StringBuilder();
         ExportParameterVisitor visitor = new MySqlExportParameterVisitor(out);

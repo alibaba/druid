@@ -74,7 +74,9 @@ public class DruidDataSourceTest_exceptionSorter extends TestCase {
 
         long createCount = dataSource.getCreateCount();
         assertTrue(createCount == 2 || createCount == 3);
-        assertEquals(createCount - 1, dataSource.getDiscardCount());
+        long discardCount = dataSource.getDiscardCount();
+        assertTrue("createCount : " + createCount
+                , createCount == discardCount || createCount - 1 == discardCount);
         assertEquals(1, dataSource.getPoolingCount());
     }
 }

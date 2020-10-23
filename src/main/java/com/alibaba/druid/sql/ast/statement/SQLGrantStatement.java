@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,19 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLGrantStatement extends SQLStatementImpl {
+import java.util.ArrayList;
+import java.util.List;
 
-    protected final List<SQLExpr> privileges = new ArrayList<SQLExpr>();
-
-    protected SQLObject           on;
-    protected SQLExpr             to;
-
-    public SQLGrantStatement(){
-
-    }
-
-    public SQLGrantStatement(String dbType){
-        super(dbType);
-    }
+public class SQLGrantStatement extends SQLPrivilegeStatement {
 
     // mysql
-    protected SQLObjectType objectType;
     private SQLExpr         maxQueriesPerHour;
     private SQLExpr         maxUpdatesPerHour;
     private SQLExpr         maxConnectionsPerHour;
@@ -52,12 +40,22 @@ public class SQLGrantStatement extends SQLStatementImpl {
 
     private boolean         withGrantOption;
 
+
+
+    public SQLGrantStatement(){
+
+    }
+
+    public SQLGrantStatement(DbType dbType){
+        super(dbType);
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.privileges);
-            acceptChild(visitor, on);
-            acceptChild(visitor, to);
+            acceptChild(visitor, resource);
+            acceptChild(visitor, users);
             acceptChild(visitor, identifiedBy);
         }
         visitor.endVisit(this);
@@ -67,11 +65,11 @@ public class SQLGrantStatement extends SQLStatementImpl {
     public List<SQLObject> getChildren() {
         List<SQLObject> children = new ArrayList<SQLObject>();
         children.addAll(privileges);
-        if (on != null) {
-            children.add(on);
+        if (resource != null) {
+            children.add(resource);
         }
-        if (to != null) {
-            children.add(to);
+        if (users != null) {
+            children.addAll(users);
         }
         if (identifiedBy != null) {
             children.add(identifiedBy);
@@ -79,33 +77,12 @@ public class SQLGrantStatement extends SQLStatementImpl {
         return children;
     }
 
-    public SQLObjectType getObjectType() {
-        return objectType;
+    public SQLObjectType getResourceType() {
+        return resourceType;
     }
 
-    public void setObjectType(SQLObjectType objectType) {
-        this.objectType = objectType;
-    }
-
-    public SQLObject getOn() {
-        return on;
-    }
-
-    public void setOn(SQLObject on) {
-        this.on = on;
-        on.setParent(this);
-    }
-
-    public SQLExpr getTo() {
-        return to;
-    }
-
-    public void setTo(SQLExpr to) {
-        this.to = to;
-    }
-
-    public List<SQLExpr> getPrivileges() {
-        return privileges;
+    public void setResourceType(SQLObjectType resourceType) {
+        this.resourceType = resourceType;
     }
 
     public SQLExpr getMaxQueriesPerHour() {

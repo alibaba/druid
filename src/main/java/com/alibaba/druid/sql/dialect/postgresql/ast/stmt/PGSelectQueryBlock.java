@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -25,14 +23,14 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObject;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObject{
 
     private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
-    private WindowClause  window;
 
-    private SQLOrderBy    orderBy;
     private FetchClause   fetch;
     private ForClause     forClause;
     private IntoOption    intoOption;
@@ -42,7 +40,7 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
     }
 
     public PGSelectQueryBlock() {
-        dbType = JdbcConstants.POSTGRESQL;
+        dbType = DbType.postgresql;
     }
 
     public IntoOption getIntoOption() {
@@ -71,7 +69,7 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
             acceptChild(visitor, this.from);
             acceptChild(visitor, this.where);
             acceptChild(visitor, this.groupBy);
-            acceptChild(visitor, this.window);
+            acceptChild(visitor, this.windows);
             acceptChild(visitor, this.orderBy);
             acceptChild(visitor, this.limit);
             acceptChild(visitor, this.fetch);
@@ -96,59 +94,12 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
         this.forClause = forClause;
     }
 
-    public WindowClause getWindow() {
-        return window;
-    }
-
-    public void setWindow(WindowClause window) {
-        this.window = window;
-    }
-
-    public SQLOrderBy getOrderBy() {
-        return orderBy;
-    }
-
-    public void setOrderBy(SQLOrderBy orderBy) {
-        this.orderBy = orderBy;
-    }
-
     public List<SQLExpr> getDistinctOn() {
         return distinctOn;
     }
 
     public void setDistinctOn(List<SQLExpr> distinctOn) {
         this.distinctOn = distinctOn;
-    }
-
-    public static class WindowClause extends PGSQLObjectImpl {
-
-        private SQLExpr       name;
-        private List<SQLExpr> definition = new ArrayList<SQLExpr>(2);
-
-        public SQLExpr getName() {
-            return name;
-        }
-
-        public void setName(SQLExpr name) {
-            this.name = name;
-        }
-
-        public List<SQLExpr> getDefinition() {
-            return definition;
-        }
-
-        public void setDefinition(List<SQLExpr> definition) {
-            this.definition = definition;
-        }
-
-        @Override
-        public void accept0(PGASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, name);
-                acceptChild(visitor, definition);
-            }
-            visitor.endVisit(this);
-        }
     }
 
     public static class FetchClause extends PGSQLObjectImpl {

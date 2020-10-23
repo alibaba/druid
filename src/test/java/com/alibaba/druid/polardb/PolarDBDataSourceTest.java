@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.alibaba.druid.DbType;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -35,7 +36,7 @@ public class PolarDBDataSourceTest extends TestCase {
     public void testDataSource() throws SQLException {
         dataSource.init();
 
-        Assert.assertTrue(JdbcConstants.POLARDB.equals(dataSource.getDbType()));
+        Assert.assertTrue(JdbcConstants.POLARDB.equals(DbType.of(dataSource.getDbType())));
         Assert.assertTrue(JdbcConstants.POLARDB_DRIVER.equals(dataSource.getDriverClassName()));
 
         Connection conn = dataSource.getConnection();

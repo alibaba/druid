@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.oracle;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -12,7 +13,7 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleListAggTest1 extends OracleTest {
-    private final String dbType = JdbcConstants.ORACLE;
+    private final DbType dbType = JdbcConstants.ORACLE;
 
     public void test_0() throws Exception {
         String sql = "SELECT count(0) " +
