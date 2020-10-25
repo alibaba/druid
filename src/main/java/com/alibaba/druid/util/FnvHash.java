@@ -867,6 +867,7 @@ public final class FnvHash {
         long FACE_FEATURE_EXTRACT_V1 = fnv1a_64_lower("FACE_FEATURE_EXTRACT_V1");
         long TEXT_FEATURE_EXTRACT_V1 = fnv1a_64_lower("TEXT_FEATURE_EXTRACT_V1");
 
+        long JSON_TABLE = fnv1a_64_lower("JSON_TABLE");
         long JSON_EXTRACT = fnv1a_64_lower("JSON_EXTRACT");
         long JSON_EXTRACT_SCALAR = fnv1a_64_lower("json_extract_scalar");
         long JSON_ARRAY_GET = fnv1a_64_lower("JSON_ARRAY_GET");
@@ -1112,5 +1113,6 @@ public final class FnvHash {
         long _UJIS = fnv1a_64_lower("_UJIS");
         long X = fnv1a_64_lower("X");
         long TRANSFORM = fnv1a_64_lower("TRANSFORM");
+        long NESTED = fnv1a_64_lower("NESTED");
     }
 }
