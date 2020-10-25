@@ -2348,7 +2348,7 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLOrderBy parseDistributeBy() {
-        if (lexer.token == Token.DISTRIBUTE) {
+        if (lexer.token == Token.DISTRIBUTE || lexer.identifierEquals("DISTRIBUTE")) {
             SQLOrderBy orderBy = new SQLOrderBy();
 
             lexer.nextToken();
