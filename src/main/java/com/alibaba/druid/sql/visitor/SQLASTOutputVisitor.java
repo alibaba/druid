@@ -3229,7 +3229,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         SQLColumnDefinition.Identity identity = x.getIdentity();
         if (identity != null) {
-            print(' ');
+            if (dbType == DbType.h2) {
+                print0(ucase ? " AS " : " as ");
+            } else {
+                print(' ');
+            }
             identity.accept(this);
         }
 

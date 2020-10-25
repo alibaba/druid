@@ -4,6 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
+import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
@@ -41,5 +42,10 @@ public class ClickHouse_select_0 extends TestCase {
                         "FROM preComp_3All_20180322\n" +
                         "LIMIT 1, 10", //
                 output);
+
+        String psql = ParameterizedOutputVisitorUtils.parameterize(sql, DbType.clickhouse);
+        assertEquals("SELECT date, transactionChannel, tranactionType\n" +
+                "FROM preComp_3All_20180322\n" +
+                "LIMIT ?, ?", psql);
     }
 }

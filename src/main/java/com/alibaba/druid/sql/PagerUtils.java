@@ -162,6 +162,7 @@ public class PagerUtils {
                 return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
             case postgresql:
             case hive:
+            case odps:
                 return limitSQLQueryBlock(queryBlock, dbType, offset, count, check);
             case oracle:
             case oceanbase_oracle:

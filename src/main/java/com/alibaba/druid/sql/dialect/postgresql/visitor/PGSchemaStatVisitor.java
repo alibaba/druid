@@ -108,11 +108,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         return visit((SQLSelectStatement) x);
     }
 
-    @Override
-    public void endVisit(PGUpdateStatement x) {
-
-    }
-
     public boolean isPseudoColumn(long hash) {
         return PGUtils.isPseudoColumn(hash);
     }

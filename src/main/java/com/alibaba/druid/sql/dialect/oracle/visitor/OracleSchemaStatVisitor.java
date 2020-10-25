@@ -349,11 +349,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public void endVisit(OracleAlterTableSplitPartition.TableSpaceItem x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTableSplitPartition.UpdateIndexesClause x) {
         return false;
     }

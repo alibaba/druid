@@ -639,11 +639,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public void endVisit(MySqlAlterTableValidation x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlCaseStatement x) {
         accept(x.getWhenList());
         return false;

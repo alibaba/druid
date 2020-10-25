@@ -182,6 +182,12 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
                 provider = new SQLiteWallProvider(config);
                 break;
+            case clickhouse:
+                if (config == null) {
+                    config = new WallConfig(ClickhouseWallProvider.DEFAULT_CONFIG_DIR);
+                }
+                provider = new ClickhouseWallProvider(config);
+                break;
             default:
                 throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }

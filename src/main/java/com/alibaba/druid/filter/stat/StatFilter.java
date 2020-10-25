@@ -153,7 +153,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         try {
-            sql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+            sql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType, null, null, null);
         } catch (Exception e) {
             LOG.error("merge sql error, dbType " + dbType + ", druid-" + VERSION.getVersionNumber() + ", sql : " + sql, e);
         }
