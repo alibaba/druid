@@ -8870,7 +8870,9 @@ public class MySqlStatementParser extends SQLStatementParser {
         accept(Token.WHILE);
 
         accept(Token.SEMI);
-
+        
+        stmt.setAfterSemi(true);
+        
         return stmt;
 
     }
@@ -8900,7 +8902,9 @@ public class MySqlStatementParser extends SQLStatementParser {
         acceptIdentifier(label);
 
         accept(Token.SEMI);
-
+        
+        stmt.setAfterSemi(true);
+        
         return stmt;
 
     }
