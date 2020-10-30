@@ -55,6 +55,10 @@ public class Profiler {
 
     public static void release(long nanos) {
         ProfileEntry current = currentLocal.get();
+        if (current == null) {
+            return;
+        }
+
         currentLocal.set(current.getParent());
 
         ProfileEntryReqStat stat = null;
