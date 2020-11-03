@@ -296,6 +296,11 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             for (;;) {
                 String name = lexer.stringVal();
                 lexer.nextToken();
+                if(lexer.token()==Token.DOT){
+                    lexer.nextToken();
+                    name = name+Token.DOT.name+lexer.stringVal();
+                    lexer.nextToken();
+                }
                 accept(Token.EQ);
                 SQLExpr value = this.exprParser.primary();
                 stmt.addTblProperty(name, value);
