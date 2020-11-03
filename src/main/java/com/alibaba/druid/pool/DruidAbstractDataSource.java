@@ -867,7 +867,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setValidationQueryTimeout(int validationQueryTimeout) {
-        if (validationQueryTimeout < 0 && JdbcConstants.SQL_SERVER.equals(dbTypeName)) {
+        if (validationQueryTimeout < 0 && DbType.of(dbTypeName) == DbType.sqlserver) {
             LOG.error("validationQueryTimeout should be >= 0");
         }
         this.validationQueryTimeout = validationQueryTimeout;

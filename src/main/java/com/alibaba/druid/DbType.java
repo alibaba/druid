@@ -99,4 +99,8 @@ public enum DbType {
             return null;
         }
     }
+
+    public final boolean equals(String other) {
+        return this == of(other);
+    }
 }
