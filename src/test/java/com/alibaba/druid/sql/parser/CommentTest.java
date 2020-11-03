@@ -17,8 +17,6 @@ package com.alibaba.druid.sql.parser;
 
 import java.util.List;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -81,4 +79,5 @@ public class CommentTest extends TestCase {
         lexer.nextToken();
         assertEquals("hello world", lexer.stringVal());
     }
+
 }
