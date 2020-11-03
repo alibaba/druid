@@ -3733,9 +3733,13 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.token == Token.LPAREN) {
                 lexer.nextToken();
-                SQLExpr arg = this.expr();
-                arg.setParent(charType);
-                charType.addArgument(arg);
+                if (typeNameHashCode == FnvHash.Constants.ENUM) {
+                    exprList(charType.getArguments(), charType);
+                } else {
+                    SQLExpr arg = this.expr();
+                    arg.setParent(charType);
+                    charType.addArgument(arg);
+                }
                 accept(Token.RPAREN);
             }
 
@@ -3905,6 +3909,7 @@ public class SQLExprParser extends SQLParser {
                 || hash == FnvHash.Constants.TEXT
                 || hash == FnvHash.Constants.MEDIUMTEXT
                 || hash == FnvHash.Constants.LONGTEXT
+                || hash == FnvHash.Constants.ENUM
                 ;
     }
 
