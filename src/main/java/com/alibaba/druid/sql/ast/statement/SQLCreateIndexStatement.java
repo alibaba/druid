@@ -37,6 +37,7 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
     protected List<SQLAssignItem> properties = new ArrayList<SQLAssignItem>();
     protected List<SQLAssignItem> tableProperties = new ArrayList<SQLAssignItem>();
     protected boolean storing;
+    protected boolean ifNotExists;
 
     public SQLCreateIndexStatement() {
         indexDefinition.setParent(this);
@@ -162,6 +163,7 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
     public SQLCreateIndexStatement clone() {
         SQLCreateIndexStatement x = new SQLCreateIndexStatement();
         indexDefinition.cloneTo(x.indexDefinition);
+        x.setIfNotExists(ifNotExists);
         return x;
     }
 
@@ -317,5 +319,13 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
     @Override
     public List<SQLSelectOrderByItem> getColumns() {
         return indexDefinition.getColumns();
+    }
+
+    public boolean isIfNotExists() {
+        return ifNotExists;
+    }
+
+    public void setIfNotExists(boolean ifNotExists) {
+        this.ifNotExists = ifNotExists;
     }
 }

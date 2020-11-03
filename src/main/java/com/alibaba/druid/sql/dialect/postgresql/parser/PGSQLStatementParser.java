@@ -608,6 +608,13 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         accept(Token.INDEX);
 
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+            stmt.setIfNotExists(true);
+        }
+
         if (lexer.identifierEquals(FnvHash.Constants.CONCURRENTLY)) {
             lexer.nextToken();
             stmt.setConcurrently(true);

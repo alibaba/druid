@@ -52,4 +52,29 @@ public class PGCreateIndexTest_0 extends PGTest {
         assertEquals(1, visitor.getColumns().size() );
     }
 
+    public void test_1() throws Exception {
+        String sql = "CREATE INDEX if not exists \"calculate_measure_dataset_id_idx\" ON \"calculate_measure\" USING btree (\"dataset_id\");";
+
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+
+        assertEquals("CREATE INDEX IF NOT EXISTS \"calculate_measure_dataset_id_idx\" ON \"calculate_measure\" USING btree (\"dataset_id\");", SQLUtils.toPGString(stmt));
+
+        assertEquals("create index if not exists \"calculate_measure_dataset_id_idx\" on \"calculate_measure\" using btree (\"dataset_id\");", stmt.toLowerCaseString());
+
+        assertEquals(1, statementList.size());
+
+        PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
+        stmt.accept(visitor);
+
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("public.city")));
+//
+//        assertTrue(visitor.getTables().get(new TableStat.Name("public.city")).getCreateIndexCount() == 1);
+//
+//        assertEquals(1, visitor.getColumns().size() );
+    }
 }
