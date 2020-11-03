@@ -1927,6 +1927,11 @@ public class OracleStatementParser extends SQLStatementParser {
                         if (lexer.identifierEquals(FnvHash.Constants.ROWTYPE)) {
                             lexer.nextToken();
                             typeName = "TABLE OF " + name.toString() + "%ROWTYPE";
+                        } else if (lexer.token() == Token.LPAREN && lexer.stringVal().equalsIgnoreCase("Varchar2")) {
+                            accept(Token.LPAREN);
+                            int len = this.exprParser.acceptInteger();
+                            accept(Token.RPAREN);
+                            typeName = "TABLE OF " + name.toString() + "(" + len + ")";
                         } else {
                             acceptIdentifier("TYPE");
                             typeName = "TABLE OF " + name.toString() + "%TYPE";
