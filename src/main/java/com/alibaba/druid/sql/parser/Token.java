@@ -132,7 +132,7 @@ public enum Token {
     SHOW("SHOW"),
     REPLACE("REPLACE"),
     PERIOD("PERIOD"),
-
+    ELSEIF("ELSEIF"),
     BITS,
 
     // MySql procedure add by zz

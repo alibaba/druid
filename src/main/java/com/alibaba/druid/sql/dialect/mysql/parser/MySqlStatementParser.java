@@ -8818,28 +8818,24 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         this.parseStatementList(stmt.getStatements(), -1, stmt);
 
-        while (lexer.token() == Token.ELSE) {
+        while (lexer.token() == Token.ELSEIF) {
             lexer.nextToken();
-
-            if (lexer.token() == Token.IF) {
-                lexer.nextToken();
-
-                SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
-
-                elseIf.setCondition(this.exprParser.expr());
-                elseIf.setParent(stmt);
-
-                accept(Token.THEN);
-                this.parseStatementList(elseIf.getStatements(), -1, elseIf);
-
-
-                stmt.getElseIfList().add(elseIf);
-            } else {
-                SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
-                this.parseStatementList(elseItem.getStatements(), -1, elseItem);
-                stmt.setElseItem(elseItem);
-                break;
-            }
+            SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
+            
+            elseIf.setCondition(this.exprParser.expr());
+            elseIf.setParent(stmt);
+            
+            accept(Token.THEN);
+            this.parseStatementList(elseIf.getStatements(), -1, stmt);
+    
+            stmt.getElseIfList().add(elseIf);
+        }
+    
+        if(lexer.token() == Token.ELSE) {
+            lexer.nextToken();
+            SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
+            this.parseStatementList(elseItem.getStatements(), -1, elseItem);
+            stmt.setElseItem(elseItem);
         }
 
         accept(Token.END);
