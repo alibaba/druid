@@ -3008,27 +3008,27 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (param instanceof InputStream) {
-            print0("'<InputStream>");
+            print0("'<InputStream>'");
             return;
         }
 
         if (param instanceof Reader) {
-            print0("'<Reader>");
+            print0("'<Reader>'");
             return;
         }
 
         if (param instanceof Blob) {
-            print0("'<Blob>");
+            print0("'<Blob>'");
             return;
         }
 
         if (param instanceof NClob) {
-            print0("'<NClob>");
+            print0("'<NClob>'");
             return;
         }
 
         if (param instanceof Clob) {
-            print0("'<Clob>");
+            print0("'<Clob>'");
             return;
         }
 
