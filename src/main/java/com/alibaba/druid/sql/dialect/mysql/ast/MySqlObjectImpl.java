@@ -22,13 +22,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public abstract class MySqlObjectImpl extends SQLObjectImpl implements MySqlObject {
 
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof MySqlASTVisitor) {
-            accept0((MySqlASTVisitor) visitor);
+    protected void accept0(SQLASTVisitor v) {
+        if (v instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) v);
         } else {
-            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+            throw new IllegalArgumentException("not support visitor type : " + v.getClass().getName());
         }
     }
 
-    public abstract void accept0(MySqlASTVisitor visitor);
+    public abstract void accept0(MySqlASTVisitor v);
 }

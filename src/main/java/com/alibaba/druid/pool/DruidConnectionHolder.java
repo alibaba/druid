@@ -29,6 +29,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidAbstractDataSource.PhysicalConnectionInfo;
 import com.alibaba.druid.proxy.jdbc.WrapperProxy;
 import com.alibaba.druid.support.logging.Log;
@@ -112,10 +113,11 @@ public final class DruidConnectionHolder {
 
         {
             boolean initUnderlyHoldability = !holdabilityUnsupported;
-            if (JdbcConstants.SYBASE.equals(dataSource.dbTypeName) //
-                || JdbcConstants.DB2.equals(dataSource.dbTypeName) //
-                || JdbcConstants.HIVE.equals(dataSource.dbTypeName) //
-                || JdbcConstants.ODPS.equals(dataSource.dbTypeName) //
+            DbType dbType = DbType.of(dataSource.dbTypeName);
+            if (dbType == DbType.sybase //
+                    || dbType == DbType.db2 //
+                    || dbType == DbType.hive //
+                    || dbType == DbType.odps //
             ) {
                 initUnderlyHoldability = false;
             }

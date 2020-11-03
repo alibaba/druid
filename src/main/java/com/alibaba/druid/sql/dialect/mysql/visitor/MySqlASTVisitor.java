@@ -22,10 +22,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -1430,5 +1427,20 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     }
 
+    default boolean visit(MySqlJSONTableExpr x) {
+        return true;
+    }
 
+    default void endVisit(MySqlJSONTableExpr x) {
+
+    }
+
+
+    default boolean visit(MySqlJSONTableExpr.Column x) {
+        return true;
+    }
+
+    default void endVisit(MySqlJSONTableExpr.Column x) {
+
+    }
 } //

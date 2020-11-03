@@ -24,10 +24,7 @@ import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl.Option;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
@@ -208,6 +205,34 @@ public class MySqlExprParser extends SQLExprParser {
                     currentTimeExpr = new SQLCurrentTimeExpr(SQLCurrentTimeExpr.Type.LOCALTIME);
                 } else if(hash_lower == FnvHash.Constants.LOCALTIMESTAMP && !quoteStart) {
                     currentTimeExpr = new SQLCurrentTimeExpr(SQLCurrentTimeExpr.Type.LOCALTIMESTAMP);
+                } else if (hash_lower == FnvHash.Constants.JSON_TABLE) {
+                    if (lexer.identifierEquals("JSON_TABLE")) {
+                        lexer.nextToken();
+                        accept(Token.LPAREN);
+
+                        MySqlJSONTableExpr jsonTable = new MySqlJSONTableExpr();
+                        jsonTable.setExpr(
+                                this.expr());
+                        accept(Token.COMMA);
+                        jsonTable.setPath(
+                                this.expr());
+                        acceptIdentifier("COLUMNS");
+                        accept(Token.LPAREN);
+                        for (;lexer.token() != Token.RPAREN;) {
+                            jsonTable.addColumn(
+                                    parseJsonTableColumn());
+
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            break;
+                        }
+                        accept(Token.RPAREN);
+
+                        accept(Token.RPAREN);
+                        return jsonTable;
+                    }
                 } else if((hash_lower == FnvHash.Constants._LATIN1) && !quoteStart) {
                     lexer.nextToken();
 
@@ -503,6 +528,77 @@ public class MySqlExprParser extends SQLExprParser {
                 return super.primary();
         }
 
+    }
+
+    protected MySqlJSONTableExpr.Column parseJsonTableColumn() {
+        MySqlJSONTableExpr.Column column = new MySqlJSONTableExpr.Column();
+
+        SQLName name = this.name();
+        column.setName(
+                name);
+
+        if (lexer.token() == Token.FOR) {
+            lexer.nextToken();
+            acceptIdentifier("ORDINALITY");
+        } else {
+            boolean nested = name instanceof SQLIdentifierExpr
+                    && name.nameHashCode64() == FnvHash.Constants.NESTED;
+
+            if (!nested) {
+                column.setDataType(
+                        this.parseDataType());
+            }
+
+            if (lexer.token() == Token.EXISTS) {
+                lexer.nextToken();
+                column.setExists(true);
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.PATH)) {
+                lexer.nextToken();
+                column.setPath(
+                        this.primary());
+            }
+
+            if (name instanceof SQLIdentifierExpr
+                    && name.nameHashCode64() == FnvHash.Constants.NESTED) {
+                acceptIdentifier("COLUMNS");
+                accept(Token.LPAREN);
+                for (;lexer.token() != Token.RPAREN;) {
+                    MySqlJSONTableExpr.Column nestedColumn = parseJsonTableColumn();
+                    column.addNestedColumn(nestedColumn);
+
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    break;
+                }
+                accept(Token.RPAREN);
+            }
+
+            for (int i = 0; i < 2; ++i) {
+                if (lexer.identifierEquals("ERROR")
+                        || lexer.token() == Token.DEFAULT
+                        || lexer.token() == Token.NULL) {
+                    if (lexer.token() == Token.DEFAULT) {
+                        lexer.nextToken();
+                    }
+
+                    SQLExpr expr = this.expr();
+                    accept(Token.ON);
+                    if (lexer.identifierEquals("ERROR")) {
+                        lexer.nextToken();
+                        column.setOnError(expr);
+                    } else {
+                        acceptIdentifier("EMPTY");
+                        column.setOnEmpty(expr);
+                    }
+                }
+            }
+        }
+
+        return column;
     }
 
     public final SQLExpr primaryRest(SQLExpr expr) {
