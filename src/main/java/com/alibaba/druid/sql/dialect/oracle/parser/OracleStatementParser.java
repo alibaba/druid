@@ -788,7 +788,11 @@ public class OracleStatementParser extends SQLStatementParser {
 
             SQLExpr dyanmiacSql = this.exprParser.primary();
             stmt.setDynamicSql(dyanmiacSql);
-
+            if (lexer.identifierEquals("BULK")) {
+                lexer.nextToken();
+                acceptIdentifier("COLLECT");
+                stmt.setBulkCollect(true);
+            }
             if (lexer.token() == Token.INTO) {
                 lexer.nextToken();
 
@@ -1979,6 +1983,18 @@ public class OracleStatementParser extends SQLStatementParser {
                     } else {
                         throw new ParserException("TODO : " + lexer.info());
                     }
+                } else if (lexer.token() == Token.RECORD) {
+                    lexer.nextToken();
+                    String typeName = "RECORD";
+                    SQLRecordDataType sqlRecordDataType = new SQLRecordDataType();
+                    sqlRecordDataType.setDbType(dbType);
+                    sqlRecordDataType.setName(typeName);
+                    if (lexer.token() == Token.LPAREN) {
+                        lexer.nextToken();
+                        this.parseColumnsList(sqlRecordDataType.getColumns(), sqlRecordDataType);
+                        accept(Token.RPAREN);
+                    }
+                    dataType = sqlRecordDataType;
                 } else {
                     throw new ParserException("TODO : " + lexer.info());
                 }
@@ -2104,7 +2120,19 @@ public class OracleStatementParser extends SQLStatementParser {
             break;
         }
     }
-
+    
+    private void parseColumnsList(List<SQLColumnDefinition> columns, SQLObject parent) {
+        for ( ; ; ) {
+            SQLColumnDefinition columnDefinition = this.exprParser.parseColumn();
+            columns.add(columnDefinition);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+    }
+    
     public OracleSelectParser createSQLSelectParser() {
         return new OracleSelectParser(this.exprParser, selectListCache);
     }
