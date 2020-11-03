@@ -292,23 +292,29 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
             lexer.nextToken();
             accept(Token.LPAREN);
-
+            StringBuilder propertyName = new StringBuilder();
             for (;;) {
-                String name = lexer.stringVal();
-                lexer.nextToken();
+                if(lexer.token()!=Token.DOT && lexer.token()!=Token.EQ){
+                    String name = lexer.stringVal();
+                    propertyName.append(name);
+                    lexer.nextToken();
+                }
                 if(lexer.token()==Token.DOT){
+                    propertyName.append(Token.DOT.name);
                     lexer.nextToken();
-                    name = name+Token.DOT.name+lexer.stringVal();
+                    propertyName.append(lexer.stringVal());
                     lexer.nextToken();
+                    continue;
                 }
                 accept(Token.EQ);
                 SQLExpr value = this.exprParser.primary();
-                stmt.addTblProperty(name, value);
+                stmt.addTblProperty(propertyName.toString(), value);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     if (lexer.token() == Token.RPAREN) {
                         break;
                     }
+                    propertyName = new StringBuilder();
                     continue;
                 }
                 break;
