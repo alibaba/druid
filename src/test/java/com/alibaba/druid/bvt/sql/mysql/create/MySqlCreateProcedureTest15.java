@@ -50,7 +50,7 @@ public class MySqlCreateProcedureTest15 extends MysqlTest {
                 "\tINSERT INTO part_tab\n" +
                 "\tVALUES (v, 'testing partitions', ADDDATE('1995-01-01', RAND(v) * 36520 % 3652));\n" +
                 "\tSET v = v + 1;\n" +
-                "\tEND WHILE\n" +
+                "\tEND WHILE;\n" +
                 "END", SQLUtils.toMySqlString(stmt));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
