@@ -41,14 +41,12 @@ public class MySqlCreateFunctionTest_1 extends MysqlTest {
 
         System.out.println(SQLUtils.toMySqlString(stmt));
 
-        assertEquals("CREATE PROCEDURE `load_part_tab` ()\n" +
+        assertEquals("CREATE FUNCTION `test1`.`proc1` (\n" +
+                "\t`a` enum('1', '2') CHARACTER SET utf8\n" +
+                ")\n" +
+                "RETURNS int(10) DETERMINISTIC\n" +
                 "BEGIN\n" +
-                "\tDECLARE v INT DEFAULT 0;\n" +
-                "\tWHILE v < 1 DO\n" +
-                "\tINSERT INTO part_tab\n" +
-                "\tVALUES (v, 'testing partitions', ADDDATE('1995-01-01', RAND(v) * 36520 % 3652));\n" +
-                "\tSET v = v + 1;\n" +
-                "\tEND WHILE;\n" +
+                "\tRETURN 0;\n" +
                 "END", SQLUtils.toMySqlString(stmt));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -59,11 +57,10 @@ public class MySqlCreateFunctionTest_1 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
-        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
-        assertTrue(visitor.containsTable("part_tab"));
     }
 
     

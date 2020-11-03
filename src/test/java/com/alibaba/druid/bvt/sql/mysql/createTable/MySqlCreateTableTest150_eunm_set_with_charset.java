@@ -28,18 +28,18 @@ public class MySqlCreateTableTest150_eunm_set_with_charset extends TestCase {
         assertEquals(1, statementList.size());
 
         assertEquals("CREATE TEMPORARY TABLE `tb_xx` (\n" +
-                "\t`col_ttuap` enum('value1', 'value2') GENERATED ALWAYS AS (1 + 2) VIRTUAL CHARACTER SET utf8 COLLATE utf8_unicode_ci UNIQUE COMMENT 'comment' REFERENCES tb_fn (`col_qzqnqrrfyv`) MATCH PARTIAL\n" +
+                "\t`col_ttuap` enum('value1', 'value2') CHARACTER SET utf8 COLLATE utf8_unicode_ci GENERATED ALWAYS AS (1 + 2) VIRTUAL UNIQUE COMMENT 'comment' REFERENCES tb_fn (`col_qzqnqrrfyv`) MATCH PARTIAL\n" +
                 ") MIN_ROWS = 1 CHECKSUM = 1 COMPRESSION = 'NONE'", stmt.toString());
 
         assertEquals("create temporary table `tb_xx` (\n" +
-                "\t`col_ttuap` enum('value1', 'value2') generated always as (1 + 2) virtual character set utf8 collate utf8_unicode_ci unique comment 'comment' references tb_fn (`col_qzqnqrrfyv`) match partial\n" +
+                "\t`col_ttuap` enum('value1', 'value2') character set utf8 collate utf8_unicode_ci generated always as (1 + 2) virtual unique comment 'comment' references tb_fn (`col_qzqnqrrfyv`) match partial\n" +
                 ") min_rows = 1 checksum = 1 compression = 'NONE'", stmt.toLowerCaseString());
     }
 
     public void test_1() {
         String sql = "create temporary table `tb_xx` (\n" +
-                "`col_ttuap` set('value1','value2') character set utf8  collate utf8_unicode_ci generated always as ( 1+2 ) virtual unique comment 'comment' references tb_fn ( `col_qzqnqrrfyv` ) match partial\n" +
-                ") min_rows = 1 , checksum = 1 , compression 'NONE'";
+                "\t`col_ttuap` enum('value1', 'value2') character set utf8 collate utf8_unicode_ci generated always as (1 + 2) virtual unique comment 'comment' references tb_fn (`col_qzqnqrrfyv`) match partial\n" +
+                ") min_rows = 1 checksum = 1 compression = 'NONE'";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -48,11 +48,11 @@ public class MySqlCreateTableTest150_eunm_set_with_charset extends TestCase {
         assertEquals(1, statementList.size());
 
         assertEquals("CREATE TEMPORARY TABLE `tb_xx` (\n" +
-                "\t`col_ttuap` set('value1', 'value2') GENERATED ALWAYS AS (1 + 2) VIRTUAL CHARACTER SET utf8 COLLATE utf8_unicode_ci UNIQUE COMMENT 'comment' REFERENCES tb_fn (`col_qzqnqrrfyv`) MATCH PARTIAL\n" +
+                "\t`col_ttuap` enum('value1', 'value2') CHARACTER SET utf8 COLLATE utf8_unicode_ci GENERATED ALWAYS AS (1 + 2) VIRTUAL UNIQUE COMMENT 'comment' REFERENCES tb_fn (`col_qzqnqrrfyv`) MATCH PARTIAL\n" +
                 ") MIN_ROWS = 1 CHECKSUM = 1 COMPRESSION = 'NONE'", stmt.toString());
 
         assertEquals("create temporary table `tb_xx` (\n" +
-                "\t`col_ttuap` set('value1', 'value2') generated always as (1 + 2) virtual character set utf8 collate utf8_unicode_ci unique comment 'comment' references tb_fn (`col_qzqnqrrfyv`) match partial\n" +
+                "\t`col_ttuap` enum('value1', 'value2') character set utf8 collate utf8_unicode_ci generated always as (1 + 2) virtual unique comment 'comment' references tb_fn (`col_qzqnqrrfyv`) match partial\n" +
                 ") min_rows = 1 checksum = 1 compression = 'NONE'", stmt.toLowerCaseString());
     }
 
