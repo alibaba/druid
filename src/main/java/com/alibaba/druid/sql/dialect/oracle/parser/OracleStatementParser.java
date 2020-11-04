@@ -168,6 +168,9 @@ public class OracleStatementParser extends SQLStatementParser {
                 SQLStatement stmt = parseBlock();
                 stmt.setParent(parent);
                 statementList.add(stmt);
+                if(parent instanceof SQLCreateTriggerStatement) {
+                    return;
+                }
                 continue;
             }
 
@@ -1953,6 +1956,8 @@ public class OracleStatementParser extends SQLStatementParser {
                             SQLExpr indexBy = this.exprParser.primary();
                             ((SQLDataTypeImpl) dataType).setIndexBy(indexBy);
                         }
+                    }else if (lexer.token() == Token.SEMI) {
+                        dataType = new SQLDataTypeImpl("TABLE OF " + name.toString());
                     }
                     dataType.setDbType(dbType);
                 } else if (lexer.identifierEquals("VARRAY")) {

@@ -595,6 +595,9 @@ public class SQLStatementParser extends SQLParser {
                         SQLStatement dialectStmt = statementList.get(j);
                         dialectStmt.setParent(parent);
                     }
+                    if (parent instanceof SQLCreateTriggerStatement) {
+                        return;
+                    }
                 }
 
                 continue;
@@ -3848,7 +3851,7 @@ public class SQLStatementParser extends SQLParser {
             stmt.setWhen(condition);
         }
 
-        List<SQLStatement> body = this.parseStatementList();
+        List<SQLStatement> body = this.parseStatementList(stmt);
         if (body == null || body.isEmpty()) {
             throw new ParserException("syntax error");
         }

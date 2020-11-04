@@ -9099,6 +9099,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         MySqlLeaveStatement leaveStmt = new MySqlLeaveStatement();
         leaveStmt.setLabelName(exprParser.name().getSimpleName());
         accept(Token.SEMI);
+        leaveStmt.setAfterSemi(true);
+        
         return leaveStmt;
     }
 
@@ -9168,7 +9170,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         stmt.setSelect(select);
 
         accept(Token.SEMI);
-
+        stmt.setAfterSemi(true);
+        
         return stmt;
     }
 
@@ -9304,7 +9307,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (!(stmt.getSpStatement() instanceof SQLBlockStatement)) {
             accept(Token.SEMI);
         }
-
+        
+        stmt.setAfterSemi(true);
 
         return stmt;
     }
