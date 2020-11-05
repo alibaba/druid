@@ -1907,6 +1907,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     || lexer.token() == Token.TABLE) {
                 break;
             } else if (lexer.identifierEquals(FnvHash.Constants.TYPE)) {
+                
                 lexer.nextToken();
                 name = this.exprParser.name();
                 accept(Token.IS);
@@ -1921,7 +1922,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     accept(Token.OF);
 
-                    name = this.exprParser.name();
+                    SQLName tname = this.exprParser.name();
 
                     if (lexer.token() == Token.PERCENT) {
                         lexer.nextToken();
@@ -1929,15 +1930,15 @@ public class OracleStatementParser extends SQLStatementParser {
                         String typeName;
                         if (lexer.identifierEquals(FnvHash.Constants.ROWTYPE)) {
                             lexer.nextToken();
-                            typeName = "TABLE OF " + name.toString() + "%ROWTYPE";
+                            typeName = "TABLE OF " + tname.toString() + "%ROWTYPE";
                         } else if (lexer.token() == Token.LPAREN && lexer.stringVal().equalsIgnoreCase("Varchar2")) {
                             accept(Token.LPAREN);
                             int len = this.exprParser.acceptInteger();
                             accept(Token.RPAREN);
-                            typeName = "TABLE OF " + name.toString() + "(" + len + ")";
+                            typeName = "TABLE OF " + tname.toString() + "(" + len + ")";
                         } else {
                             acceptIdentifier("TYPE");
-                            typeName = "TABLE OF " + name.toString() + "%TYPE";
+                            typeName = "TABLE OF " + tname.toString() + "%TYPE";
                         }
 
                         dataType = new SQLDataTypeImpl(typeName);
@@ -1957,7 +1958,7 @@ public class OracleStatementParser extends SQLStatementParser {
                             ((SQLDataTypeImpl) dataType).setIndexBy(indexBy);
                         }
                     }else if (lexer.token() == Token.SEMI) {
-                        dataType = new SQLDataTypeImpl("TABLE OF " + name.toString());
+                        dataType = new SQLDataTypeImpl("TABLE OF " + tname.toString());
                     }
                     dataType.setDbType(dbType);
                 } else if (lexer.identifierEquals("VARRAY")) {

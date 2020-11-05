@@ -6827,7 +6827,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 String dataTypeName = dataType.getName();
                 boolean printType = (dataTypeName.startsWith("TABLE OF") && x.getDefaultValue() == null)
                         || dataTypeName.equalsIgnoreCase("REF CURSOR")
-                        || dataTypeName.startsWith("VARRAY(");
+                        || dataTypeName.startsWith("VARRAY(")
+                        || dataTypeName.startsWith("RECORD");
                 if (printType) {
                     print0(ucase ? "TYPE " : "type ");
                 }
