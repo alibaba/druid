@@ -2401,6 +2401,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         print0(ucase ? "INDEX" : "index");
 
+        if (x.isIfNotExists()) {
+            print0(ucase ? " IF NOT EXISTS" : " if not exists");
+        }
+
         if (x.isConcurrently()) {
             print0(ucase ? " CONCURRENTLY" : " concurrently");
         }
