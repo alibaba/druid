@@ -390,6 +390,7 @@ public class ParameterizedOutputVisitorUtils {
 
         switch (dbType) {
             case oracle:
+            case oceanbase_oracle:
                 return new OracleParameterizedOutputVisitor(out);
             case mysql:
             case mariadb:

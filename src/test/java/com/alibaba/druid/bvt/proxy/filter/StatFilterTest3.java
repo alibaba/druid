@@ -61,4 +61,12 @@ public class StatFilterTest3 extends TestCase {
                 "\tAND lat > ?\n" +
                 "\tAND site_id = ?;" , filter.mergeSql("drop table if exists test_site_data_select_111; create table test_site_data_select_111 AS select * from postman_trace_info_one  where lng>0 and lat>0  and site_id='17814' ;", JdbcConstants.POSTGRESQL));
     }
+
+    public void test_merge_oracle() throws Exception {
+        StatFilter filter = new StatFilter();
+        filter.setDbType(DbType.oceanbase_oracle);
+        filter.setMergeSql(true);
+
+        filter.mergeSql("insert into t(f1, f2) values (1, 2)", DbType.oceanbase_oracle);
+    }
 }
