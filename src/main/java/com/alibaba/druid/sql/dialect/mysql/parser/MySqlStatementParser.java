@@ -8818,24 +8818,28 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         this.parseStatementList(stmt.getStatements(), -1, stmt);
 
-        while (lexer.token() == Token.ELSEIF) {
+        while (lexer.token() == Token.ELSE) {
             lexer.nextToken();
-            SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
-            
-            elseIf.setCondition(this.exprParser.expr());
-            elseIf.setParent(stmt);
-            
-            accept(Token.THEN);
-            this.parseStatementList(elseIf.getStatements(), -1, stmt);
-    
-            stmt.getElseIfList().add(elseIf);
-        }
-    
-        if(lexer.token() == Token.ELSE) {
-            lexer.nextToken();
-            SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
-            this.parseStatementList(elseItem.getStatements(), -1, elseItem);
-            stmt.setElseItem(elseItem);
+
+            if (lexer.token() == Token.IF) {
+                lexer.nextToken();
+
+                SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
+
+                elseIf.setCondition(this.exprParser.expr());
+                elseIf.setParent(stmt);
+
+                accept(Token.THEN);
+                this.parseStatementList(elseIf.getStatements(), -1, elseIf);
+
+
+                stmt.getElseIfList().add(elseIf);
+            } else {
+                SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
+                this.parseStatementList(elseItem.getStatements(), -1, elseItem);
+                stmt.setElseItem(elseItem);
+                break;
+            }
         }
 
         accept(Token.END);
@@ -9099,8 +9103,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         MySqlLeaveStatement leaveStmt = new MySqlLeaveStatement();
         leaveStmt.setLabelName(exprParser.name().getSimpleName());
         accept(Token.SEMI);
-        leaveStmt.setAfterSemi(true);
-        
         return leaveStmt;
     }
 
@@ -9170,8 +9172,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         stmt.setSelect(select);
 
         accept(Token.SEMI);
-        stmt.setAfterSemi(true);
-        
+
         return stmt;
     }
 
@@ -9307,8 +9308,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (!(stmt.getSpStatement() instanceof SQLBlockStatement)) {
             accept(Token.SEMI);
         }
-        
-        stmt.setAfterSemi(true);
+
 
         return stmt;
     }

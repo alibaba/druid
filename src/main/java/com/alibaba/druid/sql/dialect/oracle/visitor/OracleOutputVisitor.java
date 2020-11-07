@@ -1523,7 +1523,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(SQLIfStatement.ElseIf x) {
-        print0(ucase ? "ELSIF " : "elsif ");
+        print0(ucase ? "ELSE IF " : "else if ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
         this.indentCount++;
@@ -2612,11 +2612,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleExecuteImmediateStatement x) {
         print0(ucase ? "EXECUTE IMMEDIATE " : "execute immediate ");
         x.getDynamicSql().accept(this);
-        
-        if (x.isBulkCollect()) {
-            print0(ucase ? " BULK COLLECT " : " bulk collect ");
-        }
-        
+
         List<SQLExpr> into = x.getInto();
         if (into.size() > 0) {
             print0(ucase ? " INTO " : " into ");

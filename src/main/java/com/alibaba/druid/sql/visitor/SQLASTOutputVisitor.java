@@ -2890,8 +2890,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         } else if (expr instanceof SQLMethodInvokeExpr) {
             visit((SQLMethodInvokeExpr) expr);
-        } else if (expr instanceof SQLListExpr) {
-            printAndAccept(((SQLListExpr) expr).getItems(), ",");
         } else {
             expr.accept(this);
         }
@@ -4387,19 +4385,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (x.isDropStorage()) {
-            print0(ucase ? " DROP STORAGE" : " drop storage");
+            print0(ucase ? " DROP STORAGE" : " drop storage");    
         }
         
         if (x.isReuseStorage()) {
-            print0(ucase ? " REUSE STORAGE" : " reuse storage");
+            print0(ucase ? " REUSE STORAGE" : " reuse storage");    
         }
         
         if (x.isIgnoreDeleteTriggers()) {
-            print0(ucase ? " IGNORE DELETE TRIGGERS" : " ignore delete triggers");
+            print0(ucase ? " IGNORE DELETE TRIGGERS" : " ignore delete triggers");    
         }
         
         if (x.isRestrictWhenDeleteTriggers()) {
-            print0(ucase ? " RESTRICT WHEN DELETE TRIGGERS" : " restrict when delete triggers");
+            print0(ucase ? " RESTRICT WHEN DELETE TRIGGERS" : " restrict when delete triggers");    
         }
         
         if (x.isContinueIdentity()) {
@@ -4407,7 +4405,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         
         if (x.isImmediate()) {
-            print0(ucase ? " IMMEDIATE" : " immediate");
+            print0(ucase ? " IMMEDIATE" : " immediate");    
         }
 
         return false;
@@ -5100,7 +5098,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLKeep x) {
         if (x.getDenseRank() == SQLKeep.DenseRank.FIRST) {
-            print0(ucase ? "KEEP (DENSE_RANK FIRST " : "keep (dense_rank first ");
+            print0(ucase ? "KEEP (DENSE_RANK FIRST " : "keep (dense_rank first ");    
         } else {
             print0(ucase ? "KEEP (DENSE_RANK LAST " : "keep (dense_rank last ");
         }
@@ -6827,8 +6825,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 String dataTypeName = dataType.getName();
                 boolean printType = (dataTypeName.startsWith("TABLE OF") && x.getDefaultValue() == null)
                         || dataTypeName.equalsIgnoreCase("REF CURSOR")
-                        || dataTypeName.startsWith("VARRAY(")
-                        || dataTypeName.startsWith("RECORD");
+                        || dataTypeName.startsWith("VARRAY(");
                 if (printType) {
                     print0(ucase ? "TYPE " : "type ");
                 }
@@ -7473,7 +7470,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     
     protected void printPartitions(List<SQLName> partitions) {
         if (partitions.size() == 1 && "ALL".equalsIgnoreCase(partitions.get(0).getSimpleName())) {
-            print0(ucase ? "ALL" : "all");
+            print0(ucase ? "ALL" : "all");    
         } else {
             printAndAccept(partitions, ", ");
         }

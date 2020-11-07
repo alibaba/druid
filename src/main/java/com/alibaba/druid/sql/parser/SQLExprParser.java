@@ -531,11 +531,6 @@ public class SQLExprParser extends SQLParser {
                             break;
                         }
                     }
-                } else if (DbType.oracle == dbType) {
-                    lexer.nextTokenValue();
-                    if (lexer.token == Token.BARBAR) {
-                        sqlExpr = additiveRest(sqlExpr);
-                    }
                 } else {
                     lexer.nextToken();
                 }
@@ -1312,7 +1307,7 @@ public class SQLExprParser extends SQLParser {
             expr = dotRest(expr);
             return primaryRest(expr);
         } else if (lexer.identifierEquals(FnvHash.Constants.SETS) //
-                && expr.getClass() == SQLIdentifierExpr.class //
+                && expr.getClass() == SQLIdentifierExpr.class // 
                 && "GROUPING".equalsIgnoreCase(((SQLIdentifierExpr) expr).getName())) {
             SQLGroupingSetExpr groupingSets = new SQLGroupingSetExpr();
             lexer.nextToken();

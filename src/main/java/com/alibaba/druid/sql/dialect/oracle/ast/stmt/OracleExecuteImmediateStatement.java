@@ -26,8 +26,6 @@ import java.util.List;
 public class OracleExecuteImmediateStatement extends OracleStatementImpl {
 
     private SQLExpr dynamicSql;
-    
-    private boolean bulkCollect;
 
     private final List<SQLArgument> arguments = new ArrayList<SQLArgument>();
 
@@ -87,14 +85,6 @@ public class OracleExecuteImmediateStatement extends OracleStatementImpl {
             dynamicSql.setParent(this);
         }
         this.dynamicSql = dynamicSql;
-    }
-    
-    public boolean isBulkCollect() {
-        return bulkCollect;
-    }
-    
-    public void setBulkCollect(boolean bulkCollect) {
-        this.bulkCollect = bulkCollect;
     }
 
     public void setDynamicSql(String dynamicSql) {
