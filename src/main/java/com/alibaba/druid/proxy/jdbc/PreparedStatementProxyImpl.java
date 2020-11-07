@@ -557,6 +557,23 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
             return;
         }
 
+        String className = x.getClass().getName();
+
+        if (className.equals("java.time.LocalTime")) {
+            setParameter(parameterIndex, new JdbcParameterImpl(Types.TIME, x));
+            return;
+        }
+
+        if (className.equals("java.time.LocalDate")) {
+            setParameter(parameterIndex, new JdbcParameterImpl(Types.DATE, x));
+            return;
+        }
+
+        if (className.equals("java.time.LocalDateTime")) {
+            setParameter(parameterIndex, new JdbcParameterImpl(Types.TIMESTAMP, x));
+            return;
+        }
+
         setParameter(parameterIndex, createParameter(Types.OTHER, null));
     }
 
