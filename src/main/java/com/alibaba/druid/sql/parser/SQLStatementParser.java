@@ -582,13 +582,21 @@ public class SQLStatementParser extends SQLParser {
                 stmt.setParent(parent);
                 continue;
             }
-
+    
+            if (lexer.token() == Token.ELSEIF
+                    && parent instanceof SQLIfStatement) {
+                break;
+            }
+            
             int size = statementList.size();
             if (parseStatementListDialect(statementList)) {
                 if (parent != null) {
                     for (int j = size; j < statementList.size(); ++j) {
                         SQLStatement dialectStmt = statementList.get(j);
                         dialectStmt.setParent(parent);
+                    }
+                    if (parent instanceof SQLCreateTriggerStatement) {
+                        return;
                     }
                 }
 
@@ -3843,7 +3851,7 @@ public class SQLStatementParser extends SQLParser {
             stmt.setWhen(condition);
         }
 
-        List<SQLStatement> body = this.parseStatementList();
+        List<SQLStatement> body = this.parseStatementList(stmt);
         if (body == null || body.isEmpty()) {
             throw new ParserException("syntax error");
         }
