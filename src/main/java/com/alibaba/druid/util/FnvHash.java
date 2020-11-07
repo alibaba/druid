@@ -1114,5 +1114,6 @@ public final class FnvHash {
         long X = fnv1a_64_lower("X");
         long TRANSFORM = fnv1a_64_lower("TRANSFORM");
         long NESTED = fnv1a_64_lower("NESTED");
+        long RESTART = fnv1a_64_lower("RESTART");
     }
 }

@@ -6549,6 +6549,18 @@ public class SQLStatementParser extends SQLParser {
                 lexer.nextToken();
                 stmt.setOrder(Boolean.TRUE);
                 continue;
+            } else if (lexer.identifierEquals(FnvHash.Constants.RESTART)) {
+                lexer.nextToken();
+                stmt.setRestart(true);
+
+                if (lexer.token == Token.WITH || lexer.token == Token.EQ) {
+                    lexer.nextToken();
+                    stmt.setRestartWith(this.exprParser.primary());
+                } else if(lexer.token == LITERAL_INT) {
+                    stmt.setRestartWith(this.exprParser.primary());
+                }
+
+                continue;
             } else if (lexer.identifierEquals("NOORDER")) {
                 lexer.nextToken();
                 stmt.setOrder(Boolean.FALSE);

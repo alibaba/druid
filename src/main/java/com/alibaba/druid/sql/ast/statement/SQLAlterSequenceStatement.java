@@ -25,6 +25,9 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
     private Boolean cache;
     private SQLExpr cacheValue;
 
+    private boolean restart;
+    private SQLExpr restartWith;
+
     private Boolean order;
 
     private boolean changeToSimple;
@@ -202,5 +205,24 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
 
     public void setChangeToTime(boolean changeToTime) {
         this.changeToTime = changeToTime;
+    }
+
+    public boolean isRestart() {
+        return restart;
+    }
+
+    public void setRestart(boolean restart) {
+        this.restart = restart;
+    }
+
+    public SQLExpr getRestartWith() {
+        return restartWith;
+    }
+
+    public void setRestartWith(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.restartWith = x;
     }
 }

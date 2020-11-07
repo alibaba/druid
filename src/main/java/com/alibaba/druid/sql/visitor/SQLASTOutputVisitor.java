@@ -7820,6 +7820,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
+        if (x.isRestart()) {
+            print0(ucase ? " RESTART" : " restart");
+
+            SQLExpr restartWith = x.getRestartWith();
+            if (restartWith != null) {
+                print0(ucase ? " WITH " : " with ");
+                restartWith.accept(this);
+            }
+        }
+
         return false;
     }
 

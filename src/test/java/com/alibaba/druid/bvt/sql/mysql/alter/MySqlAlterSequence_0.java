@@ -46,4 +46,32 @@ public class MySqlAlterSequence_0 extends TestCase {
         String output = SQLUtils.toOracleString(stmt);
         Assert.assertEquals("ALTER SEQUENCE customers_seq CYCLE CACHE 5;", output);
     }
+
+    public void test_alter_seq_3() throws Exception {
+        String sql = "ALTER SEQUENCE s1 MINVALUE 10 RESTART;";
+        SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL).get(0);
+        String output = SQLUtils.toOracleString(stmt);
+        Assert.assertEquals("ALTER SEQUENCE s1 MINVALUE 10 RESTART;", output);
+    }
+
+    public void test_alter_seq_4() throws Exception {
+        String sql = "ALTER SEQUENCE s1 MINVALUE 10 RESTART 10;";
+        SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL).get(0);
+        String output = SQLUtils.toOracleString(stmt);
+        Assert.assertEquals("ALTER SEQUENCE s1 MINVALUE 10 RESTART WITH 10;", output);
+    }
+
+    public void test_alter_seq_5() throws Exception {
+        String sql = "ALTER SEQUENCE s1 MINVALUE 10 RESTART with 10;";
+        SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL).get(0);
+        String output = SQLUtils.toOracleString(stmt);
+        Assert.assertEquals("ALTER SEQUENCE s1 MINVALUE 10 RESTART WITH 10;", output);
+    }
+
+    public void test_alter_seq_6() throws Exception {
+        String sql = "ALTER SEQUENCE s1 MINVALUE 10 RESTART = 10;";
+        SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL).get(0);
+        String output = SQLUtils.toOracleString(stmt);
+        Assert.assertEquals("ALTER SEQUENCE s1 MINVALUE 10 RESTART WITH 10;", output);
+    }
 }
