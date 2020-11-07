@@ -39,7 +39,6 @@ public class MySqlLexer extends Lexer {
         map.put("DUAL", Token.DUAL);
         map.put("FALSE", Token.FALSE);
         map.put("IF", Token.IF);
-        map.put("ELSEIF", Token.ELSEIF);
         map.put("KILL", Token.KILL);
 
         map.put("LIMIT", Token.LIMIT);

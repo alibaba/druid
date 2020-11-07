@@ -168,9 +168,6 @@ public class OracleStatementParser extends SQLStatementParser {
                 SQLStatement stmt = parseBlock();
                 stmt.setParent(parent);
                 statementList.add(stmt);
-                if(parent instanceof SQLCreateTriggerStatement) {
-                    return;
-                }
                 continue;
             }
 
@@ -791,11 +788,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
             SQLExpr dyanmiacSql = this.exprParser.primary();
             stmt.setDynamicSql(dyanmiacSql);
-            if (lexer.identifierEquals("BULK")) {
-                lexer.nextToken();
-                acceptIdentifier("COLLECT");
-                stmt.setBulkCollect(true);
-            }
+
             if (lexer.token() == Token.INTO) {
                 lexer.nextToken();
 
@@ -905,7 +898,7 @@ public class OracleStatementParser extends SQLStatementParser {
         accept(Token.END);
         accept(Token.LOOP);
         accept(Token.SEMI);
-        stmt.setAfterSemi(true);
+
         return stmt;
     }
 
@@ -1907,7 +1900,6 @@ public class OracleStatementParser extends SQLStatementParser {
                     || lexer.token() == Token.TABLE) {
                 break;
             } else if (lexer.identifierEquals(FnvHash.Constants.TYPE)) {
-                
                 lexer.nextToken();
                 name = this.exprParser.name();
                 accept(Token.IS);
@@ -1922,7 +1914,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     accept(Token.OF);
 
-                    SQLName tname = this.exprParser.name();
+                    name = this.exprParser.name();
 
                     if (lexer.token() == Token.PERCENT) {
                         lexer.nextToken();
@@ -1930,15 +1922,10 @@ public class OracleStatementParser extends SQLStatementParser {
                         String typeName;
                         if (lexer.identifierEquals(FnvHash.Constants.ROWTYPE)) {
                             lexer.nextToken();
-                            typeName = "TABLE OF " + tname.toString() + "%ROWTYPE";
-                        } else if (lexer.token() == Token.LPAREN && lexer.stringVal().equalsIgnoreCase("Varchar2")) {
-                            accept(Token.LPAREN);
-                            int len = this.exprParser.acceptInteger();
-                            accept(Token.RPAREN);
-                            typeName = "TABLE OF " + tname.toString() + "(" + len + ")";
+                            typeName = "TABLE OF " + name.toString() + "%ROWTYPE";
                         } else {
                             acceptIdentifier("TYPE");
-                            typeName = "TABLE OF " + tname.toString() + "%TYPE";
+                            typeName = "TABLE OF " + name.toString() + "%TYPE";
                         }
 
                         dataType = new SQLDataTypeImpl(typeName);
@@ -1957,8 +1944,6 @@ public class OracleStatementParser extends SQLStatementParser {
                             SQLExpr indexBy = this.exprParser.primary();
                             ((SQLDataTypeImpl) dataType).setIndexBy(indexBy);
                         }
-                    }else if (lexer.token() == Token.SEMI) {
-                        dataType = new SQLDataTypeImpl("TABLE OF " + tname.toString());
                     }
                     dataType.setDbType(dbType);
                 } else if (lexer.identifierEquals("VARRAY")) {
@@ -1994,18 +1979,6 @@ public class OracleStatementParser extends SQLStatementParser {
                     } else {
                         throw new ParserException("TODO : " + lexer.info());
                     }
-                } else if (lexer.token() == Token.RECORD) {
-                    lexer.nextToken();
-                    String typeName = "RECORD";
-                    SQLRecordDataType sqlRecordDataType = new SQLRecordDataType();
-                    sqlRecordDataType.setDbType(dbType);
-                    sqlRecordDataType.setName(typeName);
-                    if (lexer.token() == Token.LPAREN) {
-                        lexer.nextToken();
-                        this.parseColumnsList(sqlRecordDataType.getColumns(), sqlRecordDataType);
-                        accept(Token.RPAREN);
-                    }
-                    dataType = sqlRecordDataType;
                 } else {
                     throw new ParserException("TODO : " + lexer.info());
                 }
@@ -2131,19 +2104,7 @@ public class OracleStatementParser extends SQLStatementParser {
             break;
         }
     }
-    
-    private void parseColumnsList(List<SQLColumnDefinition> columns, SQLObject parent) {
-        for ( ; ; ) {
-            SQLColumnDefinition columnDefinition = this.exprParser.parseColumn();
-            columns.add(columnDefinition);
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-            break;
-        }
-    }
-    
+
     public OracleSelectParser createSQLSelectParser() {
         return new OracleSelectParser(this.exprParser, selectListCache);
     }
