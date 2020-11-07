@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.2.2</version>
+	<version>1.2.3_preview_01</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -17,7 +17,7 @@
 		<jmh.version>1.19</jmh.version>
 
 		<gpg.skip>false</gpg.skip>
-		<javadoc.skip>false</javadoc.skip>
+		<javadoc.skip>true</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
