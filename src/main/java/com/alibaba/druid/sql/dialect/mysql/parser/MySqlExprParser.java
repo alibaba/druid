@@ -1849,7 +1849,10 @@ public class MySqlExprParser extends SQLExprParser {
                         lexer.nextToken();
                     }
 
-                    assignItem = new SQLAssignItem(new SQLIdentifierExpr(SINGLE_WORD_TABLE_OPTIONS[idx]), expr());
+                    // STORAGE_POLICY
+                    assignItem = new SQLAssignItem(
+                            new SQLIdentifierExpr(SINGLE_WORD_TABLE_OPTIONS[idx])
+                            , idx == 9 ? charExpr() : expr());
                 }
             } else {
                 // Following may not table options. Save mark.

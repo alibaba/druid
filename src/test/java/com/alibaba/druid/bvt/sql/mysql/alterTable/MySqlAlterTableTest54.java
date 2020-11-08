@@ -68,4 +68,24 @@ public class MySqlAlterTableTest54 extends TestCase {
             //do nothing
         }
     }
+
+    public void test_6() throws Exception {
+        String sql = "alter table event_log storage_policy = HOT";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        try {
+            SQLAlterTableStatement stmt = (SQLAlterTableStatement) parser.parseStatementList().get(0);
+            fail();
+        } catch (Exception e) {
+        }
+    }
+
+    public void test_7() throws Exception {
+        String sql = "alter table event_log storage_policy = COLD";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        try {
+            SQLAlterTableStatement stmt = (SQLAlterTableStatement) parser.parseStatementList().get(0);
+            fail();
+        } catch (Exception e) {
+        }
+    }
 }
