@@ -87,6 +87,14 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
         return null;
     }
 
+    public String getTableName(boolean normalize) {
+        String tableName = getTableName();
+        if (normalize) {
+            return SQLUtils.normalize(tableName);
+        }
+        return tableName;
+    }
+
     public String getTableName() {
         if (expr == null) {
             return null;
