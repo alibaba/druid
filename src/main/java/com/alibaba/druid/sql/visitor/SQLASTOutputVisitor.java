@@ -10666,6 +10666,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " WITH SPLIT" : " with split");
         }
 
+        if (x.isForce()) {
+            print0(ucase ? " FORCE = true" : " force = true");
+        } else {
+            print0(ucase ? " FORCE = false" : " force = false");
+        }
+
         return false;
     }
     @Override

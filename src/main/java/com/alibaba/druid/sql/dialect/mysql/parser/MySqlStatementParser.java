@@ -1935,6 +1935,20 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setWithSplit(true);
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
+            lexer.nextToken();
+
+            accept(EQ);
+
+            if (lexer.token() == TRUE) {
+                lexer.nextToken();
+                stmt.setForce(true);
+            } else if (lexer.token() == FALSE) {
+                lexer.nextToken();
+                stmt.setForce(false);
+            }
+        }
+
         return stmt;
     }
 

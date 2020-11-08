@@ -24,6 +24,7 @@ public class SQLBuildTableStatement extends SQLStatementImpl {
     private SQLName table;
     private SQLIntegerExpr version;
     private boolean withSplit = false;
+    private boolean force = false;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -56,5 +57,13 @@ public class SQLBuildTableStatement extends SQLStatementImpl {
 
     public void setWithSplit(boolean withSplit) {
         this.withSplit = withSplit;
+    }
+
+    public boolean isForce() {
+        return force;
+    }
+
+    public void setForce(boolean force) {
+        this.force = force;
     }
 }
