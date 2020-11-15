@@ -8,13 +8,11 @@ ORDER BY    a.col ASC, a.position ASC
 ---------------------------
 SELECT DISTINCT a.id AS "id", a.col AS "col", a.position AS "position", a.panel_id AS "panelId"
 FROM view_position_info a
-	LEFT JOIN view_portal b
-		ON a.panel_id = b.panel_id
-	LEFT JOIN view_portal_panel c
-		ON a.panel_id = c.panel_id
+	LEFT JOIN view_portal b ON a.panel_id = b.panel_id
+	LEFT JOIN view_portal_panel c ON a.panel_id = c.panel_id
 WHERE b.user_id = ?
-	AND (b.is_grid = 'y'
-		AND c.param_name = 'is_hidden'
-		AND c.param_value = 'false'
+	AND ((b.is_grid = 'y'
+			AND c.param_name = 'is_hidden'
+			AND c.param_value = 'false')
 		OR b.is_grid != 'y')
 ORDER BY a.col ASC, a.position ASC

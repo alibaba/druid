@@ -47,7 +47,12 @@ public class MySqlResourceTest extends TestCase {
 //        exec_test("bvt/parser/mysql-11.txt");
 //        exec_test("bvt/parser/mysql-12.txt");
 //        exec_test("bvt/parser/mysql-13.txt");
-        exec_test("bvt/parser/mysql-14.txt");
+        exec_test("bvt/parser/mysql-0.txt");
+    }
+
+
+    public void test_14() throws Exception {
+        exec_test("bvt/parser/mysql-16.txt");
     }
 
     public void test_16() throws Exception {
@@ -65,6 +70,9 @@ public class MySqlResourceTest extends TestCase {
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
         String expect = items[1].trim();
+        if (expect != null) {
+            expect = expect.replaceAll("\\r\\n", "\n");
+        }
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
