@@ -40,7 +40,7 @@ public class MySqlCreateProcedureTest extends MysqlTest {
 				" if x then"+
 				" insert into test values(id,age);"+
 				" insert into test values(id,age);"+
-				" else if y then"+
+				" elseif y then"+
 				" insert into test values(id,age);"+
 				" while x do"+
 				" insert into test values(id,age);"+
