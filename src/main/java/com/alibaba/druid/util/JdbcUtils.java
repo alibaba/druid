@@ -19,17 +19,7 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.Driver;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -93,6 +83,8 @@ public final class JdbcUtils implements JdbcConstants {
             }
 
             x.close();
+        } catch (SQLRecoverableException e) {
+            // skip
         } catch (Exception e) {
             LOG.debug("close connection error", e);
         }
