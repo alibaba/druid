@@ -4855,7 +4855,7 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token == Token.ON) {
             lexer.nextToken();
             accept(Token.DELETE);
-            if (lexer.identifierEquals(FnvHash.Constants.CASCADE)) {
+            if (lexer.identifierEquals(FnvHash.Constants.CASCADE) || lexer.token == Token.CASCADE) {
                 lexer.nextToken();
                 fk.setOnDeleteCascade(true);
             } else {
