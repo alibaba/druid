@@ -8005,6 +8005,16 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         SQLCreateDatabaseStatement stmt = new SQLCreateDatabaseStatement(dbType);
 
+        if (lexer.token() == Token.HINT) {
+            List<SQLCommentHint> hints = this.exprParser.parseHints();
+            if (hints.size() == 1) {
+                String text = hints.get(0).getText();
+                if (text.endsWith(" IF NOT EXISTS") && text.charAt(0) == '!') {
+                    stmt.setIfNotExists(true);
+                }
+            }
+        }
+
         if (lexer.token() == Token.IF) {
             lexer.nextToken();
             accept(Token.NOT);

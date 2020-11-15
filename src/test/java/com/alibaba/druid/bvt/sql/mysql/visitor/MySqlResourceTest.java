@@ -50,6 +50,10 @@ public class MySqlResourceTest extends TestCase {
         exec_test("bvt/parser/mysql-14.txt");
     }
 
+    public void test_16() throws Exception {
+        exec_test("bvt/parser/mysql-16.txt");
+    }
+
     public void exec_test(String resource) throws Exception {
 //        System.out.println(resource);
         InputStream is = null;
@@ -64,12 +68,12 @@ public class MySqlResourceTest extends TestCase {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
 //        System.out.println(sql);
 //        System.out.println("Tables : " + visitor.getTables());
@@ -77,6 +81,10 @@ public class MySqlResourceTest extends TestCase {
 //
 //        System.out.println();
 //        System.out.println();
+
+        if (expect != null && !expect.isEmpty()) {
+            assertEquals(expect, stmt.toString());
+        }
     }
 
     void mergValidate(String sql, String expect) {
