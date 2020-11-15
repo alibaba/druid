@@ -2476,7 +2476,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 return false;
             }
         }
-        exp.accept(this);
+        if (exp != null) {
+            exp.accept(this);
+        }
         return false;
     }
     
