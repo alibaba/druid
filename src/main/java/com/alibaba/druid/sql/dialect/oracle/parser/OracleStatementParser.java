@@ -1592,7 +1592,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 if (lexer.token() == Token.CONSTRAINT) {
                     lexer.nextToken();
-                    SQLAlterTableEnableConstraint item = new SQLAlterTableEnableConstraint();
+                    SQLAlterTableDisableConstraint item = new SQLAlterTableDisableConstraint();
                     item.setConstraintName(this.exprParser.name());
                     stmt.addItem(item);
                 } else {
@@ -1602,7 +1602,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 if (lexer.token() == Token.CONSTRAINT) {
                     lexer.nextToken();
-                    SQLAlterTableDisableConstraint item = new SQLAlterTableDisableConstraint();
+                    SQLAlterTableEnableConstraint item = new SQLAlterTableEnableConstraint();
                     item.setConstraintName(this.exprParser.name());
                     stmt.addItem(item);
                 } else {
