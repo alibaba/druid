@@ -30,7 +30,7 @@ public class HiveCreateTableTest_50 extends OracleTest {
                 "LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'\n" +
                 "TBLPROPERTIES (\n" +
                 "\t'parquet.compression' = 'snappy',\n" +
-                "\t'parquet.compressiontransient_lastDdlTime' = '1603362950'\n" +
+                "\t'transient_lastDdlTime' = '1603362950'\n" +
                 ")",SQLUtils.formatHive(createDdl));
 
     }

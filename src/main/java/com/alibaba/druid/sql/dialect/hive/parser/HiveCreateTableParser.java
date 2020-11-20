@@ -310,6 +310,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
                 accept(Token.EQ);
                 SQLExpr value = this.exprParser.primary();
                 stmt.addTblProperty(propertyName.toString(), value);
+                propertyName = new StringBuilder();
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     if (lexer.token() == Token.RPAREN) {
