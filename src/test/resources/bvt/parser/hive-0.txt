@@ -1,0 +1,8 @@
+CREATE TABLE if not exists iteblog_06(
+    name struct<guo:string,sheng:string,shi:string>, value string
+)
+---------------------------
+CREATE TABLE IF NOT EXISTS iteblog_06 (
+	name STRUCT<guo:string, sheng:string, shi:string>,
+	value string
+)
