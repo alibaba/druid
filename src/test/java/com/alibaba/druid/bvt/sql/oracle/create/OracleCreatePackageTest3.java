@@ -71,6 +71,8 @@ public class OracleCreatePackageTest3 extends OracleTest {
                         "  RETURN VARCHAR2;\n" +
                         "END Mail_fck_bpi;";
 
+        System.out.println(sql);
+
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);

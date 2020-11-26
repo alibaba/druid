@@ -41,6 +41,10 @@ public class OracleResourceTest extends OracleTest {
         }
     }
 
+    public void test_58() throws Exception {
+        exec_test("bvt/parser/oracle-58.txt");
+    }
+
     public void exec_test(String resource) throws Exception {
         System.out.println(resource);
         InputStream is = null;
