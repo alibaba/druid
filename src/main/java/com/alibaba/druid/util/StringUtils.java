@@ -26,7 +26,10 @@ import com.alibaba.druid.support.logging.LogFactory;
  */
 public class StringUtils {
 
-    private final static Log LOG = LogFactory.getLog(StringUtils.class);
+    private static final Log LOG = LogFactory.getLog(StringUtils.class);
+
+    private StringUtils() {
+    }
 
     /**
      * Example: subString("12345","1","4")=23
@@ -49,18 +52,7 @@ public class StringUtils {
      * @return
      */
     public static String subString(String src, String start, String to) {
-        int indexFrom = start == null ? 0 : src.indexOf(start);
-        int indexTo = to == null ? src.length() : src.indexOf(to);
-        if (indexFrom < 0 || indexTo < 0 || indexFrom > indexTo) {
-            return null;
-        }
-
-        if (null != start) {
-            indexFrom += start.length();
-        }
-
-        return src.substring(indexFrom, indexTo);
-
+        return subString(src, start, to, false);
     }
 
     /**
@@ -73,11 +65,13 @@ public class StringUtils {
      * @return
      */
     public static String subString(String src, String start, String to, boolean toLast) {
-        if(!toLast) {
-            return subString(src, start, to);
-        }
         int indexFrom = start == null ? 0 : src.indexOf(start);
-        int indexTo = to == null ? src.length() : src.lastIndexOf(to);
+        int indexTo;
+        if (to == null) {
+            indexTo = src.length();
+        } else {
+            indexTo = toLast ? src.lastIndexOf(to) : src.indexOf(to);
+        }
         if (indexFrom < 0 || indexTo < 0 || indexFrom > indexTo) {
             return null;
         }
@@ -87,7 +81,6 @@ public class StringUtils {
         }
 
         return src.substring(indexFrom, indexTo);
-
     }
 
     /**
@@ -125,16 +118,8 @@ public class StringUtils {
         return a.equalsIgnoreCase(b);
     }
 
-    public static boolean isEmpty(String value) {
-        return isEmpty((CharSequence) value);
-    }
-
     public static boolean isEmpty(CharSequence value) {
-        if (value == null || value.length() == 0) {
-            return true;
-        }
-
-        return false;
+        return value == null || value.length() == 0;
     }
     
     public static int lowerHashCode(String text) {
@@ -155,7 +140,7 @@ public class StringUtils {
     }
 
     public static boolean isNumber(String str) {
-        if (str.length() == 0) {
+        if (str == null || str.length() == 0) {
             return false;
         }
         int sz = str.length();
@@ -254,7 +239,7 @@ public class StringUtils {
     }
 
     public static boolean isNumber(char[] chars) {
-        if (chars.length == 0) {
+        if (chars == null || chars.length == 0) {
             return false;
         }
         int sz = chars.length;
