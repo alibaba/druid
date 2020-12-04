@@ -1169,6 +1169,11 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         SQLObject object = resolveColum(columnNameHash);
         if (object instanceof SQLColumnDefinition) {
             return (SQLColumnDefinition) object;
+        } else if (object instanceof SQLSelectItem) {
+            SQLExpr expr = ((SQLSelectItem) object).getExpr();
+            if (expr instanceof SQLName) {
+                return ((SQLName) expr).getResolvedColumn();
+            }
         }
         return null;
     }
