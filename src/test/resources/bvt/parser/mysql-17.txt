@@ -1,0 +1,23 @@
+CREATE TABLE `t12` (
+  `c1` int DEFAULT NULL,
+  `c2` int DEFAULT NULL,
+  `c3` int DEFAULT NULL,
+  CONSTRAINT `c12_positive` CHECK ((`c2` > 0)) /*!80016 NOT ENFORCED */,
+  CONSTRAINT `c21_nonzero` CHECK ((`c1` <> 0)),
+  CONSTRAINT `t12_chk_1` CHECK ((`c1` <> `c2`)),
+  CONSTRAINT `t12_chk_2` CHECK ((`c1` > 10)),
+  CONSTRAINT `t12_chk_3` CHECK ((`c3` < 100)),
+  CONSTRAINT `t12_chk_4` CHECK ((`c1` > `c3`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+---------------------------
+CREATE TABLE `t12` (
+	`c1` int DEFAULT NULL,
+	`c2` int DEFAULT NULL,
+	`c3` int DEFAULT NULL,
+	CONSTRAINT `c12_positive` CHECK (`c2` > 0) NOT ENFORCED,
+	CONSTRAINT `c21_nonzero` CHECK (`c1` <> 0),
+	CONSTRAINT `t12_chk_1` CHECK (`c1` <> `c2`),
+	CONSTRAINT `t12_chk_2` CHECK (`c1` > 10),
+	CONSTRAINT `t12_chk_3` CHECK (`c3` < 100),
+	CONSTRAINT `t12_chk_4` CHECK (`c1` > `c3`)
+) ENGINE = InnoDB CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci

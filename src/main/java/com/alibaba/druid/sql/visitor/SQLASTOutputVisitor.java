@@ -5273,6 +5273,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         x.getExpr().accept(this);
         this.indentCount--;
         print(')');
+
+        Boolean enforced = x.getEnforced();
+        if (enforced != null) {
+            if (enforced.booleanValue()) {
+                print0(ucase ? " ENFORCED" : " enforced");
+            } else {
+                print0(ucase ? " NOT ENFORCED" : " not enforced");
+            }
+        }
+
         return false;
     }
 

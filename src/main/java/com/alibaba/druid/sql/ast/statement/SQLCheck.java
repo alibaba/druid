@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLCheck extends SQLConstraintImpl implements SQLTableElement, SQLTableConstraint, SQLReplaceable {
 
     private SQLExpr expr;
+    private Boolean enforced;
 
     public SQLCheck(){
 
@@ -63,6 +64,8 @@ public class SQLCheck extends SQLConstraintImpl implements SQLTableElement, SQLT
         if (expr != null) {
             expr = expr.clone();
         }
+
+        x.enforced = enforced;
     }
 
     public SQLCheck clone() {
@@ -88,5 +91,13 @@ public class SQLCheck extends SQLConstraintImpl implements SQLTableElement, SQLT
             return true;
         }
         return false;
+    }
+
+    public Boolean getEnforced() {
+        return enforced;
+    }
+
+    public void setEnforced(Boolean enforced) {
+        this.enforced = enforced;
     }
 }
