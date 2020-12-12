@@ -56,4 +56,37 @@ public class MySqlSchemaStatVisitorTest7 extends TestCase {
 
 	}
 
+	public void test_1() throws Exception {
+		String sql = "select id,name from bi.aaa where stat_date <= cast(current_date as varchar(10))";
+
+//		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
+		MySqlStatementParser parser = new MySqlStatementParser(sql);
+		List<SQLStatement> statementList = parser.parseStatementList();
+		SQLStatement stmt = statementList.get(0);
+
+		assertEquals(1, statementList.size());
+
+		MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+		stmt.accept(visitor);
+
+		System.out.println(sql);
+		System.out.println("Tables : " + visitor.getTables());
+		System.out.println("fields : " + visitor.getColumns());
+		System.out.println(visitor.getConditions());
+		assertEquals(1, visitor.getConditions().size());
+		assertEquals(1, visitor.getConditions().get(0).getValues().size());
+		assertEquals("CURRENT_DATE", visitor.getConditions().get(0).getValues().get(0));
+
+		assertEquals(1, visitor.getTables().size());
+//		assertEquals(true, visitor.containsTable("t1"));
+//		assertEquals(true, visitor.containsTable("t2"));
+//
+//		assertEquals(4, visitor.getColumns().size());
+//		assertEquals(true, visitor.containsColumn("t1", "b"));
+//		assertEquals(true, visitor.containsColumn("t2", "b"));
+//		assertEquals(true, visitor.containsColumn("t1", "a"));
+		// assertEquals(true, visitor.getFields().contains(new
+		// Column("users", "name")));
+
+	}
 }

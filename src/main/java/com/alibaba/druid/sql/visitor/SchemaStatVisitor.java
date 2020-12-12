@@ -840,7 +840,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
 
             Object value;
-            if (item instanceof SQLMethodInvokeExpr) {
+
+            if (item instanceof SQLCastExpr) {
+                item = ((SQLCastExpr) item).getExpr();
+            }
+
+            if (item instanceof SQLMethodInvokeExpr
+                    || item instanceof SQLCurrentTimeExpr) {
                 value = item.toString();
             } else {
                 value = SQLEvalVisitorUtils.eval(dbType, item, parameters, false);
