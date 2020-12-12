@@ -294,6 +294,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             lexer.nextToken();
 
             if (lexer.token() == Token.UPDATE) {
+                lexer.nextToken();
                 queryBlock.setForUpdate(true);
 
                 if (lexer.identifierEquals(FnvHash.Constants.NO_WAIT)
