@@ -15,13 +15,10 @@
  */
 package com.alibaba.druid.bvt.sql.hive;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
-import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
@@ -37,6 +34,10 @@ public class HiveResourceTest extends TestCase {
 
     public void test_0() throws Exception {
         exec_test("bvt/parser/hive-0.txt");
+    }
+
+    public void test_1() throws Exception {
+        exec_test("bvt/parser/hive-1.txt");
     }
 
     public void exec_test(String resource) throws Exception {
@@ -71,13 +72,14 @@ public class HiveResourceTest extends TestCase {
             assertEquals(expect, stmt.toString());
         }
 
-//        System.out.println(sql);
+        System.out.println(sql);
+//        System.out.println(stmt.toString());
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //
 //        System.out.println();
 //        System.out.println("---------------------------");
-//        System.out.println(SQLUtils.toOdpsString(stmt));
+        System.out.println(SQLUtils.toHiveString(stmt));
     }
 
 

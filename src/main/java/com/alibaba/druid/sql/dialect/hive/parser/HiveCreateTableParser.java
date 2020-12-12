@@ -103,6 +103,8 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             }
 
             accept(Token.RPAREN);
+        } else if (lexer.token() == Token.LIKE) {
+            parseLike(stmt);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.ENGINE)) {
@@ -274,19 +276,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.token() == Token.LIKE) {
-            lexer.nextToken();
-
-            if (lexer.identifierEquals(FnvHash.Constants.MAPPING)) {
-                SQLExpr like = this.exprParser.primary();
-                stmt.setLike(new SQLExprTableSource(like));
-            } else if (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN) {
-                SQLSelect select = this.createSQLSelectParser().select();
-                stmt.setLikeQuery(true);
-                stmt.setSelect(select);
-            } else {
-                SQLName name = this.exprParser.name();
-                stmt.setLike(name);
-            }
+            parseLike(stmt);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
@@ -364,6 +354,22 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         }
 
         return stmt;
+    }
+
+    protected void parseLike(HiveCreateTableStatement stmt) {
+        lexer.nextToken();
+
+        if (lexer.identifierEquals(FnvHash.Constants.MAPPING)) {
+            SQLExpr like = this.exprParser.primary();
+            stmt.setLike(new SQLExprTableSource(like));
+        } else if (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN) {
+            SQLSelect select = this.createSQLSelectParser().select();
+            stmt.setLikeQuery(true);
+            stmt.setSelect(select);
+        } else {
+            SQLName name = this.exprParser.name();
+            stmt.setLike(name);
+        }
     }
 
     private void parseSortedBy(HiveCreateTableStatement stmt) {

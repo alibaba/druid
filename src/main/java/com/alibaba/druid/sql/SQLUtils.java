@@ -136,6 +136,10 @@ public class SQLUtils {
         return toOdpsString(sqlObject, null);
     }
 
+    public static String toHiveString(SQLObject sqlObject) {
+        return toSQLString(sqlObject, DbType.odps);
+    }
+
     public static String toOdpsString(SQLObject sqlObject, FormatOption option) {
         return toSQLString(sqlObject, DbType.odps, option);
     }
