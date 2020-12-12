@@ -1125,6 +1125,16 @@ public class SQLExprParser extends SQLParser {
                     break;
                 }
                 throw new ParserException("ERROR. " + lexer.info());
+            case ON:
+                if (dbType == DbType.postgresql) {
+                    String methodName = lexer.stringVal();
+                    lexer.nextToken();
+                    if (lexer.token == Token.LPAREN) {
+                        sqlExpr = this.methodRest(new SQLIdentifierExpr(methodName), true);
+                        break;
+                    }
+                }
+                throw new ParserException("ERROR. " + lexer.info());
             default:
                 throw new ParserException("ERROR. " + lexer.info());
         }

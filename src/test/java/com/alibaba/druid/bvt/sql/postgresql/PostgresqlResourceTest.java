@@ -48,6 +48,10 @@ public class PostgresqlResourceTest extends PGTest {
         exec_test("bvt/parser/postgresql-2.txt");
     }
 
+    public void test_3() throws Exception {
+        exec_test("bvt/parser/postgresql-3.txt");
+    }
+
     public void exec_test(String resource) throws Exception {
         System.out.println(resource);
         InputStream is = null;
@@ -59,16 +63,19 @@ public class PostgresqlResourceTest extends PGTest {
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
         String expect = items[1].trim();
+        if (expect != null) {
+            expect = expect.replaceAll("\\r\\n", "\n");
+        }
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
@@ -77,6 +84,10 @@ public class PostgresqlResourceTest extends PGTest {
 
         System.out.println();
         System.out.println();
+
+        if (expect != null && !expect.isEmpty()) {
+            assertEquals(expect, stmt.toString());
+        }
     }
 
     void mergValidate(String sql, String expect) {

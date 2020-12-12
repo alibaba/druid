@@ -9,11 +9,14 @@ WITH RECURSIVE employee_recursive(distance, employee_name, manager_name) AS (
   )
 SELECT distance, employee_name FROM employee_recursive;
 ---------------------------
-SELECT e1.last_name
-FROM employees e1
-WHERE f(CURSOR((
-	SELECT e2.hire_date
-	FROM employees e2
-	WHERE e1.employee_id = e2.manager_id
-	)), e1.hire_date) = 1
-ORDER BY last_name;
+WITH RECURSIVE employee_recursive (distance, employee_name, manager_name) AS (
+		SELECT 1, employee_name, manager_name
+		FROM employee
+		WHERE manager_name = 'Mary'
+		UNION ALL
+		SELECT er.distance + 1, e.employee_name, e.manager_name
+		FROM employee_recursive er, employee e
+		WHERE er.employee_name = e.manager_name
+	)
+SELECT distance, employee_name
+FROM employee_recursive;
