@@ -2939,7 +2939,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         SQLSelect select = stmt.getSelect();
-        this.visit(select);
+        if (select != null) {
+            this.visit(select);
+        }
 
         return false;
     }
