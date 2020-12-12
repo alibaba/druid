@@ -1784,6 +1784,10 @@ public class SQLStatementParser extends SQLParser {
                         SQLPrimaryKey primaryKey = this.exprParser.parsePrimaryKey();
                         SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(primaryKey);
                         stmt.addItem(item);
+                    } else if (lexer.token == UNIQUE) {
+                        SQLUnique unique = this.exprParser.parseUnique();
+                        SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(unique);
+                        stmt.addItem(item);
                     } else if (lexer.token == Token.IDENTIFIER) {
                         SQLAlterTableAddColumn item = parseAlterTableAddColumn();
                         stmt.addItem(item);
