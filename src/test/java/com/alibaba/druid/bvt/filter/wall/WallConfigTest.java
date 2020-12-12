@@ -15,7 +15,7 @@ public class WallConfigTest extends TestCase {
         WallConfig config = new WallConfig();
         config.configFromProperties(properties);
         
-        Assert.assertTrue(config.isSelelctAllow());
+        Assert.assertTrue(config.isSelectAllow());
     }
     
     public void test_selectAllow_false() throws Exception {
@@ -24,7 +24,7 @@ public class WallConfigTest extends TestCase {
         WallConfig config = new WallConfig();
         config.configFromProperties(properties);
         
-        Assert.assertFalse(config.isSelelctAllow());
+        Assert.assertFalse(config.isSelectAllow());
     }
     
     public void test_deleteAllow() throws Exception {

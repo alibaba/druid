@@ -701,13 +701,29 @@ public class WallConfig implements WallConfigMBean {
         void filterResultsetTenantColumn(Object value);
     }
 
-    public boolean isSelelctAllow() {
+    public boolean isSelectAllow() {
         return selelctAllow;
     }
 
-    public void setSelelctAllow(boolean selelctAllow) {
+
+    public void setSelectAllow(boolean selelctAllow) {
         this.selelctAllow = selelctAllow;
     }
+
+    /**
+     * @deprecated use isSelectAllow
+     */
+    public boolean isSelelctAllow() {
+        return isSelectAllow();
+    }
+
+    /**
+     * @deprecated use setSelelctAllow
+     */
+    public void setSelelctAllow(boolean selelctAllow) {
+        this.setSelectAllow(selelctAllow);
+    }
+
 
     public boolean isSelectWhereAlwayTrueCheck() {
         return selectWhereAlwayTrueCheck;
@@ -827,7 +843,7 @@ public class WallConfig implements WallConfigMBean {
         {
             Boolean propertyValue = getBoolean(properties, "druid.wall.selelctAllow");
             if (propertyValue != null) {
-                this.setSelelctAllow(propertyValue);
+                this.setSelectAllow(propertyValue);
             }
         }
         {

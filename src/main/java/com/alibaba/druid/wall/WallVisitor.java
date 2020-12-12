@@ -149,7 +149,7 @@ public interface WallVisitor extends SQLASTVisitor {
     @Override
     default boolean visit(SQLSelectStatement x) {
         WallConfig config = getConfig();
-        if (!config.isSelelctAllow()) {
+        if (!config.isSelectAllow()) {
             this.getViolations()
                     .add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow",
                     this.toSQL(x)));
