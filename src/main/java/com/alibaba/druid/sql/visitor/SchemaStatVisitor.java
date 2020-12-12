@@ -2759,7 +2759,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         SQLName tableName = x.getObject();
 
         TableStat tableStat = this.getTableStat(x.getObject());
-        tableStat.incrementDropIndexCount();
 
         SQLName column = x.getColumn();
         if (column != null) {
