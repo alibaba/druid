@@ -280,26 +280,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-
-            for (;;) {
-                String name = lexer.stringVal();
-                lexer.nextToken();
-                accept(Token.EQ);
-                SQLExpr value = this.exprParser.primary();
-                stmt.addTblProperty(name, value);
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    if (lexer.token() == Token.RPAREN) {
-                        break;
-                    }
-                    continue;
-                }
-                break;
-            }
-
-            accept(Token.RPAREN);
+            parseTblProperties(stmt);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.META)) {
@@ -354,6 +335,35 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         }
 
         return stmt;
+    }
+
+    private void parseTblProperties(HiveCreateTableStatement stmt) {
+        lexer.nextToken();
+        accept(Token.LPAREN);
+
+        for (;;) {
+            String name = lexer.stringVal();
+            lexer.nextToken();
+            if (lexer.token() == Token.DOT) {
+                lexer.nextToken();
+                name += "." + lexer.stringVal();
+                lexer.nextToken();
+            }
+
+            accept(Token.EQ);
+            SQLExpr value = this.exprParser.primary();
+            stmt.addTblProperty(name, value);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                continue;
+            }
+            break;
+        }
+
+        accept(Token.RPAREN);
     }
 
     protected void parseLike(HiveCreateTableStatement stmt) {
