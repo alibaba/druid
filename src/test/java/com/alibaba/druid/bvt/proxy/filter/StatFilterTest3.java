@@ -69,4 +69,21 @@ public class StatFilterTest3 extends TestCase {
 
         filter.mergeSql("insert into t(f1, f2) values (1, 2)", DbType.oceanbase_oracle);
     }
+
+    public void test_merge_nodbtype() throws Exception {
+        StatFilter filter = new StatFilter();
+
+        Assert.assertFalse(filter.isMergeSql());
+
+        filter.setMergeSql(true);
+
+        Assert.assertTrue(filter.isMergeSql());
+        Assert.assertNull(filter.getDbType());
+
+        Assert.assertEquals("SELECT *\n" +
+                        "FROM temp.test\n" +
+                        "ORDER BY id DESC\n" +
+                        "LIMIT ?"
+                , filter.mergeSql("select * from temp.test order by id desc limit 1"));
+    }
 }
