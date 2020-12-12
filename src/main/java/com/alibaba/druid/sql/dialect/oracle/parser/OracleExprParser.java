@@ -899,6 +899,11 @@ public class OracleExprParser extends SQLExprParser {
                             beginExpr = relational();
                         }
 
+                        final SQLOver.WindowingBound beginBound = parseWindowingBound();
+                        if (beginBound != null) {
+                            over.setWindowingBetweenBeginBound(beginBound);
+                        }
+
                         accept(Token.AND);
                         SQLExpr endExpr;
                         if (lexer.identifierEquals(FnvHash.Constants.CURRENT)) {

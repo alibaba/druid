@@ -2299,7 +2299,7 @@ public class SQLExprParser extends SQLParser {
         accept(Token.RPAREN);
     }
 
-    private SQLOver.WindowingBound parseWindowingBound() {
+    protected SQLOver.WindowingBound parseWindowingBound() {
         if (lexer.identifierEquals(FnvHash.Constants.PRECEDING)) {
             lexer.nextToken();
             return SQLOver.WindowingBound.PRECEDING;

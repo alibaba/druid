@@ -77,8 +77,11 @@ public class OracleAnalytic extends SQLOver implements SQLReplaceable, OracleExp
         return x;
     }
 
-    public void setWindowing(OracleAnalyticWindowing windowing) {
-        this.windowing = windowing;
+    public void setWindowing(OracleAnalyticWindowing x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.windowing = x;
     }
 
     public SQLDataType computeDataType() {

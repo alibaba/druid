@@ -39,6 +39,10 @@ public class OracleSQLParserResourceTest extends TestCase {
         exec_test("bvt/parser/oracle-55.txt");
     }
 
+    public void test_59() throws Exception {
+        exec_test("bvt/parser/oracle-59.txt");
+    }
+
     public void exec_test(String resource) throws Exception {
         System.out.println(resource);
         InputStream is = null;
@@ -49,17 +53,26 @@ public class OracleSQLParserResourceTest extends TestCase {
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
-        String expect = items[1].trim();
+        String expect = null;
+        if (items.length > 1) {
+            expect = items[1];
+            if (expect != null) {
+                expect = expect.trim();
+                expect = expect.replaceAll("\\r\\n", "\n");
+            }
+        }
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         String text = TestUtils.outputOracle(statementList);
-        expect = expect.replaceAll("\\r\\n", "\n");
+
         System.out.println(text);
-        Assert.assertEquals(expect, text.trim());
+        if (expect != null && !expect.isEmpty()) {
+            Assert.assertEquals(expect, text.trim());
+        }
 
     }
 }

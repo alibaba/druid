@@ -3886,4 +3886,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public void setCheckExecuteTime(boolean checkExecuteTime) {
         this.checkExecuteTime = checkExecuteTime;
     }
+
+    public void forEach(Connection conn) {
+
+    }
 }
