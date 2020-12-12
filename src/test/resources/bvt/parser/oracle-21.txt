@@ -17,16 +17,20 @@ select * from (
 
 ---------------------------
 SELECT *
-FROM (SELECT rownum AS rnm, z.*
-	FROM (SELECT DISTINCT tt.id AS use_less_id, tt.*
-		FROM (SELECT t.*, rct.parent_id, RCT.NAME AS trunk_name
+FROM (
+	SELECT rownum AS rnm, z.*
+	FROM (
+		SELECT DISTINCT tt.id AS use_less_id, tt.*
+		FROM (
+			SELECT t.*, rct.parent_id, RCT.NAME AS trunk_name
 			FROM x_1_2 t, k_2_3 rct
-			WHERE t.is_deleted = 'n' AND t.trunk_id = rct.id
-			) tt
+			WHERE t.is_deleted = 'n'
+				AND t.trunk_id = rct.id
+		) tt
 		START WITH trunk_name = 'rc.mf.Caesar'
 		CONNECT BY PRIOR parent_id = trunk_id
 		ORDER BY load_order NULLS LAST
-		) z
+	) z
 	WHERE rownum < ?
-	)
-WHERE rnm >= ?;
+)
+WHERE rnm >= ?

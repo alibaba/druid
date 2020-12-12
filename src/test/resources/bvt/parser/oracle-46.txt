@@ -4,4 +4,4 @@ SELECT employee_id, manager_id
 ---------------------------
 SELECT employee_id, manager_id
 FROM employees
-WHERE manager_id(+) = employees.employee_id;
+WHERE employees.manager_id(+) = employees.employee_id;

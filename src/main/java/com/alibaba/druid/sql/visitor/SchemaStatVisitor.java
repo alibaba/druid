@@ -2819,6 +2819,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     protected final void statExpr(SQLExpr x) {
+        if (x == null) {
+            return;
+        }
+
         Class<?> clazz = x.getClass();
         if (clazz == SQLIdentifierExpr.class) {
             visit((SQLIdentifierExpr) x);

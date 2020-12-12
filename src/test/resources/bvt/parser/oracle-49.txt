@@ -10,4 +10,4 @@ FROM hr_info t1, TABLE(CAST(MULTISET((
 	SELECT t3.last_name, t3.department_id, t3.salary
 	FROM people t3
 	WHERE t3.department_id = t1.department_id
-	)) AS people_tab_typ)) t2;
+)) AS people_tab_typ)) t2;

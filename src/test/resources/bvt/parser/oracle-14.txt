@@ -13,9 +13,16 @@ SELECT channel_desc, calendar_month_desc, co.country_id,
       (channel_desc, co.country_id), 
       (calendar_month_desc, co.country_id) );
 ---------------------------
-SELECT channel_desc, calendar_month_desc, co.country_id, TO_CHAR(sum(amount_sold), '9,999,999,999') AS SALES$
+SELECT channel_desc, calendar_month_desc, co.country_id
+	, TO_CHAR(sum(amount_sold), '9,999,999,999') AS SALES$
 FROM xxxx, bbb, times, ccc, ddd co
-WHERE xxxx.time_id = times.time_id AND xxxx.cust_id = bbb.cust_id AND xxxx.channel_id = ccc.channel_id AND bbb.country_id = co.country_id AND (ccc.channel_desc IN ('Direct Sales', 'Internet') AND (times.calendar_month_desc IN ('2000-09', '2000-10') AND co.country_iso_code IN ('UK', 'US')))
+WHERE xxxx.time_id = times.time_id
+	AND xxxx.cust_id = bbb.cust_id
+	AND xxxx.channel_id = ccc.channel_id
+	AND bbb.country_id = co.country_id
+	AND ccc.channel_desc IN ('Direct Sales', 'Internet')
+	AND times.calendar_month_desc IN ('2000-09', '2000-10')
+	AND co.country_iso_code IN ('UK', 'US')
 GROUP BY GROUPING SETS ((channel_desc, calendar_month_desc, co.country_id), (channel_desc, co.country_id), (calendar_month_desc, co.country_id));
 
 

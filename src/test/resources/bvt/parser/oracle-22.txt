@@ -24,20 +24,26 @@ where rnm >= ?
 
 ---------------------------
 SELECT *
-FROM (SELECT rownum AS rnm, z.*
-	FROM (SELECT *
-		FROM (SELECT DISTINCT *
-			FROM (SELECT lower(a.role_name) || '#' || a.permission_id AS KEY, 'y' AS value
+FROM (
+	SELECT rownum AS rnm, z.*
+	FROM (
+		SELECT *
+		FROM (
+			SELECT DISTINCT *
+			FROM (
+				SELECT lower(a.role_name) || '#' || a.permission_id AS key, 'y' AS value
 				FROM f_p_23 A
 				WHERE a.is_deleted = 'n'
 				UNION ALL
 				SELECT lower(b.role_name) || '#' || a.permission_id, 'y'
 				FROM f_p_23 A, app_role_base_role B
-				WHERE a.is_deleted = 'n' AND b.is_deleted = 'n' AND a.role_name = b.base_role_name
-				)
-			) c
-		ORDER BY c.KEY
-		) z
+				WHERE a.is_deleted = 'n'
+					AND b.is_deleted = 'n'
+					AND a.role_name = b.base_role_name
+			)
+		) c
+		ORDER BY c.key
+	) z
 	WHERE rownum < ?
-	)
-WHERE rnm >= ?;
+)
+WHERE rnm >= ?

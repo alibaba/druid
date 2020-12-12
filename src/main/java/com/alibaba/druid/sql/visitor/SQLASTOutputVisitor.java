@@ -2058,6 +2058,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         print(')');
 
+        if (x.isIgnoreNulls()) {
+            print0(ucase ? " IGNORE NULLS" : " ignore nulls");
+        }
+
         SQLKeep keep = x.getKeep();
         if (keep != null) {
             print(' ');

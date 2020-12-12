@@ -1,0 +1,10 @@
+SELECT empno,
+       deptno,
+       sal,
+       FIRST_VALUE(sal) IGNORE NULLS
+         OVER (PARTITION BY deptno ORDER BY sal) AS lowest_in_dept
+FROM   emp;
+---------------------------
+SELECT empno, deptno, sal
+	, FIRST_VALUE(sal) IGNORE NULLS OVER (PARTITION BY deptno ORDER BY sal) AS lowest_in_dept
+FROM emp;

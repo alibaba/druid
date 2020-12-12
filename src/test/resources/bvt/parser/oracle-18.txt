@@ -8,7 +8,10 @@ ORDER BY e.word_alias,a.createtime DESC
 
 
 ---------------------------
-SELECT /*+use_hash(a b e) index(e)*/ Count(*)
+SELECT /*+ use_hash(a b e) index(e)*/ Count(*)
 FROM bbbb a, aaaa b, q_keyword e, CCCC f
-WHERE a.offerid = b.offerid AND a.keywordid = e.keywordid AND a.offerid = f.offerid AND a.issuspect = '1'
-ORDER BY e.word_alias, a.createtime DESC;	
+WHERE a.offerid = b.offerid
+	AND a.keywordid = e.keywordid
+	AND a.offerid = f.offerid
+	AND a.issuspect = '1'
+ORDER BY e.word_alias, a.createtime DESC
