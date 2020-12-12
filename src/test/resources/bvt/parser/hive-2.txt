@@ -1,0 +1,26 @@
+create external table `ods.ods_dc_test_df` ( `id` bigint comment 'id',  `name` string comment '名称' )  
+comment '测试表' partitioned by ( `dt` string )
+row format serde 'org.apache.hadoop.hive.ql.io.parquet.serde.parquethiveserde'
+stored as inputformat 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+          outputformat 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+location 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+ tblproperties ( parquet.compression = 'snappy' , transient_lastDdlTime = '1603362950' )
+---------------------------
+CREATE EXTERNAL TABLE `ods.ods_dc_test_df` (
+	`id` bigint COMMENT 'id',
+	`name` string COMMENT '名称'
+)
+COMMENT '测试表'
+PARTITIONED BY (
+	`dt` string
+)
+ROW FORMAT
+	SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.parquethiveserde'
+STORED AS
+	INPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+	OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+TBLPROPERTIES (
+	'parquet.compression' = 'snappy',
+	'transient_lastDdlTime' = '1603362950'
+)
