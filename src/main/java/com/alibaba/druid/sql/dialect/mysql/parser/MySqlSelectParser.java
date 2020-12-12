@@ -292,17 +292,28 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.FOR) {
             lexer.nextToken();
-            accept(Token.UPDATE);
 
-            queryBlock.setForUpdate(true);
-            
-            if (lexer.identifierEquals(FnvHash.Constants.NO_WAIT) || lexer.identifierEquals(FnvHash.Constants.NOWAIT)) {
-                lexer.nextToken();
-                queryBlock.setNoWait(true);
-            } else if (lexer.identifierEquals(FnvHash.Constants.WAIT)) {
-                lexer.nextToken();
-                SQLExpr waitTime = this.exprParser.primary();
-                queryBlock.setWaitTime(waitTime);
+            if (lexer.token() == Token.UPDATE) {
+                queryBlock.setForUpdate(true);
+
+                if (lexer.identifierEquals(FnvHash.Constants.NO_WAIT)
+                        || lexer.identifierEquals(FnvHash.Constants.NOWAIT)) {
+                    lexer.nextToken();
+                    queryBlock.setNoWait(true);
+                } else if (lexer.identifierEquals(FnvHash.Constants.WAIT)) {
+                    lexer.nextToken();
+                    SQLExpr waitTime = this.exprParser.primary();
+                    queryBlock.setWaitTime(waitTime);
+                }
+
+                if (lexer.identifierEquals(FnvHash.Constants.SKIP)) {
+                    lexer.nextToken();
+                    acceptIdentifier("LOCKED");
+                    queryBlock.setSkipLocked(true);
+                }
+            } else {
+                acceptIdentifier("SHARE");
+                queryBlock.setForShare(true);
             }
         }
 

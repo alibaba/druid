@@ -1,0 +1,6 @@
+SELECT * FROM parent WHERE NAME = 'Jones' FOR SHARE;
+---------------------------
+SELECT *
+FROM parent
+WHERE NAME = 'Jones'
+FOR SHARE;

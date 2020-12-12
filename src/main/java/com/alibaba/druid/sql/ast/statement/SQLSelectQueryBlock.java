@@ -53,6 +53,8 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected boolean                    parenthesized   = false;
     protected boolean                    forUpdate       = false;
     protected boolean                    noWait          = false;
+    protected boolean                    skipLocked      = false;
+    protected boolean                    forShare        = false;
     protected SQLExpr                    waitTime;
     protected SQLLimit                   limit;
 
@@ -534,7 +536,23 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     public void setNoWait(boolean noWait) {
         this.noWait = noWait;
     }
-    
+
+    public boolean isSkipLocked() {
+        return skipLocked;
+    }
+
+    public void setSkipLocked(boolean skipLocked) {
+        this.skipLocked = skipLocked;
+    }
+
+    public boolean isForShare() {
+        return forShare;
+    }
+
+    public void setForShare(boolean forShare) {
+        this.forShare = forShare;
+    }
+
     public SQLExpr getWaitTime() {
         return waitTime;
     }
@@ -986,6 +1004,8 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         x.parenthesized = parenthesized;
         x.forUpdate = forUpdate;
         x.noWait = noWait;
+        x.skipLocked = skipLocked;
+        x.forShare = forShare;
         if (waitTime != null) {
             x.setWaitTime(waitTime.clone());
         }

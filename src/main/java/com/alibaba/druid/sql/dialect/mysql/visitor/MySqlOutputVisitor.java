@@ -238,6 +238,15 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 print0(ucase ? " WAIT " : " wait ");
                 x.getWaitTime().accept(this);
             }
+
+            if (x.isSkipLocked()) {
+                print0(ucase ? " SKIP LOCKED" : " skip locked");
+            }
+        }
+
+        if (x.isForShare()) {
+            println();
+            print0(ucase ? "FOR SHARE" : "for share");
         }
 
         if (x.isLockInShareMode()) {

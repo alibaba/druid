@@ -1,0 +1,8 @@
+SELECT * FROM table_name WHERE ref = ? AND flag = 0 LIMIT ? FOR UPDATE SKIP LOCKED
+---------------------------
+SELECT *
+FROM table_name
+WHERE ref = ?
+	AND flag = 0
+LIMIT ?
+FOR UPDATE SKIP LOCKED
