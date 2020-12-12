@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements OracleSQLObject {
@@ -31,6 +32,11 @@ public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements Oracl
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof OracleASTVisitor) {
             this.accept0((OracleASTVisitor) v);
+            return;
+        }
+
+        if (v instanceof SQLASTOutputVisitor) {
+            ((SQLASTOutputVisitor) v).print(this.toString());
         }
     }
 
