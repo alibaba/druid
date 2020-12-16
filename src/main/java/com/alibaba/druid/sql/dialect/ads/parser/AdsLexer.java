@@ -34,12 +34,12 @@ public class AdsLexer extends Lexer {
     public AdsLexer(String input) {
         super(input);
         dbType = DbType.ads;
-        super.keywods = DEFAULT_ADS_KEYWORDS;
+        super.keywords = DEFAULT_ADS_KEYWORDS;
     }
 
     public AdsLexer(String input, SQLParserFeature... features){
         super(input);
-        super.keywods = DEFAULT_ADS_KEYWORDS;
+        super.keywords = DEFAULT_ADS_KEYWORDS;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }

@@ -52,7 +52,7 @@ public class PhoenixLexer extends Lexer {
 
     public PhoenixLexer(String input, SQLParserFeature... features){
         super(input);
-        super.keywods = DEFAULT_PHOENIX_KEYWORDS;
+        super.keywords = DEFAULT_PHOENIX_KEYWORDS;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }

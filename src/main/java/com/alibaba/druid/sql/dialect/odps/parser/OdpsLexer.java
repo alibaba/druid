@@ -55,7 +55,7 @@ public class OdpsLexer extends Lexer {
     public OdpsLexer(String input, SQLParserFeature... features){
         super(input);
         dbType = DbType.odps;
-        super.keywods = DEFAULT_ODPS_KEYWORDS;
+        super.keywords = DEFAULT_ODPS_KEYWORDS;
         this.skipComment = true;
         this.keepComments = false;
 
@@ -69,13 +69,13 @@ public class OdpsLexer extends Lexer {
         dbType = DbType.odps;
         this.skipComment = skipComment;
         this.keepComments = keepComments;
-        super.keywods = DEFAULT_ODPS_KEYWORDS;
+        super.keywords = DEFAULT_ODPS_KEYWORDS;
     }
     
     public OdpsLexer(String input, CommentHandler commentHandler){
         super(input, commentHandler);
         dbType = DbType.odps;
-        super.keywods = DEFAULT_ODPS_KEYWORDS;
+        super.keywords = DEFAULT_ODPS_KEYWORDS;
     }
     
     public void scanComment() {
@@ -167,7 +167,7 @@ public class OdpsLexer extends Lexer {
         this.ch = charAt(pos);
 
         stringVal = addSymbol();
-        Token tok = keywods.getKeyword(stringVal);
+        Token tok = keywords.getKeyword(stringVal);
         if (tok != null) {
             token = tok;
         } else {

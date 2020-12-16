@@ -78,7 +78,7 @@ public class PGLexer extends Lexer {
     public PGLexer(String input, SQLParserFeature... features){
         super(input, true);
         this.keepComments = true;
-        super.keywods = DEFAULT_PG_KEYWORDS;
+        super.keywords = DEFAULT_PG_KEYWORDS;
         super.dbType = DbType.postgresql;
         for (SQLParserFeature feature : features) {
             config(feature, true);

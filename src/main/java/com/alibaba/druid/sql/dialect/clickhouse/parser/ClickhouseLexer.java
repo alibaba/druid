@@ -35,12 +35,12 @@ public class ClickhouseLexer extends Lexer {
     public ClickhouseLexer(String input) {
         super(input);
         dbType = DbType.clickhouse;
-        super.keywods = DEFAULT_KEYWORDS;
+        super.keywords = DEFAULT_KEYWORDS;
     }
 
     public ClickhouseLexer(String input, SQLParserFeature... features){
         super(input);
-        super.keywods = DEFAULT_KEYWORDS;
+        super.keywords = DEFAULT_KEYWORDS;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }

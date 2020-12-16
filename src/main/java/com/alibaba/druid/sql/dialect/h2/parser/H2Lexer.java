@@ -47,12 +47,12 @@ public class H2Lexer extends Lexer {
 
     public H2Lexer(String input){
         super(input, null, DbType.h2);
-        super.keywods = DEFAULT_H2_KEYWORDS;
+        super.keywords = DEFAULT_H2_KEYWORDS;
     }
 
     public H2Lexer(String input, SQLParserFeature... features){
         super(input, null, DbType.h2);
-        super.keywods = DEFAULT_H2_KEYWORDS;
+        super.keywords = DEFAULT_H2_KEYWORDS;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }

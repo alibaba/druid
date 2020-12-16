@@ -39,7 +39,7 @@ public class PrestoLexer extends Lexer {
 
     public PrestoLexer(String input, SQLParserFeature... features){
         super(input);
-        super.keywods = DEFAULT_PHOENIX_KEYWORDS;
+        super.keywords = DEFAULT_PHOENIX_KEYWORDS;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }

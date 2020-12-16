@@ -60,7 +60,7 @@ public class HiveLexer extends Lexer {
         this.keepComments = true;
         dbType = DbType.hive;
         this.features |= SQLParserFeature.SupportUnicodeCodePoint.mask;
-        super.keywods = DEFAULT_HIVE_KEYWORDS;
+        super.keywords = DEFAULT_HIVE_KEYWORDS;
     }
 
     public HiveLexer(String input, SQLParserFeature... features){
@@ -68,7 +68,7 @@ public class HiveLexer extends Lexer {
         dbType = DbType.hive;
         this.skipComment = true;
         this.keepComments = true;
-        super.keywods = DEFAULT_HIVE_KEYWORDS;
+        super.keywords = DEFAULT_HIVE_KEYWORDS;
         this.features |= SQLParserFeature.SupportUnicodeCodePoint.mask;
         for (SQLParserFeature feature : features) {
             config(feature, true);
