@@ -117,6 +117,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             SQLBetweenExpr betweenExpr = (SQLBetweenExpr) expr;
             SQLOver.WindowingBound beginBound = over.getWindowingBetweenBeginBound();
             if (beginBound != null) {
+                print0(ucase ? " BETWEEN " : " between ");
                 betweenExpr.getBeginExpr().accept(this);
                 print(' ');
                 print0(ucase ? beginBound.name : beginBound.name_lower);
