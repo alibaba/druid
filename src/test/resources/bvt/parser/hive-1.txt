@@ -3,5 +3,5 @@ like  ads_data.sale_detail_one1
 STORED AS parquet
 ---------------------------
 CREATE TABLE ads_data.sale_detail_one23
-STORED AS parquet
 LIKE ads_data.sale_detail_one1
+STORED AS parquet

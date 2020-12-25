@@ -10398,6 +10398,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " BUCKETS" : " buckets");
         }
 
+        SQLExprTableSource like = x.getLike();
+        if (like != null) {
+            println();
+            print0(ucase ? "LIKE " : "like ");
+            like.accept(this);
+        }
+
         SQLExpr storedAs = x.getStoredAs();
         if (storedAs != null) {
             println();
@@ -10440,13 +10447,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             println();
             visit(select);
-        }
-
-        SQLExprTableSource like = x.getLike();
-        if (like != null) {
-            println();
-            print0(ucase ? "LIKE " : "like ");
-            like.accept(this);
         }
     }
 

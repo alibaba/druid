@@ -46,10 +46,10 @@ public class HiveCreateTableTest_36_dla extends OracleTest {
             String text = SQLUtils.toSQLString(stmt, JdbcConstants.HIVE);
 
             assertEquals("CREATE TABLE dla_table1\n" +
+                    "LIKE dla_table2\n" +
                     "TBLPROPERTIES (\n" +
                     "\t'column_mapping' = 'hello,world;james,bond;'\n" +
-                    ")\n" +
-                    "LIKE dla_table2;", text);
+                    ");", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());

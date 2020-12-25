@@ -29,10 +29,10 @@ public class HiveCreateTableTest_46_dla extends OracleTest {
         SQLStatement stmt =  SQLUtils.parseSingleStatement(sql, DbType.hive, SQLParserFeature.KeepComments);
 
         assertEquals("CREATE EXTERNAL TABLE parquet_tbl\n" +
+                "LIKE MAPPING('oss://user/etl/destination/datafile1.dat')\n" +
                 "TBLPROPERTIES (\n" +
                 "\t'target.table.location' = 'oss://user/etl/destination/'\n" +
-                ")\n" +
-                "LIKE MAPPING('oss://user/etl/destination/datafile1.dat')", stmt.toString());
+                ")", stmt.toString());
 
         assertEquals(stmt.toString(), SQLUtils.parseSingleStatement(stmt.toString(), DbType.hive, SQLParserFeature.KeepComments).toString());
     }
