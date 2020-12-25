@@ -2724,6 +2724,12 @@ public class WallVisitorUtils {
             }
         }
 
+        if ((!isWhite) && visitor.getDbType() == DbType.oracle) {
+            if (text.startsWith("+")) {
+                isWhite = true;
+            }
+        }
+
         if (!isWhite) {
             addViolation(visitor, ErrorCode.EVIL_HINTS, "hint not allow", x);
         }
