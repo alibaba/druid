@@ -1443,4 +1443,12 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     default void endVisit(MySqlJSONTableExpr.Column x) {
 
     }
+
+    default boolean visit(MysqlAlterTableAlterCheck x) {
+        return true;
+    }
+
+    default void endVisit(MysqlAlterTableAlterCheck x) {
+
+    }
 } //

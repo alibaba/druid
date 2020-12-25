@@ -1546,10 +1546,19 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
             SQLCheck check = new SQLCheck();
             check.setName(name);
-            SQLExpr expr = this.exprParser.expr();
+            SQLExpr expr = this.exprParser.primary();
             check.setExpr(expr);
             constraint = check;
 
+            boolean enforce = true;
+            if (Token.NOT.equals(lexer.token())) {
+                enforce = false;
+                lexer.nextToken();
+            }
+            if (lexer.stringVal().equalsIgnoreCase("ENFORCED")) {
+                check.setEnforced(enforce);
+                lexer.nextToken();
+            }
             if (lexer.token() == Token.HINT) {
                 String hintText = lexer.stringVal();
                 if (hintText != null) {

@@ -6021,13 +6021,14 @@ public class MySqlStatementParser extends SQLStatementParser {
                             lexer.nextToken();
                             if (lexer.token() == Token.IDENTIFIER) {
                                 constraintSymbol = this.exprParser.name();
-                                if (lexer.token() != Token.PRIMARY && lexer.token() != Token.UNIQUE && lexer.token() != Token.FOREIGN) {
+                                if (lexer.token() != Token.PRIMARY && lexer.token() != Token.UNIQUE && lexer.token() != Token.FOREIGN && lexer.token() != CHECK) {
                                     throw new ParserException("syntax error, expect PRIMARY, UNIQUE or FOREIGN, actual " + lexer.token() + ", " + lexer.info());
                                 }
                             }
                         case PRIMARY:
                         case UNIQUE:
                         case FOREIGN:
+                        case CHECK:
                             // Constraint.
                             if (lexer.token() == Token.FOREIGN) {
                                 MysqlForeignKey fk = this.getExprParser().parseForeignKey();
@@ -6054,20 +6055,28 @@ public class MySqlStatementParser extends SQLStatementParser {
                                 this.exprParser.parseIndex(uk.getIndexDefinition());
                                 SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(uk);
                                 stmt.addItem(item);
+                            } else if (lexer.token() == Token.CHECK) { // ADD CHECK (expr)
+                                lexer.nextToken();
+                                accept(Token.LPAREN);
+                                SQLCheck check = new SQLCheck();
+                                if (null != constraintSymbol) {
+                                    check.setName(constraintSymbol);
+                                }
+                                check.setExpr(this.exprParser.expr());
+                                accept(Token.RPAREN);
+                                boolean enforce = true;
+                                if (lexer.token() == Token.NOT) {
+                                    enforce = false;
+                                    lexer.nextToken();
+                                }
+                                if (lexer.stringVal().equalsIgnoreCase("ENFORCED")) {
+                                    check.setEnforced(enforce);
+                                    lexer.nextToken();
+                                }
+                                SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(check);
+                                stmt.addItem(item);
                             }
                             return true;
-
-                        // ADD CHECK (expr)
-                        case CHECK: {
-                            lexer.nextToken();
-                            accept(Token.LPAREN);
-                            SQLCheck check = new SQLCheck();
-                            check.setExpr(this.exprParser.expr());
-                            accept(Token.RPAREN);
-                            SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(check);
-                            stmt.addItem(item);
-                            return true;
-                        }
 
                         // ADD PARTITION (partition_definition)
                         case PARTITION: {
@@ -6525,6 +6534,20 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                     alterIndex.setAnalyzerName(this.exprParser.name());
                     stmt.addItem(alterIndex);
+                } else if (lexer.token() == Token.CHECK || lexer.token() == Token.CONSTRAINT) {
+                    lexer.nextToken();
+                    MysqlAlterTableAlterCheck check = new MysqlAlterTableAlterCheck();
+                    check.setName(this.exprParser.name());
+                    boolean enforce = true;
+                    if (lexer.token() == Token.NOT) {
+                        enforce = false;
+                        lexer.nextToken();
+                    }
+                    if (lexer.stringVal().equalsIgnoreCase("ENFORCED")) {
+                        check.setEnforced(enforce);
+                        lexer.nextToken();
+                    }
+                    stmt.addItem(check);
                 } else {
                     // ALTER [COLUMN] col_name {SET DEFAULT literal | DROP DEFAULT}
                     if (lexer.token() == Token.COLUMN) {
