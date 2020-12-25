@@ -5711,6 +5711,21 @@ public class SQLExprParser extends SQLParser {
         } else {
             limit.setRowCount(temp);
         }
+
+        if (lexer.token == Token.BY && dbType == DbType.clickhouse) {
+            lexer.nextToken();
+
+            for (;;) {
+                SQLExpr item = this.expr();
+                limit.addBy(item);
+                if (lexer.token == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+        }
+
         return limit;
     }
 

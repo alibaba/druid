@@ -15,11 +15,9 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
+import java.util.ArrayList;
+import java.util.List;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.HashMap;
@@ -30,6 +28,7 @@ import java.util.HashMap;
 public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
     private SQLExpr rowCount;
     private SQLExpr offset;
+    private List<SQLExpr> by;
 
     public SQLLimit() {
 
@@ -79,20 +78,26 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
         this.offset = offset;
     }
 
-    public void merge(SQLLimit limit) {
-        if (limit == null) {
+    public void merge(SQLLimit other) {
+        if (other == null) {
             return;
         }
 
-        if (limit.offset != null) {
+        if (other.offset != null) {
             if (this.offset == null) {
-                this.offset = limit.offset.clone();
+                this.offset = other.offset.clone();
             }
         }
 
-        if (limit.rowCount != null) {
+        if (other.rowCount != null) {
             if (this.rowCount == null) {
-                this.rowCount = limit.rowCount.clone();
+                this.rowCount = other.rowCount.clone();
+            }
+        }
+
+        if (other.by != null) {
+            for (SQLExpr item : other.by) {
+                addBy(item.clone());
             }
         }
     }
@@ -106,6 +111,12 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
 
             if (rowCount != null) {
                 rowCount.accept(visitor);
+            }
+
+            if (by != null) {
+                for (SQLExpr item : by) {
+                    item.accept(visitor);
+                }
             }
         }
         visitor.endVisit(this);
@@ -122,11 +133,33 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
             x.setRowCount(rowCount.clone());
         }
 
+        if (by != null) {
+            for (SQLExpr item : by) {
+                x.addBy(item);
+            }
+        }
+
         if (attributes != null) {
             x.attributes = (HashMap) ((HashMap) attributes).clone();
         }
 
         return x;
+    }
+
+    public void addBy(SQLExpr item) {
+        if (item == null) {
+            return;
+        }
+
+        if (by == null) {
+            by = new ArrayList<>(1);
+        }
+        by.add(item);
+        item.setParent(this);
+    }
+
+    public List<SQLExpr> getBy() {
+        return by;
     }
 
     @Override

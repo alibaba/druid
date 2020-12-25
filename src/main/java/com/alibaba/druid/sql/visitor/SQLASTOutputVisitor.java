@@ -7950,6 +7950,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printExpr(rowCount, parameterized);
         }
 
+        final List<SQLExpr> by = x.getBy();
+        if (by != null) {
+            print0(ucase ? " BY " : " by ");
+            for (int i = 0; i < by.size(); i++) {
+                if (i != 0) {
+                    print0(", ");
+                }
+                by.get(i).accept(this);
+            }
+        }
+
         return false;
     }
 
