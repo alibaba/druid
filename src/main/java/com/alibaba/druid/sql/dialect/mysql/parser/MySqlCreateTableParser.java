@@ -1550,6 +1550,9 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             check.setExpr(expr);
             constraint = check;
 
+            boolean enforce = true;
+            //should find Token.NOT to recognize "NOT ENFORCED"
+            //but somehow Token.NOT eaten by "this.exprParser.expr()" in above code
             if (lexer.token() == Token.HINT) {
                 String hintText = lexer.stringVal();
                 if (hintText != null) {
@@ -1564,6 +1567,9 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     }
                     lexer.nextToken();
                 }
+            } else if (lexer.stringVal().equalsIgnoreCase("ENFORCED")) {
+                check.setEnforced(enforce);
+                lexer.nextToken();
             }
         }
 
