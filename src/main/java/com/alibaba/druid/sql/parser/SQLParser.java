@@ -154,6 +154,14 @@ public class SQLParser {
                         return null;
                     }
                     return ident;
+                } else if (hash == FnvHash.Constants.ASOF && dbType == DbType.clickhouse) {
+                    Lexer.SavePoint mark = lexer.mark();
+                    lexer.nextToken();
+                    if (lexer.token == Token.LEFT || lexer.token == Token.JOIN) {
+                        lexer.reset(mark);
+                        return null;
+                    }
+                    return ident;
                 }
             }
         }

@@ -3962,6 +3962,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else {
             println();
 
+            boolean asof = x.isAsof();
+            if (asof) {
+                print0(ucase ? " ASOF ": " asof");
+            }
+
             if (x.isNatural()) {
                 print0(ucase ? "NATURAL " : "natural ");
             }

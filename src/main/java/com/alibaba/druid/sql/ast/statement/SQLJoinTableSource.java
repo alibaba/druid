@@ -37,6 +37,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     protected final List<SQLExpr> using = new ArrayList<SQLExpr>();
     protected boolean             natural = false;
     protected UDJ                 udj; // for maxcompute
+    protected boolean             asof; // for clickhouse
 
     public SQLJoinTableSource(String alias){
         super(alias);
@@ -91,6 +92,14 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             x.setParent(this);
         }
         this.udj = x;
+    }
+
+    public boolean isAsof() {
+        return asof;
+    }
+
+    public void setAsof(boolean asof) {
+        this.asof = asof;
     }
 
     public JoinType getJoinType() {
@@ -324,6 +333,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         }
 
         x.natural = natural;
+        x.asof = asof;
 
         if (udj != null) {
             x.udj = udj.clone();
@@ -348,6 +358,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         if (right instanceof SQLJoinTableSource) {
             ((SQLJoinTableSource) right).reverse();
         }
+
     }
 
     /**

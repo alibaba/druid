@@ -1151,7 +1151,7 @@ public class SQLSelectParser extends SQLParser {
                             && ((hash = lexer.hash_lower()) == FnvHash.Constants.STRAIGHT_JOIN
                             || hash == FnvHash.Constants.CROSS)))
                     {
-                        String alias = tableAlias();
+                        String alias = tableAlias(false);
                         if (alias != null) {
                             if (isEnabled(SQLParserFeature.IgnoreNameQuotes) && alias.length() > 1) {
                                 alias = StringUtils.removeNameQuotes(alias);
@@ -1190,6 +1190,12 @@ public class SQLSelectParser extends SQLParser {
         boolean natural = lexer.identifierEquals(FnvHash.Constants.NATURAL);
         if (natural) {
             lexer.nextToken();
+        }
+
+        boolean asof = false;
+        if (lexer.identifierEquals(FnvHash.Constants.ASOF) && dbType == DbType.clickhouse) {
+            lexer.nextToken();
+            asof = true;
         }
 
         switch (lexer.token) {
@@ -1276,6 +1282,9 @@ public class SQLSelectParser extends SQLParser {
             SQLJoinTableSource join = new SQLJoinTableSource();
             join.setLeft(tableSource);
             join.setJoinType(joinType);
+            if (asof) {
+                join.setAsof(true);
+            }
 
             boolean isBrace = false;
             if (SQLJoinTableSource.JoinType.COMMA == joinType) {
