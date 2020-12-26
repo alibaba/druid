@@ -1,0 +1,5 @@
+create table default.sale_detail_6781 like default.sale_detail_1119 STORED AS parquet
+---------------------------
+CREATE TABLE default.sale_detail_6781
+LIKE default.sale_detail_1119
+STORED AS parquet
