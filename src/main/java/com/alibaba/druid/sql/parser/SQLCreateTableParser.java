@@ -182,6 +182,16 @@ public class SQLCreateTableParser extends SQLDDLParser {
             createTable.setPartitioning(partitionClause);
         }
 
+        if (dbType == DbType.clickhouse) {
+            if (lexer.identifierEquals(FnvHash.Constants.ENGINE)) {
+                lexer.nextToken();
+                accept(Token.EQ);
+                createTable.setEngine(
+                        this.exprParser.expr()
+                );
+            }
+        }
+
         return createTable;
     }
 

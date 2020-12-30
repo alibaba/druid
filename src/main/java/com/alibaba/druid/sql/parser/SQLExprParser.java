@@ -3675,6 +3675,46 @@ public class SQLExprParser extends SQLParser {
         } else if (lexer.identifierEquals(FnvHash.Constants.ROW) || lexer.token == Token.ROW) {
             lexer.nextToken();
             return parseSqlRowDataType();
+        } else if (lexer.identifierEquals(FnvHash.Constants.NESTED) && dbType == DbType.clickhouse) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+
+            SQLStructDataType struct = new SQLStructDataType(dbType);
+
+            for (;;) {
+                SQLName name;
+                switch (lexer.token) {
+                    case GROUP:
+                    case ORDER:
+                    case FROM:
+                    case TO:
+                        name = new SQLIdentifierExpr(lexer.stringVal());
+                        lexer.nextToken();
+                        break;
+                    default:
+                        name = this.name();
+                        break;
+                }
+
+                SQLDataType dataType = this.parseDataType();
+                SQLStructDataType.Field field = struct.addField(name, dataType);
+
+                if (lexer.token == Token.COMMENT) {
+                    lexer.nextToken();
+                    SQLCharExpr chars = (SQLCharExpr) this.primary();
+                    field.setComment(chars.getText());
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+
+            accept(Token.RPAREN);
+
+            return struct;
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.UNIONTYPE)) {

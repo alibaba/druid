@@ -72,6 +72,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected boolean replace = false;
     protected boolean ignore = false;
     protected boolean                          dimension;
+    protected SQLExpr                          engine;
 
     public SQLCreateTableStatement(){
 
@@ -1533,5 +1534,16 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
 
         return false;
+    }
+
+    public SQLExpr getEngine() {
+        return engine;
+    }
+
+    public void setEngine(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.engine = x;
     }
 }

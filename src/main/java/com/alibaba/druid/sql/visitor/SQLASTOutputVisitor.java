@@ -3526,6 +3526,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             tablespace.accept(this);
         }
 
+        SQLExpr engine = x.getEngine();
+        if (engine != null) {
+            print0(ucase ? " ENGINE = " : " engine = ");
+            engine.accept(this);
+        }
+
         return false;
     }
 
