@@ -516,6 +516,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.KDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:polardb")) {
             return JdbcConstants.POLARDB_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:highgo:")) {
+            return "com.highgo.jdbc.Driver";
         } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }
@@ -621,6 +623,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.kdb;
         } else if (rawUrl.startsWith("jdbc:polardb")) {
             return DbType.polardb;
+        } else if (rawUrl.startsWith("jdbc:highgo:")) {
+            return DbType.highgo;
         } else {
             return null;
         }

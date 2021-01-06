@@ -46,6 +46,7 @@ public enum DbType {
     ali_oracle          (1 << 33),
     mock          (1 << 34),
     sybase          (1 << 35),
+    highgo          (1 << 36),
 
 
     ingres          (0),
