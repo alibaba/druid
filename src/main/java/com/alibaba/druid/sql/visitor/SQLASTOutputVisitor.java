@@ -5405,6 +5405,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLAlterTableStatement x) {
         print0(ucase ? "ALTER TABLE " : "alter table ");
+
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+
         printTableSourceExpr(x.getName());
         this.indentCount++;
         for (int i = 0; i < x.getItems().size(); ++i) {

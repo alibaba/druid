@@ -1,0 +1,20 @@
+SET data = jsonb_set(
+data,
+ARRAY[(
+SELECT idx - 1 AS idx
+FROM cgm_data c1,
+jsonb_array_elements(data)
+WHERE
+info ->> 'index' = ?
+and c1.id = ?
+)]::TEXT[],
+?::jsonb
+)
+WHERE t1.id = ?;
+---------------------------
+SET data TO jsonb_set(data, ARRAY[(
+	SELECT idx - 1 AS idx
+	FROM cgm_data c1, jsonb_array_elements(data)
+	WHERE info ->> 'index' = ?
+		AND c1.id = ?
+)]::TEXT[], ?::jsonb), t1, id, id

@@ -53,6 +53,8 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
     protected int                   buckets;
     protected int                   shards;
 
+    private boolean                 ifExists                 = false;
+
     public SQLAlterTableStatement(){
 
     }
@@ -83,6 +85,14 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     public void setOffline(boolean offline) {
         this.offline = offline;
+    }
+
+    public boolean isIfExists() {
+        return ifExists;
+    }
+
+    public void setIfExists(boolean ifExists) {
+        this.ifExists = ifExists;
     }
 
     public boolean isRemovePatiting() {

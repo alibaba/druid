@@ -1763,6 +1763,13 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
 
             SQLAlterTableStatement stmt = new SQLAlterTableStatement(getDbType());
+
+            if (lexer.token == Token.IF) {
+                lexer.nextToken();
+                accept(Token.EXISTS);
+                stmt.setIfExists(true);
+            }
+
             stmt.setName(this.exprParser.name());
 
             for (;;) {

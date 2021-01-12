@@ -52,6 +52,18 @@ public class PostgresqlResourceTest extends PGTest {
         exec_test("bvt/parser/postgresql-3.txt");
     }
 
+    public void test_4() throws Exception {
+        exec_test("bvt/parser/postgresql-4.txt");
+    }
+
+    public void test_5() throws Exception {
+        exec_test("bvt/parser/postgresql-5.txt");
+    }
+
+    public void test_6() throws Exception {
+        exec_test("bvt/parser/postgresql-6.txt");
+    }
+
     public void exec_test(String resource) throws Exception {
         System.out.println(resource);
         InputStream is = null;

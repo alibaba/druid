@@ -1,0 +1,4 @@
+ALTER TABLE tb_a ADD COLUMNS ( a bigint );
+---------------------------
+ALTER TABLE tb_a
+	ADD COLUMNS (a bigint);

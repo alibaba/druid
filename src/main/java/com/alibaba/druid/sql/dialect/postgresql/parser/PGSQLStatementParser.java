@@ -557,6 +557,10 @@ public class PGSQLStatementParser extends SQLStatementParser {
                     values.add(new SQLCharExpr(lexer.stringVal()));
                 } else if (lexer.token() == Token.LITERAL_INT) {
                     values.add(new SQLIdentifierExpr(lexer.numberString()));
+                } else if (lexer.identifierEquals(FnvHash.Constants.JSON_SET)
+                        || lexer.identifierEquals(FnvHash.Constants.JSONB_SET)) {
+                    SQLExpr json_set = this.exprParser.expr();
+                    values.add(json_set);
                 } else {
                     values.add(new SQLIdentifierExpr(lexer.stringVal()));
                 }

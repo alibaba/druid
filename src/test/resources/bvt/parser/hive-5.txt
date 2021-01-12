@@ -1,0 +1,4 @@
+INSERT INTO tb_a VALUES ( 1 );
+---------------------------
+INSERT INTO TABLE tb_a
+VALUES (1);
