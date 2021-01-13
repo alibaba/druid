@@ -1,0 +1,5 @@
+alter table if exists tcweatherdata
+add column predictiontime timestamp
+---------------------------
+ALTER TABLE IF EXISTS tcweatherdata
+	ADD COLUMN predictiontime timestamp

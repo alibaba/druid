@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.schemaStat;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -17,7 +18,7 @@ public class SchemaStatTest13 extends TestCase {
     public void test_schemaStat() throws Exception {
         String sql = "select a.id, b.name from (select t1.* from table1 t1 left join table3 t3 on cast(t1.id as bigint) = t3.id) a inner join table2 b on a.id = b.id";
 
-        String dbType = JdbcConstants.ORACLE;
+        DbType dbType = JdbcConstants.ORACLE;
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         SQLStatement stmt = parser.parseStatementList().get(0);
 

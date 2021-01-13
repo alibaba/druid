@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements OracleSQLObject {
@@ -31,6 +32,11 @@ public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements Oracl
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof OracleASTVisitor) {
             this.accept0((OracleASTVisitor) v);
+            return;
+        }
+
+        if (v instanceof SQLASTOutputVisitor) {
+            ((SQLASTOutputVisitor) v).print(this.toString());
         }
     }
 
@@ -47,4 +53,5 @@ public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements Oracl
     public String toString() {
         return SQLUtils.toOracleString(this);
     }
+
 }

@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.oracle.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class Oracle_param_0 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "select * from t where rownum = 1";
 

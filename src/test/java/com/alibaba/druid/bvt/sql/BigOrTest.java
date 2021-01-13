@@ -17,6 +17,7 @@ package com.alibaba.druid.bvt.sql;
 
 import java.util.List;
 
+import com.alibaba.druid.DbType;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -31,7 +32,7 @@ public class BigOrTest extends TestCase {
             buf.append(" OR FID = " + i);
         }
         String sql = buf.toString();
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, null);
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, (DbType) null);
         String text = SQLUtils.toSQLString(stmtList.get(0));
         //System.out.println(text);
     }

@@ -1,5 +1,6 @@
 package com.alibaba.druid.demo.sql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -16,7 +17,7 @@ import java.util.Map;
 public class PGVisitorDemo extends TestCase {
     public void test_for_demo() throws Exception {
         String sql = "select * from mytable a where a.id = 3";
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.POSTGRESQL);
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.postgresql);
 
         ExportTableAliasVisitor visitor = new ExportTableAliasVisitor();
         for (SQLStatement stmt : stmtList) {

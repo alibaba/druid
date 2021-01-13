@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql;
 
+import com.alibaba.druid.DbType;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -28,10 +29,12 @@ public class MybatisTest extends TestCase {
 
     public void test_mysql() throws Exception {
         Assert.assertEquals("SELECT *\nFROM t\nWHERE id = #{id}", SQLUtils.format(sql, JdbcUtils.MYSQL));
+        Assert.assertEquals("SELECT *\nFROM t\nWHERE id = #{id}", SQLUtils.format(sql, JdbcUtils.OCEANBASE));
     }
 
     public void test_oracle() throws Exception {
         Assert.assertEquals("SELECT *\nFROM t\nWHERE id = #{id}", SQLUtils.format(sql, JdbcUtils.ORACLE));
+        Assert.assertEquals("SELECT *\nFROM t\nWHERE id = #{id}", SQLUtils.format(sql, JdbcUtils.OCEANBASE_ORACLE));
         Assert.assertEquals("SELECT *\nFROM t\nWHERE id = #{id}", SQLUtils.format(sql, JdbcUtils.ALI_ORACLE));
     }
 
@@ -40,6 +43,6 @@ public class MybatisTest extends TestCase {
     }
 
     public void test_sql92() throws Exception {
-        Assert.assertEquals("SELECT *\nFROM t\nWHERE id = #{id}", SQLUtils.format(sql, null));
+        Assert.assertEquals("SELECT *\nFROM t\nWHERE id = #{id}", SQLUtils.format(sql, (DbType) null));
     }
 }

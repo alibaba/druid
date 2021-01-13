@@ -1,0 +1,20 @@
+CREATE TABLE visits (
+  time     DateTime,
+  visits   Nested
+  (
+    a          String,
+    btime      Int64,
+    c          String,
+    e          String
+  )
+) ENGINE = Memory;
+---------------------------
+CREATE TABLE visits (
+	time DateTime,
+	visits NESTED (
+		a String,
+		btime Int64,
+		c String,
+		e String
+	)
+) ENGINE = Memory;

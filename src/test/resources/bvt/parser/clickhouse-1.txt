@@ -1,0 +1,12 @@
+select * from data_all dsa where dsa.sign='1' and dsa.number in ( select DISTINCT number
+from dc_clients do
+where hasAny(splitByString(',',cast(do.df_time as String)),[?,?])=1 )
+---------------------------
+SELECT *
+FROM data_all dsa
+WHERE dsa.sign = '1'
+	AND dsa.number IN (
+		SELECT DISTINCT number
+		FROM dc_clients do
+		WHERE hasAny(splitByString(',', CAST(do.df_time AS String)), [?, ?]) = 1
+	)

@@ -1,0 +1,8 @@
+create table s_2c3e24b36890b0d31aeca286e84c6471 as (
+    SELECT DISTINCT ON (sn) sn, num01 FROM "s_f73e29e1c9830041f1bdfa8_2c3e24b36890b0d31aeca286e84c6471"
+ );
+---------------------------
+CREATE TABLE s_2c3e24b36890b0d31aeca286e84c6471
+AS
+SELECT DISTINCT ON(sn) AS sn, num01
+FROM "s_f73e29e1c9830041f1bdfa8_2c3e24b36890b0d31aeca286e84c6471";

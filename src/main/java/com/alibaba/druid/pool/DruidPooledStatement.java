@@ -19,16 +19,15 @@ import java.net.SocketTimeoutException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.MySqlUtils;
 
@@ -127,7 +126,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             return;
         }
 
-        if (!JdbcConstants.MYSQL.equals(dataSource.dbType)) {
+        if (DbType.mysql != DbType.of(dataSource.dbTypeName)) {
             return;
         }
 

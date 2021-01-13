@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,24 @@
  */
 package com.alibaba.druid.sql.dialect.hive.ast;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
-
 public class HiveMultiInsertStatement extends SQLStatementImpl {
-
+    protected SQLWithSubqueryClause with;
     private SQLTableSource from;
 
     private List<HiveInsert>       items = new ArrayList<HiveInsert>();
     
     public HiveMultiInsertStatement() {
-        dbType = JdbcConstants.HIVE;
+        super (DbType.hive);
     }
 
     public void setFrom(SQLTableSource from) {
@@ -58,6 +59,7 @@ public class HiveMultiInsertStatement extends SQLStatementImpl {
         if (visitor instanceof HiveASTVisitor) {
             accept0((HiveASTVisitor) visitor);
         } else {
+            acceptChild(visitor, with);
             acceptChild(visitor, from);
             acceptChild(visitor, items);
         }
@@ -65,9 +67,21 @@ public class HiveMultiInsertStatement extends SQLStatementImpl {
 
     public void accept0(HiveASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, with);
             acceptChild(visitor, from);
             acceptChild(visitor, items);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLWithSubqueryClause getWith() {
+        return with;
+    }
+
+    public void setWith(SQLWithSubqueryClause with) {
+        if (with != null) {
+            with.setParent(this);
+        }
+        this.with = with;
     }
 }

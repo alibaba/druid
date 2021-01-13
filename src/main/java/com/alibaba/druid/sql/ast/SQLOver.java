@@ -1,12 +1,12 @@
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,27 +20,26 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class SQLOver extends SQLObjectImpl {
+public class SQLOver extends SQLObjectImpl implements SQLReplaceable {
 
     protected final List<SQLExpr> partitionBy = new ArrayList<SQLExpr>();
     protected SQLOrderBy          orderBy;
+    protected SQLOrderBy          distributeBy;
+    protected SQLOrderBy          sortBy;
 
     // for db2
     protected SQLName             of;
 
-    protected SQLExpr             windowing;
-    protected WindowingType       windowingType = WindowingType.ROWS;
+    protected WindowingType       windowingType;
 
     protected boolean             windowingPreceding;
     protected boolean             windowingFollowing;
 
     protected SQLExpr             windowingBetweenBegin;
-    protected boolean             windowingBetweenBeginPreceding;
-    protected boolean             windowingBetweenBeginFollowing;
+    protected WindowingBound      windowingBetweenBeginBound;
 
     protected SQLExpr             windowingBetweenEnd;
-    protected boolean             windowingBetweenEndPreceding;
-    protected boolean             windowingBetweenEndFollowing;
+    protected WindowingBound      windowingBetweenEndBound;
 
     public SQLOver(){
 
@@ -53,9 +52,29 @@ public class SQLOver extends SQLObjectImpl {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.partitionBy);
-            acceptChild(visitor, this.orderBy);
-            acceptChild(visitor, this.of);
+            if (partitionBy != null) {
+                for (SQLExpr item : partitionBy) {
+                    if (item != null) {
+                        item.accept(visitor);
+                    }
+                }
+            }
+
+            if (orderBy != null) {
+                orderBy.accept(visitor);
+            }
+
+            if (distributeBy != null) {
+                distributeBy.accept(visitor);
+            }
+
+            if (sortBy != null) {
+                sortBy.accept(visitor);
+            }
+
+            if (of != null) {
+                of.accept(visitor);
+            }
         }
         visitor.endVisit(this);
     }
@@ -71,6 +90,28 @@ public class SQLOver extends SQLObjectImpl {
         this.orderBy = orderBy;
     }
 
+    public SQLOrderBy getDistributeBy() {
+        return distributeBy;
+    }
+
+    public void setDistributeBy(SQLOrderBy x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.distributeBy = x;
+    }
+
+    public SQLOrderBy getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(SQLOrderBy x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.sortBy = x;
+    }
+
     public SQLName getOf() {
         return of;
     }
@@ -84,14 +125,6 @@ public class SQLOver extends SQLObjectImpl {
 
     public List<SQLExpr> getPartitionBy() {
         return partitionBy;
-    }
-
-    public SQLExpr getWindowing() {
-        return windowing;
-    }
-
-    public void setWindowing(SQLExpr windowing) {
-        this.windowing = windowing;
     }
 
     public WindowingType getWindowingType() {
@@ -110,36 +143,12 @@ public class SQLOver extends SQLObjectImpl {
         this.windowingPreceding = windowingPreceding;
     }
 
-    public boolean isWindowingFollowing() {
-        return windowingFollowing;
-    }
-
-    public void setWindowingFollowing(boolean windowingFollowing) {
-        this.windowingFollowing = windowingFollowing;
-    }
-
     public SQLExpr getWindowingBetweenBegin() {
         return windowingBetweenBegin;
     }
 
     public void setWindowingBetweenBegin(SQLExpr windowingBetweenBegin) {
         this.windowingBetweenBegin = windowingBetweenBegin;
-    }
-
-    public boolean isWindowingBetweenBeginPreceding() {
-        return windowingBetweenBeginPreceding;
-    }
-
-    public void setWindowingBetweenBeginPreceding(boolean windowingBetweenBeginPreceding) {
-        this.windowingBetweenBeginPreceding = windowingBetweenBeginPreceding;
-    }
-
-    public boolean isWindowingBetweenBeginFollowing() {
-        return windowingBetweenBeginFollowing;
-    }
-
-    public void setWindowingBetweenBeginFollowing(boolean windowingBetweenBeginFollowing) {
-        this.windowingBetweenBeginFollowing = windowingBetweenBeginFollowing;
     }
 
     public SQLExpr getWindowingBetweenEnd() {
@@ -151,19 +160,27 @@ public class SQLOver extends SQLObjectImpl {
     }
 
     public boolean isWindowingBetweenEndPreceding() {
-        return windowingBetweenEndPreceding;
-    }
-
-    public void setWindowingBetweenEndPreceding(boolean windowingBetweenEndPreceding) {
-        this.windowingBetweenEndPreceding = windowingBetweenEndPreceding;
+        return windowingBetweenEndBound == WindowingBound.PRECEDING;
     }
 
     public boolean isWindowingBetweenEndFollowing() {
-        return windowingBetweenEndFollowing;
+        return windowingBetweenEndBound == WindowingBound.FOLLOWING;
     }
 
-    public void setWindowingBetweenEndFollowing(boolean windowingBetweenEndFollowing) {
-        this.windowingBetweenEndFollowing = windowingBetweenEndFollowing;
+    public WindowingBound getWindowingBetweenBeginBound() {
+        return windowingBetweenBeginBound;
+    }
+
+    public void setWindowingBetweenBeginBound(WindowingBound windowingBetweenBeginBound) {
+        this.windowingBetweenBeginBound = windowingBetweenBeginBound;
+    }
+
+    public WindowingBound getWindowingBetweenEndBound() {
+        return windowingBetweenEndBound;
+    }
+
+    public void setWindowingBetweenEndBound(WindowingBound windowingBetweenEndBound) {
+        this.windowingBetweenEndBound = windowingBetweenEndBound;
     }
 
     @Override
@@ -175,19 +192,16 @@ public class SQLOver extends SQLObjectImpl {
 
         if (windowingPreceding != sqlOver.windowingPreceding) return false;
         if (windowingFollowing != sqlOver.windowingFollowing) return false;
-        if (windowingBetweenBeginPreceding != sqlOver.windowingBetweenBeginPreceding) return false;
-        if (windowingBetweenBeginFollowing != sqlOver.windowingBetweenBeginFollowing) return false;
-        if (windowingBetweenEndPreceding != sqlOver.windowingBetweenEndPreceding) return false;
-        if (windowingBetweenEndFollowing != sqlOver.windowingBetweenEndFollowing) return false;
-        if (partitionBy != null ? !partitionBy.equals(sqlOver.partitionBy) : sqlOver.partitionBy != null) return false;
+        if (!partitionBy.equals(sqlOver.partitionBy)) return false;
         if (orderBy != null ? !orderBy.equals(sqlOver.orderBy) : sqlOver.orderBy != null) return false;
         if (of != null ? !of.equals(sqlOver.of) : sqlOver.of != null) return false;
-        if (windowing != null ? !windowing.equals(sqlOver.windowing) : sqlOver.windowing != null) return false;
         if (windowingType != sqlOver.windowingType) return false;
         if (windowingBetweenBegin != null ? !windowingBetweenBegin.equals(sqlOver.windowingBetweenBegin) : sqlOver.windowingBetweenBegin != null)
             return false;
-        return windowingBetweenEnd != null ? windowingBetweenEnd.equals(sqlOver.windowingBetweenEnd) : sqlOver.windowingBetweenEnd == null;
-
+        if (windowingBetweenBeginBound != sqlOver.windowingBetweenBeginBound) return false;
+        if (windowingBetweenEnd != null ? !windowingBetweenEnd.equals(sqlOver.windowingBetweenEnd) : sqlOver.windowingBetweenEnd != null)
+            return false;
+        return windowingBetweenEndBound == sqlOver.windowingBetweenEndBound;
     }
 
     @Override
@@ -195,16 +209,13 @@ public class SQLOver extends SQLObjectImpl {
         int result = partitionBy != null ? partitionBy.hashCode() : 0;
         result = 31 * result + (orderBy != null ? orderBy.hashCode() : 0);
         result = 31 * result + (of != null ? of.hashCode() : 0);
-        result = 31 * result + (windowing != null ? windowing.hashCode() : 0);
         result = 31 * result + (windowingType != null ? windowingType.hashCode() : 0);
         result = 31 * result + (windowingPreceding ? 1 : 0);
         result = 31 * result + (windowingFollowing ? 1 : 0);
         result = 31 * result + (windowingBetweenBegin != null ? windowingBetweenBegin.hashCode() : 0);
-        result = 31 * result + (windowingBetweenBeginPreceding ? 1 : 0);
-        result = 31 * result + (windowingBetweenBeginFollowing ? 1 : 0);
+        result = 31 * result + (windowingBetweenBeginBound != null ? windowingBetweenBeginBound.hashCode() : 0);
         result = 31 * result + (windowingBetweenEnd != null ? windowingBetweenEnd.hashCode() : 0);
-        result = 31 * result + (windowingBetweenEndPreceding ? 1 : 0);
-        result = 31 * result + (windowingBetweenEndFollowing ? 1 : 0);
+        result = 31 * result + (windowingBetweenEndBound != null ? windowingBetweenEndBound.hashCode() : 0);
         return result;
     }
 
@@ -212,7 +223,7 @@ public class SQLOver extends SQLObjectImpl {
         for (SQLExpr item : partitionBy) {
             SQLExpr item1 = item.clone();
             item1.setParent(x);
-            x.partitionBy.add(item);
+            x.partitionBy.add(item1);
         }
 
         if (orderBy != null) {
@@ -223,9 +234,6 @@ public class SQLOver extends SQLObjectImpl {
             x.setOf(of.clone());
         }
 
-        if (windowing != null) {
-            x.setWindowing(windowing.clone());
-        }
         x.windowingType = windowingType;
         x.windowingPreceding = windowingPreceding;
         x.windowingFollowing = windowingFollowing;
@@ -233,14 +241,12 @@ public class SQLOver extends SQLObjectImpl {
         if (windowingBetweenBegin != null) {
             x.setWindowingBetweenBegin(windowingBetweenBegin.clone());
         }
-        x.windowingBetweenBeginPreceding = windowingBetweenBeginPreceding;
-        x.windowingBetweenBeginFollowing = windowingBetweenBeginFollowing;
+        x.windowingBetweenBeginBound = windowingBetweenBeginBound;
+        x.windowingBetweenEndBound = windowingBetweenEndBound;
 
         if (windowingBetweenEnd != null) {
             x.setWindowingBetweenEnd(windowingBetweenEnd.clone());
         }
-        x.windowingBetweenEndPreceding = windowingBetweenEndPreceding;
-        x.windowingBetweenEndFollowing = windowingBetweenEndFollowing;
     }
 
     public SQLOver clone() {
@@ -249,7 +255,52 @@ public class SQLOver extends SQLObjectImpl {
         return x;
     }
 
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (windowingBetweenBegin == expr) {
+            setWindowingBetweenBegin(target);
+            return true;
+        }
+
+        if (windowingBetweenEnd == expr) {
+            setWindowingBetweenEnd(target);
+            return true;
+        }
+
+        for (int i = 0; i < partitionBy.size(); i++) {
+            if (partitionBy.get(i) == expr) {
+                partitionBy.set(i, target);
+                target.setParent(this);
+            }
+        }
+
+        return false;
+    }
+
     public static enum WindowingType {
-        ROWS, RANGE
+        ROWS("ROWS"), RANGE("RANGE");
+
+        public final String name;
+        public final String name_lower;
+        private WindowingType(String name) {
+            this.name = name;
+            this.name_lower = name.toLowerCase();
+        }
+    }
+
+
+    public static enum WindowingBound {
+        UNBOUNDED_PRECEDING("UNBOUNDED PRECEDING"),
+        PRECEDING("PRECEDING"),
+        CURRENT_ROW("CURRENT ROW"),
+        FOLLOWING("FOLLOWING"),
+        UNBOUNDED_FOLLOWING("UNBOUNDED FOLLOWING");
+
+        public final String name;
+        public final String name_lower;
+        private WindowingBound(String name) {
+            this.name = name;
+            this.name_lower = name.toLowerCase();
+        }
     }
 }

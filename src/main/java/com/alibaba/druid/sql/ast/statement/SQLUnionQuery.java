@@ -15,13 +15,18 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDbTypedObject;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLDbTypedObject {
@@ -33,7 +38,7 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
     private SQLOrderBy       orderBy;
 
     private SQLLimit         limit;
-    private String           dbType;
+    private DbType           dbType;
 
     public SQLUnionOperator getOperator() {
         return operator;
@@ -205,11 +210,11 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
         return null;
     }
 
-    public String getDbType() {
+    public DbType getDbType() {
         return dbType;
     }
 
-    public void setDbType(String dbType) {
+    public void setDbType(DbType dbType) {
         this.dbType = dbType;
     }
 
@@ -226,6 +231,54 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
         }
 
         return false;
+    }
+
+    public List<SQLSelectQuery> getChildren() {
+        boolean bracket = this.bracket && !(parent instanceof SQLUnionQueryTableSource);
+
+        if (relations.size() > 2) {
+            return relations;
+        }
+
+        SQLSelectQuery left = getLeft();
+        SQLSelectQuery right = getRight();
+
+        if ((!bracket)
+                && left instanceof SQLUnionQuery
+                && ((SQLUnionQuery) left).getOperator() == operator
+                && !right.isBracket()
+                && orderBy == null) {
+
+            SQLUnionQuery leftUnion = (SQLUnionQuery) left;
+
+            ArrayList<SQLSelectQuery> rights = new ArrayList<SQLSelectQuery>();
+            rights.add(right);
+
+            for (; ; ) {
+                SQLSelectQuery leftLeft = leftUnion.getLeft();
+                SQLSelectQuery leftRight = leftUnion.getRight();
+
+                if ((!leftUnion.isBracket())
+                        && leftUnion.getOrderBy() == null
+                        && (!leftLeft.isBracket())
+                        && (!leftRight.isBracket())
+                        && leftLeft instanceof SQLUnionQuery
+                        && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
+                    rights.add(leftRight);
+                    leftUnion = (SQLUnionQuery) leftLeft;
+                    continue;
+                } else {
+                    rights.add(leftRight);
+                    rights.add(leftLeft);
+                }
+                break;
+            }
+            Collections.reverse(rights);
+
+            return rights;
+        }
+
+        return Arrays.asList(left, right);
     }
 
     @Override

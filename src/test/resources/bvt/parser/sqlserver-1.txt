@@ -1,0 +1,4 @@
+ALTER TABLE [dbo].[sys_config] ADD UNIQUE ([param_key] ASC)
+---------------------------
+ALTER TABLE [dbo].[sys_config]
+	ADD UNIQUE ([param_key] ASC)

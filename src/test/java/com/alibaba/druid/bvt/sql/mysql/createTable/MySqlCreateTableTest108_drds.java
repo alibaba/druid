@@ -4,6 +4,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
@@ -33,8 +35,7 @@ public class MySqlCreateTableTest108_drds extends MysqlTest {
                 "\tERR_REASON varchar(255) COMMENT '失败原因',\n" +
                 "\tPART_ID integer NOT NULL COMMENT '分区标识（取订单编号中的月份）'\n" +
                 ")\n" +
-                "DBPARTITION BY HASH (SUBS_ORDER_ID)\n" +
-                "TBPARTITION BY HASH (PART_ID)\n" +
-                "TBPARTITIONS 12;", stmt.toString());
+                "DBPARTITION BY HASH(SUBS_ORDER_ID)\n" +
+                "TBPARTITION BY UNI_HASH(PART_ID) TBPARTITIONS 12;", stmt.toString());
     }
 }

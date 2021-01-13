@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,7 +122,7 @@ public class MySqlExplainTest extends MysqlTest {
     }
 
     private SQLStatement testParseFormat(String sql) {
-        List<SQLStatement> statements = parse(sql);
+        List<SQLStatement> statements = parseList(sql);
         assertStatements(statements);
 
         SQLStatement statement = statements.get(0);
@@ -143,11 +143,6 @@ public class MySqlExplainTest extends MysqlTest {
         assertHasSeenXConditions(stats, 0);
 
         assertHasSeenTable(stats, tableName);
-    }
-
-    private List<SQLStatement> parse(String sql) {
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
-        return parser.parseStatementList();
     }
 
     private String format(SQLStatement statement) {

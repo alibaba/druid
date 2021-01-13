@@ -29,6 +29,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidAbstractDataSource.PhysicalConnectionInfo;
 import com.alibaba.druid.proxy.jdbc.WrapperProxy;
 import com.alibaba.druid.support.logging.Log;
@@ -73,6 +74,7 @@ public final class DruidConnectionHolder {
     protected final Map<String, Object>           variables;
     protected final Map<String, Object>           globleVariables;
     final ReentrantLock                           lock                     = new ReentrantLock();
+    protected String                              initSchema;
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo)
                                                                                                           throws SQLException{
@@ -111,10 +113,11 @@ public final class DruidConnectionHolder {
 
         {
             boolean initUnderlyHoldability = !holdabilityUnsupported;
-            if (JdbcConstants.SYBASE.equals(dataSource.dbType) //
-                || JdbcConstants.DB2.equals(dataSource.dbType) //
-                || JdbcConstants.HIVE.equals(dataSource.dbType) //
-                || JdbcConstants.ODPS.equals(dataSource.dbType) //
+            DbType dbType = DbType.of(dataSource.dbTypeName);
+            if (dbType == DbType.sybase //
+                    || dbType == DbType.db2 //
+                    || dbType == DbType.hive //
+                    || dbType == DbType.odps //
             ) {
                 initUnderlyHoldability = false;
             }

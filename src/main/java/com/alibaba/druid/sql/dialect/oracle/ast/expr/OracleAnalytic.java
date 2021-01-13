@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,22 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleAnalytic extends SQLOver implements OracleExpr {
+import java.util.ArrayList;
+import java.util.List;
+
+public class OracleAnalytic extends SQLOver implements SQLReplaceable, OracleExpr {
 
     private OracleAnalyticWindowing windowing;
 
-    public OracleAnalytic(){
+    public OracleAnalytic() {
 
     }
 
@@ -75,11 +77,27 @@ public class OracleAnalytic extends SQLOver implements OracleExpr {
         return x;
     }
 
-    public void setWindowing(OracleAnalyticWindowing windowing) {
-        this.windowing = windowing;
+    public void setWindowing(OracleAnalyticWindowing x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.windowing = x;
     }
 
     public SQLDataType computeDataType() {
         return null;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+
+        for (int i = 0; i < partitionBy.size(); i++) {
+            if (partitionBy.get(i) == expr) {
+                partitionBy.set(i, target);
+                return true;
+            }
+        }
+
+        return false;
     }
 }

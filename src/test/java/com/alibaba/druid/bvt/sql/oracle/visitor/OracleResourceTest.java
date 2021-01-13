@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import org.junit.Assert;
 
@@ -33,12 +35,58 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleResourceTest extends OracleTest {
 
-    public void test_0() throws Exception {
-        // 13
-//        exec_test("bvt/parser/oracle-56.txt");
-        for (int i = 0; i <= 57; ++i) { // 57
+    public void test_0_9() throws Exception {
+        for (int i = 0; i <= 9; ++i) { // 57
              exec_test("bvt/parser/oracle-" + i + ".txt");
+            System.out.println();
         }
+    }
+
+    public void test_10_19() throws Exception {
+        for (int i = 10; i <= 19; ++i) { // 57
+            exec_test("bvt/parser/oracle-" + i + ".txt");
+            System.out.println();
+        }
+    }
+
+    public void test_20_29() throws Exception {
+        for (int i = 20; i <= 29; ++i) { // 57
+            exec_test("bvt/parser/oracle-" + i + ".txt");
+            System.out.println();
+        }
+    }
+
+    public void test_30_39() throws Exception {
+        for (int i = 30; i <= 39; ++i) { // 57
+            exec_test("bvt/parser/oracle-" + i + ".txt");
+            System.out.println();
+        }
+    }
+
+    public void test_40_49() throws Exception {
+        for (int i = 40; i <= 49; ++i) { // 57
+            exec_test("bvt/parser/oracle-" + i + ".txt");
+            System.out.println();
+        }
+    }
+
+    public void test_50_57() throws Exception {
+        for (int i = 50; i <= 57; ++i) { // 57
+            exec_test("bvt/parser/oracle-" + i + ".txt");
+            System.out.println();
+        }
+    }
+
+    public void test_58() throws Exception {
+        exec_test("bvt/parser/oracle-58.txt");
+    }
+
+    public void test_59() throws Exception {
+        exec_test("bvt/parser/oracle-59.txt");
+    }
+
+    public void test_60() throws Exception {
+        exec_test("bvt/parser/oracle-60.txt");
     }
 
     public void exec_test(String resource) throws Exception {
@@ -51,7 +99,12 @@ public class OracleResourceTest extends OracleTest {
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
-        String expect = items[1].trim();
+        String expect = null;
+        if (items.length > 1) {
+            expect = items[1];
+            expect = expect.trim();
+            expect = expect.replaceAll("\\r\\n", "\n");
+        }
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -74,23 +127,17 @@ public class OracleResourceTest extends OracleTest {
 
         System.out.println();
         System.out.println();
-    }
 
-    void mergValidate(String sql, String expect) {
-
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-
-        Assert.assertEquals(1, statementList.size());
-
-        StringBuilder out = new StringBuilder();
-        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out, true);
-        statemen.accept(visitor);
-
-        System.out.println(out.toString());
-
-        Assert.assertEquals(expect, out.toString());
+        if (statementList.size() == 1) {
+            SQLStatement stmt = statementList.get(0);
+            if (expect != null && !expect.isEmpty()) {
+                assertEquals(expect, stmt.toString());
+            }
+        } else {
+            if (expect != null && !expect.isEmpty()) {
+                assertEquals(expect, SQLUtils.toSQLString(statementList, DbType.oracle));
+            }
+        }
     }
 
 }

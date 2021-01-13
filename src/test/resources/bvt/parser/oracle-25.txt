@@ -46,26 +46,37 @@ where rownum_ >= ?
 
 ---------------------------
 SELECT *
-FROM (SELECT row_.*, rownum AS rownum_
-	FROM (SELECT *
-		FROM (SELECT results.*, row_number() OVER (PARTITION BY (results.object_id) ORDER BY results.gmt_modified DESC) AS rn
-			FROM (SELECT sus.ID AS ID, sus.GMT_CREATE AS GMT_CREATE, sus.GMT_MODIFIED AS GMT_MODIFIED, sus.COMPANY_ID AS COMPANY_ID, sus.OBJECT_ID AS OBJECT_ID
+FROM (
+	SELECT row_.*, rownum AS rownum_
+	FROM (
+		SELECT *
+		FROM (
+			SELECT results.*, row_number() OVER (PARTITION BY results.object_id ORDER BY results.gmt_modified DESC) AS rn
+			FROM (
+				SELECT sus.ID AS ID, sus.GMT_CREATE AS GMT_CREATE, sus.GMT_MODIFIED AS GMT_MODIFIED, sus.COMPANY_ID AS COMPANY_ID, sus.OBJECT_ID AS OBJECT_ID
 					, sus.OBJECT_TYPE AS OBJECT_TYPE, sus.CONFIRM_TYPE AS CONFIRM_TYPE, sus.OPERATOR AS OPERATOR, sus.FILTER_TYPE AS FILTER_TYPE, sus.MEMBER_ID AS MEMBER_ID
 					, sus.MEMBER_FUC_Q AS MEMBER_FUC_Q, sus.RISK_TYPE AS RISK_TYPE, 'Y' AS IS_DRAFT
 				FROM f_U_c_ sus, a_b_c_draft p, member m
-				WHERE 1 = 1 AND p.company_id = m.company_id AND m.login_id = ? AND (p.sale_type IN (?) AND p.id = sus.object_id)
+				WHERE 1 = 1
+					AND p.company_id = m.company_id
+					AND m.login_id = ?
+					AND p.sale_type IN (?)
+					AND p.id = sus.object_id
 				UNION
 				SELECT sus.ID AS ID, sus.GMT_CREATE AS GMT_CREATE, sus.GMT_MODIFIED AS GMT_MODIFIED, sus.COMPANY_ID AS COMPANY_ID, sus.OBJECT_ID AS OBJECT_ID
 					, sus.OBJECT_TYPE AS OBJECT_TYPE, sus.CONFIRM_TYPE AS CONFIRM_TYPE, sus.OPERATOR AS OPERATOR, sus.FILTER_TYPE AS FILTER_TYPE, sus.MEMBER_ID AS MEMBER_ID
 					, sus.MEMBER_FUC_Q AS MEMBER_FUC_Q, sus.RISK_TYPE AS RISK_TYPE, 'N' AS IS_DRAFT
 				FROM f_U_c_ sus, a_b_c p, member m
-				WHERE 1 = 1 AND p.company_id = m.company_id AND m.login_id = ? AND (p.sale_type IN (?) AND p.id = sus.object_id)
-				) results
-			)
+				WHERE 1 = 1
+					AND p.company_id = m.company_id
+					AND m.login_id = ?
+					AND p.sale_type IN (?)
+					AND p.id = sus.object_id
+			) results
+		)
 		WHERE rn = 1
 		ORDER BY gmt_modified DESC
-		) row_
+	) row_
 	WHERE rownum <= ?
-	)
-WHERE rownum_ >= ?;
-
+)
+WHERE rownum_ >= ?

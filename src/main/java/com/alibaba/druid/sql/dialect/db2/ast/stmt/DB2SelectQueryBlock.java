@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.db2.ast.stmt;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -22,7 +23,6 @@ import com.alibaba.druid.sql.dialect.db2.ast.DB2Object;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Object {
     private Isolation isolation;
@@ -54,7 +54,7 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
     }
 
     public DB2SelectQueryBlock() {
-        dbType = JdbcConstants.DB2;
+        dbType = DbType.db2;
     }
 
     public Isolation getIsolation() {
@@ -93,8 +93,9 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
         }
     }
 
-    public void output(StringBuffer buf) {
-        DB2OutputVisitor visitor = new DB2OutputVisitor(buf);
-        this.accept(visitor);
+    public void output(Appendable buf) {
+        this.accept(
+                new DB2OutputVisitor(buf)
+        );
     }
 }

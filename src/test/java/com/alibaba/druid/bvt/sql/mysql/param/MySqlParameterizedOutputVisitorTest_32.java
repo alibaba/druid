@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -17,8 +18,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_32 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
-
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "/* cds internal mark */select count(*) as count  from (" +
                 "( select env_type from `tmall_miaoscm`.`miao_sale_ledger_0060` where `id` > 1 limit 136 )" +

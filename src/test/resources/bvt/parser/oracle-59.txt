@@ -1,0 +1,21 @@
+SELECT B.CUSTOMER_ID customerId,B.CN_NAME NAME
+    , OPENING_DATE,CLOSING_DATE
+    , count(A.OPENING_DATE)
+        over (partition BY B.CUSTOMER_ID
+            ORDER BY trunc(A.OPENING_DATE,'mm')
+            RANGE BETWEEN interval '3' month (4) preceding AND CURRENT ROW
+        ) AS createCount
+     , count(A.CLOSING_DATE)
+        over (partition BY B.CUSTOMER_ID
+            ORDER BY trunc(NVL(A.CLOSING_DATE,SYSDATE),'mm')
+            RANGE BETWEEN interval '3' month (4) preceding AND CURRENT ROW) AS cancelCount
+     ,row_number ()
+        over (partition BY B.CUSTOMER_ID ORDER BY trunc(A.OPENING_DATE) DESC) AS row_flg
+FROM account_info A,CUSTOMER_INFO B WHERE A.CUSTOMER_ID=B.CUSTOMER_ID
+---------------------------
+SELECT B.CUSTOMER_ID AS customerId, B.CN_NAME AS NAME, OPENING_DATE, CLOSING_DATE
+	, count(A.OPENING_DATE) OVER (PARTITION BY B.CUSTOMER_ID ORDER BY trunc(A.OPENING_DATE, 'mm') RANGE  BETWEEN INTERVAL '3' MONTH(4) PRECEDING AND CURRENT ROW) AS createCount
+	, count(A.CLOSING_DATE) OVER (PARTITION BY B.CUSTOMER_ID ORDER BY trunc(NVL(A.CLOSING_DATE, SYSDATE), 'mm') RANGE  BETWEEN INTERVAL '3' MONTH(4) PRECEDING AND CURRENT ROW) AS cancelCount
+	, row_number() OVER (PARTITION BY B.CUSTOMER_ID ORDER BY trunc(A.OPENING_DATE) DESC) AS row_flg
+FROM account_info A, CUSTOMER_INFO B
+WHERE A.CUSTOMER_ID = B.CUSTOMER_ID

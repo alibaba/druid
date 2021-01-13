@@ -61,21 +61,20 @@ END;
 ---------------------------
 DROP TABLE employees_temp;
 CREATE TABLE employees_temp
-	AS
-	SELECT employee_id, first_name, last_name
-	FROM employees;
+AS
+SELECT employee_id, first_name, last_name
+FROM employees;
 DROP TABLE employees_temp2;
 CREATE TABLE employees_temp2
-	AS
-	SELECT employee_id, first_name, last_name
-	FROM employees;
+AS
+SELECT employee_id, first_name, last_name
+FROM employees;
 DECLARE
-	seq_value NUMBER
+	seq_value NUMBER;
 BEGIN
 	seq_value := employees_seq.NEXTVAL;
 	DBMS_OUTPUT.PUT_LINE('Initial sequence value: ' || TO_CHAR(seq_value));
-	INSERT INTO employees_temp
-		(employee_id, first_name, last_name)
+	INSERT INTO employees_temp (employee_id, first_name, last_name)
 	VALUES (employees_seq.NEXTVAL, 'Lynette', 'Smith');
 	INSERT INTO employees_temp2
 	VALUES (employees_seq.CURRVAL, 'Morgan', 'Smith');
@@ -85,7 +84,7 @@ BEGIN
 	UPDATE employees_temp
 	SET employee_id = employees_seq.NEXTVAL
 	WHERE first_name = 'Lynette'
-	AND last_name = 'Smith';
+		AND last_name = 'Smith';
 	seq_value := employees_seq.CURRVAL;
 	DBMS_OUTPUT.PUT_LINE('Ending sequence value: ' || TO_CHAR(seq_value));
 END;

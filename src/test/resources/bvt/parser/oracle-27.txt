@@ -7,8 +7,9 @@ group by bk.attr_id;
 
 
 ---------------------------
-SELECT bk.attr_id AS attrId, group_concat(DISTINCT(bk.value_id)) AS attrValueStr, group_concat(DISTINCT(pt.name)) AS themeNameStr
-FROM a_c_ pt LEFT JOIN cde_f bk ON pt.spu_id = bk.spu_id 
-WHERE pt.status = 'action' AND pt.category_id = ?
+SELECT bk.attr_id AS attrId, group_concat(DISTINCT bk.value_id) AS attrValueStr, group_concat(DISTINCT pt.name) AS themeNameStr
+FROM a_c_ pt
+	LEFT JOIN cde_f bk ON pt.spu_id = bk.spu_id 
+WHERE pt.status = 'action'
+	AND pt.category_id = ?
 GROUP BY bk.attr_id;
-

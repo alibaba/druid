@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,25 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
+
+import java.util.List;
+
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 
 public class Length implements Function {
     public final static Length instance = new Length();
     
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getParameters().size() != 1) {
+        if (x.getArguments().size() != 1) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        SQLExpr param0 = x.getParameters().get(0);
+        SQLExpr param0 = x.getArguments().get(0);
         param0.accept(visitor);
 
         Object param0Value = param0.getAttributes().get(EVAL_VALUE);
@@ -42,5 +45,19 @@ public class Length implements Function {
 
         int result = strValue.length();
         return result;
+    }
+
+    public Object eval(SQLMethodInvokeExpr x) {
+        List<SQLExpr> parameters = x.getArguments();
+        if (parameters.size() == 1) {
+            Object p0 = ((SQLValuableExpr) parameters.get(0)).getValue();
+
+            if (p0 instanceof String) {
+                String str = (String) p0;
+                return str.length();
+            }
+        }
+
+        return SQLEvalVisitor.EVAL_ERROR;
     }
 }

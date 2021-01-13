@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
     <artifactId>druid-spring-boot-starter</artifactId>
-    <version>1.1.18</version>
+    <version>1.2.5_preview_01</version>
     <packaging>jar</packaging>
     <name>druid-spring-boot-starter</name>
     <description>Spring Boot with Druid support,help you simplify Druid config in Spring Boot.</description>
     <url>https://github.com/alibaba/druid</url>
 
     <properties>
-        <druid.version>1.1.18</druid.version>
+        <druid.version>1.2.4</druid.version>
         <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
     </properties>
 
@@ -115,8 +115,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>

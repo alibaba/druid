@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQLCreateStatement {
 
@@ -45,8 +46,11 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
     private boolean            noSql;
     private boolean            readSqlData;
     private boolean            modifiesSqlData;
+    private boolean            languageSql;
 
     private String             wrappedSource;
+
+    private SQLCharExpr        comment;
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -55,6 +59,7 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
             acceptChild(visitor, name);
             acceptChild(visitor, parameters);
             acceptChild(visitor, block);
+            acceptChild(visitor, comment);
         }
         visitor.endVisit(this);
     }
@@ -177,6 +182,25 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
         }
 
         return null;
+    }
+
+    public boolean isLanguageSql() {
+        return languageSql;
+    }
+
+    public void setLanguageSql(boolean languageSql) {
+        this.languageSql = languageSql;
+    }
+
+    public SQLCharExpr getComment() {
+        return comment;
+    }
+
+    public void setComment(SQLCharExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
+        this.comment = comment;
     }
 
     public String getWrappedSource() {

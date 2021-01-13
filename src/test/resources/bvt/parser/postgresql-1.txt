@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS test_dim_segment
+(
+aid bigint
+,segment_id bigint
+,segment_name text
+,ds text not null
+)
+PARTITION BY LIST(ds);
+
+---------------------------
+CREATE TABLE IF NOT EXISTS test_dim_segment (
+	aid bigint,
+	segment_id bigint,
+	segment_name text,
+	ds text NOT NULL
+);

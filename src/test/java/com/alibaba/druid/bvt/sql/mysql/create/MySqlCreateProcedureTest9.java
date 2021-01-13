@@ -27,10 +27,10 @@ import java.util.List;
 
 /**
  * 
- * @Description: 测试异常声明
- * @author zhujun [455910092@qq.com]
- * @date 2016-4-17
- * @version V1.0
+ * Description: 测试异常声明
+ * author zhujun [455910092@qq.com]
+ * date 2016-4-17
+ * version V1.0
  */
 public class MySqlCreateProcedureTest9 extends MysqlTest {
 

@@ -1,0 +1,10 @@
+alter table ACT_RU_INTEGRATION
+    add constraint ACT_FK_INT_EXECUTION
+        foreign key (EXECUTION_ID_)
+            references ACT_RU_EXECUTION (ID_)
+        on delete cascade
+---------------------------
+ALTER TABLE ACT_RU_INTEGRATION
+	ADD CONSTRAINT ACT_FK_INT_EXECUTION FOREIGN KEY (EXECUTION_ID_)
+		REFERENCES ACT_RU_EXECUTION (ID_)
+		ON DELETE CASCADE

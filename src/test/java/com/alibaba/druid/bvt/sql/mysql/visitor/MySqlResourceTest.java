@@ -47,7 +47,28 @@ public class MySqlResourceTest extends TestCase {
 //        exec_test("bvt/parser/mysql-11.txt");
 //        exec_test("bvt/parser/mysql-12.txt");
 //        exec_test("bvt/parser/mysql-13.txt");
-        exec_test("bvt/parser/mysql-14.txt");
+        exec_test("bvt/parser/mysql-0.txt");
+    }
+
+
+    public void test_14() throws Exception {
+        exec_test("bvt/parser/mysql-16.txt");
+    }
+
+    public void test_16() throws Exception {
+        exec_test("bvt/parser/mysql-16.txt");
+    }
+
+    public void test_17() throws Exception {
+        exec_test("bvt/parser/mysql-17.txt");
+    }
+
+    public void test_18() throws Exception {
+        exec_test("bvt/parser/mysql-18.txt");
+    }
+
+    public void test_19() throws Exception {
+        exec_test("bvt/parser/mysql-19.txt");
     }
 
     public void exec_test(String resource) throws Exception {
@@ -61,15 +82,18 @@ public class MySqlResourceTest extends TestCase {
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
         String expect = items[1].trim();
+        if (expect != null) {
+            expect = expect.replaceAll("\\r\\n", "\n");
+        }
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
 //        System.out.println(sql);
 //        System.out.println("Tables : " + visitor.getTables());
@@ -77,6 +101,10 @@ public class MySqlResourceTest extends TestCase {
 //
 //        System.out.println();
 //        System.out.println();
+
+        if (expect != null && !expect.isEmpty()) {
+            assertEquals(expect, stmt.toString());
+        }
     }
 
     void mergValidate(String sql, String expect) {

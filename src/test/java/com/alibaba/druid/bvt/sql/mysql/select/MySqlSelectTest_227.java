@@ -17,6 +17,11 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 
 public class MySqlSelectTest_227 extends MysqlTest {
@@ -26,7 +31,8 @@ public class MySqlSelectTest_227 extends MysqlTest {
 
         Exception error = null;
         try {
-            SQLUtils.parseSingleMysqlStatement(sql);
+            SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
+            System.out.println(statement.toString());
         } catch (Exception ex) {
             error = ex;
         }

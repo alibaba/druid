@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,21 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.clause;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class SampleClause extends OracleSQLObjectImpl {
+import java.util.ArrayList;
+import java.util.List;
 
-    private boolean       block   = false;
+public class SampleClause extends OracleSQLObjectImpl implements SQLReplaceable {
 
-    private List<SQLExpr> percent = new ArrayList<SQLExpr>();
+    private boolean             block   = false;
 
-    private SQLExpr       seedValue;
+    private final List<SQLExpr> percent = new ArrayList<SQLExpr>();
+
+    private SQLExpr             seedValue;
 
     public boolean isBlock() {
         return block;
@@ -42,8 +43,12 @@ public class SampleClause extends OracleSQLObjectImpl {
         return percent;
     }
 
-    public void setPercent(List<SQLExpr> percent) {
-        this.percent = percent;
+    public void addPercent(SQLExpr x) {
+        if (x == null) {
+            return;
+        }
+        x.setParent(this);
+        this.percent.add(x);
     }
 
     public SQLExpr getSeedValue() {
@@ -51,6 +56,9 @@ public class SampleClause extends OracleSQLObjectImpl {
     }
 
     public void setSeedValue(SQLExpr seedValue) {
+        if (seedValue != null) {
+            seedValue.setParent(this);
+        }
         this.seedValue = seedValue;
     }
 
@@ -63,6 +71,7 @@ public class SampleClause extends OracleSQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    @Override
     public SampleClause clone() {
         SampleClause x = new SampleClause();
 
@@ -79,5 +88,23 @@ public class SampleClause extends OracleSQLObjectImpl {
         }
 
         return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+
+        for (int i = percent.size() - 1; i >= 0; i--) {
+            if (percent.get(i) == expr) {
+                percent.set(i, target);
+                return true;
+            }
+        }
+
+        if (expr == seedValue) {
+            setSeedValue(target);
+            return true;
+        }
+
+        return false;
     }
 }

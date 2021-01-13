@@ -1,22 +1,4 @@
-/*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.druid.sql.ast.statement;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -25,9 +7,13 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAlterStatement {
     private SQLName name;
 
+    private Boolean withCache;
     private SQLExpr startWith;
     private SQLExpr incrementBy;
     private SQLExpr minValue;
@@ -39,7 +25,18 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
     private Boolean cache;
     private SQLExpr cacheValue;
 
+    private boolean restart;
+    private SQLExpr restartWith;
+
     private Boolean order;
+
+    private boolean changeToSimple;
+    private boolean changeToGroup;
+    private boolean changeToTime;
+
+    public SQLAlterSequenceStatement() {
+
+    }
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -122,6 +119,14 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
         this.cache = cache;
     }
 
+    public Boolean getWithCache() {
+        return withCache;
+    }
+
+    public void setWithCache(Boolean withCache) {
+        this.withCache = withCache;
+    }
+
     public Boolean getOrder() {
         return order;
     }
@@ -176,5 +181,48 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
             cacheValue.setParent(this);
         }
         this.cacheValue = cacheValue;
+    }
+
+    public boolean isChangeToSimple() {
+        return changeToSimple;
+    }
+
+    public void setChangeToSimple(boolean changeToSimple) {
+        this.changeToSimple = changeToSimple;
+    }
+
+    public boolean isChangeToGroup() {
+        return changeToGroup;
+    }
+
+    public void setChangeToGroup(boolean changeToGroup) {
+        this.changeToGroup = changeToGroup;
+    }
+
+    public boolean isChangeToTime() {
+        return changeToTime;
+    }
+
+    public void setChangeToTime(boolean changeToTime) {
+        this.changeToTime = changeToTime;
+    }
+
+    public boolean isRestart() {
+        return restart;
+    }
+
+    public void setRestart(boolean restart) {
+        this.restart = restart;
+    }
+
+    public SQLExpr getRestartWith() {
+        return restartWith;
+    }
+
+    public void setRestartWith(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.restartWith = x;
     }
 }

@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;
@@ -78,6 +79,15 @@ public class WallSelectLimitTest_2 extends TestCase {
         WallProvider provider = new OracleWallProvider(config);
         WallCheckResult checkResult = provider.check(sql);
         String resultSql = checkResult.getSql();
+        System.out.println(resultSql);
+        assertEquals("SELECT *\n" +
+                "FROM t\n" +
+                "WHERE ROWNUM <= 10", resultSql);
+
+        sql = PagerUtils.limit("select * from t", JdbcConstants.OCEANBASE_ORACLE, 0, 10);
+        provider = new OracleWallProvider(config);
+        checkResult = provider.check(sql);
+        resultSql = checkResult.getSql();
         System.out.println(resultSql);
         assertEquals("SELECT *\n" +
                 "FROM t\n" +

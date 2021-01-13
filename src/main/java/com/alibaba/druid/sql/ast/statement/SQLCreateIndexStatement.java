@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,42 +15,45 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCreateStatement {
+import java.util.ArrayList;
+import java.util.List;
 
-    private SQLName                    name;
+public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCreateStatement, SQLIndex {
 
-    private SQLTableSource             table;
+    private SQLIndexDefinition indexDefinition = new SQLIndexDefinition();
 
-    private List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
+    private boolean concurrently; // for pg
+    protected SQLName tablespace; // for oracle
+    protected boolean deferedRebuild;
+    protected SQLTableSource in;
+    protected SQLExternalRecordFormat rowFormat;
+    protected SQLName storedAs;
+    protected List<SQLAssignItem> properties = new ArrayList<SQLAssignItem>();
+    protected List<SQLAssignItem> tableProperties = new ArrayList<SQLAssignItem>();
+    protected boolean storing;
+    protected boolean ifNotExists;
 
-    private String                     type;
-    
-    // for mysql
-    private String                     using;
-
-    private SQLExpr                    comment;
-
-    public SQLCreateIndexStatement(){
-
+    public SQLCreateIndexStatement() {
+        indexDefinition.setParent(this);
     }
-    
-    public SQLCreateIndexStatement(String dbType){
-        super (dbType);
+
+    public SQLCreateIndexStatement(DbType dbType) {
+        super(dbType);
+        indexDefinition.setParent(this);
+    }
+
+    public SQLIndexDefinition getIndexDefinition() {
+        return indexDefinition;
     }
 
     public SQLTableSource getTable() {
-        return table;
+        return indexDefinition.getTable();
     }
 
     public void setTable(SQLName table) {
@@ -58,12 +61,12 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
     }
 
     public void setTable(SQLTableSource table) {
-        this.table = table;
+        indexDefinition.setTable(table);
     }
 
     public String getTableName() {
-        if (table instanceof SQLExprTableSource) {
-            SQLExpr expr = ((SQLExprTableSource) table).getExpr();
+        if (indexDefinition.getTable() instanceof SQLExprTableSource) {
+            SQLExpr expr = ((SQLExprTableSource) indexDefinition.getTable()).getExpr();
             if (expr instanceof SQLIdentifierExpr) {
                 return ((SQLIdentifierExpr) expr).getName();
             } else if (expr instanceof SQLPropertyExpr) {
@@ -75,46 +78,48 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
     }
 
     public List<SQLSelectOrderByItem> getItems() {
-        return items;
+        return indexDefinition.getColumns();
     }
 
     public void addItem(SQLSelectOrderByItem item) {
         if (item != null) {
             item.setParent(this);
         }
-        this.items.add(item);
+        indexDefinition.getColumns().add(item);
     }
 
     public SQLName getName() {
-        return name;
+        return indexDefinition.getName();
     }
 
     public void setName(SQLName name) {
-        this.name = name;
+        indexDefinition.setName(name);
     }
 
     public String getType() {
-        return type;
+        return indexDefinition.getType();
     }
 
     public void setType(String type) {
-        this.type = type;
+        indexDefinition.setType(type);
     }
-    
+
     public String getUsing() {
-        return using;
+        return indexDefinition.hasOptions() ? indexDefinition.getOptions().getIndexType() : null;
     }
 
     public void setUsing(String using) {
-        this.using = using;
+        indexDefinition.getOptions().setIndexType(using);
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, name);
-            acceptChild(visitor, table);
-            acceptChild(visitor, items);
+            acceptChild(visitor, indexDefinition.getName());
+            acceptChild(visitor, indexDefinition.getTable());
+            acceptChild(visitor, indexDefinition.getColumns());
+            acceptChild(visitor, tablespace);
+            acceptChild(visitor, in);
         }
         visitor.endVisit(this);
     }
@@ -122,22 +127,22 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
     @Override
     public List<SQLObject> getChildren() {
         List<SQLObject> children = new ArrayList<SQLObject>();
-        if (name != null) {
-            children.add(name);
+        if (indexDefinition.getName() != null) {
+            children.add(indexDefinition.getName());
         }
 
-        if (table != null) {
-            children.add(table);
+        if (indexDefinition.getTable() != null) {
+            children.add(indexDefinition.getTable());
         }
 
-        children.addAll(this.items);
+        children.addAll(indexDefinition.getColumns());
         return children;
     }
 
     public String getSchema() {
         SQLName name = null;
-        if (table instanceof SQLExprTableSource) {
-            SQLExpr expr = ((SQLExprTableSource) table).getExpr();
+        if (indexDefinition.getTable() instanceof SQLExprTableSource) {
+            SQLExpr expr = ((SQLExprTableSource) indexDefinition.getTable()).getExpr();
             if (expr instanceof SQLName) {
                 name = (SQLName) expr;
             }
@@ -157,33 +162,170 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
 
     public SQLCreateIndexStatement clone() {
         SQLCreateIndexStatement x = new SQLCreateIndexStatement();
-        if (name != null) {
-            x.setName(name.clone());
-        }
-        if (table != null) {
-            x.setTable(table.clone());
-        }
-        for (SQLSelectOrderByItem item : items) {
-            SQLSelectOrderByItem item2 = item.clone();
-            item2.setParent(x);
-            x.items.add(item2);
-        }
-        x.type = type;
-        x.using = using;
-        if (comment != null) {
-            x.setComment(comment.clone());
-        }
+        indexDefinition.cloneTo(x.indexDefinition);
+        x.setIfNotExists(ifNotExists);
         return x;
     }
 
     public SQLExpr getComment() {
-        return comment;
+        return indexDefinition.hasOptions() ? indexDefinition.getOptions().getComment() : null;
     }
 
     public void setComment(SQLExpr x) {
+        indexDefinition.getOptions().setComment(x);
+    }
+
+    public SQLName getTablespace() {
+        return tablespace;
+    }
+
+    public void setTablespace(SQLName x) {
         if (x != null) {
             x.setParent(this);
         }
-        this.comment = x;
+        this.tablespace = x;
+    }
+
+    public boolean isConcurrently() {
+        return concurrently;
+    }
+
+    public void setConcurrently(boolean concurrently) {
+        this.concurrently = concurrently;
+    }
+
+    public List<SQLAssignItem> getOptions() {
+        return indexDefinition.getCompatibleOptions();
+    }
+
+    public boolean isDeferedRebuild() {
+        return deferedRebuild;
+    }
+
+    public void setDeferedRebuild(boolean deferedRebuild) {
+        this.deferedRebuild = deferedRebuild;
+    }
+
+    public SQLTableSource getIn() {
+        return in;
+    }
+
+    public void setIn(SQLName x) {
+        if (x == null) {
+            this.in = null;
+            return;
+        }
+        setIn(new SQLExprTableSource(x));
+    }
+
+    public void setIn(SQLTableSource x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.in = x;
+    }
+
+    public SQLName getStoredAs() {
+        return storedAs;
+    }
+
+    public void setStoredAs(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedAs = x;
+    }
+
+    public SQLExternalRecordFormat getRowFormat() {
+        return rowFormat;
+    }
+
+    public void setRowFormat(SQLExternalRecordFormat x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.rowFormat = x;
+    }
+
+    public List<SQLAssignItem> getProperties() {
+        return properties;
+    }
+
+    public List<SQLAssignItem> getTableProperties() {
+        return tableProperties;
+    }
+
+    public void addOption(String name, SQLExpr value) {
+        SQLAssignItem assignItem = new SQLAssignItem(new SQLIdentifierExpr(name), value);
+        assignItem.setParent(this);
+        // Add both with same object.
+        indexDefinition.getOptions().getOtherOptions().add(assignItem);
+        indexDefinition.getCompatibleOptions().add(assignItem);
+    }
+
+    public boolean isGlobal() {
+        return indexDefinition.isGlobal();
+    }
+
+    public void setGlobal(boolean global) {
+        indexDefinition.setGlobal(global);
+    }
+
+    public boolean isLocal() {
+        return indexDefinition.isLocal();
+    }
+
+    public void setLocal(boolean local) {
+        indexDefinition.setLocal(local);
+    }
+
+    public SQLExpr getDbPartitionBy() {
+        return indexDefinition.getDbPartitionBy();
+    }
+
+    public void setDbPartitionBy(SQLExpr x) {
+        indexDefinition.setDbPartitionBy(x);
+    }
+
+    public SQLExpr getTablePartitions() {
+        return indexDefinition.getTbPartitions();
+    }
+
+    public void setTablePartitions(SQLExpr x) {
+        indexDefinition.setTbPartitions(x);
+    }
+
+    public SQLExpr getTablePartitionBy() {
+        return indexDefinition.getTbPartitionBy();
+    }
+
+    public void setTablePartitionBy(SQLExpr x) {
+        indexDefinition.setTbPartitionBy(x);
+    }
+
+    public boolean isStoring() {
+        return storing;
+    }
+
+    public void setStoring(boolean storing) {
+        this.storing = storing;
+    }
+
+    @Override
+    public List<SQLName> getCovering() {
+        return indexDefinition.getCovering();
+    }
+
+    @Override
+    public List<SQLSelectOrderByItem> getColumns() {
+        return indexDefinition.getColumns();
+    }
+
+    public boolean isIfNotExists() {
+        return ifNotExists;
+    }
+
+    public void setIfNotExists(boolean ifNotExists) {
+        this.ifNotExists = ifNotExists;
     }
 }

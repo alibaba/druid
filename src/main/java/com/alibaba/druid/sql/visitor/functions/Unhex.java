@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,31 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
-import java.io.UnsupportedEncodingException;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.util.HexBin;
+
+import java.io.UnsupportedEncodingException;
+
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Unhex implements Function {
 
     public final static Unhex instance = new Unhex();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getParameters().size() != 1) {
+        if (x.getArguments().size() != 1) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        SQLExpr param0 = x.getParameters().get(0);
+        SQLExpr param0 = x.getArguments().get(0);
 
         if (param0 instanceof SQLMethodInvokeExpr) {
             SQLMethodInvokeExpr paramMethodExpr = (SQLMethodInvokeExpr) param0;
             if (paramMethodExpr.getMethodName().equalsIgnoreCase("hex")) {
-                SQLExpr subParamExpr = paramMethodExpr.getParameters().get(0);
+                SQLExpr subParamExpr = paramMethodExpr.getArguments().get(0);
                 subParamExpr.accept(visitor);
 
                 Object param0Value = subParamExpr.getAttributes().get(EVAL_VALUE);

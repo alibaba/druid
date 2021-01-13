@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,63 +15,86 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface SQLServerASTVisitor extends SQLASTVisitor {
 
-    boolean visit(SQLServerSelectQueryBlock x);
+    default boolean visit(SQLServerSelectQueryBlock x) {
+        return visit((SQLSelectQueryBlock) x);
+    }
 
-    void endVisit(SQLServerSelectQueryBlock x);
+    default void endVisit(SQLServerSelectQueryBlock x) {
+        endVisit((SQLSelectQueryBlock) x);
+    }
 
-    boolean visit(SQLServerTop x);
+    default boolean visit(SQLServerTop x) {
+        return true;
+    }
 
-    void endVisit(SQLServerTop x);
+    default void endVisit(SQLServerTop x) {}
     
-    boolean visit(SQLServerObjectReferenceExpr x);
+    default boolean visit(SQLServerObjectReferenceExpr x) {
+        return true;
+    }
     
-    void endVisit(SQLServerObjectReferenceExpr x);
+    default void endVisit(SQLServerObjectReferenceExpr x) {}
     
-    boolean visit(SQLServerInsertStatement x);
+    default boolean visit(SQLServerInsertStatement x) {
+        return visit((SQLInsertStatement) x);
+    }
     
-    void endVisit(SQLServerInsertStatement x);
+    default void endVisit(SQLServerInsertStatement x) {
+        endVisit((SQLInsertStatement) x);
+    }
 
-    boolean visit(SQLServerUpdateStatement x);
+    default boolean visit(SQLServerUpdateStatement x) {
+        return true;
+    }
     
-    void endVisit(SQLServerUpdateStatement x);
+    default void endVisit(SQLServerUpdateStatement x) {}
     
-    boolean visit(SQLServerExecStatement x);
+    default boolean visit(SQLServerExecStatement x) {
+        return true;
+    }
     
-    void endVisit(SQLServerExecStatement x);
+    default void endVisit(SQLServerExecStatement x) {}
     
-    boolean visit(SQLServerSetTransactionIsolationLevelStatement x);
+    default boolean visit(SQLServerSetTransactionIsolationLevelStatement x) {
+        return true;
+    }
 
-    void endVisit(SQLServerSetTransactionIsolationLevelStatement x);
+    default void endVisit(SQLServerSetTransactionIsolationLevelStatement x) {}
 
-    boolean visit(SQLServerOutput x);
+    default boolean visit(SQLServerOutput x) {
+        return true;
+    }
 
-    void endVisit(SQLServerOutput x);
+    default void endVisit(SQLServerOutput x) {}
 
-    boolean visit(SQLServerRollbackStatement x);
+    default boolean visit(SQLServerRollbackStatement x) {
+        return true;
+    }
 
-    void endVisit(SQLServerRollbackStatement x);
+    default void endVisit(SQLServerRollbackStatement x) {}
     
-    boolean visit(SQLServerWaitForStatement x);
+    default boolean visit(SQLServerWaitForStatement x) {
+        return true;
+    }
 
-    void endVisit(SQLServerWaitForStatement x);
+    default void endVisit(SQLServerWaitForStatement x) {}
     
-    boolean visit(SQLServerParameter x);
+    default boolean visit(SQLServerParameter x) {
+        return true;
+    }
 
-    void endVisit(SQLServerParameter x);
+    default void endVisit(SQLServerParameter x) {}
 
 }

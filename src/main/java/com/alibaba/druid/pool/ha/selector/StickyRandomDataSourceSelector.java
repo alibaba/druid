@@ -48,7 +48,7 @@ public class StickyRandomDataSourceSelector extends RandomDataSourceSelector {
     @Override
     public DataSource get() {
         StickyDataSourceHolder holder = holders.get();
-        if (holder != null && isValid(holder) && !isExpired(holder)) {
+        if (holder != null && isAvailable(holder)) {
             LOG.debug("Return the sticky DataSource " + holder.getDataSource().toString() + " directly.");
             return holder.getDataSource();
         }
@@ -58,6 +58,14 @@ public class StickyRandomDataSourceSelector extends RandomDataSourceSelector {
         holders.remove();
         holders.set(holder);
         return dataSource;
+    }
+
+    private boolean isAvailable(StickyDataSourceHolder holder) {
+        boolean flag = isValid(holder) && !isExpired(holder);
+        if (flag && holder.getDataSource() instanceof DruidDataSource) {
+            flag = ((DruidDataSource) holder.getDataSource()).getPoolingCount() > 0;
+        }
+        return flag;
     }
 
     private boolean isValid(StickyDataSourceHolder holder) {

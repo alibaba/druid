@@ -17,6 +17,7 @@ package com.alibaba.druid.bvt.sql.postgresql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.PGTest;
@@ -33,13 +34,18 @@ public class PGDeleteTest extends PGTest {
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 //        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
+        {
+            SchemaStatVisitor v = new SchemaStatVisitor();
+            stmt.accept(v);
+        }
+
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());

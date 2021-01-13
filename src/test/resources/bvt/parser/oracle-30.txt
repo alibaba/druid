@@ -19,23 +19,20 @@ ORDER BY order1;
 
 
 ---------------------------
-WITH
-	dup_hiredate (eid, emp_last, mgr_id, reportLevel, hire_date, job_id)
-	AS
-	(
+WITH dup_hiredate (eid, emp_last, mgr_id, reportLevel, hire_date, job_id) AS (
 		SELECT employee_id, last_name, manager_id, 0 AS reportLevel, hire_date
 			, job_id
 		FROM employees
 		WHERE manager_id IS NULL
 		UNION ALL
-		SELECT e.employee_id, e.last_name, e.manager_id, r.reportLevel + 1 AS reportLevel, e.hire_date
-			, e.job_id
+		SELECT e.employee_id, e.last_name, e.manager_id, r.reportLevel + 1 AS reportLevel
+			, e.hire_date, e.job_id
 		FROM dup_hiredate r, employees e
 		WHERE r.eid = e.manager_id
 	)
 	SEARCH DEPTH FIRST BY hire_date SET order1
 	CYCLE hire_date SET is_cycle TO 'Y' DEFAULT 'N'
-SELECT lpad(' ', 2 * reportLevel) || emp_last AS emp_name, eid, mgr_id, hire_date, job_id
-	, is_cycle
+SELECT lpad(' ', 2 * reportLevel) || emp_last AS emp_name
+	, eid, mgr_id, hire_date, job_id, is_cycle
 FROM dup_hiredate
 ORDER BY order1;

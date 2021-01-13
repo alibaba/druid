@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public final class SQLContainsExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
 
@@ -90,8 +86,17 @@ public final class SQLContainsExpr extends SQLExprImpl implements SQLReplaceable
 
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.expr);
-            acceptChild(visitor, this.targetList);
+            if (this.expr != null) {
+                this.expr.accept(visitor);
+            }
+
+            if (this.targetList != null) {
+                for (SQLExpr item : this.targetList) {
+                    if (item != null) {
+                        item.accept(visitor);
+                    }
+                }
+            }
         }
 
         visitor.endVisit(this);
@@ -149,7 +154,7 @@ public final class SQLContainsExpr extends SQLExprImpl implements SQLReplaceable
     }
 
     public SQLDataType computeDataType() {
-        return SQLBooleanExpr.DEFAULT_DATA_TYPE;
+        return SQLBooleanExpr.DATA_TYPE;
     }
 
     @Override

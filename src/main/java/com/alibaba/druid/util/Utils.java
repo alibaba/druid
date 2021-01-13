@@ -38,6 +38,10 @@ public class Utils {
     public final static int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
     public static String read(InputStream in) {
+        if (in == null) {
+            return null;
+        }
+
         InputStreamReader reader;
         try {
             reader = new InputStreamReader(in, "UTF-8");
@@ -48,6 +52,14 @@ public class Utils {
     }
 
     public static String readFromResource(String resource) throws IOException {
+        if (resource == null
+                || resource.isEmpty()
+                || resource.contains("..")
+                || resource.contains("?")
+                || resource.contains(":")) {
+            return null;
+        }
+
         InputStream in = null;
         try {
             in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
@@ -67,6 +79,14 @@ public class Utils {
     }
 
     public static byte[] readByteArrayFromResource(String resource) throws IOException {
+        if (resource == null
+                || resource.isEmpty()
+                || resource.contains("..")
+                || resource.contains("?")
+                || resource.contains(":")) {
+            return null;
+        }
+
         InputStream in = null;
         try {
             in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
@@ -81,9 +101,14 @@ public class Utils {
     }
 
     public static byte[] readByteArray(InputStream input) throws IOException {
+        if (input == null) {
+            return null;
+        }
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         copy(input, output);
-        return output.toByteArray();
+        byte[] bytes = output.toByteArray();
+        output.close();
+        return bytes;
     }
 
     public static long copy(InputStream input, OutputStream output) throws IOException {
@@ -101,8 +126,11 @@ public class Utils {
     }
 
     public static String read(Reader reader) {
-        try {
+        if (reader == null) {
+            return null;
+        }
 
+        try {
             StringWriter writer = new StringWriter();
 
             char[] buffer = new char[DEFAULT_BUFFER_SIZE];
@@ -118,6 +146,10 @@ public class Utils {
     }
 
     public static String read(Reader reader, int length) {
+        if (reader == null) {
+            return null;
+        }
+
         try {
             char[] buffer = new char[length];
 
@@ -143,14 +175,13 @@ public class Utils {
         if (date == null) {
             return null;
         }
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return format.format(date);
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                .format(date);
     }
 
     public static String getStackTrace(Throwable ex) {
         StringWriter buf = new StringWriter();
         ex.printStackTrace(new PrintWriter(buf));
-
         return buf.toString();
     }
 

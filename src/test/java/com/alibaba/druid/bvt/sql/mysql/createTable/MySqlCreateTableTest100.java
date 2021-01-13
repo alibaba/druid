@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
 import com.alibaba.druid.sql.MysqlTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -36,8 +37,8 @@ public class MySqlCreateTableTest100 extends MysqlTest {
                 "\t`status` TINYINT(4) NOT NULL DEFAULT '1',\n" +
                 "\t`geometry` geometry NOT NULL,\n" +
                 "\tPRIMARY KEY (`id`),\n" +
-                "\tCONSTRAINT `uk_queue_id` UNIQUE `uk_queue_id` USING BTREE (`queue_id`) KEY_BLOCK_SIZE = 10,\n" +
-                "\tKEY `ft_status` USING FULLTEXT (`queue_id`),\n" +
+                "\tUNIQUE KEY `uk_queue_id` USING BTREE (`queue_id`) KEY_BLOCK_SIZE = 10,\n" +
+                "\tFULLTEXT KEY `ft_status` (`queue_id`),\n" +
                 "\tSPATIAL INDEX `spatial`(`geometry`),\n" +
                 "\tCONSTRAINT FOREIGN KEY `fk_test` (`queue_id`) REFERENCES `test` (`id`)\n" +
                 ") ENGINE = INNODB", stmt.toString());

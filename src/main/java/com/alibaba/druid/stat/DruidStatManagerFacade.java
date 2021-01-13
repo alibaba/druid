@@ -186,7 +186,7 @@ public final class DruidStatManagerFacade {
 
             for (Object datasource : dataSources) {
                 Map<String, Object> wallStat = DruidDataSourceUtils.getWallStatMap(datasource);
-                map = mergWallStat(map, wallStat);
+                map = mergeWallStat(map, wallStat);
             }
 
             return map;
@@ -204,8 +204,16 @@ public final class DruidStatManagerFacade {
         //
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    /**
+     * @deprecated
+     * @return
+     */
     public static Map mergWallStat(Map mapA, Map mapB) {
+        return mergeWallStat(mapA, mapB);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static Map mergeWallStat(Map mapA, Map mapB) {
         if (mapA == null || mapA.size() == 0) {
             return mapB;
         }
@@ -236,7 +244,7 @@ public final class DruidStatManagerFacade {
 
                     String sql = (String) blackItem.get("sql");
                     Map<String, Object> oldItem = newSet.get(sql);
-                    newSet.put(sql, mergWallStat(oldItem, blackItem));
+                    newSet.put(sql, mergeWallStat(oldItem, blackItem));
                 }
 
                 Collection<Map<String, Object>> collectionB = (Collection<Map<String, Object>>) valueB;
@@ -247,12 +255,12 @@ public final class DruidStatManagerFacade {
 
                     String sql = (String) blackItem.get("sql");
                     Map<String, Object> oldItem = newSet.get(sql);
-                    newSet.put(sql, mergWallStat(oldItem, blackItem));
+                    newSet.put(sql, mergeWallStat(oldItem, blackItem));
                 }
                 newMap.put(key, newSet.values());
             } else {
                 if (valueA instanceof Map && valueB instanceof Map) {
-                    Object newValue = mergWallStat((Map) valueA, (Map) valueB);
+                    Object newValue = mergeWallStat((Map) valueA, (Map) valueB);
                     newMap.put(key, newValue);
                 } else if (valueA instanceof Set && valueB instanceof Set) {
                     Set<Object> set = new HashSet<Object>();
@@ -305,7 +313,7 @@ public final class DruidStatManagerFacade {
             String name = (String) mapB.get("name");
             Map<String, Object> mapA = mapped.get(name);
 
-            Map<String, Object> mergedMap = mergWallStat(mapA, mapB);
+            Map<String, Object> mergedMap = mergeWallStat(mapA, mapB);
             mergedList.add(mergedMap);
         }
 

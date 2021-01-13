@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,200 +15,101 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
-import java.util.List;
-import java.util.Map;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateFunctionStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveMsckRepairStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
+import java.util.List;
+
 public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVisitor {
-    public HiveOutputVisitor(Appendable appender) {
-        super(appender);
+    {
+        super.quote = '`';
     }
 
-    public HiveOutputVisitor(Appendable appender, String dbType) {
+    public HiveOutputVisitor(Appendable appender) {
+        super(appender, DbType.hive);
+    }
+
+    public HiveOutputVisitor(Appendable appender, DbType dbType) {
         super(appender, dbType);
     }
 
     public HiveOutputVisitor(Appendable appender, boolean parameterized) {
         super(appender, parameterized);
+        dbType = DbType.hive;
     }
 
-
     @Override
-    public boolean visit(HiveCreateTableStatement x) {
-        printCreateTable(x, true);
+    public boolean visit(HiveInsert x) {
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+        if (x.isOverwrite()) {
+            print0(ucase ? "INSERT OVERWRITE TABLE " : "insert overwrite table ");
+        } else {
+            print0(ucase ? "INSERT INTO TABLE " : "insert into table ");
+        }
+        x.getTableSource().accept(this);
+
+        List<SQLAssignItem> partitions = x.getPartitions();
+        if (partitions != null) {
+            int partitionsSize = partitions.size();
+            if (partitionsSize > 0) {
+                print0(ucase ? " PARTITION (" : " partition (");
+                for (int i = 0; i < partitionsSize; ++i) {
+                    if (i != 0) {
+                        print0(", ");
+                    }
+
+                    SQLAssignItem assign = partitions.get(i);
+                    assign.getTarget().accept(this);
+
+                    if (assign.getValue() != null) {
+                        print('=');
+                        assign.getValue().accept(this);
+                    }
+                }
+                print(')');
+            }
+            println();
+        }
+
+        SQLSelect select = x.getQuery();
+        List<SQLInsertStatement.ValuesClause> valuesList = x.getValuesList();
+        if (select != null) {
+            select.accept(this);
+        } else if (!valuesList.isEmpty()) {
+            print0(ucase ? "VALUES " : "values ");
+            printAndAccept(valuesList, ", ");
+        }
+
 
         return false;
-    }
-
-    protected void printCreateTable(HiveCreateTableStatement x, boolean printSelect) {
-        print0(ucase ? "CREATE " : "create ");
-
-        final SQLCreateTableStatement.Type tableType = x.getType();
-        if (SQLCreateTableStatement.Type.GLOBAL_TEMPORARY.equals(tableType)) {
-            print0(ucase ? "GLOBAL TEMPORARY " : "global temporary ");
-        } else if (SQLCreateTableStatement.Type.LOCAL_TEMPORARY.equals(tableType)) {
-            print0(ucase ? "LOCAL TEMPORARY " : "local temporary ");
-        }
-        print0(ucase ? "TABLE " : "table ");
-
-        if (x.isIfNotExiists()) {
-            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
-        }
-
-        printTableSourceExpr(x.getName());
-
-        printTableElements(x.getTableElementList());
-
-        SQLExprTableSource inherits = x.getInherits();
-        if (inherits != null) {
-            print0(ucase ? " INHERITS (" : " inherits (");
-            inherits.accept(this);
-            print(')');
-        }
-
-        SQLExpr comment = x.getComment();
-        if (comment != null) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            comment.accept(this);
-        }
-
-        int partitionSize = x.getPartitionColumns().size();
-        if (partitionSize > 0) {
-            println();
-            print0(ucase ? "PARTITIONED BY (" : "partitioned by (");
-            this.indentCount++;
-            println();
-            for (int i = 0; i < partitionSize; ++i) {
-                SQLColumnDefinition column = x.getPartitionColumns().get(i);
-                column.accept(this);
-
-                if (i != partitionSize - 1) {
-                    print(',');
-                }
-                if (this.isPrettyFormat() && column.hasAfterComment()) {
-                    print(' ');
-                    printlnComment(column.getAfterCommentsDirect());
-                }
-
-                if (i != partitionSize - 1) {
-                    println();
-                }
-            }
-            this.indentCount--;
-            println();
-            print(')');
-        }
-
-        List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
-        if (clusteredBy.size() > 0) {
-            println();
-            print0(ucase ? "CLUSTERED BY (" : "clustered by (");
-            printAndAccept(clusteredBy, ",");
-            print(')');
-        }
-
-        SQLExternalRecordFormat format = x.getRowFormat();
-        if (format != null) {
-            println();
-            print0(ucase ? "ROW FORMAT DELIMITED " : "row format delimited ");
-            visit(format);
-        }
-
-        List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
-        if (sortedBy.size() > 0) {
-            println();
-            print0(ucase ? "SORTED BY (" : "sorted by (");
-            printAndAccept(sortedBy, ", ");
-            print(')');
-        }
-
-        int buckets = x.getBuckets();
-        if (buckets > 0) {
-            println();
-            print0(ucase ? "INTO " : "into ");
-            print(buckets);
-            print0(ucase ? " BUCKETS" : " buckets");
-        }
-
-        SQLName storedAs = x.getStoredAs();
-        if (storedAs != null) {
-            println();
-            print0(ucase ? "STORE AS " : "store as ");
-            printExpr(storedAs);
-        }
-
-        Map<String, SQLObject> tableOptions = x.getTableOptions();
-        if (tableOptions.size() > 0) {
-            println();
-            print0(ucase ? "TBLPROPERTIES (" : "tblproperties (");
-            int i = 0;
-            for (Map.Entry<String, SQLObject> option : tableOptions.entrySet()) {
-                print0(option.getKey());
-                print0(" = ");
-                option.getValue().accept(this);
-                ++i;
-            }
-            print(')');
-        }
-
-        SQLSelect select = x.getSelect();
-        if (printSelect && select != null) {
-            println();
-            print0(ucase ? "AS" : "as");
-
-            println();
-            visit(select);
-        }
-    }
-
-    @Override
-    public void endVisit(HiveCreateTableStatement x) {
-
     }
 
     public boolean visit(SQLExternalRecordFormat x) {
-        if (x.getDelimitedBy() != null) {
-            println();
-            print0(ucase ? "LINES TERMINATED BY " : "lines terminated by ");
-            x.getDelimitedBy().accept(this);
-        }
-
-        if (x.getTerminatedBy() != null) {
-            println();
-            print0(ucase ? "FIELDS TERMINATED BY " : "fields terminated by ");
-            x.getTerminatedBy().accept(this);
-        }
-
-        return false;
-    }
-
-
-    @Override
-    public void endVisit(HiveMultiInsertStatement x) {
-
+        return hiveVisit(x);
     }
 
     @Override
     public boolean visit(HiveMultiInsertStatement x) {
+        SQLWithSubqueryClause with = x.getWith();
+        if (with != null) {
+            visit(with);
+            println();
+        }
+
         SQLTableSource from = x.getFrom();
         if (x.getFrom() != null) {
             if (from instanceof SQLSubqueryTableSource) {
@@ -238,15 +139,17 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         return false;
     }
 
-    @Override
-    public void endVisit(HiveInsertStatement x) {
-
-    }
-
     public boolean visit(HiveInsertStatement x) {
         if (x.hasBeforeComment()) {
             printlnComments(x.getBeforeCommentsDirect());
         }
+
+        SQLWithSubqueryClause with = x.getWith();
+        if (with != null) {
+            visit(with);
+            println();
+        }
+
         if (x.isOverwrite()) {
             print0(ucase ? "INSERT OVERWRITE TABLE " : "insert overwrite table ");
         } else {
@@ -254,15 +157,23 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         }
         x.getTableSource().accept(this);
 
-        int partitions = x.getPartitions().size();
-        if (partitions > 0) {
+        List<SQLExpr> columns = x.getColumns();
+        if (columns.size() > 0) {
+            print('(');
+            printAndAccept(columns, ", ");
+            print(')');
+        }
+
+        List<SQLAssignItem> partitions = x.getPartitions();
+        int partitionSize = partitions.size();
+        if (partitionSize > 0) {
             print0(ucase ? " PARTITION (" : " partition (");
-            for (int i = 0; i < partitions; ++i) {
+            for (int i = 0; i < partitionSize; ++i) {
                 if (i != 0) {
                     print0(", ");
                 }
 
-                SQLAssignItem assign = x.getPartitions().get(i);
+                SQLAssignItem assign = partitions.get(i);
                 assign.getTarget().accept(this);
 
                 if (assign.getValue() != null) {
@@ -271,6 +182,9 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
                 }
             }
             print(')');
+        }
+        if (x.isIfNotExists()) {
+            print0(ucase ? " IF NOT EXISTS" : " if not exists");
         }
         println();
 
@@ -287,53 +201,272 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         return false;
     }
 
-    @Override
-    public boolean visit(HiveInsert x) {
-        if (x.hasBeforeComment()) {
-            printlnComments(x.getBeforeCommentsDirect());
-        }
-        if (x.isOverwrite()) {
-            print0(ucase ? "INSERT OVERWRITE TABLE " : "insert overwrite table ");
-        } else {
-            print0(ucase ? "INSERT INTO TABLE " : "insert into table ");
-        }
-        x.getTableSource().accept(this);
+    public boolean visit(SQLMergeStatement.MergeUpdateClause x) {
+        print0(ucase ? "WHEN MATCHED " : "when matched ");
+        this.indentCount++;
 
-        int partitions = x.getPartitions().size();
-        if (partitions > 0) {
-            print0(ucase ? " PARTITION (" : " partition (");
-            for (int i = 0; i < partitions; ++i) {
-                if (i != 0) {
-                    print0(", ");
-                }
 
-                SQLAssignItem assign = x.getPartitions().get(i);
-                assign.getTarget().accept(this);
-
-                if (assign.getValue() != null) {
-                    print('=');
-                    assign.getValue().accept(this);
-                }
+        SQLExpr where = x.getWhere();
+        if (where != null) {
+            this.indentCount++;
+            if (SQLBinaryOpExpr.isAnd(where)) {
+                println();
+            } else {
+                print(' ');
             }
-            print(')');
-        }
-        println();
 
-        SQLSelect select = x.getQuery();
-        List<SQLInsertStatement.ValuesClause> valuesList = x.getValuesList();
-        if (select != null) {
-            select.accept(this);
-        } else if (!valuesList.isEmpty()) {
-            print0(ucase ? "VALUES " : "values ");
-            printAndAccept(valuesList, ", ");
-        }
+            print0(ucase ? "AND " : "and ");
 
+            printExpr(where, parameterized);
+            this.indentCount--;
+            println();
+        }
+        print0(ucase ? "UPDATE SET " : "update set ");
+        printAndAccept(x.getItems(), ", ");
+        this.indentCount--;
+
+        SQLExpr deleteWhere = x.getDeleteWhere();
+        if (deleteWhere != null) {
+            println();
+            print0(ucase ? "WHEN MATCHED AND " : "when matched and ");
+            printExpr(deleteWhere, parameterized);
+            print0(ucase ? " DELETE" : " delete");
+        }
 
         return false;
     }
 
     @Override
-    public void endVisit(HiveInsert x) {
+    public boolean visit(HiveCreateFunctionStatement x) {
+        if (x.isTemporary()) {
+            print0(ucase ? "CREATE TEMPORARY FUNCTION " : "create temporary function ");
+        } else {
+            print0(ucase ? "CREATE FUNCTION " : "create function ");
+        }
+        x.getName().accept(this);
 
+        SQLExpr className = x.getClassName();
+        if (className != null) {
+            print0(ucase ? " AS " : " as ");
+            className.accept(this);
+        }
+
+        indentCount++;
+        SQLExpr location = x.getLocationn();
+        if (location != null) {
+            println();
+
+            HiveCreateFunctionStatement.ResourceType resourceType = x.getResourceType();
+
+            if (resourceType != null) {
+                print0(ucase ? "USING " : "using ");
+                print0(resourceType.name());
+                print(' ');
+            } else {
+                print0(ucase ? "LOCATION " : "location ");
+            }
+            location.accept(this);
+        }
+
+        SQLExpr symbol = x.getSymbol();
+        if (symbol != null) {
+            println();
+            print0(ucase ? "SYMBOL = " : "symbol = ");
+            symbol.accept(this);
+        }
+
+        indentCount--;
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(HiveLoadDataStatement x) {
+        print0(ucase ? "LOAD DATA " : "load data ");
+
+        if (x.isLocal()) {
+            print0(ucase ? "LOCAL " : "local ");
+        }
+
+        print0(ucase ? "INPATH " : "inpath ");
+        x.getInpath().accept(this);
+
+        if (x.isOverwrite()) {
+            print0(ucase ? " OVERWRITE INTO TABLE " : " overwrite into table ");
+        } else {
+            print0(ucase ? " INTO TABLE " : " into table ");
+        }
+        x.getInto().accept(this);
+
+        if (x.getPartition().size() > 0) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            printAndAccept(x.getPartition(), ", ");
+            print(')');
+        }
+
+        return false;
+    }
+
+    @Override public boolean visit(HiveMsckRepairStatement x) {
+        final List<SQLCommentHint> headHints = x.getHeadHintsDirect();
+        if (headHints != null) {
+            for (SQLCommentHint hint : headHints) {
+                hint.accept(this);
+                println();
+            }
+        }
+        print0(ucase ? "MSCK REPAIR" : "msck repair");
+
+        SQLName database = x.getDatabase();
+        if (database != null) {
+            print0(ucase ? " DATABASE " : " database ");
+            database.accept(this);
+        }
+
+        SQLExprTableSource table = x.getTable();
+        if (table != null) {
+            print0(ucase ? " TABLE " : " table ");
+            table.accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableExchangePartition x) {
+        print0(ucase ? "EXCHANGE PARTITION (" : "exchange partition (");
+        printAndAccept(x.getPartitions(), ", ");
+        print0(ucase ? ") WITH TABLE " : ") with table ");
+        x.getTable().accept(this);
+
+        Boolean validation = x.getValidation();
+        if (validation != null) {
+            if (validation) {
+                print0(ucase ? " WITH VALIDATION" : " with validation");
+            } else {
+                print0(ucase ? " WITHOUT VALIDATION" : " without validation");
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateIndexStatement x) {
+        print0(ucase ? "CREATE " : "create ");
+        print0(ucase ? "INDEX " : "index ");
+
+        x.getName().accept(this);
+        print0(ucase ? " ON TABLE " : " on table ");
+        x.getTable().accept(this);
+        print0(" (");
+        printAndAccept(x.getItems(), ", ");
+        print(')');
+
+        String type = x.getType();
+        if (type != null) {
+            print0(ucase ? " AS " : " as ");
+            print0(type);
+        }
+
+
+        if (x.isDeferedRebuild()) {
+            print0(ucase ? " WITH DEFERRED REBUILD" : " with deferred rebuild");
+        }
+
+        if (x.getProperties().size() > 0) {
+            print0(ucase ? " IDXPROPERTIES (" : " idxproperties (");
+            printAndAccept(x.getProperties(), ", ");
+            print(')');
+        }
+
+        // for mysql
+        String using = x.getUsing();
+        if (using != null) {
+            print0(ucase ? " USING " : " using ");
+            print0(using);
+        }
+
+        SQLExpr comment = x.getComment();
+        if (comment != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            comment.accept(this);
+        }
+
+        final SQLTableSource in = x.getIn();
+        if (in != null) {
+            print0(ucase ? " IN TABLE " : " in table ");
+            in.accept(this);
+        }
+
+        final SQLExternalRecordFormat format = x.getRowFormat();
+        if (format != null) {
+            println();
+            print0(ucase ? "ROW FORMAT DELIMITED " : "row rowFormat delimited ");
+            visit(format);
+        }
+
+        final SQLName storedAs = x.getStoredAs();
+        if (storedAs != null) {
+            print0(ucase ? " STORED BY " : " stored by ");
+            storedAs.accept(this);
+        }
+
+        if (x.getTableProperties().size() > 0) {
+            print0(ucase ? " TBLPROPERTIES (" : " tblproperties (");
+            printAndAccept(x.getTableProperties(), ", ");
+            print(')');
+        }
+
+        return false;
+    }
+
+    public boolean visit(SQLCharExpr x, boolean parameterized) {
+        String text = x.getText();
+        if (text == null) {
+            print0(ucase ? "NULL" : "null");
+        } else {
+            StringBuilder buf = new StringBuilder(text.length() + 2);
+            buf.append('\'');
+            for (int i = 0; i < text.length(); ++i) {
+                char ch = text.charAt(i);
+                switch (ch) {
+                    case '\\':
+                        buf.append("\\\\");
+                        break;
+                    case '\'':
+                        buf.append("\\'");
+                        break;
+                    case '\0':
+                        buf.append("\\0");
+                        break;
+                    case '\n':
+                        buf.append("\\n");
+                        break;
+                    case '\r':
+                        buf.append("\\r");
+                        break;
+                    case '\b':
+                        buf.append("\\b");
+                        break;
+                    case '\t':
+                        buf.append("\\t");
+                        break;
+                    default:
+                        if (ch == '\u2605') {
+                            buf.append("\\u2605");
+                        } else if (ch == '\u25bc') {
+                            buf.append("\\u25bc");
+                        } else {
+                            buf.append(ch);
+                        }
+                        break;
+                }
+            }
+            buf.append('\'');
+
+            print0(buf.toString());
+        }
+
+        return false;
     }
 }

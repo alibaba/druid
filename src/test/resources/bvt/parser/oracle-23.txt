@@ -10,9 +10,14 @@ from (
 
 ---------------------------
 SELECT nodeId, nodeName, taskflowName, taskflowVersion
-FROM (SELECT /*+use_hash(n f) ordered*/ n.ID AS nodeId, n.name AS nodeName, f.name AS taskflowName, f.version AS taskflowVersion
+FROM (
+	SELECT /*+ use_hash(n f) ordered */ n.ID AS nodeId, n.name AS nodeName, f.name AS taskflowName, f.version AS taskflowVersion
 	FROM "AB" n, "BC_3" f
-	WHERE n.owner = ? AND (n.STATUS IN (?) AND n.GMT_MODIFIED < ? AND n.IS_AUTO = 'Y' AND n.task_flow_id = f.id)
+	WHERE n.owner = ?
+		AND n.STATUS IN (?)
+		AND n.GMT_MODIFIED < ?
+		AND n.IS_AUTO = 'Y'
+		AND n.task_flow_id = f.id
 	ORDER BY f.priority DESC NULLS LAST, f.gmt_create ASC
-	)
-WHERE rownum < ?;
+)
+WHERE rownum < ?

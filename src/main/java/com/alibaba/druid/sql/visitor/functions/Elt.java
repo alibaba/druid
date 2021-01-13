@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,36 +15,36 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
+
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Elt implements Function {
 
     public final static Elt instance = new Elt();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getParameters().size() <= 1) {
+        if (x.getArguments().size() <= 1) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        SQLExpr param0 = x.getParameters().get(0);
+        SQLExpr param0 = x.getArguments().get(0);
         param0.accept(visitor);
 
-        Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+        Object param0Value = param0.getAttribute(EVAL_VALUE);
         int param0IntValue;
         if (!(param0Value instanceof Number)) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
         param0IntValue = ((Number) param0Value).intValue();
 
-        if (param0IntValue >= x.getParameters().size()) {
+        if (param0IntValue >= x.getArguments().size()) {
             return SQLEvalVisitor.EVAL_VALUE_NULL;
         }
 
-        SQLExpr item = x.getParameters().get(param0IntValue);
+        SQLExpr item = x.getArguments().get(param0IntValue);
         item.accept(visitor);
 
         Object itemValue = item.getAttributes().get(EVAL_VALUE);

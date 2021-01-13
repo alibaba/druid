@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,30 @@
  */
 package com.alibaba.druid.sql.dialect.db2.visitor;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntervalUnit;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2CreateTableStatement;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisitor {
 
     public DB2OutputVisitor(Appendable appender){
-        super(appender, JdbcConstants.DB2);
+        super(appender, DbType.db2);
     }
 
     public DB2OutputVisitor(Appendable appender, boolean parameterized){
         super(appender, parameterized);
-        this.dbType = JdbcConstants.DB2;
+        this.dbType = DbType.db2;
     }
 
     @Override
@@ -162,7 +163,7 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
         SQLIntervalUnit unit = x.getUnit();
         if (unit != null) {
             print(' ');
-            print0(ucase ? unit.name() : unit.name_lcase);
+            print0(ucase ? unit.name : unit.name_lcase);
             print(ucase ? 'S' : 's');
         }
         return false;
@@ -173,25 +174,60 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
 
         final Integer seed = x.getSeed();
         final Integer increment = x.getIncrement();
+        final Integer minValue = x.getMinValue();
+        final Integer maxValue = x.getMaxValue();
 
-        if (seed != null || increment != null) {
+        if (seed != null || increment != null || x.isCycle() || minValue != null || maxValue != null) {
             print0(" (");
         }
 
         if (seed != null) {
             print0(ucase ? "START WITH " : "start with ");
             print(seed);
-            if (increment != null) {
-                print0(", ");
-            }
         }
 
         if (increment != null) {
+            if (seed != null) {
+                print0(", ");
+            }
             print0(ucase ? "INCREMENT BY " : "increment by ");
             print(increment);
+        }
+
+        if (x.isCycle()) {
+            if (seed != null || increment != null) {
+                print0(", ");
+            }
+            print0(ucase ? "CYCLE" : "cycle");
+        }
+
+        if (minValue != null) {
+            if (seed != null || increment != null || x.isCycle()) {
+                print0(", ");
+            }
+            print0(ucase ? "MINVALUE " : "minvalue ");
+            print(minValue);
+        }
+
+        if (maxValue != null) {
+            if (seed != null || increment != null || x.isCycle() || minValue != null) {
+                print0(", ");
+            }
+            print0(ucase ? "MAXVALUE " : "maxvalue ");
+            print(maxValue);
+        }
+
+        if (seed != null || increment != null || x.isCycle() || minValue != null || maxValue != null) {
             print(')');
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableAddColumn x) {
+        print0(ucase ? "ADD COLUMNS " : "add columns ");
+        printAndAccept(x.getColumns(), ", ");
         return false;
     }
 }

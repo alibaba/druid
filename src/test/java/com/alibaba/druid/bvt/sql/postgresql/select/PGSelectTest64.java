@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.postgresql.select;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
@@ -24,6 +25,7 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class PGSelectTest64 extends TestCase {
+    private final DbType dbType = JdbcConstants.POSTGRESQL;
 
     public void test_0() throws Exception {
         String sql = "select * from public.newtable \n" +
@@ -31,7 +33,7 @@ public class PGSelectTest64 extends TestCase {
                 "limit 10 offset 0";
         System.out.println(sql);
 
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.POSTGRESQL);
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
         SQLStatement stmt = stmtList.get(0);
 
         assertEquals("SELECT *\n" +
@@ -46,7 +48,7 @@ public class PGSelectTest64 extends TestCase {
 
         assertEquals(1, stmtList.size());
 
-        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.POSTGRESQL);
+        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
         stmt.accept(visitor);
 
 //        System.out.println("Tables : " + visitor.getTables());

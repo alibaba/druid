@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public abstract class MySqlObjectImpl extends SQLObjectImpl implements MySqlObject {
 
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof MySqlASTVisitor) {
-            accept0((MySqlASTVisitor) visitor);
+    protected void accept0(SQLASTVisitor v) {
+        if (v instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) v);
         } else {
-            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+            throw new IllegalArgumentException("not support visitor type : " + v.getClass().getName());
         }
     }
 
-    public abstract void accept0(MySqlASTVisitor visitor);
+    public abstract void accept0(MySqlASTVisitor v);
 }

@@ -3,34 +3,25 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.1.21_preview_01</version>
-
+	<version>1.2.5_preview_01</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
-	<description>An JDBC datasource implementation.</description>
+	<description>A JDBC datasource implementation.</description>
 	<url>https://github.com/alibaba/druid</url>
 	<inceptionYear>2013</inceptionYear>
 
 	<properties>
 		<spring.version>4.3.20.RELEASE</spring.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<jmh.version>1.19</jmh.version>
 
-		<gpg.skip>true</gpg.skip>
+		<gpg.skip>false</gpg.skip>
 		<javadoc.skip>true</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>local-file</id>
-			<url>file://${project.basedir}/lib/</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
 
 	<developers>
 		<developer>
@@ -202,9 +193,9 @@
 
 	<profiles>
 		<profile>
-			<id>default-profile</id>
+			<id>jconsole</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<!--<activeByDefault>true</activeByDefault>-->
 				<file>
 					<exists>${env.JAVA_HOME}/lib/jconsole.jar</exists>
 				</file>
@@ -230,6 +221,19 @@
 					<scope>system</scope>
 					<systemPath>${toolsjar}</systemPath>
 					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>java11plus</id>
+			<activation>
+				<jdk>[11,)</jdk>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>javax.annotation</groupId>
+					<artifactId>javax.annotation-api</artifactId>
+					<version>1.3.2</version>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -419,19 +423,19 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
-			<version>2.5</version>
+			<version>2.13.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.5</version>
+			<version>2.13.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.17</version>
+			<version>8.0.21</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -443,14 +447,14 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.2.6</version>
+			<version>42.2.12</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3</version>
+			<groupId>com.oracle.ojdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<version>19.3.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -464,7 +468,7 @@
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
-			<version>2.2.2</version>
+			<version>2.3.2</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
@@ -512,13 +516,13 @@
 		<dependency>
 			<groupId>org.apache.calcite</groupId>
 			<artifactId>calcite-core</artifactId>
-			<version>1.14.0</version>
+			<version>1.18.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>22.0</version>
+			<version>29.0-jre</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -527,7 +531,32 @@
 			<version>2.5.3</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>4.2.0</version>
+			<scope>provided</scope>
+		</dependency>
 
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.73</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hive</groupId>
+			<artifactId>hive-jdbc</artifactId>
+			<version>3.1.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>ru.yandex.clickhouse</groupId>
+			<artifactId>clickhouse-jdbc</artifactId>
+			<version>0.2.4</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!--
 			test dependences
@@ -546,8 +575,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- <dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> <version>4.0.2206.100</version>
-			<scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -648,12 +675,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.36</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4</artifactId>
 			<version>4.7</version>
@@ -679,21 +700,27 @@
 			<scope>test</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>tools</artifactId>
-            <version>1.8</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/openjdk-1.8-tools.jar</systemPath>
-        </dependency>
+		<dependency>
+			<groupId>com.sun</groupId>
+			<artifactId>tools</artifactId>
+			<version>1.8</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/openjdk-1.8-tools.jar</systemPath>
+		</dependency>
 
-        <dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>jconsole</artifactId>
-            <version>1.8</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/openjdk-1.8-jconsole.jar</systemPath>
-        </dependency>
+		<dependency>
+			<groupId>com.sun</groupId>
+			<artifactId>jconsole</artifactId>
+			<version>1.8</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/openjdk-1.8-jconsole.jar</systemPath>
+		</dependency>
 
-    </dependencies>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-test</artifactId>
+			<version>4.2.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>

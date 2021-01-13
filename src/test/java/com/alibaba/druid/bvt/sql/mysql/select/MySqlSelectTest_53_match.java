@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ import java.util.List;
 public class MySqlSelectTest_53_match extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql =  "SELECT *, MATCH(question_content_fulltext) " + //
-                "AGAINST('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE) AS score " + //
+        String sql =  "SELECT *, `MATCH`(question_content_fulltext) " + //
+                "`AGAINST`('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE) AS score " + //
                 "FROM aws_question " + //
                 "WHERE MATCH(question_content_fulltext) " + //
-                "   AGAINST('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE)  " + //
+                "   AGAINST('2015431867 2636826089 3807520117 2796321160 2615920174') > 1 " + //
                 "ORDER BY score DESC, agree_count DESC LIMIT 10";
 
         System.out.println(sql);
@@ -56,31 +56,27 @@ public class MySqlSelectTest_53_match extends MysqlTest {
         
         {
             String output = SQLUtils.toMySqlString(stmt);
-            assertEquals("SELECT *, MATCH (question_content_fulltext) AGAINST ('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE) AS score\n" +
-                            "FROM aws_question\n" +
-                            "WHERE MATCH (question_content_fulltext) AGAINST ('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE)\n" +
-                            "ORDER BY score DESC, agree_count DESC\n" +
-                            "LIMIT 10", //
-                                output);
+            assertEquals("SELECT *, MATCH (question_content_fulltext) AGAINST ('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE) AS score\n"
+                         + "FROM aws_question\n"
+                         + "WHERE MATCH (question_content_fulltext) AGAINST ('2015431867 2636826089 3807520117 2796321160 2615920174') > 1\n"
+                         + "ORDER BY score DESC, agree_count DESC\n" + "LIMIT 10", //
+                         output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("select *, match (question_content_fulltext) against ('2015431867 2636826089 3807520117 2796321160 2615920174' in boolean mode) as score\n" +
-                            "from aws_question\n" +
-                            "where match (question_content_fulltext) against ('2015431867 2636826089 3807520117 2796321160 2615920174' in boolean mode)\n" +
-                            "order by score desc, agree_count desc\n" +
-                            "limit 10", //
-                                output);
+            assertEquals("select *, match (question_content_fulltext) against ('2015431867 2636826089 3807520117 2796321160 2615920174' in boolean mode) as score\n"
+                         + "from aws_question\n"
+                         + "where match (question_content_fulltext) against ('2015431867 2636826089 3807520117 2796321160 2615920174') > 1\n"
+                         + "order by score desc, agree_count desc\n" + "limit 10", //
+                         output);
         }
 
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
-            assertEquals("SELECT *, MATCH (question_content_fulltext) AGAINST (? IN BOOLEAN MODE) AS score\n" +
-                            "FROM aws_question\n" +
-                            "WHERE MATCH (question_content_fulltext) AGAINST (? IN BOOLEAN MODE)\n" +
-                            "ORDER BY score DESC, agree_count DESC\n" +
-                            "LIMIT ?", //
-                    output);
+            assertEquals("SELECT *, MATCH (question_content_fulltext) AGAINST (? IN BOOLEAN MODE) AS score\n"
+                         + "FROM aws_question\n" + "WHERE MATCH (question_content_fulltext) AGAINST (?) > ?\n"
+                         + "ORDER BY score DESC, agree_count DESC\n" + "LIMIT ?", //
+                         output);
         }
     }
 }

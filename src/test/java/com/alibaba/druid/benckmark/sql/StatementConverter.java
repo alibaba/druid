@@ -1,5 +1,6 @@
 package com.alibaba.druid.benckmark.sql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
@@ -33,12 +34,12 @@ public class StatementConverter {
         } else if (stmt instanceof SQLUpdateStatement) {
             SQLTableSource tableSource = ((SQLUpdateStatement) stmt).getTableSource();
             SQLExpr where = ((SQLUpdateStatement) stmt).getWhere();
-            String dbType = ((SQLUpdateStatement) stmt).getDbType();
+            DbType dbType = ((SQLUpdateStatement) stmt).getDbType();
             selectStmt = buildSelect(tableSource, where, dbType);
         } else if (stmt instanceof SQLDeleteStatement) {
             SQLTableSource tableSource = ((SQLDeleteStatement) stmt).getTableSource();
             SQLExpr where = ((SQLDeleteStatement) stmt).getWhere();
-            String dbType = ((SQLDeleteStatement) stmt).getDbType();
+            DbType dbType = ((SQLDeleteStatement) stmt).getDbType();
             selectStmt = buildSelect(tableSource, where, dbType);
         } else if (stmt instanceof SQLInsertStatement) {
             SQLSelect sqlSelect = ((SQLInsertStatement) stmt).getQuery();
@@ -64,7 +65,7 @@ public class StatementConverter {
     }
 
     // build 'select * from ...'
-    static SQLSelectStatement buildSelect(SQLTableSource tableSource, SQLExpr where, String dbType) {
+    static SQLSelectStatement buildSelect(SQLTableSource tableSource, SQLExpr where, DbType dbType) {
         SQLSelectQueryBlock sqlSelectQuery = new SQLSelectQueryBlock();
         sqlSelectQuery.addSelectItem(new SQLSelectItem(new SQLAllColumnExpr()));
         sqlSelectQuery.setWhere(where);

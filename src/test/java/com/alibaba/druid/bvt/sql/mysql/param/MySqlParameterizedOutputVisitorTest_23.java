@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_23 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
 
         String sql = "select `wmc_xxx_s`.fid from `wmc_xxx_s_0479` as `wmc_xxx_s` where `wmc_xxx_s`.fid = 3";
 

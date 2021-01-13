@@ -23,8 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLValuesQuery
-        extends SQLObjectImpl implements SQLSelectQuery {
+public class SQLValuesQuery extends SQLObjectImpl implements SQLSelectQuery {
     private boolean          bracket  = false;
 
     private List<SQLExpr> values = new ArrayList<SQLExpr>();

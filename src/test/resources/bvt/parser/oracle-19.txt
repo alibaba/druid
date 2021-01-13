@@ -11,12 +11,15 @@ where rownum < ? ) where rnm >= ?
 
 ---------------------------
 SELECT *
-FROM (SELECT rownum AS rnm, z.*
-	FROM (SELECT name AS value, value AS KEY
+FROM (
+	SELECT rownum AS rnm, z.*
+	FROM (
+		SELECT name AS value, value AS key
 		FROM a_b_c
-		WHERE is_deleted = 'n' AND type = 'fuse'
+		WHERE is_deleted = 'n'
+			AND type = 'fuse'
 		ORDER BY ordering
-		) z
+	) z
 	WHERE rownum < ?
-	)
-WHERE rnm >= ?;
+)
+WHERE rnm >= ?

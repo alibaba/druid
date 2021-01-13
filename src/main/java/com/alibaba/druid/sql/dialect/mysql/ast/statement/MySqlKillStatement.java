@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-
-public class MySqlKillStatement extends MySqlStatementImpl {
+public class MySqlKillStatement extends SQLStatementImpl {
 
     private Type          type;
     private List<SQLExpr> threadIds = new ArrayList<SQLExpr>();
@@ -45,6 +48,10 @@ public class MySqlKillStatement extends MySqlStatementImpl {
     }
 
     public void setThreadId(SQLExpr threadId) {
+        if (this.threadIds.size() == 0) {
+            this.threadIds.add(threadId);
+            return;
+        }
         this.threadIds.set(0, threadId);
     }
     
@@ -52,7 +59,7 @@ public class MySqlKillStatement extends MySqlStatementImpl {
         return threadIds;
     }
 
-    public void accept0(MySqlASTVisitor visitor) {
+    protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, threadIds);
         }

@@ -21,19 +21,28 @@ WHERE k.cnt > ?
 ORDER BY memberid ASC, createtime DESC 	
 
 ---------------------------
-SELECT custid, memberid, to_char(createtime, 'yyyy-mm-dd hh24:mi:ss') AS createtime, planid, auditstate
-	, to_char(modifytime, 'yyyy-mm-dd hh24:mi:ss') AS modifytime, createid, to_char(custappdate, 'yyyy-mm-dd hh24:mi:ss') AS custappdate, executeState, gmtcreate
-	, custname, planbatchid
-FROM (SELECT custid, memberid, createtime, planid, auditstate
+SELECT custid, memberid, to_char(createtime, 'yyyy-mm-dd hh24:mi:ss') AS createtime
+	, planid, auditstate, to_char(modifytime, 'yyyy-mm-dd hh24:mi:ss') AS modifytime
+	, createid, to_char(custappdate, 'yyyy-mm-dd hh24:mi:ss') AS custappdate, executeState
+	, gmtcreate, custname, planbatchid
+FROM (
+	SELECT custid, memberid, createtime, planid, auditstate
 		, createid, custappdate, executeState, custname, gmtcreate
 		, cnt, planbatchid, modifytime
-	FROM (SELECT p.custid, p.memberid, p.createtime, p.planid, p.auditstate
+	FROM (
+		SELECT p.custid, p.memberid, p.createtime, p.planid, p.auditstate
 			, p.createid, p.custappdate, p.modifytime, p.gmtcreate, p.executeState
-			, c.custname, row_number() OVER ( ORDER BY p.memberid ASC, p.createtime DESC) AS cnt, p.planbatchid
+			, c.custname, row_number() OVER (ORDER BY p.memberid ASC, p.createtime DESC) AS cnt, p.planbatchid
 		FROM x_plp_f_u_c_k p, x_xcde c
-		WHERE p.custid = c.custid AND p.applytype = 0 AND p.createtime BETWEEN to_date(?, 'yyyy-mm-dd') AND to_date(?, 'yyyy-mm-dd hh24:mi:ss') AND (p.auditstate = ? AND p.executestate = 1) AND auditstate != 3 AND p.memberid IN (?)
-		) t
+		WHERE p.custid = c.custid
+			AND p.applytype = 0
+			AND p.createtime BETWEEN to_date(?, 'yyyy-mm-dd') AND to_date(?, 'yyyy-mm-dd hh24:mi:ss')
+			AND (p.auditstate = ?
+				AND p.executestate = 1)
+			AND auditstate != 3
+			AND p.memberid IN (?)
+	) t
 	WHERE t.cnt < ?
-	) k
+) k
 WHERE k.cnt > ?
-ORDER BY memberid ASC, createtime DESC;
+ORDER BY memberid ASC, createtime DESC

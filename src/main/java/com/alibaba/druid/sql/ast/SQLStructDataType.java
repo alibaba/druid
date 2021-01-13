@@ -1,36 +1,23 @@
-/*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
+
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FnvHash;
-
 public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
-    private String dbType;
+    private DbType dbType;
     private List<Field> fields = new ArrayList<Field>();
 
     public SQLStructDataType() {
 
     }
 
-    public SQLStructDataType(String dbType) {
+    public SQLStructDataType(DbType dbType) {
         this.dbType = dbType;
     }
 
@@ -75,12 +62,12 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
     }
 
     @Override
-    public void setDbType(String dbType) {
+    public void setDbType(DbType dbType) {
         this.dbType = dbType;
     }
 
     @Override
-    public String getDbType() {
+    public DbType getDbType() {
         return dbType;
     }
 
@@ -106,15 +93,40 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
         return fields;
     }
 
-    public void addField(SQLName name, SQLDataType dataType) {
+    public Field addField(SQLName name, SQLDataType dataType) {
         Field field = new Field(name, dataType);
         field.setParent(this);
         fields.add(field);
+        return field;
+    }
+
+    public int jdbcType() {
+        return Types.STRUCT;
+    }
+
+    @Override
+    public boolean isInt() {
+        return false;
+    }
+    @Override
+    public boolean isNumberic() {
+        return false;
+    }
+
+    @Override
+    public boolean isString() {
+        return false;
+    }
+
+    @Override
+    public boolean hasKeyLength() {
+        return false;
     }
 
     public static class Field extends SQLObjectImpl {
-        private SQLName name;
+        private SQLName     name;
         private SQLDataType dataType;
+        private String      comment;
 
         public Field(SQLName name, SQLDataType dataType) {
             setName(name);
@@ -150,6 +162,14 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
                 x.setParent(this);
             }
             this.dataType = x;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
         }
     }
 }

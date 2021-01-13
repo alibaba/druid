@@ -15,10 +15,17 @@ where xh=1
   
 
 ---------------------------
-SELECT INDUSTRY_ID, sale_type, service_type, RISK_TYPE, to_char(gmt_create, 'yyyy-mm-dd hh24:mi:ss') AS gmt_create
-FROM (SELECT /*+use_hash(a b c) ordered*/ b.service_type, b.RISK_TYPE, b.sale_type, b.INDUSTRY_ID, b.GMT_CREATE
-		, row_number() OVER (PARTITION BY (b.service_type, b.RISK_TYPE, b.sale_type, b.INDUSTRY_ID) ORDER BY b.GMT_CREATE) AS xh
+SELECT INDUSTRY_ID, sale_type, service_type, RISK_TYPE
+	, to_char(gmt_create, 'yyyy-mm-dd hh24:mi:ss') AS gmt_create
+FROM (
+	SELECT /*+ use_hash(a b c) ordered */ b.service_type, b.RISK_TYPE, b.sale_type, b.INDUSTRY_ID, b.GMT_CREATE
+		, row_number() OVER (PARTITION BY b.service_type, b.RISK_TYPE, b.sale_type, b.INDUSTRY_ID ORDER BY b.GMT_CREATE) AS xh
 	FROM "AAAAA" a, "F" b, "BBBBB" c
-	WHERE a.id = b.task_flow_id AND a.id = c.task_flow_id AND c.status = 'waiting' AND c.IS_AUTO = 'N' AND a.status = 'running' AND c.name IN (?)
-	)
-WHERE xh = 1;
+	WHERE a.id = b.task_flow_id
+		AND a.id = c.task_flow_id
+		AND c.status = 'waiting'
+		AND c.IS_AUTO = 'N'
+		AND a.status = 'running'
+		AND c.name IN (?)
+)
+WHERE xh = 1

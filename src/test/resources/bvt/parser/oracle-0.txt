@@ -15,5 +15,11 @@ ORDER BY id   ;
 ---------------------------
 SELECT ID AS id, to_char(GMT_MODIFIED, 'yyyymmdd hh24:mi:ss') AS gmtModified, COL5 AS col5
 FROM ABC_ABC
-WHERE IS_DELETED = 'n' AND end_time IS NULL AND deadline_time < sysdate AND approval_time IS NULL AND id > :1 AND (col2 IN (:2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18, :19, :20, :21, :22, :23, :24, :25, :26, :27, :28, :29, :30, :31, :32, :33) AND rownum < :34)
+WHERE IS_DELETED = 'n'
+	AND end_time IS NULL
+	AND deadline_time < SYSDATE
+	AND approval_time IS NULL
+	AND id > :1
+	AND col2 IN (:2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18, :19, :20, :21, :22, :23, :24, :25, :26, :27, :28, :29, :30, :31, :32, :33)
+	AND rownum < :34
 ORDER BY id;

@@ -1,25 +1,40 @@
 select b.* 		from 		 ( 		    select * from (select row_.*, rownum rownum_ from (    	 		    	  select * 		                    from ( 		                    		select '1' is_draft,a.IS_DISPLAY,a.score,a.type,a.repository_type,a.GMT_MODIFIED,ID 		                            from product_draft a 		                            where 1=1 									 										and 											a.COMPANY_ID = ? 										 									 									 									 										 									 									 										 									 									 										 									 									 									     									 									 										 													 									 										and 																	 																	a.REPOSITORY_TYPE in ( 																	 											 												? 														, 												? 														 																	 																	) 																	 										 									 									 										and 											upper(a.SUBJECT) like 											upper(?) 																 									 									 										 									 									 										 									 									 										 									 									 										and 														 														a.OWNER_MEMBER_ID in ( 														 											 												? 														, 												? 														, 												? 														, 												? 														, 												? 														, 												? 														, 												? 														, 												? 														, 												? 														, 												? 														 														 														) 														 										 									 									 										and 														 														a.STATUS in ( 														 											 												? 														, 												? 														, 												? 														, 												? 														, 												? 														, 												? 														 														 														) 														 										 									 									 										 									 									 										 									 		                          union all 		                          select '0' is_draft,a.IS_DISPLAY,a.score,a.type,a.repository_type,a.GMT_MODIFIED,ID 		                            from product a 		                            where a.draft_status = 'no_status' 									 											and 												a.COMPANY_ID = ? 											 									 									 									 										 									 									 										 									 									 										 									 									 									     									 									 										 													 									 										and 											 											a.REPOSITORY_TYPE in ( 											 											 												? 											, 												? 											 											 											) 											 										 									 									 										and 											upper(a.SUBJECT) like 											upper(?) 										 									 									 										 									 									 										 									 									 										 									 									 										and 											a.OWNER_MEMBER_ID in ( 											 												? 															, 												? 															, 												? 															, 												? 															, 												? 															, 												? 															, 												? 															, 												? 															, 												? 															, 												? 															 											) 										 									 									 										and 															 															a.STATUS in ( 														 											 												? 															, 												? 															, 												? 															, 												? 															, 												? 															, 												? 															 															 															) 														 										 										 									 									 										 									 									 										 									) 				                    									 										order by 										 										 											type asc 										 										 										 										 											, 										 									 									 									 										 											"GMT_MODIFIED" 											desc 										, 											"ID" 											desc 										 									 								 								 		    )row_ where rownum <= ? ) where rownum_ >= ?    	) a, 		   (select '1' as is_draft, id, m.ACTION_TRACE,m.TYPE,m.IMAGE_REPOSITORY_IDS,m.SUBJECT,m.MEMBER_ID,m.MEMBER_SEQ, m.REPOSITORY_TYPE,m.STATUS,m.GROUP_ID,  							m.GROUP_ID2,m.GROUP_ID3,m.GMT_MODIFIED,m.GMT_CREATE,m.COMPANY_ID, m.OWNER_MEMBER_ID,m.OWNER_MEMBER_SEQ,m.IND_BY_ALL,m.IND_BY_GROUP, 							m.IND_BY_GROUP2,m.IND_BY_GROUP3,m.HAVE_IMAGE,m.IMAGE_COUNT,m.IS_DISPLAY,m.RED_MODEL,m.KEYWORDS,m.EXPORT_TYPE,                             m.IMAGE_VERSION, m.SCORE from product_draft m 		   union all 		   select '0' as is_draft, id, NULL AS ACTION_TRACE,n.TYPE,n.IMAGE_REPOSITORY_IDS,n.SUBJECT,n.MEMBER_ID,n.MEMBER_SEQ,n.REPOSITORY_TYPE, 					n.STATUS,n.GROUP_ID,n.GROUP_ID2,n.GROUP_ID3,n.GMT_MODIFIED,n.GMT_CREATE,n.COMPANY_ID,n.OWNER_MEMBER_ID,n.OWNER_MEMBER_SEQ, 					n.IND_BY_ALL,n.IND_BY_GROUP,n.IND_BY_GROUP2,n.IND_BY_GROUP3,n.HAVE_IMAGE,n.IMAGE_COUNT,n.IS_DISPLAY,n.RED_MODEL,n.KEYWORDS,                              n.EXPORT_TYPE, n.IMAGE_VERSION, n.SCORE from product n) b 		where a.is_draft=b.is_draft 		and a.id=b.id 		 			 				order by 				 				 					b.type asc 				 				 				 				 					, 				 			 			 			 				 					b."GMT_MODIFIED" 					desc 				, 					b."ID" 					desc 				 			 		 	
 ---------------------------
 SELECT b.*
-FROM (SELECT *
-	FROM (SELECT row_.*, rownum AS rownum_
-		FROM (SELECT *
-			FROM (SELECT '1' AS is_draft, a.IS_DISPLAY, a.score, a.type, a.repository_type
+FROM (
+	SELECT *
+	FROM (
+		SELECT row_.*, rownum AS rownum_
+		FROM (
+			SELECT *
+			FROM (
+				SELECT '1' AS is_draft, a.IS_DISPLAY, a.score, a.type, a.repository_type
 					, a.GMT_MODIFIED, ID
 				FROM product_draft a
-				WHERE 1 = 1 AND a.COMPANY_ID = ? AND (a.REPOSITORY_TYPE IN (?, ?) AND upper(a.SUBJECT) LIKE upper(?) AND (a.OWNER_MEMBER_ID IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) AND a.STATUS IN (?, ?, ?, ?, ?, ?)))
+				WHERE 1 = 1
+					AND a.COMPANY_ID = ?
+					AND a.REPOSITORY_TYPE IN (?, ?)
+					AND upper(a.SUBJECT) LIKE upper(?)
+					AND a.OWNER_MEMBER_ID IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					AND a.STATUS IN (?, ?, ?, ?, ?, ?)
 				UNION ALL
 				SELECT '0' AS is_draft, a.IS_DISPLAY, a.score, a.type, a.repository_type
 					, a.GMT_MODIFIED, ID
 				FROM product a
-				WHERE a.draft_status = 'no_status' AND a.COMPANY_ID = ? AND (a.REPOSITORY_TYPE IN (?, ?) AND upper(a.SUBJECT) LIKE upper(?) AND (a.OWNER_MEMBER_ID IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) AND a.STATUS IN (?, ?, ?, ?, ?, ?)))
-				)
+				WHERE a.draft_status = 'no_status'
+					AND a.COMPANY_ID = ?
+					AND a.REPOSITORY_TYPE IN (?, ?)
+					AND upper(a.SUBJECT) LIKE upper(?)
+					AND a.OWNER_MEMBER_ID IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					AND a.STATUS IN (?, ?, ?, ?, ?, ?)
+			)
 			ORDER BY type ASC, "GMT_MODIFIED" DESC, "ID" DESC
-			) row_
+		) row_
 		WHERE rownum <= ?
-		)
+	)
 	WHERE rownum_ >= ?
-	) a, (SELECT '1' AS is_draft, id, m.ACTION_TRACE, m.TYPE, m.IMAGE_REPOSITORY_IDS
+) a, (
+	SELECT '1' AS is_draft, id, m.ACTION_TRACE, m.TYPE, m.IMAGE_REPOSITORY_IDS
 		, m.SUBJECT, m.MEMBER_ID, m.MEMBER_SEQ, m.REPOSITORY_TYPE, m.STATUS
 		, m.GROUP_ID, m.GROUP_ID2, m.GROUP_ID3, m.GMT_MODIFIED, m.GMT_CREATE
 		, m.COMPANY_ID, m.OWNER_MEMBER_ID, m.OWNER_MEMBER_SEQ, m.IND_BY_ALL, m.IND_BY_GROUP
@@ -34,6 +49,7 @@ FROM (SELECT *
 		, n.IND_BY_GROUP2, n.IND_BY_GROUP3, n.HAVE_IMAGE, n.IMAGE_COUNT, n.IS_DISPLAY
 		, n.RED_MODEL, n.KEYWORDS, n.EXPORT_TYPE, n.IMAGE_VERSION, n.SCORE
 	FROM product n
-	) b
-WHERE a.is_draft = b.is_draft AND a.id = b.id
-ORDER BY b.type ASC, b."GMT_MODIFIED" DESC, b."ID" DESC;
+) b
+WHERE a.is_draft = b.is_draft
+	AND a.id = b.id
+ORDER BY b.type ASC, b."GMT_MODIFIED" DESC, b."ID" DESC

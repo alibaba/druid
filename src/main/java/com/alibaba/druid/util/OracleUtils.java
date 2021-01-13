@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.sql.XAConnection;
 import javax.transaction.xa.XAException;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -38,6 +39,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleStatement;
+import oracle.jdbc.driver.T4CXAConnection;
 import oracle.jdbc.internal.OraclePreparedStatement;
 import oracle.jdbc.xa.client.OracleXAConnection;
 import oracle.sql.ROWID;
@@ -47,7 +49,12 @@ public class OracleUtils {
     private final static Log LOG = LogFactory.getLog(OracleUtils.class);
 
     public static XAConnection OracleXAConnection(Connection oracleConnection) throws XAException {
-        return new OracleXAConnection(oracleConnection);
+        String oracleConnectionClassName = oracleConnection.getClass().getName();
+        if ("oracle.jdbc.driver.T4CConnection".equals(oracleConnectionClassName)) {
+            return new T4CXAConnection(oracleConnection);
+        } else {
+            return new OracleXAConnection(oracleConnection);
+        }
     }
 
     public static int getRowPrefetch(PreparedStatement stmt) throws SQLException {
@@ -309,7 +316,7 @@ public class OracleUtils {
             return ddlScript;
         }
 
-        List stmtList = SQLUtils.parseStatements(ddlScript, JdbcConstants.ORACLE);
+        List stmtList = SQLUtils.parseStatements(ddlScript, DbType.oracle);
         if (simplify) {
             for (Object o : stmtList) {
                 if (o instanceof SQLCreateTableStatement) {
@@ -322,6 +329,6 @@ public class OracleUtils {
         if (sorted) {
             SQLCreateTableStatement.sort(stmtList);
         }
-        return SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
+        return SQLUtils.toSQLString(stmtList, DbType.oracle);
     }
 }

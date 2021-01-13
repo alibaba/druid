@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
@@ -35,10 +36,10 @@ public class MySqlParameterizedOutputVisitorTest_75_or extends TestCase {
 
         List<Object> outParameters = new ArrayList<Object>(0);
 
-        SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL).get(0);
+        SQLStatement stmt = SQLUtils.parseStatements(sql, DbType.mysql).get(0);
 
         StringBuilder out = new StringBuilder(sql.length());
-        ParameterizedVisitor visitor = ParameterizedOutputVisitorUtils.createParameterizedOutputVisitor(out, JdbcConstants.MYSQL);
+        ParameterizedVisitor visitor = ParameterizedOutputVisitorUtils.createParameterizedOutputVisitor(out, DbType.mysql);
         visitor.config(VisitorFeature.OutputParameterizedQuesUnMergeOr, true);
         if (outParameters != null) {
             visitor.setOutputParameters(outParameters);

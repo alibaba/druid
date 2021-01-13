@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,30 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.Collections;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 public class SQLRealExpr extends SQLNumericLiteralExpr implements SQLValuableExpr {
 
-    private Float value;
+    private float value;
 
     public SQLRealExpr(){
 
     }
 
-    public SQLRealExpr(Float value){
+    public SQLRealExpr(float value){
         super();
         this.value = value;
+    }
+
+    public SQLRealExpr(String value) {
+        super();
+        this.value = Float.valueOf(value);
     }
 
     public SQLRealExpr clone() {
@@ -61,34 +68,24 @@ public class SQLRealExpr extends SQLNumericLiteralExpr implements SQLValuableExp
 
         visitor.endVisit(this);
     }
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+
+    public void setValue(float value) {
+        this.value = value;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        SQLRealExpr other = (SQLRealExpr) obj;
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLRealExpr that = (SQLRealExpr) o;
+
+        return Float.compare(that.value, value) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return (value != +0.0f ? Float.floatToIntBits(value) : 0);
     }
 
     @Override

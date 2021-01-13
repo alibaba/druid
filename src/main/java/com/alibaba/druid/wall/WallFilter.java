@@ -40,6 +40,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
@@ -60,11 +62,7 @@ import com.alibaba.druid.util.ServletPathMatcher;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack.StatementType;
-import com.alibaba.druid.wall.spi.DB2WallProvider;
-import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import com.alibaba.druid.wall.spi.OracleWallProvider;
-import com.alibaba.druid.wall.spi.PGWallProvider;
-import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import com.alibaba.druid.wall.spi.*;
 import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 public class WallFilter extends FilterAdapter implements WallFilterMBean {
@@ -75,7 +73,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     private WallProvider       provider;
 
-    private String             dbType;
+    private String dbTypeName;
 
     private WallConfig         config;
 
@@ -112,59 +110,86 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     @Override
     public synchronized void init(DataSourceProxy dataSource) {
 
-        if (null == dataSource) {
+        if (dataSource == null) {
             LOG.error("dataSource should not be null");
             return;
         }
 
-        if (this.dbType == null || this.dbType.trim().length() == 0) {
+        if (this.dbTypeName == null || this.dbTypeName.trim().length() == 0) {
             if (dataSource.getDbType() != null) {
-                this.dbType = dataSource.getDbType();
+                this.dbTypeName = dataSource.getDbType();
             } else {
-                this.dbType = JdbcUtils.getDbType(dataSource.getRawJdbcUrl(), "");
+                this.dbTypeName = JdbcUtils.getDbType(dataSource.getRawJdbcUrl(), "");
             }
         }
 
-        if (dbType == null) {
-            dbType = JdbcUtils.getDbType(dataSource.getUrl(), null);
+        if (dbTypeName == null) {
+            dbTypeName = JdbcUtils.getDbType(dataSource.getUrl(), null);
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType) || //
-            JdbcUtils.MARIADB.equals(dbType) || //
-            JdbcUtils.H2.equals(dbType)||
-            JdbcUtils.PRESTO.equals(dbType)) {
-            if (config == null) {
-                config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
-            }
+        DbType dbType = DbType.of(this.dbTypeName);
 
-            provider = new MySqlWallProvider(config);
-        } else if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
-            if (config == null) {
-                config = new WallConfig(OracleWallProvider.DEFAULT_CONFIG_DIR);
-            }
+        switch (dbType) {
+            case mysql:
+            case oceanbase:
+            case drds:
+            case mariadb:
+            case h2:
+            case presto:
+                if (config == null) {
+                    config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
+                }
 
-            provider = new OracleWallProvider(config);
-        } else if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
-            if (config == null) {
-                config = new WallConfig(SQLServerWallProvider.DEFAULT_CONFIG_DIR);
-            }
+                provider = new MySqlWallProvider(config);
+                break;
+            case oracle:
+            case ali_oracle:
+            case oceanbase_oracle:
+                if (config == null) {
+                    config = new WallConfig(OracleWallProvider.DEFAULT_CONFIG_DIR);
+                }
 
-            provider = new SQLServerWallProvider(config);
-        } else if (JdbcUtils.POSTGRESQL.equals(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
-            if (config == null) {
-                config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
-            }
+                provider = new OracleWallProvider(config);
+                break;
+            case sqlserver:
+            case jtds:
+                if (config == null) {
+                    config = new WallConfig(SQLServerWallProvider.DEFAULT_CONFIG_DIR);
+                }
 
-            provider = new PGWallProvider(config);
-        } else if (JdbcUtils.DB2.equals(dbType)) {
-            if (config == null) {
-                config = new WallConfig(DB2WallProvider.DEFAULT_CONFIG_DIR);
-            }
+                provider = new SQLServerWallProvider(config);
+                break;
+            case postgresql:
+            case edb:
+            case polardb:
+                if (config == null) {
+                    config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
+                }
 
-            provider = new DB2WallProvider(config);
-        } else {
-            throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
+                provider = new PGWallProvider(config);
+                break;
+            case db2:
+                if (config == null) {
+                    config = new WallConfig(DB2WallProvider.DEFAULT_CONFIG_DIR);
+                }
+
+                provider = new DB2WallProvider(config);
+                break;
+            case sqlite:
+                if (config == null) {
+                    config = new WallConfig(SQLiteWallProvider.DEFAULT_CONFIG_DIR);
+                }
+
+                provider = new SQLiteWallProvider(config);
+                break;
+            case clickhouse:
+                if (config == null) {
+                    config = new WallConfig(ClickhouseWallProvider.DEFAULT_CONFIG_DIR);
+                }
+                provider = new ClickhouseWallProvider(config);
+                break;
+            default:
+                throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }
         
         provider.setName(dataSource.getName());
@@ -173,11 +198,19 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     public String getDbType() {
-        return dbType;
+        return dbTypeName;
     }
 
     public void setDbType(String dbType) {
-        this.dbType = dbType;
+        this.dbTypeName = dbType;
+    }
+
+    public void setDbType(DbType dbType) {
+        if (dbType == null) {
+            this.dbTypeName = null;
+        } else {
+            this.dbTypeName = dbType.name();
+        }
     }
 
     public boolean isLogViolation() {
@@ -796,16 +829,32 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         if (violations.size() > 0) {
             Violation firstViolation = violations.get(0);
             if (isLogViolation()) {
-                LOG.error("sql injection violation, " + firstViolation.getMessage() + " : " + sql);
+                LOG.error("sql injection violation, dbType "
+                        + getDbType()
+                        + ", druid-version "
+                        + VERSION.getVersionNumber()
+                        + ", "
+                        + firstViolation.getMessage() + " : " + sql);
             }
 
             if (throwException) {
                 if (violations.get(0) instanceof SyntaxErrorViolation) {
                     SyntaxErrorViolation violation = (SyntaxErrorViolation) violations.get(0);
-                    throw new SQLException("sql injection violation, " + firstViolation.getMessage() + " : " + sql,
+                    throw new SQLException("sql injection violation, dbType "
+                            + getDbType() + ", "
+                            + ", druid-version "
+                            + VERSION.getVersionNumber()
+                            + ", "
+                            + firstViolation.getMessage() + " : " + sql,
                             violation.getException());
                 } else {
-                    throw new SQLException("sql injection violation, " + firstViolation.getMessage() + " : " + sql);
+                    throw new SQLException("sql injection violation, dbType "
+                            + getDbType()
+                            + ", druid-version "
+                            + VERSION.getVersionNumber()
+                            + ", "
+                            + firstViolation.getMessage()
+                            + " : " + sql);
                 }
             }
         }
