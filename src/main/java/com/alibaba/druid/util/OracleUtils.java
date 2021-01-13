@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.sql.XAConnection;
 import javax.transaction.xa.XAException;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -315,7 +316,7 @@ public class OracleUtils {
             return ddlScript;
         }
 
-        List stmtList = SQLUtils.parseStatements(ddlScript, JdbcConstants.ORACLE);
+        List stmtList = SQLUtils.parseStatements(ddlScript, DbType.oracle);
         if (simplify) {
             for (Object o : stmtList) {
                 if (o instanceof SQLCreateTableStatement) {
@@ -328,6 +329,6 @@ public class OracleUtils {
         if (sorted) {
             SQLCreateTableStatement.sort(stmtList);
         }
-        return SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
+        return SQLUtils.toSQLString(stmtList, DbType.oracle);
     }
 }

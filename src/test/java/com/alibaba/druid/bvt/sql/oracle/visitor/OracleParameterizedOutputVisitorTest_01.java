@@ -36,7 +36,7 @@ public class OracleParameterizedOutputVisitorTest_01 extends TestCase {
                 "\t, lower(aa.owner || '.' || aa.table_name) AS ref_info\n" +
                 "FROM dba_synonyms dd, dba_objects cc, dba_tables aa\n" +
                 "\tLEFT JOIN dba_tab_comments bb ON aa.owner = bb.owner\n" +
-                "AND aa.table_name = bb.table_name \n" +
+                "\tAND aa.table_name = bb.table_name \n" +
                 "WHERE aa.owner = cc.owner\n" +
                 "\tAND aa.table_name = cc.object_name\n" +
                 "\tAND cc.subobject_name IS NULL\n" +

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,11 +44,11 @@ public abstract class OracleSegmentAttributesImpl extends SQLObjectImpl implemen
         return tablespace;
     }
 
-    public void setTablespace(SQLName tablespace) {
-        if (tablespace != null) {
-            tablespace.setParent(this);
+    public void setTablespace(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.tablespace = tablespace;
+        this.tablespace = x;
     }
 
     public Boolean getCompress() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class MySqlCreateTableTest72 extends MysqlTest {
 
@@ -32,7 +31,7 @@ public class MySqlCreateTableTest72 extends MysqlTest {
         String sql = "CREATE TABLE \"MessageInstance\" ("
                 + "  \"id\" int(11) NOT NULL AUTO_INCREMENT,"
                 + "  \"messageId\" int(11) NOT NULL,"
-                + "  PRIMARY KEY (\"id\"),"
+                + "  PRIMARY KEY (\'id\'),"
                 + "  KEY \"ix_messageId\" (\"messageId\")"
                 + ")";
 
@@ -51,7 +50,7 @@ public class MySqlCreateTableTest72 extends MysqlTest {
             Assert.assertEquals("CREATE TABLE \"MessageInstance\" ("
                     + "\n\t\"id\" int(11) NOT NULL AUTO_INCREMENT,"
                     + "\n\t\"messageId\" int(11) NOT NULL,"
-                    + "\n\tPRIMARY KEY (\"id\"),"
+                    + "\n\tPRIMARY KEY (\'id\'),"
                     + "\n\tKEY \"ix_messageId\" (\"messageId\")"
                     + "\n)", output);
         }
@@ -61,7 +60,7 @@ public class MySqlCreateTableTest72 extends MysqlTest {
             Assert.assertEquals("create table \"MessageInstance\" ("
                     + "\n\t\"id\" int(11) not null auto_increment,"
                     + "\n\t\"messageId\" int(11) not null,"
-                    + "\n\tprimary key (\"id\"),"
+                    + "\n\tprimary key (\'id\'),"
                     + "\n\tkey \"ix_messageId\" (\"messageId\")"
                     + "\n)", output);
         }

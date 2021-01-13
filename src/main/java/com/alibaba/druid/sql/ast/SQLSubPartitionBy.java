@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 
 public abstract class SQLSubPartitionBy extends SQLObjectImpl {
 
@@ -27,16 +28,18 @@ public abstract class SQLSubPartitionBy extends SQLObjectImpl {
     protected List<SQLAssignItem>   options              = new ArrayList<SQLAssignItem>();
     protected List<SQLSubPartition> subPartitionTemplate = new ArrayList<SQLSubPartition>();
 
+    protected SQLIntegerExpr lifecycle;
+
     public SQLExpr getSubPartitionsCount() {
         return subPartitionsCount;
     }
 
-    public void setSubPartitionsCount(SQLExpr subPartitionsCount) {
-        if (subPartitionsCount != null) {
-            subPartitionsCount.setParent(this);
+    public void setSubPartitionsCount(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
         }
 
-        this.subPartitionsCount = subPartitionsCount;
+        this.subPartitionsCount = x;
     }
 
     public boolean isLinear() {
@@ -71,6 +74,16 @@ public abstract class SQLSubPartitionBy extends SQLObjectImpl {
             p2.setParent(x);
             x.subPartitionTemplate.add(p2);
         }
+
+        x.lifecycle = lifecycle;
+    }
+
+    public SQLIntegerExpr getLifecycle() {
+        return lifecycle;
+    }
+
+    public void setLifecycle(SQLIntegerExpr lifecycle) {
+        this.lifecycle = lifecycle;
     }
 
     public boolean isPartitionByColumn(long columnNameHashCode64) {

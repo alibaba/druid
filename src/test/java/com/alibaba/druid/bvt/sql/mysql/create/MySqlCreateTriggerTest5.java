@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTriggerTest5 extends MysqlTest {
-
 
     public void test_0() throws Exception {
         String sql = " CREATE DEFINER=`test_app`@`%` TRIGGER `trg_xxx_update` AFTER UPDATE ON `txxx` FOR EACH ROW begin"

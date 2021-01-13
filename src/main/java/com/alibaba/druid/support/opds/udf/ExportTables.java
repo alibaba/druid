@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,29 @@
  */
 package com.alibaba.druid.support.opds.udf;
 
-import java.util.List;
-import java.util.Map;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.aliyun.odps.udf.UDF;
 
+import java.util.List;
+import java.util.Map;
+
 public class ExportTables extends UDF {
 
-    public String evaluate(String sql) {
-        return evaluate(sql, null);
+    public String evaluate(String sql) throws Throwable {
+        return evaluate(sql, null, false);
     }
 
-    public String evaluate(String sql, String dbType) {
+    public String evaluate(String sql, String dbTypeName) throws Throwable {
+        return evaluate(sql, dbTypeName, false);
+    }
+
+    public String evaluate(String sql, String dbTypeName, boolean throwError) throws Throwable {
+        DbType dbType = dbTypeName == null ? null : DbType.valueOf(dbTypeName);
+
         try {
             List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
             SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
@@ -51,9 +58,14 @@ public class ExportTables extends UDF {
             }
 
             return buf.toString();
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             System.err.println("error sql : " + sql);
             ex.printStackTrace();
+
+            if (throwError) {
+                throw ex;
+            }
+
             return null;
         }
     }

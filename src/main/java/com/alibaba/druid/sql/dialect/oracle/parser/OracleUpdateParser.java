@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public class OracleUpdateParser extends SQLStatementParser {
     }
 
     private void parseReturn(OracleUpdateStatement update) {
-        if (lexer.identifierEquals("RETURN") || lexer.token() == Token.RETURNING) {
+        if (lexer.token() == Token.RETURN || lexer.token() == Token.RETURNING) {
             lexer.nextToken();
 
             for (;;) {
@@ -90,7 +90,7 @@ public class OracleUpdateParser extends SQLStatementParser {
 
             for (;;) {
                 SQLExpr item = this.exprParser.expr();
-                update.getReturningInto().add(item);
+                update.addReturningInto(item);
 
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();

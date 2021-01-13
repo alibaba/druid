@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,28 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
-
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
+
+import java.util.List;
+
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.*;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 public class Isnull implements Function {
 
     public final static Isnull instance = new Isnull();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        final List<SQLExpr> parameters = x.getParameters();
-        if (parameters.size() == 0) {
+        final List<SQLExpr> arguments = x.getArguments();
+        if (arguments.size() == 0) {
             return EVAL_ERROR;
         }
 
-        SQLExpr condition = parameters.get(0);
+        SQLExpr condition = arguments.get(0);
         condition.accept(visitor);
         Object itemValue = condition.getAttributes().get(EVAL_VALUE);
         if (itemValue == EVAL_VALUE_NULL) {

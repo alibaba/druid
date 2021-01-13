@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,15 @@
  */
 package com.alibaba.druid.sql.dialect.db2.parser;
 
-import java.util.Arrays;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalUnit;
-import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.Arrays;
 
 public class DB2ExprParser extends SQLExprParser {
     public final static String[] AGGREGATE_FUNCTIONS;
@@ -53,7 +45,7 @@ public class DB2ExprParser extends SQLExprParser {
     public DB2ExprParser(String sql){
         this(new DB2Lexer(sql));
         this.lexer.nextToken();
-        this.dbType = JdbcConstants.DB2;
+        this.dbType = DbType.db2;
     }
 
     public DB2ExprParser(String sql, SQLParserFeature... features){
@@ -65,7 +57,7 @@ public class DB2ExprParser extends SQLExprParser {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
-        this.dbType = JdbcConstants.DB2;
+        this.dbType = DbType.db2;
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
@@ -146,7 +138,7 @@ public class DB2ExprParser extends SQLExprParser {
             SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.DAY);
             lexer.nextToken();
             expr = intervalExpr;
-        } else if (lexer.identifierEquals(FnvHash.Constants.HOURS)) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.HOUR) || lexer.identifierEquals(FnvHash.Constants.HOURS)) {
             SQLIntervalExpr intervalExpr = new SQLIntervalExpr(expr, SQLIntervalUnit.HOUR);
             lexer.nextToken();
             expr = intervalExpr;
@@ -235,7 +227,9 @@ public class DB2ExprParser extends SQLExprParser {
                     throw new ParserException("TODO " + lexer.info());
                 }
 
-                accept(Token.COMMA);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
             }
 
             if (lexer.identifierEquals(FnvHash.Constants.INCREMENT)) {
@@ -246,6 +240,47 @@ public class DB2ExprParser extends SQLExprParser {
                     lexer.nextToken();
                 } else {
                     throw new ParserException("TODO " + lexer.info());
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.CYCLE)) {
+                lexer.nextToken();
+                identity.setCycle(true);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.MINVALUE)) {
+                lexer.nextTokenValue();
+                if (lexer.token() == Token.LITERAL_INT) {
+                    identity.setMinValue((Integer) lexer.integerValue());
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.MAXVALUE)) {
+                lexer.nextToken();
+                if (lexer.token() == Token.LITERAL_INT) {
+                    identity.setMaxValue((Integer) lexer.integerValue());
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
                 }
             }
 

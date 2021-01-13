@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,8 @@
  */
 package com.alibaba.druid.sql.repository;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.alibaba.druid.DruidRuntimeException;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -29,68 +24,78 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLAlterViewStatement;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateFunctionStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateSequenceStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowColumnsStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
+import com.alibaba.druid.sql.repository.function.Function;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.FnvHash;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by wenshao on 03/06/2017.
  */
 public class SchemaRepository {
     private static Log LOG = LogFactory.getLog(SchemaRepository.class);
-    private Schema defaultSchema;
-    protected String dbType;
-    protected SQLASTVisitor consoleVisitor;
+
+    private   Schema                    defaultSchema;
+    protected DbType                    dbType;
+    protected DbType                    schemaDbType;
+    protected SQLASTVisitor             consoleVisitor;
+    protected Map<String, Schema>       schemas           = new LinkedHashMap<String, Schema>();
+    protected final Map<Long, Function> internalFunctions = new ConcurrentHashMap<Long, Function>(16, 0.75f, 1);
+    protected SchemaLoader              schemaLoader;
 
     public SchemaRepository() {
 
     }
 
-    public SchemaRepository(String dbType) {
-        this.dbType = dbType;
+    public SchemaRepository(DbType dbType) {
+        this (dbType, dbType);
+    }
 
-        if (JdbcConstants.MYSQL.equals(dbType) || JdbcConstants.OCEANBASE.equals(dbType)) {
-            consoleVisitor = new MySqlConsoleSchemaVisitor();
-        } else if (JdbcConstants.ORACLE.equals(dbType) || JdbcConstants.OCEANBASE_ORACLE.equals(dbType)) {
-            consoleVisitor = new OracleConsoleSchemaVisitor();
-        } else {
-            consoleVisitor = new DefaultConsoleSchemaVisitor();
+    public SchemaRepository(DbType dbType, DbType schemaDbType) {
+        if (dbType == null) {
+            dbType = DbType.other;
+        }
+        if (schemaDbType == null) {
+            schemaDbType = dbType;
+        }
+
+        this.dbType = dbType;
+        this.schemaDbType = schemaDbType;
+
+        switch (dbType) {
+            case mysql:
+                consoleVisitor = new MySqlConsoleSchemaVisitor();
+                break;
+            case oracle:
+                consoleVisitor = new OracleConsoleSchemaVisitor();
+                break;
+            default:
+                consoleVisitor = new DefaultConsoleSchemaVisitor();
+                break;
         }
     }
 
-    private Map<String, Schema> schemas = new LinkedHashMap<String, Schema>();
-
-    public String getDbType() {
+    public DbType getDbType() {
         return dbType;
     }
 
@@ -113,20 +118,18 @@ public class SchemaRepository {
             return;
         }
 
-        if (defaultSchema == null) {
-            if (this.defaultSchema != null
-                    && this.defaultSchema.getName() == null) {
-                this.defaultSchema.setName(name);
+        if (this.defaultSchema != null
+                && this.defaultSchema.getName() == null) {
+            this.defaultSchema.setName(name);
 
-                schemas.put(normalizedName, this.defaultSchema);
-                return;
-            }
-
-            defaultSchema = new Schema(this);
-            defaultSchema.setName(name);
-            schemas.put(normalizedName, defaultSchema);
-            this.defaultSchema = defaultSchema;
+            schemas.put(normalizedName, this.defaultSchema);
+            return;
         }
+
+        defaultSchema = new Schema(this);
+        defaultSchema.setName(name);
+        schemas.put(normalizedName, defaultSchema);
+        this.defaultSchema = defaultSchema;
     }
 
     public Schema findSchema(String schema) {
@@ -141,15 +144,21 @@ public class SchemaRepository {
         name = SQLUtils.normalize(name);
         String normalizedName = name.toLowerCase();
 
-        if (getDefaultSchema() != null && defaultSchema.getName() == null) {
+        if (getDefaultSchema() != null && defaultSchema.getName() == null && create) {
             defaultSchema.setName(name);
             schemas.put(normalizedName, defaultSchema);
             return defaultSchema;
         }
 
         Schema schema = schemas.get(normalizedName);
-        if (schema == null) {
-            schema = new Schema(this, name);
+        if (schema == null && create) {
+            int p = name.indexOf('.');
+
+            String catalog = null;
+            if (p != -1) {
+                catalog = name.substring(0, p);
+            }
+            schema = new Schema(this, catalog, name);
             schemas.put(normalizedName, schema);
         }
         return schema;
@@ -168,7 +177,60 @@ public class SchemaRepository {
     }
 
     public SchemaObject findTable(String tableName) {
-        return getDefaultSchema().findTable(tableName);
+        if (tableName.indexOf('.') != -1) {
+            SQLExpr expr = SQLUtils.toSQLExpr(tableName, dbType);
+            if (!(expr instanceof SQLIdentifierExpr)) {
+                return findTable((SQLName) expr);
+            }
+        }
+        SchemaObject object = getDefaultSchema()
+                .findTable(tableName);
+
+        if (object != null) {
+            return object;
+        }
+
+        String ddl = loadDDL(tableName);
+        if (ddl == null) {
+            return null;
+        }
+
+        DbType schemaDbType = this.schemaDbType;
+        if (schemaDbType == null) {
+            schemaDbType = dbType;
+        }
+
+        SchemaObject schemaObject = acceptDDL(ddl, schemaDbType);
+        if (schemaObject != null) {
+            return schemaObject;
+        }
+
+        return getDefaultSchema()
+                .findTable(tableName);
+    }
+
+    public SchemaObject findView(String viewName) {
+        SchemaObject object = getDefaultSchema()
+                .findView(viewName);
+
+        if (object != null) {
+            return object;
+        }
+
+        String ddl = loadDDL(viewName);
+        if (ddl == null) {
+            return null;
+        }
+
+        acceptDDL(ddl);
+
+        return getDefaultSchema()
+                .findView(viewName);
+    }
+
+    public SchemaObject findTable(long tableNameHash) {
+        return getDefaultSchema()
+                .findTable(tableNameHash);
     }
 
     public SchemaObject findTableOrView(String tableName) {
@@ -179,6 +241,30 @@ public class SchemaRepository {
         Schema schema = getDefaultSchema();
 
         SchemaObject object = schema.findTableOrView(tableName);
+        if (object != null) {
+            return object;
+        }
+
+        for (Schema s : this.schemas.values()) {
+            if (s == schema) {
+                continue;
+            }
+
+            object = schema.findTableOrView(tableName);
+            if (object != null) {
+                return object;
+            }
+        }
+
+        String ddl = loadDDL(tableName);
+        if (ddl == null) {
+            return null;
+        }
+
+        acceptDDL(ddl);
+
+        // double check
+        object = schema.findTableOrView(tableName);
         if (object != null) {
             return object;
         }
@@ -206,14 +292,23 @@ public class SchemaRepository {
     }
 
     public void acceptDDL(String ddl) {
-        acceptDDL(ddl, dbType);
+        acceptDDL(ddl, schemaDbType);
     }
 
-    public void acceptDDL(String ddl, String dbType) {
+    public SchemaObject acceptDDL(String ddl, DbType dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(ddl, dbType);
         for (SQLStatement stmt : stmtList) {
-            accept(stmt);
+            if (stmt instanceof SQLCreateTableStatement) {
+                SchemaObject schemaObject = acceptCreateTable((SQLCreateTableStatement) stmt);
+                if (stmtList.size() == 1) {
+                    return schemaObject;
+                }
+            } else {
+                accept(stmt);
+            }
         }
+
+        return null;
     }
 
     public void accept(SQLStatement stmt) {
@@ -269,36 +364,62 @@ public class SchemaRepository {
         resolveVisitor.visit(stmt);
     }
 
+    public void resolve(SQLSelectQueryBlock queryBlock, SchemaResolveVisitor.Option... options) {
+        if (queryBlock == null) {
+            return;
+        }
+
+        SchemaResolveVisitor resolveVisitor = createResolveVisitor(options);
+        resolveVisitor.visit(queryBlock);
+    }
+
     public void resolve(SQLStatement stmt, SchemaResolveVisitor.Option... options) {
         if (stmt == null) {
             return;
         }
 
         SchemaResolveVisitor resolveVisitor = createResolveVisitor(options);
-        stmt.accept(resolveVisitor);
+        if (stmt instanceof SQLSelectStatement) {
+            resolveVisitor.visit((SQLSelectStatement) stmt);
+        } else {
+            stmt.accept(resolveVisitor);
+        }
     }
 
     private SchemaResolveVisitor createResolveVisitor(SchemaResolveVisitor.Option... options) {
         int optionsValue = SchemaResolveVisitor.Option.of(options);
 
         SchemaResolveVisitor resolveVisitor;
-        if (JdbcUtils.isMysqlDbType(dbType) || JdbcConstants.SQLITE.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.MySqlResolveVisitor(this, optionsValue);
-        } else if (JdbcUtils.isOracleDbType(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.OracleResolveVisitor(this, optionsValue);
-        } else if (JdbcUtils.isPgsqlDbType(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.PGResolveVisitor(this, optionsValue);
-        } else if (JdbcUtils.isSqlserverDbType(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.SQLServerResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.DB2.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.DB2ResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.ODPS.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.OdpsResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.HIVE.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.HiveResolveVisitor(this, optionsValue);
-        } else {
-            resolveVisitor = new SchemaResolveVisitorFactory.SQLResolveVisitor(this, optionsValue);
+        switch (dbType) {
+            case mysql:
+            case mariadb:
+            case sqlite:
+                resolveVisitor = new SchemaResolveVisitorFactory.MySqlResolveVisitor(this, optionsValue);
+                break;
+            case oracle:
+                resolveVisitor = new SchemaResolveVisitorFactory.OracleResolveVisitor(this, optionsValue);
+                break;
+            case db2:
+                resolveVisitor = new SchemaResolveVisitorFactory.DB2ResolveVisitor(this, optionsValue);
+                break;
+            case odps:
+                resolveVisitor = new SchemaResolveVisitorFactory.OdpsResolveVisitor(this, optionsValue);
+                break;
+            case hive:
+                resolveVisitor = new SchemaResolveVisitorFactory.HiveResolveVisitor(this, optionsValue);
+                break;
+            case postgresql:
+            case edb:
+                resolveVisitor = new SchemaResolveVisitorFactory.PGResolveVisitor(this, optionsValue);
+                break;
+            case sqlserver:
+                resolveVisitor = new SchemaResolveVisitorFactory.SQLServerResolveVisitor(this, optionsValue);
+                break;
+            default:
+                resolveVisitor = new SchemaResolveVisitorFactory.SQLResolveVisitor(this, optionsValue);
+                break;
         }
+
         return resolveVisitor;
     }
 
@@ -324,8 +445,8 @@ public class SchemaRepository {
             List<SQLStatement> stmtList = SQLUtils.parseStatements(input, dbType);
 
             for (SQLStatement stmt : stmtList) {
-                if (stmt instanceof MySqlShowColumnsStatement) {
-                    MySqlShowColumnsStatement showColumns = ((MySqlShowColumnsStatement) stmt);
+                if (stmt instanceof SQLShowColumnsStatement) {
+                    SQLShowColumnsStatement showColumns = ((SQLShowColumnsStatement) stmt);
                     SQLName db = showColumns.getDatabase();
                     Schema schema;
                     if (db == null) {
@@ -347,8 +468,8 @@ public class SchemaRepository {
                         MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
                         createTableStmt.showCoumns(buf);
                     }
-                } else if (stmt instanceof MySqlShowCreateTableStatement) {
-                    MySqlShowCreateTableStatement showCreateTableStmt = (MySqlShowCreateTableStatement) stmt;
+                } else if (stmt instanceof SQLShowCreateTableStatement) {
+                    SQLShowCreateTableStatement showCreateTableStmt = (SQLShowCreateTableStatement) stmt;
                     SQLName table = showCreateTableStmt.getName();
                     SchemaObject schemaObject = findTable(table);
                     if (schemaObject == null) {
@@ -389,21 +510,60 @@ public class SchemaRepository {
 
             return buf.toString();
         } catch (IOException ex) {
-            throw new DruidRuntimeException("exeucte command error.", ex);
+            throw new FastsqlException("exeucte command error.", ex);
         }
     }
 
     public SchemaObject findTable(SQLName name) {
         if (name instanceof SQLIdentifierExpr) {
-            return findTable(((SQLIdentifierExpr) name).getName());
+            return findTable(
+                    ((SQLIdentifierExpr) name).getName());
         }
 
         if (name instanceof SQLPropertyExpr) {
             SQLPropertyExpr propertyExpr = (SQLPropertyExpr) name;
-            String schema = propertyExpr.getOwnernName();
+            SQLExpr owner = propertyExpr.getOwner();
+            String schema;
+            String catalog = null;
+            if (owner instanceof SQLIdentifierExpr) {
+                schema = ((SQLIdentifierExpr) owner).getName();
+            } else if (owner instanceof SQLPropertyExpr){
+                schema = ((SQLPropertyExpr) owner).getName();
+                catalog = ((SQLPropertyExpr) owner).getOwnernName();
+            } else {
+                return null;
+            }
+
             long tableHashCode64 = propertyExpr.nameHashCode64();
 
-            Schema schemaObj = findSchema(schema);
+            Schema schemaObj = findSchema(schema, false);
+            if (schemaObj != null) {
+                SchemaObject table = schemaObj.findTable(tableHashCode64);
+                if (table != null) {
+                    return table;
+                }
+            }
+
+            String ddl = loadDDL(catalog, schema, propertyExpr.getName());
+
+            if (ddl == null) {
+                schemaObj = findSchema(schema, true);
+            } else {
+                List<SQLStatement> stmtList = SQLUtils.parseStatements(ddl, schemaDbType);
+                for (SQLStatement stmt : stmtList) {
+                    accept(stmt);
+                }
+
+                if (stmtList.size() == 1) {
+                    SQLStatement stmt = stmtList.get(0);
+                    if (stmt instanceof SQLCreateTableStatement) {
+                        SQLCreateTableStatement createStmt = (SQLCreateTableStatement) stmt;
+                        String schemaName = createStmt.getSchema();
+                        schemaObj = findSchema(schemaName, true);
+                    }
+                }
+            }
+
             if (schemaObj == null) {
                 return null;
             }
@@ -433,9 +593,9 @@ public class SchemaRepository {
             MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
             if (createTableStmt != null) {
                 createTableStmt.setName(to.clone());
+                acceptCreateTable(createTableStmt);
             }
 
-            schema.objects.put(to.hashCode64(), schemaObject);
             schema.objects.remove(nameHashCode64);
         }
         return true;
@@ -463,6 +623,11 @@ public class SchemaRepository {
 
         public boolean visit(SQLCreateSequenceStatement x) {
             acceptCreateSequence(x);
+            return false;
+        }
+
+        public boolean visit(HiveCreateTableStatement x) {
+            acceptCreateTable(x);
             return false;
         }
 
@@ -597,6 +762,11 @@ public class SchemaRepository {
             return false;
         }
 
+        public boolean visit(HiveCreateTableStatement x) {
+            acceptCreateTable(x);
+            return false;
+        }
+
         public boolean visit(SQLDropTableStatement x) {
             acceptDropTable(x);
             return false;
@@ -633,7 +803,7 @@ public class SchemaRepository {
         }
     }
 
-    boolean acceptCreateTable(MySqlCreateTableStatement x) {
+    SchemaObject acceptCreateTable(MySqlCreateTableStatement x) {
         SQLExprTableSource like = x.getLike();
         if (like != null) {
             SchemaObject table = findTable((SQLName) like.getExpr());
@@ -642,24 +812,27 @@ public class SchemaRepository {
                 MySqlCreateTableStatement stmtCloned = stmt.clone();
                 stmtCloned.setName(x.getName().clone());
                 acceptCreateTable((SQLCreateTableStatement) stmtCloned);
-                return false;
+                return table;
             }
         }
 
         return acceptCreateTable((SQLCreateTableStatement) x);
     }
 
-    boolean acceptCreateTable(SQLCreateTableStatement x) {
+    SchemaObject acceptCreateTable(SQLCreateTableStatement x) {
         SQLCreateTableStatement x1 = x.clone();
         String schemaName = x1.getSchema();
 
         Schema schema = findSchema(schemaName, true);
 
         SQLSelect select = x1.getSelect();
+
         if (select != null) {
             select.accept(createResolveVisitor(SchemaResolveVisitor.Option.ResolveAllColumn));
 
             SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+            this.resolve(queryBlock);
+
             if (queryBlock != null) {
                 List<SQLSelectItem> selectList = queryBlock.getSelectList();
                 for (SQLSelectItem selectItem : selectList) {
@@ -669,13 +842,39 @@ public class SchemaRepository {
                         continue;
                     }
 
+                    SQLColumnDefinition column = null;
+                    if (selectItemExpr instanceof SQLName) {
+                        final SQLColumnDefinition resolvedColumn = ((SQLName) selectItemExpr).getResolvedColumn();
+                        if (resolvedColumn != null) {
+                            column = new SQLColumnDefinition();
+                            column.setDataType(
+                                    selectItem.computeDataType());
+                            if (DbType.mysql == dbType) {
+                                if (resolvedColumn.getDefaultExpr() != null) {
+                                    column.setDefaultExpr(resolvedColumn.getDefaultExpr().clone());
+                                }
+                                if (resolvedColumn.getConstraints().size() > 0) {
+                                    for (SQLColumnConstraint constraint : resolvedColumn.getConstraints()) {
+                                        column.addConstraint(constraint.clone());
+                                    }
+                                }
+                                if (resolvedColumn.getComment() != null) {
+                                    column.setComment(resolvedColumn.getComment());
+                                }
+                            }
+                        }
+                    }
+
+                    if (column == null) {
+                        column = new SQLColumnDefinition();
+                        column.setDataType(
+                                selectItem.computeDataType());
+                    }
+
                     String name = selectItem.computeAlias();
-                    SQLDataType dataType = selectItem.computeDataType();
-                    SQLColumnDefinition column = new SQLColumnDefinition();
                     column.setName(name);
-                    column.setDataType(dataType);
                     column.setDbType(dbType);
-                    x1.getTableElementList().add(column);
+                    x1.addColumn(column);
                 }
                 if (x1.getTableElementList().size() > 0) {
                     x1.setSelect(null);
@@ -716,9 +915,9 @@ public class SchemaRepository {
             LOG.info("replaced table '" + name + "'");
         }
 
-        table = new SchemaObjectImpl(name, SchemaObjectType.Table, x1);
+        table = new SchemaObject(schema, name, SchemaObjectType.Table, x1);
         schema.objects.put(table.nameHashCode64(), table);
-        return true;
+        return table;
     }
 
     boolean acceptDropTable(SQLDropTableStatement x) {
@@ -745,7 +944,7 @@ public class SchemaRepository {
             return false;
         }
 
-        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.View, x.clone());
+        SchemaObject object = new SchemaObject(schema, name, SchemaObjectType.View, x.clone());
         schema.objects.put(object.nameHashCode64(), object);
         return true;
     }
@@ -761,12 +960,15 @@ public class SchemaRepository {
             return false;
         }
 
-        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.View, x.clone());
+        SchemaObject object = new SchemaObject(schema, name, SchemaObjectType.View, x.clone());
         schema.objects.put(object.nameHashCode64(), object);
         return true;
     }
 
     boolean acceptDropIndex(SQLDropIndexStatement x) {
+        if (x.getTableName() == null) {
+            return false;
+        }
         SQLName table = x.getTableName().getName();
         SchemaObject object = findTable(table);
 
@@ -787,7 +989,7 @@ public class SchemaRepository {
         Schema schema = findSchema(schemaName, true);
 
         String name = x.getName().getSimpleName();
-        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Index, x.clone());
+        SchemaObject object = new SchemaObject(schema, name, SchemaObjectType.Index, x.clone());
         schema.objects.put(object.nameHashCode64(), object);
 
         return true;
@@ -798,7 +1000,7 @@ public class SchemaRepository {
         Schema schema = findSchema(schemaName, true);
 
         String name = x.getName().getSimpleName();
-        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Function, x.clone());
+        SchemaObject object = new SchemaObject(schema, name, SchemaObjectType.Function, x.clone());
         schema.functions.put(object.nameHashCode64(), object);
 
         return true;
@@ -825,7 +1027,7 @@ public class SchemaRepository {
         Schema schema = findSchema(schemaName, true);
 
         String name = x.getName().getSimpleName();
-        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Sequence);
+        SchemaObject object = new SchemaObject(schema, name, SchemaObjectType.Sequence);
         schema.objects.put(object.nameHashCode64(), object);
         return false;
     }
@@ -837,5 +1039,73 @@ public class SchemaRepository {
         long nameHashCode64 = x.getName().nameHashCode64();
         schema.objects.remove(nameHashCode64);
         return false;
+    }
+
+    public SQLDataType findFuntionReturnType(long functionNameHashCode) {
+        if (functionNameHashCode == FnvHash.Constants.LEN || functionNameHashCode == FnvHash.Constants.LENGTH) {
+            return SQLIntegerExpr.DATA_TYPE;
+        }
+
+        return null;
+    }
+
+    protected String loadDDL(String table) {
+        if (table == null) {
+            return null;
+        }
+
+        table = SQLUtils.normalize(table, schemaDbType);
+
+        if (schemaLoader != null) {
+            return schemaLoader.loadDDL(null, null, table);
+        }
+        return null;
+    }
+
+    protected String loadDDL(String schema, String table) {
+        if (table == null) {
+            return null;
+        }
+
+        table = SQLUtils.normalize(table, dbType);
+        if (schema != null) {
+            schema = SQLUtils.normalize(schema, dbType);
+        }
+
+        if (schemaLoader != null) {
+            return schemaLoader.loadDDL(null, schema, table);
+        }
+        return null;
+    }
+
+    protected String loadDDL(String catalog, String schema, String table) {
+        if (table == null) {
+            return null;
+        }
+
+        table = SQLUtils.normalize(table, dbType);
+        if (schema != null) {
+            schema = SQLUtils.normalize(schema, dbType);
+        }
+        if (catalog != null) {
+            catalog = SQLUtils.normalize(catalog, dbType);
+        }
+
+        if (schemaLoader != null) {
+            return schemaLoader.loadDDL(catalog, schema, table);
+        }
+        return null;
+    }
+
+    public SchemaLoader getSchemaLoader() {
+        return schemaLoader;
+    }
+
+    public void setSchemaLoader(SchemaLoader schemaLoader) {
+        this.schemaLoader = schemaLoader;
+    }
+
+    public static interface SchemaLoader {
+        String loadDDL(String catalog, String schema, String objectName);
     }
 }

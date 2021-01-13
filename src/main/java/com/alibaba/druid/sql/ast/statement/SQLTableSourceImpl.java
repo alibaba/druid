@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,20 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.util.FnvHash;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.util.FnvHash;
 
 public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTableSource {
     protected String        alias;
     protected List<SQLHint> hints;
     protected SQLExpr       flashback;
-    protected long          aliasHashCod64;
+    protected long aliasHashCode64;
 
     public SQLTableSourceImpl(){
 
@@ -43,9 +42,32 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
         return this.alias;
     }
 
+    public String getAlias2() {
+        if (this.alias == null || this.alias.length() == 0) {
+            return alias;
+        }
+
+        char first = alias.charAt(0);
+        if (first == '"' || first == '\'') {
+            char[] chars = new char[alias.length() - 2];
+            int len = 0;
+            for (int i = 1; i < alias.length() - 1; ++i) {
+                char ch = alias.charAt(i);
+                if (ch == '\\') {
+                    ++i;
+                    ch = alias.charAt(i);
+                }
+                chars[len++] = ch;
+            }
+            return new String(chars, 0, len);
+        }
+
+        return alias;
+    }
+
     public void setAlias(String alias) {
         this.alias = alias;
-        this.aliasHashCod64 = 0L;
+        this.aliasHashCode64 = 0L;
     }
 
     public int getHintsSize() {
@@ -95,11 +117,11 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     }
 
     public long aliasHashCode64() {
-        if (aliasHashCod64 == 0
+        if (aliasHashCode64 == 0
                 && alias != null) {
-            aliasHashCod64 = FnvHash.hashCode64(alias);
+            aliasHashCode64 = FnvHash.hashCode64(alias);
         }
-        return aliasHashCod64;
+        return aliasHashCode64;
     }
 
     public SQLColumnDefinition findColumn(String columnName) {
@@ -115,16 +137,40 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
         return null;
     }
 
+    public SQLObject resolveColum(long columnNameHash) {
+        return findColumn(columnNameHash);
+    }
+
     public SQLTableSource findTableSourceWithColumn(String columnName) {
         if (columnName == null) {
             return null;
         }
 
         long hash = FnvHash.hashCode64(alias);
-        return findTableSourceWithColumn(hash);
+        return findTableSourceWithColumn(hash, columnName, 0);
+    }
+
+    public SQLTableSource findTableSourceWithColumn(SQLName columnName) {
+        if (columnName instanceof SQLIdentifierExpr) {
+            return findTableSourceWithColumn(
+                    columnName.nameHashCode64(), columnName.getSimpleName(), 0);
+        }
+
+        if (columnName instanceof SQLPropertyExpr) {
+            SQLExpr owner = ((SQLPropertyExpr) columnName).getOwner();
+            if (owner instanceof SQLIdentifierExpr) {
+                return findTableSource(((SQLIdentifierExpr) owner).nameHashCode64());
+            }
+        }
+
+        return null;
     }
 
     public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
+        return findTableSourceWithColumn(columnNameHash, null, 0);
+    }
+
+    public SQLTableSource findTableSourceWithColumn(long columnNameHash, String columnName, int option) {
         return null;
     }
 
@@ -139,10 +185,6 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
             return this;
         }
         return null;
-    }
-
-    public SQLObject resolveColum(long columnNameHash) {
-        return findColumn(columnNameHash);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,20 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-public class SQLArrayExpr extends SQLExprImpl {
+public class SQLArrayExpr extends SQLExprImpl implements SQLReplaceable  {
 
     private SQLExpr       expr;
-
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
+
+    public SQLArrayExpr() {
+
+    }
 
     public SQLArrayExpr clone() {
         SQLArrayExpr x = new SQLArrayExpr();
@@ -56,13 +57,27 @@ public class SQLArrayExpr extends SQLExprImpl {
 
     public void setValues(List<SQLExpr> values) {
         this.values = values;
+        if (values != null) {
+            for (SQLExpr value : values) {
+                value.setParent(this);
+            }
+        }
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, expr);
-            acceptChild(visitor, values);
+            if (expr != null) {
+                this.expr.accept(visitor);
+            }
+
+            if (values != null) {
+                for (SQLExpr value : values) {
+                    if (value != null) {
+                        value.accept(visitor);
+                    }
+                }
+            }
         }
         visitor.endVisit(this);
     }
@@ -99,5 +114,15 @@ public class SQLArrayExpr extends SQLExprImpl {
     }
 
 
-
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        for (int i = 0; i < values.size(); i++) {
+            if (values.get(i) == expr) {
+                target.setParent(this);
+                values.set(i, target);
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -51,5 +52,10 @@ public class MySqlSetTest_3 extends TestCase {
         String text = SQLUtils.toMySqlString(stmt);
 
         Assert.assertEquals("SET sql_mode = ?, NAMES ?, CHARACTER SET utf8, CHARACTER_SET_RESULTS = utf8, COLLATION_CONNECTION = ?", text);
+    }
+
+    public void test_1() throws Exception {
+        SQLUtils.parseSingleStatement("set names utf8mb4", "mysql");
+        SQLUtils.parseSingleStatement("set names utf8mb4", (DbType) null);
     }
 }

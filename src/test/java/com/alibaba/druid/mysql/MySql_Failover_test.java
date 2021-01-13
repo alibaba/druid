@@ -1,6 +1,7 @@
 package com.alibaba.druid.mysql;
 
 import com.alibaba.druid.DbTestCase;
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -17,7 +18,7 @@ public class MySql_Failover_test extends DbTestCase {
     public void test_oracle() throws Exception {
         Connection conn = getConnection();
 
-        String createTableScript = JdbcUtils.getCreateTableScript(conn, JdbcConstants.MYSQL);
+        String createTableScript = JdbcUtils.getCreateTableScript(conn, DbType.mysql);
         System.out.println(createTableScript);
 
 

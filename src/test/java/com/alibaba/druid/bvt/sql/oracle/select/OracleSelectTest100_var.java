@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class OracleSelectTest100_var extends OracleTest {
             assertEquals("SELECT *\n" +
                     "FROM zj_sb_zzs_fb3_mx\n" +
                     "WHERE fphm = :\"SYS_B_0\"\n" +
-                    "\tAND sssq_q = DATE :\"SYS_B_1\"", text);
+                    "\tAND sssq_q = DATE '?'", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());

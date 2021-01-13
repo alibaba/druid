@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class CharTypes {
         if (c <= identifierFlags.length) {
             return identifierFlags[c];
         }
-        return c != '　' && c != '，' && c != '）';
+        return c != '　' && c != '，' && c != '）' && c != '（';
     }
 
     public static String valueOf(char ch) {
@@ -122,4 +122,16 @@ public class CharTypes {
                || c == '　'; // Chinese space
     }
 
+    public static String trim(String value) {
+        int len = value.length();
+        int st = 0;
+
+        while ((st < len) && (isWhitespace(value.charAt(st)))) {
+            st++;
+        }
+        while ((st < len) && isWhitespace(value.charAt(len - 1))) {
+            len--;
+        }
+        return ((st > 0) || (len < value.length())) ? value.substring(st, len) : value;
+    }
 }

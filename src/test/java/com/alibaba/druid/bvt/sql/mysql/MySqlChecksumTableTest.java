@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.Assert;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class MySqlChecksumTableTest extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
@@ -41,6 +42,26 @@ public class MySqlChecksumTableTest extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
-        assertEquals("CHECKSUM TABLE TABLE tbl_name", stmt.toString());
+        assertEquals("CHECKSUM TABLE tbl_name", stmt.toString());
+    }
+
+    public void test_1() throws Exception {
+        String sql = "CHECKSUM TABLE t1,t2";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+
+        assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
+
+        assertEquals("CHECKSUM TABLE t1, t2", stmt.toString());
     }
 }

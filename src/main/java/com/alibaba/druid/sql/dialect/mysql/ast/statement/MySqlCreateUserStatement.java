@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,31 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MySqlCreateUserStatement extends MySqlStatementImpl implements SQLCreateStatement {
 
     private List<UserSpecification> users = new ArrayList<UserSpecification>(2);
 
+    private boolean ifNotExists = false;
+
     public List<UserSpecification> getUsers() {
         return users;
+    }
+
+    public boolean isIfNotExists() {
+        return ifNotExists;
+    }
+
+    public void setIfNotExists(boolean ifNotExists) {
+        this.ifNotExists = ifNotExists;
     }
 
     public void addUser(UserSpecification user) {
@@ -52,13 +63,14 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl implements SQLC
         private boolean passwordHash = false;
         private SQLExpr password;
         private SQLExpr authPlugin;
+        private boolean pluginAs;
 
         public SQLExpr getUser() {
             return user;
         }
 
         public void setUser(SQLExpr user) {
-            this.user = user;
+            this.user = (SQLName) user;
         }
 
         public boolean isPasswordHash() {
@@ -85,6 +97,14 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl implements SQLC
             this.authPlugin = authPlugin;
         }
 
+        public boolean isPluginAs() {
+            return pluginAs;
+        }
+
+        public void setPluginAs(boolean pluginAs) {
+            this.pluginAs = pluginAs;
+        }
+
         @Override
         public void accept0(MySqlASTVisitor visitor) {
             if (visitor.visit(this)) {
@@ -94,6 +114,7 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl implements SQLC
             }
             visitor.endVisit(this);
         }
+
 
     }
 }

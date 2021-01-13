@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,30 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLReplaceable, Comparable<SQLPropertyExpr> {
     private   SQLExpr             owner;
     private   String              name;
 
     protected long                nameHashCod64;
     protected long                hashCode64;
 
-    protected SQLColumnDefinition resolvedColumn;
+    protected SQLObject           resolvedColumn;
     protected SQLObject           resolvedOwnerObject;
+
+    public SQLPropertyExpr(String owner2, String owner, String name){
+        this(new SQLPropertyExpr(owner2, owner), name);
+    }
 
     public SQLPropertyExpr(String owner, String name){
         this(new SQLIdentifierExpr(owner), name);
@@ -71,7 +67,16 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         return this.owner;
     }
 
+    @Deprecated
     public String getOwnernName() {
+        if (owner instanceof SQLName) {
+            return ((SQLName) owner).toString();
+        }
+
+        return null;
+    }
+
+    public String getOwnerName() {
         if (owner instanceof SQLName) {
             return ((SQLName) owner).toString();
         }
@@ -113,7 +118,17 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     }
 
     public void setOwner(String owner) {
-        this.setOwner(new SQLIdentifierExpr(owner));
+        if (owner == null) {
+            this.owner = null;
+            return;
+        }
+
+        if (owner.indexOf('.') != -1) {
+            SQLExpr ownerExpr = SQLUtils.toSQLExpr(owner);
+            this.setOwner(ownerExpr);
+        } else {
+            this.setOwner(new SQLIdentifierExpr(owner));
+        }
     }
 
     public String getName() {
@@ -131,15 +146,21 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         }
     }
 
-    public void output(StringBuffer buf) {
-        this.owner.output(buf);
-        buf.append(".");
-        buf.append(this.name);
+    public void output(Appendable buf) {
+        try {
+            this.owner.output(buf);
+            buf.append(".");
+            buf.append(this.name);
+        } catch (IOException ex) {
+            throw new FastsqlException("output error", ex);
+        }
     }
 
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.owner);
+            if (this.owner != null) {
+                this.owner.accept(visitor);
+            }
         }
 
         visitor.endVisit(this);
@@ -164,6 +185,21 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         return hashCode64;
     }
 
+    public boolean equals(SQLIdentifierExpr other) {
+        if (other == null) {
+            return false;
+        }
+
+        if (this.nameHashCode64() != other.nameHashCode64()) {
+            return false;
+        }
+
+        return resolvedOwnerObject != null
+                && resolvedOwnerObject == other.getResolvedOwnerObject()
+                && resolvedColumn != null
+                && resolvedColumn == other.getResolvedColumn();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -175,14 +211,12 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         if (!(obj instanceof SQLPropertyExpr)) {
             return false;
         }
+
         SQLPropertyExpr other = (SQLPropertyExpr) obj;
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
+        if (this.nameHashCode64() != other.nameHashCode64()) {
             return false;
         }
+
         if (owner == null) {
             if (other.owner != null) {
                 return false;
@@ -190,6 +224,7 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         } else if (!owner.equals(other.owner)) {
             return false;
         }
+        
         return true;
     }
 
@@ -239,10 +274,28 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     }
 
     public SQLColumnDefinition getResolvedColumn() {
-        return resolvedColumn;
+        if (resolvedColumn instanceof SQLColumnDefinition) {
+            return (SQLColumnDefinition) resolvedColumn;
+        }
+
+        if (resolvedColumn instanceof SQLSelectItem) {
+            SQLSelectItem selectItem = (SQLSelectItem) resolvedColumn;
+            final SQLExpr expr = selectItem.getExpr();
+            if (expr instanceof SQLIdentifierExpr) {
+                return ((SQLIdentifierExpr) expr).getResolvedColumn();
+            } else if (expr instanceof SQLPropertyExpr) {
+                return ((SQLPropertyExpr) expr).getResolvedColumn();
+            }
+        }
+        
+        return null;
     }
 
     public void setResolvedColumn(SQLColumnDefinition resolvedColumn) {
+        this.resolvedColumn = resolvedColumn;
+    }
+
+    public void setResolvedColumn(SQLSelectItem resolvedColumn) {
         this.resolvedColumn = resolvedColumn;
     }
 
@@ -279,12 +332,21 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     }
 
     public SQLDataType computeDataType() {
-        if (resolvedColumn != null) {
-            return resolvedColumn.getDataType();
+        if (resolvedColumn instanceof SQLColumnDefinition
+                && resolvedColumn != null) {
+            return ((SQLColumnDefinition) resolvedColumn).getDataType();
         }
 
-        if (resolvedOwnerObject != null
-                && resolvedOwnerObject instanceof SQLSubqueryTableSource) {
+        if (resolvedColumn instanceof SQLSelectItem
+                && resolvedColumn != null) {
+            return ((SQLSelectItem) resolvedColumn).computeDataType();
+        }
+
+        if (resolvedOwnerObject == null) {
+            return null;
+        }
+
+        if (resolvedOwnerObject instanceof SQLSubqueryTableSource) {
             SQLSelect select = ((SQLSubqueryTableSource) resolvedOwnerObject).getSelect();
             SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
             if (queryBlock == null) {
@@ -293,6 +355,20 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
             SQLSelectItem selectItem = queryBlock.findSelectItem(nameHashCode64());
             if (selectItem != null) {
                 return selectItem.computeDataType();
+            }
+        } else if (resolvedOwnerObject instanceof SQLUnionQueryTableSource) {
+            SQLSelectQueryBlock queryBlock = ((SQLUnionQueryTableSource) resolvedOwnerObject).getUnion().getFirstQueryBlock();
+            if (queryBlock == null) {
+                return null;
+            }
+            SQLSelectItem selectItem = queryBlock.findSelectItem(nameHashCode64());
+            if (selectItem != null) {
+                return selectItem.computeDataType();
+            }
+        } else if (resolvedOwnerObject instanceof SQLExprTableSource) {
+            SQLExpr expr = ((SQLExprTableSource) resolvedOwnerObject).getExpr();
+            if (expr != null) {
+
             }
         }
 
@@ -323,5 +399,24 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         }
 
         return owner.toString() + '.' + name;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == owner) {
+            setOwner(target);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int compareTo(SQLPropertyExpr o) {
+        int r = SQLExprComparor.compareTo(owner, o.owner);
+        if (r != 0) {
+            return r;
+        }
+
+        return name.compareTo(o.name);
     }
 }

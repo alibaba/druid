@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLHint;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLLateralViewTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSourceImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -50,6 +53,29 @@ public class MySqlUpdateTableSource extends SQLTableSourceImpl {
 
     public void setUpdate(MySqlUpdateStatement update) {
         this.update = update;
+    }
+
+    @Override
+    public MySqlUpdateTableSource clone() {
+
+
+        MySqlUpdateTableSource x = new MySqlUpdateTableSource(this.update);
+
+        x.setAlias(this.alias);
+
+        if (this.flashback != null) {
+            x.setFlashback(this.flashback.clone());
+        }
+
+        if (this.hints != null) {
+            for (SQLHint e : this.hints) {
+                SQLHint e2 = e.clone();
+                e2.setParent(x);
+                x.getHints().add(e2);
+            }
+        }
+
+        return x;
     }
 
 }

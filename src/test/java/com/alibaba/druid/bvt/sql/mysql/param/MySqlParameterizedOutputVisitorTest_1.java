@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
-public class MySqlParameterizedOutputVisitorTest_1 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTest {
 
     public void test_0() throws Exception {
         String sql = "SELECT * FROM T WHERE ID IN (?)";
@@ -32,8 +30,12 @@ public class MySqlParameterizedOutputVisitorTest_1 extends TestCase {
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.POSTGRESQL), sql);
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.H2), sql);
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DERBY), sql);
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.HSQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.derby), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.hsql), sql);
+
+        paramaterizeAST(sql, "SELECT *\n" +
+                "FROM T\n" +
+                "WHERE ID IN (?)");
     }
 
     public void test_1() throws Exception {
@@ -44,8 +46,12 @@ public class MySqlParameterizedOutputVisitorTest_1 extends TestCase {
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.POSTGRESQL), sql);
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.H2), sql);
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DERBY), sql);
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.HSQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.derby), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.hsql), sql);
+
+        paramaterizeAST(sql, "SELECT *\n" +
+                "FROM T\n" +
+                "WHERE ID = ?");
     }
     
     public void test_2() throws Exception {
@@ -56,8 +62,13 @@ public class MySqlParameterizedOutputVisitorTest_1 extends TestCase {
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.POSTGRESQL), sql);
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.H2), sql);
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DERBY), sql);
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.HSQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.derby), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.hsql), sql);
+
+        paramaterizeAST(sql, "SELECT *\n" +
+                "FROM T\n" +
+                "WHERE ID = ?\n" +
+                "\tAND Name = ?");
     }
     
     public void test_3() throws Exception {
@@ -68,8 +79,12 @@ public class MySqlParameterizedOutputVisitorTest_1 extends TestCase {
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.POSTGRESQL), sql);
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.H2), sql);
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DERBY), sql);
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.HSQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.derby), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.hsql), sql);
+
+        paramaterizeAST(sql, "SELECT *\n" +
+                "FROM T\n" +
+                "WHERE ID IS NULL");
     }
     
     public void test_4() throws Exception {
@@ -80,12 +95,19 @@ public class MySqlParameterizedOutputVisitorTest_1 extends TestCase {
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.POSTGRESQL), sql);
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.H2), sql);
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DERBY), sql);
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.HSQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.derby), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.hsql), sql);
+
+        paramaterizeAST(sql, "INSERT INTO T (FID, FNAME)\n" +
+                "VALUES (?, ?)");
     }
     
     public void test_mysql() throws Exception {
         String sql = "INSERT INTO T (FID, FNAME) VALUES(?, ?), (?, ?)";
-        Assert.assertNotSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
+        Assert.assertNotSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.mysql), sql);
+
+        paramaterizeAST(sql, "INSERT INTO T (FID, FNAME)\n" +
+                "VALUES (?, ?),\n" +
+                "\t(?, ?)");
     }
 }

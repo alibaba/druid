@@ -7,8 +7,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLUnnestTableSource
-        extends SQLTableSourceImpl {
+public class SQLUnnestTableSource extends SQLTableSourceImpl {
     private final List<SQLExpr> items = new ArrayList<SQLExpr>();
     protected List<SQLName> columns = new ArrayList<SQLName>();
     private boolean ordinality = false;

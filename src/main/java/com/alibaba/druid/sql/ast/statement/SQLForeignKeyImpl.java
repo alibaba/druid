@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKeyConstraint {
     private SQLExprTableSource referencedTable;
@@ -27,6 +27,7 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
     private List<SQLName>      referencedColumns  = new ArrayList<SQLName>();
     private boolean            onDeleteCascade    = false;
     private boolean            onDeleteSetNull    = false;
+    private boolean            disableNovalidate  = false;
 
     public SQLForeignKeyImpl(){
 
@@ -85,6 +86,14 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
 
     public void setOnDeleteSetNull(boolean onDeleteSetNull) {
         this.onDeleteSetNull = onDeleteSetNull;
+    }
+
+    public boolean isDisableNovalidate() {
+        return disableNovalidate;
+    }
+
+    public void setDisableNovalidate(boolean disableNovalidate) {
+        this.disableNovalidate = disableNovalidate;
     }
 
     @Override
@@ -151,7 +160,7 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
 
     public static enum Option {
 
-        RESTRICT("RESTRICT"), CASCADE("CASCADE"), SET_NULL("SET NULL"), NO_ACTION("NO ACTION");
+        RESTRICT("RESTRICT"), CASCADE("CASCADE"), SET_NULL("SET NULL"), NO_ACTION("NO ACTION"), SET_DEFAULT("SET DEFAULT");
 
         public final String name;
         public final String name_lcase;

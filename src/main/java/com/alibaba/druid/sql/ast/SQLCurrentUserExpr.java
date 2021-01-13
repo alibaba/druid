@@ -2,8 +2,7 @@ package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCurrentUserExpr
-        extends SQLExprImpl {
+public class SQLCurrentUserExpr extends SQLExprImpl {
 
     public SQLCurrentUserExpr() {
     }

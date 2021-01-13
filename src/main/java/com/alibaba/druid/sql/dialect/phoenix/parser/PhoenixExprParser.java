@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,14 @@ package com.alibaba.druid.sql.dialect.phoenix.parser;
 
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 /**
  * Created by wenshao on 16/9/13.
  */
 public class PhoenixExprParser extends SQLExprParser {
-    public PhoenixExprParser(String sql){
-        this(new PhoenixLexer(sql));
+    public PhoenixExprParser(String sql, SQLParserFeature... features){
+        this(new PhoenixLexer(sql, features));
         this.lexer.nextToken();
     }
 

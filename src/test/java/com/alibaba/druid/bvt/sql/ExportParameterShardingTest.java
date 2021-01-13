@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -14,7 +15,7 @@ import java.util.List;
  * Created by wenshao on 23/11/2016.
  */
 public class ExportParameterShardingTest extends TestCase {
-    String dbType = JdbcConstants.MYSQL;
+    DbType dbType = JdbcConstants.MYSQL;
 
     public void test_exportParameter() throws Exception {
         String sql = "select * from t_user_0000 where oid = 1001";

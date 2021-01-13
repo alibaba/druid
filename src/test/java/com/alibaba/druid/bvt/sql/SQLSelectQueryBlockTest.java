@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -12,7 +13,7 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class SQLSelectQueryBlockTest extends TestCase {
-    private final String dbType = JdbcConstants.MYSQL;
+    private final DbType dbType = JdbcConstants.MYSQL;
     private SchemaRepository repository;
 
     protected void setUp() throws Exception {

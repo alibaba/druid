@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.create;
 
-import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
@@ -23,11 +22,11 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
+import junit.framework.TestCase;
 
 import java.util.List;
 
-public class MySqlCreateViewTest5 extends MysqlTest {
+public class MySqlCreateViewTest5 extends TestCase {
 
     public void test_0() throws Exception {
         String sql = "create or replace definer = current_user sql security invoker view my_view4(c1, 1c, _, c1_2) \n" +
@@ -83,6 +82,8 @@ public class MySqlCreateViewTest5 extends MysqlTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
 
         assertTrue(visitor.getColumns().contains(new Column("t1", "col1")));
+        assertTrue(visitor.getColumns().contains(new Column("t1", "*")));
+        assertTrue(visitor.getColumns().contains(new Column("t2", "*")));
 //        assertTrue(visitor.getColumns().contains(new Column("t2", "l_suppkey")));
     }
 }

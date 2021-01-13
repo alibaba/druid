@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,16 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObject;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PGFunctionTableSource extends SQLExprTableSource implements PGSQLObject {
 
@@ -52,5 +53,33 @@ public class PGFunctionTableSource extends SQLExprTableSource implements PGSQLOb
             acceptChild(visitor, this.parameters);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public PGFunctionTableSource clone() {
+
+        PGFunctionTableSource x = new PGFunctionTableSource();
+
+        x.setAlias(this.alias);
+
+        for (SQLParameter e : this.parameters) {
+            SQLParameter e2 = e.clone();
+            e2.setParent(x);
+            x.getParameters().add(e2);
+        }
+
+        if (this.flashback != null) {
+            x.setFlashback(this.flashback.clone());
+        }
+
+        if (this.hints != null) {
+            for (SQLHint e : this.hints) {
+                SQLHint e2 = e.clone();
+                e2.setParent(x);
+                x.getHints().add(e2);
+            }
+        }
+
+        return x;
     }
 }
