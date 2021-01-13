@@ -101,8 +101,8 @@ public class ZookeeperNodeListener extends NodeListener {
             @Override
             public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
                 try {
-                    lock.lock();
                     LOG.info("Receive an event: " + event.getType());
+                    lock.lock();
                     PathChildrenCacheEvent.Type eventType = event.getType();
                     switch (eventType) {
                         case CHILD_REMOVED:
@@ -123,6 +123,7 @@ public class ZookeeperNodeListener extends NodeListener {
                     }
                 } finally {
                     lock.unlock();
+                    LOG.info("Finish the processing of event: " + event.getType());
                 }
             }
         });
@@ -160,12 +161,17 @@ public class ZookeeperNodeListener extends NodeListener {
      */
     @Override
     public List<NodeEvent> refresh() {
-        Properties properties = getPropertiesFromCache();
-        List<NodeEvent> events = NodeEvent.getEventsByDiffProperties(getProperties(), properties);
-        if (events != null && !events.isEmpty()) {
-            setProperties(properties);
+        try {
+            lock.lock();
+            Properties properties = getPropertiesFromCache();
+            List<NodeEvent> events = NodeEvent.getEventsByDiffProperties(getProperties(), properties);
+            if (events != null && !events.isEmpty()) {
+                setProperties(properties);
+            }
+            return events;
+        } finally {
+            lock.unlock();
         }
-        return events;
     }
 
     private void checkParameters() {
