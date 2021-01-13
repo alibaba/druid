@@ -170,3 +170,4 @@ public class HiveLexer extends Lexer {
         scanHiveComment();
     }
 
+}
