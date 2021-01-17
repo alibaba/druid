@@ -2595,4 +2595,29 @@ public interface SQLASTVisitor {
     default boolean visit(SQLListResourceGroupStatement x) {
         return true;
     }
+
+    default void endVisit(SQLAlterTableMergePartition x) {
+
+    }
+
+    default boolean visit(SQLAlterTableMergePartition x) {
+        return true;
+    }
+
+    default void endVisit(SQLPartitionSpec x) {
+
+    }
+
+    default boolean visit(SQLPartitionSpec x) {
+        return true;
+    }
+
+    default void endVisit(SQLPartitionSpec.Item x) {
+
+    }
+
+    default boolean visit(SQLPartitionSpec.Item x) {
+        return true;
+    }
+
 }

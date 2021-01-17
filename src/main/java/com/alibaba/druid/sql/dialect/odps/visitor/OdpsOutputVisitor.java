@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.odps.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
@@ -593,7 +594,11 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     protected void printMethodOwner(SQLExpr owner) {
         owner.accept(this);
-        print(':');
+        if (owner instanceof SQLMethodInvokeExpr) {
+            print('.');
+        } else {
+            print(':');
+        }
     }
 
     protected void printJoinType(JoinType joinType) {
@@ -954,6 +959,13 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             storedAs.accept(this);
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(OdpsNewExpr x) {
+        print0("new ");
+        super.visit((SQLMethodInvokeExpr) x);
         return false;
     }
 }

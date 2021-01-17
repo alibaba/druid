@@ -55,6 +55,7 @@ public class OdpsSelectParser extends SQLSelectParser {
         if (lexer.token() == Token.FROM) {
             parseFrom(queryBlock);
             parseWhere(queryBlock);
+            parseGroupBy(queryBlock);
 
             if (lexer.token() == Token.SELECT) {
                 lexer.nextToken();
@@ -84,6 +85,10 @@ public class OdpsSelectParser extends SQLSelectParser {
 
                 parseSelectList(queryBlock);
             }
+
+            if (queryBlock.getWhere() == null && lexer.token() == Token.WHERE) {
+                parseWhere(queryBlock);
+            }
         } else {
             accept(Token.SELECT);
 
@@ -92,22 +97,29 @@ public class OdpsSelectParser extends SQLSelectParser {
             }
 
             if (lexer.token() == Token.COMMENT) {
+                String tokenStr = lexer.stringVal();
                 lexer.nextToken();
+                if (lexer.token() == Token.COMMA) {
+                    queryBlock.addSelectItem(new SQLIdentifierExpr(tokenStr));
+                    lexer.nextToken();
+                }
             }
 
-            if (lexer.token() == Token.DISTINCT) {
-                queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
-                lexer.nextToken();
-            } else if (lexer.token() == Token.UNIQUE) {
-                queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
-                lexer.nextToken();
-            } else if (lexer.token() == Token.ALL) {
-                Lexer.SavePoint mark = lexer.mark();
-                lexer.nextToken();
-                if (lexer.token() == Token.DOT) {
-                    lexer.reset(mark);
-                } else {
-                    queryBlock.setDistionOption(SQLSetQuantifier.ALL);
+            if (queryBlock.getSelectList().isEmpty()) {
+                if (lexer.token() == Token.DISTINCT) {
+                    queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.UNIQUE) {
+                    queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.ALL) {
+                    Lexer.SavePoint mark = lexer.mark();
+                    lexer.nextToken();
+                    if (lexer.token() == Token.DOT) {
+                        lexer.reset(mark);
+                    } else {
+                        queryBlock.setDistionOption(SQLSetQuantifier.ALL);
+                    }
                 }
             }
 
@@ -121,6 +133,7 @@ public class OdpsSelectParser extends SQLSelectParser {
             }
 
             parseWhere(queryBlock);
+            parseGroupBy(queryBlock);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.WINDOW)) {
@@ -193,6 +206,30 @@ public class OdpsSelectParser extends SQLSelectParser {
             lexer.nextToken();
             return new SQLExprTableSource(new SQLIdentifierExpr(str));
         }
-        return super.parseTableSource();
+        SQLTableSource tableSource = super.parseTableSource();
+
+        if (lexer.token() == Token.TABLE && tableSource.getAlias() == null) {
+            tableSource.setAlias(
+                    lexer.stringVal()
+            );
+            lexer.nextToken();
+
+            tableSource = parseTableSourceRest(tableSource);
+        }
+
+        return tableSource;
+    }
+
+    protected SQLTableSource primaryTableSourceRest(SQLTableSource tableSource) {
+        if (lexer.identifierEquals(FnvHash.Constants.LATERAL) || lexer.token() == Token.LATERAL) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (lexer.token() == Token.VIEW) {
+                tableSource = parseLateralView(tableSource);
+            } else {
+                lexer.reset(mark);
+            }
+        }
+        return tableSource;
     }
 }

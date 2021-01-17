@@ -2183,8 +2183,41 @@ public class SQLStatementParser extends SQLParser {
                     stmt.addItem(item);
                 } else if (DbType.odps == dbType && lexer.identifierEquals("MERGE")) {
                     lexer.nextToken();
-                    acceptIdentifier("SMALLFILES");
-                    stmt.setMergeSmallFiles(true);
+
+                    boolean ifExists = false;
+                    if (lexer.token == Token.IF) {
+                        lexer.nextToken();
+                        accept(Token.EXISTS);
+                        ifExists = true;
+                    }
+
+                    if (lexer.token == PARTITION) {
+                        SQLAlterTableMergePartition item = new SQLAlterTableMergePartition();
+                        for (;;) {
+                            item.addPartition(
+                                    this.getExprParser().parsePartitionSpec()
+                            );
+                            if (lexer.token == COMMA) {
+                                lexer.nextToken();
+                            } else {
+                                break;
+                            }
+                        }
+
+                        accept(OVERWRITE);
+                        item.setOverwritePartition(
+                                this.getExprParser().parsePartitionSpec()
+                        );
+
+                        if (ifExists) {
+                            item.setIfExists(true);
+                        }
+
+                        stmt.addItem(item);
+                    } else {
+                        acceptIdentifier("SMALLFILES");
+                        stmt.setMergeSmallFiles(true);
+                    }
                 } else if (DbType.odps == dbType && lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
                     lexer.nextToken();
                     accept(Token.BY);
@@ -6627,6 +6660,13 @@ public class SQLStatementParser extends SQLParser {
             SQLExpr tableExpr = this.exprParser.expr();
             stmt.setTable(tableExpr);
         }
+
+        if (lexer.identifierEquals(FnvHash.Constants.ADD)) {
+            lexer.nextToken();
+            acceptIdentifier("PARTITIONS");
+            stmt.setAddPartitions(true);
+        }
+
         return stmt;
     }
 

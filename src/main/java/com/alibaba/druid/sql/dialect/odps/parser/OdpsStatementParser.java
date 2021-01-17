@@ -49,12 +49,12 @@ public class OdpsStatementParser extends SQLStatementParser {
         SQLSelect select =  new OdpsSelectParser(this.exprParser)
                 .select();
 
-        if (select.getWithSubQuery() == null && select.getQuery() instanceof SQLSelectQueryBlock) {
-            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) select.getQuery();
-            if (queryBlock.getFrom() == null && queryBlock.getWhere() != null) {
-                throw new ParserException("none from query not support where clause.");
-            }
-        }
+//        if (select.getWithSubQuery() == null && select.getQuery() instanceof SQLSelectQueryBlock) {
+//            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) select.getQuery();
+//            if (queryBlock.getFrom() == null && queryBlock.getWhere() != null) {
+//                throw new ParserException("none from query not support where clause.");
+//            }
+//        }
 
         return new SQLSelectStatement(select, DbType.odps);
     }

@@ -328,6 +328,10 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             print0(ucase ? " TABLE " : " table ");
             table.accept(this);
         }
+
+        if (x.isAddPartitions()) {
+            print0(ucase ? " ADD PARTITIONS" : " add partitions");
+        }
         return false;
     }
 

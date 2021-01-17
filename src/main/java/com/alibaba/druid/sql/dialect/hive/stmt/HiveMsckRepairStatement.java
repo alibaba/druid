@@ -13,6 +13,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class HiveMsckRepairStatement extends SQLStatementImpl implements SQLAlterStatement {
     private SQLExprTableSource table;
     private SQLName database;
+    private boolean addPartitions;
 
     public HiveMsckRepairStatement() {
         super(DbType.hive);
@@ -34,6 +35,13 @@ public class HiveMsckRepairStatement extends SQLStatementImpl implements SQLAlte
         visitor.endVisit(this);
     }
 
+    public boolean isAddPartitions() {
+        return addPartitions;
+    }
+
+    public void setAddPartitions(boolean addPartitions) {
+        this.addPartitions = addPartitions;
+    }
 
     public SQLExprTableSource getTable() {
         return table;
