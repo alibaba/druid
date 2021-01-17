@@ -232,4 +232,12 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
 
     }
 
+    default boolean visit(OdpsNewExpr x) {
+        return true;
+    }
+
+    default void endVisit(OdpsNewExpr x) {
+
+    }
+
 }

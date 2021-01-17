@@ -142,7 +142,14 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     case CLOSE:
                     case IN:
                     case OUT:
-                        column = this.exprParser.parseColumn();
+                    case LIMIT:
+                    case FULL:
+                    case MINUS:
+                    case VALUES:
+                    case TRIGGER:
+                    case USE:
+                    case LIKE:
+                        column = this.exprParser.parseColumn(stmt);
                         break;
                     default:
                         throw new ParserException("expect identifier. " + lexer.info());
@@ -182,6 +189,8 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                 switch (lexer.token()) {
                     case KEY:
                     case IDENTIFIER:
+                    case GROUP:
+                    case INTERVAL:
                         break;
                     default:
                         throw new ParserException("expect identifier. " + lexer.info());

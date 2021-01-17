@@ -33,14 +33,14 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
     private static final long     serialVersionUID = 1L;
 
-    protected String              methodName;
-    protected long                methodNameHashCode64;
-    protected SQLExpr             owner;
-    protected final List<SQLExpr> arguments       = new ArrayList<SQLExpr>();
-    private SQLExpr               from;
-    private SQLExpr               using;
-    private SQLExpr               _for;
-    private String                trimOption;
+    protected final List<SQLExpr>   arguments       = new ArrayList<SQLExpr>();
+    protected String                methodName;
+    protected long                  methodNameHashCode64;
+    protected SQLExpr               owner;
+    protected SQLExpr               from;
+    protected SQLExpr               using;
+    protected SQLExpr               _for;
+    protected String                trimOption;
     protected transient SQLDataType resolvedReturnDataType;
 
     public SQLMethodInvokeExpr(){
@@ -273,7 +273,11 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
     public SQLMethodInvokeExpr clone() {
         SQLMethodInvokeExpr x = new SQLMethodInvokeExpr();
+        cloneTo(x);
+        return x;
+    }
 
+    public void cloneTo(SQLMethodInvokeExpr x) {
         x.methodName = methodName;
 
         if (owner != null) {
@@ -306,8 +310,6 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
                 x.putAttribute(key, value);
             }
         }
-
-        return x;
     }
 
     @Override

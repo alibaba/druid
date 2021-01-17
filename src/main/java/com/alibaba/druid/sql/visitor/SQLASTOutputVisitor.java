@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsNewExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
@@ -9038,6 +9039,34 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public boolean visit(SQLAlterTableMergePartition x) {
+        print0(ucase ? "MERGE " : "merge ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+        println();
+        printlnAndAccept(x.getPartitions(), ", ");
+        println();
+        print0(ucase ? "OVERWRITE" : "overwrite");
+        println();
+        x.getOverwritePartition().accept(this);
+        return false;
+    }
+
+    public boolean visit(SQLPartitionSpec x) {
+        print0(ucase ? "PARTITION (" : "partition (");
+        printAndAccept(x.getItems(), ", ");
+        print(')');
+        return false;
+    }
+
+    public boolean visit(SQLPartitionSpec.Item x) {
+        x.getColumn().accept(this);
+        print0(" = ");
+        x.getValue().accept(this);
+        return false;
+    }
+
     public boolean visit(SQLAlterTableSubpartitionAvailablePartitionNum x) {
         print0(ucase ? "SUBPARTITION_AVAILABLE_PARTITION_NUM = " : "subpartition_available_partition_num = ");
         x.getNumber().accept(this);
@@ -10958,6 +10987,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         printAndAccept(x.getThreadIds(), ", ");
         return false;
+    }
+
+    public boolean visit(OdpsNewExpr x) {
+        print0(ucase ? "NEW " : "new ");
+        return super.visit((SQLMethodInvokeExpr) x);
     }
 
     public char getNameQuote() {

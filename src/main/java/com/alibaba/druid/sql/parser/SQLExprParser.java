@@ -779,6 +779,7 @@ public class SQLExprParser extends SQLParser {
                     parseQueryPlanHint(sqlExpr);
                 }
                 break;
+            case FROM:
             case SELECT:
                 SQLQueryExpr queryExpr = new SQLQueryExpr(
                         createSelectParser()
@@ -866,6 +867,7 @@ public class SQLExprParser extends SQLParser {
                     case NULL:
                     case INTERVAL:
                     case LBRACE:
+                    case IF:
                         sqlExpr = primary();
 
                         while (lexer.token == Token.HINT) {
@@ -1079,6 +1081,10 @@ public class SQLExprParser extends SQLParser {
             case DELETE:
             case BY:
             case UPDATE:
+            case LOOP:
+            case LIKE:
+            case UNION:
+            case CREATE:
                 if (dbType == DbType.odps) {
                     sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                     lexer.nextToken();
@@ -1135,6 +1141,15 @@ public class SQLExprParser extends SQLParser {
                     }
                 }
                 throw new ParserException("ERROR. " + lexer.info());
+            case COLONCOLON:
+                if (dbType == DbType.odps) {
+                    lexer.nextToken();
+                    SQLMethodInvokeExpr method = (SQLMethodInvokeExpr) this.primary();
+                    method.setOwner(new SQLIdentifierExpr(""));
+                    sqlExpr = method;
+                    break;
+                }
+                throw new ParserException("ERROR. " + lexer.info());
             default:
                 throw new ParserException("ERROR. " + lexer.info());
         }
@@ -1152,7 +1167,7 @@ public class SQLExprParser extends SQLParser {
         SQLExpr sqlExpr;
         String str = lexer.stringVal();
         lexer.nextToken();
-        if (lexer.token == Token.DOT) {
+        if (lexer.token == Token.DOT || lexer.token == Token.SLASH) {
             return primaryRest(new SQLIdentifierExpr(str));
         } else if (lexer.token == Token.COMMA) {
             return new SQLIdentifierExpr(str);
@@ -1244,6 +1259,9 @@ public class SQLExprParser extends SQLParser {
             case SLASH:
             case DOT:
             case FROM:
+            case ORDER:
+            case THEN:
+            case END:
                 return new SQLIdentifierExpr(str);
             default:
                 break;
@@ -1357,7 +1375,7 @@ public class SQLExprParser extends SQLParser {
             if (lexer.token == Token.LPAREN &&
                     !(expr instanceof SQLIntegerExpr) && !(expr instanceof SQLHexExpr)) {
                 SQLExpr method = methodRest(expr, true);
-                if (lexer.token == Token.LBRACKET) {
+                if (lexer.token == Token.LBRACKET || lexer.token == Token.DOT) {
                     method = primaryRest(method);
                 }
                 return method;
@@ -2023,6 +2041,10 @@ public class SQLExprParser extends SQLParser {
                 case VALUES:
                 case IN:
                 case OUT:
+                case LIMIT:
+                case TRIGGER:
+                case USE:
+                case LIKE:
                     if (dbType == DbType.odps) {
                         identName = lexer.stringVal();
                         lexer.nextToken();
@@ -2227,7 +2249,7 @@ public class SQLExprParser extends SQLParser {
                         || lexer.token == Token.LITERAL_FLOAT
                         || lexer.token == Token.LITERAL_CHARS
                 ) {
-                    SQLExpr betweenBegin = this.primary();
+                    SQLExpr betweenBegin = this.additive();
                     over.setWindowingBetweenBegin(betweenBegin);
                 } else if (lexer.token == Token.IDENTIFIER) {
                     long hash = lexer.hash_lower();
@@ -2252,7 +2274,7 @@ public class SQLExprParser extends SQLParser {
                         || lexer.token == Token.LITERAL_FLOAT
                         || lexer.token == Token.LITERAL_CHARS
                 ) {
-                    SQLExpr betweenEnd = this.primary();
+                    SQLExpr betweenEnd = this.additive();
                     over.setWindowingBetweenEnd(betweenEnd);
                 } else if (lexer.token == Token.IDENTIFIER) {
                     long hash = lexer.hash_lower();
@@ -2261,7 +2283,7 @@ public class SQLExprParser extends SQLParser {
                             && hash != FnvHash.Constants.FOLLOWING
                             && hash != FnvHash.Constants.CURRENT
                             && hash != FnvHash.Constants.UNBOUNDED) {
-                        SQLExpr betweenBegin = this.primary();
+                        SQLExpr betweenBegin = this.additive();
                         over.setWindowingBetweenEnd(betweenBegin);
                     }
                 }
@@ -2275,7 +2297,7 @@ public class SQLExprParser extends SQLParser {
                         || lexer.token == Token.LITERAL_FLOAT
                         || lexer.token == Token.LITERAL_CHARS
                 ) {
-                    SQLExpr betweenBegin = this.primary();
+                    SQLExpr betweenBegin = this.additive();
                     over.setWindowingBetweenBegin(betweenBegin);
                 } else if (lexer.token == Token.IDENTIFIER) {
                     long hash = lexer.hash_lower();
@@ -2284,7 +2306,7 @@ public class SQLExprParser extends SQLParser {
                             && hash != FnvHash.Constants.FOLLOWING
                             && hash != FnvHash.Constants.CURRENT
                             && hash != FnvHash.Constants.UNBOUNDED) {
-                        SQLExpr betweenBegin = this.primary();
+                        SQLExpr betweenBegin = this.additive();
                         over.setWindowingBetweenBegin(betweenBegin);
                     }
                 }
@@ -4261,17 +4283,21 @@ public class SQLExprParser extends SQLParser {
                     lexer.nextToken();
 
                     if (dbType == DbType.odps) {
-                        if (lexer.token == Token.LITERAL_ALIAS) {
-                            String tmp = lexer.stringVal();
-                            if (tmp.length() > 2 && tmp.charAt(0) == '"' && tmp.charAt(tmp.length() - 1) == '"') {
-                                tmp = tmp.substring(1, tmp.length() - 1);
-                            }
+                        for (;;) {
+                            if (lexer.token == Token.LITERAL_ALIAS) {
+                                String tmp = lexer.stringVal();
+                                if (tmp.length() > 2 && tmp.charAt(0) == '"' && tmp.charAt(tmp.length() - 1) == '"') {
+                                    tmp = tmp.substring(1, tmp.length() - 1);
+                                }
 
-                            stringVal += tmp;
-                            lexer.nextToken();
-                        } else if (lexer.token == Token.LITERAL_CHARS) {
-                            stringVal += lexer.stringVal();
-                            lexer.nextToken();
+                                stringVal += tmp;
+                                lexer.nextToken();
+                            } else if (lexer.token == Token.LITERAL_CHARS) {
+                                stringVal += lexer.stringVal();
+                                lexer.nextToken();
+                            } else {
+                                break;
+                            }
                         }
                     }
 
@@ -5610,6 +5636,35 @@ public class SQLExprParser extends SQLParser {
 
     protected SQLPartition parsePartition() {
         throw new ParserException("TODO");
+    }
+
+    public SQLPartitionSpec parsePartitionSpec() {
+        SQLPartitionSpec spec = new SQLPartitionSpec();
+        accept(Token.PARTITION);
+        accept(Token.LPAREN);
+
+        for (;;) {
+            SQLPartitionSpec.Item item = new SQLPartitionSpec.Item();
+            item.setColumn(
+                    this.name());
+
+            accept(Token.EQ);
+
+            item.setValue(
+                    this.expr());
+
+            spec.addItem(item);
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        accept(Token.RPAREN);
+        return spec;
     }
 
     protected SQLPartitionBy parsePartitionBy() {

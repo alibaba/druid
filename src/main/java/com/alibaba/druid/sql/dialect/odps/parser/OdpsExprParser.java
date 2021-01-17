@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsNewExpr;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsTransformExpr;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.parser.*;
@@ -75,16 +76,31 @@ public class OdpsExprParser extends SQLExprParser {
         return new SQLCharExpr(chars);
     }
     
+    final static long GSONBUILDER = FnvHash.fnv1a_64_lower("GSONBUILDER");
+    
     @Override
     public SQLSelectItem parseSelectItem() {
         SQLExpr expr;
         if (lexer.token() == Token.IDENTIFIER) {
-            expr = new SQLIdentifierExpr(lexer.stringVal());
+            String stringVal = lexer.stringVal();
+            long hash_lower = lexer.hash_lower();
+
             lexer.nextTokenComma();
 
-            if (lexer.token() != Token.COMMA) {
-                expr = this.primaryRest(expr);
-                expr = this.exprRest(expr);
+            if (FnvHash.Constants.DATETIME == hash_lower
+                    && lexer.stringVal().charAt(0) != '`'
+                    && lexer.token() == Token.LITERAL_CHARS) {
+                String literal = lexer.stringVal();
+                lexer.nextToken();
+
+                SQLDateTimeExpr ts = new SQLDateTimeExpr(literal);
+                expr = ts;
+            } else {
+                expr = new SQLIdentifierExpr(stringVal);
+                if (lexer.token() != Token.COMMA) {
+                    expr = this.primaryRest(expr);
+                    expr = this.exprRest(expr);
+                }
             }
         } else {
             expr = expr();
@@ -123,23 +139,23 @@ public class OdpsExprParser extends SQLExprParser {
         } else {
             alias = as();
         }
-        
+
         SQLSelectItem item = new SQLSelectItem(expr, alias);
-        
+
         if (lexer.hasComment() && lexer.isKeepComments()) {
             item.addAfterComment(lexer.readAndResetComments());
         }
 
         return item;
     }
-    
+
     public SQLExpr primaryRest(SQLExpr expr) {
         if(lexer.token() == Token.COLON) {
             lexer.nextToken();
             expr = dotRest(expr);
             return expr;
         }
-        
+
         if (lexer.token() == Token.LBRACKET) {
             SQLArrayExpr array = new SQLArrayExpr();
             array.setExpr(expr);
@@ -197,13 +213,20 @@ public class OdpsExprParser extends SQLExprParser {
             return transformExpr;
         }
 
-        if (expr instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.NEW) {
+        if (expr instanceof SQLIdentifierExpr
+                && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.NEW) {
             SQLIdentifierExpr ident = (SQLIdentifierExpr) expr;
 
-            if (lexer.identifierEquals(FnvHash.Constants.GSON)) {
-                ident.setName(ident.getName() + ' ' + lexer.stringVal());
+            OdpsNewExpr newExpr = new OdpsNewExpr();
+            if (lexer.identifierEquals(FnvHash.Constants.GSON)
+                    || lexer.identifierEquals(GSONBUILDER)) {
                 lexer.nextToken();
-            } else if (lexer.identifierEquals("java")) {
+                newExpr.setMethodName(lexer.stringVal());
+                accept(Token.LPAREN);
+                this.exprList(newExpr.getArguments(), newExpr);
+                accept(Token.RPAREN);
+                expr = newExpr;
+            } else if (lexer.identifierEquals("java") || lexer.identifierEquals("com")) {
                 SQLName name = this.name();
                 String strName = ident.getName() + ' ' + name.toString();
                 if (lexer.token() == Token.LT) {
@@ -221,7 +244,7 @@ public class OdpsExprParser extends SQLExprParser {
             }
         }
 
-        
+
         return super.primaryRest(expr);
     }
     

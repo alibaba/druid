@@ -297,6 +297,7 @@ public class SQLParser {
                 case DEFERRED:
                 case OUTER:
                 case DO:
+                case LOOP:
                 case STORE:
                 case MOD:
                 case ANY:
@@ -337,6 +338,9 @@ public class SQLParser {
                 case INNER:
                 case CLOSE:
                 case VALUES:
+                case SHOW:
+                case SEQUENCE:
+                case TO:
                     if (dbType == DbType.odps) {
                         alias = lexer.stringVal();
                         lexer.nextToken();
@@ -345,6 +349,7 @@ public class SQLParser {
                     break;
                 case GROUP:
                 case ORDER:
+                case DEFAULT:
                     if (dbType == DbType.odps) {
                         Lexer.SavePoint mark = lexer.mark();
                         alias = lexer.stringVal();
@@ -486,6 +491,7 @@ public class SQLParser {
                 case PARTITION:
                 case UPDATE:
                 case DO:
+                case LOOP:
                 case REPEAT:
                 case DEFAULT:
                 case LIKE:
@@ -499,6 +505,7 @@ public class SQLParser {
                 case IN:
                 case OUT:
                 case BY:
+                case EXCEPT:
                     alias = lexer.stringVal();
                     lexer.nextToken();
                     return alias;
