@@ -240,7 +240,7 @@ public final class JdbcUtils implements JdbcConstants {
                     } else {
                         out.print(Long.toString(value));
                     }
-                } else if (type == Types.TIMESTAMP) {
+                } else if (type == Types.TIMESTAMP || type == Types.TIMESTAMP_WITH_TIMEZONE) {
                     out.print(String.valueOf(rs.getTimestamp(columnIndex)));
                 } else if (type == Types.DECIMAL) {
                     out.print(String.valueOf(rs.getBigDecimal(columnIndex)));
@@ -378,6 +378,9 @@ public final class JdbcUtils implements JdbcConstants {
 
             case Types.TIMESTAMP:
                 return "TIMESTAMP";
+
+            case Types.TIMESTAMP_WITH_TIMEZONE:
+                return "TIMESTAMP_WITH_TIMEZONE";
 
             case Types.TINYINT:
                 return "TINYINT";

@@ -574,6 +574,11 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
             return;
         }
 
+        if (className.equals("java.time.ZonedDateTime")) {
+            setParameter(parameterIndex, new JdbcParameterImpl(Types.TIMESTAMP, x));
+            return;
+        }
+
         setParameter(parameterIndex, createParameter(Types.OTHER, null));
     }
 
