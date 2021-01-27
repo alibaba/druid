@@ -1638,7 +1638,7 @@ public class MySqlExprParser extends SQLExprParser {
                     lexer.nextToken();
                 }
                 SQLExpr minRows = this.primary();
-                subPartition.setMaxRows(minRows);
+                subPartition.setMinRows(minRows);
             } else if (lexer.identifierEquals(FnvHash.Constants.ENGINE) || //
                     (storage = (lexer.token() == Token.STORAGE || lexer.identifierEquals(FnvHash.Constants.STORAGE)))) {
                 if (storage) {
