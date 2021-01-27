@@ -271,7 +271,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
             if (right instanceof SQLJoinTableSource) {
                 print('(');
+                incrementIndent();
+                println();
                 right.accept(this);
+                decrementIndent();
+                println();
                 print(')');
             } else {
                 right.accept(this);

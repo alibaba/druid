@@ -620,7 +620,8 @@ public class OracleSelectParser extends SQLSelectParser {
                 tableSource = new OracleSelectSubqueryTableSource(select());
             } else if (lexer.token() == Token.LPAREN) {
                 tableSource = (OracleSelectTableSource) parseTableSource();
-            } else if (lexer.token() == Token.IDENTIFIER) {
+            } else if (lexer.token() == Token.IDENTIFIER
+                    || lexer.token() == Token.LITERAL_ALIAS) {
                 SQLTableSource identTable = parseTableSource();
                 accept(Token.RPAREN);
                 parsePivot((OracleSelectTableSource) identTable);
