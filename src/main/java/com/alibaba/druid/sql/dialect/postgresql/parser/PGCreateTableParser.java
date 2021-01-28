@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
+import com.alibaba.druid.sql.ast.SQLPartitionByHash;
 import com.alibaba.druid.sql.ast.SQLPartitionByList;
 import com.alibaba.druid.sql.parser.*;
 
@@ -45,7 +46,26 @@ public class PGCreateTableParser extends SQLCreateTableParser {
             }
 
             return list;
+        } else if (lexer.identifierEquals("HASH") || lexer.identifierEquals("UNI_HASH")) {
+            SQLPartitionByHash hash = new SQLPartitionByHash();
+
+            if (lexer.identifierEquals("UNI_HASH")) {
+                hash.setUnique(true);
+            }
+
+            lexer.nextToken();
+
+            if (lexer.token() == Token.KEY) {
+                lexer.nextToken();
+                hash.setKey(true);
+            }
+
+            accept(Token.LPAREN);
+            this.exprParser.exprList(hash.getColumns(), hash);
+            accept(Token.RPAREN);
+            return hash;
         }
+
         throw new ParserException("TODO " + lexer.info());
     }
 }

@@ -3512,6 +3512,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLCreateTableStatement x) {
         printCreateTable(x, true);
 
+        SQLPartitionBy partitionBy = x.getPartitioning();
+        if (partitionBy != null) {
+            println();
+            print0(ucase ? "PARTITION BY " : "partition by ");
+            partitionBy.accept(this);
+        }
+
         List<SQLAssignItem> options = x.getTableOptions();
         if (options.size() > 0) {
             println();

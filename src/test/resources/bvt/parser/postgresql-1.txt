@@ -13,4 +13,5 @@ CREATE TABLE IF NOT EXISTS test_dim_segment (
 	segment_id bigint,
 	segment_name text,
 	ds text NOT NULL
-);
+)
+PARTITION BY LIST (ds);
