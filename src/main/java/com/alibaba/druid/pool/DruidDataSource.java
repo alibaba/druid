@@ -1207,6 +1207,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.driverClass = driver.getClass().getName();
             }
         }
+        if(!driver.acceptsURL(getUrl())) {
+            throw new SQLException(String.format("driver not support this url:\"%s\"",this.jdbcUrl));
+        }
     }
 
     protected void initCheck() throws SQLException {
