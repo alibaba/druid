@@ -74,6 +74,7 @@ public class ZookeeperNodeListener extends NodeListener {
      * URL Template, e.g.
      * jdbc:mysql://${host}:${port}/${database}?useUnicode=true
      * ${host}, ${port} and ${database} will be replaced by values in ZK
+     * ${host} can also be #{host} and #host#
      */
     private String urlTemplate;
 
@@ -100,8 +101,8 @@ public class ZookeeperNodeListener extends NodeListener {
             @Override
             public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
                 try {
-                    lock.lock();
                     LOG.info("Receive an event: " + event.getType());
+                    lock.lock();
                     PathChildrenCacheEvent.Type eventType = event.getType();
                     switch (eventType) {
                         case CHILD_REMOVED:
@@ -122,6 +123,7 @@ public class ZookeeperNodeListener extends NodeListener {
                     }
                 } finally {
                     lock.unlock();
+                    LOG.info("Finish the processing of event: " + event.getType());
                 }
             }
         });
@@ -159,12 +161,17 @@ public class ZookeeperNodeListener extends NodeListener {
      */
     @Override
     public List<NodeEvent> refresh() {
-        Properties properties = getPropertiesFromCache();
-        List<NodeEvent> events = NodeEvent.getEventsByDiffProperties(getProperties(), properties);
-        if (events != null && !events.isEmpty()) {
-            setProperties(properties);
+        try {
+            lock.lock();
+            Properties properties = getPropertiesFromCache();
+            List<NodeEvent> events = NodeEvent.getEventsByDiffProperties(getProperties(), properties);
+            if (events != null && !events.isEmpty()) {
+                setProperties(properties);
+            }
+            return events;
+        } finally {
+            lock.unlock();
         }
-        return events;
     }
 
     private void checkParameters() {
@@ -258,12 +265,18 @@ public class ZookeeperNodeListener extends NodeListener {
         String dataPrefix = getPrefix();
         if (properties.containsKey(dataPrefix + ".host")) {
             url = url.replace("${host}", properties.getProperty(dataPrefix + ".host"));
+            url = url.replace("#{host}", properties.getProperty(dataPrefix + ".host"));
+            url = url.replace("#host#", properties.getProperty(dataPrefix + ".host"));
         }
         if (properties.containsKey(dataPrefix + ".port")) {
             url = url.replace("${port}", properties.getProperty(dataPrefix + ".port"));
+            url = url.replace("#{port}", properties.getProperty(dataPrefix + ".port"));
+            url = url.replace("#port#", properties.getProperty(dataPrefix + ".port"));
         }
         if (properties.containsKey(dataPrefix + ".database")) {
             url = url.replace("${database}", properties.getProperty(dataPrefix + ".database"));
+            url = url.replace("#{database}", properties.getProperty(dataPrefix + ".database"));
+            url = url.replace("#database#", properties.getProperty(dataPrefix + ".database"));
         }
         return url;
     }
