@@ -32,7 +32,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean {
     @Autowired
     private DataSourceProperties basicProperties;
-
+    
+    @Override
+    protected void resolveDriver() throws SQLException {
+        super.resolveDriver();
+        if(!driver.acceptsURL(getUrl())) {
+            throw new SQLException(String.format("没有找到支持url:\"%s\"的数据库驱动!",getUrl()));
+        }
+    }
+    
     @Override
     public void afterPropertiesSet() throws Exception {
         //if not found prefix 'spring.datasource.druid' jdbc properties ,'spring.datasource' prefix jdbc properties will be used.
