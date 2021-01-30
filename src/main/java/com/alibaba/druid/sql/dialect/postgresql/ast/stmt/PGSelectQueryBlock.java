@@ -145,6 +145,7 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
 
         private List<SQLExpr> of = new ArrayList<SQLExpr>(2);
         private boolean       noWait;
+        private boolean       skipLocked;
         private Option        option;
 
         public Option getOption() {
@@ -169,6 +170,14 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
 
         public void setNoWait(boolean noWait) {
             this.noWait = noWait;
+        }
+
+        public boolean isSkipLocked() {
+            return skipLocked;
+        }
+
+        public void setSkipLocked(boolean skipLocked) {
+            this.skipLocked = skipLocked;
         }
 
         @Override

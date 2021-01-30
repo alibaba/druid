@@ -1,0 +1,11 @@
+select * from msg.msg_pool
+where status=?
+order by create_time
+limit 100 for update skip locked
+---------------------------
+SELECT *
+FROM msg.msg_pool
+WHERE status = ?
+ORDER BY create_time
+LIMIT 100
+FOR UPDATE SKIP LOCKED

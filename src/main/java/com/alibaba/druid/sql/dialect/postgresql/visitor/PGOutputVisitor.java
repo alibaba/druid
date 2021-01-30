@@ -67,12 +67,13 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public boolean visit(ForClause x) {
         print0(ucase ? "FOR " : "for ");
         if (ForClause.Option.UPDATE.equals(x.getOption())) {
-            print0(ucase ? "UPDATE " : "update ");
+            print0(ucase ? "UPDATE" : "update");
         } else if (ForClause.Option.SHARE.equals(x.getOption())) {
-            print0(ucase ? "SHARE " : "share ");
+            print0(ucase ? "SHARE" : "share");
         }
 
         if (x.getOf().size() > 0) {
+            print(' ');
             for (int i = 0; i < x.getOf().size(); ++i) {
                 if (i != 0) {
                     println(", ");
@@ -83,6 +84,8 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         if (x.isNoWait()) {
             print0(ucase ? " NOWAIT" : " nowait");
+        } else if (x.isSkipLocked()) {
+            print0(ucase ? " SKIP LOCKED" : " skip locked");
         }
 
         return false;

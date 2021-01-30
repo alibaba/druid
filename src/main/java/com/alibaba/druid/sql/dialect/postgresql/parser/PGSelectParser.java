@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
 import com.alibaba.druid.sql.ast.statement.SQLValuesQuery;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
 
@@ -231,6 +232,10 @@ public class PGSelectParser extends SQLSelectParser {
             if (lexer.token() == Token.NOWAIT) {
                 lexer.nextToken();
                 forClause.setNoWait(true);
+            } else  if (lexer.identifierEquals(FnvHash.Constants.SKIP)) {
+                lexer.nextToken();
+                acceptIdentifier("LOCKED");
+                forClause.setSkipLocked(true);
             }
 
             queryBlock.setForClause(forClause);
