@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 public class MySqlPrimaryKey extends MySqlKey implements SQLPrimaryKey {
 
     public MySqlPrimaryKey(){
-        dbType = DbType.oracle;
+        dbType = DbType.mysql;
     }
 
     protected void accept0(MySqlASTVisitor visitor) {

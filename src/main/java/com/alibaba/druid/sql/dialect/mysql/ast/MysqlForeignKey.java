@@ -32,7 +32,7 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
     protected Option onDelete;
 
     public MysqlForeignKey() {
-        dbType = DbType.oracle;
+        dbType = DbType.mysql;
     }
 
     public SQLName getIndexName() {
