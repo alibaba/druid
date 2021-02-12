@@ -1214,7 +1214,8 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCommit() {
-        throw new ParserException("TODO " + lexer.info());
+        acceptIdentifier("COMMIT");
+        return new SQLCommitStatement();
     }
 
     public SQLStatement parseShow() {
