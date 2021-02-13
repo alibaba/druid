@@ -18,7 +18,7 @@ public class TDDLSqlSelect extends SqlSelect {
     public TDDLSqlSelect(SqlParserPos pos, SqlNodeList keywordList, SqlNodeList selectList, SqlNode from, SqlNode where,
                          SqlNodeList groupBy, SqlNode having, SqlNodeList windowDecls, SqlNodeList orderBy,
                          SqlNode offset, SqlNode fetch, SqlNodeList hints, SqlNodeList headHints) {
-        super(pos, keywordList, selectList, from, where, groupBy, having, windowDecls, orderBy, offset, fetch);
+        super(pos, keywordList, selectList, from, where, groupBy, having, windowDecls, orderBy, offset, fetch, null);
         this.hints = hints;
         this.headHints = headHints;
     }

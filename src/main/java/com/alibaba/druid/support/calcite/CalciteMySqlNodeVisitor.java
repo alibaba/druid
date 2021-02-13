@@ -15,6 +15,7 @@ import org.apache.calcite.sql.*;
 import org.apache.calcite.sql.fun.*;
 import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.calcite.sql.parser.SqlParserUtil;
+import org.apache.calcite.sql.type.SqlTypeName;
 import org.apache.calcite.util.DateString;
 import org.apache.calcite.util.TimeString;
 import org.apache.calcite.util.TimestampString;
@@ -245,180 +246,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         return visit((SQLSelectQueryBlock) x);
     }
 
-    public boolean visit(SQLSelectQueryBlock x) {
-        SqlNodeList keywordList = null;
-        List<SqlNode> keywordNodes = new ArrayList<SqlNode>(5);
-        int option = x.getDistionOption();
-        if (option != 0) {
-            if (option == SQLSetQuantifier.DISTINCT
-                    || option == SQLSetQuantifier.DISTINCTROW) {
-                keywordNodes.add(SqlSelectKeyword.DISTINCT.symbol(SqlParserPos.ZERO));
-            } else if (option == SQLSetQuantifier.ALL) {
-                keywordNodes.add(SqlSelectKeyword.ALL.symbol(SqlParserPos.ZERO));
-            }
-
-            keywordList = new SqlNodeList(keywordNodes, SqlParserPos.ZERO);
-        }
-
-        // select list
-        List<SqlNode> columnNodes = new ArrayList<SqlNode>(x.getSelectList().size());
-        for (SQLSelectItem selectItem : x.getSelectList()) {
-            SqlNode column = convertToSqlNode(selectItem);
-            columnNodes.add(column);
-        }
-
-        //select item
-        SqlNodeList selectList = new SqlNodeList(columnNodes, SqlParserPos.ZERO);
-
-        //from
-        SqlNode from = null;
-
-        SQLTableSource tableSource = x.getFrom();
-        if (tableSource != null) {
-            from = convertToSqlNode(tableSource);
-        }
-
-        //where
-        SqlNode where = convertToSqlNode(x.getWhere());
-
-        //order by
-        SqlNodeList orderBySqlNode = null;
-        SQLOrderBy orderBy = x.getOrderBy();
-        if (orderBy != null) {
-            orderBySqlNode = convertOrderby(orderBy);
-        }
-
-        //group by
-        SqlNodeList groupBySqlNode = null;
-        SqlNode having = null;
-        SQLSelectGroupByClause groupBys = x.getGroupBy();
-
-        if (groupBys != null) {
-            if (groupBys.getHaving() != null) {
-                having = convertToSqlNode(groupBys.getHaving());
-            }
-
-            if (groupBys.getItems().size() > 0) {
-                List<SqlNode> groupByNodes = new ArrayList<SqlNode>(groupBys.getItems().size());
-
-                for (SQLExpr groupBy : groupBys.getItems()) {
-                    SqlNode groupByNode = convertToSqlNode(groupBy);
-                    groupByNodes.add(groupByNode);
-                }
-                groupBySqlNode = new SqlNodeList(groupByNodes, SqlParserPos.ZERO);
-            }
-
-            SqlInternalOperator op = null;
-            if (groupBys.isWithRollUp()) {
-                op = SqlStdOperatorTable.ROLLUP;
-            } else if (groupBys.isWithCube()) {
-                op = SqlStdOperatorTable.CUBE;
-            }
-
-            if (op != null) {
-                List<SqlNode> rollupNodes = new ArrayList<SqlNode>(1);
-
-                boolean isRow = false;
-                for (SqlNode node : groupBySqlNode.getList()) {
-                    if (node instanceof SqlBasicCall && ((SqlBasicCall) node).getOperator() == SqlStdOperatorTable.ROW) {
-                        isRow = true;
-                        break;
-                    }
-                }
-
-                if (isRow) {
-                    rollupNodes.add(op.createCall(SqlParserPos.ZERO, groupBySqlNode.toArray()));
-                    groupBySqlNode = new SqlNodeList(rollupNodes, SqlParserPos.ZERO);
-                } else {
-                    rollupNodes.add(op.createCall(SqlParserPos.ZERO, groupBySqlNode));
-                    groupBySqlNode = new SqlNodeList(rollupNodes, SqlParserPos.ZERO);
-                }
-
-            }
-        }
-
-        //limit
-        SqlNode offset = null;
-        SqlNode fetch = null;
-        SQLLimit limit = x.getLimit();
-        if (limit != null) {
-            offset = convertToSqlNode(limit.getOffset());
-            fetch = convertToSqlNode(limit.getRowCount());
-        }
-
-        //hints
-        SqlNodeList hints = convertHints(x.getHints());
-
-        if (orderBy != null && x.getParent() instanceof SQLUnionQuery) {
-            this.sqlNode = new com.alibaba.druid.support.calcite.TDDLSqlSelect(SqlParserPos.ZERO
-                    , keywordList
-                    , selectList
-                    , from
-                    , where
-                    , groupBySqlNode
-                    , having
-                    , null
-                    , null
-                    , offset
-                    , fetch
-                    , hints
-                    , null
-            );
-            sqlNode = new SqlOrderBy(SqlParserPos.ZERO
-                    , sqlNode
-                    , orderBySqlNode
-                    , null
-                    , fetch
-            );
-        } else {
-            if (orderBySqlNode == null) {
-                orderBySqlNode = SqlNodeList.EMPTY;
-            }
-            if (hints == null || SqlNodeList.isEmptyList(hints)) {
-                this.sqlNode = new SqlSelect(SqlParserPos.ZERO
-                        , keywordList
-                        , selectList
-                        , from
-                        , where
-                        , groupBySqlNode
-                        , having
-                        , null
-                        , SqlNodeList.EMPTY
-                        , null
-                        , null
-                );
-
-                if ((!SqlNodeList.isEmptyList(orderBySqlNode))
-                        || offset != null
-                        || fetch != null
-                ) {
-                    sqlNode = new SqlOrderBy(SqlParserPos.ZERO
-                            , sqlNode
-                            , orderBySqlNode
-                            , offset
-                            , fetch);
-                }
-            } else {
-                this.sqlNode = new com.alibaba.druid.support.calcite.TDDLSqlSelect(SqlParserPos.ZERO
-                        , keywordList
-                        , selectList
-                        , from
-                        , where
-                        , groupBySqlNode
-                        , having
-                        , null
-                        , orderBySqlNode
-                        , offset
-                        , fetch
-                        , hints
-                        , null
-                );
-            }
-        }
-
-
-        return false;
-    }
+    private static Map<Long, SqlTypeName> nameHashCode64SqlTypeNameMapping = new HashMap<>();
 
     public boolean visit(SQLTableSource x) {
         Class<?> clazz = x.getClass();
@@ -622,6 +450,218 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         return false;
     }
 
+    static {
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.BIT, SqlTypeName.BOOLEAN);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.BOOLEAN, SqlTypeName.BOOLEAN);
+
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.TINYINT, SqlTypeName.TINYINT);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.SMALLINT, SqlTypeName.SMALLINT);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.INT, SqlTypeName.INTEGER);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.INTEGER, SqlTypeName.INTEGER);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.BIGINT, SqlTypeName.BIGINT);
+
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.DECIMAL, SqlTypeName.DECIMAL);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.FLOAT, SqlTypeName.FLOAT);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.REAL, SqlTypeName.REAL);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.DOUBLE, SqlTypeName.DOUBLE);
+
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.DATE, SqlTypeName.DATE);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.TIME, SqlTypeName.TIME);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.TIMESTAMP, SqlTypeName.TIMESTAMP);
+
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.CHAR, SqlTypeName.CHAR);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.VARCHAR, SqlTypeName.VARCHAR);
+
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.BINARY, SqlTypeName.BINARY);
+        nameHashCode64SqlTypeNameMapping.put(FnvHash.Constants.VARBINARY, SqlTypeName.VARBINARY);
+    }
+
+    public boolean visit(SQLSelectQueryBlock x) {
+        SqlNodeList keywordList = null;
+        List<SqlNode> keywordNodes = new ArrayList<SqlNode>(5);
+        int option = x.getDistionOption();
+        if (option != 0) {
+            if (option == SQLSetQuantifier.DISTINCT
+                    || option == SQLSetQuantifier.DISTINCTROW) {
+                keywordNodes.add(SqlSelectKeyword.DISTINCT.symbol(SqlParserPos.ZERO));
+            } else if (option == SQLSetQuantifier.ALL) {
+                keywordNodes.add(SqlSelectKeyword.ALL.symbol(SqlParserPos.ZERO));
+            }
+
+            keywordList = new SqlNodeList(keywordNodes, SqlParserPos.ZERO);
+        }
+
+        // select list
+        List<SqlNode> columnNodes = new ArrayList<SqlNode>(x.getSelectList().size());
+        for (SQLSelectItem selectItem : x.getSelectList()) {
+            SqlNode column = convertToSqlNode(selectItem);
+            columnNodes.add(column);
+        }
+
+        //select item
+        SqlNodeList selectList = new SqlNodeList(columnNodes, SqlParserPos.ZERO);
+
+        //from
+        SqlNode from = null;
+
+        SQLTableSource tableSource = x.getFrom();
+        if (tableSource != null) {
+            from = convertToSqlNode(tableSource);
+        }
+
+        //where
+        SqlNode where = convertToSqlNode(x.getWhere());
+
+        //order by
+        SqlNodeList orderBySqlNode = null;
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
+            orderBySqlNode = convertOrderby(orderBy);
+        }
+
+        //group by
+        SqlNodeList groupBySqlNode = null;
+        SqlNode having = null;
+        SQLSelectGroupByClause groupBys = x.getGroupBy();
+
+        if (groupBys != null) {
+            if (groupBys.getHaving() != null) {
+                having = convertToSqlNode(groupBys.getHaving());
+            }
+
+            if (groupBys.getItems().size() > 0) {
+                List<SqlNode> groupByNodes = new ArrayList<SqlNode>(groupBys.getItems().size());
+
+                for (SQLExpr groupBy : groupBys.getItems()) {
+                    SqlNode groupByNode = convertToSqlNode(groupBy);
+                    groupByNodes.add(groupByNode);
+                }
+                groupBySqlNode = new SqlNodeList(groupByNodes, SqlParserPos.ZERO);
+            }
+
+            SqlInternalOperator op = null;
+            if (groupBys.isWithRollUp()) {
+                op = SqlStdOperatorTable.ROLLUP;
+            } else if (groupBys.isWithCube()) {
+                op = SqlStdOperatorTable.CUBE;
+            }
+
+            if (op != null) {
+                List<SqlNode> rollupNodes = new ArrayList<SqlNode>(1);
+
+                boolean isRow = false;
+                for (SqlNode node : groupBySqlNode.getList()) {
+                    if (node instanceof SqlBasicCall && ((SqlBasicCall) node).getOperator() == SqlStdOperatorTable.ROW) {
+                        isRow = true;
+                        break;
+                    }
+                }
+
+                if (isRow) {
+                    rollupNodes.add(op.createCall(SqlParserPos.ZERO, groupBySqlNode.toArray()));
+                    groupBySqlNode = new SqlNodeList(rollupNodes, SqlParserPos.ZERO);
+                } else {
+                    rollupNodes.add(op.createCall(SqlParserPos.ZERO, groupBySqlNode));
+                    groupBySqlNode = new SqlNodeList(rollupNodes, SqlParserPos.ZERO);
+                }
+
+            }
+        }
+
+        //limit
+        SqlNode offset = null;
+        SqlNode fetch = null;
+        SQLLimit limit = x.getLimit();
+        if (limit != null) {
+            offset = convertToSqlNode(limit.getOffset());
+            fetch = convertToSqlNode(limit.getRowCount());
+        }
+
+        //hints
+        SqlNodeList hints = convertHints(x.getHints());
+
+        if (orderBy != null && x.getParent() instanceof SQLUnionQuery) {
+            this.sqlNode = new com.alibaba.druid.support.calcite.TDDLSqlSelect(SqlParserPos.ZERO
+                    , keywordList
+                    , selectList
+                    , from
+                    , where
+                    , groupBySqlNode
+                    , having
+                    , null
+                    , null
+                    , offset
+                    , fetch
+                    , hints
+                    , null
+            );
+            sqlNode = new SqlOrderBy(SqlParserPos.ZERO
+                    , sqlNode
+                    , orderBySqlNode
+                    , null
+                    , fetch
+            );
+        } else {
+            if (orderBySqlNode == null) {
+                orderBySqlNode = SqlNodeList.EMPTY;
+            }
+            if (hints == null || SqlNodeList.isEmptyList(hints)) {
+                this.sqlNode = new SqlSelect(SqlParserPos.ZERO
+                        , keywordList
+                        , selectList
+                        , from
+                        , where
+                        , groupBySqlNode
+                        , having
+                        , null
+                        , SqlNodeList.EMPTY
+                        , null
+                        , null
+                        , null
+                );
+
+                if ((!SqlNodeList.isEmptyList(orderBySqlNode))
+                        || offset != null
+                        || fetch != null
+                ) {
+                    sqlNode = new SqlOrderBy(SqlParserPos.ZERO
+                            , sqlNode
+                            , orderBySqlNode
+                            , offset
+                            , fetch);
+                }
+            } else {
+                this.sqlNode = new com.alibaba.druid.support.calcite.TDDLSqlSelect(SqlParserPos.ZERO
+                        , keywordList
+                        , selectList
+                        , from
+                        , where
+                        , groupBySqlNode
+                        , having
+                        , null
+                        , orderBySqlNode
+                        , offset
+                        , fetch
+                        , hints
+                        , null
+                );
+            }
+        }
+
+
+        return false;
+    }
+
+    private SqlTypeName toSqlTypeName(SQLDataType dataType) {
+        long nameHashCode64 = dataType.nameHashCode64();
+        SqlTypeName sqlTypeName = nameHashCode64SqlTypeNameMapping.get(nameHashCode64);
+        if (sqlTypeName != null) {
+            return sqlTypeName;
+        }
+
+        throw new FastsqlException("TODO");
+    }
+
     public boolean visit(SQLCastExpr x) {
         SqlLiteral functionQualifier = null;
 
@@ -649,9 +689,10 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
             }
         }
 
-
         SqlDataTypeSpec sqlDataTypeSpec
-                = new SqlDataTypeSpec(dataTypeNode, scale, precision, null, null, SqlParserPos.ZERO);
+                = new SqlDataTypeSpec(
+                new SqlBasicTypeNameSpec(toSqlTypeName(dataType), scale, precision, SqlParserPos.ZERO)
+                , SqlParserPos.ZERO);
 
         SqlOperator sqlOperator = new SqlCastFunction();
 

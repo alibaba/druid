@@ -4,7 +4,6 @@
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
 	<version>1.2.5_preview_01</version>
-
 	<packaging>jar</packaging>
 	<name>druid</name>
 	<description>A JDBC datasource implementation.</description>
@@ -516,7 +515,7 @@
 		<dependency>
 			<groupId>org.apache.calcite</groupId>
 			<artifactId>calcite-core</artifactId>
-			<version>1.18.0</version>
+			<version>1.26.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -657,13 +656,7 @@
 		<dependency>
 			<groupId>org.apache.calcite</groupId>
 			<artifactId>calcite-druid</artifactId>
-			<version>1.13.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.calcite</groupId>
-			<artifactId>calcite-example-csv</artifactId>
-			<version>1.13.0</version>
+			<version>1.26.0</version>
 			<scope>test</scope>
 		</dependency>
 
