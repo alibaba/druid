@@ -44,18 +44,10 @@ public abstract class ResourceServlet extends HttpServlet {
     public static final String PARAM_NAME_DENY     = "deny";
     public static final String PARAM_REMOTE_ADDR   = "remoteAddress";
 
-    protected String           username            = null;
-    protected String           password            = null;
-
-    protected List<IPRange>    allowList           = new ArrayList<IPRange>();
-    protected List<IPRange>    denyList            = new ArrayList<IPRange>();
-
-    protected final String     resourcePath;
-
-    protected String           remoteAddressHeader = null;
+    protected final ResourceHandler handler;
 
     public ResourceServlet(String resourcePath){
-        this.resourcePath = resourcePath;
+        handler = new ResourceHandler(resourcePath);
     }
 
     public void init() throws ServletException {
@@ -65,17 +57,17 @@ public abstract class ResourceServlet extends HttpServlet {
     private void initAuthEnv() {
         String paramUserName = getInitParameter(PARAM_NAME_USERNAME);
         if (!StringUtils.isEmpty(paramUserName)) {
-            this.username = paramUserName;
+            handler.username = paramUserName;
         }
 
         String paramPassword = getInitParameter(PARAM_NAME_PASSWORD);
         if (!StringUtils.isEmpty(paramPassword)) {
-            this.password = paramPassword;
+            handler.password = paramPassword;
         }
 
         String paramRemoteAddressHeader = getInitParameter(PARAM_REMOTE_ADDR);
         if (!StringUtils.isEmpty(paramRemoteAddressHeader)) {
-            this.remoteAddressHeader = paramRemoteAddressHeader;
+            handler.remoteAddressHeader = paramRemoteAddressHeader;
         }
 
         try {
@@ -90,7 +82,7 @@ public abstract class ResourceServlet extends HttpServlet {
                     }
 
                     IPRange ipRange = new IPRange(item);
-                    allowList.add(ipRange);
+                    handler.allowList.add(ipRange);
                 }
             }
         } catch (Exception e) {
@@ -110,7 +102,7 @@ public abstract class ResourceServlet extends HttpServlet {
                     }
 
                     IPRange ipRange = new IPRange(item);
-                    denyList.add(ipRange);
+                    handler.denyList.add(ipRange);
                 }
             }
         } catch (Exception e) {
@@ -120,183 +112,245 @@ public abstract class ResourceServlet extends HttpServlet {
     }
 
     public boolean isPermittedRequest(String remoteAddress) {
-        boolean ipV6 = remoteAddress != null && remoteAddress.indexOf(':') != -1;
-
-        if (ipV6) {
-            return "0:0:0:0:0:0:0:1".equals(remoteAddress) || (denyList.size() == 0 && allowList.size() == 0);
-        }
-
-        IPAddress ipAddress = new IPAddress(remoteAddress);
-
-        for (IPRange range : denyList) {
-            if (range.isIPAddressInRange(ipAddress)) {
-                return false;
-            }
-        }
-
-        if (allowList.size() > 0) {
-            for (IPRange range : allowList) {
-                if (range.isIPAddressInRange(ipAddress)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        return true;
+        return handler.isPermittedRequest(remoteAddress);
     }
 
     protected String getFilePath(String fileName) {
-        return resourcePath + fileName;
+        return handler.resourcePath + fileName;
     }
 
     protected void returnResourceFile(String fileName, String uri, HttpServletResponse response)
-                                                                                                throws ServletException,
-                                                                                                IOException {
-
-        String filePath = getFilePath(fileName);
-        
-        if (filePath.endsWith(".html")) {
-            response.setContentType("text/html; charset=utf-8");
-        }
-        if (fileName.endsWith(".jpg")) {
-            byte[] bytes = Utils.readByteArrayFromResource(filePath);
-            if (bytes != null) {
-                response.getOutputStream().write(bytes);
-            }
-
-            return;
-        }
-
-        String text = Utils.readFromResource(filePath);
-        if (text == null) {
-            response.sendRedirect(uri + "/index.html");
-            return;
-        }
-        if (fileName.endsWith(".css")) {
-            response.setContentType("text/css;charset=utf-8");
-        } else if (fileName.endsWith(".js")) {
-            response.setContentType("text/javascript;charset=utf-8");
-        }
-        response.getWriter().write(text);
+            throws ServletException,
+            IOException {
+        handler.returnResourceFile(fileName, uri, response);
     }
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String contextPath = request.getContextPath();
         String servletPath = request.getServletPath();
-        String requestURI = request.getRequestURI();
+        handler.service(request, response, servletPath, new ProcessCallback() {
 
-        response.setCharacterEncoding("utf-8");
-
-        if (contextPath == null) { // root context
-            contextPath = "";
-        }
-        String uri = contextPath + servletPath;
-        String path = requestURI.substring(contextPath.length() + servletPath.length());
-
-        if (!isPermittedRequest(request)) {
-            path = "/nopermit.html";
-            returnResourceFile(path, uri, response);
-            return;
-        }
-
-        if ("/submitLogin".equals(path)) {
-            String usernameParam = request.getParameter(PARAM_NAME_USERNAME);
-            String passwordParam = request.getParameter(PARAM_NAME_PASSWORD);
-            if (username.equals(usernameParam) && password.equals(passwordParam)) {
-                request.getSession().setAttribute(SESSION_USER_KEY, username);
-                response.getWriter().print("success");
-            } else {
-                response.getWriter().print("error");
+            @Override
+            public String process(String url) {
+                return ResourceServlet.this.process(url);
             }
-            return;
-        }
-
-        if (isRequireAuth() //
-            && !ContainsUser(request)//
-            && !checkLoginParam(request)//
-            && !("/login.html".equals(path) //
-                 || path.startsWith("/css")//
-                 || path.startsWith("/js") //
-            || path.startsWith("/img"))) {
-            if (contextPath.equals("") || contextPath.equals("/")) {
-                response.sendRedirect("/druid/login.html");
-            } else {
-                if ("".equals(path)) {
-                    response.sendRedirect("druid/login.html");
-                } else {
-                    response.sendRedirect("login.html");
-                }
-            }
-            return;
-        }
-
-        if ("".equals(path)) {
-            if (contextPath.equals("") || contextPath.equals("/")) {
-                response.sendRedirect("/druid/index.html");
-            } else {
-                response.sendRedirect("druid/index.html");
-            }
-            return;
-        }
-
-        if ("/".equals(path)) {
-            response.sendRedirect("index.html");
-            return;
-        }
-
-        if (path.contains(".json")) {
-            String fullUrl = path;
-            if (request.getQueryString() != null && request.getQueryString().length() > 0) {
-                fullUrl += "?" + request.getQueryString();
-            }
-            response.getWriter().print(process(fullUrl));
-            return;
-        }
-
-        // find file in resources path
-        returnResourceFile(path, uri, response);
+        });
     }
 
     public boolean ContainsUser(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        return session != null && session.getAttribute(SESSION_USER_KEY) != null;
+        return handler.containsUser(request);
     }
 
     public boolean checkLoginParam(HttpServletRequest request) {
-        String usernameParam = request.getParameter(PARAM_NAME_USERNAME);
-        String passwordParam = request.getParameter(PARAM_NAME_PASSWORD);
-        if(null == username || null == password){
-            return false;
-        } else if (username.equals(usernameParam) && password.equals(passwordParam)) {
-            return true;
-        }
-        return false;
+        return handler.checkLoginParam(request);
     }
 
     public boolean isRequireAuth() {
-        return this.username != null;
+        return handler.isRequireAuth();
     }
 
     public boolean isPermittedRequest(HttpServletRequest request) {
-        String remoteAddress = getRemoteAddress(request);
-        return isPermittedRequest(remoteAddress);
+        return handler.isPermittedRequest(request);
     }
 
     protected String getRemoteAddress(HttpServletRequest request) {
-        String remoteAddress = null;
-        
-        if (remoteAddressHeader != null) {
-            remoteAddress = request.getHeader(remoteAddressHeader);
-        }
-        
-        if (remoteAddress == null) {
-            remoteAddress = request.getRemoteAddr();
-        }
-        
-        return remoteAddress;
+        return handler.getRemoteAddress(request);
     }
 
     protected abstract String process(String url);
+
+    public static interface ProcessCallback {
+        String process(String url);
+    }
+
+    public static class ResourceHandler {
+        protected String username = null;
+        protected String password = null;
+
+        protected List<IPRange> allowList = new ArrayList<IPRange>();
+        protected List<IPRange> denyList = new ArrayList<IPRange>();
+
+        protected String resourcePath;
+
+        protected String remoteAddressHeader = null;
+
+        public ResourceHandler(String resourcePath) {
+            this.resourcePath = resourcePath;
+        }
+
+        protected void returnResourceFile(String fileName, String uri, HttpServletResponse response)
+                throws ServletException,
+                IOException {
+
+            String filePath = getFilePath(fileName);
+
+            if (filePath.endsWith(".html")) {
+                response.setContentType("text/html; charset=utf-8");
+            }
+            if (fileName.endsWith(".jpg")) {
+                byte[] bytes = Utils.readByteArrayFromResource(filePath);
+                if (bytes != null) {
+                    response.getOutputStream().write(bytes);
+                }
+
+                return;
+            }
+
+            String text = Utils.readFromResource(filePath);
+            if (text == null) {
+                return;
+            }
+
+            if (fileName.endsWith(".css")) {
+                response.setContentType("text/css;charset=utf-8");
+            } else if (fileName.endsWith(".js")) {
+                response.setContentType("text/javascript;charset=utf-8");
+            }
+            response.getWriter().write(text);
+        }
+
+        protected String getFilePath(String fileName) {
+            return resourcePath + fileName;
+        }
+
+        public boolean checkLoginParam(HttpServletRequest request) {
+            String usernameParam = request.getParameter(PARAM_NAME_USERNAME);
+            String passwordParam = request.getParameter(PARAM_NAME_PASSWORD);
+            if(null == username || null == password){
+                return false;
+            } else if (username.equals(usernameParam) && password.equals(passwordParam)) {
+                return true;
+            }
+            return false;
+        }
+
+        protected String getRemoteAddress(HttpServletRequest request) {
+            String remoteAddress = null;
+
+            if (remoteAddressHeader != null) {
+                remoteAddress = request.getHeader(remoteAddressHeader);
+            }
+
+            if (remoteAddress == null) {
+                remoteAddress = request.getRemoteAddr();
+            }
+
+            return remoteAddress;
+        }
+
+        public boolean containsUser(HttpServletRequest request) {
+            HttpSession session = request.getSession(false);
+            return session != null && session.getAttribute(SESSION_USER_KEY) != null;
+        }
+
+        public boolean isRequireAuth() {
+            return username != null;
+        }
+
+        public boolean isPermittedRequest(HttpServletRequest request) {
+            String remoteAddress = getRemoteAddress(request);
+            return isPermittedRequest(remoteAddress);
+        }
+
+        public boolean isPermittedRequest(String remoteAddress) {
+            boolean ipV6 = remoteAddress != null && remoteAddress.indexOf(':') != -1;
+
+            if (ipV6) {
+                return "0:0:0:0:0:0:0:1".equals(remoteAddress) || (denyList.size() == 0 && allowList.size() == 0);
+            }
+
+            IPAddress ipAddress = new IPAddress(remoteAddress);
+
+            for (IPRange range : denyList) {
+                if (range.isIPAddressInRange(ipAddress)) {
+                    return false;
+                }
+            }
+
+            if (allowList.size() > 0) {
+                for (IPRange range : allowList) {
+                    if (range.isIPAddressInRange(ipAddress)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public void service(HttpServletRequest request
+                , HttpServletResponse response
+                , String servletPath
+                , ProcessCallback processCallback
+        ) throws ServletException, IOException {
+            String contextPath = request.getContextPath();
+            String requestURI = request.getRequestURI();
+
+            response.setCharacterEncoding("utf-8");
+
+            if (contextPath == null) { // root context
+                contextPath = "";
+            }
+            String uri = contextPath + servletPath;
+            String path = requestURI.substring(contextPath.length() + servletPath.length());
+
+            if (!isPermittedRequest(request)) {
+                path = "/nopermit.html";
+                returnResourceFile(path, uri, response);
+                return;
+            }
+
+            if ("/submitLogin".equals(path)) {
+                String usernameParam = request.getParameter(PARAM_NAME_USERNAME);
+                String passwordParam = request.getParameter(PARAM_NAME_PASSWORD);
+                if (username.equals(usernameParam) && password.equals(passwordParam)) {
+                    request.getSession().setAttribute(SESSION_USER_KEY, username);
+                    response.getWriter().print("success");
+                } else {
+                    response.getWriter().print("error");
+                }
+                return;
+            }
+
+            if (isRequireAuth() //
+                    && !containsUser(request)//
+                    && !checkLoginParam(request)//
+                    && !("/login.html".equals(path) //
+                    || path.startsWith("/css")//
+                    || path.startsWith("/js") //
+                    || path.startsWith("/img"))) {
+                if (contextPath.equals("") || contextPath.equals("/")) {
+                    response.sendRedirect("/druid/login.html");
+                } else {
+                    if ("".equals(path)) {
+                        response.sendRedirect("druid/login.html");
+                    } else {
+                        response.sendRedirect("login.html");
+                    }
+                }
+                return;
+            }
+
+            if ("".equals(path) || "/".equals(path)) {
+                returnResourceFile("/index.html", uri, response);
+                return;
+            }
+
+            if (path.contains(".json")) {
+                String fullUrl = path;
+                if (request.getQueryString() != null && request.getQueryString().length() > 0) {
+                    fullUrl += "?" + request.getQueryString();
+                }
+                response.getWriter().print(processCallback.process(fullUrl));
+                return;
+            }
+
+            // find file in resources path
+
+            returnResourceFile(path, uri, response);
+        }
+
+
+    }
 }

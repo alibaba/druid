@@ -25,6 +25,8 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.logging.Log;
@@ -189,6 +191,36 @@ public class StatViewServlet extends ResourceServlet {
             }
         }
         return resp;
+    }
+
+    public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String contextPath = request.getContextPath();
+        String servletPath = request.getServletPath();
+        String requestURI = request.getRequestURI();
+
+        response.setCharacterEncoding("utf-8");
+
+        if (contextPath == null) { // root context
+            contextPath = "";
+        }
+        String uri = contextPath + servletPath;
+        String path = requestURI.substring(contextPath.length() + servletPath.length());
+
+        if ("".equals(path)) {
+            if (contextPath.equals("") || contextPath.equals("/")) {
+                response.sendRedirect("/druid/index.html");
+            } else {
+                response.sendRedirect("druid/index.html");
+            }
+            return;
+        }
+
+        if ("/".equals(path)) {
+            response.sendRedirect("index.html");
+            return;
+        }
+
+        super.service(request, response);
     }
 
 }
