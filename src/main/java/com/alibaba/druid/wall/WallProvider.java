@@ -34,6 +34,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -708,7 +709,19 @@ public abstract class WallProvider {
             }
         } else {
             if ((!updateCheckHandlerEnable) && sql.length() < MAX_SQL_LENGTH) {
-                sqlStat = addWhiteSql(sql, tableStat, context.getFunctionStats(), syntaxError);
+                boolean selectLimit = false;
+                if (config.getSelectLimit() > 0) {
+                    for (SQLStatement stmt : statementList) {
+                        if (stmt instanceof SQLSelectStatement) {
+                            selectLimit = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!selectLimit) {
+                    sqlStat = addWhiteSql(sql, tableStat, context.getFunctionStats(), syntaxError);
+                }
             }
         }
         

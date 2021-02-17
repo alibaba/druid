@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;
@@ -40,6 +39,27 @@ public class WallSelectLimitTest_2 extends TestCase {
         assertEquals("SELECT *\n" +
                 "FROM t\n" +
                 "LIMIT 10", resultSql);
+    }
+
+    public void testMySql_0() throws Exception {
+        String sql = "select * from t";
+        WallProvider provider = new MySqlWallProvider(config);
+        {
+            WallCheckResult checkResult = provider.check(sql);
+            String resultSql = checkResult.getSql();
+            System.out.println(resultSql);
+            assertEquals("SELECT *\n" +
+                    "FROM t\n" +
+                    "LIMIT 1000", resultSql);
+        }
+        {
+            WallCheckResult checkResult = provider.check(sql);
+            String resultSql = checkResult.getSql();
+            System.out.println(resultSql);
+            assertEquals("SELECT *\n" +
+                    "FROM t\n" +
+                    "LIMIT 1000", resultSql);
+        }
     }
 
     public void testPG() throws Exception {
