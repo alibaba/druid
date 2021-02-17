@@ -493,8 +493,10 @@ public final class JdbcUtils implements JdbcConstants {
             return "com.mimer.jdbc.Driver";
         } else if (rawUrl.startsWith("jdbc:dm:")) {
             return JdbcConstants.DM_DRIVER;
-        } else if (rawUrl.startsWith("jdbc:kingbase:") || rawUrl.startsWith("jdbc:kingbase8:")) {
+        } else if (rawUrl.startsWith("jdbc:kingbase:")) {
             return JdbcConstants.KINGBASE_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:kingbase8:")) {
+            return JdbcConstants.KINGBASE8_DRIVER;
         } else if (rawUrl.startsWith("jdbc:gbase:")) {
             return JdbcConstants.GBASE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:xugu:")) {
