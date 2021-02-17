@@ -27,15 +27,11 @@ import java.util.Map;
 
 public class ExportTables extends UDF {
 
-    public String evaluate(String sql) throws Throwable {
-        return evaluate(sql, null, false);
+    public String evaluate(String sql) {
+        return evaluate(sql, null);
     }
 
-    public String evaluate(String sql, String dbTypeName) throws Throwable {
-        return evaluate(sql, dbTypeName, false);
-    }
-
-    public String evaluate(String sql, String dbTypeName, boolean throwError) throws Throwable {
+    public String evaluate(String sql, String dbTypeName) {
         DbType dbType = dbTypeName == null ? null : DbType.valueOf(dbTypeName);
 
         try {
@@ -59,13 +55,6 @@ public class ExportTables extends UDF {
 
             return buf.toString();
         } catch (Exception ex) {
-            System.err.println("error sql : " + sql);
-            ex.printStackTrace();
-
-            if (throwError) {
-                throw ex;
-            }
-
             return null;
         }
     }

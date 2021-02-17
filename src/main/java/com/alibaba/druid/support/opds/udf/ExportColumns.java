@@ -49,9 +49,7 @@ public class ExportColumns extends UDF {
             }
 
             return buf.toString();
-        } catch (Exception ex) {
-            System.err.println("error sql : " + sql);
-            ex.printStackTrace();
+        } catch (Throwable ex) {
             return null;
         }
     }
