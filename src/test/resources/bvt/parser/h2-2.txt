@@ -1,0 +1,5 @@
+ALTER TABLE analysis_properties ALTER COLUMN snapshot_uuid RENAME TO analysis_uuid
+---------------------------
+ALTER TABLE analysis_properties
+	ALTER COLUMN snapshot_uuid,
+	RENAME TO analysis_uuid

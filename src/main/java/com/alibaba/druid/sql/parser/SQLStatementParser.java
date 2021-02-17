@@ -1799,6 +1799,13 @@ public class SQLStatementParser extends SQLParser {
                     } else if (lexer.token == Token.IDENTIFIER) {
                         SQLAlterTableAddColumn item = parseAlterTableAddColumn();
                         stmt.addItem(item);
+                    } else if (lexer.token == LPAREN) {
+                        if (dbType == DbType.h2) {
+                            lexer.nextToken();
+                            SQLAlterTableAddColumn item = parseAlterTableAddColumn();
+                            stmt.addItem(item);
+                            accept(RPAREN);
+                        }
                     } else if (lexer.token == Token.COLUMN) {
                         lexer.nextToken();
                         SQLAlterTableAddColumn item = parseAlterTableAddColumn();

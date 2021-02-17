@@ -3758,7 +3758,8 @@ public class SQLExprParser extends SQLParser {
             return unionType;
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.GENERATED)) {
+        if (lexer.identifierEquals(FnvHash.Constants.GENERATED)
+                || lexer.identifierEquals(FnvHash.Constants.RENAME)) {
             return null;
         }
 
@@ -4264,8 +4265,29 @@ public class SQLExprParser extends SQLParser {
                             SQLExpr unitIndex = primary();
                             column.setStep(unitIndex);
                         }
+                    } else if (lexer.token == Token.LPAREN) {
+                        lexer.nextToken();
+                        SQLColumnDefinition.Identity ident = new SQLColumnDefinition.Identity();
+                        if (lexer.token == Token.LITERAL_INT) {
+                            ident.setSeed(lexer.integerValue().intValue());
+                            lexer.nextToken();
+                        } else {
+                            throw new ParserException("TODO : " + lexer.info());
+                        }
 
+                        if (lexer.token == Token.COMMA) {
+                            lexer.nextToken();
+                            if (lexer.token == Token.LITERAL_INT) {
+                                ident.setIncrement(lexer.integerValue().intValue());
+                                lexer.nextToken();
+                            } else {
+                                throw new ParserException("TODO : " + lexer.info());
+                            }
+                        }
 
+                        column.setIdentity(ident);
+
+                        accept(Token.RPAREN);
                     }
                     return parseColumnRest(column);
                 }

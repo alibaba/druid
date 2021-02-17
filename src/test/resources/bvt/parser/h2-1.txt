@@ -1,0 +1,4 @@
+ALTER TABLE ce_task_message ADD (message_type VARCHAR (255) NULL)
+---------------------------
+ALTER TABLE ce_task_message
+	ADD (message_type VARCHAR(255) NULL)

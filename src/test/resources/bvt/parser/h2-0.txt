@@ -1,0 +1,16 @@
+CREATE TABLE active_rule_parameters (
+    id INTEGER NOT NULL AUTO_INCREMENT (1,1),
+    active_rule_id INTEGER NOT NULL,
+    rules_parameter_id INTEGER NOT NULL,
+    value VARCHAR (4000) NULL,rules_parameter_key VARCHAR (128) NULL,
+    CONSTRAINT pk_active_rule_parameters PRIMARY KEY (id))
+
+---------------------------
+CREATE TABLE active_rule_parameters (
+	id INTEGER AUTO_INCREMENT NOT NULL AS IDENTITY (1, 1),
+	active_rule_id INTEGER NOT NULL,
+	rules_parameter_id INTEGER NOT NULL,
+	value VARCHAR(4000) NULL,
+	rules_parameter_key VARCHAR(128) NULL,
+	CONSTRAINT pk_active_rule_parameters PRIMARY KEY (id)
+)
