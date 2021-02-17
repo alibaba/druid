@@ -1,0 +1,20 @@
+CREATE TABLE live_measures_copy (uuid, project_uuid, component_uuid, metric_uuid, value, text_value, variation, measure_data, update_marker, created_at, updated_at) AS (SELECT uuid, project_uuid, component_uuid, CAST (metric_id AS VARCHAR (40)) AS metric_uuid, value, text_value, variation, measure_data, update_marker, created_at, updated_at FROM live_measures)
+---------------------------
+CREATE TABLE live_measures_copy (
+	uuid,
+	project_uuid,
+	component_uuid,
+	metric_uuid,
+	value,
+	text_value,
+	variation,
+	measure_data,
+	update_marker,
+	created_at,
+	updated_at
+)
+AS
+SELECT uuid, project_uuid, component_uuid, CAST(metric_id AS VARCHAR(40)) AS metric_uuid, value
+	, text_value, variation, measure_data, update_marker, created_at
+	, updated_at
+FROM live_measures

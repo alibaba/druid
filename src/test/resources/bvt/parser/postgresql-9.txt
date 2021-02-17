@@ -1,0 +1,28 @@
+CREATE TABLE issue_changes_copy (
+    uuid, kee,
+    issue_key,
+    user_login,
+    change_type,
+    change_data,
+    created_at,
+    updated_at,
+    issue_change_creation_date
+)
+AS (
+    SELECT CAST (id AS VARCHAR (40)) AS uuid, kee, issue_key, user_login, change_type, change_data, created_at, updated_at, issue_change_creation_date FROM issue_changes)
+---------------------------
+CREATE TABLE issue_changes_copy (
+	uuid,
+	kee,
+	issue_key,
+	user_login,
+	change_type,
+	change_data,
+	created_at,
+	updated_at,
+	issue_change_creation_date
+)
+AS
+SELECT CAST(id AS VARCHAR(40)) AS uuid, kee, issue_key, user_login, change_type
+	, change_data, created_at, updated_at, issue_change_creation_date
+FROM issue_changes

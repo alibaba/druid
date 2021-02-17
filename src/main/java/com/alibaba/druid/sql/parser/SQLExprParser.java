@@ -4066,7 +4066,9 @@ public class SQLExprParser extends SQLParser {
         if (token != Token.SET //
                 && token != Token.DROP
                 && token != Token.PRIMARY
-                && token != Token.RPAREN) {
+                && token != Token.RPAREN
+                && token != Token.COMMA
+        ) {
             column.setDataType(
                     parseDataType());
         }

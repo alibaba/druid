@@ -1895,6 +1895,13 @@ public class SQLStatementParser extends SQLParser {
                     if (lexer.token == Token.COLUMN) {
                         SQLAlterTableAlterColumn alterColumn = parseAlterColumn();
                         stmt.addItem(alterColumn);
+
+                        if (dbType == DbType.postgresql) {
+                            if (lexer.token == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                        }
                     } else if (lexer.token == Token.LITERAL_ALIAS) {
                         SQLAlterTableAlterColumn alterColumn = parseAlterColumn();
                         stmt.addItem(alterColumn);
@@ -2381,7 +2388,13 @@ public class SQLStatementParser extends SQLParser {
         } else if (lexer.token == Token.COLUMN) {
             lexer.nextToken();
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
-            this.exprParser.names(item.getColumns());
+
+            if (dbType == DbType.postgresql) {
+                item.getColumns().add(
+                        this.exprParser.name());
+            } else {
+                this.exprParser.names(item.getColumns());
+            }
 
             if (lexer.token == Token.CASCADE) {
                 item.setCascade(true);
@@ -2389,6 +2402,12 @@ public class SQLStatementParser extends SQLParser {
             }
 
             stmt.addItem(item);
+
+            if (dbType == DbType.postgresql) {
+                if (lexer.token == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
         } else if (lexer.token == Token.LITERAL_ALIAS) {
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
             this.exprParser.names(item.getColumns());

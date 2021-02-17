@@ -5424,7 +5424,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             SQLAlterTableItem item = x.getItems().get(i);
             if (i != 0) {
                 SQLAlterTableItem former = x.getItems().get(i - 1);
-                if (this.dbType == DbType.hive && former instanceof SQLAlterTableAddPartition && item instanceof SQLAlterTableAddPartition) {
+                if (this.dbType == DbType.hive
+                        && former instanceof SQLAlterTableAddPartition
+                        && item instanceof SQLAlterTableAddPartition) {
                     // ignore comma
                 } else {
                     print(',');
