@@ -82,6 +82,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
+import com.alibaba.druid.support.clickhouse.BalancedClickhouseDriver;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JMXUtils;
@@ -1196,6 +1197,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (MockDriver.class.getName().equals(driverClass)) {
                 driver = MockDriver.instance;
+            } else if ("com.alibaba.druid.support.clickhouse.BalancedClickhouseDriver".equals(driverClass)) {
+                Properties info = new Properties();
+                info.put("user", username);
+                info.put("password", password);
+                info.putAll(connectProperties);
+                driver = new BalancedClickhouseDriver(jdbcUrl, info);
             } else {
                 if (jdbcUrl == null && (driverClass == null || driverClass.length() == 0)) {
                     throw new SQLException("url not set");
