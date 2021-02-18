@@ -53,17 +53,17 @@ public class SQLServerLexer extends Lexer {
 
     public SQLServerLexer(char[] input, int inputLength, boolean skipComment){
         super(input, inputLength, skipComment);
-        super.keywods = DEFAULT_SQL_SERVER_KEYWORDS;
+        super.keywords = DEFAULT_SQL_SERVER_KEYWORDS;
     }
 
     public SQLServerLexer(String input){
         super(input);
-        super.keywods = DEFAULT_SQL_SERVER_KEYWORDS;
+        super.keywords = DEFAULT_SQL_SERVER_KEYWORDS;
     }
 
     public SQLServerLexer(String input, SQLParserFeature... features){
         super(input);
-        super.keywods = DEFAULT_SQL_SERVER_KEYWORDS;
+        super.keywords = DEFAULT_SQL_SERVER_KEYWORDS;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }

@@ -33,13 +33,13 @@ public class BlinkLexer extends Lexer {
 
     public BlinkLexer(String input){
         super(input);
-        super.keywods = DEFAULT_BLINK_KEYWORDS;
+        super.keywords = DEFAULT_BLINK_KEYWORDS;
         dbType = DbType.blink;
     }
 
     public BlinkLexer(String input, SQLParserFeature... features){
         super(input);
-        super.keywods = DEFAULT_BLINK_KEYWORDS;
+        super.keywords = DEFAULT_BLINK_KEYWORDS;
         dbType = DbType.blink;
         for (SQLParserFeature feature : features) {
             config(feature, true);

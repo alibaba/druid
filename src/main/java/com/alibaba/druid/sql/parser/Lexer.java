@@ -82,7 +82,7 @@ public class Lexer {
 
     protected Token        token;
 
-    protected Keywords     keywods        = Keywords.DEFAULT_KEYWORDS;
+    protected Keywords keywords = Keywords.DEFAULT_KEYWORDS;
 
     protected String       stringVal;
     protected long         hash_lower; // fnv1a_64
@@ -106,7 +106,7 @@ public class Lexer {
     protected DbType         dbType;
 
     protected boolean        optimizedForParameterized = false;
-    protected boolean        keepSourceLocaltion       = false;
+    protected boolean        keepSourceLocation = false;
 
     protected int            startPos;
     protected int            posLine;
@@ -131,9 +131,9 @@ public class Lexer {
         this.dbType = dbType;
 
         if (DbType.sqlite == dbType) {
-            this.keywods = Keywords.SQLITE_KEYWORDS;
+            this.keywords = Keywords.SQLITE_KEYWORDS;
         } else if (DbType.dm == dbType) {
-            this.keywods = Keywords.DM_KEYWORDS;
+            this.keywords = Keywords.DM_KEYWORDS;
         }
     }
 
@@ -214,8 +214,8 @@ public class Lexer {
         String stringVal;
     }
 
-    public Keywords getKeywods() {
-        return keywods;
+    public Keywords getKeywords() {
+        return keywords;
     }
 
     public SavePoint mark() {
@@ -2337,7 +2337,7 @@ public class Lexer {
             return;
         }
 
-        Token tok = keywods.getKeyword(hash_lower);
+        Token tok = keywords.getKeyword(hash_lower);
         if (tok != null) {
             token = tok;
             if (token == Token.IDENTIFIER) {
@@ -2858,7 +2858,7 @@ public class Lexer {
         } else if (feature == KeepComments) {
             this.keepComments = state;
         } else if (feature == KeepSourceLocation) {
-            this.keepSourceLocaltion = state;
+            this.keepSourceLocation = state;
         } else if (feature == SkipComments) {
             this.skipComment = state;
         }

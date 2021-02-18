@@ -120,21 +120,21 @@ public class OracleLexer extends Lexer {
 
     public OracleLexer(char[] input, int inputLength, boolean skipComment){
         super(input, inputLength, skipComment);
-        super.keywods = DEFAULT_ORACLE_KEYWORDS;
+        super.keywords = DEFAULT_ORACLE_KEYWORDS;
     }
 
     public OracleLexer(String input){
         super(input);
         this.skipComment = true;
         this.keepComments = true;
-        super.keywods = DEFAULT_ORACLE_KEYWORDS;
+        super.keywords = DEFAULT_ORACLE_KEYWORDS;
     }
 
     public OracleLexer(String input, SQLParserFeature... features){
         super(input);
         this.skipComment = true;
         this.keepComments = true;
-        super.keywods = DEFAULT_ORACLE_KEYWORDS;
+        super.keywords = DEFAULT_ORACLE_KEYWORDS;
 
         for (SQLParserFeature feature : features) {
             config(feature, true);
@@ -212,7 +212,7 @@ public class OracleLexer extends Lexer {
         this.ch = charAt(pos);
 
         stringVal = addSymbol();
-        Token tok = keywods.getKeyword(stringVal);
+        Token tok = keywords.getKeyword(stringVal);
         if (tok != null) {
             token = tok;
         } else {

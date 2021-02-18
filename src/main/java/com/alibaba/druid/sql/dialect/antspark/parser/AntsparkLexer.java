@@ -49,7 +49,7 @@ public class AntsparkLexer extends Lexer {
     public AntsparkLexer(String input) {
         super(input);
         dbType= DbType.antspark;
-        super.keywods = DEFAULT_ANTSPARK_KEYWORDS;
+        super.keywords = DEFAULT_ANTSPARK_KEYWORDS;
     }
 
 }
