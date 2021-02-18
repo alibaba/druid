@@ -70,7 +70,7 @@ public class MySqlExceptionSorter implements ExceptionSorter {
         }
         
         // for oceanbase
-        if (errorCode >= -10000 && errorCode <= -9000) {
+        if (errorCode >= -9000 && errorCode <= -8000) {
             return true;
         }
         
