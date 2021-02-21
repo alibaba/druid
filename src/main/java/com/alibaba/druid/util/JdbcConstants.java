@@ -118,6 +118,9 @@ public interface JdbcConstants {
     String PRESTO                     = "presto";
     String PRESTO_DRIVER              = "com.facebook.presto.jdbc.PrestoDriver";
 
+    String TRINO                      = "trino";
+    String TRINO_DRIVER               = "io.trino.jdbc.TrinoDriver";
+
     String ELASTIC_SEARCH             = "elastic_search";
     
     String ELASTIC_SEARCH_DRIVER      = "com.alibaba.xdriver.elastic.jdbc.ElasticDriver";
