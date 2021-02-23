@@ -2999,7 +2999,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (param instanceof Number //
-            || param instanceof Boolean || param instanceof java.time.temporal.Temporal) {
+            || param instanceof Boolean || param instanceof java.time.temporal.Temporal ) {
             print0(param.toString());
             return;
         }
