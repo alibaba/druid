@@ -1,0 +1,16 @@
+WITH A AS (
+ WITH A1 AS (
+ SELECT *
+ FROM aaa1226.t123
+ LIMIT 1
+ )
+ SELECT *
+ FROM A1
+ ), 
+ B AS (
+ SELECT *
+ FROM aaa1226.t123
+ LIMIT 1
+ )
+SELECT *
+FROM A, B

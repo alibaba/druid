@@ -1,0 +1,9 @@
+CREATE TABLE inventory(
+    items JSON,
+    INDEX i1 ( (JSON_VALUE(items, '$.name' RETURNING VARCHAR(50))) ),
+    INDEX i2 ( (JSON_VALUE(items, '$.price' RETURNING DECIMAL(5,2))) ),
+    INDEX i3 ( (JSON_VALUE(items, '$.quantity' RETURNING UNSIGNED)) )
+);
+---------------------------
+INSERT INTO name
+VALUES ();

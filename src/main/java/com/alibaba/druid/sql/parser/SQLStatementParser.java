@@ -5896,6 +5896,9 @@ public class SQLStatementParser extends SQLParser {
         for (int i = 0; ; ++i) {
             int startPos = lexer.pos - 1;
 
+            if (lexer.token == Token.ROW) {
+                lexer.nextToken();
+            }
             if (lexer.token != Token.LPAREN) {
                 throw new ParserException("syntax error, expect ')', " + lexer.info());
             }

@@ -1,0 +1,10 @@
+select *,
+    row_number() over w1
+from
+(
+    VALUES
+        (1, 'a'),
+        (2, 'b'),
+        (3, 'c')
+) AS t (id, name)
+window w1 as (partition by 1 order by id)

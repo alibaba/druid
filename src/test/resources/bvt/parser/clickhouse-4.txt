@@ -1,0 +1,24 @@
+SELECT
+            sum(r[1]) AS r1,
+            sum(r[2]) AS r2
+        FROM
+        (
+        WITH subtractDays(toDate('2021-01-19'), 1) AS day
+        SELECT
+            retention(toDate(created) = day,
+            toDate(created) = '2021-01-19'
+        ) AS r
+        FROM user_action_logs
+        WHERE toDate(created) IN(day, '2021-01-19')
+        GROUP BY member_id
+        )
+---------------------------
+CREATE TABLE visits (
+	time DateTime,
+	visits NESTED (
+		a String,
+		btime Int64,
+		c String,
+		e String
+	)
+) ENGINE = Memory;
