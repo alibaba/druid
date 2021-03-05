@@ -778,6 +778,8 @@ public class Lexer {
             return SQLType.ANALYZE;
         } else if (hashCode == FnvHash.Constants.EXPLAIN) {
             return SQLType.EXPLAIN;
+        } else if (hashCode == FnvHash.Constants.READ) {
+            return SQLType.READ;
         } else if (hashCode == FnvHash.Constants.WITH) {
             if (dbType == DbType.mysql
                     || dbType == DbType.hive
@@ -815,15 +817,57 @@ public class Lexer {
             if (token == Token.USER || identifierEquals(FnvHash.Constants.USER)) {
                 return SQLType.CREATE_USER;
             }
+
+            _for:
+            for (int i = 0; i < 1000;++i) {
+                switch (token) {
+                    case EOF:
+                    case ERROR:
+                        break _for;
+                    case TABLE:
+                        sqlType = SQLType.CREATE_TABLE;
+                        break;
+                    case VIEW:
+                        sqlType = SQLType.CREATE_VIEW;
+                        break _for;
+                    case FUNCTION:
+                        sqlType = SQLType.CREATE_FUNCTION;
+                        break;
+                    case SELECT:
+                        if (sqlType == SQLType.CREATE_TABLE) {
+                            sqlType = SQLType.CREATE_TABLE_AS_SELECT;
+                            break _for;
+                        }
+                        break;
+                    default:
+                        if (identifierEquals(FnvHash.Constants.ROLE)) {
+                            sqlType = SQLType.CREATE_ROLE;
+                            break _for;
+                        }
+                        break;
+                }
+
+                nextToken();
+            }
         } else if (sqlType == SQLType.DROP) {
             nextToken();
             if (token == Token.USER || identifierEquals(FnvHash.Constants.USER)) {
                 return SQLType.DROP_USER;
+            } else if (token == TABLE) {
+                return SQLType.DROP_TABLE;
+            } else if (token == VIEW) {
+                return SQLType.DROP_VIEW;
+            } else if (token == FUNCTION) {
+                return SQLType.DROP_FUNCTION;
+            } else if (identifierEquals(FnvHash.Constants.RESOURCE)) {
+                return SQLType.DROP_RESOURCE;
             }
         } else if (sqlType == SQLType.ALTER) {
             nextToken();
             if (token == Token.USER || identifierEquals(FnvHash.Constants.USER)) {
                 return SQLType.ALTER_USER;
+            } else if (token == TABLE) {
+                return SQLType.ALTER_TABLE;
             }
         }
 
