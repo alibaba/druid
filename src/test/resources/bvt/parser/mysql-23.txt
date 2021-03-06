@@ -1,0 +1,27 @@
+SELECT
+table_schema AS tableSchema,
+table_name AS tableName,
+table_rows AS tableRows,
+AVG_ROW_LENGTH AS avgRowLength,
+ROUND((data_length / 1024 / 1024 / 1024), 2) AS dataSize,
+ROUND((index_length / 1024 / 1024 / 1024), 2) AS indexSize,
+ROUND((data_length + index_length) / 1024 / 1024 / 1024, 2) AS tableSpace,
+ROUND((data_free /(data_length + index_length)) * 100, 2) AS pctFree
+FROM
+information_schema.TABLES
+WHERE
+table_schema NOT IN ('mysql', 'performance_schema', 'retl', 'test')
+ORDER BY
+table_rows DESC
+LIMIT
+10
+---------------------------
+SELECT table_schema AS tableSchema, table_name AS tableName, table_rows AS tableRows, AVG_ROW_LENGTH AS avgRowLength
+	, ROUND(data_length / 1024 / 1024 / 1024, 2) AS dataSize
+	, ROUND(index_length / 1024 / 1024 / 1024, 2) AS indexSize
+	, ROUND((data_length + index_length) / 1024 / 1024 / 1024, 2) AS tableSpace
+	, ROUND(data_free / (data_length + index_length) * 100, 2) AS pctFree
+FROM information_schema.TABLES
+WHERE table_schema NOT IN ('mysql', 'performance_schema', 'retl', 'test')
+ORDER BY table_rows DESC
+LIMIT 10

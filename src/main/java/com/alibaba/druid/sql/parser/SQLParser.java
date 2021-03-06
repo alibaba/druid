@@ -314,6 +314,7 @@ public class SQLParser {
                 case VIEW:
                 case KILL:
                 case COMMENT:
+                case TABLESPACE:
                     alias = lexer.stringVal();
                     lexer.nextToken();
                     break;
@@ -506,6 +507,7 @@ public class SQLParser {
                 case OUT:
                 case BY:
                 case EXCEPT:
+                case TABLESPACE:
                     alias = lexer.stringVal();
                     lexer.nextToken();
                     return alias;
