@@ -1,0 +1,282 @@
+SELECT
+		b.t50teamtype AS "teamType",
+		c.did AS "deptDid",
+		c.deptname AS "deptName",
+		a.tid AS "tid",
+		b.t50name AS "teamName",
+		b.t50name AS "t50Name",
+       	a.pid AS "t01Pid",
+       	a.psnname AS "t01PsnName",
+       	d.t02othername AS "t02OtherName",
+       	a.t01identity AS "t01Identity",
+       	a.t01idcardtype AS "t01IdCardType",
+       	a.t01personid AS "t01PersonId",
+       	a.t01sex AS "t01Sex",
+       	to_char(a.t01birthday,'yyyy-mm-dd') AS "t01Birthday",
+        d.t02publicist AS "t02Publicist",
+       	d.t02marriaged AS "t02Marriaged",
+       	d.t02health AS "t02Health",
+       	d.t02nation AS "t02Nation",
+       	d.t02native AS "t02Native",
+       	d.t02school AS "t02School",
+       	to_char(d.t02graduate,'yyyy-mm-dd') AS "t02Graduate",
+       	d.t02major AS "t02Major",
+       	d.t02education AS "t02Education",
+		d.t02address AS "t02Address",
+		d.t02zipcode AS "t02ZipCode",
+		d.t02homephone AS "t02HomePhone",
+		d.t02mobilephone AS "t02MobilePhone",
+		d.t02email AS "t02Email",
+		d.t02crime AS "t02Crime",
+       	to_char(a.t01probationdate,'yyyy-mm-dd') AS "t01ProbationDate",
+       	to_char(a.t01engagedate,'yyyy-mm-dd') AS "t01EngageDate",
+       	to_char(a.t01dutydate,'yyyy-mm-dd') AS "t01DutyDate",
+		a.t01actrank AS "t01ActRank",
+		a.t01areatype AS "t01AreaType",
+		'团险' AS "t02Channel",
+		'团险部' AS "deptExType",
+		d.t02punish AS "t02Punish",
+		d.t02source AS "t02Source",
+		a.t01recrutetype AS "t01RecruteType",
+		a.t01recommend AS "t01Recommend",
+		a.t01engage AS "t01Engage",
+		d.t02cityadvice AS "t02CityAdvice",
+		d.t02citydetail AS "t02CityDetail",
+		d.t02branchadvice AS "t02BranchAdvice",
+		d.t02branchdetail AS "t02BranchDetail",
+		d.t02detail AS "t02Detail",
+		(select workplacename from t_workplaceinfo where workplaceno = a.t01zcno) AS "zcInfo",
+		a.t01centercode AS "centerInfo",
+		(select centername from t_centerinfo where centercode = a.t01centercode) as "centerName",
+		a.t01status AS "t01Status",
+		to_char(t09.t09statdate,'yyyy-mm-dd') AS "t09StatDate",
+		to_char(t09.t09approvaldate,'yyyy-mm-dd') AS "t09ApprovalDate",
+		t16.t16accountid AS "t16AccountId",
+		c.t29cardtype as "t29CardType",
+        c.t29qualifyid as "t29QualifyId",
+		a.t01erpnumber AS "t01ErpNumber",
+		(select
+			br.brhname
+		from
+			t_branch br,t_bidrelat bi
+		where
+			bi.superbid=br.bid and bi.superlev=2 and bi.bdid=c.did and rownum=1) AS "cityDept",
+		(select
+			br.brhname
+		from
+			t_branch br,t_bidrelat bi
+		where
+			bi.superbid=br.bid and bi.superlev=3 and bi.bdid=c.did and rownum=1) AS "countryDept",
+		a.t01zcno AS "zcNo",
+		b.t50deptrank AS "teamLevel",
+		b2.tid AS "sup1tid",
+		b2.t50name AS "sup1t50Name",
+		b2.t50deptrank AS "sup1teamLevel",
+		b3.tid AS "sup2tid",
+		b3.t50name AS "sup2t50Name"
+	FROM
+       	t01_psn a
+		LEFT JOIN
+     		t02_psninfo d
+		ON
+     		a.pid = d.pid
+		LEFT JOIN
+          	(SELECT
+               	t09.pid, max(t09.t09statdate) as t09statdate, max(t09.t09approvaldate) as t09approvaldate
+          	FROM
+               	t09_psndiminfo t09
+          	GROUP BY
+               	t09.pid) t09
+		ON
+     		t09.pid = a.pid
+		LEFT JOIN
+          	(SELECT
+               	a.pid, b.t16accountid
+          	FROM
+               	(SELECT
+                    t16.pid, max(t16.t16enddate) maxenddate
+                FROM
+                    t16_psnaccount t16
+                WHERE
+                    sysdate BETWEEN t16.t16startdate and t16.t16enddate
+                GROUP BY
+                    t16.pid) a
+          		LEFT JOIN
+                	t16_psnaccount b
+          		ON
+                	a.maxenddate = b.t16enddate and a.pid = b.pid) t16
+		ON
+      		t16.pid = a.pid
+		LEFT JOIN
+       (select
+       		pid,
+       		to_char(substr(listagg(t29cardtype) within group(order by t29cardtype), instr(listagg(t29cardtype) within group(order by t29cardtype), ',') + 1)) t29cardtype,
+       		to_char(listagg(t29qualifyid) within group(order by t29qualifyid)) t29qualifyid
+         from
+              T29_PSNQUALCARD
+          where
+            T29CARDTYPE = '02' and sysdate between T29STARTDATE and T29ENDDATE AND pid is not null
+          group by
+             pid
+          ) c
+       ON
+          a.pid = c.pid,
+		t50_tdept b
+		left join
+			t50_tdept b2
+		on
+			b.t50superior = b2.tid
+		left join
+			t50_tdept b3
+		on
+			b2.t50superior = b3.tid, t_dept c
+		WHERE
+			a.tid = b.tid AND a.did = c.did
+			AND a.t01persontype = ?
+			AND c.did IN
+			 (
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 )
+			AND a.t01status = ?
+		group by
+		a.pid,a.psnname,d.t02othername,a.t01persontype,a.tid,a.t01status,b.t50name,
+		c.did,c.deptname,a.t01identity,a.t01personid,a.t01sex,a.t01birthday,
+		d.t02publicist,d.t02marriaged,d.t02health,d.t02nation,
+		d.t02native,d.t02school,d.t02graduate,d.t02major,d.t02education,d.t02address,
+		d.t02zipcode,d.t02email, d.t02homephone,d.t02mobilephone,d.t02crime,a.t01probationdate,
+		a.t01engagedate,a.t01dutydate,a.t01actrank,a.t01areatype,a.t01erpnumber,
+		d.t02channel,d.t02punish,d.t02source,a.t01recrutetype,a.t01recommend,
+		a.t01engage,d.t02cityadvice,d.t02citydetail,d.t02branchadvice,d.t02branchdetail,
+		d.t02detail,a.t01centercode,t09statdate,t09approvaldate,t16.t16accountid,a.t01idcardtype,a.t01zcno,
+		c.t29cardtype,c.t29qualifyid, b.t50deptrank,b.t50deptrank, b2.tid, b2.t50name, b2.t50deptrank, b3.tid,
+		b3.t50name,b.t50teamtype
+		ORDER BY
+		"deptDid", "tid", "t01Pid"
+---------------------------
+SELECT b.t50teamtype AS "teamType", c.did AS "deptDid", c.deptname AS "deptName", a.tid AS "tid", b.t50name AS "teamName"
+	, b.t50name AS "t50Name", a.pid AS "t01Pid", a.psnname AS "t01PsnName", d.t02othername AS "t02OtherName", a.t01identity AS "t01Identity"
+	, a.t01idcardtype AS "t01IdCardType", a.t01personid AS "t01PersonId", a.t01sex AS "t01Sex"
+	, to_char(a.t01birthday, 'yyyy-mm-dd') AS "t01Birthday", d.t02publicist AS "t02Publicist"
+	, d.t02marriaged AS "t02Marriaged", d.t02health AS "t02Health", d.t02nation AS "t02Nation", d.t02native AS "t02Native", d.t02school AS "t02School"
+	, to_char(d.t02graduate, 'yyyy-mm-dd') AS "t02Graduate", d.t02major AS "t02Major"
+	, d.t02education AS "t02Education", d.t02address AS "t02Address", d.t02zipcode AS "t02ZipCode", d.t02homephone AS "t02HomePhone", d.t02mobilephone AS "t02MobilePhone"
+	, d.t02email AS "t02Email", d.t02crime AS "t02Crime", to_char(a.t01probationdate, 'yyyy-mm-dd') AS "t01ProbationDate"
+	, to_char(a.t01engagedate, 'yyyy-mm-dd') AS "t01EngageDate"
+	, to_char(a.t01dutydate, 'yyyy-mm-dd') AS "t01DutyDate", a.t01actrank AS "t01ActRank"
+	, a.t01areatype AS "t01AreaType", '团险' AS "t02Channel", '团险部' AS "deptExType", d.t02punish AS "t02Punish", d.t02source AS "t02Source"
+	, a.t01recrutetype AS "t01RecruteType", a.t01recommend AS "t01Recommend", a.t01engage AS "t01Engage", d.t02cityadvice AS "t02CityAdvice", d.t02citydetail AS "t02CityDetail"
+	, d.t02branchadvice AS "t02BranchAdvice", d.t02branchdetail AS "t02BranchDetail", d.t02detail AS "t02Detail"
+	, (
+		SELECT workplacename
+		FROM t_workplaceinfo
+		WHERE workplaceno = a.t01zcno
+	) AS "zcInfo", a.t01centercode AS "centerInfo"
+	, (
+		SELECT centername
+		FROM t_centerinfo
+		WHERE centercode = a.t01centercode
+	) AS "centerName", a.t01status AS "t01Status", to_char(t09.t09statdate, 'yyyy-mm-dd') AS "t09StatDate"
+	, to_char(t09.t09approvaldate, 'yyyy-mm-dd') AS "t09ApprovalDate", t16.t16accountid AS "t16AccountId"
+	, c.t29cardtype AS "t29CardType", c.t29qualifyid AS "t29QualifyId", a.t01erpnumber AS "t01ErpNumber"
+	, (
+		SELECT br.brhname
+		FROM t_branch br, t_bidrelat bi
+		WHERE bi.superbid = br.bid
+			AND bi.superlev = 2
+			AND bi.bdid = c.did
+			AND rownum = 1
+	) AS "cityDept"
+	, (
+		SELECT br.brhname
+		FROM t_branch br, t_bidrelat bi
+		WHERE bi.superbid = br.bid
+			AND bi.superlev = 3
+			AND bi.bdid = c.did
+			AND rownum = 1
+	) AS "countryDept", a.t01zcno AS "zcNo", b.t50deptrank AS "teamLevel", b2.tid AS "sup1tid", b2.t50name AS "sup1t50Name"
+	, b2.t50deptrank AS "sup1teamLevel", b3.tid AS "sup2tid", b3.t50name AS "sup2t50Name"
+FROM t01_psn a
+LEFT JOIN t02_psninfo d ON a.pid = d.pid 
+LEFT JOIN (
+	SELECT t09.pid, max(t09.t09statdate) AS t09statdate, max(t09.t09approvaldate) AS t09approvaldate
+	FROM t09_psndiminfo t09
+	GROUP BY t09.pid
+) t09 ON t09.pid = a.pid 
+LEFT JOIN (
+	SELECT a.pid, b.t16accountid
+	FROM (
+		SELECT t16.pid, max(t16.t16enddate) AS maxenddate
+		FROM t16_psnaccount t16
+		WHERE SYSDATE BETWEEN t16.t16startdate AND t16.t16enddate
+		GROUP BY t16.pid
+	) a
+		LEFT JOIN t16_psnaccount b ON a.maxenddate = b.t16enddate
+		AND a.pid = b.pid 
+) t16 ON t16.pid = a.pid 
+LEFT JOIN (
+	SELECT pid
+		, to_char(substr(listagg(t29cardtype) WITHIN GROUP (ORDER BY t29cardtype), instr(listagg(t29cardtype) WITHIN GROUP (ORDER BY t29cardtype), ',') + 1)) AS t29cardtype
+		, to_char(listagg(t29qualifyid) WITHIN GROUP (ORDER BY t29qualifyid)) AS t29qualifyid
+	FROM T29_PSNQUALCARD
+	WHERE T29CARDTYPE = '02'
+		AND SYSDATE BETWEEN T29STARTDATE AND T29ENDDATE
+		AND pid IS NOT NULL
+	GROUP BY pid
+) c ON a.pid = c.pid , t50_tdept b
+LEFT JOIN t50_tdept b2 ON b.t50superior = b2.tid 
+LEFT JOIN t50_tdept b3 ON b2.t50superior = b3.tid , t_dept c
+WHERE a.tid = b.tid
+	AND a.did = c.did
+	AND a.t01persontype = ?
+	AND c.did IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	AND a.t01status = ?
+GROUP BY a.pid, a.psnname, d.t02othername, a.t01persontype, a.tid, a.t01status, b.t50name, c.did, c.deptname, a.t01identity, a.t01personid, a.t01sex, a.t01birthday, d.t02publicist, d.t02marriaged, d.t02health, d.t02nation, d.t02native, d.t02school, d.t02graduate, d.t02major, d.t02education, d.t02address, d.t02zipcode, d.t02email, d.t02homephone, d.t02mobilephone, d.t02crime, a.t01probationdate, a.t01engagedate, a.t01dutydate, a.t01actrank, a.t01areatype, a.t01erpnumber, d.t02channel, d.t02punish, d.t02source, a.t01recrutetype, a.t01recommend, a.t01engage, d.t02cityadvice, d.t02citydetail, d.t02branchadvice, d.t02branchdetail, d.t02detail, a.t01centercode, t09statdate, t09approvaldate, t16.t16accountid, a.t01idcardtype, a.t01zcno, c.t29cardtype, c.t29qualifyid, b.t50deptrank, b.t50deptrank, b2.tid, b2.t50name, b2.t50deptrank, b3.tid, b3.t50name, b.t50teamtype
+ORDER BY "deptDid", "tid", "t01Pid"

@@ -71,6 +71,26 @@ public class MySqlResourceTest extends TestCase {
         exec_test("bvt/parser/mysql-19.txt");
     }
 
+    public void test_20() throws Exception {
+        exec_test("bvt/parser/mysql-20.txt");
+    }
+
+    public void test_21() throws Exception {
+        exec_test("bvt/parser/mysql-21.txt");
+    }
+
+    public void test_22() throws Exception {
+        exec_test("bvt/parser/mysql-22.txt");
+    }
+
+    public void test_23() throws Exception {
+        exec_test("bvt/parser/mysql-23.txt");
+    }
+
+    public void test_24() throws Exception {
+        exec_test("bvt/parser/mysql-24.txt");
+    }
+
     public void exec_test(String resource) throws Exception {
 //        System.out.println(resource);
         InputStream is = null;
