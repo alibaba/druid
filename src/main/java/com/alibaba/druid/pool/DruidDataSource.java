@@ -2149,7 +2149,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     boolean putLast(DruidConnectionHolder e, long lastActiveTimeMillis) {
-        if (poolingCount >= maxActive || e.discard) {
+        if (poolingCount >= maxActive || e.discard || this.closed) {
             return false;
         }
 
@@ -2503,7 +2503,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private boolean put(DruidConnectionHolder holder, long createTaskId) {
         lock.lock();
         try {
-            if (poolingCount >= maxActive) {
+            if (poolingCount >= maxActive || this.closed) {
                 if (createScheduler != null) {
                     clearCreateTask(createTaskId);
                 }
