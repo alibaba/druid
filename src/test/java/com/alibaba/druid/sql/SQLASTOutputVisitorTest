@@ -1,0 +1,10 @@
+public class SQLASTOutputVisitorTest extends TestCase {
+
+    public void testPrintParameter() {
+        StringBuilder sb=new StringBuilder();
+        SQLASTOutputVisitor statementParser = new SQLASTOutputVisitor(sb);
+        LocalDateTime now = LocalDateTime.now();
+        statementParser.printParameter(now);
+        assertEquals(now.toString(),sb.toString());
+    }
+}
