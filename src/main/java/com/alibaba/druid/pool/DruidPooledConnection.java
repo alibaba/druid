@@ -233,44 +233,49 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
     @Override
     public void close() throws SQLException {
-        if (this.disable) {
-            return;
-        }
-
-        DruidConnectionHolder holder = this.holder;
-        if (holder == null) {
-            if (dupCloseLogEnable) {
-                LOG.error("dup close");
+        lock.lock();
+        try {
+            if (this.disable) {
+                return;
             }
-            return;
-        }
 
-        DruidAbstractDataSource dataSource = holder.getDataSource();
-        boolean isSameThread = this.getOwnerThread() == Thread.currentThread();
-        
-        if (!isSameThread) {
-            dataSource.setAsyncCloseConnectionEnable(true);
-        }
-        
-        if (dataSource.isAsyncCloseConnectionEnable()) {
-            syncClose();
-            return;
-        }
+            DruidConnectionHolder holder = this.holder;
+            if (holder == null) {
+                if (dupCloseLogEnable) {
+                    LOG.error("dup close");
+                }
+                return;
+            }
 
-        for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
-            listener.connectionClosed(new ConnectionEvent(this));
-        }
+            DruidAbstractDataSource dataSource = holder.getDataSource();
+            boolean isSameThread = this.getOwnerThread() == Thread.currentThread();
 
-        
-        List<Filter> filters = dataSource.getProxyFilters();
-        if (filters.size() > 0) {
-            FilterChainImpl filterChain = new FilterChainImpl(dataSource);
-            filterChain.dataSource_recycle(this);
-        } else {
-            recycle();
-        }
+            if (!isSameThread) {
+                dataSource.setAsyncCloseConnectionEnable(true);
+            }
 
-        this.disable = true;
+            if (dataSource.isAsyncCloseConnectionEnable()) {
+                syncClose();
+                return;
+            }
+
+            for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
+                listener.connectionClosed(new ConnectionEvent(this));
+            }
+
+
+            List<Filter> filters = dataSource.getProxyFilters();
+            if (filters.size() > 0) {
+                FilterChainImpl filterChain = new FilterChainImpl(dataSource);
+                filterChain.dataSource_recycle(this);
+            } else {
+                recycle();
+            }
+
+            this.disable = true;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void syncClose() throws SQLException {

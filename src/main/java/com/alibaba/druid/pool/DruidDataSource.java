@@ -3079,6 +3079,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             final int checkCount = poolingCount - minIdle;
             final long currentTimeMillis = System.currentTimeMillis();
+            DruidConnectionHolder[] newConnections = new DruidConnectionHolder[maxActive];;
+            int newPoolingCount = 0;
             for (int i = 0; i < poolingCount; ++i) {
                 DruidConnectionHolder connection = connections[i];
 
@@ -3101,6 +3103,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (idleMillis < minEvictableIdleTimeMillis
                             && idleMillis < keepAliveBetweenTimeMillis
                     ) {
+                        System.arraycopy(newConnections, newPoolingCount, connections, i, poolingCount - i);
+                        newPoolingCount += poolingCount - i;
                         break;
                     }
 
@@ -3116,22 +3120,27 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     if (keepAlive && idleMillis >= keepAliveBetweenTimeMillis) {
                         keepAliveConnections[keepAliveCount++] = connection;
+                        continue;
                     }
                 } else {
                     if (i < checkCount) {
                         evictConnections[evictCount++] = connection;
+                        continue;
                     } else {
+                        System.arraycopy(newConnections, newPoolingCount, connections, i, poolingCount - i);
+                        newPoolingCount += poolingCount - i;
                         break;
                     }
                 }
+
+                newConnections[newPoolingCount++] = connection;
             }
 
-            int removeCount = evictCount + keepAliveCount;
-            if (removeCount > 0) {
-                System.arraycopy(connections, removeCount, connections, 0, poolingCount - removeCount);
-                Arrays.fill(connections, poolingCount - removeCount, poolingCount, null);
-                poolingCount -= removeCount;
+            System.arraycopy(connections, 0, newConnections, 0, newPoolingCount);
+            if (newPoolingCount < poolingCount) {
+                Arrays.fill(connections, newPoolingCount, poolingCount, null);
             }
+            poolingCount = newPoolingCount;
             keepAliveCheckCount += keepAliveCount;
 
             if (keepAlive && poolingCount + activeCount < minIdle) {
