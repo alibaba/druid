@@ -1584,6 +1584,9 @@ public class SQLExprParser extends SQLParser {
                 aggregateExpr.setOption(SQLAggregateOption.DISTINCT);
             }
 
+            if (lexer.token == Token.COLONCOLON) {
+                return primaryRest(aggregateExpr);
+            }
 
             return aggregateExpr;
         }
