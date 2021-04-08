@@ -33,7 +33,7 @@ public class HttpClientUtils {
     private final static Log LOG = LogFactory.getLog(HttpClientUtils.class);
 
     public static boolean post(String serverUrl, String data, long timeout) {
-        StringBuilder responseBuilder = null;
+        StringBuilder responseBuilder;
         BufferedReader reader = null;
         OutputStreamWriter wr = null;
 
@@ -51,7 +51,7 @@ public class HttpClientUtils {
             if (LOG.isDebugEnabled()) {
                 reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 responseBuilder = new StringBuilder();
-                String line = null;
+                String line;
                 while ((line = reader.readLine()) != null) {
                     responseBuilder.append(line).append("\n");
                 }
