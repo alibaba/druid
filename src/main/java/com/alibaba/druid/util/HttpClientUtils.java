@@ -82,7 +82,7 @@ public class HttpClientUtils {
         return false;
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         post("http://www.alibaba.com/trade/search", "fsb=y&IndexArea=product_en&CatId=&SearchText=test", 6000);
     }
 
