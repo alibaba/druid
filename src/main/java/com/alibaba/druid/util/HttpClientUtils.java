@@ -42,7 +42,7 @@ public class HttpClientUtils {
             url = new URL(serverUrl);
             URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
-            conn.setConnectTimeout(1000 * 5);
+            conn.setConnectTimeout((int) timeout);
             wr = new OutputStreamWriter(conn.getOutputStream());
 
             wr.write(data);
