@@ -117,7 +117,7 @@ public class MonitorStatService implements DruidStatServiceMBean {
                 int port = instance.getPort();
                 String serviceId = instance.getServiceId();
                 // 根据前端参数采集指定的服务
-                if (serviceId.equals(requestServiceName)) {
+                if (serviceId.equalsIgnoreCase(requestServiceName)) {
                     ServiceNode serviceNode = new ServiceNode();
                     serviceNode.setId(instanceId);
                     serviceNode.setPort(port);
