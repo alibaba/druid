@@ -4808,7 +4808,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterSystemGetConfigStatement x) {
-        print0(ucase ? "ALTER SYSTEM GET CONFIG " : "atler system get config ");
+        print0(ucase ? "ALTER SYSTEM GET CONFIG " : "alter system get config ");
         x.getName().accept(this);
 
         return false;
@@ -4816,7 +4816,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterSystemSetConfigStatement x) {
-        print0(ucase ? "ALTER SYSTEM SET COFNIG " : "atler system set config ");
+        print0(ucase ? "ALTER SYSTEM SET COFNIG " : "alter system set config ");
 
         printAndAccept(x.getOptions(), " ");
 
@@ -4825,7 +4825,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterViewStatement x) {
-        print0(ucase ? "ALTER " : "atler ");
+        print0(ucase ? "ALTER " : "alter ");
 
         this.indentCount++;
         String algorithm = x.getAlgorithm();
