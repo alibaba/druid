@@ -20,8 +20,12 @@ public class MetaSqlExtract  extends UDF {
             return null;
         }
 
-        String part = xml.substring(p0, p1);
-        return StringEscapeUtils.unescapeXml(part);
+        String sql = xml.substring(p0, p1);
+        if (sql.startsWith("<![CDATA[")) {
+            sql = sql.substring("<![CDATA[".length(), sql.length() - 3);
+        }
+
+        return StringEscapeUtils.unescapeXml(sql);
     }
 
 }

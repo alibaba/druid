@@ -1119,5 +1119,9 @@ public final class FnvHash {
         long ASOF = fnv1a_64_lower("ASOF");
         long JSON_SET = fnv1a_64_lower("JSON_SET");
         long JSONB_SET = fnv1a_64_lower("JSONB_SET");
+
+        long TUNNEL = fnv1a_64_lower("TUNNEL");
+        long DOWNLOAD = fnv1a_64_lower("DOWNLOAD");
+        long UPLOAD = fnv1a_64_lower("UPLOAD");
     }
 }

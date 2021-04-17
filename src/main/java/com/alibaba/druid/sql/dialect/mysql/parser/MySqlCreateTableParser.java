@@ -359,6 +359,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 }
             }
 
+            if (lexer.token() == Token.HINT) {
+                lexer.nextToken();
+            }
+
             accept(Token.RPAREN);
 
             if (lexer.token() == Token.HINT && lexer.stringVal().charAt(0) == '!') {
@@ -402,6 +406,17 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     expr = this.exprParser.integerExpr();
                 }
                 stmt.addOption("BLOCK_SIZE", expr);
+                continue;
+            }
+
+            if (lexer.identifierEquals("BLOCK_FORMAT")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
+                SQLExpr expr = this.exprParser.primary();
+                stmt.addOption("BLOCK_FORMAT", expr);
                 continue;
             }
 

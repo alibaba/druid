@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
 import com.alibaba.druid.sql.dialect.antspark.visitor.AntsparkOutputVisitor;
 import com.alibaba.druid.sql.dialect.antspark.visitor.AntsparkSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseOutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
@@ -547,6 +548,8 @@ public class SQLUtils {
                 return new HiveSchemaStatVisitor(repository);
             case antspark:
                 return new AntsparkSchemaStatVisitor(repository);
+            case clickhouse:
+                return new ClickSchemaStatVisitor(repository);
             default:
                 return new SchemaStatVisitor(repository);
         }

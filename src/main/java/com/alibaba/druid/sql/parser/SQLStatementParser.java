@@ -3947,9 +3947,7 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.DATABASE);
         }
 
-
-
-        if (lexer.token == Token.IF) {
+        if (lexer.token == Token.IF || lexer.identifierEquals("IF")) {
             lexer.nextToken();
             accept(Token.NOT);
             accept(Token.EXISTS);

@@ -1,10 +1,7 @@
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class ClickhouseStatementParser extends SQLStatementParser {
     public ClickhouseStatementParser(String sql) {
@@ -68,5 +65,9 @@ public class ClickhouseStatementParser extends SQLStatementParser {
         }
 
         return withQueryClause;
+    }
+
+    public SQLCreateTableParser getSQLCreateTableParser() {
+        return new ClickhouseCreateTableParser(this.exprParser);
     }
 }
