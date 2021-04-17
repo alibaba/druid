@@ -88,7 +88,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
         accept(Token.TABLE);
 
-        if (lexer.token() == Token.IF) {
+        if (lexer.token() == Token.IF || lexer.identifierEquals("IF")) {
             lexer.nextToken();
             accept(Token.NOT);
             accept(Token.EXISTS);
@@ -182,17 +182,13 @@ public class SQLCreateTableParser extends SQLDDLParser {
             createTable.setPartitioning(partitionClause);
         }
 
-        if (dbType == DbType.clickhouse) {
-            if (lexer.identifierEquals(FnvHash.Constants.ENGINE)) {
-                lexer.nextToken();
-                accept(Token.EQ);
-                createTable.setEngine(
-                        this.exprParser.expr()
-                );
-            }
-        }
+        parseCreateTableRest(createTable);
 
         return createTable;
+    }
+
+    protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
+
     }
 
     public SQLPartitionBy parsePartitionBy() {

@@ -912,6 +912,10 @@ public class SchemaRepository {
         String name = x1.computeName();
         SchemaObject table = schema.findTableOrView(name);
         if (table != null) {
+            if (x1.isIfNotExists()) {
+                return table;
+            }
+
             LOG.info("replaced table '" + name + "'");
         }
 

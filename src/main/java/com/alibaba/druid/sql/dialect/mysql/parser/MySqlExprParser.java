@@ -1137,7 +1137,7 @@ public class MySqlExprParser extends SQLExprParser {
             accept(Token.RPAREN);
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.STORED)) {
+        if (lexer.identifierEquals(FnvHash.Constants.STORED) || lexer.identifierEquals("PERSISTENT")) {
             lexer.nextToken();
             column.setStored(true);
         }
@@ -1153,6 +1153,7 @@ public class MySqlExprParser extends SQLExprParser {
             column.setDelimiter(expr);
             return parseColumnRest(column);
         }
+
         if (lexer.identifierEquals("delimiter_tokenizer")) {
             lexer.nextToken();
             SQLExpr expr = this.expr();
@@ -1236,6 +1237,11 @@ public class MySqlExprParser extends SQLExprParser {
             } else {
                 break;
             }
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.ARRAY)) {
+            lexer.nextToken();
+            dataType = new SQLArrayDataType(dataType);
         }
 
         return dataType;

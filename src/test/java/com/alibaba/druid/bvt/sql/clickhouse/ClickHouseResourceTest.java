@@ -51,6 +51,26 @@ public class ClickHouseResourceTest extends OracleTest {
     public void test_3() throws Exception {
         exec_test("bvt/parser/clickhouse-3.txt");
     }
+//
+//    public void test_4() throws Exception {
+//        exec_test("bvt/parser/clickhouse-4.txt");
+//    }
+
+    public void test_5() throws Exception {
+        exec_test("bvt/parser/clickhouse-5.txt");
+    }
+
+    public void test_6() throws Exception {
+        exec_test("bvt/parser/clickhouse-6.txt");
+    }
+
+    public void test_7() throws Exception {
+        exec_test("bvt/parser/clickhouse-7.txt");
+    }
+
+    public void test_8() throws Exception {
+        exec_test("bvt/parser/clickhouse-8.txt");
+    }
 
     public void exec_test(String resource) throws Exception {
         System.out.println(resource);

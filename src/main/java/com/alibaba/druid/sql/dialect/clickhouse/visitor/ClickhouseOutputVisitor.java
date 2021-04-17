@@ -1,13 +1,15 @@
 package com.alibaba.druid.sql.dialect.clickhouse.visitor;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLRowDataType;
-import com.alibaba.druid.sql.ast.SQLStructDataType;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+
+import java.util.List;
 
 public class ClickhouseOutputVisitor extends SQLASTOutputVisitor implements ClickhouseVisitor {
     public ClickhouseOutputVisitor(Appendable appender) {
@@ -69,6 +71,39 @@ public class ClickhouseOutputVisitor extends SQLASTOutputVisitor implements Clic
             dataType.accept(this);
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(ClickhouseCreateTableStatement x) {
+        super.visit((SQLCreateTableStatement) x);
+
+        SQLExpr partitionBy = x.getPartitionBy();
+        if (partitionBy != null) {
+            println();
+            print0(ucase ? "PARTITION BY " : "partition by ");
+            partitionBy.accept(this);
+        }
+
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
+            println();
+            orderBy.accept(this);
+        }
+
+        SQLExpr sampleBy = x.getSampleBy();
+        if (sampleBy != null) {
+            println();
+            print0(ucase ? "SAMPLE BY " : "sample by ");
+            sampleBy.accept(this);
+        }
+
+        List<SQLAssignItem> settings = x.getSettings();
+        if (!settings.isEmpty()) {
+            println();
+            print0(ucase ? "SETTINGS " : "settings ");
+            printAndAccept(settings, ", ");
+        }
         return false;
     }
 }

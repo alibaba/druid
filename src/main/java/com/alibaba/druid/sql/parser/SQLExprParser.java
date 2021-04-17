@@ -594,7 +594,11 @@ public class SQLExprParser extends SQLParser {
             }
             break;
             case DEFAULT:
-                sqlExpr = new SQLDefaultExpr();
+                if (dbType == DbType.clickhouse) {
+                    sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+                } else {
+                    sqlExpr = new SQLDefaultExpr();
+                }
                 lexer.nextToken();
                 break;
             case DUAL:
@@ -798,7 +802,8 @@ public class SQLExprParser extends SQLParser {
                     cast.setExpr(
                             expr());
                     accept(Token.AS);
-                    cast.setDataType(parseDataType(false));
+                    cast.setDataType(
+                            parseDataType(false));
                     accept(Token.RPAREN);
 
                     sqlExpr = cast;
@@ -1757,6 +1762,9 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
             } else if (lexer.token == Token.VARIANT && lexer.stringVal().startsWith("$")) {
                 name = lexer.stringVal();
+                lexer.nextToken();
+            } else if (lexer.token == Token.LITERAL_INT && dbType == DbType.hive) {
+                name = lexer.numberString();
                 lexer.nextToken();
             } else {
                 throw new ParserException("error : " + lexer.info());
@@ -3826,6 +3834,10 @@ public class SQLExprParser extends SQLParser {
                 charType.setHints(hints);
             }
 
+            if (lexer.identifierEquals(FnvHash.Constants.ARRAY)) {
+                return parseDataTypeRest(charType);
+            }
+
             return charType;
         }
 
@@ -3850,6 +3862,10 @@ public class SQLExprParser extends SQLParser {
             if (lexer.token == Token.HINT) {
                 List<SQLCommentHint> hints = this.parseHints();
                 charType.setHints(hints);
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.ARRAY)) {
+                return parseDataTypeRest(charType);
             }
 
             return charType;

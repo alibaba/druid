@@ -797,12 +797,21 @@ public class Lexer {
             nextToken();
             if (token == Token.USER || identifierEquals(FnvHash.Constants.USER)) {
                 return SQLType.ADD_USER;
+            } else if (token == TABLE) {
+                return SQLType.ADD_TABLE;
             }
         } else if (hashCode == FnvHash.Constants.REMOVE) {
             nextToken();
             if (token == Token.USER || identifierEquals(FnvHash.Constants.USER)) {
                 return SQLType.REMOVE_USER;
             }
+        } else if (hashCode == FnvHash.Constants.TUNNEL) {
+            nextToken();
+            if (identifierEquals(FnvHash.Constants.DOWNLOAD)) {
+                return SQLType.TUNNEL_DOWNLOAD;
+            }
+        } else if (hashCode == FnvHash.Constants.UPLOAD) {
+            return SQLType.UPLOAD;
         }
 
         return SQLType.UNKNOWN;
@@ -811,7 +820,6 @@ public class Lexer {
     public final SQLType scanSQLTypeV2() {
 
         SQLType sqlType = scanSQLType();
-
         if (sqlType == SQLType.CREATE) {
             nextToken();
             if (token == Token.USER || identifierEquals(FnvHash.Constants.USER)) {
@@ -869,6 +877,19 @@ public class Lexer {
             } else if (token == TABLE) {
                 return SQLType.ALTER_TABLE;
             }
+        } else if (sqlType == SQLType.INSERT) {
+            for (int i = 0; i < 1000;++i) {
+                nextToken();
+
+                if (token == SELECT) {
+                    return SQLType.INSERT_SELECT;
+                } else if (token == VALUES) {
+                    return SQLType.INSERT_VALUES;
+                } else if (token == ERROR || token == EOF) {
+                    break;
+                }
+            }
+            return sqlType;
         }
 
         return sqlType;
