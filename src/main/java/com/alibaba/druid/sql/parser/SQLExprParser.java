@@ -1090,7 +1090,7 @@ public class SQLExprParser extends SQLParser {
             case LIKE:
             case UNION:
             case CREATE:
-                if (dbType == DbType.odps) {
+                if (dbType == DbType.odps || dbType == DbType.hive) {
                     sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                     lexer.nextToken();
                     break;

@@ -202,7 +202,8 @@ public class SQLParser {
                 }
                 case FOR:
                 case GRANT:
-                    if (dbType == DbType.odps){
+                case CHECK:
+                    if (dbType == DbType.odps || dbType == DbType.hive) {
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
                         return strVal;
@@ -342,7 +343,7 @@ public class SQLParser {
                 case SHOW:
                 case SEQUENCE:
                 case TO:
-                    if (dbType == DbType.odps) {
+                    if (dbType == DbType.odps || dbType == DbType.hive) {
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         break;
@@ -351,7 +352,7 @@ public class SQLParser {
                 case GROUP:
                 case ORDER:
                 case DEFAULT:
-                    if (dbType == DbType.odps) {
+                    if (dbType == DbType.odps || dbType == DbType.hive) {
                         Lexer.SavePoint mark = lexer.mark();
                         alias = lexer.stringVal();
                         lexer.nextToken();
