@@ -2506,4 +2506,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         return false;
     }
 
+    public boolean visit(SQLArrayDataType x) {
+        x.getComponentType().accept(this);
+        print('[');
+        printAndAccept(x.getArguments(), ", ");
+        print(']');
+        return false;
+    }
 }

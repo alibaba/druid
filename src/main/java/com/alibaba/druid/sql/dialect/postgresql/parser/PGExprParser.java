@@ -16,9 +16,11 @@
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLArrayDataType;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -71,6 +73,18 @@ public class PGExprParser extends SQLExprParser {
             lexer.nextToken();
         }
         return super.parseDataType();
+    }
+
+    protected SQLDataType parseDataTypeRest(SQLDataType dataType) {
+        dataType = super.parseDataTypeRest(dataType);
+
+        if (lexer.token() == Token.LBRACKET) {
+            lexer.nextToken();
+            accept(Token.RBRACKET);
+            dataType = new SQLArrayDataType(dataType);
+        }
+
+        return dataType;
     }
     
     public PGSelectParser createSelectParser() {

@@ -3836,6 +3836,8 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.ARRAY)) {
                 return parseDataTypeRest(charType);
+            } else if (lexer.token == Token.LBRACKET) {
+                return parseDataTypeRest(charType);
             }
 
             return charType;
