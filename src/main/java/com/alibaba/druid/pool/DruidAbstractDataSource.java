@@ -1388,7 +1388,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         if (validConnectionChecker != null) {
-            boolean result = true;
+            boolean result;
             Exception error = null;
             try {
                 result = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
@@ -1406,6 +1406,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             } catch (SQLException ex) {
                 throw ex;
             } catch (Exception ex) {
+                result = false;
                 error = ex;
             }
             
