@@ -118,13 +118,21 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 print(' ');
             }
 
-            final int distionOption = x.getDistionOption();
-            if (SQLSetQuantifier.ALL == distionOption) {
-                print0(ucase ? "ALL " : "all ");
-            } else if (SQLSetQuantifier.DISTINCT == distionOption) {
-                print0(ucase ? "DISTINCT " : "distinct ");
-            } else if (SQLSetQuantifier.DISTINCTROW == distionOption) {
-                print0(ucase ? "DISTINCTROW " : "distinctrow ");
+            switch (x.getDistionOption()) {
+                case SQLSetQuantifier.ALL:
+                    print0(ucase ? "ALL " : "all ");
+                    break;
+                case SQLSetQuantifier.DISTINCT:
+                    print0(ucase ? "DISTINCT " : "distinct ");
+                    break;
+                case SQLSetQuantifier.DISTINCTROW:
+                    print0(ucase ? "DISTINCTROW " : "distinctrow ");
+                    break;
+                case SQLSetQuantifier.UNIQUE:
+                    print0(ucase ? "UNIQUE " : "unique ");
+                    break;
+                default:
+                    break;
             }
 
             if (x.isHignPriority()) {

@@ -16,7 +16,13 @@
 package com.alibaba.druid.bvt.sql.mysql.alterTable;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenameColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
@@ -47,6 +53,28 @@ public class MySqlAlterTableTest_40_change extends TestCase {
         
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
+
+        assertTrue(
+                isRenameColumn((SQLAlterTableStatement) stmt)
+        );
+    }
+
+    public boolean isRenameColumn(SQLAlterTableStatement stmt) {
+        for (SQLAlterTableItem item : stmt.getItems()) {
+            if (item instanceof MySqlAlterTableChangeColumn) {
+                MySqlAlterTableChangeColumn changeColumn = (MySqlAlterTableChangeColumn) item;
+                SQLIdentifierExpr columnName = (SQLIdentifierExpr) changeColumn.getColumnName();
+                String newColumnName = changeColumn.getNewColumnDefinition().getColumnName();
+                if (!columnName.nameEquals(newColumnName)) {
+                    return true;
+                }
+            }
+
+            if (item instanceof SQLAlterTableRenameColumn) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
