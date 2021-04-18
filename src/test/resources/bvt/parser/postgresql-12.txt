@@ -1,0 +1,4 @@
+select max(tmp1)::varchar from test01;
+---------------------------
+SELECT max(tmp1)::varchar
+FROM test01;
