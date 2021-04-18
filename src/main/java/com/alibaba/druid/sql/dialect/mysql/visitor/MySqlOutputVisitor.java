@@ -5272,7 +5272,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlAlterServerStatement x) {
-        print0(ucase ? "ATLER SERVER " : "alter server ");
+        print0(ucase ? "ALTER SERVER " : "alter server ");
         x.getName().accept(this);
 
         print(" OPTIONS(");
