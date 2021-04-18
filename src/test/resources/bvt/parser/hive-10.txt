@@ -1,0 +1,5 @@
+select * from zhangkk_user check where check.user_id = 1;
+---------------------------
+SELECT *
+FROM zhangkk_user check
+WHERE check.user_id = 1;
