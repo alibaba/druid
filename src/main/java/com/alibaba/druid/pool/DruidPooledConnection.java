@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.sql.ConnectionEvent;
@@ -63,6 +64,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     protected volatile   boolean               traceEnable          = false;
     private   volatile   boolean               disable              = false;
     protected volatile   boolean               closed               = false;
+    protected volatile   boolean               closing              = false;
     protected final      Thread                ownerThread;
     private              long                  connectedTimeMillis;
     private              long                  connectedTimeNano;
@@ -247,27 +249,32 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
         DruidAbstractDataSource dataSource = holder.getDataSource();
         boolean isSameThread = this.getOwnerThread() == Thread.currentThread();
-        
+
         if (!isSameThread) {
             dataSource.setAsyncCloseConnectionEnable(true);
         }
-        
+
         if (dataSource.isAsyncCloseConnectionEnable()) {
             syncClose();
             return;
         }
 
-        for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
-            listener.connectionClosed(new ConnectionEvent(this));
-        }
+        closing = true;
 
-        
-        List<Filter> filters = dataSource.getProxyFilters();
-        if (filters.size() > 0) {
-            FilterChainImpl filterChain = new FilterChainImpl(dataSource);
-            filterChain.dataSource_recycle(this);
-        } else {
-            recycle();
+        try {
+            for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
+                listener.connectionClosed(new ConnectionEvent(this));
+            }
+
+            List<Filter> filters = dataSource.getProxyFilters();
+            if (filters.size() > 0) {
+                FilterChainImpl filterChain = new FilterChainImpl(dataSource);
+                filterChain.dataSource_recycle(this);
+            } else {
+                recycle();
+            }
+        } finally {
+            closing = false;
         }
 
         this.disable = true;
@@ -276,7 +283,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public void syncClose() throws SQLException {
         lock.lock();
         try {
-            if (this.disable) {
+            if (this.disable || closing) {
                 return;
             }
 
@@ -287,6 +294,8 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
                 }
                 return;
             }
+
+            closing = true;
 
             for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
                 listener.connectionClosed(new ConnectionEvent(this));
@@ -303,6 +312,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
             this.disable = true;
         } finally {
+            closing = false;
             lock.unlock();
         }
     }
@@ -1143,7 +1153,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         } else {
             asyncCloseEnabled = false;
         }
-        
+
         if (asyncCloseEnabled) {
             lock.lock();
             try {
@@ -1155,7 +1165,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             checkStateInternal();
         }
     }
-    
+
     private void checkStateInternal() throws SQLException {
         if (closed) {
             if (disableError != null) {
@@ -1246,21 +1256,21 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public void abandond() {
         this.abandoned = true;
     }
-    
+
     /**
      * @since 1.0.17
      */
     public long getPhysicalConnectNanoSpan() {
         return this.holder.getCreateNanoSpan();
     }
-    
+
     /**
      * @since 1.0.17
      */
     public long getPhysicalConnectionUsedCount() {
         return this.holder.getUseCount();
     }
-    
+
     /**
      * @since 1.0.17
      */

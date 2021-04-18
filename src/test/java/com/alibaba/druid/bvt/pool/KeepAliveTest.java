@@ -57,6 +57,6 @@ public class KeepAliveTest extends TestCase {
 
 
 
-        // Thread.sleep(1000 * 1000);
+        Thread.sleep(1000 * 1000);
     }
 }
