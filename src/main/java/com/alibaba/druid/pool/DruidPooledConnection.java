@@ -64,7 +64,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     protected volatile   boolean               traceEnable          = false;
     private   volatile   boolean               disable              = false;
     protected volatile   boolean               closed               = false;
-    protected volatile   boolean               closing              = false;
+    static AtomicIntegerFieldUpdater CLOSING_UPDATER = AtomicIntegerFieldUpdater.newUpdater(DruidPooledConnection.class, "closing");
     protected final      Thread                ownerThread;
     private              long                  connectedTimeMillis;
     private              long                  connectedTimeNano;
@@ -73,6 +73,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     protected            StackTraceElement[]   connectStackTrace;
     protected            Throwable             disableError         = null;
     final                ReentrantLock         lock;
+    protected volatile   int                   closing              = 0;
 
     public DruidPooledConnection(DruidConnectionHolder holder){
         super(holder.getConnection());
@@ -259,7 +260,9 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             return;
         }
 
-        closing = true;
+        if (!CLOSING_UPDATER.compareAndSet(this, 0, 1)) {
+            return;
+        }
 
         try {
             for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
@@ -274,7 +277,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
                 recycle();
             }
         } finally {
-            closing = false;
+            CLOSING_UPDATER.set(this, 0);
         }
 
         this.disable = true;
@@ -283,7 +286,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public void syncClose() throws SQLException {
         lock.lock();
         try {
-            if (this.disable || closing) {
+            if (this.disable || CLOSING_UPDATER.get(this) != 0) {
                 return;
             }
 
@@ -295,7 +298,9 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
                 return;
             }
 
-            closing = true;
+            if (!CLOSING_UPDATER.compareAndSet(this, 0, 1)) {
+                return;
+            }
 
             for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
                 listener.connectionClosed(new ConnectionEvent(this));
@@ -312,7 +317,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
             this.disable = true;
         } finally {
-            closing = false;
+            CLOSING_UPDATER.set(this, 0);
             lock.unlock();
         }
     }
