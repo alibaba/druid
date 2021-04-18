@@ -129,7 +129,7 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
             return null;
         }
 
-        long hash = FnvHash.hashCode64(alias);
+        long hash = FnvHash.hashCode64(columnName);
         return findColumn(hash);
     }
 
@@ -146,7 +146,7 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
             return null;
         }
 
-        long hash = FnvHash.hashCode64(alias);
+        long hash = FnvHash.hashCode64(columnName);
         return findTableSourceWithColumn(hash, columnName, 0);
     }
 
