@@ -180,6 +180,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                 }
             }
 
+
             while (true) {
                 Token token = lexer.token();
                 if (token == (Token.DISTINCT)) {
@@ -190,6 +191,9 @@ public class MySqlSelectParser extends SQLSelectParser {
                     lexer.nextToken();
                 } else if (token == (Token.ALL)) {
                     queryBlock.setDistionOption(SQLSetQuantifier.ALL);
+                    lexer.nextToken();
+                } else if (token == (Token.UNIQUE)) {
+                    queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
                     lexer.nextToken();
                 } else if (lexer.identifierEquals(FnvHash.Constants.HIGH_PRIORITY)) {
                     queryBlock.setHignPriority(true);
