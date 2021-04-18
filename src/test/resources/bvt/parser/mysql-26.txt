@@ -1,0 +1,9 @@
+select unique a.optdeptno,b.systypeno,a.optid pid
+       from t_char2opt a ,t_character b
+     where a.cserno = b.cserno
+       and b.t_code IN('NQAMIS','NQSZIS')
+---------------------------
+SELECT UNIQUE a.optdeptno, b.systypeno, a.optid AS pid
+FROM t_char2opt a, t_character b
+WHERE a.cserno = b.cserno
+	AND b.t_code IN ('NQAMIS', 'NQSZIS')

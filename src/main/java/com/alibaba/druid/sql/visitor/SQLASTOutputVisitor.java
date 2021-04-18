@@ -4825,7 +4825,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterViewStatement x) {
-        print0(ucase ? "ALTER " : "atler ");
+        print0(ucase ? "ALTER " : "alter ");
 
         this.indentCount++;
         String algorithm = x.getAlgorithm();
@@ -4844,7 +4844,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         String sqlSecurity = x.getSqlSecurity();
         if (sqlSecurity != null && sqlSecurity.length() > 0) {
-            print0(ucase ? "SQL SECURITY = " : "sql security = ");
+            print0(ucase ? "SQL SECURITY " : "sql security ");
             print0(sqlSecurity);
             println();
         }
