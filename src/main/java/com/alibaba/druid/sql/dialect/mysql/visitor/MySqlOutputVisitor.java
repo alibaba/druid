@@ -1016,6 +1016,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
         }
 
+        if (this.isPrettyFormat() && x.hasBeforeComment()) {
+            this.printlnComments(x.getBeforeCommentsDirect());
+        }
+
         print0(ucase ? "DELETE " : "delete ");
 
         for (int i = 0, size = x.getHintsSize(); i < size; ++i) {
@@ -1099,6 +1103,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 hint.accept(this);
                 println();
             }
+        }
+
+        if (this.isPrettyFormat() && x.hasBeforeComment()) {
+            this.printlnComments(x.getBeforeCommentsDirect());
         }
 
         SQLWithSubqueryClause with = x.getWith();

@@ -1,0 +1,21 @@
+CREATE TABLE product_order (
+    no INT NOT NULL AUTO_INCREMENT,
+    product_category INT NOT NULL,
+    product_id INT NOT NULL,
+    customer_id INT NOT NULL,
+    total_price DECIMAL(5,2),
+    PRIMARY KEY(no),
+    INDEX (product_category, product_id),
+    UNIQUE INDEX idx_cust_id (customer_id)
+) ENGINE=INNODB ;
+---------------------------
+CREATE TABLE product_order (
+	no INT NOT NULL AUTO_INCREMENT,
+	product_category INT NOT NULL,
+	product_id INT NOT NULL,
+	customer_id INT NOT NULL,
+	total_price DECIMAL(5, 2),
+	PRIMARY KEY (no),
+	INDEX(product_category, product_id),
+	UNIQUE INDEX idx_cust_id (customer_id)
+) ENGINE = INNODB;
