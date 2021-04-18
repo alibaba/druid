@@ -3575,6 +3575,7 @@ public class SQLStatementParser extends SQLParser {
                             if (name != null) {
                                 key.setName(name);
                             }
+                            key.setParent(stmt);
                             stmt.getTableElementList().add(key);
                         }
                         continue;
