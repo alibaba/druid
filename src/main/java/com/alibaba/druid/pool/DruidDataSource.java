@@ -2104,6 +2104,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 filter.destroy();
             }
         } finally {
+            this.closing = false;
             lock.unlock();
         }
 
@@ -2503,7 +2504,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private boolean put(DruidConnectionHolder holder, long createTaskId) {
         lock.lock();
         try {
-            if (poolingCount >= maxActive || this.closed) {
+            if (this.closing || this.closed) {
+                return false;
+            }
+
+            if (poolingCount >= maxActive) {
                 if (createScheduler != null) {
                     clearCreateTask(createTaskId);
                 }
@@ -2778,7 +2783,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     lastCreateError = e;
                     lastErrorTimeMillis = System.currentTimeMillis();
 
-                    if (!closing) {
+                    if ((!closing) && (!closed)) {
                         LOG.error("create connection Thread Interrupted, url: " + jdbcUrl, e);
                     }
                     break;
