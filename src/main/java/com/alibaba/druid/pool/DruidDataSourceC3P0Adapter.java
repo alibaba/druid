@@ -165,7 +165,9 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     }
 
     public void setIdleConnectionTestPeriod(int idleConnectionTestPeriod) {
-        dataSource.setTimeBetweenEvictionRunsMillis(((long) idleConnectionTestPeriod) * 1000L);
+        long timeBetweenEvictionRunsMillis = ((long) idleConnectionTestPeriod) * 1000L;
+        dataSource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+        dataSource.setKeepAliveBetweenTimeMillis(timeBetweenEvictionRunsMillis * 2);
     }
 
     public int getInitialPoolSize() {

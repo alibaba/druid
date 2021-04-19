@@ -37,9 +37,12 @@ public class KeepAliveTest extends TestCase {
     public void test_keepAlive() throws Exception {
         dataSource.init();
 
-        for (int i = 0; i < 1000; ++i) {
-            if (dataSource.getMinIdle() == dataSource.getPoolingCount()) {
+        for (int i = 0; i < 100; ++i) {
+            int poolingCount = dataSource.getPoolingCount();
+            if (poolingCount >= dataSource.getMinIdle()) {
                 break;
+            } else {
+                System.out.println("poolingCount : " + poolingCount);
             }
             Thread.sleep(10 * 1);
         }
@@ -55,8 +58,5 @@ public class KeepAliveTest extends TestCase {
         }
         // assertEquals(dataSource.getMaxActive(), dataSource.getPoolingCount());
 
-
-
-        Thread.sleep(1000 * 1000);
     }
 }
