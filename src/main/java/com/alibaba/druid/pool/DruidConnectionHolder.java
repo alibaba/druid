@@ -63,7 +63,7 @@ public final class DruidConnectionHolder {
     protected final List<Statement>               statementTrace           = new ArrayList<Statement>(2);
     protected final boolean                       defaultReadOnly;
     protected final int                           defaultHoldability;
-    protected final int                           defaultTransactionIsolation;
+    protected int                                 defaultTransactionIsolation;
     protected final boolean                       defaultAutoCommit;
     protected boolean                             underlyingReadOnly;
     protected int                                 underlyingHoldability;
@@ -193,6 +193,14 @@ public final class DruidConnectionHolder {
 
     public void setUnderlyingAutoCommit(boolean underlyingAutoCommit) {
         this.underlyingAutoCommit = underlyingAutoCommit;
+    }
+
+    public int getDefaultTransactionIsolation() {
+        return defaultTransactionIsolation;
+    }
+
+    public void setDefaultTransactionIsolation(int defaultTransactionIsolation) {
+        this.defaultTransactionIsolation = defaultTransactionIsolation;
     }
 
     public long getLastActiveTimeMillis() {
