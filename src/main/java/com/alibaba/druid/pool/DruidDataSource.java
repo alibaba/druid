@@ -870,6 +870,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 throw new SQLException("maxEvictableIdleTimeMillis must be grater than minEvictableIdleTimeMillis");
             }
 
+            if (keepAlive && keepAliveBetweenTimeMillis <= timeBetweenEvictionRunsMillis) {
+                throw new SQLException("keepAliveBetweenTimeMillis must be grater than timeBetweenEvictionRunsMillis");
+            }
+
             if (this.driverClass != null) {
                 this.driverClass = driverClass.trim();
             }
@@ -2864,7 +2868,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             for (;;) {
                 // 从前面开始删除
                 try {
-                    if (closed) {
+                    if (closed || closing) {
                         break;
                     }
 

@@ -790,6 +790,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             LOG.error("keepAliveBetweenTimeMillis should be greater than 30000");
         }
 
+        if (keepAliveBetweenTimeMillis <= timeBetweenEvictionRunsMillis) {
+            LOG.warn("keepAliveBetweenTimeMillis should be greater than timeBetweenEvictionRunsMillis");
+        }
+
         this.keepAliveBetweenTimeMillis = keepAliveBetweenTimeMillis;
     }
 
