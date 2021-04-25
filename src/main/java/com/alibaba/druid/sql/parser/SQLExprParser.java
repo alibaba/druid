@@ -1335,7 +1335,7 @@ public class SQLExprParser extends SQLParser {
             expr = dotRest(expr);
             return primaryRest(expr);
         } else if (lexer.identifierEquals(FnvHash.Constants.SETS) //
-                && expr.getClass() == SQLIdentifierExpr.class // 
+                && expr.getClass() == SQLIdentifierExpr.class //
                 && "GROUPING".equalsIgnoreCase(((SQLIdentifierExpr) expr).getName())) {
             SQLGroupingSetExpr groupingSets = new SQLGroupingSetExpr();
             lexer.nextToken();
@@ -1950,6 +1950,10 @@ public class SQLExprParser extends SQLParser {
         } else {
             switch (lexer.token) {
 //                case MODEL:
+                case MODE:
+                case ERRORS:
+                case NOWAIT:
+                case COMMIT:
                 case PCTFREE:
                 case INITRANS:
                 case MAXTRANS:
