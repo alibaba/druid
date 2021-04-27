@@ -17,9 +17,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
@@ -97,4 +95,19 @@ public interface SQLServerASTVisitor extends SQLASTVisitor {
 
     default void endVisit(SQLServerParameter x) {}
 
+    default boolean visit(SQLServerSelectPivot x) { return true; }
+
+    default void endVisit(SQLServerSelectPivot x) {}
+
+    default boolean visit(SQLServerSelectUnPivot x) { return true; }
+
+    default void endVisit(SQLServerSelectUnPivot x) {}
+
+    default boolean visit(SQLServerSelectPivotTableSource x) { return true; }
+
+    default void endVisit(SQLServerSelectPivotTableSource x) {}
+
+    default boolean visit(SQLServerSelectPivot.Item x) { return true; }
+
+    default void endVisit(SQLServerSelectPivot.Item x) {}
 }

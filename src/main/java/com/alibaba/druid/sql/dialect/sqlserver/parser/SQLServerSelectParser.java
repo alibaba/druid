@@ -19,9 +19,9 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.*;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLServerSelectParser extends SQLSelectParser {
 
@@ -195,7 +195,103 @@ public class SQLServerSelectParser extends SQLSelectParser {
 
             accept(Token.RPAREN);
         }
+        if (lexer.identifierEquals(FnvHash.Constants.PIVOT)) {
+            SQLServerSelectPivotTableSource pivotTableSource = new SQLServerSelectPivotTableSource();
+            pivotTableSource.setTableSource(tableSource);
+            tableSource.setParent(pivotTableSource);
+            return parsePivot(pivotTableSource);
+        } else if (lexer.identifierEquals(FnvHash.Constants.UNPIVOT)) {
+            SQLServerSelectPivotTableSource pivotTableSource = new SQLServerSelectPivotTableSource();
+            pivotTableSource.setTableSource(tableSource);
+            tableSource.setParent(pivotTableSource);
+            return parseUnPivot(pivotTableSource);
+        }
 
         return super.parseTableSourceRest(tableSource);
+    }
+
+    private SQLServerSelectPivotTableSource parsePivot(SQLServerSelectPivotTableSource tableSource) {
+        SQLServerSelectPivot.Item item;
+        lexer.nextToken();
+        SQLServerSelectPivot pivot = new SQLServerSelectPivot();
+        accept(Token.LPAREN);
+        while (true) {
+            item = new SQLServerSelectPivot.Item(this.exprParser.expr(), as());
+            pivot.getItems().add(item);
+            if (lexer.token() != Token.COMMA) {
+                break;
+            }
+            lexer.nextToken();
+        }
+        accept(Token.FOR);
+        parsePivotFor(pivot);
+
+        accept(Token.IN);
+        accept(Token.LPAREN);
+        if (lexer.token() == Token.SELECT) {
+            item = new SQLServerSelectPivot.Item();
+            item.setExpr(this.exprParser.expr());
+            pivot.getPivotIn().add(item);
+        } else {
+            while(true) {
+                item = new SQLServerSelectPivot.Item(this.exprParser.expr(), as());
+                pivot.getPivotIn().add(item);
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                }
+                lexer.nextToken();
+            }
+        }
+        accept(Token.RPAREN);
+        accept(Token.RPAREN);
+        tableSource.setAlias(as());
+        tableSource.setPivot(pivot);
+        return tableSource;
+    }
+
+    private SQLServerSelectPivotTableSource parseUnPivot(SQLServerSelectPivotTableSource tableSource) {
+        lexer.nextToken();
+        SQLServerSelectUnPivot unPivot = new SQLServerSelectUnPivot();
+        accept(Token.LPAREN);
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            this.exprParser.exprList(unPivot.getItems(), unPivot);
+            accept(Token.RPAREN);
+        } else {
+            unPivot.getItems().add(this.exprParser.expr());
+        }
+        accept(Token.FOR);
+        parsePivotFor(unPivot);
+
+        accept(Token.IN);
+        accept(Token.LPAREN);
+        while(true) {
+            unPivot.getPivotIn().add(this.exprParser.expr());
+            if (lexer.token() != Token.COMMA) {
+                break;
+            }
+            lexer.nextToken();
+        }
+        accept(Token.RPAREN);
+        accept(Token.RPAREN);
+        tableSource.setPivot(unPivot);
+        tableSource.setAlias(as());
+        return tableSource;
+    }
+
+    private void parsePivotFor(SQLServerSelectBasePivot basePivot) {
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            while(true) {
+                basePivot.getPivotFor().add(this.exprParser.primary());
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                }
+                lexer.nextToken();
+            }
+            accept(Token.RPAREN);
+        } else {
+            basePivot.getPivotFor().add(this.exprParser.primary());
+        }
     }
 }

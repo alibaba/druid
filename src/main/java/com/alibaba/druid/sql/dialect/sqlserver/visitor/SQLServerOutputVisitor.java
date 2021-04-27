@@ -20,9 +20,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
@@ -579,6 +577,69 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         boolean odps = isOdps();
         print0(ucase ? "ADD " : "add ");
         printAndAccept(x.getColumns(), ", ");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLServerSelectPivot x) {
+        print0(ucase ? "PIVOT" : "pivot");
+        visitPivot(x.getItems(), x.getPivotFor(), x.getPivotIn());
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLServerSelectUnPivot x) {
+        print0(ucase ? "UNPIVOT" : "unpivot");
+        visitPivot(x.getItems(), x.getPivotFor(), x.getPivotIn());
+        return false;
+    }
+
+    private void visitPivot(List<? extends SQLObject> pivotItem, List<? extends SQLObject> pivotFor, List<? extends SQLObject> pivotIn) {
+        print0("(");
+        printAndAccept(pivotItem, ",");
+        if (!pivotFor.isEmpty()) {
+            print0(ucase ? " FOR " : " for ");
+            if (pivotFor.size() == 1) {
+                ((SQLExpr) pivotFor.get(0)).accept(this);
+            } else {
+                print('(');
+                printAndAccept(pivotFor, ", ");
+                print(')');
+            }
+        }
+
+        if (!pivotIn.isEmpty()) {
+            print0(ucase ? " IN (" : " in (");
+            printAndAccept(pivotIn, ", ");
+            print(')');
+        }
+
+        print(')');
+    }
+
+    @Override
+    public boolean visit(SQLServerSelectPivotTableSource x) {
+        if (x.getTableSource() != null) {
+            x.getTableSource().accept(this);
+        }
+        print(" ");
+        if (x.getPivot() != null) {
+            x.getPivot().accept(this);
+        }
+        if (x.getAlias() != null && x.getAlias().length() > 0) {
+            print0(ucase ? " AS " : " as ");
+            print0(x.getAlias());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLServerSelectPivot.Item x) {
+        x.getExpr().accept(this);
+        if ((x.getAlias() != null) && (x.getAlias().length() > 0)) {
+            print0(ucase ? " AS " : " as ");
+            print0(x.getAlias());
+        }
         return false;
     }
 }

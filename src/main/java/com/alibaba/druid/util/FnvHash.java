@@ -960,6 +960,7 @@ public final class FnvHash {
         long ALLOW = fnv1a_64_lower("ALLOW");
         long DISALLOW = fnv1a_64_lower("DISALLOW");
         long PIVOT = fnv1a_64_lower("PIVOT");
+        long UNPIVOT = fnv1a_64_lower("UNPIVOT");
         long MODEL = fnv1a_64_lower("MODEL");
         long KEEP = fnv1a_64_lower("KEEP");
         long REFERENCE = fnv1a_64_lower("REFERENCE");
