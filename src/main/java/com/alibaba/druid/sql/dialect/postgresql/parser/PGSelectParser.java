@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -88,7 +89,19 @@ public class PGSelectParser extends SQLSelectParser {
 
                     for (;;) {
                         SQLExpr expr = this.createExprParser().expr();
-                        queryBlock.getDistinctOn().add(expr);
+                        if (expr instanceof SQLListExpr) {
+                            // 判断是不是多个字段表达式
+                            List<SQLObject> children = expr.getChildren();
+                            if (children != null) {
+                                for (SQLObject child : children) {
+                                    if (child instanceof SQLIdentifierExpr) {
+                                        queryBlock.getDistinctOn().add((SQLIdentifierExpr) child);
+                                    }
+                                }
+                            }
+                        } else {
+                            queryBlock.getDistinctOn().add(expr);
+                        }
                         if (lexer.token() == Token.COMMA) {
                             lexer.nextToken();
                             continue;
