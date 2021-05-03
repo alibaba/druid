@@ -422,15 +422,16 @@ public class SQLUtils {
                     visitor.println();
                 }
             }
-            {
-                List<String> comments = stmt.getBeforeCommentsDirect();
-                if (comments != null){
-                    for(String comment : comments) {
-                        visitor.printComment(comment);
-                        visitor.println();
-                    }
-                }
-            }
+
+//            {
+//                List<String> comments = stmt.getBeforeCommentsDirect();
+//                if (comments != null){
+//                    for(String comment : comments) {
+//                        visitor.printComment(comment);
+//                        visitor.println();
+//                    }
+//                }
+//            }
             stmt.accept(visitor);
 
             if (i == size - 1) {

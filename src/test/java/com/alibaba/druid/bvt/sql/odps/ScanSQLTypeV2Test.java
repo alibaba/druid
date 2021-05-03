@@ -47,4 +47,43 @@ public class ScanSQLTypeV2Test extends TestCase {
         SQLType sqlType = lexer.scanSQLTypeV2();
         assertEquals(SQLType.DROP_FUNCTION, sqlType);
     }
+
+    public void test_sqlTypeV2_4() throws Exception {
+        String sql = "INSERT INTO employee VALUES \n" +
+                "(13,'Mari',51,'M'),\n" +
+                "(14,'Pat',34,'F');";
+
+        Lexer lexer = SQLParserUtils.createLexer(sql, DbType.odps);
+        SQLType sqlType = lexer.scanSQLTypeV2();
+        assertEquals(SQLType.INSERT_VALUES, sqlType);
+    }
+
+    public void test_sqlTypeV2_5() throws Exception {
+        String sql = "\n" +
+                "add table xxxx partition(ds='20210306') as 'search_tablebert_output_v_vocab' -f";
+
+        Lexer lexer = SQLParserUtils.createLexer(sql, DbType.odps);
+        SQLType sqlType = lexer.scanSQLTypeV2();
+        assertEquals(SQLType.ADD_TABLE, sqlType);
+    }
+
+    public void test_sqlTypeV2_6() throws Exception {
+        String sql = "\n" +
+                "tunnel download xx_dev.xxx tem_app_list_dy.txt";
+
+        Lexer lexer = SQLParserUtils.createLexer(sql, DbType.odps);
+        SQLType sqlType = lexer.scanSQLTypeV2();
+        assertEquals(SQLType.TUNNEL_DOWNLOAD, sqlType);
+    }
+
+    public void test_sqlTypeV2_7() throws Exception {
+        String sql = "\n" +
+                "upload xx \n" +
+                "FROM http://xxx/res?id=163890713";
+
+        Lexer lexer = SQLParserUtils.createLexer(sql, DbType.odps);
+        SQLType sqlType = lexer.scanSQLTypeV2();
+        assertEquals(SQLType.UPLOAD, sqlType);
+    }
+
 }

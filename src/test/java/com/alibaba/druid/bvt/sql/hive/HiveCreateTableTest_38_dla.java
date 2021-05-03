@@ -34,7 +34,6 @@ public class HiveCreateTableTest_38_dla extends OracleTest {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.hive, SQLParserFeature.KeepComments);
 
         assertEquals("-- {\"n_nationkey\":0,\"n_name\":\"ALGERIA\",\"n_regionkey\":0,\"n_comment\":\" haggle. carefully final deposits detect slyly agai\"}\n" +
-                "-- {\"n_nationkey\":0,\"n_name\":\"ALGERIA\",\"n_regionkey\":0,\"n_comment\":\" haggle. carefully final deposits detect slyly agai\"}\n" +
                 "CREATE DATABASE ddl_json_string\n" +
                 "WITH DBPROPERTIES (\n" +
                 "\tLOCATION = 'oss://oss-cn-hangzhou-for-openanalytics/datasets/tpch/1x/json_string/',\n" +

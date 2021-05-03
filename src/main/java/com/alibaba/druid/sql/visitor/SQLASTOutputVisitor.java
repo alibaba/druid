@@ -3078,6 +3078,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+
         print0(ucase ? "DROP " : "drop ");
         List<SQLCommentHint> hints = x.getHints();
         if (hints != null) {
@@ -3130,6 +3134,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLDropViewStatement x) {
+        List<SQLCommentHint> headHints = x.getHeadHintsDirect();
+        if (headHints != null) {
+            for (SQLCommentHint hint : headHints) {
+                visit((SQLCommentHint) hint);
+                println();
+            }
+        }
+
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+
         print0(ucase ? "DROP VIEW " : "drop view ");
 
         if (x.isIfExists()) {
@@ -3886,6 +3902,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLSetStatement x) {
+        if(x.getHeadHintsDirect() != null) {
+            for (SQLCommentHint hint : x.getHeadHintsDirect()) {
+                hint.accept(this);
+            }
+        }
+
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+
         boolean printSet = x.getAttribute("parser.set") == Boolean.TRUE || !JdbcUtils.isOracleDbType(dbType);
         if (printSet) {
             print0(ucase ? "SET " : "set ");
@@ -5938,6 +5964,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLDropFunctionStatement x) {
+        List<SQLCommentHint> headHints = x.getHeadHintsDirect();
+        if (headHints != null) {
+            for (SQLCommentHint hint : headHints) {
+                visit((SQLCommentHint) hint);
+                println();
+            }
+        }
+
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+
         if (x.isTemporary()) {
             print0(ucase ? "DROP TEMPORARY FUNCTION " : "drop temporary function ");
         } else {
