@@ -1,0 +1,15 @@
+SELECT asset_id, statistics_year, statistics_month, rent_rate, average_rent
+FROM dw_asset_operating_summary
+WHERE rent_rate IS NOT NULL AND average_rent IS NOT NULL AND is_del = toInt8(0)
+GROUP BY asset_id, statistics_year, statistics_month, rent_rate, average_rent
+ORDER BY asset_id, statistics_year DESC, statistics_month DESC
+LIMIT 1 BY asset_id
+---------------------------
+SELECT asset_id, statistics_year, statistics_month, rent_rate, average_rent
+FROM dw_asset_operating_summary
+WHERE rent_rate IS NOT NULL
+	AND average_rent IS NOT NULL
+	AND is_del = toInt8(0)
+GROUP BY asset_id, statistics_year, statistics_month, rent_rate, average_rent
+ORDER BY asset_id, statistics_year DESC, statistics_month DESC
+LIMIT 1 BY asset_id

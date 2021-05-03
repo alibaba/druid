@@ -34,9 +34,6 @@ public class HiveCreateTableTest_39_dla extends OracleTest {
         assertEquals("--\n" +
                 "-- Sample on record\n" +
                 "--     {\"c_custkey\":1,\"c_name\":\"Customer#000000001\",\"c_address\":\"IVhzIApeRb ot,c,E\",\"c_nationkey\":15,\"c_phone\":\"25-989-741-2988\",\"c_acctbal\":711.56,\"c_mktsegment\":\"BUILDING\",\"c_comment\":\"to theeven, regular platelets. regular, ironic epitaphs nag e\"}\n" +
-                "--\n" +
-                "-- Sample on record\n" +
-                "--     {\"c_custkey\":1,\"c_name\":\"Customer#000000001\",\"c_address\":\"IVhzIApeRb ot,c,E\",\"c_nationkey\":15,\"c_phone\":\"25-989-741-2988\",\"c_acctbal\":711.56,\"c_mktsegment\":\"BUILDING\",\"c_comment\":\"to theeven, regular platelets. regular, ironic epitaphs nag e\"}\n" +
                 "CREATE EXTERNAL TABLE IF NOT EXISTS `mengdou_test`.`ddl_customer_json` (\n" +
                 "\t`c_acctbal` double,\n" +
                 "\t`c_address` string,\n" +

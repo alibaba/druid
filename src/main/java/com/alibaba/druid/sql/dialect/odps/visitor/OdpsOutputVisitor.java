@@ -57,6 +57,18 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     public boolean visit(OdpsCreateTableStatement x) {
+        List<SQLCommentHint> headHints = x.getHeadHintsDirect();
+        if (headHints != null) {
+            for (SQLCommentHint hint : headHints) {
+                visit((SQLCommentHint) hint);
+                println();
+            }
+        }
+
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+
         print0(ucase ? "CREATE " : "create ");
 
         if (x.isExternal()) {
@@ -569,6 +581,18 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     @Override
     public boolean visit(OdpsReadStatement x) {
+        List<SQLCommentHint> headHints = x.getHeadHintsDirect();
+        if (headHints != null) {
+            for (SQLCommentHint hint : headHints) {
+                visit((SQLCommentHint) hint);
+                println();
+            }
+        }
+
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+
         print0(ucase ? "READ " : "read ");
         x.getTable().accept(this);
 
@@ -636,6 +660,18 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     @Override
     public boolean visit(OdpsShowGrantsStmt x) {
+        List<SQLCommentHint> headHints = x.getHeadHintsDirect();
+        if (headHints != null) {
+            for (SQLCommentHint hint : headHints) {
+                visit((SQLCommentHint) hint);
+                println();
+            }
+        }
+
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+
         if (x.isLabel()) {
             print0(ucase ? "SHOW LABEL GRANTS" : "show label grants");
 
@@ -852,6 +888,18 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     @Override
     public boolean visit(OdpsCountStatement x) {
+        List<SQLCommentHint> headHints = x.getHeadHintsDirect();
+        if (headHints != null) {
+            for (SQLCommentHint hint : headHints) {
+                visit((SQLCommentHint) hint);
+                println();
+            }
+        }
+
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+
         print0(ucase ? "COUNT " : "count ");
         x.getTable().accept(this);
 
