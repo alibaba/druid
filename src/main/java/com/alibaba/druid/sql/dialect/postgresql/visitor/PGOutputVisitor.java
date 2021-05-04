@@ -109,11 +109,18 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
             print0(ucase ? "DISTINCT " : "distinct ");
 
-            if (x.getDistinctOn() != null && x.getDistinctOn().size() > 0) {
+            List<SQLExpr> distinctOn = x.getDistinctOn();
+            if (distinctOn != null && distinctOn.size() > 0) {
                 print0(ucase ? "ON " : "on ");
-                print0("(");
-                printAndAccept(x.getDistinctOn(), ", ");
-                print0(") ");
+
+                if (distinctOn.size() == 1 && distinctOn.get(0) instanceof SQLListExpr) {
+                    printExpr(distinctOn.get(0));
+                    print(' ');
+                } else {
+                    print0("(");
+                    printAndAccept(distinctOn, ", ");
+                    print0(") ");
+                }
             }
         }
 
