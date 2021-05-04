@@ -1,0 +1,5 @@
+select distinct on (a,b) a,b from table order by a,b
+---------------------------
+SELECT DISTINCT ON (a, b) a, b
+FROM table
+ORDER BY a, b
