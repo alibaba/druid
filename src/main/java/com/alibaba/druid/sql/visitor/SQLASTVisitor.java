@@ -1077,6 +1077,14 @@ public interface SQLASTVisitor {
 
     }
 
+    default boolean visit(SQLAlterTableSetLocation x) {
+        return true;
+    }
+
+    default void endVisit(SQLAlterTableSetLocation x) {
+
+    }
+
     default boolean visit(SQLAlterTableEnableLifecycle x) {
         return true;
     }

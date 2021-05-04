@@ -1,0 +1,17 @@
+from (select name,address from test1) t1 left join (select name,school from test2) t2 on t2.name = t1.name
+insert overwrite table tt1
+select name,address,school insert overwrite table tt2 select name,address
+---------------------------
+FROM (
+	SELECT name, address
+	FROM test1
+) t1
+	LEFT JOIN (
+		SELECT name, school
+		FROM test2
+	) t2
+	ON t2.name = t1.name
+INSERT OVERWRITE TABLE tt1
+SELECT name, address, school
+INSERT OVERWRITE TABLE tt2
+SELECT name, address

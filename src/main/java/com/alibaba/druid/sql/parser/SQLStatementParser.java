@@ -2051,6 +2051,11 @@ public class SQLStatementParser extends SQLParser {
                         SQLAlterTableSetLifecycle setLifecycle = new SQLAlterTableSetLifecycle();
                         setLifecycle.setLifecycle(this.exprParser.primary());
                         stmt.addItem(setLifecycle);
+                    } else if (lexer.identifierEquals(Constants.LOCATION)) {
+                        lexer.nextToken();
+                        SQLAlterTableSetLocation setLocation = new SQLAlterTableSetLocation();
+                        setLocation.setLocation(this.exprParser.primary());
+                        stmt.addItem(setLocation);
                     } else if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
                         lexer.nextToken();
                         SQLAlterTableSetOption setOption = new SQLAlterTableSetOption();
