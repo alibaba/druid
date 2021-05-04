@@ -2048,8 +2048,6 @@ public class SQLExprParser extends SQLParser {
                 case SHOW:
                 case FOR:
                 case LEAVE:
-                case MODE:
-                case NOWAIT:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;
