@@ -1,0 +1,4 @@
+ALTER TABLE bi.bi_xxx_external SET LOCATION 'hdfs://nameservice1/user/hive/warehouse/bi.db/bi_xxx/pt=aaa';
+---------------------------
+ALTER TABLE bi.bi_xxx_external
+	SET LOCATION 'hdfs://nameservice1/user/hive/warehouse/bi.db/bi_xxx/pt=aaa';
