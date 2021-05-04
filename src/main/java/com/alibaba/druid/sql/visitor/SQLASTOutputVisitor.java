@@ -6580,6 +6580,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLAlterTableSetLocation x) {
+        print0(ucase ? "SET LOCATION " : "set location ");
+        x.getLocation().accept(this);
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLAlterTableEnableLifecycle x) {
         if (x.getPartition().size() != 0) {
             print0(ucase ? "PARTITION (" : "partition (");

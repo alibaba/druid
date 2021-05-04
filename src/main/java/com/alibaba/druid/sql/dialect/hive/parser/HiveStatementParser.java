@@ -78,7 +78,18 @@ public class HiveStatementParser extends SQLStatementParser {
                 String alias = lexer.stringVal();
                 accept(Token.IDENTIFIER);
 
-                SQLSubqueryTableSource from = new SQLSubqueryTableSource(select, alias);
+                SQLTableSource from = new SQLSubqueryTableSource(select, alias);
+
+                switch (lexer.token()) {
+                    case LEFT:
+                    case RIGHT:
+                    case FULL:
+                    case JOIN:
+                        from = selectParser.parseTableSourceRest(from);
+                        break;
+                    default:
+                        break;
+                }
 
                 stmt.setFrom(from);
             }

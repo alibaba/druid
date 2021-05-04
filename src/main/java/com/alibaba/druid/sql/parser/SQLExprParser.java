@@ -970,13 +970,17 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 break;
             case BANG:
+                lexer.nextToken();
+                sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Not
+                        , primary());
+                break;
             case BANGBANG: {
                 if (dbType == DbType.hive) {
                     throw new ParserException(lexer.info());
                 }
                 lexer.nextToken();
-                SQLExpr bangExpr = primary();
-                sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Not, bangExpr);
+                sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Not
+                        , primary());
                 break;
             }
             case BANG_TILDE: {
@@ -4605,6 +4609,17 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
             } else {
                 SQLExpr expr = expr();
+
+                if (lexer.token == Token.COLON) {
+                    if (dbType == DbType.hive || dbType == DbType.odps) {
+                        Lexer.SavePoint mark = lexer.mark();
+                        lexer.nextToken();
+                        String str = expr.toString() + ':';
+                        str += lexer.numberString();
+                        lexer.nextToken();
+                        expr = new SQLIdentifierExpr(str);
+                    }
+                }
 
                 if (lexer.token == Token.COMMA && DbType.postgresql == dbType) {
                     SQLListExpr listExpr = new SQLListExpr();

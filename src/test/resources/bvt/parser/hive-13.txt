@@ -1,0 +1,3 @@
+set test.url=xx.test.com:8808;
+---------------------------
+SET test.url = xx.test.com:8808;
