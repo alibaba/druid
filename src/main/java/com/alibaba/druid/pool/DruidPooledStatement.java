@@ -55,7 +55,19 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     protected void addResultSetTrace(ResultSet resultSet) {
         if (resultSetTrace == null) {
             resultSetTrace = new ArrayList<ResultSet>(1);
+        } else if (resultSetTrace.size() > 0) {
+            int lastIndex = resultSetTrace.size() - 1;
+            ResultSet lastResultSet = resultSetTrace.get(lastIndex);
+            try {
+                if (lastResultSet.isClosed()) {
+                    resultSetTrace.set(lastIndex, resultSet);
+                    return;
+                }
+            } catch (SQLException ex) {
+                // skip
+            }
         }
+
         resultSetTrace.add(resultSet);
     }
 

@@ -17,16 +17,7 @@ package com.alibaba.druid.bvt.pool.basic;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLXML;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.sql.Types;
+import java.sql.*;
 
 import org.junit.Assert;
 import junit.framework.TestCase;
@@ -71,6 +62,13 @@ public class PoolableCallableStatementTest extends TestCase {
 
         stmt.registerOutParameter(2, Types.DECIMAL, 10);
         Assert.assertEquals(2, raw.getOutParameters().size());
+    }
+
+    public void test_executeQuery_large() throws Exception {
+        for (int i = 0; i < 1000 * 1000; ++i) {
+            ResultSet rs = stmt.executeQuery();
+            rs.close();
+        }
     }
 
     public void test_basic() throws Exception {
