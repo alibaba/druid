@@ -48,7 +48,7 @@ public class ConfigTools {
 
 	public static void main(String[] args) throws Exception {
         String password = args[0];
-        String[] arr = genKeyPair(512);
+        String[] arr = genKeyPair(2048);
         System.out.println("privateKey:" + arr[0]);
         System.out.println("publicKey:" + arr[1]);
         System.out.println("password:" + encrypt(arr[0], password));
