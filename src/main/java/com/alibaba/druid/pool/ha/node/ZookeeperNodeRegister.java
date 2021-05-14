@@ -20,7 +20,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.nodes.GroupMember;
-import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.curator.retry.RetryForever;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -49,9 +49,9 @@ public class ZookeeperNodeRegister {
     public void init() {
         if (client == null) {
             client = CuratorFrameworkFactory.builder()
-                    .connectionTimeoutMs(3000)
+                    .connectionTimeoutMs(5000)
                     .connectString(zkConnectString)
-                    .retryPolicy(new ExponentialBackoffRetry(5000, 3, 30000))
+                    .retryPolicy(new RetryForever(10000))
                     .sessionTimeoutMs(30000)
                     .build();
             client.start();
