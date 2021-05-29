@@ -36,6 +36,7 @@ import com.alibaba.druid.util.FnvHash;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor, OracleASTVisitor {
@@ -957,14 +958,18 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(OracleBinaryFloatExpr x) {
-        print0(x.getValue().toString());
-        print('F');
+        Optional.ofNullable(x.getValue()).ifPresent(value -> {
+            print0(value.toString());
+            print('F');
+        });
         return false;
     }
 
     public boolean visit(OracleBinaryDoubleExpr x) {
-        print0(x.getValue().toString());
-        print('D');
+        Optional.ofNullable(x.getValue()).ifPresent(value -> {
+            print0(value.toString());
+            print('D');
+        });
         return false;
     }
 
