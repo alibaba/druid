@@ -40,6 +40,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
+import java.util.Optional;
 
 public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleASTVisitor {
 
@@ -775,8 +776,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleBinaryFloatExpr x) {
-        print0(x.getValue().toString());
-        print('F');
+        Optional.ofNullable(x.getValue()).ifPresent(value -> {
+            print0(value.toString());
+            print('F');
+        });
         return false;
     }
 
