@@ -785,8 +785,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleBinaryDoubleExpr x) {
-        print0(x.getValue().toString());
-        print('D');
+        Optional.ofNullable(x.getValue()).ifPresent(value -> {
+            print0(value.toString());
+            print('D');
+        });
         return false;
     }
 
