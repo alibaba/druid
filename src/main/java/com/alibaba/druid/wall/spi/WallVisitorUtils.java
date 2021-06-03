@@ -252,7 +252,7 @@ public class WallVisitorUtils {
 
         WallConfig config = visitor.getConfig();
         if (!config.isDeleteAllow()) {
-            addViolation(visitor, ErrorCode.INSERT_NOT_ALLOW, "delete not allow", x);
+            addViolation(visitor, ErrorCode.DELETE_NOT_ALLOW, "delete not allow", x);
             return;
         }
 
@@ -2324,7 +2324,7 @@ public class WallVisitorUtils {
         }
 
         if (x.getOperator() == SQLUnionOperator.MINUS && !visitor.getConfig().isMinusAllow()) {
-            addViolation(visitor, ErrorCode.INTERSET_NOT_ALLOW, "minus not allow", x);
+            addViolation(visitor, ErrorCode.MINUS_NOT_ALLOW, "minus not allow", x);
             return true;
         }
 
