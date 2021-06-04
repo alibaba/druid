@@ -20,7 +20,12 @@ public class SQLIndexOptions extends SQLObjectImpl {
     private SQLExpr comment;
     private String algorithm;
     private String lock;
+    private boolean invisible;
     private List<SQLAssignItem> otherOptions = new ArrayList<SQLAssignItem>();
+
+    public SQLIndexOptions() {
+
+    }
 
     public String getIndexType() {
         return indexType;
@@ -120,6 +125,14 @@ public class SQLIndexOptions extends SQLObjectImpl {
         }
     }
 
+    public boolean isInvisible() {
+        return invisible;
+    }
+
+    public void setInvisible(boolean invisible) {
+        this.invisible = invisible;
+    }
+
     public List<SQLAssignItem> getOtherOptions() {
         return otherOptions;
     }
@@ -154,5 +167,7 @@ public class SQLIndexOptions extends SQLObjectImpl {
             item1.setParent(parent);
             options.otherOptions.add(item1);
         }
+
+        options.invisible = invisible;
     }
 }
