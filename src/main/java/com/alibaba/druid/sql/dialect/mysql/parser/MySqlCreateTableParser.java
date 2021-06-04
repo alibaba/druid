@@ -348,6 +348,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         stmt.getTableElementList().add(column);
                     }
 
+                    if (lexer.token() == Token.HINT) {
+                        lexer.nextToken();
+                    }
+
                     if (lexer.token() != Token.COMMA) {
                         break;
                     } else {
