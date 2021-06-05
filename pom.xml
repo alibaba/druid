@@ -693,21 +693,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.sun</groupId>
-			<artifactId>tools</artifactId>
-			<version>1.8</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/openjdk-1.8-tools.jar</systemPath>
-		</dependency>
 
-		<dependency>
-			<groupId>com.sun</groupId>
-			<artifactId>jconsole</artifactId>
-			<version>1.8</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/openjdk-1.8-jconsole.jar</systemPath>
-		</dependency>
 
 		<dependency>
 			<groupId>org.apache.curator</groupId>
