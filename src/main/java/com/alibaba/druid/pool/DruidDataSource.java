@@ -1689,6 +1689,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     activeCount++;
                     holder.active = true;
+                    holder.lastActiveTimeMillis = System.currentTimeMillis();
                     if (activeCount > activePeak) {
                         activePeak = activeCount;
                         activePeakTime = System.currentTimeMillis();
@@ -3138,8 +3139,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             int removeCount = evictCount + keepAliveCount;
             if (removeCount > 0) {
                 System.arraycopy(connections, removeCount, connections, 0, poolingCount - removeCount);
-                Arrays.fill(connections, poolingCount - removeCount, poolingCount, null);
                 poolingCount -= removeCount;
+                Arrays.fill(connections, poolingCount, poolingCount + removeCount, null);
             }
             keepAliveCheckCount += keepAliveCount;
 
