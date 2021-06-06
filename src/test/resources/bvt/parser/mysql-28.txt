@@ -1,0 +1,13 @@
+CREATE TABLE t1 (
+  i INT,
+  j INT,
+  k INT,
+  INDEX i_idx (i) INVISIBLE
+) ENGINE = InnoDB;
+---------------------------
+CREATE TABLE t1 (
+	i INT,
+	j INT,
+	k INT,
+	INDEX i_idx(i) INVISIBLE
+) ENGINE = InnoDB;

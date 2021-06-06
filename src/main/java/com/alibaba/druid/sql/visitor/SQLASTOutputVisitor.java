@@ -6035,6 +6035,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (x.isInvisible()) {
             print0(ucase ? " INVISIBLE" : " invisible");
+        } else if (x.isVisible()) {
+            print0(ucase ? " VISIBLE" : " visible");
         }
 
         SQLExpr keyBlockSize = x.getKeyBlockSize();
@@ -6128,9 +6130,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "HASHMAP " : "hashmap ");
         }
 
-        print('(');
-        printAndAccept(x.getColumns(), ", ");
-        print(')');
+        if (x.getColumns().size() > 0) {
+            print('(');
+            printAndAccept(x.getColumns(), ", ");
+            print(')');
+        }
 
         if (x.getAnalyzerName() != null) {
             print0(ucase ? " WITH ANALYZER " : " with analyzer ");
@@ -6187,6 +6191,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLAlterTableAddIndex x) {
         print0(ucase ? "ADD " : "add ");
+
+        visit(x.getIndexDefinition());
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableAlterIndex x) {
+        print0(ucase ? "ALTER " : "alter ");
 
         visit(x.getIndexDefinition());
 
