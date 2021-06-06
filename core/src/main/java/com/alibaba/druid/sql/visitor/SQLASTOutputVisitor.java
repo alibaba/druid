@@ -6173,6 +6173,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (x.isInvisible()) {
             print0(ucase ? " INVISIBLE" : " invisible");
+        } else if (x.isVisible()) {
+            print0(ucase ? " VISIBLE" : " visible");
         }
 
         SQLExpr keyBlockSize = x.getKeyBlockSize();

@@ -1,0 +1,118 @@
+--odps sql
+--********************************************************************--
+--author:tianzhao
+--create time:2020-04-07 16:50:53
+--job info: 用户维度表（公司用户+外部用户）
+--********************************************************************--
+
+
+
+INSERT OVERWRITE TABLE dim_user
+PARTITION( ds='${ds}' )
+
+select
+a.user_id -- xxxxx this is comment
+,partner_id
+,app_code
+,user_level
+,trim(user_name)     user_name
+,real_name
+,user_phone
+,user_catalog
+,user_type
+,user_password
+,user_status
+,user_info_status
+,user_remark
+,promoter_name
+,promoter_id
+,user_role
+,if(a.deleted_time = 0 or a.deleted_time is null, 0, 1)     is_del
+,created_at       create_gmt
+,updated_at       update_gmt
+,audit_time       audit_gmt
+,audit_user_id
+,a.tags
+,employee_id
+,nickname
+,email
+,department_id
+,base_point
+,point
+,add_up_point
+,if(type = 0, 0, 1)      is_real_user
+,account_id
+,IF(a.deleted_time = 0, null, FROM_UNIXTIME(CAST(a.deleted_time/1000 as BIGINT)))  del_gmt
+--
+,role_id
+,set_role_gmt
+,role_name
+,domain_id
+,role_remark
+--
+,c.manager_shop_id
+,c.manager_shop_name
+,c.manager_shop_create_gmt
+from (
+    select *
+    from  ods_rose_rose_user_df
+    where ds = '${ds}'
+    and id is not null
+    and user_id is not null
+)   a
+left join (
+    select aa.user_id
+    ,COLLECT_SET(aa.role_id)   role_id
+    ,COLLECT_SET(aa.create_role_gmt)  set_role_gmt
+    ,COLLECT_SET(bb.role_name)  role_name
+    ,COLLECT_SET(bb.domain_id)  domain_id
+    ,COLLECT_SET(bb.role_remark)  role_remark
+    from (
+        select user_id, role_id, created_at  create_role_gmt
+        from ods_rose_rose_user_role_df
+        where ds = '${ds}'
+        and user_id is not null
+        and role_id is not null
+    ) aa
+    left join (
+        select role_id
+        ,max(if(is_deleted = 1, NULL, role_name))   role_name
+        ,max(if(is_deleted = 1, NULL, domain_id))   domain_id
+        ,max(if(is_deleted = 1, NULL, role_remark))   role_remark
+        from ods_rose_rose_role_df
+        where ds = '${ds}'
+        and role_id is not null
+        group by role_id
+    ) bb
+    on aa.role_id = bb.role_id
+    group by aa.user_id
+)   b
+on a.user_id = b.user_id
+left join(
+    select
+    tmp3.user_id
+    ,collect_list(tmp3.shop_id)         manager_shop_id
+    ,collect_list(tmp3.shop_name)       manager_shop_name
+    ,collect_list(tmp3.created_at)      manager_shop_create_gmt
+    from
+    (
+        select tmp3.user_id, tmp1.shop_id, tmp1.created_at,tmp2.shop_name
+        from
+        (
+            select user_id,shop_id,created_at
+            from    adbb5.ods_rose_shop_user_df
+            where   ds = '${ds}'
+            and     shop_id is not null
+        ) tmp1  join
+        (
+            select shop_id,shop_name
+            from ods_rose_shop_df
+            where  ds = '${ds}'
+            and is_deleted = 0
+        ) tmp2
+        on tmp3.shop_id = tmp2.shop_id
+    ) tmp3
+    group by tmp3.user_id
+) c
+on a.user_id = c.user_id
+;

@@ -1,0 +1,3 @@
+CREATE INDEX j_idx ON t1 (j) INVISIBLE;
+---------------------------
+CREATE INDEX j_idx ON t1 (j) INVISIBLE;

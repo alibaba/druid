@@ -1,0 +1,12 @@
+create table lt_tmp_adm_ddm_algo_user_cat2_interval_buy_history_days_20201114_dd lifecycle 7 as 
+select user_id,cat2_id,interval,gmt_create_dd
+    ,ROW_NUMBER() OVER(PARTITION BY  user_id,cat2_id,interval ORDER BY gmt_create_dd) AS row_num
+from(
+    select distinct trd_biz_consumer_id as user_id
+            ,coalesce(trd_cate_2_id,sh_cate_2_id) as cat2_id
+            ,mapHour2RangeBySlices(split_part(trd_gmt_create, ' ', 2), '6.0,10.5,14.0,16.0,21.0') interval
+            ,datetrunc(trd_gmt_create,'DD') gmt_create_dd
+    from kbalgo.adm_ddm_algo_dwd_evt_ot_trd_trade_di
+    where dt<='20201114' and dt > '20201015'
+            and length(trd_biz_consumer_id)>3 and length(coalesce(trd_cate_2_id,sh_cate_2_id))>3
+)t;

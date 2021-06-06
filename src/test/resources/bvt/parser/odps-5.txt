@@ -1,0 +1,47 @@
+create table if not exists crm_hp_marketing_group_meta_cron (
+
+
+  brand_id string comment '人群包适用的crm brand id',
+  track_id string comment 'md5(group_id + brand_id + dt + hh)',
+  algo_name string comment
+    '算法名称, 主要供效果看板模块追踪算法级别的转化情况使用',
+
+
+  group_type string comment
+    '人群包组成分类, 这个信息涉及到人群包投放链路的匹配，分类如下: \n'
+    'MEMBER_ONLY: 只有会员，适用于CRM平台会员营销链路或者代运营投放链路\n'
+    'CUSTOMER_ONLY: 只有顾客，适用于CRM平台顾客营销链路或者代运营投放链路\n'
+    'POTENTIAL_ONLY: 潜客，适用于CRM平台潜客营销链路或者代运营投放链路\n'
+    'MEMBER_AND_CUSTOMER'
+    'CUSTOMER_AND_POTENTIAL'
+    'ALL: 可能包含全部三类人群，只适用于代运营投放链路',
+  scene string comment
+    '人群包适用场景, MEMBER_RECRUIT-会员招募, TRADE_PROMOTION-促成交易',
+  platform string comment
+    '人群投放平台, CRM-crm人群管理, OP-代运营平台',
+	channel string comment
+  	'投放的端是 koubei-口碑 eleme-饿了么 wanjiadenghuo-支付宝万家灯火',
+
+
+  name string comment
+    '人群包id对应的名称，一般用于展示在相应前端系统里, 便于使用者理解人群包的内容',
+  description string comment '对人群包的详细描述',
+
+
+  create_time string comment '创建时间',
+  creator string comment '创建人',
+  num bigint comment '人群包规模, 不同oneid的数量',
+  customerNum bigint comment '人群包的顾客数量',
+  memberNum bigint comment '人群包的会员数量',
+  proCustomerNum bigint comment '人群包的潜客数量',
+  ext_info string comment '以json字典表示的额外信息'
+) comment 'CRM精准营销人群信息定义表，一次性'
+partitioned by (
+
+  dt string comment '日期',
+  hh string comment '小时, 00-23',
+
+
+
+  group_id string comment '人群包id = algo_name_id = algo_name + "_" + creator'
+) lifecycle 9999;
