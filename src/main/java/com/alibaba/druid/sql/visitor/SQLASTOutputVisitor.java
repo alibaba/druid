@@ -3468,6 +3468,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
+        if (x.getWith() != null) {
+            x.getWith().accept(this);
+            println();
+        }
+
         print0(ucase ? "UPDATE " : "update ");
 
         printTableSource(x.getTableSource());

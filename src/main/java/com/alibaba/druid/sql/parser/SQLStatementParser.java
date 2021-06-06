@@ -5257,6 +5257,10 @@ public class SQLStatementParser extends SQLParser {
             HiveMultiInsertStatement insert = (HiveMultiInsertStatement) this.parseInsert();
             insert.setWith(with);
             return insert;
+        } else if (lexer.token == UPDATE) {
+            SQLUpdateStatement update = this.parseUpdateStatement();
+            update.setWith(with);
+            return update;
         }
 
         throw new ParserException("TODO. " + lexer.info());
