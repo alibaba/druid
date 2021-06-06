@@ -4451,7 +4451,7 @@ public class SQLExprParser extends SQLParser {
 
     protected SQLColumnCheck parseColumnCheck() {
         lexer.nextToken();
-        SQLExpr expr = this.expr();
+        SQLExpr expr = this.primary();
         SQLColumnCheck check = new SQLColumnCheck(expr);
 
         if (lexer.token == Token.DISABLE) {
@@ -4472,7 +4472,20 @@ public class SQLExprParser extends SQLParser {
         } else if (lexer.identifierEquals(FnvHash.Constants.NORELY)) {
             lexer.nextToken();
             check.setRely(Boolean.FALSE);
+        } else if (lexer.identifierEquals("ENFORCED")) {
+            lexer.nextToken();
+            check.setEnforced(true);
+        } else if (lexer.token == Token.NOT) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (lexer.identifierEquals("ENFORCED")) {
+                lexer.nextToken();
+                check.setEnforced(false);
+            } else {
+                lexer.reset(mark);
+            }
         }
+
         return check;
     }
 

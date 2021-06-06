@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLColumnCheck extends SQLConstraintImpl implements SQLColumnConstraint, SQLReplaceable {
 
     private SQLExpr expr;
+    protected Boolean enforced;
 
     public SQLColumnCheck(){
 
@@ -41,6 +42,14 @@ public class SQLColumnCheck extends SQLConstraintImpl implements SQLColumnConstr
             expr.setParent(this);
         }
         this.expr = expr;
+    }
+
+    public Boolean getEnforced() {
+        return enforced;
+    }
+
+    public void setEnforced(Boolean enforced) {
+        this.enforced = enforced;
     }
 
     @Override

@@ -38,7 +38,7 @@ public class MySqlCreateTableTest157_shadow extends MysqlTest {
                 "\t`gmt_create` datetime NOT NULL COMMENT '创建时间',\n" +
                 "\t`gmt_modified` datetime NOT NULL COMMENT '修改时间',\n" +
                 "\tPRIMARY KEY (`id`),\n" +
-                "\tKEY `idx_ranking` (`user_id`, `scene_code`, `record_type`, `record_date`)\n" +
+                "\tKEY `idx_ranking` (`user_id`, `scene_code`, `record_type`, `record_date`) KEY_BLOCK_SIZE = 16384\n" +
                 ") AUTO_INCREMENT = 1000001 CHARSET = utf8mb4;", stmt.toString());
     }
 }
