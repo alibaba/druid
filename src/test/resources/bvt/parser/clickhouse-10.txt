@@ -1,0 +1,4 @@
+ALTER TABLE customer_info ADD COLUMN sex Nullable(String);
+---------------------------
+ALTER TABLE customer_info
+	ADD COLUMN sex Nullable(String);
