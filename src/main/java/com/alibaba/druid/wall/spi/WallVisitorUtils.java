@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExecuteImmediateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
@@ -2636,7 +2637,7 @@ public class WallVisitorUtils {
             allow = config.isHintAllow();
             denyMessage = "hint not allow";
             errorCode = ErrorCode.HINT_NOT_ALLOW;
-        } else if (x instanceof MySqlLockTableStatement) {
+        } else if (x instanceof SQLLockTableStatement) {
             allow = config.isLockTableAllow();
             denyMessage = "lock table not allow";
             errorCode = ErrorCode.LOCK_TABLE_NOT_ALLOW;
