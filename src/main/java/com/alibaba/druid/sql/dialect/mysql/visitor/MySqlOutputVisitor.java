@@ -2236,6 +2236,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
         }
 
+        if (x.getWith() != null) {
+            x.getWith().accept(this);
+            println();
+        }
+
         List<SQLExpr> returning = x.getReturning();
         if (returning != null && returning.size() > 0) {
             print0(ucase ? "SELECT " : "select ");
