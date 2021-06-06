@@ -881,6 +881,14 @@ public interface SQLASTVisitor {
         return true;
     }
 
+    default void endVisit(SQLAlterTableAlterIndex x) {
+
+    }
+
+    default boolean visit(SQLAlterTableAlterIndex x) {
+        return true;
+    }
+
     default void endVisit(SQLAlterTableAddConstraint x) {
 
     }

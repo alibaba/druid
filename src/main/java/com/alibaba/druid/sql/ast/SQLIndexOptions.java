@@ -21,6 +21,7 @@ public class SQLIndexOptions extends SQLObjectImpl {
     private String algorithm;
     private String lock;
     private boolean invisible;
+    private boolean visible;
     private List<SQLAssignItem> otherOptions = new ArrayList<SQLAssignItem>();
 
     public SQLIndexOptions() {
@@ -131,6 +132,14 @@ public class SQLIndexOptions extends SQLObjectImpl {
 
     public void setInvisible(boolean invisible) {
         this.invisible = invisible;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public List<SQLAssignItem> getOtherOptions() {

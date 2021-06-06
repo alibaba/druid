@@ -4781,6 +4781,10 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 indexDefinition.getOptions().setInvisible(true);
             } else if ((DbType.mysql == dbType) &&
+                    lexer.identifierEquals("VISIBLE")) {
+                lexer.nextToken();
+                indexDefinition.getOptions().setVisible(true);
+            } else if ((DbType.mysql == dbType) &&
                     lexer.token == Token.HINT && lexer.stringVal().trim().equals("!80000 INVISIBLE")) {
                 lexer.nextToken();
                 indexDefinition.getOptions().setInvisible(true);

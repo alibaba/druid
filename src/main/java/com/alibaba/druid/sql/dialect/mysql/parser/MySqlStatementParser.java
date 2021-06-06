@@ -6531,8 +6531,19 @@ public class MySqlStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.INDEX) {
                     // Caution: Not in MySql documents.
                     lexer.nextToken();
-                    MySqlAlterTableAlterFullTextIndex alterIndex = new MySqlAlterTableAlterFullTextIndex();
+
                     SQLName indexName = this.exprParser.name();
+
+                    if (lexer.identifierEquals("VISIBLE")) {
+                        SQLAlterTableAlterIndex alterIndex = new SQLAlterTableAlterIndex();
+                        alterIndex.setName(indexName);
+                        lexer.nextToken();
+                        alterIndex.getIndexDefinition().getOptions().setVisible(true);
+                        stmt.addItem(alterIndex);
+                        break;
+                    }
+
+                    MySqlAlterTableAlterFullTextIndex alterIndex = new MySqlAlterTableAlterFullTextIndex();
                     alterIndex.setIndexName(indexName);
 
                     accept(Token.SET);
