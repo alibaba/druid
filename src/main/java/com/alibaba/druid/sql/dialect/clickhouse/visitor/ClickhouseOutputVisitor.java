@@ -2,10 +2,7 @@ package com.alibaba.druid.sql.dialect.clickhouse.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -13,7 +10,7 @@ import java.util.List;
 
 public class ClickhouseOutputVisitor extends SQLASTOutputVisitor implements ClickhouseVisitor {
     public ClickhouseOutputVisitor(Appendable appender) {
-        super(appender);
+        super(appender, DbType.clickhouse);
     }
 
     public ClickhouseOutputVisitor(Appendable appender, DbType dbType) {
@@ -104,6 +101,12 @@ public class ClickhouseOutputVisitor extends SQLASTOutputVisitor implements Clic
             print0(ucase ? "SETTINGS " : "settings ");
             printAndAccept(settings, ", ");
         }
+        return false;
+    }
+
+    public boolean visit(SQLAlterTableAddColumn x) {
+        print0(ucase ? "ADD COLUMN " : "add column ");
+        printAndAccept(x.getColumns(), ", ");
         return false;
     }
 }
