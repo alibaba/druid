@@ -701,11 +701,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         print(')');
 
-        if (x.getIndexDefinition().hasOptions()) {
-            x.getIndexDefinition().getOptions().accept(this);
+        SQLIndexDefinition indexDefinition = x.getIndexDefinition();
+        if (indexDefinition.hasOptions()) {
+            indexDefinition.getOptions().accept(this);
         }
 
         SQLExpr comment = x.getComment();
+        if (indexDefinition.hasOptions()
+                && indexDefinition.getOptions().getComment() == comment) {
+            comment = null;
+        }
+
         if (comment != null) {
             print0(ucase ? " COMMENT " : " comment ");
             printExpr(comment);

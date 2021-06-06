@@ -33,7 +33,7 @@ public class MySqlCreateTableTest156_ob
                 "\t`gmt_create` datetime NOT NULL COMMENT '创建时间',\n" +
                 "\t`gmt_modified` datetime NOT NULL COMMENT '修改时间',\n" +
                 "\tPRIMARY KEY (`id`),\n" +
-                "\tKEY `idx_ranking` (`user_id`, `scene_code`, `record_type`, `record_date`)\n" +
+                "\tKEY `idx_ranking` (`user_id`, `scene_code`, `record_type`, `record_date`) KEY_BLOCK_SIZE = 16384\n" +
                 ") AUTO_INCREMENT = 1000001 CHARSET = utf8mb4 COMPRESSION = 'lz4_1.0' REPLICA_NUM = 3 BLOCK_SIZE = 16384 USE_BLOOM_FILTER = false TABLET_SIZE = 134217728 PCTFREE = 10 COMMENT 'ar平台数据排行榜';", stmt.toString());
     }
 }

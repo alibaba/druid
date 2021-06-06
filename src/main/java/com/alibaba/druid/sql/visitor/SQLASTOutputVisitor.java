@@ -5196,11 +5196,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         x.getExpr().accept(this);
         print(')');
 
-        if (x.getEnable() != null) {
-            if (x.getEnable().booleanValue()) {
+        Boolean enable = x.getEnable();
+        if (enable != null) {
+            if (enable.booleanValue()) {
                 print0(ucase ? " ENABLE" : " enable");
             } else {
                 print0(ucase ? " DISABLE" : " disable");
+            }
+        }
+
+        Boolean enforced = x.getEnforced();
+        if (enforced != null) {
+            if (enforced.booleanValue()) {
+                print0(ucase ? " ENFORCED" : " enforced");
+            } else {
+                print0(ucase ? " NOT ENFORCED" : " not enforced");
             }
         }
         return false;

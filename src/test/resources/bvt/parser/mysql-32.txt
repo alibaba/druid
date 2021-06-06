@@ -1,0 +1,21 @@
+create table test(
+    id int,
+    fist_name varchar(20),
+    last_name varchar(20),
+    age int check (age < 200) not enforced,
+    sex char(1) check (sex='女' or sex='男') enforced,
+    constraint name_ck check (fist_name<>last_name) not enforced,
+    constraint age_ck check (age>=16 and age<65)
+ )engine=innodb default charset=utf8;
+---------------------------
+CREATE TABLE test (
+	id int,
+	fist_name varchar(20),
+	last_name varchar(20),
+	age int CHECK (age < 200) NOT ENFORCED,
+	sex char(1) CHECK (sex = '女'
+	OR sex = '男') ENFORCED,
+	CONSTRAINT name_ck CHECK (fist_name <> last_name) NOT ENFORCED,
+	CONSTRAINT age_ck CHECK (age >= 16
+		AND age < 65)
+) ENGINE = innodb CHARSET = utf8;
