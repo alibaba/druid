@@ -19,13 +19,14 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlLockTableStatement extends MySqlStatementImpl {
+public class MySqlLockTableStatement extends MySqlStatementImpl implements SQLLockTableStatement {
 
     private List<Item> items = new ArrayList<Item>();
 

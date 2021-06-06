@@ -19,12 +19,13 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OracleLockTableStatement extends OracleStatementImpl {
+public class OracleLockTableStatement extends OracleStatementImpl implements SQLLockTableStatement {
 
     private SQLExprTableSource table;
     private LockMode lockMode;

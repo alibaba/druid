@@ -38,4 +38,11 @@ public class OracleWallTest7 extends TestCase {
 
         assertTrue(WallUtils.isValidateOracle(sql));
     }
+
+    public void test_lock() throws Exception {
+        String sql = //
+        "LOCK TABLE \"SFXT\".\"FLYWAY_SCHEMA_HISTORY\" IN EXCLUSIVE MODE";
+
+        assertTrue(WallUtils.isValidateOracle(sql));
+    }
 }
