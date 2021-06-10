@@ -38,10 +38,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.Rea
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-import org.eclipse.jetty.util.StringUtil;
 
 import java.util.List;
-import java.util.Optional;
 
 public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleASTVisitor {
 
