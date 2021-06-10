@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.Fetc
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
+import org.eclipse.jetty.util.StringUtil;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -958,18 +959,18 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(OracleBinaryFloatExpr x) {
-        Optional.ofNullable(x.getValue()).ifPresent(value -> {
-            print0(value.toString());
+        if (x != null && x.getValue() != null) {
+            print0(x.getValue().toString());
             print('F');
-        });
+        }
         return false;
     }
 
     public boolean visit(OracleBinaryDoubleExpr x) {
-        Optional.ofNullable(x.getValue()).ifPresent(value -> {
-            print0(value.toString());
+        if (x != null && x.getValue() != null) {
+            print0(x.getValue().toString());
             print('D');
-        });
+        }
         return false;
     }
 

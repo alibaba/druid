@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.Rea
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import org.eclipse.jetty.util.StringUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -776,19 +777,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleBinaryFloatExpr x) {
-        Optional.ofNullable(x.getValue()).ifPresent(value -> {
-            print0(value.toString());
+        if (x != null && x.getValue() != null) {
+            print0(x.getValue().toString());
             print('F');
-        });
+        }
         return false;
     }
 
     @Override
     public boolean visit(OracleBinaryDoubleExpr x) {
-        Optional.ofNullable(x.getValue()).ifPresent(value -> {
-            print0(value.toString());
+        if (x != null && x.getValue() != null) {
+            print0(x.getValue().toString());
             print('D');
-        });
+        }
         return false;
     }
 
