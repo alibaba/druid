@@ -957,14 +957,18 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(OracleBinaryFloatExpr x) {
-        print0(x.getValue().toString());
-        print('F');
+        if (x != null && x.getValue() != null) {
+            print0(x.getValue().toString());
+            print('F');
+        }
         return false;
     }
 
     public boolean visit(OracleBinaryDoubleExpr x) {
-        print0(x.getValue().toString());
-        print('D');
+        if (x != null && x.getValue() != null) {
+            print0(x.getValue().toString());
+            print('D');
+        }
         return false;
     }
 
