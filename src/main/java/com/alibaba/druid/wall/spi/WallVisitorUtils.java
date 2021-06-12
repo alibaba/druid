@@ -1711,44 +1711,56 @@ public class WallVisitorUtils {
     }
 
     public static void checkFunction(WallVisitor visitor, SQLMethodInvokeExpr x) {
-
         final WallTopStatementContext topStatementContext = wallTopStatementContextLocal.get();
         if (topStatementContext != null && (topStatementContext.fromSysSchema || topStatementContext.fromSysTable)) {
             return;
         }
 
-        checkSchema(visitor, x.getOwner());
+        String methodName = x.getMethodName().toLowerCase();
+        SQLExpr owner = x.getOwner();
+
+        WallProvider provider = visitor.getProvider();
 
         if (!visitor.getConfig().isFunctionCheck()) {
             return;
         }
-
-        String methodName = x.getMethodName().toLowerCase();
 
         WallContext context = WallContext.current();
         if (context != null) {
             context.incrementFunctionInvoke(methodName);
         }
 
-        if (!visitor.getProvider().checkDenyFunction(methodName)) {
-            boolean isTopNoneFrom = isTopNoneFromSelect(visitor, x);
-            if (isTopNoneFrom) {
+        if (owner != null) {
+            String fullName = (owner.toString() + '.' + methodName).toLowerCase();
+            if (provider.getConfig().getPermitFunctions().contains(fullName)) {
                 return;
             }
 
-            if (isTopFromDenySchema(visitor, x)) {
-                return;
-            }
-
-            boolean isShow = x.getParent() instanceof MySqlShowGrantsStatement;
-            if (isShow) {
-                return;
-            }
-
-            if (isWhereOrHaving(x) || checkSqlExpr(x)) {
-                addViolation(visitor, ErrorCode.FUNCTION_DENY, "deny function : " + methodName, x);
-            }
+            checkSchema(visitor, owner);
         }
+
+        if (provider.checkDenyFunction(methodName)) {
+            return;
+        }
+
+        boolean isTopNoneFrom = isTopNoneFromSelect(visitor, x);
+        if (isTopNoneFrom) {
+            return;
+        }
+
+        if (isTopFromDenySchema(visitor, x)) {
+            return;
+        }
+
+        boolean isShow = x.getParent() instanceof MySqlShowGrantsStatement;
+        if (isShow) {
+            return;
+        }
+
+        if (isWhereOrHaving(x) || checkSqlExpr(x)) {
+            addViolation(visitor, ErrorCode.FUNCTION_DENY, "deny function : " + methodName, x);
+        }
+
     }
 
     public static SQLSelectQueryBlock getQueryBlock(SQLObject x) {
