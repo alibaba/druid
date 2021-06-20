@@ -3032,6 +3032,10 @@ public class SQLExprParser extends SQLParser {
     public SQLExpr orRest(SQLExpr expr) {
         for (;;) {
             if (lexer.token == Token.OR) {
+                if (lexer.isKeepComments() && lexer.hasComment()) {
+                    expr.addAfterComment(lexer.readAndResetComments());
+                }
+
                 lexer.nextToken();
                 SQLExpr rightExp = xor();
 

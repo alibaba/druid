@@ -1132,6 +1132,12 @@ public class SQLSelectParser extends SQLParser {
     }
 
     public SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
+        if (lexer.hasComment()
+                && lexer.isKeepComments()
+                && !(tableSource instanceof SQLSubqueryTableSource)) {
+            tableSource.addAfterComment(lexer.readAndResetComments());
+        }
+
         if (tableSource.getAlias() == null || tableSource.getAlias().length() == 0) {
             Token token = lexer.token;
             long hash;
