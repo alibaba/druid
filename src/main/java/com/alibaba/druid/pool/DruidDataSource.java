@@ -570,6 +570,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public void restart() throws SQLException {
+        this.restart(null);
+    }
+
+    public void restart(Properties properties) throws SQLException {
         lock.lock();
         try {
             if (activeCount > 0) {
@@ -584,6 +588,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.inited = false;
             this.enable = true;
             this.closed = false;
+
+            if (properties != null) {
+                configFromPropety(properties);
+            }
         } finally {
             lock.unlock();
         }
