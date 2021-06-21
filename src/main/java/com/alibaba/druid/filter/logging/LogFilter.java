@@ -122,11 +122,37 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                 statementExecutableSqlLogEnable = false;
             }
         }
+        {
+            String prop = properties.getProperty("druid.log.conn.logError");
+            if ("false".equals(prop)) {
+                connectionLogErrorEnabled = false;
+            } else if ("true".equals(prop)) {
+                connectionLogErrorEnabled = true;
+            }
+        }
+        {
+            String prop = properties.getProperty("druid.log.stmt.logError");
+            if ("false".equals(prop)) {
+                statementLogErrorEnabled = false;
+            } else if ("true".equals(prop)) {
+                statementLogErrorEnabled = true;
+            }
+        }
+        {
+            String prop = properties.getProperty("druid.log.rs.logError");
+            if ("false".equals(prop)) {
+                resultSetLogErrorEnabled = false;
+            } else if ("true".equals(prop)) {
+                resultSetLogErrorEnabled = true;
+            }
+        }
     }
 
     @Override
     public void init(DataSourceProxy dataSource) {
         this.dataSource = dataSource;
+        configFromProperties(dataSource.getConnectProperties());
+        configFromProperties(System.getProperties());
     }
 
     public boolean isConnectionLogErrorEnabled() {
