@@ -1271,6 +1271,7 @@ public class SQLExprParser extends SQLParser {
             case ORDER:
             case THEN:
             case END:
+            case AS:
                 return new SQLIdentifierExpr(str);
             default:
                 break;
@@ -2376,6 +2377,31 @@ public class SQLExprParser extends SQLParser {
     public SQLOrderBy parseOrderBy() {
         if (lexer.token == Token.ORDER) {
             SQLOrderBy orderBy = new SQLOrderBy();
+
+            lexer.nextToken();
+
+            if (lexer.identifierEquals(FnvHash.Constants.SIBLINGS)) {
+                lexer.nextToken();
+                orderBy.setSibings(true);
+            }
+
+            accept(Token.BY);
+
+            orderBy(orderBy.getItems(), orderBy);
+
+            if (lexer.token == Token.ORDER) {
+                throw new ParserException(lexer.info()); // dual order by
+            }
+
+            return orderBy;
+        }
+
+        return null;
+    }
+
+    public SQLZOrderBy parseZOrderBy() {
+        if (lexer.identifierEquals("ZORDER")) {
+            SQLZOrderBy orderBy = new SQLZOrderBy();
 
             lexer.nextToken();
 

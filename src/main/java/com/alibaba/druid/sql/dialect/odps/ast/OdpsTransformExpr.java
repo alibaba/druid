@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.odps.ast;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -11,10 +12,10 @@ import java.util.List;
 
 public class OdpsTransformExpr extends SQLExprImpl implements OdpsObject {
     private SQLExternalRecordFormat inputRowFormat;
-    private final List<SQLExpr> inputColumns = new ArrayList<SQLExpr>();
-    private final List<SQLExpr> outputColumns = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> inputColumns = new ArrayList<>();
+    private final List<SQLColumnDefinition> outputColumns = new ArrayList<>();
     private SQLExpr using;
-    private final List<SQLExpr> resources = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> resources = new ArrayList<>();
     private SQLExternalRecordFormat outputRowFormat;
 
     @Override
@@ -58,7 +59,7 @@ public class OdpsTransformExpr extends SQLExprImpl implements OdpsObject {
         return inputColumns;
     }
 
-    public List<SQLExpr> getOutputColumns() {
+    public List<SQLColumnDefinition> getOutputColumns() {
         return outputColumns;
     }
 

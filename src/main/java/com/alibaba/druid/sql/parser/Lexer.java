@@ -675,16 +675,32 @@ public class Lexer {
                 ch = charAt(++pos);
             }
 
-            if (ch == '/' && pos + 1 < text.length() && text.charAt(pos + 1) == '*') {
-                int index = text.indexOf("*/", pos + 2);
-                if (index == -1) {
-                    return SQLType.UNKNOWN;
-                }
+            if (ch == '/') {
+                if (pos + 1 < text.length() && text.charAt(pos + 1) == '*') {
+                    int index = text.indexOf("*/", pos + 2);
+                    if (index == -1) {
+                        return SQLType.UNKNOWN;
+                    }
 
-                pos = index + 2;
-                ch = charAt(pos);
-                continue;
+                    pos = index + 2;
+                    ch = charAt(pos);
+                    continue;
+                } else if (pos + 2 < text.length()
+                        && text.charAt(pos + 1) == ' '
+                        && text.charAt(pos + 2) == '*'
+                        && dbType == DbType.odps
+                ) {
+                    int index = text.indexOf("* /", pos + 3);
+                    if (index == -1) {
+                        return SQLType.UNKNOWN;
+                    }
+
+                    pos = index + 3;
+                    ch = charAt(pos);
+                    continue;
+                }
             }
+
 
             if (ch == '-' && pos + 1 < text.length() && text.charAt(pos + 1) == '-') {
                 int index = text.indexOf('\n', pos + 2);
@@ -1176,6 +1192,12 @@ public class Lexer {
                             continue;
                         }
                     } else if (nextChar == ' ' && charAt(pos + 2) == '*') {
+                        scanComment();
+                        if ((token == Token.LINE_COMMENT || token == Token.MULTI_LINE_COMMENT) && skipComment) {
+                            bufPos = 0;
+                            continue;
+                        }
+                    } else if (nextChar == ' ' && charAt(pos + 2) == ' ' && charAt(pos + 3) == '*') {
                         scanComment();
                         if ((token == Token.LINE_COMMENT || token == Token.MULTI_LINE_COMMENT) && skipComment) {
                             bufPos = 0;
@@ -2091,6 +2113,12 @@ public class Lexer {
             mark = pos;
             bufPos = 0;
             scanChar();
+
+            if (dbType == DbType.odps && ch == ' ') {
+                mark = pos;
+                bufPos = 0;
+                scanChar();
+            }
         }
 
         // /*+ */
@@ -2114,9 +2142,16 @@ public class Lexer {
             for (;;) {
                 char c2;
                 if (ch == '*'
-                        && ((c2 = charAt(pos + 1)) == '/' || (c2 == ' ' && charAt(pos + 2) == '/'))
+                        && ((c2 = charAt(pos + 1)) == '/'
+                            || (c2 == ' ' && charAt(pos + 2) == '/')
+                            || (c2 == ' ' && charAt(pos + 2) == ' ' && charAt(pos + 3) == '/'))
                 ) {
                     if (c2 == ' ') {
+                        bufPos ++;
+                        scanChar();
+                    }
+
+                    if (charAt(pos + 1) == ' ') {
                         bufPos ++;
                         scanChar();
                     }

@@ -1022,6 +1022,14 @@ public class SQLSelectParser extends SQLParser {
                 }
             } else if (lexer.token == Token.LPAREN) {
                 tableSource = parseTableSource();
+
+                while (lexer.token == Token.UNION && tableSource instanceof SQLUnionQueryTableSource) {
+                    SQLUnionQueryTableSource unionQueryTableSource = (SQLUnionQueryTableSource) tableSource;
+                    SQLUnionQuery union = unionQueryTableSource.getUnion();
+                    unionQueryTableSource.setUnion(
+                            (SQLUnionQuery) queryRest(union)
+                    );
+                }
                 accept(Token.RPAREN);
             } else {
                 tableSource = parseTableSource();

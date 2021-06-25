@@ -83,6 +83,10 @@ public class SQLParser {
                 || token == Token.SELECT
                 || token == Token.FROM
                 || token == Token.WHERE) {
+            if (token == Token.WHERE && dbType == DbType.odps) {
+                return null;
+            }
+
             if (must) {
                 throw new ParserException("illegal alias. " + lexer.info());
             }
@@ -113,8 +117,18 @@ public class SQLParser {
                     case COMMA:
                     case WHERE:
                     case INNER:
+                    case LEFT:
+                    case RIGHT:
+                    case FULL:
                     case ON:
                         return ident;
+                    case JOIN:
+                        if (hash != FnvHash.Constants.NATURAL
+                                && hash != FnvHash.Constants.CROSS) {
+                            return ident;
+                        }
+                        lexer.reset(mark);
+                        break;
                     default:
                         lexer.reset(mark);
                         break;
@@ -509,6 +523,8 @@ public class SQLParser {
                 case BY:
                 case EXCEPT:
                 case TABLESPACE:
+                case CREATE:
+                case DELETE:
                     alias = lexer.stringVal();
                     lexer.nextToken();
                     return alias;
