@@ -911,6 +911,12 @@ public class SQLStatementParser extends SQLParser {
 
         accept(Token.VIEW);
 
+        if (lexer.token == Token.IF) {
+            lexer.nextToken();
+            accept(Token.EXISTS);
+            stmt.setIfExists(true);
+        }
+
         stmt.setName(this.exprParser.name());
         return stmt;
     }

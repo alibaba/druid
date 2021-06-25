@@ -256,7 +256,8 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
-        if (stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) {
+        if (stmt.getClusteringType() != ClusteringType.Range &&
+                (stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0)) {
             accept(Token.INTO);
             if (lexer.token() == Token.LITERAL_INT) {
                 stmt.setBuckets(lexer.integerValue().intValue());

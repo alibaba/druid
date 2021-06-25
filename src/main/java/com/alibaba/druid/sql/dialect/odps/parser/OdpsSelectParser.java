@@ -143,7 +143,8 @@ public class OdpsSelectParser extends SQLSelectParser {
         parseGroupBy(queryBlock);
 
         queryBlock.setOrderBy(this.exprParser.parseOrderBy());
-        
+        queryBlock.setZOrderBy(this.exprParser.parseZOrderBy());
+
         if (lexer.token() == Token.DISTRIBUTE) {
             lexer.nextToken();
             accept(Token.BY);

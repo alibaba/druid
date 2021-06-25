@@ -17,10 +17,7 @@ package com.alibaba.druid.sql.dialect.odps.ast;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -30,7 +27,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 
 public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
-
+    private SQLZOrderBy zOrderBy;
 
     public OdpsSelectQueryBlock(){
         dbType = DbType.odps;
@@ -64,6 +61,7 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.where);
             acceptChild(visitor, this.groupBy);
             acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.zOrderBy);
             acceptChild(visitor, this.clusterBy);
             acceptChild(visitor, this.distributeBy);
             acceptChild(visitor, this.sortBy);
@@ -84,5 +82,17 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
         }
 
         setLimit(new SQLLimit(new SQLIntegerExpr(rowCount)));
+    }
+
+    public SQLZOrderBy getZOrderBy() {
+        return zOrderBy;
+    }
+
+    public void setZOrderBy(SQLZOrderBy x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+
+        this.zOrderBy = x;
     }
 }

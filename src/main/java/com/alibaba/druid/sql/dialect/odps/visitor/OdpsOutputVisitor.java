@@ -471,6 +471,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             x.getOrderBy().accept(this);
         }
 
+        SQLZOrderBy zorderBy = x.getZOrderBy();
+        if (zorderBy != null) {
+            println();
+            zorderBy.accept(this);
+        }
+
         final List<SQLSelectOrderByItem> distributeBy = x.getDistributeByDirect();
         if (distributeBy.size() > 0) {
             println();
@@ -504,6 +510,23 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         int itemSize = x.getItems().size();
         if (itemSize > 0) {
             print0(ucase ? "ORDER BY " : "order by ");
+            this.indentCount++;
+            for (int i = 0; i < itemSize; ++i) {
+                if (i != 0) {
+                    println(", ");
+                }
+                x.getItems().get(i).accept(this);
+            }
+            this.indentCount--;
+        }
+
+        return false;
+    }
+
+    public boolean visit(SQLZOrderBy x) {
+        int itemSize = x.getItems().size();
+        if (itemSize > 0) {
+            print0(ucase ? "ZORDER BY " : "zorder by ");
             this.indentCount++;
             for (int i = 0; i < itemSize; ++i) {
                 if (i != 0) {
@@ -946,7 +969,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             printAndAccept(resources, ", ");
         }
 
-        List<SQLExpr> outputColumns = x.getOutputColumns();
+        List<SQLColumnDefinition> outputColumns = x.getOutputColumns();
         if (!outputColumns.isEmpty()) {
             println();
             print0(ucase ? "AS (" : "as (");
