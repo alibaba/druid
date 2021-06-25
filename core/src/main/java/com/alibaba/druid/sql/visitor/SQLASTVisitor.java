@@ -279,6 +279,14 @@ public interface SQLASTVisitor {
     default void endVisit(SQLZOrderBy x) {
     }
 
+    default boolean visit(SQLZOrderBy x) {
+        return true;
+    }
+
+    default void endVisit(SQLZOrderBy x) {
+
+    }
+
     default boolean visit(SQLSelectOrderByItem x) {
         return true;
     }
