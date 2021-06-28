@@ -1094,6 +1094,11 @@ public class SQLExprParser extends SQLParser {
             case LIKE:
             case UNION:
             case CREATE:
+            case COMMA:
+            case STAR:
+            case DIV:
+            case DISTRIBUTE:
+            case UNIQUE:
                 if (dbType == DbType.odps || dbType == DbType.hive) {
                     sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                     lexer.nextToken();
@@ -1176,10 +1181,17 @@ public class SQLExprParser extends SQLParser {
         SQLExpr sqlExpr;
         String str = lexer.stringVal();
         lexer.nextToken();
-        if (lexer.token == Token.DOT || lexer.token == Token.SLASH) {
-            return primaryRest(new SQLIdentifierExpr(str));
-        } else if (lexer.token == Token.COMMA) {
-            return new SQLIdentifierExpr(str);
+        switch (lexer.token) {
+            case DOT:
+            case SLASH:
+                return primaryRest(new SQLIdentifierExpr(str));
+            case COMMA:
+            case PLUS:
+            case SUB:
+            case RPAREN:
+                return new SQLIdentifierExpr(str);
+            default:
+                break;
         }
 
         SQLAllExpr allExpr = new SQLAllExpr();

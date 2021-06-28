@@ -973,8 +973,15 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         if (!outputColumns.isEmpty()) {
             println();
             print0(ucase ? "AS (" : "as (");
-            printAndAccept(resources, ", ");
+            printAndAccept(outputColumns, ", ");
             print(')');
+        }
+
+        SQLExternalRecordFormat inputRowFormat = x.getInputRowFormat();
+        if (inputRowFormat != null) {
+            println();
+            print0(ucase ? "ROW FORMAT DELIMITED" : "row format delimited");
+            inputRowFormat.accept(this);
         }
 
         return false;
