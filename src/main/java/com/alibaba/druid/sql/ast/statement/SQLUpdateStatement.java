@@ -170,6 +170,10 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     protected void acceptChild(SQLASTVisitor visitor)
     {
+        if (with != null) {
+            with.accept(visitor);
+        }
+
         if (tableSource != null) {
             tableSource.accept(visitor);
         }
