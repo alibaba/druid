@@ -58,7 +58,7 @@ public class SQLSelectParser extends SQLParser {
             select.setWithSubQuery(with);
         }
 
-        SQLSelectQuery query = query(select);
+        SQLSelectQuery query = query(select, true);
         select.setQuery(query);
 
         SQLOrderBy orderBy = this.parseOrderBy();
@@ -336,6 +336,10 @@ public class SQLSelectParser extends SQLParser {
             union.setLeft(selectQuery);
 
             union.setOperator(SQLUnionOperator.MINUS);
+            if (lexer.token == Token.DISTINCT) {
+                union.setOperator(SQLUnionOperator.MINUS_DISTINCT);
+                lexer.nextToken();
+            }
 
             SQLSelectQuery right = this.query(union, false);
             union.setRight(right);
@@ -1094,7 +1098,7 @@ public class SQLSelectParser extends SQLParser {
             this.exprParser.names(tableSource.getColumns(), tableSource);
             accept(Token.RPAREN);
 
-            return tableSource;
+            return parseTableSourceRest(tableSource);
         }
 
         if (lexer.token == Token.SELECT) {

@@ -218,6 +218,10 @@ public class OdpsExprParser extends SQLExprParser {
                         break;
                     }
                     accept(Token.RPAREN);
+                } else {
+                    SQLColumnDefinition column = new SQLColumnDefinition();
+                    column.setName(this.name());
+                    outputColumns.add(column);
                 }
             }
 

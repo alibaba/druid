@@ -160,7 +160,9 @@ public class SQLParser {
                     return ident;
                 } else if (hash == FnvHash.Constants.DISTRIBUTE
                         || hash == FnvHash.Constants.SORT
-                        || hash == FnvHash.Constants.CLUSTER) {
+                        || hash == FnvHash.Constants.CLUSTER
+                        || hash == FnvHash.Constants.ZORDER
+                ) {
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
                     if (lexer.token == Token.BY) {
@@ -217,6 +219,8 @@ public class SQLParser {
                 case FOR:
                 case GRANT:
                 case CHECK:
+                case LEAVE:
+                case TRIGGER:
                     if (dbType == DbType.odps || dbType == DbType.hive) {
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
