@@ -184,7 +184,7 @@
 
                     var lastSlowHtml = stat.MaxTimespan;
                     if (stat.LastSlowParameters != null && stat.LastSlowParameters.length > 0) {
-                        lastSlowHtml = '<a target="_blank" style="color:red" href="sql-detail.html?sqlId=' + stat.ID + '">' + stat.MaxTimespan + '</a>';
+                        lastSlowHtml = '<a target="_blank" style="color:red" href="sql-detail.html?serviceId=' + serviceId + '&sqlId=' + stat.ID + '">' + stat.MaxTimespan + '</a>';
                     }
                     html += "<td>" + replace(lastSlowHtml) + "</td>";
                     html += "<td>" + replace(stat.InTransactionCount) + "</td>";
