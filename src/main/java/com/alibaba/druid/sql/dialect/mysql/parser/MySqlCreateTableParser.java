@@ -392,7 +392,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 } else {
                     expr = this.exprParser.expr();
                 }
-                stmt.addOption("ENGINE", expr);
+                stmt.setEngine(expr);
                 continue;
             }
 
