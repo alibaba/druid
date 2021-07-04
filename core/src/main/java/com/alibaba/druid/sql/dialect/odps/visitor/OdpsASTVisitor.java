@@ -286,4 +286,12 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     default void endVisit(OdpsCopyStmt x) {
     }
 
+    default boolean visit(OdpsInstallPackageStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsInstallPackageStatement x) {
+
+    }
+
 }
