@@ -568,6 +568,12 @@ public class Lexer {
             return;
         }
 
+        if (ch == '（') {
+            scanChar();
+            token = Token.LPAREN;
+            return;
+        }
+
         if (ch == '$' && isVaraintChar(charAt(pos + 1))) {
             scanVariable();
             return;

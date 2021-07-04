@@ -115,7 +115,7 @@ public class OdpsSelectParser extends SQLSelectParser {
                 } else if (lexer.token() == Token.ALL) {
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
-                    if (lexer.token() == Token.DOT) {
+                    if (lexer.token() == Token.DOT || lexer.token() == Token.COMMA) {
                         lexer.reset(mark);
                     } else {
                         queryBlock.setDistionOption(SQLSetQuantifier.ALL);

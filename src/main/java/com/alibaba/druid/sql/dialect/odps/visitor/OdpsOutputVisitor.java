@@ -668,7 +668,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     public boolean visit(SQLDataType x) {
         String dataTypeName = x.getName();
-        print0(ucase ? dataTypeName.toUpperCase() : dataTypeName.toLowerCase());
+        if (dataTypeName.indexOf('<') != -1 || dataTypeName.equals("Object")) {
+            print0(dataTypeName);
+        } else {
+            print0(ucase ? dataTypeName.toUpperCase() : dataTypeName.toLowerCase());
+        }
+
         if (x.getArguments().size() > 0) {
             print('(');
             printAndAccept(x.getArguments(), ", ");
@@ -848,6 +853,18 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
         if (x.isForce()) {
             print0(" -f");
+        }
+
+        SQLName toPackage = x.getToPackage();
+        if (toPackage != null) {
+            print0(ucase ? " TO PACKAGE " : " to package ");
+            printExpr(toPackage);
+
+            List<SQLPrivilegeItem> privileges = x.getPrivileges();
+            if (!privileges.isEmpty()) {
+                print0(ucase ? " WITH PRIVILEGES " : " with privileges ");
+                printAndAccept(privileges, ", ");
+            }
         }
 
         return false;
@@ -1050,6 +1067,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     public boolean visit(OdpsNewExpr x) {
         print0("new ");
         super.visit((SQLMethodInvokeExpr) x);
+        return false;
+    }
+
+    public boolean visit(OdpsInstallPackageStatement x) {
+        print0(ucase ? "INSTALL PACKAGE " : "install package ");
+        printExpr(x.getPackageName());
         return false;
     }
 }

@@ -240,4 +240,12 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
 
     }
 
+    default boolean visit(OdpsInstallPackageStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsInstallPackageStatement x) {
+
+    }
+
 }

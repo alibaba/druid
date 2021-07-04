@@ -143,6 +143,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     case CLOSE:
                     case IN:
                     case OUT:
+                    case INOUT:
                     case LIMIT:
                     case FULL:
                     case MINUS:
@@ -150,6 +151,13 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     case TRIGGER:
                     case USE:
                     case LIKE:
+                    case DISTRIBUTE:
+                    case DELETE:
+                    case UPDATE:
+                    case IS:
+                    case LEFT:
+                    case RIGHT:
+                    case REPEAT:
                         column = this.exprParser.parseColumn(stmt);
                         break;
                     default:

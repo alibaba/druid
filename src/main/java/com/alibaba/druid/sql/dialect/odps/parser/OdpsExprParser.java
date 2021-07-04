@@ -45,7 +45,8 @@ public class OdpsExprParser extends SQLExprParser {
                 "STDDEV", //
                 "SUM", //
                 "ROW_NUMBER",
-                "WM_CONCAT"//
+                "WM_CONCAT",
+                "COLLECT_LIST"//
         };
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];

@@ -339,6 +339,9 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token == Token.DISTINCT) {
                 union.setOperator(SQLUnionOperator.MINUS_DISTINCT);
                 lexer.nextToken();
+            } else if (lexer.token == Token.ALL) {
+                union.setOperator(SQLUnionOperator.MINUS_ALL);
+                lexer.nextToken();
             }
 
             SQLSelectQuery right = this.query(union, false);
@@ -806,9 +809,14 @@ public class SQLSelectParser extends SQLParser {
             }
 
             if (lexer.token == Token.ALL) {
+                Lexer.SavePoint mark = lexer.mark();
                 lexer.nextToken();
                 if (!lexer.identifierEquals(FnvHash.Constants.GROUPING)) {
-                    throw new ParserException("group by all syntax error. " + lexer.info());
+                    if (dbType == DbType.odps) {
+                        lexer.reset(mark);
+                    } else {
+                        throw new ParserException("group by all syntax error. " + lexer.info());
+                    }
                 }
             } else if (lexer.token == Token.DISTINCT) {
                 lexer.nextToken();
@@ -1027,7 +1035,8 @@ public class SQLSelectParser extends SQLParser {
             } else if (lexer.token == Token.LPAREN) {
                 tableSource = parseTableSource();
 
-                while (lexer.token == Token.UNION && tableSource instanceof SQLUnionQueryTableSource) {
+                while ((lexer.token == Token.UNION || lexer.token == Token.EXCEPT || lexer.token == Token.INTERSECT)
+                        && tableSource instanceof SQLUnionQueryTableSource) {
                     SQLUnionQueryTableSource unionQueryTableSource = (SQLUnionQueryTableSource) tableSource;
                     SQLUnionQuery union = unionQueryTableSource.getUnion();
                     unionQueryTableSource.setUnion(
@@ -1223,6 +1232,18 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.identifierEquals(FnvHash.Constants.ASOF) && dbType == DbType.clickhouse) {
             lexer.nextToken();
             asof = true;
+        }
+
+        if (lexer.token == Token.OUTER) {
+            Lexer.SavePoint mark = lexer.mark();
+            String str = lexer.stringVal();
+            lexer.nextToken();
+            if (tableSource.getAlias() == null &&
+                    !lexer.identifierEquals(FnvHash.Constants.APPLY)) {
+                tableSource.setAlias(str);
+            } else {
+                lexer.reset(mark);
+            }
         }
 
         switch (lexer.token) {
