@@ -4342,10 +4342,11 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
 
             for (;;) {
-
                 if (lexer.token == Token.CONSTRAINT) {
                     SQLTableConstraint constraint = (SQLTableConstraint) this.exprParser.parseConstaint();
                     createView.addColumn(constraint);
+                } else if (lexer.token == Token.RPAREN) {
+                    break;
                 } else {
                     SQLColumnDefinition column = new SQLColumnDefinition();
                     column.setDbType(dbType);

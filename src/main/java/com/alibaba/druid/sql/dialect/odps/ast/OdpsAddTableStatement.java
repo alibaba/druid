@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLPartitionValue;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLPrivilegeItem;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 
 import java.util.ArrayList;
@@ -30,10 +31,12 @@ import java.util.List;
 public class OdpsAddTableStatement extends OdpsStatementImpl implements SQLAlterStatement {
 
     private SQLExprTableSource table;
-
     private final List<SQLAssignItem> partitoins = new ArrayList<SQLAssignItem>();
     protected SQLExpr comment;
     protected boolean force;
+
+    protected final List<SQLPrivilegeItem> privileges = new ArrayList<SQLPrivilegeItem>();
+    protected SQLName toPackage;
 
     public OdpsAddTableStatement() {
         super.dbType = DbType.odps;
@@ -84,5 +87,21 @@ public class OdpsAddTableStatement extends OdpsStatementImpl implements SQLAlter
 
     public List<SQLAssignItem> getPartitoins() {
         return partitoins;
+    }
+
+    public SQLName getToPackage() {
+        return toPackage;
+    }
+
+    public void setToPackage(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+
+        this.toPackage = x;
+    }
+
+    public List<SQLPrivilegeItem> getPrivileges() {
+        return privileges;
     }
 }

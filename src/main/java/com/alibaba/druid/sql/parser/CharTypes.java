@@ -112,6 +112,9 @@ public class CharTypes {
         }
    
         whitespaceFlags[160] = true; // 特别处理
+        whitespaceFlags[223] = true; // 特别处理, odps
+        whitespaceFlags[229] = true; // 特别处理, odps
+        whitespaceFlags[231] = true; // 特别处理, odps
     }
 
     /**

@@ -129,6 +129,20 @@ public class OdpsStatementParser extends SQLStatementParser {
                     acceptIdentifier("f");
                     stmt.setForce(true);
                 }
+
+                if (lexer.token() == Token.TO) {
+                    lexer.nextToken();
+                    acceptIdentifier("PACKAGE");
+                    SQLName packageName = this.exprParser.name();
+                    stmt.setToPackage(packageName);
+
+                    if (lexer.token() == Token.WITH) {
+                        lexer.nextToken();
+                        acceptIdentifier("PRIVILEGES");
+                        parsePrivileages(stmt.getPrivileges(), stmt);
+                    }
+                }
+
                 statementList.add(stmt);
                 return true;
             }
@@ -290,6 +304,17 @@ public class OdpsStatementParser extends SQLStatementParser {
             return true;
         }
 
+        if (lexer.identifierEquals("INSTALL")) {
+            lexer.nextToken();
+            acceptIdentifier("PACKAGE");
+            OdpsInstallPackageStatement stmt = new OdpsInstallPackageStatement();
+            stmt.setPackageName(
+                    this.exprParser.name()
+            );
+            statementList.add(stmt);
+            return true;
+        }
+
         if (lexer.identifierEquals(FnvHash.Constants.KILL)) {
             SQLStatement stmt = parseKill();
             statementList.add(stmt);
@@ -387,7 +412,13 @@ public class OdpsStatementParser extends SQLStatementParser {
             HiveMultiInsertStatement stmt = new HiveMultiInsertStatement();
 
             if (lexer.token() == Token.IDENTIFIER) {
-                SQLName tableName = this.exprParser.name();
+                Lexer.SavePoint mark = lexer.mark();
+                SQLExpr tableName = this.exprParser.name();
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.reset(mark);
+                    tableName = this.exprParser.primary();
+                }
+
                 SQLTableSource from = new SQLExprTableSource(tableName);
 
                 if (lexer.token() == Token.IDENTIFIER) {
