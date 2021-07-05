@@ -2048,6 +2048,14 @@ public interface SQLASTVisitor {
     default void endVisit(SQLPurgeTemporaryOutputStatement x) {
     }
 
+    default boolean visit(SQLPurgeTemporaryOutputStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLPurgeTemporaryOutputStatement x) {
+
+    }
+
     default boolean visit(SQLPurgeLogsStatement x) {
         return true;
     }
