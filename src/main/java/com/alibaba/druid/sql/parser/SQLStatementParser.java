@@ -1133,6 +1133,16 @@ public class SQLStatementParser extends SQLParser {
             return stmt;
         }
 
+
+        if (lexer.identifierEquals("TEMPORARY")) {
+            lexer.nextToken();
+            acceptIdentifier("OUTPUT");
+            SQLPurgeTemporaryOutputStatement stmt = new SQLPurgeTemporaryOutputStatement();
+            stmt.setName(
+                    this.exprParser.name());
+            return stmt;
+        }
+
         SQLPurgeLogsStatement stmt = new SQLPurgeLogsStatement();
 
         if (lexer.token == Token.BINARY) {

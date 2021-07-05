@@ -618,6 +618,12 @@ public class OdpsStatementParser extends SQLStatementParser {
             return stmt;
         }
 
+        if (lexer.identifierEquals("RECYCLEBIN")) {
+            lexer.nextToken();
+            SQLShowRecylebinStatement stmt = new SQLShowRecylebinStatement();
+            return stmt;
+        }
+
         if (lexer.token() == Token.CREATE) {
             return parseShowCreateTable();
         }

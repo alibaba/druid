@@ -233,4 +233,8 @@ public class OdpsSelectParser extends SQLSelectParser {
         }
         return tableSource;
     }
+
+    public void parseTableSourceSample(SQLTableSource tableSource) {
+        parseTableSourceSampleHive(tableSource);
+    }
 }

@@ -158,6 +158,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     case LEFT:
                     case RIGHT:
                     case REPEAT:
+                    case COMPUTE:
                         column = this.exprParser.parseColumn(stmt);
                         break;
                     default:
@@ -196,6 +197,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             
             for (;;) {
                 switch (lexer.token()) {
+                    case INDEX:
                     case KEY:
                     case IDENTIFIER:
                     case GROUP:
@@ -335,32 +337,17 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-
-            for (;;) {
-                String name = lexer.stringVal();
-                lexer.nextToken();
-                accept(Token.EQ);
-                SQLExpr value = this.exprParser.primary();
-                stmt.addTblProperty(name, value);
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    if (lexer.token() == Token.RPAREN) {
-                        break;
-                    }
-                    continue;
-                }
-                break;
-            }
-
-            accept(Token.RPAREN);
+            parseTblProperties(stmt);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.LOCATION)) {
             lexer.nextToken();
             SQLExpr location = this.exprParser.expr();
             stmt.setLocation(location);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
+            parseTblProperties(stmt);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.USING)) {
@@ -375,5 +362,28 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         }
         
         return stmt;
+    }
+
+    private void parseTblProperties(OdpsCreateTableStatement stmt) {
+        acceptIdentifier("TBLPROPERTIES");
+        accept(Token.LPAREN);
+
+        for (;;) {
+            String name = lexer.stringVal();
+            lexer.nextToken();
+            accept(Token.EQ);
+            SQLExpr value = this.exprParser.primary();
+            stmt.addTblProperty(name, value);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                continue;
+            }
+            break;
+        }
+
+        accept(Token.RPAREN);
     }
 }
