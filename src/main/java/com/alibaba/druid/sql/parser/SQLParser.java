@@ -251,6 +251,7 @@ public class SQLParser {
                     }
                     break;
                 case SHOW:
+                case REFERENCES:
                 case REPEAT:
                 case USE:
                 case OUT: {
@@ -382,6 +383,7 @@ public class SQLParser {
                 case SHOW:
                 case SEQUENCE:
                 case TO:
+                case REFERENCES:
                     if (dbType == DbType.odps || dbType == DbType.hive) {
                         alias = lexer.stringVal();
                         lexer.nextToken();
@@ -551,6 +553,8 @@ public class SQLParser {
                 case CREATE:
                 case DELETE:
                 case PRIMARY:
+                case FOREIGN:
+                case REFERENCES:
                     alias = lexer.stringVal();
                     lexer.nextToken();
                     return alias;

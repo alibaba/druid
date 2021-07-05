@@ -240,9 +240,12 @@ public class OdpsExprParser extends SQLExprParser {
 
             OdpsNewExpr newExpr = new OdpsNewExpr();
             if (lexer.identifierEquals(FnvHash.Constants.GSON)
-                    || lexer.identifierEquals(GSONBUILDER)) {
+                    || lexer.identifierEquals(GSONBUILDER)
+                    || lexer.identifierEquals("STRING")
+            ) {
                 lexer.nextToken();
-                newExpr.setMethodName(lexer.stringVal());
+                String methodName = lexer.stringVal();
+                newExpr.setMethodName(methodName);
                 accept(Token.LPAREN);
                 this.exprList(newExpr.getArguments(), newExpr);
                 accept(Token.RPAREN);

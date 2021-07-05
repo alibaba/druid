@@ -1102,6 +1102,7 @@ public class SQLExprParser extends SQLParser {
             case DISTRIBUTE:
             case UNIQUE:
             case PROCEDURE:
+            case REFERENCES:
                 if (dbType == DbType.odps || dbType == DbType.hive) {
                     sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                     lexer.nextToken();
@@ -1144,9 +1145,11 @@ public class SQLExprParser extends SQLParser {
                     lexer.nextToken();
                     switch (lexer.token) {
                         case DOT:
+                        case COMMA:
                         case LT:
                         case EQ:
                         case GT:
+                        case RPAREN:
                             sqlExpr = new SQLIdentifierExpr(str);
                             break;
                         default:
@@ -1227,6 +1230,7 @@ public class SQLExprParser extends SQLParser {
             case WHERE:
             case GROUP:
             case SEMI:
+            case AS:
                 return new SQLIdentifierExpr(str);
             case IDENTIFIER:
                 if (dbType == DbType.odps) {
@@ -4734,6 +4738,8 @@ public class SQLExprParser extends SQLParser {
                     || lexer.identifierEquals("utf8mb4")
             ) {
                 // skip
+            } else if (lexer.token == Token.EQEQ && dbType == DbType.odps) {
+                lexer.nextToken();
             } else {
                 accept(Token.EQ);
             }

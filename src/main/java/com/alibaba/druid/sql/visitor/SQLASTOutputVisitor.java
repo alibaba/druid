@@ -11080,6 +11080,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return super.visit((SQLMethodInvokeExpr) x);
     }
 
+    public boolean visit(SQLPurgeTemporaryOutputStatement x) {
+        print0(ucase ? "PURGE TEMPORARY OUTPUT " : "purge temporary output ");
+        printExpr(x.getName());
+        return false;
+    }
+
     public char getNameQuote() {
         return quote;
     }
