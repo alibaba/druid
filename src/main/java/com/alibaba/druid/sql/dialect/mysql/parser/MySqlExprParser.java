@@ -883,8 +883,21 @@ public class MySqlExprParser extends SQLExprParser {
             
             // 
             
-            if (methodInvokeExpr.getArguments().size() == 1 //
-                    && lexer.token() == Token.IDENTIFIER) {
+            if (methodInvokeExpr.getArguments().size() == 1 ) {
+                if (lexer.token() != Token.IDENTIFIER){
+                    Token token = lexer.token();
+                    SQLExpr expr = methodInvokeExpr.getArguments().get(0);
+                    if (token == Token.EQ) {
+                        expr = relationalRest(expr);
+                        expr = andRest(expr);
+                        expr = xorRest(expr);
+                        expr = orRest(expr);
+                        methodInvokeExpr.getArguments().set(0,expr);
+                    } else {
+                        methodInvokeExpr.getArguments().set(0,exprRest(expr));
+                    }
+                }
+
                 SQLExpr value = methodInvokeExpr.getArguments().get(0);
                 String unit = lexer.stringVal();
                 lexer.nextToken();
