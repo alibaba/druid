@@ -1396,6 +1396,9 @@ class SchemaResolveVisitorFactory {
 
     static void resolve(SchemaResolveVisitor visitor, SQLSelectQueryBlock x) {
         SchemaResolveVisitor.Context ctx = visitor.createContext(x);
+        if (ctx != null && ctx.level >= 32) {
+            return;
+        }
 
         SQLTableSource from = x.getFrom();
 

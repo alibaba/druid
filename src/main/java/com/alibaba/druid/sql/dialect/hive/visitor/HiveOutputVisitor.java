@@ -157,13 +157,6 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         }
         x.getTableSource().accept(this);
 
-        List<SQLExpr> columns = x.getColumns();
-        if (columns.size() > 0) {
-            print('(');
-            printAndAccept(columns, ", ");
-            print(')');
-        }
-
         List<SQLAssignItem> partitions = x.getPartitions();
         int partitionSize = partitions.size();
         if (partitionSize > 0) {
@@ -183,6 +176,14 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             }
             print(')');
         }
+
+        List<SQLExpr> columns = x.getColumns();
+        if (columns.size() > 0) {
+            print(" (");
+            printAndAccept(columns, ", ");
+            print(')');
+        }
+
         if (x.isIfNotExists()) {
             print0(ucase ? " IF NOT EXISTS" : " if not exists");
         }
