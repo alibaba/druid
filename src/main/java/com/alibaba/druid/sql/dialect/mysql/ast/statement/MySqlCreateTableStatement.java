@@ -647,4 +647,22 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     public void setWithData(Boolean withData) {
         this.withData = withData;
     }
+
+    public SQLExpr getEngine() {
+        for (SQLAssignItem option : tableOptions) {
+            SQLExpr target = option.getTarget();
+            if (target instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) target).getName().equalsIgnoreCase("ENGINE")) {
+                return option.getValue();
+            }
+        }
+
+        return null;
+    }
+
+    public void setEngine(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        addOption("ENGINE", x);
+    }
 }
