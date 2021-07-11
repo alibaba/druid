@@ -73,6 +73,7 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
     static class Context {
         public final Context parent;
         public final SQLObject object;
+        public final int level;
 
         private SQLTableSource tableSource;
 
@@ -85,6 +86,9 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
         public Context(SQLObject object, Context parent) {
             this.object = object;
             this.parent = parent;
+            this.level = parent == null
+                    ? 0
+                    : parent.level + 1;
         }
 
         public SQLTableSource getFrom() {

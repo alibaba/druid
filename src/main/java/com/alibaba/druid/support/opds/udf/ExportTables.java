@@ -27,13 +27,18 @@ import java.util.Map;
 
 public class ExportTables extends UDF {
 
-    public String evaluate(String sql) {
-        return evaluate(sql, null);
+    public String evaluate(String sql) throws Throwable {
+        return evaluate(sql, null, false);
     }
 
-    public String evaluate(String sql, String dbTypeName) {
+    public String evaluate(String sql, String dbTypeName) throws Throwable {
+        return evaluate(sql, dbTypeName, false);
+    }
+
+    public String evaluate(String sql, String dbTypeName, boolean throwError) throws Throwable {
         DbType dbType = dbTypeName == null ? null : DbType.valueOf(dbTypeName);
 
+        Throwable error = null;
         try {
             List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
             SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
@@ -54,8 +59,16 @@ public class ExportTables extends UDF {
             }
 
             return buf.toString();
-        } catch (Exception ex) {
-            return null;
+        } catch (Exception ignored) {
+            // skip
+        } catch (StackOverflowError ignored) {
+            // skip
         }
+
+        if (throwError && error != null) {
+            throw error;
+        }
+
+        return null;
     }
 }
