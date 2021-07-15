@@ -44,6 +44,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.PGUtils;
@@ -1910,12 +1911,24 @@ class SchemaResolveVisitorFactory {
                             }
                         }
                     }
+                    return;
+                }
+
+                SchemaObject view = repository.findView((SQLName) expr);
+                if (view != null) {
+                    x.setSchemaObject(view);
+                    return;
                 }
             }
+            return;
+        }
 
-        } else if (expr instanceof SQLMethodInvokeExpr) {
+        if (expr instanceof SQLMethodInvokeExpr) {
             visitor.visit((SQLMethodInvokeExpr) expr);
-        } else if (expr instanceof SQLQueryExpr) {
+            return;
+        }
+
+        if (expr instanceof SQLQueryExpr) {
             SQLSelect select =
             ((SQLQueryExpr) expr)
                     .getSubQuery();
@@ -1933,9 +1946,10 @@ class SchemaResolveVisitorFactory {
                 }
             }
             //if (queryBlock.findColumn())
-        } else {
-            expr.accept(visitor);
+            return;
         }
+
+        expr.accept(visitor);
     }
 
     static void resolve(SchemaResolveVisitor visitor, SQLAlterTableStatement x) {
@@ -2222,6 +2236,14 @@ class SchemaResolveVisitorFactory {
                     if (entry != null) {
                         x.setResolvedTableSource(entry);
                         return true;
+                    }
+                }
+
+                SchemaRepository repo = visitor.getRepository();
+                if (repo != null) {
+                    SchemaObject view = repo.findView(x);
+                    if (view != null && view.getStatement() instanceof SQLCreateViewStatement) {
+                        x.setResolvedOwnerObject(view.getStatement());
                     }
                 }
             }

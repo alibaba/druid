@@ -1924,6 +1924,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (isSimpleExprTableSource(x)) {
             TableStat stat = getTableStatWithUnwrap(expr);
             if (stat == null) {
+                if (expr instanceof SQLIdentifierExpr
+                        && ((SQLIdentifierExpr) expr).getResolvedOwnerObject() instanceof SQLCreateViewStatement) {
+                    SQLCreateViewStatement createView = (SQLCreateViewStatement) ((SQLIdentifierExpr) expr).getResolvedOwnerObject();
+                    createView.getSubQuery().accept(this);
+                }
+
                 return false;
             }
 
@@ -1969,7 +1975,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         SQLObject resolvedOwnerObject = identifierExpr.getResolvedOwnerObject();
         if (resolvedOwnerObject instanceof SQLSubqueryTableSource
-                || resolvedOwnerObject instanceof SQLWithSubqueryClause.Entry) {
+                || resolvedOwnerObject instanceof SQLWithSubqueryClause.Entry
+                || resolvedOwnerObject instanceof SQLCreateViewStatement) {
             return true;
         }
 
