@@ -40,6 +40,10 @@ public class TableStat {
     int dropIndexCount   = 0;
     int referencedCount  = 0;
 
+    public TableStat() {
+
+    }
+
     public int getReferencedCount() {
         return referencedCount;
     }

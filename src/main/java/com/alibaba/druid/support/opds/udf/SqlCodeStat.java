@@ -1,5 +1,6 @@
 package com.alibaba.druid.support.opds.udf;
 
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -27,7 +28,7 @@ public class SqlCodeStat extends UDF {
         DbType dbType = dbTypeName == null ? null : DbType.valueOf(dbTypeName);
 
         try {
-            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.odps);
+            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.odps, SQLParserFeature.EnableMultiUnion);
 
             CodeStatVisitor v = new CodeStatVisitor();
             for (SQLStatement stmt : stmtList) {

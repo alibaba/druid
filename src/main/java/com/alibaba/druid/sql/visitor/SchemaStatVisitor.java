@@ -1006,9 +1006,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         SQLExpr original = expr;
 
         for (int i = 0;;i++) {
-//            if (i > 100) {
-//                return null;
-//            }
+            if (i > 1000) {
+                return null;
+            }
 
             if (expr instanceof SQLMethodInvokeExpr) {
                 SQLMethodInvokeExpr methodInvokeExp = (SQLMethodInvokeExpr) expr;
@@ -1924,12 +1924,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (isSimpleExprTableSource(x)) {
             TableStat stat = getTableStatWithUnwrap(expr);
             if (stat == null) {
-                if (expr instanceof SQLIdentifierExpr
-                        && ((SQLIdentifierExpr) expr).getResolvedOwnerObject() instanceof SQLCreateViewStatement) {
-                    SQLCreateViewStatement createView = (SQLCreateViewStatement) ((SQLIdentifierExpr) expr).getResolvedOwnerObject();
-                    createView.getSubQuery().accept(this);
-                }
-
                 return false;
             }
 
@@ -1975,8 +1969,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         SQLObject resolvedOwnerObject = identifierExpr.getResolvedOwnerObject();
         if (resolvedOwnerObject instanceof SQLSubqueryTableSource
-                || resolvedOwnerObject instanceof SQLWithSubqueryClause.Entry
-                || resolvedOwnerObject instanceof SQLCreateViewStatement) {
+                || resolvedOwnerObject instanceof SQLWithSubqueryClause.Entry) {
             return true;
         }
 
@@ -2191,6 +2184,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         if (x.getSelect() != null) {
             x.getSelect().accept(this);
+            stat.incrementInsertCount();
         }
 
         SQLExprTableSource like = x.getLike();

@@ -348,6 +348,12 @@ public class SchemaRepository {
         return getDefaultSchema().getTables(x);
     }
 
+    public boolean removeTable(SQLName name) {
+        return getDefaultSchema()
+                .removeObject(
+                        name.nameHashCode64());
+    }
+
     public int getTableCount() {
         return getDefaultSchema().getTableCount();
     }
