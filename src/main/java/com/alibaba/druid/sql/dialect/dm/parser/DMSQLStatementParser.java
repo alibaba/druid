@@ -7,7 +7,7 @@ import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 /**
- * @author weirui@cestc.cn
+ * @author two brother
  * @date 2021/7/22 10:54
  */
 public class DMSQLStatementParser extends SQLStatementParser {

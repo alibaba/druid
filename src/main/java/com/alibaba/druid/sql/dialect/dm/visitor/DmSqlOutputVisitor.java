@@ -13,7 +13,7 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import java.util.List;
 
 /**
- * @author weirui@cestc.cn
+ * @author two brother
  * @date 2021/7/26 11:31
  */
 public class DmSqlOutputVisitor  extends SQLASTOutputVisitor implements DMASTVisitor {

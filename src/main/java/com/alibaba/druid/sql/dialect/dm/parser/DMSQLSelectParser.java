@@ -5,7 +5,7 @@ import com.alibaba.druid.sql.dialect.dm.ast.DMSQLSelectQueryBlock;
 import com.alibaba.druid.sql.parser.*;
 
 /**
- * @author weirui@cestc.cn
+ * @author two brother
  * @date 2021/7/22 10:52
  */
 public class DMSQLSelectParser extends SQLSelectParser {

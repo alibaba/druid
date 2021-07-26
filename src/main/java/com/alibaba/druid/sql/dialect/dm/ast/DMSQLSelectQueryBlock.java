@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /**
- * @author weirui@cestc.cn
+ * @author two brother
  * @date 2021/7/22 11:05
  */
 public class DMSQLSelectQueryBlock extends SQLSelectQueryBlock {

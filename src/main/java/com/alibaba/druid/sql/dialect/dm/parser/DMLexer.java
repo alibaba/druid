@@ -12,7 +12,7 @@ import java.util.Map;
 import static com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer.DEFAULT_MYSQL_KEYWORDS;
 
 /**
- * @author weirui@cestc.cn
+ * @author two brother
  * @date 2021/7/22 11:28
  */
 public class DMLexer extends Lexer {

@@ -6,7 +6,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import junit.framework.TestCase;
 
 /**
- * @author weirui@cestc.cn
+ * @author two brother
  * @date 2021/7/26 10:29
  */
 public class DM_SelectTopTest_0 extends TestCase {
