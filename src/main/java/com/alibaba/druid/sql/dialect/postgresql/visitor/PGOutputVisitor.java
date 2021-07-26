@@ -533,13 +533,20 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(SQLLimit x) {
-        print0(ucase ? "LIMIT " : "limit ");
-
-        x.getRowCount().accept(this);
-
-        if (x.getOffset() != null) {
-            print0(ucase ? " OFFSET " : " offset ");
+        if (x.isOffsetFirst()){
+            print0(ucase ? "OFFSET " : "offset ");
             x.getOffset().accept(this);
+            if (x.getRowCount() != null) {
+                print0(ucase ? " LIMIT " : " limit ");
+                x.getRowCount().accept(this);
+            }
+        }else {
+            print0(ucase ? "LIMIT " : "limit ");
+            x.getRowCount().accept(this);
+            if (x.getOffset() != null && !x.isOffsetFirst()) {
+                print0(ucase ? " OFFSET " : " offset ");
+                x.getOffset().accept(this);
+            }
         }
         return false;
     }

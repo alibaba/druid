@@ -142,8 +142,11 @@ public class PGSelectParser extends SQLSelectParser {
 
         for (;;) {
             if (lexer.token() == Token.LIMIT) {
-                SQLLimit limit = new SQLLimit();
-
+                SQLLimit limit = queryBlock.getLimit();
+                if (limit == null) {
+                    limit = new SQLLimit();
+                    queryBlock.setLimit(limit);
+                }
                 lexer.nextToken();
                 if (lexer.token() == Token.ALL) {
                     limit.setRowCount(new SQLIdentifierExpr("ALL"));
@@ -151,12 +154,11 @@ public class PGSelectParser extends SQLSelectParser {
                 } else {
                     limit.setRowCount(expr());
                 }
-
-                queryBlock.setLimit(limit);
             } else if (lexer.token() == Token.OFFSET) {
                 SQLLimit limit = queryBlock.getLimit();
                 if (limit == null) {
                     limit = new SQLLimit();
+                    limit.setOffsetFirst(true);
                     queryBlock.setLimit(limit);
                 }
                 lexer.nextToken();

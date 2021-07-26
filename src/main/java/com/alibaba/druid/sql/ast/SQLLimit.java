@@ -29,6 +29,7 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
     private SQLExpr rowCount;
     private SQLExpr offset;
     private List<SQLExpr> by;
+    private boolean offsetFirst = false;
 
     public SQLLimit() {
 
@@ -193,5 +194,13 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
         int result = rowCount != null ? rowCount.hashCode() : 0;
         result = 31 * result + (offset != null ? offset.hashCode() : 0);
         return result;
+    }
+
+    public boolean isOffsetFirst() {
+        return offsetFirst;
+    }
+
+    public void setOffsetFirst(boolean offsetFirst) {
+        this.offsetFirst = offsetFirst;
     }
 }
