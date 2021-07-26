@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2Lexer;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
+import com.alibaba.druid.sql.dialect.dm.parser.DMSQLStatementParser;
 import com.alibaba.druid.sql.dialect.h2.parser.H2ExprParser;
 import com.alibaba.druid.sql.dialect.h2.parser.H2Lexer;
 import com.alibaba.druid.sql.dialect.h2.parser.H2StatementParser;
@@ -137,6 +138,8 @@ public class SQLParserUtils {
                 return new AntsparkStatementParser(sql);
             case clickhouse:
                 return new ClickhouseStatementParser(sql);
+            case dm:
+                return new DMSQLStatementParser(sql);
             default:
                 return new SQLStatementParser(sql, dbType);
         }

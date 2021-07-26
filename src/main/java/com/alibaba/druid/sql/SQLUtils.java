@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseOutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.dm.visitor.DmSqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
@@ -500,6 +501,8 @@ public class SQLUtils {
                 return new AntsparkOutputVisitor(out);
             case clickhouse:
                 return new ClickhouseOutputVisitor(out);
+            case dm:
+                return new DmSqlOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }

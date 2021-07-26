@@ -358,6 +358,8 @@ public enum Token {
     POUNDGTGT("#>>"),
     MONKEYS_AT_GT("@>"),
     LT_MONKEYS_AT("<@"),
+    // dm
+    TIES("TIES")
     ;
 
     public final String name;

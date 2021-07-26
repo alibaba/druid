@@ -399,7 +399,7 @@ public class SQLSelectParser extends SQLParser {
             return valuesQuery(acceptUnion);
         }
         
-        SQLSelectQueryBlock queryBlock = new SQLSelectQueryBlock(dbType);
+        SQLSelectQueryBlock queryBlock = createSqlSelectQueryBlock();
         
         if (lexer.hasComment() && lexer.isKeepComments()) {
             queryBlock.addBeforeComment(lexer.readAndResetComments());
@@ -439,6 +439,7 @@ public class SQLSelectParser extends SQLParser {
             queryBlock.setDistionOption(SQLSetQuantifier.ALL);
             lexer.nextToken();
         }
+        parseSelectBefore(queryBlock);
 
         parseSelectList(queryBlock);
 
@@ -482,6 +483,14 @@ public class SQLSelectParser extends SQLParser {
         }
 
         return queryRest(queryBlock, acceptUnion);
+    }
+
+    protected SQLSelectQueryBlock createSqlSelectQueryBlock() {
+
+        return new SQLSelectQueryBlock(dbType);
+    }
+
+    protected void parseSelectBefore(SQLSelectQueryBlock queryBlock) {
     }
 
     protected SQLSelectQuery valuesQuery(boolean acceptUnion) {

@@ -25,4 +25,5 @@ public interface SQLSetQuantifier {
     public final static int DISTINCTROW = 4;
 
     // <SetQuantifier>
+
 }
