@@ -4348,6 +4348,23 @@ public class SQLStatementParser extends SQLParser {
 
         createView.setName(exprParser.name());
 
+        if (dbType == DbType.clickhouse) {
+            if (lexer.token == Token.ON) {
+                lexer.nextToken();
+                acceptIdentifier("CLUSTER");
+                createView.setOnCluster(true);
+            }
+
+            if (lexer.token == LITERAL_CHARS) {
+                SQLName to = this.exprParser.name();
+                createView.setTo(to);
+            } else if (lexer.token == TO) {
+                lexer.nextToken();
+                SQLName to = this.exprParser.name();
+                createView.setTo(to);
+            }
+        }
+
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
 

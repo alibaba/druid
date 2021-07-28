@@ -38,6 +38,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     protected boolean             natural = false;
     protected UDJ                 udj; // for maxcompute
     protected boolean             asof; // for clickhouse
+    protected boolean             global; // for clickhouse
 
     public SQLJoinTableSource(String alias){
         super(alias);
@@ -649,6 +650,14 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         return null;
     }
 
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        this.global = global;
+    }
+
     @Override
     public int hashCode() {
         int result = left != null ? left.hashCode() : 0;
@@ -657,6 +666,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         result = 31 * result + (condition != null ? condition.hashCode() : 0);
         result = 31 * result + using.hashCode();
         result = 31 * result + (natural ? 1 : 0);
+        result = 31 * result + (global ? 1 : 0);
         return result;
     }
 
@@ -664,15 +674,19 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         SQLJoinTableSource that = (SQLJoinTableSource) o;
 
         if (natural != that.natural) return false;
+        if (asof != that.asof) return false;
+        if (global != that.global) return false;
         if (left != null ? !left.equals(that.left) : that.left != null) return false;
         if (joinType != that.joinType) return false;
         if (right != null ? !right.equals(that.right) : that.right != null) return false;
         if (condition != null ? !condition.equals(that.condition) : that.condition != null) return false;
-        return using.equals(that.using);
+        if (using != null ? !using.equals(that.using) : that.using != null) return false;
+        return udj != null ? udj.equals(that.udj) : that.udj == null;
     }
 
     public void splitTo(List<SQLTableSource> outTableSources, JoinType joinType) {

@@ -1330,6 +1330,14 @@ public class SQLSelectParser extends SQLParser {
             }
         }
 
+        boolean global = false;
+        if (dbType == DbType.clickhouse) {
+            if (lexer.token == Token.GLOBAL) {
+                lexer.nextToken();
+                global = true;
+            }
+        }
+
         switch (lexer.token) {
             case LEFT:
                 lexer.nextToken();
@@ -1414,6 +1422,7 @@ public class SQLSelectParser extends SQLParser {
             SQLJoinTableSource join = new SQLJoinTableSource();
             join.setLeft(tableSource);
             join.setJoinType(joinType);
+            join.setGlobal(global);
             if (asof) {
                 join.setAsof(true);
             }

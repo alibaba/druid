@@ -3989,9 +3989,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print('(');
         }
 
+        JoinType joinType = x.getJoinType();
         if (left instanceof SQLJoinTableSource
                 && ((SQLJoinTableSource) left).getJoinType() == JoinType.COMMA
-                && x.getJoinType() != JoinType.COMMA
+                && joinType != JoinType.COMMA
                 && DbType.postgresql != dbType
                 && ((SQLJoinTableSource) left).getAttribute("ads.comma_join") == null) {
             print('(');
@@ -4002,7 +4003,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         this.indentCount++;
 
-        if (x.getJoinType() == JoinType.COMMA) {
+        if (joinType == JoinType.COMMA) {
             print(',');
         } else {
             println();
@@ -4016,7 +4017,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(ucase ? "NATURAL " : "natural ");
             }
 
-            printJoinType(x.getJoinType());
+            if (x.isGlobal()) {
+                print0(ucase ? "GLOBAL " : "global ");
+            }
+
+            printJoinType(joinType);
         }
         print(' ');
 
@@ -4059,7 +4064,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printAndAccept(x.getUsing(), ", ");
             print(')');
         }
-
 
         if (alias != null) {
             print0(ucase ? ") AS " : ") as ");
@@ -4965,6 +4969,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         x.getTableSource().accept(this);
+
+        if (x.isOnCluster()) {
+            print0(ucase ? " ON CLUSTER" : " on cluster");
+        }
+
+        SQLName to = x.getTo();
+        if (to != null) {
+            print0(ucase ? " TO " : " to ");
+            to.accept(this);
+        }
 
         List<SQLTableElement> columns = x.getColumns();
         if (columns.size() > 0) {

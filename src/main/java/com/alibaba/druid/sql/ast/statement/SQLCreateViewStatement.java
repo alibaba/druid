@@ -50,6 +50,10 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
 
     private SQLLiteralExpr comment;
 
+    // clickhouse
+    protected boolean onCluster;
+    private SQLName to;
+
     public SQLCreateViewStatement(){
 
     }
@@ -308,6 +312,24 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
         }
     }
 
+    public boolean isOnCluster() {
+        return onCluster;
+    }
+
+    public void setOnCluster(boolean onCluster) {
+        this.onCluster = onCluster;
+    }
+
+    public SQLName getTo() {
+        return to;
+    }
+
+    public void setTo(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.to = x;
+    }
 
     public SQLCreateViewStatement clone() {
         SQLCreateViewStatement x = new SQLCreateViewStatement();
@@ -339,6 +361,11 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
 
         if (comment != null) {
             x.setComment(comment.clone());
+        }
+
+        x.onCluster = onCluster;
+        if (x.to != null) {
+            to = x.to.clone();
         }
 
         return x;
