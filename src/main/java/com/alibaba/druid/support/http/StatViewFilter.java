@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.alibaba.druid.support.http.ResourceServlet.*;
+import static com.alibaba.druid.support.http.StatViewServlet.PARAM_NAME_RESET_ENABLE;
 
 public class StatViewFilter implements Filter {
     public final static String PARAM_NAME_PATH = "path";
@@ -102,6 +103,18 @@ public class StatViewFilter implements Filter {
             }
         } catch (Exception e) {
             String msg = "initParameter config error, deny : " + config.getInitParameter(PARAM_NAME_DENY);
+            LOG.error(msg, e);
+        }
+
+        try {
+            String param = config.getInitParameter(PARAM_NAME_RESET_ENABLE);
+            if (param != null && param.trim().length() != 0) {
+                param = param.trim();
+                boolean resetEnable = Boolean.parseBoolean(param);
+                statService.setResetEnable(resetEnable);
+            }
+        } catch (Exception e) {
+            String msg = "initParameter config error, resetEnable : " + config.getInitParameter(PARAM_NAME_RESET_ENABLE);
             LOG.error(msg, e);
         }
     }
