@@ -268,6 +268,9 @@ public class OdpsExprParser extends SQLExprParser {
             }
         }
 
+        if (expr == null) {
+            return null;
+        }
 
         return super.primaryRest(expr);
     }

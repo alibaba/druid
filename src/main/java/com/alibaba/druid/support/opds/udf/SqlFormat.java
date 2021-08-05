@@ -26,7 +26,7 @@ public class SqlFormat extends UDF {
             SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
             List<SQLStatement> statementList = parser.parseStatementList();
             return SQLUtils.toSQLString(statementList, dbType);
-        } catch (ParserException ex) {
+        } catch (Exception ex) {
             if (throwError) {
                 throw new IllegalArgumentException("error sql : \n" + sql, ex);
             }

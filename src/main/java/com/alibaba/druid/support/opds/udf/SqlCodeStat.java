@@ -60,19 +60,31 @@ public class SqlCodeStat extends UDF {
         public int select;
 
         @JSONField(ordinal = 4)
-        public int groupByCount;
+        public int groupBy;
 
         @JSONField(ordinal = 5)
-        public int orderByCount;
+        public int orderBy;
 
         @JSONField(ordinal = 6)
-        public int fromCount;
+        public int from;
 
         @JSONField(ordinal = 7)
-        public int joinCount;
+        public int join;
 
-        @JSONField(ordinal = 50)
+        @JSONField(ordinal = 8)
+        public int over;
+
+        @JSONField(ordinal = 40)
         public int insert;
+
+        @JSONField(ordinal = 41)
+        public int insertInto;
+
+        @JSONField(ordinal = 42)
+        public int insertOverwrite;
+
+        @JSONField(ordinal = 43)
+        public int insertSelect;
 
         @JSONField(ordinal = 51)
         public int update;
@@ -80,32 +92,47 @@ public class SqlCodeStat extends UDF {
         @JSONField(ordinal = 52)
         public int delete;
 
-        @JSONField(ordinal = 53)
+        @JSONField(ordinal = 60)
         public int create;
 
-        @JSONField(ordinal = 54)
+        @JSONField(ordinal = 61)
+        public int createTable;
+
+        @JSONField(ordinal = 62)
+        public int createView;
+
+        @JSONField(ordinal = 70)
         public int drop;
 
+        @JSONField(ordinal = 71)
+        public int dropTable;
+
+        @JSONField(ordinal = 72)
+        public int dropView;
+
+        @JSONField(ordinal = 80)
+        public int set;
+
         @JSONField(ordinal = 100)
-        public int conditionCount;
+        public int condition;
 
         @JSONField(ordinal = 101)
-        public int joinConditionCount;
+        public int joinCondition;
 
         @JSONField(ordinal = 102)
-        public int valueConditionCount;
+        public int valueCondition;
 
         @JSONField(ordinal = 103)
-        public int otherConditionCount;
+        public int otherCondition;
 
         @JSONField(ordinal = 104)
         public int limit;
 
         @JSONField(ordinal = 200)
-        public int aggregateCount;
+        public int aggregate;
 
         @JSONField(ordinal = 201)
-        public int functionCallCount;
+        public int functionCall;
 
         @JSONField(ordinal = 202)
         public int having;
@@ -117,18 +144,43 @@ public class SqlCodeStat extends UDF {
         public void preVisit(SQLObject x) {
             if (x instanceof SQLStatement) {
                 stat.statementCount++;
-            }
 
-            if (x instanceof SQLInsertStatement) {
-                stat.insert++;
-            } else  if (x instanceof SQLDropStatement) {
-                stat.drop++;
-            } else  if (x instanceof SQLCreateStatement) {
-                stat.create++;
-            } else  if (x instanceof SQLDeleteStatement) {
-                stat.delete++;
-            } else  if (x instanceof SQLUpdateStatement) {
-                stat.update++;
+                if (x instanceof SQLInsertStatement) {
+                    stat.insert++;
+
+                    SQLInsertStatement insert = (SQLInsertStatement) x;
+
+                    if (insert.getQuery() != null) {
+                        stat.insertSelect++;
+                    }
+
+                    if (insert.isOverwrite()) {
+                        stat.insertOverwrite++;
+                    } else {
+                        stat.insertInto++;
+                    }
+
+                } else  if (x instanceof SQLDropStatement) {
+                    stat.drop++;
+                    if (x instanceof SQLDropTableStatement) {
+                        stat.dropTable++;
+                    } else  if (x instanceof SQLDropViewStatement) {
+                        stat.dropView++;
+                    }
+                } else  if (x instanceof SQLCreateStatement) {
+                    stat.create++;
+                    if (x instanceof SQLCreateTableStatement) {
+                        stat.createTable++;
+                    } else if (x instanceof SQLCreateViewStatement) {
+                        stat.createView++;
+                    }
+                } else if (x instanceof SQLDeleteStatement) {
+                    stat.delete++;
+                } else if (x instanceof SQLUpdateStatement) {
+                    stat.update++;
+                } else if (x instanceof SQLSetStatement) {
+                    stat.set++;
+                }
             }
         }
 
@@ -147,7 +199,7 @@ public class SqlCodeStat extends UDF {
         }
 
         public boolean visit(SQLSelectGroupByClause x) {
-            stat.groupByCount++;
+            stat.groupBy++;
             if (x.getHaving() != null) {
                 stat.having++;
             }
@@ -165,60 +217,65 @@ public class SqlCodeStat extends UDF {
         }
 
         public boolean visit(SQLOrderBy x) {
-            stat.orderByCount++;
+            stat.orderBy++;
             return true;
         }
 
         public boolean visit(SQLExprTableSource x) {
-            stat.fromCount++;
+            stat.from++;
             return true;
         }
 
         public boolean visit(SQLSubqueryTableSource x) {
-            stat.fromCount++;
+            stat.from++;
             return true;
         }
 
         public boolean visit(SQLJoinTableSource x) {
-            stat.joinCount++;
+            stat.join++;
             return true;
         }
 
         public boolean visit(SQLMethodInvokeExpr x) {
-            stat.functionCallCount++;
+            stat.functionCall++;
             return true;
         }
 
         public boolean visit(SQLAggregateExpr x) {
-            stat.aggregateCount++;
+            stat.aggregate++;
+            return true;
+        }
+
+        public boolean visit(SQLOver x) {
+            stat.over++;
             return true;
         }
 
         public boolean visit(SQLCastExpr x) {
-            stat.functionCallCount++;
+            stat.functionCall++;
             return true;
         }
 
         public boolean visit(SQLInListExpr x) {
-            stat.conditionCount++;
+            stat.condition++;
             return true;
         }
 
         public boolean visit(SQLBinaryOpExpr x) {
             if (x.getOperator() != null && x.getOperator().isRelational()) {
-                stat.conditionCount++;
+                stat.condition++;
 
                 SQLExpr left = x.getLeft();
                 SQLExpr right = x.getRight();
 
                 if (left instanceof SQLName && right instanceof SQLName) {
-                    stat.joinConditionCount++;
+                    stat.joinCondition++;
                 } else if ((left instanceof SQLName || right instanceof SQLName)
                         && (left instanceof SQLLiteralExpr || right instanceof SQLLiteralExpr)
                 ) {
-                    stat.valueConditionCount++;
+                    stat.valueCondition++;
                 } else {
-                    stat.otherConditionCount++;
+                    stat.otherCondition++;
                 }
             }
             return true;
@@ -227,18 +284,18 @@ public class SqlCodeStat extends UDF {
         public boolean visit(SQLCaseExpr x) {
             SQLExpr value = x.getValueExpr();
             if (value != null) {
-                stat.conditionCount += x.getItems().size();
+                stat.condition += x.getItems().size();
             }
 
             if (x.getElseExpr() != null) {
-                stat.conditionCount++;
+                stat.condition++;
             }
 
             return true;
         }
 
         public boolean visit(SQLExistsExpr x) {
-            stat.conditionCount++;
+            stat.condition++;
             return true;
         }
 

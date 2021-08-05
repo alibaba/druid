@@ -1893,7 +1893,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         String function = x.getMethodName();
-        printFunctionName(function);
+        if (function != null) {
+            printFunctionName(function);
+        }
         printMethodParameters(x);
         return false;
     }
@@ -2611,7 +2613,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printName0(((SQLIdentifierExpr) expr).getName());
         } else if (expr instanceof SQLPropertyExpr) {
             visit((SQLPropertyExpr) expr);
-        } else {
+        } else if (expr != null) {
             printExpr(expr, parameterized);
         }
 

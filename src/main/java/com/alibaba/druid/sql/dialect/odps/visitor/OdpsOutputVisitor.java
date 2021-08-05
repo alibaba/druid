@@ -684,6 +684,10 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     protected void printFunctionName(String name) {
+        if (name == null) {
+            return;
+        }
+
         String upperName = name.toUpperCase();
         if (builtInFunctions.contains(upperName)) {
             print0(ucase ? upperName : name);

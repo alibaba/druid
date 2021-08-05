@@ -16,9 +16,11 @@
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.repository.SchemaRepository;
+import com.alibaba.druid.stat.TableStat;
 
 public class OdpsSchemaStatVisitor extends HiveSchemaStatVisitor implements OdpsASTVisitor {
 
@@ -50,6 +52,17 @@ public class OdpsSchemaStatVisitor extends HiveSchemaStatVisitor implements Odps
 
     @Override
     public boolean visit(OdpsAlterTableSetChangeLogs x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(OdpsAddTableStatement x) {
+        SQLExprTableSource table = x.getTable();
+        TableStat stat = getTableStatWithUnwrap(table.getExpr());
+        if (stat != null) {
+            stat.incrementAddCount();
+        }
+
         return false;
     }
 

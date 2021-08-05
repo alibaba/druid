@@ -39,6 +39,8 @@ public class TableStat {
     int createIndexCount = 0;
     int dropIndexCount   = 0;
     int referencedCount  = 0;
+    int addCount         = 0; // odps add table
+    int addPartitionCount= 0; // odps add table
 
     public TableStat() {
 
@@ -58,6 +60,22 @@ public class TableStat {
 
     public void incrementDropIndexCount() {
         this.dropIndexCount++;
+    }
+
+    public void incrementAddCount() {
+        this.addCount++;
+    }
+
+    public int getAddCount() {
+        return addCount;
+    }
+
+    public void incrementAddPartitionCount() {
+        this.addPartitionCount++;
+    }
+
+    public int getAddPartitionCount() {
+        return addPartitionCount;
     }
 
     public int getCreateIndexCount() {
@@ -183,6 +201,12 @@ public class TableStat {
         }
         if (dropIndexCount > 0) {
             buf.append("DropIndex");
+        }
+        if (addCount > 0) {
+            buf.append("Add");
+        }
+        if (addPartitionCount > 0) {
+            buf.append("AddPartition");
         }
 
         return buf.toString();

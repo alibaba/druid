@@ -2319,6 +2319,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         for (SQLAlterTableItem item : x.getItems()) {
             item.setParent(x);
+            if (item instanceof SQLAlterTableAddPartition) {
+                stat.incrementAddPartitionCount();
+            }
+
             item.accept(this);
         }
 
