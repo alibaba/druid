@@ -3131,8 +3131,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         }
                     }
 
-                    if (keepAlive && idleMillis >= keepAliveBetweenTimeMillis) {
-                        keepAliveConnections[keepAliveCount++] = connection;
+                    if (keepAlive) {
+                    	long nonActiveMillis = currentTimeMillis - Math.max(connection.lastActiveTimeMillis, connection.lastKeepTimeMillis);
+                    	if (nonActiveMillis >= keepAliveBetweenTimeMillis) {
+                    		keepAliveConnections[keepAliveCount++] = connection;
+                    	}
                     }
                 } else {
                     if (i < checkCount) {
