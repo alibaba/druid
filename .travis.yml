@@ -8,3 +8,7 @@ after_success:
 branches:
   except:
     - appveyor
+
+cache:
+  directories:
+  - $HOME/.m2
