@@ -1890,6 +1890,14 @@ class SchemaResolveVisitorFactory {
                 checkParameter(visitor, identifierExpr);
 
                 SQLTableSource tableSource = unwrapAlias(visitor.getContext(), null, identifierExpr.nameHashCode64());
+                if (tableSource == null && x.getParent() instanceof HiveMultiInsertStatement) {
+                    SQLWithSubqueryClause with = ((HiveMultiInsertStatement) x.getParent()).getWith();
+                    if (with != null) {
+                        SQLWithSubqueryClause.Entry entry = with.findEntry(identifierExpr.nameHashCode64());
+                        tableSource = entry;
+                    }
+                }
+
                 if (tableSource != null) {
                     identifierExpr.setResolvedTableSource(tableSource);
                     return;

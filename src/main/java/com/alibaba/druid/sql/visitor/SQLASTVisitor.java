@@ -2652,4 +2652,19 @@ public interface SQLASTVisitor {
         return true;
     }
 
+    default void endVisit(SQLAlterTableChangeOwner x) {
+
+    }
+
+    default boolean visit(SQLAlterTableChangeOwner x) {
+        return true;
+    }
+
+    default void endVisit(SQLTableDataType x) {
+
+    }
+
+    default boolean visit(SQLTableDataType x) {
+        return true;
+    }
 }

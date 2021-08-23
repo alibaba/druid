@@ -54,6 +54,11 @@ public class OdpsLexer extends Lexer {
 
     public OdpsLexer(String input, SQLParserFeature... features){
         super(input);
+
+        if (ch == '】' || ch == ' ' || ch == '，' || ch == '：' || ch == '、') {
+            ch = charAt(++pos);
+        }
+
         dbType = DbType.odps;
         super.keywords = DEFAULT_ODPS_KEYWORDS;
         this.skipComment = true;
@@ -66,6 +71,11 @@ public class OdpsLexer extends Lexer {
     
     public OdpsLexer(String input, boolean skipComment, boolean keepComments){
         super(input, skipComment);
+
+        if (ch == '】' || ch == ' ' || ch == '，' || ch == '：' || ch == '、') {
+            ch = charAt(++pos);
+        }
+
         dbType = DbType.odps;
         this.skipComment = skipComment;
         this.keepComments = keepComments;
@@ -74,6 +84,11 @@ public class OdpsLexer extends Lexer {
     
     public OdpsLexer(String input, CommentHandler commentHandler){
         super(input, commentHandler);
+
+        if (ch == '】' || ch == ' ' || ch == '，' || ch == '：' || ch == '、') {
+            ch = charAt(++pos);
+        }
+
         dbType = DbType.odps;
         super.keywords = DEFAULT_ODPS_KEYWORDS;
     }
@@ -180,6 +195,22 @@ public class OdpsLexer extends Lexer {
             token = Token.COLON;
             ch = charAt(++pos);
             return;
+        }
+
+        if (ch == '#'
+                && charAt(pos + 1) == 'C'
+                && charAt(pos + 2) == 'O'
+                && charAt(pos + 3) == 'D'
+                && charAt(pos + 4) == 'E') {
+            int p1 = text.indexOf("#END CODE", pos + 1);
+            if (p1 != -1) {
+                int end = p1 + "#END CODE".length();
+                stringVal = text.substring(pos, end);
+                token = Token.CODE;
+                pos = end;
+                ch = charAt(pos);
+                return;
+            }
         }
         
         super.scanVariable();

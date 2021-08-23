@@ -72,8 +72,13 @@ public class OdpsSelectParser extends SQLSelectParser {
                     queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
                     lexer.nextToken();
                 } else if (lexer.token() == Token.UNIQUE) {
-                    queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
+                    Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
+                    if (lexer.token() == Token.DOT) {
+                        lexer.reset(mark);
+                    } else {
+                        queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
+                    }
                 } else if (lexer.token() == Token.ALL) {
                     String str = lexer.stringVal();
                     lexer.nextToken();
@@ -97,11 +102,16 @@ public class OdpsSelectParser extends SQLSelectParser {
             }
 
             if (lexer.token() == Token.COMMENT) {
+                Lexer.SavePoint mark = lexer.mark();
+
                 String tokenStr = lexer.stringVal();
                 lexer.nextToken();
                 if (lexer.token() == Token.COMMA) {
-                    queryBlock.addSelectItem(new SQLIdentifierExpr(tokenStr));
+                    SQLIdentifierExpr expr = new SQLIdentifierExpr(tokenStr);
+                    queryBlock.addSelectItem(expr);
                     lexer.nextToken();
+                } else {
+                    lexer.reset(mark);
                 }
             }
 
@@ -110,8 +120,13 @@ public class OdpsSelectParser extends SQLSelectParser {
                     queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
                     lexer.nextToken();
                 } else if (lexer.token() == Token.UNIQUE) {
-                    queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
+                    Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
+                    if (lexer.token() == Token.DOT) {
+                        lexer.reset(mark);
+                    } else {
+                        queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
+                    }
                 } else if (lexer.token() == Token.ALL) {
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();

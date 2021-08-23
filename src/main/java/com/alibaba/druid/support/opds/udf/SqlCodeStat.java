@@ -1,5 +1,8 @@
 package com.alibaba.druid.support.opds.udf;
 
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
@@ -28,7 +31,9 @@ public class SqlCodeStat extends UDF {
         DbType dbType = dbTypeName == null ? null : DbType.valueOf(dbTypeName);
 
         try {
-            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.odps, SQLParserFeature.EnableMultiUnion);
+            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.odps
+                    , SQLParserFeature.EnableMultiUnion
+                    , SQLParserFeature.EnableSQLBinaryOpExprGroup);
 
             CodeStatVisitor v = new CodeStatVisitor();
             for (SQLStatement stmt : stmtList) {
@@ -74,6 +79,12 @@ public class SqlCodeStat extends UDF {
         @JSONField(ordinal = 8)
         public int over;
 
+        @JSONField(ordinal = 9)
+        public int subQuery;
+
+        @JSONField(ordinal = 10)
+        public int lateralView;
+
         @JSONField(ordinal = 40)
         public int insert;
 
@@ -85,6 +96,9 @@ public class SqlCodeStat extends UDF {
 
         @JSONField(ordinal = 43)
         public int insertSelect;
+
+        @JSONField(ordinal = 44)
+        public int insertMulti;
 
         @JSONField(ordinal = 51)
         public int update;
@@ -113,22 +127,28 @@ public class SqlCodeStat extends UDF {
         @JSONField(ordinal = 80)
         public int set;
 
+        @JSONField(ordinal = 90)
+        public int alter;
+
         @JSONField(ordinal = 100)
-        public int condition;
-
-        @JSONField(ordinal = 101)
-        public int joinCondition;
-
-        @JSONField(ordinal = 102)
-        public int valueCondition;
-
-        @JSONField(ordinal = 103)
-        public int otherCondition;
-
-        @JSONField(ordinal = 104)
-        public int limit;
+        public int read;
 
         @JSONField(ordinal = 200)
+        public int condition;
+
+        @JSONField(ordinal = 201)
+        public int joinCondition;
+
+        @JSONField(ordinal = 202)
+        public int valueCondition;
+
+        @JSONField(ordinal = 203)
+        public int otherCondition;
+
+        @JSONField(ordinal = 204)
+        public int limit;
+
+        @JSONField(ordinal = 300)
         public int aggregate;
 
         @JSONField(ordinal = 201)
@@ -138,7 +158,7 @@ public class SqlCodeStat extends UDF {
         public int having;
     }
 
-    private static class CodeStatVisitor extends OdpsASTVisitorAdapter {
+    static class CodeStatVisitor extends OdpsASTVisitorAdapter {
         SqlStat stat = new SqlStat();
 
         public void preVisit(SQLObject x) {
@@ -159,7 +179,17 @@ public class SqlCodeStat extends UDF {
                     } else {
                         stat.insertInto++;
                     }
-
+                } else if (x instanceof HiveMultiInsertStatement) {
+                    stat.insert++;
+                    stat.insertMulti++;
+                    stat.insertSelect++;
+                    for (HiveInsert item : ((HiveMultiInsertStatement) x).getItems()) {
+                        if (item.isOverwrite()) {
+                            stat.insertOverwrite++;
+                        } else {
+                            stat.insertInto++;
+                        }
+                    }
                 } else  if (x instanceof SQLDropStatement) {
                     stat.drop++;
                     if (x instanceof SQLDropTableStatement) {
@@ -180,12 +210,21 @@ public class SqlCodeStat extends UDF {
                     stat.update++;
                 } else if (x instanceof SQLSetStatement) {
                     stat.set++;
+                } else if (x instanceof SQLAlterStatement) {
+                    stat.alter++;
+                } else if (x instanceof OdpsReadStatement) {
+                    stat.read++;
                 }
             }
         }
 
         public boolean visit(SQLUnionQuery x) {
             stat.union++;
+            return true;
+        }
+
+        public boolean visit(SQLLateralViewTableSource x) {
+            stat.lateralView++;
             return true;
         }
 
@@ -228,10 +267,14 @@ public class SqlCodeStat extends UDF {
 
         public boolean visit(SQLSubqueryTableSource x) {
             stat.from++;
+            stat.subQuery++;
             return true;
         }
 
         public boolean visit(SQLJoinTableSource x) {
+            if (!(x.getParent() instanceof SQLJoinTableSource)) {
+                stat.from++;
+            }
             stat.join++;
             return true;
         }
@@ -303,6 +346,10 @@ public class SqlCodeStat extends UDF {
             return JSON.toJSONString(stat
                     , SerializerFeature.PrettyFormat
                     , SerializerFeature.NotWriteDefaultValue);
+        }
+
+        public java.util.Map toMap() {
+            return (java.util.Map) JSON.toJSON(stat);
         }
     }
 }

@@ -1139,7 +1139,15 @@ public class SQLSelectParser extends SQLParser {
             tableReference.setHint(hint);
         }
 
-        SQLExpr expr = expr();
+        SQLExpr expr;
+        switch (lexer.token) {
+            case ALL:
+                expr = this.exprParser.name();
+                break;
+            default:
+                expr = expr();
+                break;
+        }
 
         if (expr instanceof SQLBinaryOpExpr) {
             throw new ParserException("Invalid from clause : " + expr.toString().replace("\n", " "));
@@ -1511,7 +1519,16 @@ public class SQLSelectParser extends SQLParser {
 
                 if (rightTableSource == null) {
                     boolean aliasToken = lexer.token == Token.LITERAL_ALIAS;
-                    SQLExpr expr = this.expr();
+                    SQLExpr expr;
+                    switch (lexer.token) {
+                        case ALL:
+                            expr = this.exprParser.name();
+                            break;
+                        default:
+                            expr = this.expr();
+                            break;
+                    }
+
                     if (aliasToken && expr instanceof SQLCharExpr) {
                         expr = new SQLIdentifierExpr(((SQLCharExpr) expr).getText());
                     }

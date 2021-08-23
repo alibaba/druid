@@ -9,10 +9,12 @@ import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class HiveCreateFunctionStatement extends SQLCreateFunctionStatement implements SQLCreateStatement {
+    protected boolean declare = false;
     protected SQLExpr className;
     protected SQLExpr locationn;
     protected SQLExpr symbol;
     protected ResourceType resourceType;
+    protected String code;
 
     public void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof HiveASTVisitor) {
@@ -75,7 +77,23 @@ public class HiveCreateFunctionStatement extends SQLCreateFunctionStatement impl
         this.resourceType = resourceType;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public boolean isDeclare() {
+        return declare;
+    }
+
+    public void setDeclare(boolean declare) {
+        this.declare = declare;
+    }
+
     public static enum ResourceType {
-        JAR, FILE, ARCHIVE
+        JAR, FILE, ARCHIVE, CODE
     }
 }

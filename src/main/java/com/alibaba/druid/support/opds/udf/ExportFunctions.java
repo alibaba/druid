@@ -18,12 +18,18 @@ package com.alibaba.druid.support.opds.udf;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsNewExpr;
+import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.aliyun.odps.udf.UDF;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ExportFunctions extends UDF {
 
@@ -39,8 +45,10 @@ public class ExportFunctions extends UDF {
         DbType dbType = dbTypeName == null ? null : DbType.valueOf(dbTypeName);
 
         try {
-            List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
-            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
+            List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType
+                    , SQLParserFeature.EnableMultiUnion
+                    , SQLParserFeature.EnableSQLBinaryOpExprGroup);
+            Visitor visitor = new Visitor();
 
             for (SQLStatement stmt : statementList) {
                 stmt.accept(visitor);
@@ -49,22 +57,19 @@ public class ExportFunctions extends UDF {
             StringBuffer buf = new StringBuffer();
 
             List<SQLMethodInvokeExpr> functions = visitor.getFunctions();
+            Set<String> functionSet = new LinkedHashSet<>();
             for (int i = 0; i < functions.size(); i++) {
-                if (i != 0) {
-                    buf.append(",");
-                }
-                SQLMethodInvokeExpr func = functions.get(i);
-                String funcName = func.getMethodName();
-                buf.append(funcName);
+                functionSet.add(functions.get(i).getMethodName());
             }
 
-            for (int i = 0; i < visitor.getAggregateFunctions().size(); i++) {
-                if (buf.length() > 0) {
+            for (String funcName : functionSet) {
+                if (funcName.length() > 2 && funcName.charAt(0) == '`' && funcName.charAt(funcName.length() - 1) == '`') {
+                    funcName = funcName.substring(1, funcName.length() - 1);
+                }
+                if (buf.length() != 0) {
                     buf.append(",");
                 }
 
-                SQLAggregateExpr func = visitor.getAggregateFunctions().get(i);
-                String funcName = func.getMethodName();
                 buf.append(funcName);
             }
 
@@ -78,6 +83,58 @@ public class ExportFunctions extends UDF {
             }
 
             return null;
+        } catch (StackOverflowError ex) {
+            System.err.println("error sql : " + sql);
+            ex.printStackTrace();
+
+            if (throwError) {
+                throw ex;
+            }
+
+            return null;
+        }
+    }
+
+    public static class Visitor extends SQLASTVisitorAdapter implements OdpsASTVisitor {
+        private final List<SQLMethodInvokeExpr> functions = new ArrayList<SQLMethodInvokeExpr>();
+
+        public boolean visit(SQLMethodInvokeExpr x) {
+            functions.add(x);
+            return true;
+        }
+
+        public boolean visit(SQLAggregateExpr x) {
+            functions.add(x);
+            return true;
+        }
+
+        public boolean visit(OdpsNewExpr x) {
+            functions.add(x);
+            return true;
+        }
+
+        public List<SQLMethodInvokeExpr> getFunctions() {
+            return functions;
+        }
+
+        public boolean visit(SQLCastExpr x) {
+            functions.add(new SQLMethodInvokeExpr("CAST"));
+            return true;
+        }
+
+        public boolean visit(SQLBetweenExpr x) {
+            functions.add(new SQLMethodInvokeExpr("BETWEEN"));
+            return true;
+        }
+
+        public boolean visit(SQLCaseExpr x) {
+            functions.add(new SQLMethodInvokeExpr("CASE"));
+            return true;
+        }
+
+        public boolean visit(SQLInListExpr x) {
+            functions.add(new SQLMethodInvokeExpr("IN"));
+            return true;
         }
     }
 }

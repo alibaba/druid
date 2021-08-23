@@ -375,6 +375,15 @@ public class SchemaRepository {
         resolveVisitor.visit(stmt);
     }
 
+    public void resolve(SQLSelect select, SchemaResolveVisitor.Option... options) {
+        if (select == null) {
+            return;
+        }
+
+        SchemaResolveVisitor resolveVisitor = createResolveVisitor(options);
+        resolveVisitor.visit(select);
+    }
+
     public void resolve(SQLSelectQueryBlock queryBlock, SchemaResolveVisitor.Option... options) {
         if (queryBlock == null) {
             return;

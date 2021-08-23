@@ -15,78 +15,9 @@
  */
 package com.alibaba.druid.support.opds.udf;
 
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.repository.SchemaRepository;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
-import com.aliyun.odps.udf.UDF;
-
-import java.util.List;
-import java.util.Map;
-
-public class ExportInputTables extends UDF {
-
-    public String evaluate(String sql) throws Throwable {
-        return evaluate(sql, null, false);
-    }
-
-    public String evaluate(String sql, String dbTypeName) throws Throwable {
-        return evaluate(sql, dbTypeName, false);
-    }
-
-    public String evaluate(String sql, String dbTypeName, boolean throwError) throws Throwable {
-        DbType dbType = dbTypeName == null ? null : DbType.valueOf(dbTypeName);
-
-        Throwable error = null;
-        try {
-            SchemaRepository repo = new SchemaRepository(dbType);
-            List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
-            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(repo, dbType);
-
-            for (SQLStatement stmt : statementList) {
-                if (stmt instanceof SQLCreateViewStatement) {
-                    repo.accept(stmt);
-                } else if (stmt instanceof SQLCreateTableStatement) {
-                    repo.accept(stmt);
-                } else if (stmt instanceof SQLDropTableStatement) {
-                    repo.accept(stmt);
-                } else if (stmt instanceof SQLDropViewStatement) {
-                    repo.accept(stmt);
-                }
-
-                stmt.accept(visitor);
-            }
-
-            StringBuffer buf = new StringBuffer();
-
-            for (Map.Entry<TableStat.Name, TableStat> entry : visitor.getTables().entrySet()) {
-                TableStat.Name name = entry.getKey();
-
-                TableStat stat = entry.getValue();
-                if (stat.getSelectCount() == 0) {
-                    continue;
-                }
-
-                if (buf.length() != 0) {
-                    buf.append(',');
-                }
-                buf.append(name.toString());
-            }
-
-            return buf.toString();
-        } catch (Exception ignored) {
-            error = ignored;
-        } catch (StackOverflowError ignored) {
-            error = ignored;
-        }
-
-        if (throwError && error != null) {
-            throw error;
-        }
-
-        return null;
+public class ExportInputTables extends ExportIO {
+    public String evaluate(String sql, String dbTypeName, String projectName) {
+        return new DependencyExtractor(sql, dbTypeName, projectName)
+                .inputs();
     }
 }

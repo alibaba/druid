@@ -676,6 +676,7 @@ public class Lexer {
     }
 
     public final SQLType scanSQLType() {
+        _loop:
         for (;;) {
             while (isWhitespace(ch)) {
                 ch = charAt(++pos);
@@ -707,10 +708,31 @@ public class Lexer {
                 }
             }
 
+            if (dbType == DbType.odps) {
+                while (ch == ';') {
+                    ch = charAt(++pos);
 
-            if (ch == '-' && pos + 1 < text.length() && text.charAt(pos + 1) == '-') {
+                    if (isEOF()) {
+                        return SQLType.EMPTY;
+                    }
+
+                    while (isWhitespace(ch)) {
+                        ch = charAt(++pos);
+                    }
+                    continue _loop;
+                }
+            }
+
+            if (pos + 1 < text.length()
+                    && ((ch == '-' && text.charAt(pos + 1) == '-') || (ch == '—' && text.charAt(pos + 1) == '—'))) {
                 int index = text.indexOf('\n', pos + 2);
                 if (index == -1) {
+                    reset(0);
+                    nextToken();
+                    if (token == EOF) {
+                        return SQLType.EMPTY;
+                    }
+
                     return SQLType.UNKNOWN;
                 }
 
@@ -769,12 +791,61 @@ public class Lexer {
         } else if (hashCode == FnvHash.Constants.ALTER) {
             return SQLType.ALTER;
         } else if (hashCode == FnvHash.Constants.SHOW) {
+            nextToken();
+            if (identifierEquals(FnvHash.Constants.STATISTIC)) {
+                return SQLType.SHOW_STATISTIC;
+            } else if (identifierEquals(FnvHash.Constants.STATISTIC_LIST)) {
+                return SQLType.SHOW_STATISTIC_LIST;
+            } else if (identifierEquals(FnvHash.Constants.TABLES) || identifierEquals("TABLES；")) {
+                return SQLType.SHOW_TABLES;
+            } else if (identifierEquals(FnvHash.Constants.PARTITIONS)) {
+                return SQLType.SHOW_PARTITIONS;
+            } else if (identifierEquals(FnvHash.Constants.CATALOGS)) {
+                return SQLType.SHOW_CATALOGS;
+            } else if (identifierEquals(FnvHash.Constants.FUNCTIONS)) {
+                return SQLType.SHOW_FUNCTIONS;
+            } else if (identifierEquals(FnvHash.Constants.ROLES)) {
+                return SQLType.SHOW_ROLES;
+            } else if (identifierEquals(FnvHash.Constants.LABEL)) {
+                return SQLType.SHOW_LABEL;
+            } else if (identifierEquals(FnvHash.Constants.GRANTS)) {
+                return SQLType.SHOW_GRANTS;
+            } else if (identifierEquals(FnvHash.Constants.GRANT)
+                    || token == GRANT
+            ) {
+                return SQLType.SHOW_GRANT;
+            } else if (identifierEquals(FnvHash.Constants.RECYCLEBIN)) {
+                return SQLType.SHOW_RECYCLEBIN;
+            } else if (identifierEquals("VARIABLES")) {
+                return SQLType.SHOW_VARIABLES;
+            } else if (identifierEquals("HISTORY")) {
+                return SQLType.SHOW_HISTORY;
+            } else if (identifierEquals("PACKAGES")) {
+                return SQLType.SHOW_PACKAGES;
+            } else if (identifierEquals("PACKAGE")) {
+                return SQLType.SHOW_PACKAGE;
+            } else if (identifierEquals("CHANGELOGS")) {
+                return SQLType.SHOW_CHANGELOGS;
+            } else if (identifierEquals("ACL")) {
+                return SQLType.SHOW_ACL;
+            } else if (token == CREATE) {
+                nextToken();
+                if (token == TABLE) {
+                    return SQLType.SHOW_CREATE_TABLE;
+                }
+            }
             return SQLType.SHOW;
         } else if (hashCode == FnvHash.Constants.DESC) {
             return SQLType.DESC;
         } else if (hashCode == FnvHash.Constants.DESCRIBE) {
             return SQLType.DESC;
         } else if (hashCode == FnvHash.Constants.SET) {
+            nextToken();
+            if (identifierEquals(FnvHash.Constants.LABEL)) {
+                return SQLType.SET_LABEL;
+            } else if (identifierEquals("PROJECT")) {
+                return SQLType.SET_PROJECT;
+            }
             return SQLType.SET;
         } else if (hashCode == FnvHash.Constants.KILL) {
             return SQLType.KILL;
@@ -785,6 +856,23 @@ public class Lexer {
         } else if (hashCode == FnvHash.Constants.DROP) {
             return SQLType.DROP;
         } else if (hashCode == FnvHash.Constants.LIST) {
+            nextToken();
+            if (identifierEquals(FnvHash.Constants.USERS)) {
+                return SQLType.LIST_USERS;
+            } else if (identifierEquals(FnvHash.Constants.TABLES)) {
+                return SQLType.LIST_TABLES;
+            } else if (identifierEquals(FnvHash.Constants.ROLES)) {
+                return SQLType.LIST_ROLES;
+            } else if (identifierEquals("TENANT")) {
+                nextToken();
+                if (identifierEquals(FnvHash.Constants.ROLES)) {
+                    return SQLType.LIST_TENANT_ROLES;
+                }
+            } else if (identifierEquals("TRUSTEDPROJECTS")) {
+                return SQLType.LIST_TRUSTEDPROJECTS;
+            } else if (identifierEquals("ACCOUNTPROVIDERS")) {
+                return SQLType.LIST_ACCOUNTPROVIDERS;
+            }
             return SQLType.LIST;
         } else if (hashCode == FnvHash.Constants.ROLLBACK) {
             return SQLType.ROLLBACK;
@@ -803,13 +891,7 @@ public class Lexer {
         } else if (hashCode == FnvHash.Constants.READ) {
             return SQLType.READ;
         } else if (hashCode == FnvHash.Constants.WITH) {
-            if (dbType == DbType.mysql
-                    || dbType == DbType.hive
-                    || dbType == DbType.odps
-                    || dbType == DbType.oracle) {
-                return SQLType.SELECT;
-            }
-            return SQLType.UNKNOWN;
+            return SQLType.WITH;
         } else if (hashCode == FnvHash.Constants.DUMP) {
             nextToken();
             if (identifierEquals(FnvHash.Constants.DATA)) {
@@ -821,12 +903,31 @@ public class Lexer {
                 return SQLType.ADD_USER;
             } else if (token == TABLE) {
                 return SQLType.ADD_TABLE;
+            } else if (token == FUNCTION) {
+                return SQLType.ADD_FUNCTION;
+            } else if (identifierEquals(FnvHash.Constants.STATISTIC)) {
+                return SQLType.ADD_STATISTIC;
+            } else if (identifierEquals(FnvHash.Constants.RESOURCE)) {
+                return SQLType.ADD_RESOURCE;
+            } else if (identifierEquals("VOLUME")) {
+                return SQLType.ADD_VOLUME;
+            } else if (identifierEquals("ACCOUNTPROVIDER")) {
+                return SQLType.ADD_ACCOUNTPROVIDER;
+            } else if (identifierEquals("TRUSTEDPROJECT")) {
+                return SQLType.ADD_TRUSTEDPROJECT;
+            } else {
+                return SQLType.ADD;
             }
         } else if (hashCode == FnvHash.Constants.REMOVE) {
             nextToken();
             if (token == Token.USER || identifierEquals(FnvHash.Constants.USER)) {
                 return SQLType.REMOVE_USER;
             }
+
+            if (identifierEquals(FnvHash.Constants.RESOURCE)) {
+                return SQLType.REMOVE_RESOURCE;
+            }
+            return SQLType.REMOVE;
         } else if (hashCode == FnvHash.Constants.TUNNEL) {
             nextToken();
             if (identifierEquals(FnvHash.Constants.DOWNLOAD)) {
@@ -834,6 +935,68 @@ public class Lexer {
             }
         } else if (hashCode == FnvHash.Constants.UPLOAD) {
             return SQLType.UPLOAD;
+        } else if (hashCode == FnvHash.Constants.WHOAMI) {
+            return SQLType.WHOAMI;
+        } else if (hashCode == FnvHash.Constants.COUNT) {
+            return SQLType.COUNT;
+        } else if (hashCode == FnvHash.Constants.CLONE) {
+            return SQLType.CLONE;
+        } else if (hashCode == FnvHash.Constants.LOAD) {
+            return SQLType.LOAD;
+        } else if (hashCode == FnvHash.Constants.INSTALL) {
+            return SQLType.INSTALL;
+        } else if (hashCode == FnvHash.Constants.UNLOAD) {
+            return SQLType.UNLOAD;
+        } else if (hashCode == FnvHash.Constants.ALLOW) {
+            return SQLType.ALLOW;
+        } else if (hashCode == FnvHash.Constants.PURGE) {
+            return SQLType.PURGE;
+        } else if (hashCode == FnvHash.Constants.RESTORE) {
+            return SQLType.RESTORE;
+        } else if (hashCode == FnvHash.Constants.EXSTORE) {
+            return SQLType.EXSTORE;
+        } else if (hashCode == FnvHash.Constants.UNDO) {
+            return SQLType.UNDO;
+        } else if (hashCode == FnvHash.Constants.REMOVE) {
+            return SQLType.REMOVE;
+        } else if (hashCode == FnvHash.Constants.FROM) {
+            if (dbType == DbType.odps || dbType == DbType.hive) {
+                return SQLType.INSERT_MULTI;
+            }
+        } else if (hashCode == FnvHash.Constants.ADD) {
+            return SQLType.ADD;
+        } else if (hashCode == FnvHash.Constants.IF) {
+            return SQLType.SCRIPT;
+        } else if (hashCode == FnvHash.Constants.FUNCTION) {
+            if (dbType == DbType.odps) {
+                return SQLType.SCRIPT;
+            }
+        } else if (hashCode == FnvHash.Constants.BEGIN) {
+            if (dbType == DbType.odps || dbType == DbType.oracle) {
+                return SQLType.SCRIPT;
+            }
+        } else if (ch == '@') {
+            nextToken();
+            if (token == VARIANT && dbType == DbType.odps) {
+                nextToken();
+
+                if (token == TABLE) {
+                    return SQLType.SCRIPT;
+                }
+
+                // datatype
+                if (token == IDENTIFIER) {
+                    nextToken();
+                }
+
+                if (token == COLONEQ || token == SEMI) {
+                    return SQLType.SCRIPT;
+                }
+            }
+        }
+
+        if (ch == EOI) {
+            return SQLType.EMPTY;
         }
 
         return SQLType.UNKNOWN;
@@ -858,10 +1021,16 @@ public class Lexer {
                         sqlType = SQLType.CREATE_TABLE;
                         break;
                     case VIEW:
-                        sqlType = SQLType.CREATE_VIEW;
-                        break _for;
+                        if (sqlType == SQLType.CREATE) {
+                            sqlType = SQLType.CREATE_VIEW;
+                            break _for;
+                        }
+                        break;
                     case FUNCTION:
-                        sqlType = SQLType.CREATE_FUNCTION;
+                        if (sqlType == SQLType.CREATE) {
+                            sqlType = SQLType.CREATE_FUNCTION;
+                            break _for;
+                        }
                         break;
                     case SELECT:
                         if (sqlType == SQLType.CREATE_TABLE) {
@@ -870,8 +1039,12 @@ public class Lexer {
                         }
                         break;
                     default:
-                        if (identifierEquals(FnvHash.Constants.ROLE)) {
+                        if (sqlType == SQLType.CREATE && identifierEquals(FnvHash.Constants.ROLE)) {
                             sqlType = SQLType.CREATE_ROLE;
+                            break _for;
+                        }
+                        if (sqlType == SQLType.CREATE && identifierEquals(FnvHash.Constants.PACKAGE)) {
+                            sqlType = SQLType.CREATE_PACKAGE;
                             break _for;
                         }
                         break;
@@ -889,8 +1062,15 @@ public class Lexer {
                 return SQLType.DROP_VIEW;
             } else if (token == FUNCTION) {
                 return SQLType.DROP_FUNCTION;
+            } else if (identifierEquals(FnvHash.Constants.ROLE)) {
+                return SQLType.DROP_ROLE;
             } else if (identifierEquals(FnvHash.Constants.RESOURCE)) {
                 return SQLType.DROP_RESOURCE;
+            } else if (identifierEquals(FnvHash.Constants.MATERIALIZED)) {
+                nextToken();
+                if (token == VIEW) {
+                    return SQLType.DROP_MATERIALIZED_VIEW;
+                }
             }
         } else if (sqlType == SQLType.ALTER) {
             nextToken();
@@ -898,16 +1078,25 @@ public class Lexer {
                 return SQLType.ALTER_USER;
             } else if (token == TABLE) {
                 return SQLType.ALTER_TABLE;
+            } else if (token == VIEW) {
+                return SQLType.ALTER_VIEW;
             }
         } else if (sqlType == SQLType.INSERT) {
+            nextToken();
+            boolean overwrite = token == OVERWRITE;
             for (int i = 0; i < 1000;++i) {
                 nextToken();
 
                 if (token == SELECT) {
-                    return SQLType.INSERT_SELECT;
+                    return overwrite
+                            ? SQLType.INSERT_OVERWRITE_SELECT
+                            : SQLType.INSERT_INTO_SELECT;
                 } else if (token == VALUES) {
-                    return SQLType.INSERT_VALUES;
+                    return overwrite ? SQLType.INSERT_OVERWRITE_VALUES : SQLType.INSERT_INTO_VALUES;
                 } else if (token == ERROR || token == EOF) {
+                    if (overwrite) {
+                        sqlType = SQLType.INSERT_OVERWRITE;
+                    }
                     break;
                 }
             }

@@ -92,7 +92,9 @@ public class OdpsExprParser extends SQLExprParser {
 
             if (FnvHash.Constants.DATETIME == hash_lower
                     && lexer.stringVal().charAt(0) != '`'
-                    && lexer.token() == Token.LITERAL_CHARS) {
+                    && (lexer.token() == Token.LITERAL_CHARS
+                        || lexer.token() == Token.LITERAL_ALIAS)
+                    ) {
                 String literal = lexer.stringVal();
                 lexer.nextToken();
 
@@ -155,6 +157,13 @@ public class OdpsExprParser extends SQLExprParser {
     public SQLExpr primaryRest(SQLExpr expr) {
         if(lexer.token() == Token.COLON) {
             lexer.nextToken();
+            if (lexer.token() == Token.LITERAL_INT && expr instanceof SQLPropertyExpr) {
+                SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
+                Number integerValue = lexer.integerValue();
+                lexer.nextToken();
+                propertyExpr.setName(propertyExpr.getName() + ':' + integerValue.intValue());
+                return propertyExpr;
+            }
             expr = dotRest(expr);
             return expr;
         }
@@ -242,6 +251,7 @@ public class OdpsExprParser extends SQLExprParser {
             if (lexer.identifierEquals(FnvHash.Constants.GSON)
                     || lexer.identifierEquals(GSONBUILDER)
                     || lexer.identifierEquals("STRING")
+                    || lexer.identifierEquals("INTEGER")
             ) {
                 lexer.nextToken();
                 String methodName = lexer.stringVal();

@@ -1200,6 +1200,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLSelectQueryBlock x) {
         SQLTableSource from = x.getFrom();
 
+        setMode(x, Mode.Select);
+
         boolean isHiveMultiInsert = false;
         if (from == null) {
             isHiveMultiInsert = x.getParent() != null
@@ -1217,8 +1219,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
             return false;
         }
-
-        setMode(x, Mode.Select);
 
 //        if (x.getFrom() instanceof SQLSubqueryTableSource) {
 //            x.getFrom().accept(this);
@@ -3198,5 +3198,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLSavePointStatement x) {
         return false;
+    }
+
+    public boolean visit(SQLShowPartitionsStmt x) {
+        setMode(x, Mode.DESC);
+        return true;
     }
 }

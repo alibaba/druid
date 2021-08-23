@@ -1133,6 +1133,18 @@ public class SQLStatementParser extends SQLParser {
             return stmt;
         }
 
+        if (lexer.token == ALL) {
+            lexer.nextToken();
+
+            SQLPurgeTableStatement stmt = new SQLPurgeTableStatement();
+            stmt.setAll(true);
+
+            if (lexer.token == LITERAL_INT) {
+                stmt.setCount(lexer.integerValue().intValue());
+                lexer.nextToken();
+            }
+            return stmt;
+        }
 
         if (lexer.identifierEquals("TEMPORARY")) {
             lexer.nextToken();
@@ -2188,6 +2200,14 @@ public class SQLStatementParser extends SQLParser {
                     }
 
                     stmt.addItem(item);
+                } else if (lexer.identifierEquals("CHANGEOWNER")) {
+                    lexer.nextToken();
+                    accept(TO);
+                    SQLName name = this.exprParser.name();
+                    SQLAlterTableChangeOwner changeOwner = new SQLAlterTableChangeOwner();
+                    changeOwner.setOwner(name);
+
+                    stmt.addItem(changeOwner);
                 } else if (lexer.identifierEquals(FnvHash.Constants.ARCHIVE)) {
                     lexer.nextToken();
 
@@ -3182,7 +3202,7 @@ public class SQLStatementParser extends SQLParser {
 
     public void parseAssignItems(List<? super SQLAssignItem> items, SQLObject parent, boolean variant) {
         for (;;) {
-            SQLAssignItem item = exprParser.parseAssignItem(variant);
+            SQLAssignItem item = exprParser.parseAssignItem(variant, parent);
             item.setParent(parent);
             items.add(item);
 
@@ -4417,6 +4437,15 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.RPAREN);
         }
 
+        if (lexer.identifierEquals("RETURNS")) {
+            lexer.nextToken();
+            SQLVariantRefExpr varRef = (SQLVariantRefExpr) this.exprParser.expr();
+            createView.setReturns(varRef);
+            createView.setReturnsDataType(
+                    (SQLTableDataType) this.exprParser.parseDataType()
+            );
+        }
+
         if (lexer.token == Token.COMMENT) {
             lexer.nextToken();
             SQLCharExpr comment = (SQLCharExpr) exprParser.primary();
@@ -5224,7 +5253,9 @@ public class SQLStatementParser extends SQLParser {
 
             if (lexer.token == Token.LPAREN) {
                 lexer.nextToken();
-                exprParser.names(entry.getColumns());
+                if (lexer.token != RPAREN) {
+                    exprParser.names(entry.getColumns());
+                }
                 accept(Token.RPAREN);
             }
 
@@ -6941,7 +6972,10 @@ public class SQLStatementParser extends SQLParser {
         HiveCreateFunctionStatement stmt = new HiveCreateFunctionStatement();
         stmt.setDbType(dbType);
 
-        accept(Token.CREATE);
+        if (lexer.token == CREATE) {
+            lexer.nextToken();
+        }
+
         if (lexer.identifierEquals(FnvHash.Constants.TEMPORARY)) {
             lexer.nextToken();
             stmt.setTemporary(true);
@@ -6950,6 +6984,21 @@ public class SQLStatementParser extends SQLParser {
 
         SQLName name = this.exprParser.name();
         stmt.setName(name);
+
+        if (lexer.token == LPAREN) {
+            lexer.nextToken();
+            while (lexer.token != RPAREN) {
+                SQLParameter param = new SQLParameter();
+                param.setName(this.exprParser.name());
+                param.setDataType(this.exprParser.parseDataType());
+                if (lexer.token == COMMA) {
+                    lexer.nextToken();
+                }
+                stmt.getParameters().add(param);
+                param.setParent(stmt);
+            }
+            accept(RPAREN);
+        }
 
         if (lexer.token() == Token.AS) {
             lexer.setToken(Token.IDENTIFIER);
@@ -6983,6 +7032,11 @@ public class SQLStatementParser extends SQLParser {
             } else if (lexer.identifierEquals(FnvHash.Constants.FILE)) {
                 lexer.nextToken();
                 stmt.setResourceType(HiveCreateFunctionStatement.ResourceType.FILE);
+            } else if (lexer.token == Token.CODE) {
+                stmt.setCode(lexer.stringVal());
+                lexer.nextToken();
+                stmt.setResourceType(HiveCreateFunctionStatement.ResourceType.CODE);
+                return stmt;
             }
 
             SQLExpr location = this.exprParser.primary();

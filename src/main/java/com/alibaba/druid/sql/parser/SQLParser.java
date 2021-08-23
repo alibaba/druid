@@ -228,7 +228,10 @@ public class SQLParser {
                 case TRIGGER:
                 case CREATE:
                 case ASC:
+                case INOUT:
                 case DESC:
+                case SCHEMA:
+                case IS:
                     if (dbType == DbType.odps || dbType == DbType.hive) {
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -356,19 +359,24 @@ public class SQLParser {
                 case TABLESPACE:
                 case REPEAT:
                 case PRIMARY:
+                case UNIQUE:
+                case LEAVE:
                     alias = lexer.stringVal();
                     lexer.nextToken();
                     break;
                 case INTERSECT:
                 case EXCEPT:
                 case DESC:
+                case INOUT:
                 case MINUS: {
                     alias = lexer.stringVal();
 
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
                     if (lexer.token() != Token.COMMA
-                            && lexer.token() != Token.RPAREN) {
+                            && lexer.token() != Token.RPAREN
+                            && lexer.token() != Token.FROM
+                    ) {
                         alias = null;
                         lexer.reset(mark);
                     }
@@ -384,6 +392,10 @@ public class SQLParser {
                 case SEQUENCE:
                 case TO:
                 case REFERENCES:
+                case LIKE:
+                case NULL:
+                case RIGHT:
+                case LEFT:
                     if (dbType == DbType.odps || dbType == DbType.hive) {
                         alias = lexer.stringVal();
                         lexer.nextToken();
@@ -555,6 +567,8 @@ public class SQLParser {
                 case PRIMARY:
                 case FOREIGN:
                 case REFERENCES:
+                case INTO:
+                case USE:
                     alias = lexer.stringVal();
                     lexer.nextToken();
                     return alias;

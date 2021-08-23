@@ -1247,7 +1247,7 @@ public class MySqlExprParser extends SQLExprParser {
         return dataType;
     }
 
-    public SQLAssignItem parseAssignItem(boolean variant) {
+    public SQLAssignItem parseAssignItem(boolean variant, SQLObject parent) {
         SQLAssignItem item = new SQLAssignItem();
 
         SQLExpr var = primary();

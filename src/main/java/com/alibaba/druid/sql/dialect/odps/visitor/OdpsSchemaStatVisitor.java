@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.odps.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.repository.SchemaRepository;
@@ -66,4 +67,7 @@ public class OdpsSchemaStatVisitor extends HiveSchemaStatVisitor implements Odps
         return false;
     }
 
+    public boolean visit(OdpsSelectQueryBlock x) {
+        return visit((SQLSelectQueryBlock) x);
+    }
 }

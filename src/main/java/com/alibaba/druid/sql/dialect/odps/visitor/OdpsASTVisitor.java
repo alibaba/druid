@@ -248,4 +248,12 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
 
     }
 
+    default boolean visit(OdpsDeclareVariableStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsDeclareVariableStatement x) {
+
+    }
+
 }
