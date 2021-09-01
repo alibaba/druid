@@ -586,6 +586,7 @@ public class SQLSelectParser extends SQLParser {
 
             switch (lexer.token) {
                 case SELECT:
+                case LPAREN:
                 case WITH:
                     entry.setSubQuery(select());
                     break;

@@ -406,7 +406,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     private void orderByAddColumn(String table, String columnName, SQLObject expr) {
-        Column column = new Column(table, columnName);
+        Column column = new Column(table, columnName, dbType);
 
         SQLObject parent = expr.getParent();
         if (parent instanceof SQLSelectOrderByItem) {
@@ -3006,24 +3006,28 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             List<SQLSelectQuery> rights = new ArrayList<SQLSelectQuery>();
             rights.add(right);
 
-            for (; ; ) {
-                SQLSelectQuery leftLeft = leftUnion.getLeft();
-                SQLSelectQuery leftRight = leftUnion.getRight();
+            if (leftUnion.getRelations().size() > 2) {
+                rights.addAll(leftUnion.getRelations());
+            } else {
+                for (; ; ) {
+                    SQLSelectQuery leftLeft = leftUnion.getLeft();
+                    SQLSelectQuery leftRight = leftUnion.getRight();
 
-                if ((!leftUnion.isBracket())
-                        && leftUnion.getOrderBy() == null
-                        && (!leftLeft.isBracket())
-                        && (!leftRight.isBracket())
-                        && leftLeft instanceof SQLUnionQuery
-                        && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
-                    rights.add(leftRight);
-                    leftUnion = (SQLUnionQuery) leftLeft;
-                    continue;
-                } else {
-                    rights.add(leftRight);
-                    rights.add(leftLeft);
+                    if ((!leftUnion.isBracket())
+                            && leftUnion.getOrderBy() == null
+                            && (!leftLeft.isBracket())
+                            && (!leftRight.isBracket())
+                            && leftLeft instanceof SQLUnionQuery
+                            && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
+                        rights.add(leftRight);
+                        leftUnion = (SQLUnionQuery) leftLeft;
+                        continue;
+                    } else {
+                        rights.add(leftRight);
+                        rights.add(leftLeft);
+                    }
+                    break;
                 }
-                break;
             }
 
             for (int i = rights.size() - 1; i >= 0; i--) {

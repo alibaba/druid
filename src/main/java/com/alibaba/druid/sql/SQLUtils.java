@@ -267,6 +267,10 @@ public class SQLUtils {
     }
 
     public static SQLExpr toSQLExpr(String sql, DbType dbType) {
+        if (sql.indexOf("${") != -1 && dbType == DbType.odps) {
+            return new SQLIdentifierExpr(sql);
+        }
+
         SQLExprParser parser = SQLParserUtils.createExprParser(sql, dbType);
         SQLExpr expr = parser.expr();
 

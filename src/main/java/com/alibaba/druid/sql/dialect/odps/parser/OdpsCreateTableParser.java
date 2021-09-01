@@ -169,6 +169,13 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     case RIGHT:
                     case REPEAT:
                     case COMPUTE:
+                    case LOCK:
+                    case TABLE:
+                    case DO:
+                    case WHILE:
+                    case FOR:
+                    case RLIKE:
+                    case PROCEDURE:
                         column = this.exprParser.parseColumn(stmt);
                         break;
                     default:

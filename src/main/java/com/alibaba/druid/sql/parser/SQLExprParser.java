@@ -602,7 +602,8 @@ public class SQLExprParser extends SQLParser {
                 if (varName.startsWith(":")) {
                     varRefExpr.setIndex(lexer.nextVarIndex());
                 }
-                if (varRefExpr.getName().equals("@") && lexer.token == Token.LITERAL_CHARS) {
+                if (varRefExpr.getName().equals("@")
+                        && (lexer.token == Token.LITERAL_CHARS || (lexer.token == Token.VARIANT && lexer.stringVal().startsWith("@")))) {
                     varRefExpr.setName("@'" + lexer.stringVal() + "'");
                     lexer.nextToken();
                 } else if (varRefExpr.getName().equals("@@") && lexer.token == Token.LITERAL_CHARS) {
@@ -2177,6 +2178,7 @@ public class SQLExprParser extends SQLParser {
                 case REPEAT:
                 case LOOP:
                 case IS:
+                case LOCK:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;
@@ -2196,6 +2198,7 @@ public class SQLExprParser extends SQLParser {
                 case LEFT:
                 case RIGHT:
                 case TABLE:
+                case RLIKE:
                     if (dbType == DbType.odps) {
                         identName = lexer.stringVal();
                         lexer.nextToken();
@@ -2853,6 +2856,10 @@ public class SQLExprParser extends SQLParser {
 
                         if (lexer.token == Token.COMMA) {
                             lexer.nextTokenValue();
+
+                            if (lexer.token == Token.RPAREN && dbType == DbType.odps) {
+                                break;
+                            }
                             continue;
                         }
                         break;

@@ -643,7 +643,7 @@ public class OdpsStatementParser extends SQLStatementParser {
 
             SQLShowTablesStatement stmt = new SQLShowTablesStatement();
 
-            if (lexer.token() == Token.FROM) {
+            if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
                 lexer.nextToken();
                 stmt.setDatabase(this.exprParser.name());
             }
@@ -723,13 +723,32 @@ public class OdpsStatementParser extends SQLStatementParser {
             comments = lexer.readAndResetComments();
         }
 
-        accept(Token.SET);
+        boolean setProject = false;
+        if (identifierEquals("SETPROJECT")) {
+            lexer.nextToken();
+            setProject = true;
+        } else {
+            accept(Token.SET);
+        }
 
         if (lexer.token() == Token.SET && dbType == DbType.odps) {
             lexer.nextToken();
         }
 
-        if (lexer.identifierEquals("LABEL")) {
+        if (lexer.identifierEquals("PROJECT")) {
+            lexer.nextToken();
+            setProject = true;
+        }
+
+        if (setProject) {
+            SQLSetStatement stmt = new SQLSetStatement();
+            stmt.setOption(SQLSetStatement.Option.PROJECT);
+            SQLName target = this.exprParser.name();
+            accept(Token.EQ);
+            SQLExpr value = this.exprParser.expr();
+            stmt.set(target, value);
+            return stmt;
+        } else if (lexer.identifierEquals("LABEL")) {
             OdpsSetLabelStatement stmt = new OdpsSetLabelStatement();
 
             if (comments != null) {

@@ -27,6 +27,7 @@ public class OdpsSetLabelStatement extends OdpsStatementImpl {
 
     private String         label;
 
+    private SQLExpr        project;
     private SQLExpr        user;
 
     private SQLTableSource table;
@@ -65,6 +66,17 @@ public class OdpsSetLabelStatement extends OdpsStatementImpl {
     public void setTable(SQLTableSource table) {
         this.table = table;
         table.setParent(this);
+    }
+
+    public SQLExpr getProject() {
+        return project;
+    }
+
+    public void setProject(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.project = x;
     }
 
     public List<SQLName> getColumns() {

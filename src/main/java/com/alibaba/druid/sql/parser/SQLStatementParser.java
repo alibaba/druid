@@ -198,7 +198,7 @@ public class SQLStatementParser extends SQLParser {
                             && statementList.size() > 0
                             && statementList.get(statementList.size() - i) instanceof MySqlHintStatement) {
                         hintStatement = (MySqlHintStatement) statementList.get(statementList.size() - i);
-                    } else if (i > 0 && !semi) {
+                    } else if (i > 0 && dbType != DbType.odps && !semi) {
                         throw new ParserException("syntax error. " + lexer.info());
                     }
                     SQLStatement stmt = parseSelect();
@@ -475,6 +475,12 @@ public class SQLStatementParser extends SQLParser {
 
             if (lexer.identifierEquals("REFRESH")) {
                 SQLStatement stmt = parseRefresh();
+                statementList.add(stmt);
+                continue;
+            }
+
+            if (lexer.identifierEquals("SETPROJECT")) {
+                SQLStatement stmt = parseSet();
                 statementList.add(stmt);
                 continue;
             }
