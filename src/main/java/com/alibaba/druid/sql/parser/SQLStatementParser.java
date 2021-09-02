@@ -2275,6 +2275,11 @@ public class SQLStatementParser extends SQLParser {
                             item.setIfExists(true);
                         }
 
+                        if (lexer.identifierEquals(Constants.PURGE)) {
+                            lexer.nextToken();
+                            item.setPurge(true);
+                        }
+
                         stmt.addItem(item);
                     } else {
                         acceptIdentifier("SMALLFILES");
@@ -2336,6 +2341,10 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                     acceptIdentifier("PARTITIONS");
                     stmt.addItem(new SQLAlterTableRecoverPartitions());
+                } else if (dbType == DbType.odps && lexer.token == Token.NOT) {
+                    lexer.nextToken();
+                    acceptIdentifier("CLUSTERED");
+                    stmt.setNotClustered(true);
                 } else {
                     break;
                 }
@@ -3456,6 +3465,9 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.identifierEquals(FnvHash.Constants.TABLEGROUP)) {
                     lexer.reset(markBp, markChar, Token.CREATE);
                     return parseCreateTableGroup();
+                } else if (lexer.identifierEquals(FnvHash.Constants.SQL) && dbType == DbType.odps) {
+                    lexer.reset(markBp, markChar, Token.CREATE);
+                    return parseCreateFunction();
                 } else if (lexer.identifierEquals(FnvHash.Constants.DIMENSION)) {
                     lexer.reset(markBp, markChar, Token.CREATE);
                     return parseCreateTable();
@@ -4255,6 +4267,12 @@ public class SQLStatementParser extends SQLParser {
             udpateStatement.setTableSource(tableSource);
         }
 
+        if (dbType == DbType.odps && lexer.token == PARTITION) {
+            lexer.nextToken();
+            udpateStatement.setPartitions(new ArrayList<>());
+            this.exprParser.parseAssignItem(udpateStatement.getPartitions(), udpateStatement);
+        }
+
         parseUpdateSet(udpateStatement);
 
         if (lexer.token == (Token.WHERE)) {
@@ -4460,6 +4478,12 @@ public class SQLStatementParser extends SQLParser {
 
         this.accept(Token.AS);
 
+        if (lexer.identifierEquals(FnvHash.Constants.BEGIN)) {
+            SQLBlockStatement block = (SQLBlockStatement) this.parseBlock();
+            createView.setScript(block);
+            return createView;
+        }
+
         SQLSelectParser selectParser = this.createSQLSelectParser();
         createView.setSubQuery(selectParser.select());
 
@@ -4513,9 +4537,18 @@ public class SQLStatementParser extends SQLParser {
     protected SQLAlterTableAddColumn parseAlterTableAddColumn() {
         boolean odps = DbType.odps == dbType || DbType.hive == dbType;
 
+        boolean columns = false;
         if (odps) {
-            acceptIdentifier("COLUMNS");
-            accept(Token.LPAREN);
+            if (lexer.identifierEquals("COLUMNS")) {
+                lexer.nextToken();
+                if (lexer.token == LPAREN) {
+                    lexer.nextToken();
+                    columns = true;
+                }
+            } else if (lexer.token == LPAREN) {
+                lexer.nextToken();
+                columns = true;
+            }
         }
 
         SQLAlterTableAddColumn item = new SQLAlterTableAddColumn();
@@ -4546,7 +4579,7 @@ public class SQLStatementParser extends SQLParser {
             break;
         }
 
-        if (odps) {
+        if (odps && columns) {
             accept(Token.RPAREN);
         }
 
@@ -4975,7 +5008,11 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseMerge() {
-        accept(Token.MERGE);
+        if (lexer.identifierEquals(Constants.MERGE)) {
+            lexer.nextToken();
+        } else {
+            accept(Token.MERGE);
+        }
 
         SQLMergeStatement stmt = new SQLMergeStatement();
         stmt.setDbType(dbType);
@@ -4996,7 +5033,11 @@ public class SQLStatementParser extends SQLParser {
 
         stmt.getInto().setAlias(tableAlias());
 
-        accept(Token.USING);
+        if (lexer.identifierEquals(Constants.USING)) {
+            lexer.nextToken();
+        } else {
+            accept(Token.USING);
+        }
 
         SQLTableSource using = this.createSQLSelectParser().parseTableSource();
         stmt.setUsing(using);
@@ -5008,7 +5049,7 @@ public class SQLStatementParser extends SQLParser {
             boolean insertFlag = false;
             if (lexer.token == Token.WHEN) {
                 lexer.nextToken();
-                if (lexer.token == Token.MATCHED) {
+                if (lexer.token == Token.MATCHED || lexer.identifierEquals(Constants.MATCHED)) {
                     SQLMergeStatement.MergeUpdateClause updateClause = new SQLMergeStatement.MergeUpdateClause();
                     lexer.nextToken();
 
@@ -5101,7 +5142,11 @@ public class SQLStatementParser extends SQLParser {
             if (insertFlag) {
                 SQLMergeStatement.MergeInsertClause insertClause = new SQLMergeStatement.MergeInsertClause();
 
-                accept(Token.MATCHED);
+                if (lexer.identifierEquals(Constants.MATCHED)) {
+                    lexer.nextToken();
+                } else {
+                    accept(Token.MATCHED);
+                }
                 accept(Token.THEN);
                 accept(Token.INSERT);
 
@@ -6391,6 +6436,12 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.RPAREN);
         }
 
+        if (lexer.token == LPAREN) {
+            lexer.nextToken();
+            this.exprParser.exprList(insert.getColumns(), insert);
+            accept(RPAREN);
+        }
+
         if (lexer.token == Token.VALUES) {
             lexer.nextToken();
 
@@ -6751,9 +6802,9 @@ public class SQLStatementParser extends SQLParser {
 
     protected SQLStatement parseMsck() {
         lexer.nextToken();
-        lexer.identifierEquals("REPAIR");
-
-        lexer.nextToken();
+        if (lexer.identifierEquals("REPAIR")) {
+            lexer.nextToken();
+        }
 
         HiveMsckRepairStatement stmt = new HiveMsckRepairStatement();
 
@@ -6986,6 +7037,13 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
             stmt.setTemporary(true);
         }
+
+        boolean sql = false; // TODO for odps
+        if (lexer.identifierEquals(FnvHash.Constants.SQL)) {
+            lexer.nextToken();
+            sql = true;
+        }
+
         accept(Token.FUNCTION);
 
         SQLName name = this.exprParser.name();
@@ -7006,6 +7064,15 @@ public class SQLStatementParser extends SQLParser {
             accept(RPAREN);
         }
 
+        if (lexer.identifierEquals(Constants.RETURNS)) {
+            lexer.nextToken();
+            if (lexer.token == VARIANT) {
+                lexer.nextToken(); // TODO
+            }
+            SQLDataType returnDataType = this.exprParser.parseDataType();
+            stmt.setReturnDataType(returnDataType);
+        }
+
         if (lexer.token() == Token.AS) {
             lexer.setToken(Token.IDENTIFIER);
             lexer.nextToken();
@@ -7016,7 +7083,7 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.identifierEquals(FnvHash.Constants.LOCATION)) {
             lexer.nextToken();
             SQLExpr location = this.exprParser.primary();
-            stmt.setLocationn(location);
+            stmt.setLocation(location);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.SYMBOL)) {
@@ -7046,7 +7113,7 @@ public class SQLStatementParser extends SQLParser {
             }
 
             SQLExpr location = this.exprParser.primary();
-            stmt.setLocationn(location);
+            stmt.setLocation(location);
         }
 
         return stmt;
@@ -7072,5 +7139,9 @@ public class SQLStatementParser extends SQLParser {
             }
         }
         return stmt;
+    }
+
+    public SQLStatement parseClone() {
+        throw new ParserException("TODO " + lexer.info());
     }
 }

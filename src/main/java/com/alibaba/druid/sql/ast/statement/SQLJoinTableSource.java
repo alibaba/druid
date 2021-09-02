@@ -712,6 +712,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
         protected String alias;
         protected final List<SQLName> columns = new ArrayList<SQLName>();
+        protected List<SQLSelectOrderByItem> sortBy = new ArrayList<SQLSelectOrderByItem>();
 
         public UDJ() {
 
@@ -724,6 +725,10 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
                 acceptChild(v, columns);
             }
             v.endVisit(this);
+        }
+
+        public List<SQLSelectOrderByItem> getSortBy() {
+            return sortBy;
         }
 
         public UDJ clone() {

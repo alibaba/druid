@@ -67,6 +67,10 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             stmt.setComment(this.exprParser.primary());
         }
 
+        if (lexer.token() == Token.SEMI || lexer.token() == Token.EOF) {
+            return stmt;
+        }
+
         for (;;) {
             if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
                 parseTblProperties(stmt);
@@ -134,6 +138,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     case GROUP:
                     case INDEX:
                     case ENABLE:
+                    case DISABLE:
                     case DESC:
                     case ALL:
                     case INTERVAL:
@@ -173,9 +178,20 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     case TABLE:
                     case DO:
                     case WHILE:
+                    case LOOP:
                     case FOR:
                     case RLIKE:
                     case PROCEDURE:
+                    case GRANT:
+                    case EXCEPT:
+                    case CREATE:
+                    case PARTITIONED:
+                    case UNION:
+                    case PRIMARY:
+                    case INNER:
+                    case TO:
+                    case DECLARE:
+                    case REFERENCES:
                         column = this.exprParser.parseColumn(stmt);
                         break;
                     default:
@@ -222,6 +238,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                         case GROUP:
                         case INTERVAL:
                         case LOOP:
+                        case USER:
                             break;
                         default:
                             throw new ParserException("expect identifier. " + lexer.info());

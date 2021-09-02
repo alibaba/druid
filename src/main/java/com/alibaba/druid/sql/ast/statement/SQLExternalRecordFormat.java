@@ -2,9 +2,10 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLExternalRecordFormat extends SQLObjectImpl {
     private SQLExpr delimitedBy;
@@ -15,6 +16,7 @@ public class SQLExternalRecordFormat extends SQLObjectImpl {
     private SQLExpr linesTerminatedBy;
     private SQLExpr nullDefinedAs;
     private SQLExpr serde;
+    protected final List<SQLAssignItem> serdeProperties = new ArrayList<SQLAssignItem>();
 
     private Boolean logfile;
     private Boolean badfile;
@@ -163,6 +165,10 @@ public class SQLExternalRecordFormat extends SQLObjectImpl {
 
     public void setMissingFieldValuesAreNull(boolean missingFieldValuesAreNull) {
         this.missingFieldValuesAreNull = missingFieldValuesAreNull;
+    }
+
+    public List<SQLAssignItem> getSerdeProperties() {
+        return serdeProperties;
     }
 
     public SQLExternalRecordFormat clone() {

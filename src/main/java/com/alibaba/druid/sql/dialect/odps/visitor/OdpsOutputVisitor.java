@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
@@ -29,8 +28,6 @@ import com.alibaba.druid.sql.dialect.odps.ast.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static com.alibaba.druid.sql.dialect.odps.ast.OdpsAddFileStatement.FileType.JAR;
 
 public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisitor {
     private Set<String> builtInFunctions = new HashSet<String>();
@@ -953,7 +950,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         print0(ucase ? "COUNT " : "count ");
         x.getTable().accept(this);
 
-        List<SQLAssignItem> partitoins = x.getPartitoins();
+        List<SQLAssignItem> partitoins = x.getPartitions();
         if (partitoins.size() > 0) {
             print0(ucase ? " PARTITION (" : " partition (");
             printAndAccept(partitoins, ", ");

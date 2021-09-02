@@ -2217,7 +2217,7 @@ public class Lexer {
             this.ch = charAt(pos);
 
             if (dbType == DbType.odps) {
-                while (isDigit(this.ch)) {
+                while (isIdentifierChar(this.ch)) {
                     ++pos;
                     bufPos++;
                     this.ch = charAt(pos);
@@ -2733,8 +2733,14 @@ public class Lexer {
         }
 
         if (numberSale > 0 || numberExp) {
+            if (text.charAt(mark) == '.' && isIdentifierChar(ch)) {
+                pos = mark + 1;
+                ch = charAt(pos);
+                token = Token.DOT;
+                return;
+            }
             token = Token.LITERAL_FLOAT;
-        } else {
+        } else if (ch != '`') {
             if (isFirstIdentifierChar(ch)
                     && ch != '）'
                     && !(ch == 'b' && bufPos == 1 && charAt(pos - 1) == '0' && dbType != DbType.odps)
@@ -2767,6 +2773,7 @@ public class Lexer {
 
     public void scanHexaDecimal() {
         mark = pos;
+        bufPos = 0;
 
         if (ch == '-') {
             bufPos++;
@@ -2780,6 +2787,22 @@ public class Lexer {
                 break;
             }
             ch = charAt(++pos);
+        }
+
+        if (isIdentifierChar(ch)) {
+            for (;;) {
+                bufPos++;
+                ch = charAt(++pos);
+                if (!isIdentifierChar(ch)) {
+                    break;
+                }
+            }
+            mark -= 2;
+            bufPos += 2;
+            stringVal = addSymbol();
+            hash_lower = FnvHash.hashCode64(stringVal);
+            token = Token.IDENTIFIER;
+            return;
         }
 
         token = Token.LITERAL_HEX;

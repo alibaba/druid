@@ -1,8 +1,6 @@
 package com.alibaba.druid.sql.dialect.hive.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLCreateFunctionStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
@@ -11,7 +9,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class HiveCreateFunctionStatement extends SQLCreateFunctionStatement implements SQLCreateStatement {
     protected boolean declare = false;
     protected SQLExpr className;
-    protected SQLExpr locationn;
+    protected SQLExpr location;
     protected SQLExpr symbol;
     protected ResourceType resourceType;
     protected String code;
@@ -28,7 +26,7 @@ public class HiveCreateFunctionStatement extends SQLCreateFunctionStatement impl
         if (visitor.visit(this)) {
             this.acceptChild(visitor, name);
             this.acceptChild(visitor, className);
-            this.acceptChild(visitor, locationn);
+            this.acceptChild(visitor, location);
             this.acceptChild(visitor, symbol);
         }
         visitor.endVisit(this);
@@ -45,15 +43,15 @@ public class HiveCreateFunctionStatement extends SQLCreateFunctionStatement impl
         this.className = x;
     }
 
-    public SQLExpr getLocationn() {
-        return locationn;
+    public SQLExpr getLocation() {
+        return location;
     }
 
-    public void setLocationn(SQLExpr x) {
+    public void setLocation(SQLExpr x) {
         if (x != null) {
             x.setParent(this);
         }
-        this.locationn = x;
+        this.location = x;
     }
 
     public SQLExpr getSymbol() {

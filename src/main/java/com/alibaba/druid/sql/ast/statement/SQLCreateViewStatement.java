@@ -54,6 +54,8 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
     protected boolean onCluster;
     private SQLName to;
 
+    private SQLBlockStatement script;
+
     public SQLCreateViewStatement(){
 
     }
@@ -352,6 +354,17 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
             x.setParent(this);
         }
         this.returnsDataType = x;
+    }
+
+    public SQLBlockStatement getScript() {
+        return script;
+    }
+
+    public void setScript(SQLBlockStatement x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.script = x;
     }
 
     public SQLCreateViewStatement clone() {

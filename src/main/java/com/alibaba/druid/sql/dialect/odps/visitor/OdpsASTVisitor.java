@@ -256,4 +256,20 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
 
     }
 
+    default boolean visit(OdpsAddAccountProviderStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsAddAccountProviderStatement x) {
+
+    }
+
+    default boolean visit(OdpsUnloadStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsUnloadStatement x) {
+
+    }
+
 }

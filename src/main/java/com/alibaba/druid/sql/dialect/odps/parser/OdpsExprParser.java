@@ -100,6 +100,16 @@ public class OdpsExprParser extends SQLExprParser {
 
                 SQLDateTimeExpr ts = new SQLDateTimeExpr(literal);
                 expr = ts;
+            } else if (FnvHash.Constants.DATE == hash_lower
+                    && lexer.stringVal().charAt(0) != '`'
+                    && (lexer.token() == Token.LITERAL_CHARS
+                    || lexer.token() == Token.LITERAL_ALIAS)
+            ) {
+                String literal = lexer.stringVal();
+                lexer.nextToken();
+
+                SQLDateExpr d = new SQLDateExpr(literal);
+                expr = d;
             } else {
                 expr = new SQLIdentifierExpr(stringVal);
                 if (lexer.token() != Token.COMMA) {
@@ -256,9 +266,15 @@ public class OdpsExprParser extends SQLExprParser {
                 lexer.nextToken();
                 String methodName = lexer.stringVal();
                 newExpr.setMethodName(methodName);
-                accept(Token.LPAREN);
-                this.exprList(newExpr.getArguments(), newExpr);
-                accept(Token.RPAREN);
+                if (lexer.token() == Token.LBRACKET) {
+                    lexer.nextToken();
+                    this.exprList(newExpr.getArguments(), newExpr);
+                    accept(Token.RBRACKET);
+                } else {
+                    accept(Token.LPAREN);
+                    this.exprList(newExpr.getArguments(), newExpr);
+                    accept(Token.RPAREN);
+                }
                 expr = newExpr;
             } else if (lexer.identifierEquals("java") || lexer.identifierEquals("com")) {
                 SQLName name = this.name();

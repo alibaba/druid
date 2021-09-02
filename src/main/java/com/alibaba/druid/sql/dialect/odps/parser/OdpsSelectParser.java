@@ -122,7 +122,7 @@ public class OdpsSelectParser extends SQLSelectParser {
                 } else if (lexer.token() == Token.UNIQUE) {
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
-                    if (lexer.token() == Token.DOT) {
+                    if (lexer.token() == Token.DOT || lexer.token() == Token.COMMA) {
                         lexer.reset(mark);
                     } else {
                         queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
@@ -229,6 +229,12 @@ public class OdpsSelectParser extends SQLSelectParser {
                     lexer.stringVal()
             );
             lexer.nextToken();
+
+            if (tableSource instanceof SQLLateralViewTableSource) {
+                if (lexer.token() == Token.AS) {
+                    parseLateralViewAs((SQLLateralViewTableSource) tableSource);
+                }
+            }
 
             tableSource = parseTableSourceRest(tableSource);
         }

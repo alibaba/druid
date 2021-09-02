@@ -374,6 +374,7 @@ public final class FnvHash {
         long REGEXP = fnv1a_64_lower("REGEXP");
         long RLIKE = fnv1a_64_lower("RLIKE");
         long USING = fnv1a_64_lower("USING");
+        long MATCHED = fnv1a_64_lower("MATCHED");
         long IGNORE = fnv1a_64_lower("IGNORE");
         long FORCE = fnv1a_64_lower("FORCE");
         long CROSS = fnv1a_64_lower("CROSS");

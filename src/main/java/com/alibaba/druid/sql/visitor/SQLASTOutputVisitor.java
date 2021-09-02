@@ -5015,7 +5015,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? "AS" : "as");
         println();
 
-        x.getSubQuery().accept(this);
+        SQLSelect subQuery = x.getSubQuery();
+        if (subQuery != null) {
+            subQuery.accept(this);
+        }
+
+        SQLBlockStatement script = x.getScript();
+        if (script != null) {
+            script.accept(this);
+        }
 
         if (x.isWithCheckOption()) {
             println();
@@ -5533,6 +5541,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "INTO " : "into ");
             print(shards);
             print0(ucase ? " SHARDS" : " shards");
+        }
+
+        if (x.isNotClustered()) {
+            print0(ucase ? " NOT CLUSTERED" : " not clustered");
         }
 
         return false;
@@ -6337,9 +6349,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
         print(')');
 
-        if (x.getAlias() != null) {
-            print(' ');
-            print0(x.getAlias());
+        final List<SQLName> columns = x.getColumns();
+        final String alias = x.getAlias();
+        if (alias != null) {
+            if (columns.size() > 0) {
+                print0(" AS ");
+            } else {
+                print(' ');
+            }
+            print0(alias);
         }
 
         return false;
@@ -11104,6 +11122,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLPurgeTemporaryOutputStatement x) {
         print0(ucase ? "PURGE TEMPORARY OUTPUT " : "purge temporary output ");
         printExpr(x.getName());
+        return false;
+    }
+
+    public boolean visit(SQLCloneTableStatement x) {
+        print0(ucase ? "CLONE TABLE " : "clone table ");
+        x.getFrom().accept(this);
+        print0(ucase ? " TO " : " to ");
+        x.getTo().accept(this);
         return false;
     }
 

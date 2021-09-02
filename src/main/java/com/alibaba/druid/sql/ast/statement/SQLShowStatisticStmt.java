@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -29,6 +30,7 @@ public class SQLShowStatisticStmt extends SQLStatementImpl implements SQLShowSta
     private SQLExprTableSource tableSource;
     private boolean            full;
     private final List<SQLAssignItem> partitions = new ArrayList<SQLAssignItem>(4);
+    private final List<SQLName> columns = new ArrayList<>();
     
     public SQLShowStatisticStmt() {
         super (DbType.odps);
@@ -72,5 +74,9 @@ public class SQLShowStatisticStmt extends SQLStatementImpl implements SQLShowSta
             partition.setParent(this);
         }
         this.partitions.add(partition);
+    }
+
+    public List<SQLName> getColumns() {
+        return columns;
     }
 }

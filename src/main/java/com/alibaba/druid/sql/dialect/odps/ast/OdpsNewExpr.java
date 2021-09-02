@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.io.IOException;
 
 public class OdpsNewExpr extends SQLMethodInvokeExpr implements OdpsObject {
+    private boolean array = false;
     @Override
     public OdpsNewExpr clone() {
         OdpsNewExpr x = new OdpsNewExpr();
@@ -58,5 +59,13 @@ public class OdpsNewExpr extends SQLMethodInvokeExpr implements OdpsObject {
             throw new FastsqlException("output error", ex);
         }
         super.output(buf);
+    }
+
+    public boolean isArray() {
+        return array;
+    }
+
+    public void setArray(boolean array) {
+        this.array = array;
     }
 }

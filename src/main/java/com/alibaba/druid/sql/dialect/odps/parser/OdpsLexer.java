@@ -142,7 +142,8 @@ public class OdpsLexer extends Lexer {
         for (;;) {
             ch = charAt(++pos);
 
-            if (!isIdentifierChar(ch)) {
+            if (ch != 'ó' && ch != 'å' && ch != 'é' && ch != 'í'
+                    && !isIdentifierChar(ch)) {
                 if (ch == '{' && charAt(pos - 1) == '$') {
                     int endIndex = this.text.indexOf('}', pos);
                     if (endIndex != -1) {
@@ -180,6 +181,16 @@ public class OdpsLexer extends Lexer {
             }
         }
         this.ch = charAt(pos);
+
+        // bufPos
+        {
+            final int LEN = "USING#CODE".length();
+            if (bufPos == LEN && text.regionMatches(mark, "USING#CODE", 0, LEN)) {
+                bufPos = "USING".length();
+                pos -= 5;
+                this.ch = charAt(pos);
+            }
+        }
 
         stringVal = addSymbol();
         Token tok = keywords.getKeyword(stringVal);

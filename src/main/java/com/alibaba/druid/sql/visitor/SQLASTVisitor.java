@@ -2667,4 +2667,29 @@ public interface SQLASTVisitor {
     default boolean visit(SQLTableDataType x) {
         return true;
     }
+
+    default void endVisit(SQLCloneTableStatement x) {
+
+    }
+
+    default boolean visit(SQLCloneTableStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLShowHistoryStatement x) {
+
+    }
+
+    default boolean visit(SQLShowHistoryStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLShowRolesStatement x) {
+
+    }
+
+    default boolean visit(SQLShowRolesStatement x) {
+        return true;
+    }
+
 }

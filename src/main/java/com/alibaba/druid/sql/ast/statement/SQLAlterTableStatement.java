@@ -54,6 +54,7 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
     protected int                   shards;
 
     private boolean                 ifExists                 = false;
+    private boolean                 notClustered             = false;
 
     public SQLAlterTableStatement(){
 
@@ -266,5 +267,13 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     public void setShards(int shards) {
         this.shards = shards;
+    }
+
+    public boolean isNotClustered() {
+        return notClustered;
+    }
+
+    public void setNotClustered(boolean notClustered) {
+        this.notClustered = notClustered;
     }
 }

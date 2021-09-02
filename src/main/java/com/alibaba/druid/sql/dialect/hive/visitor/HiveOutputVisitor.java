@@ -20,12 +20,10 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateFunctionStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveMsckRepairStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -55,12 +53,17 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         if (x.hasBeforeComment()) {
             printlnComments(x.getBeforeCommentsDirect());
         }
-        if (x.isOverwrite()) {
-            print0(ucase ? "INSERT OVERWRITE TABLE " : "insert overwrite table ");
-        } else {
-            print0(ucase ? "INSERT INTO TABLE " : "insert into table ");
+        SQLExprTableSource tableSource = x.getTableSource();
+
+        if (tableSource != null) {
+            if (x.isOverwrite()) {
+                print0(ucase ? "INSERT OVERWRITE TABLE " : "insert overwrite table ");
+            } else {
+                print0(ucase ? "INSERT INTO TABLE " : "insert into table ");
+            }
+
+            tableSource.accept(this);
         }
-        x.getTableSource().accept(this);
 
         List<SQLAssignItem> partitions = x.getPartitions();
         if (partitions != null) {
@@ -121,7 +124,10 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
                 this.indentCount--;
                 println();
                 print0(") ");
-                print0(x.getFrom().getAlias());
+                String alias = x.getFrom().getAlias();
+                if (alias != null) {
+                    print0(alias);
+                }
             } else {
                 print0(ucase ? "FROM " : "from ");
                 from.accept(this);
@@ -253,11 +259,11 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         }
 
         indentCount++;
-        SQLExpr location = x.getLocationn();
+        SQLExpr location = x.getLocation();
+        HiveCreateFunctionStatement.ResourceType resourceType = x.getResourceType();
+
         if (location != null) {
             println();
-
-            HiveCreateFunctionStatement.ResourceType resourceType = x.getResourceType();
 
             if (resourceType != null) {
                 print0(ucase ? "USING " : "using ");
@@ -267,6 +273,13 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
                 print0(ucase ? "LOCATION " : "location ");
             }
             location.accept(this);
+        }
+
+        String code = x.getCode();
+        if (code != null) {
+            println();
+            print0(ucase ? "USING" : "using");
+            print0(code);
         }
 
         SQLExpr symbol = x.getSymbol();

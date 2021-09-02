@@ -27,6 +27,7 @@ public class SQLAlterTableMergePartition extends SQLObjectImpl implements SQLAlt
     private final List<SQLPartitionSpec> partitions  = new ArrayList<SQLPartitionSpec>(4);
     private boolean ifExists = false;
     private SQLPartitionSpec overwritePartition;
+    private boolean purge;
 
     public List<SQLPartitionSpec> getPartitions() {
         return partitions;
@@ -64,5 +65,13 @@ public class SQLAlterTableMergePartition extends SQLObjectImpl implements SQLAlt
             x.setParent(this);
         }
         this.overwritePartition = x;
+    }
+
+    public boolean isPurge() {
+        return purge;
+    }
+
+    public void setPurge(boolean purge) {
+        this.purge = purge;
     }
 }

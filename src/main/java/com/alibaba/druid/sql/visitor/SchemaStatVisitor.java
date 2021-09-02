@@ -2272,7 +2272,15 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             repository.resolve(x);
         }
 
-        x.getSubQuery().accept(this);
+        SQLSelect subQuery = x.getSubQuery();
+        if (subQuery != null) {
+            subQuery.accept(this);
+        }
+
+        SQLBlockStatement script = x.getScript();
+        if (script != null) {
+            script.accept(this);
+        }
         return false;
     }
 
