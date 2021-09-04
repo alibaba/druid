@@ -708,11 +708,12 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     }
 
     public static class UDJ extends SQLObjectImpl {
-        protected String function;
+        protected SQLExpr function;
         protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
         protected String alias;
         protected final List<SQLName> columns = new ArrayList<SQLName>();
         protected List<SQLSelectOrderByItem> sortBy = new ArrayList<SQLSelectOrderByItem>();
+        protected List<SQLAssignItem> properties = new ArrayList<SQLAssignItem>();
 
         public UDJ() {
 
@@ -731,9 +732,13 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             return sortBy;
         }
 
+        public UDJ(SQLExpr function) {
+            this.function = function;
+        }
+
         public UDJ clone() {
             UDJ x = new UDJ();
-            x.function = function;
+            x.function = function.clone();
             for (SQLExpr arg : arguments) {
                 SQLExpr t = arg.clone();
                 t.setParent(x);
@@ -745,18 +750,20 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
                 t.setParent(x);
                 x.columns.add(t);
             }
+
+            for (SQLAssignItem property : properties) {
+                SQLAssignItem c = property.clone();
+                c.setParent(x);
+                x.properties.add(c);
+            }
             return x;
         }
 
-        public UDJ(String function) {
-            this.function = function;
-        }
-
-        public String getFunction() {
+        public SQLExpr getFunction() {
             return function;
         }
 
-        public void setFunction(String function) {
+        public void setFunction(SQLExpr function) {
             this.function = function;
         }
 
@@ -774,6 +781,10 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
         public void setAlias(String alias) {
             this.alias = alias;
+        }
+
+        public List<SQLAssignItem> getProperties() {
+            return properties;
         }
     }
 }

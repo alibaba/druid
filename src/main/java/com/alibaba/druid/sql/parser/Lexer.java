@@ -1156,6 +1156,28 @@ public class Lexer {
         token = LITERAL_PATH;
     }
 
+    public final void nextTokenForSet() {
+        while (isWhitespace(ch)) {
+            ch = charAt(++pos);
+        }
+
+        if (isFirstIdentifierChar(ch) || ch == '{') {
+            stringVal = null;
+            mark = pos;
+            while (ch != ';' && ch != EOI) {
+                ch = charAt(++pos);
+            }
+
+            bufPos = pos - mark;
+
+            stringVal = this.subString(mark, bufPos);
+            token = IDENTIFIER;
+            return;
+        }
+
+        nextToken();
+    }
+
     public final void nextToken() {
         startPos = pos;
         bufPos = 0;
@@ -1203,6 +1225,12 @@ public class Lexer {
                         token = Token.LITERAL_NCHARS;
                         return;
                     }
+                }
+
+                if (ch == '—' && charAt(pos + 1) == '—' && charAt(pos + 2) == '\n') {
+                    pos += 3;
+                    ch = charAt(pos);
+                    continue;
                 }
 
                 scanIdentifier();
@@ -2335,29 +2363,34 @@ public class Lexer {
             }
 
             for (;;) {
-                char c2;
-                if (ch == '*'
-                        && ((c2 = charAt(pos + 1)) == '/'
-                            || (c2 == ' ' && charAt(pos + 2) == '/')
-                            || (c2 == ' ' && charAt(pos + 2) == ' ' && charAt(pos + 3) == '/'))
-                ) {
-                    if (c2 == ' ') {
-                        bufPos ++;
-                        scanChar();
-                    }
+                if (ch == '*') {
+                    if (charAt(pos + 1) == '/') {
 
-                    if (charAt(pos + 1) == ' ') {
-                        bufPos ++;
+                        bufPos += 2;
                         scanChar();
+                        scanChar();
+                        break;
+                    } else if (isWhitespace(charAt(pos + 1))) {
+                        int i = 2;
+                        for (;i < 1024 * 1024;++i) {
+                            if (!isWhitespace(charAt(pos + i))) {
+                                break;
+                            }
+                        }
+                        if (charAt(pos + i) == '/') {
+                            bufPos += 2;
+                            pos += (i + 1);
+                            ch = charAt(pos);
+                            break;
+                        }
                     }
-
-                    bufPos += 2;
-                    scanChar();
-                    scanChar();
-                    break;
                 }
 
+
                 scanChar();
+                if (ch == EOI) {
+                    break;
+                }
                 bufPos++;
             }
 
@@ -2740,7 +2773,10 @@ public class Lexer {
                 return;
             }
             token = Token.LITERAL_FLOAT;
-        } else if (ch != '`') {
+            return;
+        }
+
+        if (ch != '`') {
             if (isFirstIdentifierChar(ch)
                     && ch != '）'
                     && !(ch == 'b' && bufPos == 1 && charAt(pos - 1) == '0' && dbType != DbType.odps)
@@ -2765,10 +2801,11 @@ public class Lexer {
                 stringVal = addSymbol();
                 hash_lower = FnvHash.hashCode64(stringVal);
                 token = Token.IDENTIFIER;
-            } else {
-                token = Token.LITERAL_INT;
+                return;
             }
         }
+
+        token = Token.LITERAL_INT;
     }
 
     public void scanHexaDecimal() {

@@ -130,10 +130,22 @@ public class OdpsSelectParser extends SQLSelectParser {
                 } else if (lexer.token() == Token.ALL) {
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
-                    if (lexer.token() == Token.DOT || lexer.token() == Token.COMMA) {
-                        lexer.reset(mark);
-                    } else {
-                        queryBlock.setDistionOption(SQLSetQuantifier.ALL);
+                    switch (lexer.token()) {
+                        case DOT:
+                        case COMMA:
+                        case SUB:
+                        case PLUS:
+                        case SLASH:
+                        case GT:
+                        case GTEQ:
+                        case EQ:
+                        case LT:
+                        case LTEQ:
+                            lexer.reset(mark);
+                            break;
+                        default:
+                            queryBlock.setDistionOption(SQLSetQuantifier.ALL);
+                            break;
                     }
                 }
             }
@@ -174,6 +186,10 @@ public class OdpsSelectParser extends SQLSelectParser {
                     break;
                 }
             }
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.ZORDER)) {
+            queryBlock.setZOrderBy(this.exprParser.parseZOrderBy());
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.SORT)) {

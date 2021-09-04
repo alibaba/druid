@@ -113,6 +113,7 @@ public class SQLMergeStatement extends SQLStatementImpl {
         private List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
         private SQLExpr                where;
         private SQLExpr                deleteWhere;
+        private boolean                delete;
 
         public List<SQLUpdateSetItem> getItems() {
             return items;
@@ -123,6 +124,14 @@ public class SQLMergeStatement extends SQLStatementImpl {
                 item.setParent(this);
             }
             this.items.add(item);
+        }
+
+        public boolean isDelete() {
+            return delete;
+        }
+
+        public void setDelete(boolean delete) {
+            this.delete = delete;
         }
 
         public SQLExpr getWhere() {

@@ -3427,7 +3427,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
-    public boolean visit(MySqlShowVariantsStatement x) {
+    public boolean visit(SQLShowVariantsStatement x) {
         print0(ucase ? "SHOW " : "show ");
 
         if (x.isGlobal()) {

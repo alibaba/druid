@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.ast.statement;
+package com.alibaba.druid.sql.dialect.odps.ast;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-public class SQLShowHistoryStatement extends SQLStatementImpl implements SQLShowStatement {
-
+public class OdpsShowChangelogsStatement extends SQLStatementImpl {
     protected SQLExprTableSource table;
     private boolean tables;
     private List<SQLAssignItem> properties = new ArrayList<>();
     private List<SQLAssignItem> partitions = new ArrayList<>();
+    private SQLExpr id;
 
-    public SQLShowHistoryStatement() {
+    public OdpsShowChangelogsStatement() {
 
     }
 
@@ -45,11 +49,17 @@ public class SQLShowHistoryStatement extends SQLStatementImpl implements SQLShow
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
+        accept0((OdpsASTVisitor) visitor);
+    }
+
+    public void accept0(OdpsASTVisitor visitor) {
         if (visitor.visit(this)) {
-            if (table != null) {
-                table.accept(visitor);
-            }
+            acceptChild(visitor, table);
+            acceptChild(visitor, properties);
+            acceptChild(visitor, partitions);
+            acceptChild(visitor, id);
         }
+        visitor.endVisit(this);
     }
 
     public boolean isTables() {
@@ -66,5 +76,16 @@ public class SQLShowHistoryStatement extends SQLStatementImpl implements SQLShow
 
     public List<SQLAssignItem> getPartitions() {
         return partitions;
+    }
+
+    public SQLExpr getId() {
+        return id;
+    }
+
+    public void setId(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.id = x;
     }
 }

@@ -36,7 +36,8 @@ public class OdpsExprParser extends SQLExprParser {
     public final static long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = { "AVG", //
+        String[] strings = {
+                "AVG", //
                 "COUNT", //
                 "LAG",
                 "LEAD",
@@ -46,7 +47,9 @@ public class OdpsExprParser extends SQLExprParser {
                 "SUM", //
                 "ROW_NUMBER",
                 "WM_CONCAT",
-                "COLLECT_LIST"//
+                "STRAGG",
+                "COLLECT_LIST",
+                "COLLECT_SET"//
         };
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
@@ -110,6 +113,16 @@ public class OdpsExprParser extends SQLExprParser {
 
                 SQLDateExpr d = new SQLDateExpr(literal);
                 expr = d;
+            } else if (FnvHash.Constants.TIMESTAMP == hash_lower
+                    && lexer.stringVal().charAt(0) != '`'
+                    && (lexer.token() == Token.LITERAL_CHARS
+                    || lexer.token() == Token.LITERAL_ALIAS)
+            ) {
+                String literal = lexer.stringVal();
+                lexer.nextToken();
+
+                SQLTimestampExpr ts = new SQLTimestampExpr(literal);
+                expr = ts;
             } else {
                 expr = new SQLIdentifierExpr(stringVal);
                 if (lexer.token() != Token.COMMA) {
@@ -258,24 +271,97 @@ public class OdpsExprParser extends SQLExprParser {
             SQLIdentifierExpr ident = (SQLIdentifierExpr) expr;
 
             OdpsNewExpr newExpr = new OdpsNewExpr();
-            if (lexer.identifierEquals(FnvHash.Constants.GSON)
-                    || lexer.identifierEquals(GSONBUILDER)
-                    || lexer.identifierEquals("STRING")
-                    || lexer.identifierEquals("INTEGER")
-            ) {
-                lexer.nextToken();
+            if (lexer.token() == Token.IDENTIFIER) { //.GSON
+                Lexer.SavePoint mark = lexer.mark();
+
                 String methodName = lexer.stringVal();
+                lexer.nextToken();
+                switch (lexer.token()) {
+                    case ON:
+                    case WHERE:
+                    case GROUP:
+                    case ORDER:
+                    case INNER:
+                    case JOIN:
+                    case FULL:
+                    case OUTER:
+                    case LEFT:
+                    case RIGHT:
+                    case LATERAL:
+                    case FROM:
+                    case COMMA:
+                    case RPAREN:
+                        return ident;
+                    default:
+                        break;
+                }
+
+                while (lexer.token() == Token.DOT) {
+                    lexer.nextToken();
+                    methodName += '.' + lexer.stringVal();
+                    lexer.nextToken();
+                }
+
                 newExpr.setMethodName(methodName);
+
+                if (lexer.token() == Token.LT) {
+                    lexer.nextToken();
+                    for (;;) {
+                        if (lexer.token() == Token.GT) {
+                            break;
+                        }
+                        SQLDataType paramType = this.parseDataType(false);
+                        paramType.setParent(newExpr);
+                        newExpr.getTypeParameters().add(paramType);
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
+                    }
+                    accept(Token.GT);
+                }
+
                 if (lexer.token() == Token.LBRACKET) {
                     lexer.nextToken();
                     this.exprList(newExpr.getArguments(), newExpr);
                     accept(Token.RBRACKET);
+                    if (lexer.token() == Token.LBRACKET) {
+                        lexer.nextToken();
+                        accept(Token.RBRACKET);
+                    }
+                    newExpr.setArray(true);
+
+                    if (lexer.token() == Token.LBRACE) {
+                        lexer.nextToken();
+                        for (;;) {
+                            if (lexer.token() == Token.RPAREN) {
+                                break;
+                            }
+
+                            SQLExpr item = this.expr();
+                            newExpr.getInitValues().add(item);
+                            item.setParent(newExpr);
+
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            break;
+                        }
+                        accept(Token.RBRACE);
+                    }
+                    if (lexer.token() == Token.LBRACKET) {
+                        expr = primaryRest(newExpr);
+                    } else {
+                        expr = newExpr;
+                    }
                 } else {
                     accept(Token.LPAREN);
                     this.exprList(newExpr.getArguments(), newExpr);
                     accept(Token.RPAREN);
+                    expr = newExpr;
                 }
-                expr = newExpr;
             } else if (lexer.identifierEquals("java") || lexer.identifierEquals("com")) {
                 SQLName name = this.name();
                 String strName = ident.getName() + ' ' + name.toString();

@@ -20,6 +20,9 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLAlterMaterializedViewStatement extends SQLStatementImpl implements SQLAlterStatement {
     private SQLName name;
 
@@ -30,6 +33,7 @@ public class SQLAlterMaterializedViewStatement extends SQLStatementImpl implemen
     private boolean refreshOnDemand;
     private boolean refreshStartWith;
     private boolean refreshNext;
+    private final List<SQLExpr> partitions = new ArrayList<SQLExpr>(); // odps
 
     private Boolean enableQueryRewrite;
 
@@ -38,6 +42,7 @@ public class SQLAlterMaterializedViewStatement extends SQLStatementImpl implemen
 
     // for ADB
     protected boolean refreshOnOverWrite;
+    private boolean rebuild;
 
 
     public SQLName getName() {
@@ -151,12 +156,25 @@ public class SQLAlterMaterializedViewStatement extends SQLStatementImpl implemen
         this.next = x;
     }
 
+    public boolean isRebuild() {
+        return rebuild;
+    }
+
+    public void setRebuild(boolean rebuild) {
+        this.rebuild = rebuild;
+    }
+
+    public List<SQLExpr> getPartitions() {
+        return partitions;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, startWith);
             acceptChild(visitor, next);
+            acceptChild(visitor, partitions);
         }
         visitor.endVisit(this);
     }

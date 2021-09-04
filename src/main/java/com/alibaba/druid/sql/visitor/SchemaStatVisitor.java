@@ -3071,7 +3071,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLAnalyzeTableStatement x) {
         for (SQLExprTableSource table : x.getTables()) {
-            table.accept(this);
+            if (table != null) {
+                TableStat stat = getTableStat(table.getName());
+                if (stat != null) {
+                    stat.incrementAnalyzeCount();
+                }
+            }
         }
 
         SQLExprTableSource table = x.getTables().size() == 1 ? x.getTables().get(0) : null;
@@ -3189,6 +3194,25 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
+    @Override
+    public boolean visit(SQLCloneTableStatement x) {
+        SQLExprTableSource from = x.getFrom();
+        if (from != null) {
+            TableStat stat = getTableStat(from.getName());
+            if (stat != null) {
+                stat.incrementSelectCount();
+            }
+        }
+
+        SQLExprTableSource to = x.getTo();
+        if (to != null) {
+            TableStat stat = getTableStat(to.getName());
+            if (stat != null) {
+                stat.incrementInsertCount();
+            }
+        }
+        return false;
+    }
 
     @Override
     public boolean visit(SQLSyncMetaStatement x) {

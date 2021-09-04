@@ -14,6 +14,10 @@ public class HiveCreateFunctionStatement extends SQLCreateFunctionStatement impl
     protected ResourceType resourceType;
     protected String code;
 
+    public HiveCreateFunctionStatement() {
+
+    }
+
     public void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof HiveASTVisitor) {
             accept0((HiveASTVisitor) visitor);

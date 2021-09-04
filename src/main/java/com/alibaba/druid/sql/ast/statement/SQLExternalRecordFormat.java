@@ -16,7 +16,6 @@ public class SQLExternalRecordFormat extends SQLObjectImpl {
     private SQLExpr linesTerminatedBy;
     private SQLExpr nullDefinedAs;
     private SQLExpr serde;
-    protected final List<SQLAssignItem> serdeProperties = new ArrayList<SQLAssignItem>();
 
     private Boolean logfile;
     private Boolean badfile;
@@ -165,10 +164,6 @@ public class SQLExternalRecordFormat extends SQLObjectImpl {
 
     public void setMissingFieldValuesAreNull(boolean missingFieldValuesAreNull) {
         this.missingFieldValuesAreNull = missingFieldValuesAreNull;
-    }
-
-    public List<SQLAssignItem> getSerdeProperties() {
-        return serdeProperties;
     }
 
     public SQLExternalRecordFormat clone() {

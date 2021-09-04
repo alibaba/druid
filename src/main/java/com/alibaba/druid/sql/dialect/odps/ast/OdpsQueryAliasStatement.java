@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 
 public class OdpsQueryAliasStatement extends OdpsStatementImpl {
     private String variant;
+    private boolean cache;
     private SQLSelectStatement statement;
 
     public OdpsQueryAliasStatement() {
@@ -38,5 +39,13 @@ public class OdpsQueryAliasStatement extends OdpsStatementImpl {
 
     public void setStatement(SQLSelectStatement statement) {
         this.statement = statement;
+    }
+
+    public boolean isCache() {
+        return cache;
+    }
+
+    public void setCache(boolean cache) {
+        this.cache = cache;
     }
 }

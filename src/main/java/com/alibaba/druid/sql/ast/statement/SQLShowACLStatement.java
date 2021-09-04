@@ -15,22 +15,14 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.List;
-import java.util.ArrayList;
-
-public class SQLShowHistoryStatement extends SQLStatementImpl implements SQLShowStatement {
+public class SQLShowACLStatement extends SQLStatementImpl implements SQLShowStatement, SQLReplaceable {
 
     protected SQLExprTableSource table;
-    private boolean tables;
-    private List<SQLAssignItem> properties = new ArrayList<>();
-    private List<SQLAssignItem> partitions = new ArrayList<>();
-
-    public SQLShowHistoryStatement() {
-
-    }
 
     public SQLExprTableSource getTable() {
         return table;
@@ -52,19 +44,12 @@ public class SQLShowHistoryStatement extends SQLStatementImpl implements SQLShow
         }
     }
 
-    public boolean isTables() {
-        return tables;
-    }
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (table != null) {
+            return table.replace(expr, target);
+        }
 
-    public void setTables(boolean tables) {
-        this.tables = tables;
-    }
-
-    public List<SQLAssignItem> getProperties() {
-        return properties;
-    }
-
-    public List<SQLAssignItem> getPartitions() {
-        return partitions;
+        return false;
     }
 }

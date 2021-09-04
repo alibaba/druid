@@ -691,14 +691,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     }
 
-    default boolean visit(MySqlShowVariantsStatement x) {
-        return true;
-    }
-
-    default void endVisit(MySqlShowVariantsStatement x) {
-
-    }
-
     default boolean visit(MySqlShowTraceStatement x) {
         return true;
     }

@@ -853,8 +853,8 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.DBPARTITIONS)) {
                 lexer.nextToken();
-                SQLExpr dbPartitoins = this.exprParser.primary();
-                stmt.setDbPartitions(dbPartitoins);
+                SQLExpr dbPartitions = this.exprParser.primary();
+                stmt.setDbPartitions(dbPartitions);
                 continue;
             }
 

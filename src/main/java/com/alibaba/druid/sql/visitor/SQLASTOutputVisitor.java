@@ -4090,7 +4090,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLJoinTableSource.UDJ x) {
         print0(ucase ? "USING " : "using ");
-        print0(x.getFunction());
+        x.getFunction().accept(this);
         print('(');
         printAndAccept(x.getArguments(), ", ");
         print0(") ");
@@ -4098,6 +4098,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? " AS (" : " as (");
         printAndAccept(x.getColumns(), ", ");
         print0(")");
+
+        List<SQLAssignItem> properties = x.getProperties();
+        if (!properties.isEmpty()) {
+            print0(ucase ? " WITH UDFPROPERTIES (" : " with udfproperties (");
+            printAndAccept(properties, ", ");
+            print(')');
+        }
         return false;
     }
 
@@ -5162,6 +5169,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(ucase ? beginBound.name : beginBound.name_lower);
             }
         }
+
+        if (x.isExcludeCurrentRow()) {
+            print0(ucase ? " EXCLUDE CURRENT ROW" : " exclude current row");
+        }
         
         print(')');
         return false;
@@ -5351,6 +5362,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             after.accept(this);
         }
 
+        if (x.isFirst()) {
+            print0(ucase ? " FIRST" : " first");
+        }
+
         return false;
     }
 
@@ -5514,6 +5529,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
         if (clusteredBy.size() > 0) {
             println();
+            if (x.isRange()) {
+                print0(ucase ? "RANGE " : "range ");
+            }
             print0(ucase ? "CLUSTERED BY (" : "clustered by (");
             printAndAccept(clusteredBy, ",");
             print0(")");
@@ -6485,8 +6503,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLAlterViewRenameStatement x) {
         print0(ucase ? "ALTER VIEW " : "alter view ");
         x.getName().accept(this);
-        print0(ucase ? " RENAME TO " : " rename to ");
-        x.getTo().accept(this);
+
+        SQLName to = x.getTo();
+        if (to != null) {
+            print0(ucase ? " RENAME TO " : " rename to ");
+            printExpr(to);
+        }
+
+        SQLName changeOwnerTo = x.getChangeOwnerTo();
+        if (to != null) {
+            print0(ucase ? " CHANGEOWNER TO " : " changeowner to ");
+            printExpr(changeOwnerTo);
+        }
         return false;
     }
 
@@ -7709,6 +7737,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(MergeUpdateClause x) {
+        if (x.isDelete()) {
+            print0(ucase ? "WHEN MATCHED THEN DELETE" : "when matched then delete");
+            return false;
+        }
         print0(ucase ? "WHEN MATCHED THEN UPDATE SET " : "when matched then update set ");
         printAndAccept(x.getItems(), ", ");
 
@@ -8440,6 +8472,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
+        if (x.isRebuild()) {
+            print0(ucase ? " REBUILD" : " rebuild");
+        }
+
+        List<SQLExpr> partitions = x.getPartitions();
+        if (!partitions.isEmpty()) {
+            print0(ucase ? "PARTITIONS (" : "partitions (");
+            printAndAccept(partitions, ", ");
+            print(')');
+        }
+
         return false;
     }
 
@@ -8731,6 +8774,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " AS " : " as ");
             printAndAccept(x.getColumns(), ", ");
         }
+
+        SQLExpr on = x.getOn();
+        if (on != null) {
+            println();
+            print0(ucase ? "ON " : "on ");
+            printExpr(on);
+        }
+
         this.indentCount--;
         return false;
     }

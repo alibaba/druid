@@ -938,6 +938,7 @@ public final class FnvHash {
         long ALWAYS = fnv1a_64_lower("ALWAYS");
         long VISIBLE = fnv1a_64_lower("VISIBLE");
         long INCLUDING = fnv1a_64_lower("INCLUDING");
+        long EXCLUDE = fnv1a_64_lower("EXCLUDE");
         long EXCLUDING = fnv1a_64_lower("EXCLUDING");
         long ROUTINE = fnv1a_64_lower("ROUTINE");
         long IDENTIFIED = fnv1a_64_lower("IDENTIFIED");

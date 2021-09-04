@@ -116,11 +116,13 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             stmt.setLike(name);
         } else if (lexer.token() == Token.AS) {
             lexer.nextToken();
-            
+
             OdpsSelectParser selectParser = new OdpsSelectParser(this.exprParser);
             SQLSelect select = selectParser.select();
-            
+
             stmt.setSelect(select);
+        } else if (lexer.token() != Token.LPAREN && stmt.isExternal()) {
+            // skip
         } else {
             accept(Token.LPAREN);
             
@@ -192,12 +194,22 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     case TO:
                     case DECLARE:
                     case REFERENCES:
+                    case FOREIGN:
+                    case ESCAPE:
+                    case BY:
+                    case ALTER:
+                    case SOME:
+                    case ASC:
+                    case NULL:
+                    case CURSOR:
+                    case FETCH:
+                    case OVER:
+                    case DATABASE:
                         column = this.exprParser.parseColumn(stmt);
                         break;
                     default:
                         throw new ParserException("expect identifier. " + lexer.info());
                 }
-                
 
                 stmt.getTableElementList().add(column);
                 
@@ -223,6 +235,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
                 stmt.setComment(this.exprParser.primary());
+                continue;
             }
 
             if (lexer.token() == Token.PARTITIONED) {
@@ -234,11 +247,15 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     switch (lexer.token()) {
                         case INDEX:
                         case KEY:
+                        case CHECK:
                         case IDENTIFIER:
                         case GROUP:
                         case INTERVAL:
                         case LOOP:
                         case USER:
+                        case TABLE:
+                        case PARTITION:
+                        case SEQUENCE:
                             break;
                         default:
                             throw new ParserException("expect identifier. " + lexer.info());
@@ -262,6 +279,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                 }
 
                 accept(Token.RPAREN);
+                continue;
             }
 
             if (lexer.identifierEquals(FnvHash.Constants.RANGE)) {
@@ -356,23 +374,47 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
+            if (lexer.token() == Token.AS && stmt.getSelect() == null) {
+                lexer.nextToken();
+
+                OdpsSelectParser selectParser = new OdpsSelectParser(this.exprParser);
+                SQLSelect select = selectParser.select();
+
+                stmt.setSelect(select);
+                continue;
+            }
+
             if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
                 lexer.nextToken();
                 stmt.setLifecycle(this.exprParser.expr());
                 continue;
             }
 
-            while (lexer.identifierEquals(FnvHash.Constants.STORED)) {
+            if (lexer.identifierEquals(FnvHash.Constants.STORED)) {
                 lexer.nextToken();
                 if (lexer.token() == Token.AS) {
                     lexer.nextToken();
-                    SQLName storedAs = this.exprParser.name();
-                    stmt.setStoredAs(storedAs);
+
+                    if (lexer.identifierEquals(FnvHash.Constants.INPUTFORMAT)) {
+                        HiveInputOutputFormat format = new HiveInputOutputFormat();
+                        lexer.nextToken();
+                        format.setInput(this.exprParser.primary());
+
+                        if (lexer.identifierEquals(FnvHash.Constants.OUTPUTFORMAT)) {
+                            lexer.nextToken();
+                            format.setOutput(this.exprParser.primary());
+                        }
+                        stmt.setStoredAs(format);
+                    } else {
+                        SQLName storedAs = this.exprParser.name();
+                        stmt.setStoredAs(storedAs);
+                    }
                 } else {
                     accept(Token.BY);
                     SQLExpr storedBy = this.exprParser.expr();
                     stmt.setStoredBy(storedBy);
                 }
+                continue;
             }
 
             if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {

@@ -21,23 +21,19 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLPrivilegeItem;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OdpsAddTableStatement extends OdpsStatementImpl implements SQLAlterStatement {
+public class OdpsUndoTableStatement
+        extends OdpsStatementImpl implements SQLAlterStatement {
 
     private SQLExprTableSource table;
-    private final List<SQLAssignItem> partitions = new ArrayList<SQLAssignItem>();
-    protected SQLExpr comment;
-    protected boolean force;
+    private List<SQLAssignItem> partitions = new ArrayList<>();
+    private SQLExpr to;
 
-    protected final List<SQLPrivilegeItem> privileges = new ArrayList<SQLPrivilegeItem>();
-    protected SQLName toPackage;
-
-    public OdpsAddTableStatement() {
+    public OdpsUndoTableStatement() {
         super.dbType = DbType.odps;
     }
 
@@ -46,6 +42,8 @@ public class OdpsAddTableStatement extends OdpsStatementImpl implements SQLAlter
     protected void accept0(OdpsASTVisitor visitor) {
         if (visitor.visit(this)) {
             this.acceptChild(visitor, table);
+            this.acceptChild(visitor, partitions);
+            this.acceptChild(visitor, to);
         }
         visitor.endVisit(this);
     }
@@ -65,42 +63,15 @@ public class OdpsAddTableStatement extends OdpsStatementImpl implements SQLAlter
         this.setTable(new SQLExprTableSource(table));
     }
 
-    public SQLExpr getComment() {
-        return comment;
+    public SQLExpr getTo() {
+        return to;
     }
 
-    public void setComment(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-        this.comment = x;
-    }
-
-    public boolean isForce() {
-        return force;
-    }
-
-    public void setForce(boolean force) {
-        this.force = force;
+    public void setTo(SQLExpr to) {
+        this.to = to;
     }
 
     public List<SQLAssignItem> getPartitions() {
         return partitions;
-    }
-
-    public SQLName getToPackage() {
-        return toPackage;
-    }
-
-    public void setToPackage(SQLName x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-
-        this.toPackage = x;
-    }
-
-    public List<SQLPrivilegeItem> getPrivileges() {
-        return privileges;
     }
 }

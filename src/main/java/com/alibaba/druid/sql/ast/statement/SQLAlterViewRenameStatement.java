@@ -24,6 +24,8 @@ public class SQLAlterViewRenameStatement extends SQLStatementImpl implements SQL
     private SQLName name;
     private SQLName to;
 
+    private SQLName changeOwnerTo;
+
     public SQLName getName() {
         return name;
     }
@@ -39,11 +41,22 @@ public class SQLAlterViewRenameStatement extends SQLStatementImpl implements SQL
         return to;
     }
 
-    public void setTo(SQLName to) {
-        if (to != null) {
-            to.setParent(this);
+    public void setTo(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.to = to;
+        this.to = x;
+    }
+
+    public SQLName getChangeOwnerTo() {
+        return changeOwnerTo;
+    }
+
+    public void setChangeOwnerTo(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.changeOwnerTo = x;
     }
 
     @Override
@@ -51,6 +64,7 @@ public class SQLAlterViewRenameStatement extends SQLStatementImpl implements SQL
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, to);
+            acceptChild(visitor, changeOwnerTo);
         }
         visitor.endVisit(this);
     }

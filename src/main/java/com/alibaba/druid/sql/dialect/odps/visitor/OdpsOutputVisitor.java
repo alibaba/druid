@@ -839,10 +839,10 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         print0(ucase ? "ADD TABLE " : "add table ");
         x.getTable().accept(this);
 
-        List<SQLAssignItem> partitoins = x.getPartitoins();
-        if (partitoins.size() > 0) {
+        List<SQLAssignItem> partitions = x.getPartitions();
+        if (partitions.size() > 0) {
             print0(ucase ? " PARTITION (" : " partition (");
-            printAndAccept(partitoins, ", ");
+            printAndAccept(partitions, ", ");
             print(')');
         }
 
@@ -934,6 +934,13 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
+    public boolean visit(OdpsAlterTableSetFileFormat x) {
+        print0(ucase ? "SET FILEFORMAT " : "set fileformat ");
+        x.getValue().accept(this);
+        return false;
+    }
+
+    @Override
     public boolean visit(OdpsCountStatement x) {
         List<SQLCommentHint> headHints = x.getHeadHintsDirect();
         if (headHints != null) {
@@ -950,10 +957,10 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         print0(ucase ? "COUNT " : "count ");
         x.getTable().accept(this);
 
-        List<SQLAssignItem> partitoins = x.getPartitions();
-        if (partitoins.size() > 0) {
+        List<SQLAssignItem> partitions = x.getPartitions();
+        if (partitions.size() > 0) {
             print0(ucase ? " PARTITION (" : " partition (");
-            printAndAccept(partitoins, ", ");
+            printAndAccept(partitions, ", ");
             print(')');
         }
         return false;
@@ -1058,7 +1065,14 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         if (storedAs != null) {
             println();
             print0(ucase ? "STORED AS " : "stored as ");
-            storedAs.accept(this);
+            printExpr(storedAs);
+        }
+
+        SQLExpr using = x.getUsing();
+        if (using != null) {
+            println();
+            print0(ucase ? "USING " : "using ");
+            printExpr(using);
         }
 
         return false;

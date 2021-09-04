@@ -31,7 +31,8 @@ public class SQLCloneTableStatement extends SQLStatementImpl {
 
     protected SQLExprTableSource to;
 
-    protected boolean overwriteIfExists = false;
+    protected boolean ifExistsOverwrite = false;
+    protected boolean ifExistsIgnore = false;
 
     public SQLCloneTableStatement() {
 
@@ -89,17 +90,26 @@ public class SQLCloneTableStatement extends SQLStatementImpl {
         this.setFrom(new SQLExprTableSource(x));
     }
 
-    public boolean isOverwriteIfExists() {
-        return overwriteIfExists;
+    public boolean isIfExistsOverwrite() {
+        return ifExistsOverwrite;
     }
 
-    public void setOverwriteIfExists(boolean overwriteIfExists) {
-        this.overwriteIfExists = overwriteIfExists;
+    public void setIfExistsOverwrite(boolean ifExistsOverwrite) {
+        this.ifExistsOverwrite = ifExistsOverwrite;
+    }
+
+    public boolean isIfExistsIgnore() {
+        return ifExistsIgnore;
+    }
+
+    public void setIfExistsIgnore(boolean ifExistsIgnore) {
+        this.ifExistsIgnore = ifExistsIgnore;
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, from);
             acceptChild(visitor, to);
         }
         visitor.endVisit(this);
