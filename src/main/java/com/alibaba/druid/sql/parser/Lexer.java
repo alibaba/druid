@@ -2198,10 +2198,25 @@ public class Lexer {
             pos++;
             bufPos++;
 
+            boolean ident = false;
             for (;;) {
                 ch = charAt(++pos);
+                if (isEOF()) {
+                    pos--;
+                    bufPos--;
+                    break;
+                }
 
-                if (ch == '}') {
+                if (ch == '}' && !ident) {
+                    if (isIdentifierChar(charAt(pos + 1))) {
+                        bufPos++;
+                        ident = true;
+                        continue;
+                    }
+                    break;
+                }
+
+                if (ident && isWhitespace(ch)) {
                     break;
                 }
 
@@ -2209,7 +2224,7 @@ public class Lexer {
                 continue;
             }
 
-            if (ch != '}') {
+            if (ch != '}' && !ident) {
                 throw new ParserException("syntax error. " + info());
             }
             ++pos;
@@ -2226,7 +2241,7 @@ public class Lexer {
             }
 
             stringVal = addSymbol();
-            token = Token.VARIANT;
+            token = ident ? IDENTIFIER : Token.VARIANT;
             return;
         } else if (c1 == '$' && charAt(pos + 2) == '{') {
             pos += 2;
@@ -2789,12 +2804,30 @@ public class Lexer {
                     && !(ch == 'b' && bufPos == 1 && charAt(pos - 1) == '0' && dbType != DbType.odps)
             ) {
                 bufPos++;
+                boolean brace = false;
                 for (;;) {
                     char c0 = ch;
                     ch = charAt(++pos);
 
+                    if (isEOF()) {
+                        break;
+                    }
+
                     if (!isIdentifierChar(ch)) {
-                        if (ch == '（'  || ch == '）' && c0 > 256) {
+                        if (ch == '{' && charAt(pos - 1) == '$' && !brace) {
+                            bufPos++;
+                            brace = true;
+                            continue;
+                        }
+
+                        if (ch == '}' && brace) {
+                            bufPos++;
+                            brace = false;
+                            continue;
+                        }
+
+                        if ((ch == '（'  || ch == '）')
+                                && c0 > 256) {
                             bufPos++;
                             continue;
                         }

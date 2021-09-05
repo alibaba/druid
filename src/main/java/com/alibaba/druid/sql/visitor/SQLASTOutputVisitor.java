@@ -6511,7 +6511,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         SQLName changeOwnerTo = x.getChangeOwnerTo();
-        if (to != null) {
+        if (changeOwnerTo != null) {
             print0(ucase ? " CHANGEOWNER TO " : " changeowner to ");
             printExpr(changeOwnerTo);
         }
