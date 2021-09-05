@@ -30,36 +30,9 @@ import java.util.List;
 import java.util.TimeZone;
 
 import static com.alibaba.druid.sql.parser.CharTypes.*;
-import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
-import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
-import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.SQLParserFeature.*;
-import static com.alibaba.druid.sql.parser.SQLParserFeature.KeepComments;
-import static com.alibaba.druid.sql.parser.SQLParserFeature.KeepSourceLocation;
-import static com.alibaba.druid.sql.parser.SQLParserFeature.OptimizedForParameterized;
-import static com.alibaba.druid.sql.parser.SQLParserFeature.SkipComments;
 import static com.alibaba.druid.sql.parser.Token.*;
-import static com.alibaba.druid.sql.parser.Token.COLON;
-import static com.alibaba.druid.sql.parser.Token.COLONCOLON;
-import static com.alibaba.druid.sql.parser.Token.COLONEQ;
-import static com.alibaba.druid.sql.parser.Token.COMMA;
-import static com.alibaba.druid.sql.parser.Token.DOT;
-import static com.alibaba.druid.sql.parser.Token.EOF;
-import static com.alibaba.druid.sql.parser.Token.EQ;
-import static com.alibaba.druid.sql.parser.Token.EQEQ;
-import static com.alibaba.druid.sql.parser.Token.EQGT;
-import static com.alibaba.druid.sql.parser.Token.ERROR;
-import static com.alibaba.druid.sql.parser.Token.IDENTIFIER;
-import static com.alibaba.druid.sql.parser.Token.LBRACE;
-import static com.alibaba.druid.sql.parser.Token.LBRACKET;
-import static com.alibaba.druid.sql.parser.Token.LITERAL_ALIAS;
-import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
-import static com.alibaba.druid.sql.parser.Token.LITERAL_PATH;
-import static com.alibaba.druid.sql.parser.Token.LPAREN;
-import static com.alibaba.druid.sql.parser.Token.RBRACE;
-import static com.alibaba.druid.sql.parser.Token.RBRACKET;
-import static com.alibaba.druid.sql.parser.Token.RPAREN;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -2224,6 +2197,40 @@ public class Lexer {
         } else if (c1 == '{') {
             pos++;
             bufPos++;
+
+            for (;;) {
+                ch = charAt(++pos);
+
+                if (ch == '}') {
+                    break;
+                }
+
+                bufPos++;
+                continue;
+            }
+
+            if (ch != '}') {
+                throw new ParserException("syntax error. " + info());
+            }
+            ++pos;
+            bufPos++;
+
+            this.ch = charAt(pos);
+
+            if (dbType == DbType.odps) {
+                while (isIdentifierChar(this.ch)) {
+                    ++pos;
+                    bufPos++;
+                    this.ch = charAt(pos);
+                }
+            }
+
+            stringVal = addSymbol();
+            token = Token.VARIANT;
+            return;
+        } else if (c1 == '$' && charAt(pos + 2) == '{') {
+            pos += 2;
+            bufPos += 2;
 
             for (;;) {
                 ch = charAt(++pos);

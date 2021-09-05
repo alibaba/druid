@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.odps.ast;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 
 public class OdpsExstoreStatement extends OdpsStatementImpl {
     private SQLExprTableSource table;
-    private final List<SQLExpr> partitions = new ArrayList<SQLExpr>();
+    private final List<SQLAssignItem> partitions = new ArrayList<>();
 
     @Override
     protected void accept0(OdpsASTVisitor v) {
@@ -31,7 +32,7 @@ public class OdpsExstoreStatement extends OdpsStatementImpl {
         this.table = x;
     }
 
-    public List<SQLExpr> getPartitions() {
+    public List<SQLAssignItem> getPartitions() {
         return partitions;
     }
 }

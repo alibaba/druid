@@ -318,9 +318,7 @@ public class OdpsStatementParser extends SQLStatementParser {
             SQLExpr table = this.exprParser.expr();
             stmt.setTable(new SQLExprTableSource(table));
             accept(Token.PARTITION);
-            accept(Token.LPAREN);
-            this.exprParser.exprList(stmt.getPartitions(), stmt);
-            accept(Token.RPAREN);
+            this.exprParser.parseAssignItem(stmt.getPartitions(), stmt);
             statementList.add(stmt);
             return true;
         }

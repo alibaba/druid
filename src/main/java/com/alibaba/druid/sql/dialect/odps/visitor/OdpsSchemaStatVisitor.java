@@ -100,6 +100,19 @@ public class OdpsSchemaStatVisitor extends HiveSchemaStatVisitor implements Odps
         return false;
     }
 
+    @Override
+    public boolean visit(OdpsExstoreStatement x) {
+        SQLExprTableSource table = x.getTable();
+        TableStat stat = getTableStatWithUnwrap(table.getExpr());
+        if (stat != null) {
+            stat.incrementSelectCount();
+        }
+
+        resolvePartitions(table, x.getPartitions());
+
+        return false;
+    }
+
     private void resolvePartitions(SQLExprTableSource table, List<SQLAssignItem> parttions) {
         for (SQLAssignItem partition : parttions) {
             SQLExpr target = partition.getTarget();
