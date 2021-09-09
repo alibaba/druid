@@ -47,6 +47,14 @@ public enum DbType {
     mock          (1 << 34),
     sybase          (1 << 35),
     highgo          (1 << 36),
+    /**
+     * 非常成熟的开源mpp数据库
+     */
+    greenplum       (1 << 37),
+    /**
+     * 华为的mpp数据库
+     */
+    gaussdb       (1 << 38),
 
 
     ingres          (0),
