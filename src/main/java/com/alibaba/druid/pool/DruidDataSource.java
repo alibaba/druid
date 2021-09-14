@@ -3189,6 +3189,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 boolean discard = !validate;
                 if (validate) {
                     holer.lastKeepTimeMillis = System.currentTimeMillis();
+                    holer.setLastActiveTimeMillis(holer.lastKeepTimeMillis);
                     boolean putOk = put(holer, 0L);
                     if (!putOk) {
                         discard = true;
