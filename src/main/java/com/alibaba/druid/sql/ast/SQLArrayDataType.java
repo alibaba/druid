@@ -67,7 +67,7 @@ public class SQLArrayDataType extends SQLObjectImpl implements SQLDataType {
 
     @Override
     public void setDbType(DbType dbType) {
-        dbType = dbType;
+        this.dbType = dbType;
     }
 
     @Override
