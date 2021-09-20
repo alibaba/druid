@@ -779,6 +779,8 @@ public class Lexer {
                 return SQLType.SHOW_FUNCTIONS;
             } else if (identifierEquals(FnvHash.Constants.ROLES)) {
                 return SQLType.SHOW_ROLES;
+            } else if (identifierEquals(FnvHash.Constants.ROLE)) {
+                return SQLType.SHOW_ROLE;
             } else if (identifierEquals(FnvHash.Constants.LABEL)) {
                 return SQLType.SHOW_LABEL;
             } else if (identifierEquals(FnvHash.Constants.GRANTS)) {
@@ -836,6 +838,8 @@ public class Lexer {
                 return SQLType.LIST_TABLES;
             } else if (identifierEquals(FnvHash.Constants.ROLES)) {
                 return SQLType.LIST_ROLES;
+            } else if (identifierEquals(FnvHash.Constants.TEMPORARY)) {
+                return SQLType.LIST_TEMPORARY_OUTPUT;
             } else if (identifierEquals("TENANT")) {
                 nextToken();
                 if (identifierEquals(FnvHash.Constants.ROLES)) {
@@ -1149,6 +1153,49 @@ public class Lexer {
         }
 
         nextToken();
+    }
+
+    public final boolean skipToNextLine(int startPosition) {
+        for (int i = 0; ; ++i) {
+            int pos = startPosition + i;
+            char ch = charAt(pos);
+            if (ch == '\n') {
+                this.pos = pos;
+                this.ch = charAt(this.pos);
+                return true;
+            }
+
+            if (ch == EOI) {
+                this.pos = pos;
+                break;
+            }
+        }
+
+        return false;
+    }
+
+    public final boolean skipToNextLineOrParameter(int startPosition) {
+        for (int i = 0; ; ++i) {
+            int pos = startPosition + i;
+            char ch = charAt(pos);
+            if (ch == '\n') {
+                this.pos = pos;
+                this.ch = charAt(this.pos);
+                return true;
+            }
+            if (ch == '$' && charAt(pos + 1) == '{') {
+                this.pos = pos;
+                this.ch = charAt(this.pos);
+                return true;
+            }
+
+            if (ch == EOI) {
+                this.pos = pos;
+                break;
+            }
+        }
+
+        return false;
     }
 
     public final void nextToken() {
@@ -2198,25 +2245,10 @@ public class Lexer {
             pos++;
             bufPos++;
 
-            boolean ident = false;
             for (;;) {
                 ch = charAt(++pos);
-                if (isEOF()) {
-                    pos--;
-                    bufPos--;
-                    break;
-                }
 
-                if (ch == '}' && !ident) {
-                    if (isIdentifierChar(charAt(pos + 1))) {
-                        bufPos++;
-                        ident = true;
-                        continue;
-                    }
-                    break;
-                }
-
-                if (ident && isWhitespace(ch)) {
+                if (ch == '}') {
                     break;
                 }
 
@@ -2224,7 +2256,7 @@ public class Lexer {
                 continue;
             }
 
-            if (ch != '}' && !ident) {
+            if (ch != '}') {
                 throw new ParserException("syntax error. " + info());
             }
             ++pos;
@@ -2241,7 +2273,7 @@ public class Lexer {
             }
 
             stringVal = addSymbol();
-            token = ident ? IDENTIFIER : Token.VARIANT;
+            token = Token.VARIANT;
             return;
         } else if (c1 == '$' && charAt(pos + 2) == '{') {
             pos += 2;
@@ -2804,30 +2836,12 @@ public class Lexer {
                     && !(ch == 'b' && bufPos == 1 && charAt(pos - 1) == '0' && dbType != DbType.odps)
             ) {
                 bufPos++;
-                boolean brace = false;
                 for (;;) {
                     char c0 = ch;
                     ch = charAt(++pos);
 
-                    if (isEOF()) {
-                        break;
-                    }
-
                     if (!isIdentifierChar(ch)) {
-                        if (ch == '{' && charAt(pos - 1) == '$' && !brace) {
-                            bufPos++;
-                            brace = true;
-                            continue;
-                        }
-
-                        if (ch == '}' && brace) {
-                            bufPos++;
-                            brace = false;
-                            continue;
-                        }
-
-                        if ((ch == '（'  || ch == '）')
-                                && c0 > 256) {
+                        if (ch == '（'  || ch == '）' && c0 > 256) {
                             bufPos++;
                             continue;
                         }

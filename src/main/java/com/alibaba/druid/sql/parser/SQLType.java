@@ -32,6 +32,7 @@ public enum SQLType {
     SHOW_PARTITIONS,
     SHOW_CATALOGS,
     SHOW_FUNCTIONS,
+    SHOW_ROLE,
     SHOW_ROLES,
     SHOW_PACKAGE,
     SHOW_PACKAGES,
@@ -58,6 +59,7 @@ public enum SQLType {
     LIST_TENANT_ROLES,
     LIST_TRUSTEDPROJECTS,
     LIST_ACCOUNTPROVIDERS,
+    LIST_TEMPORARY_OUTPUT,
     WHO, // for analyticdb
     GRANT,
     REVOKE,

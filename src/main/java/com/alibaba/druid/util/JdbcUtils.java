@@ -632,6 +632,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.polardb;
         } else if (rawUrl.startsWith("jdbc:highgo:")) {
             return DbType.highgo;
+        } else if (rawUrl.startsWith("jdbc:pivotal:greenplum:")||rawUrl.startsWith("jdbc:datadirect:greenplum:")) {
+            return DbType.greenplum;
         } else {
             return null;
         }
@@ -965,6 +967,8 @@ public final class JdbcUtils implements JdbcConstants {
             case postgresql:
             case edb:
             case polardb:
+            case greenplum:
+            case gaussdb:
                 return true;
             default:
                 return false;

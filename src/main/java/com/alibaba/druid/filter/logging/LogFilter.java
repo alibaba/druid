@@ -90,6 +90,10 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     }
 
     public void configFromProperties(Properties properties) {
+        if (properties == null) {
+            return;
+        }
+
         {
             String prop = properties.getProperty("druid.log.conn");
             if ("false".equals(prop)) {
@@ -930,6 +934,17 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                          + "} clearParameters. ");
         }
         chain.preparedStatement_clearParameters(statement);
+    }
+
+    @Override
+    public void statement_clearBatch(FilterChain chain, StatementProxy statement)
+            throws SQLException {
+
+        if (isStatementParameterClearLogEnable()) {
+            statementLog("{conn-" + statement.getConnectionProxy().getId() + ", stmt-" + statement.getId()
+                    + "} clearBatch. ");
+        }
+        chain.statement_clearBatch(statement);
     }
 
     @Override

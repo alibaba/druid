@@ -22,6 +22,10 @@ public class OceanBaseOracleExceptionSorter extends OracleExceptionSorter {
     }
 
     public void configFromProperties(Properties properties) {
+        if (properties == null) {
+            return;
+        }
+
         String property = properties.getProperty("druid.oracle.fatalErrorCodes");
         if (property != null) {
             String[] items = property.split("\\,");

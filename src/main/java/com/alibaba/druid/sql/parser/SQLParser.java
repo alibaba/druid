@@ -197,7 +197,7 @@ public class SQLParser {
                             || lexer.identifierEquals(FnvHash.Constants.ANTI)
                             || lexer.identifierEquals(FnvHash.Constants.SEMI)) {
                         lexer.reset(mark);
-                        break;
+                        return null;
                     } else {
                         return strVal;
                     }
@@ -550,6 +550,7 @@ public class SQLParser {
                 case TO:
                 case REFERENCES:
                 case LIKE:
+                case RLIKE:
                 case NULL:
                 case RIGHT:
                 case LEFT:

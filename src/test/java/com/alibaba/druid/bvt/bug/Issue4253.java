@@ -19,7 +19,7 @@ public class Issue4253 extends TestCase {
     private final DbType dbType = JdbcConstants.ORACLE;
 
     public void test_for_issue() throws Exception {
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("bvt/parser/oracle-63.txt");
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("bvt/parser/oracle-62.txt");
         Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
         String input = Utils.read(reader);
         JdbcUtils.close(reader);
@@ -28,7 +28,9 @@ public class Issue4253 extends TestCase {
         try {
             parser.parseStatement(true);
         } catch (Exception ex) {
+            ex.printStackTrace();
             error = ex;
+            error.printStackTrace();
         }
         assertNull(error);
     }

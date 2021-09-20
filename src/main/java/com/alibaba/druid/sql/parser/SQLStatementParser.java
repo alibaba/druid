@@ -4735,7 +4735,7 @@ public class SQLStatementParser extends SQLParser {
         this.parseStatementList(list, 1, null);
         if (tryBest) {
             if (lexer.token != Token.EOF) {
-                throw new ParserException("sql syntax error, no terminated. " + lexer.token);
+                throw new ParserException("sql syntax error, no terminated. " + lexer.info());
             }
         }
         return list.get(0);

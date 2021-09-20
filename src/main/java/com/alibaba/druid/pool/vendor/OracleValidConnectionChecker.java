@@ -42,6 +42,10 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
 
     @Override
     public void configFromProperties(Properties properties) {
+        if (properties == null) {
+            return;
+        }
+
         String property = properties.getProperty("druid.oracle.pingTimeout");
         if (property != null && property.length() > 0) {
             int value = Integer.parseInt(property);

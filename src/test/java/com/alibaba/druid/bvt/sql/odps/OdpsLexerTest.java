@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsLexer;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
 
@@ -57,4 +58,37 @@ public class OdpsLexerTest extends TestCase {
         assertEquals("${PN}_events", lexer.stringVal());
     }
 
+
+    public void test_error_0() throws Exception {
+        String str = "1 `aaa\n${PN}_events";
+        OdpsLexer lexer = new OdpsLexer(str);
+        lexer.nextToken();
+        assertEquals(Token.LITERAL_INT, lexer.token());
+
+        int pos = lexer.pos();
+        try {
+            lexer.nextToken();
+        } catch (ParserException error) {
+            lexer.skipToNextLineOrParameter(pos);
+            lexer.nextToken();
+        }
+        assertEquals(Token.IDENTIFIER, lexer.token());
+        assertEquals("${PN}_events", lexer.stringVal());
+    }
+
+
+    public void test_error_1() throws Exception {
+        String str = "`aaa\n${PN}_events";
+        OdpsLexer lexer = new OdpsLexer(str);
+
+        int pos = lexer.pos();
+        try {
+            lexer.nextToken();
+        } catch (ParserException error) {
+            lexer.skipToNextLineOrParameter(pos);
+            lexer.nextToken();
+        }
+        assertEquals(Token.IDENTIFIER, lexer.token());
+        assertEquals("${PN}_events", lexer.stringVal());
+    }
 }

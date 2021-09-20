@@ -3806,11 +3806,20 @@ public class SQLExprParser extends SQLParser {
                     return expr;
                 }
                 break;
-            case RLIKE:
+            case RLIKE: {
+                Lexer.SavePoint mark = lexer.mark();
                 lexer.nextToken();
-                rightExp = bitOr();
-                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.RLike, rightExp, getDbType());
+                switch (lexer.token) {
+                    case COMMA:
+                        lexer.reset(mark);
+                        break;
+                    default:
+                        rightExp = bitOr();
+                        expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.RLike, rightExp, getDbType());
+                        break;
+                }
                 break;
+            }
             case IDENTIFIER:
                 long hash = lexer.hash_lower;
                 if (hash == FnvHash.Constants.SOUNDS) {

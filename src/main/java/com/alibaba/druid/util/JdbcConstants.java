@@ -136,4 +136,9 @@ public interface JdbcConstants {
      */
     DbType POLARDB                    = DbType.polardb;
     String POLARDB_DRIVER             = "com.aliyun.polardb.Driver";
+    /**
+     * GreenPlum
+     */
+    DbType GREENPLUM                    = DbType.greenplum;
+    String GREENPLUM_DRIVER             = "com.pivotal.jdbc.GreenplumDriver";
 }

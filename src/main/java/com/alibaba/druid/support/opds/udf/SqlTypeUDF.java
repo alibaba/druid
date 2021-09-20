@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsDeclareVariableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsQueryAliasStatement;
 import com.alibaba.druid.sql.parser.*;
@@ -98,8 +97,6 @@ public class SqlTypeUDF extends UDF {
                         ? SQLType.INSERT_OVERWRITE_VALUES
                         : SQLType.INSERT_INTO_VALUES;
             }
-        } else if (stmt instanceof HiveLoadDataStatement) {
-            sqlType = SQLType.LOAD;
         } else if (stmt instanceof SQLUpdateStatement) {
             sqlType = SQLType.UPDATE;
         } else if (stmt instanceof SQLDeleteStatement) {

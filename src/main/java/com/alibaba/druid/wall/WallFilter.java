@@ -162,6 +162,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             case postgresql:
             case edb:
             case polardb:
+            case greenplum:
+            case gaussdb:
                 if (config == null) {
                     config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
                 }
