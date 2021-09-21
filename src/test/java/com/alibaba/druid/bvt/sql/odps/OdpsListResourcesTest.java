@@ -40,7 +40,6 @@ public class OdpsListResourcesTest extends TestCase {
     }
 
     public void exec_test(String resource) throws Exception {
-//        System.out.println(resource);
         InputStream is = null;
 
         is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
