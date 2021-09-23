@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.odps.ast;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLPartitionValue;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -31,7 +30,7 @@ import java.util.List;
 public class OdpsAddTableStatement extends OdpsStatementImpl implements SQLAlterStatement {
 
     private SQLExprTableSource table;
-    private final List<SQLAssignItem> partitoins = new ArrayList<SQLAssignItem>();
+    private final List<SQLAssignItem> partitions = new ArrayList<SQLAssignItem>();
     protected SQLExpr comment;
     protected boolean force;
 
@@ -85,8 +84,8 @@ public class OdpsAddTableStatement extends OdpsStatementImpl implements SQLAlter
         this.force = force;
     }
 
-    public List<SQLAssignItem> getPartitoins() {
-        return partitoins;
+    public List<SQLAssignItem> getPartitions() {
+        return partitions;
     }
 
     public SQLName getToPackage() {

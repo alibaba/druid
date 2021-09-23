@@ -1,14 +1,27 @@
 package com.alibaba.druid.sql.dialect.odps.ast;
 
 import com.alibaba.druid.FastsqlException;
+import com.alibaba.druid.sql.ast.SQLArgument;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 public class OdpsNewExpr extends SQLMethodInvokeExpr implements OdpsObject {
+    private boolean array = false;
+
+    private List<SQLExpr> initValues = new ArrayList<>();
+    private List<SQLDataType> typeParameters = new ArrayList<>();
+
+    public OdpsNewExpr() {
+
+    }
+
     @Override
     public OdpsNewExpr clone() {
         OdpsNewExpr x = new OdpsNewExpr();
@@ -58,5 +71,21 @@ public class OdpsNewExpr extends SQLMethodInvokeExpr implements OdpsObject {
             throw new FastsqlException("output error", ex);
         }
         super.output(buf);
+    }
+
+    public boolean isArray() {
+        return array;
+    }
+
+    public void setArray(boolean array) {
+        this.array = array;
+    }
+
+    public List<SQLExpr> getInitValues() {
+        return initValues;
+    }
+
+    public List<SQLDataType> getTypeParameters() {
+        return typeParameters;
     }
 }

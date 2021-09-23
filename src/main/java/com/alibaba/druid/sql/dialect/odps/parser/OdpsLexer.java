@@ -21,8 +21,7 @@ import com.alibaba.druid.sql.parser.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
-import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
+import static com.alibaba.druid.sql.parser.CharTypes.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OdpsLexer extends Lexer {
@@ -54,6 +53,9 @@ public class OdpsLexer extends Lexer {
 
     public OdpsLexer(String input, SQLParserFeature... features){
         super(input);
+
+        init();
+
         dbType = DbType.odps;
         super.keywords = DEFAULT_ODPS_KEYWORDS;
         this.skipComment = true;
@@ -66,16 +68,37 @@ public class OdpsLexer extends Lexer {
     
     public OdpsLexer(String input, boolean skipComment, boolean keepComments){
         super(input, skipComment);
+
+        init();
+
         dbType = DbType.odps;
         this.skipComment = skipComment;
         this.keepComments = keepComments;
         super.keywords = DEFAULT_ODPS_KEYWORDS;
     }
-    
+
     public OdpsLexer(String input, CommentHandler commentHandler){
         super(input, commentHandler);
+
+        init();
+
         dbType = DbType.odps;
         super.keywords = DEFAULT_ODPS_KEYWORDS;
+    }
+    
+    private void init() {
+        if (ch == '】' || ch == ' ' || ch == '，' || ch == '：' || ch == '、' || ch == '\u200C' || ch == '；') {
+            ch = charAt(++pos);
+        }
+
+        if (ch == '上' && charAt(pos + 1) == '传') {
+            pos += 2;
+            ch = charAt(pos);
+
+            while(isWhitespace(ch)) {
+                ch = charAt(++pos);
+            }
+        }
     }
     
     public void scanComment() {
@@ -99,6 +122,10 @@ public class OdpsLexer extends Lexer {
                 if (ch == '`') {
                     bufPos++;
                     ch = charAt(++pos);
+                    if (ch == '`') {
+                        ch = charAt(++pos);
+                        continue;
+                    }
                     break;
                 } else if (ch == EOI) {
                     throw new ParserException("illegal identifier. " + info());
@@ -116,7 +143,10 @@ public class OdpsLexer extends Lexer {
             return;
         }
 
-        final boolean firstFlag = isFirstIdentifierChar(first);
+        final boolean firstFlag = isFirstIdentifierChar(first)
+                || ch == 'å'
+                || ch == 'ß'
+                || ch == 'ç';
         if (!firstFlag) {
             throw new ParserException("illegal identifier. " + info());
         }
@@ -127,7 +157,13 @@ public class OdpsLexer extends Lexer {
         for (;;) {
             ch = charAt(++pos);
 
-            if (!isIdentifierChar(ch)) {
+            if (ch != 'ó'
+                    && ch != 'å'
+                    && ch != 'é'
+                    && ch != 'í'
+                    && ch != 'ß'
+                    && ch != 'ü'
+                    && !isIdentifierChar(ch)) {
                 if (ch == '{' && charAt(pos - 1) == '$') {
                     int endIndex = this.text.indexOf('}', pos);
                     if (endIndex != -1) {
@@ -142,6 +178,10 @@ public class OdpsLexer extends Lexer {
                         && text.regionMatches(false, mark, "ALIYUN$", 0, 7)) {
                     continue;
                 }
+                break;
+            }
+
+            if (ch == '；') {
                 break;
             }
 
@@ -166,6 +206,16 @@ public class OdpsLexer extends Lexer {
         }
         this.ch = charAt(pos);
 
+        // bufPos
+        {
+            final int LEN = "USING#CODE".length();
+            if (bufPos == LEN && text.regionMatches(mark, "USING#CODE", 0, LEN)) {
+                bufPos = "USING".length();
+                pos -= 5;
+                this.ch = charAt(pos);
+            }
+        }
+
         stringVal = addSymbol();
         Token tok = keywords.getKeyword(stringVal);
         if (tok != null) {
@@ -180,6 +230,30 @@ public class OdpsLexer extends Lexer {
             token = Token.COLON;
             ch = charAt(++pos);
             return;
+        }
+
+        if (ch == '#'
+                && (charAt(pos + 1) == 'C' || charAt(pos + 1) == 'c')
+                && (charAt(pos + 2) == 'O' || charAt(pos + 2) == 'o')
+                && (charAt(pos + 3) == 'D' || charAt(pos + 3) == 'd')
+                && (charAt(pos + 4) == 'E' || charAt(pos + 4) == 'e')
+        ) {
+            int p1 = text.indexOf("#END CODE", pos + 1);
+            int p2 = text.indexOf("#end code", pos + 1);
+            if (p1 == -1) {
+                p1 = p2;
+            } else if (p1 > p2 && p2 != -1){
+                p1 = p2;
+            }
+
+            if (p1 != -1) {
+                int end = p1 + "#END CODE".length();
+                stringVal = text.substring(pos, end);
+                token = Token.CODE;
+                pos = end;
+                ch = charAt(pos);
+                return;
+            }
         }
         
         super.scanVariable();

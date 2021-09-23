@@ -35,8 +35,12 @@ public class HiveMultiInsertStatement extends SQLStatementImpl {
         super (DbType.hive);
     }
 
-    public void setFrom(SQLTableSource from) {
-        this.from = from;
+    public void setFrom(SQLTableSource x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+
+        this.from = x;
     }
 
     public SQLTableSource getFrom() {

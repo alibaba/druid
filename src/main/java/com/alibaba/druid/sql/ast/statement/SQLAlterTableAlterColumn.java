@@ -29,9 +29,10 @@ public class SQLAlterTableAlterColumn extends SQLObjectImpl implements SQLAlterT
     private boolean             dropNotNull;
     private SQLExpr             setDefault;
     private boolean             dropDefault;
-    private SQLName             first;
+    private boolean             first;
     private SQLName             after;
     private SQLDataType         dataType;
+    private boolean             toFirst;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -93,14 +94,11 @@ public class SQLAlterTableAlterColumn extends SQLObjectImpl implements SQLAlterT
         this.originColumn = x;
     }
 
-    public SQLName getFirst() {
+    public boolean isFirst() {
         return first;
     }
 
-    public void setFirst(SQLName x) {
-        if (x != null) {
-            x.setParent(this);
-        }
+    public void setFirst(boolean x) {
         this.first = x;
     }
 

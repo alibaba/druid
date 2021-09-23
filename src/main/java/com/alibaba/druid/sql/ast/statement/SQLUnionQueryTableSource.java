@@ -17,13 +17,17 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.SQLHint;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLUnionQueryTableSource extends SQLTableSourceImpl {
 
     private SQLUnionQuery union;
+    protected List<SQLName> columns = new ArrayList<SQLName>();
 
     public SQLUnionQueryTableSource() {
 
@@ -93,19 +97,28 @@ public class SQLUnionQueryTableSource extends SQLTableSourceImpl {
         return x;
     }
 
+    public List<SQLName> getColumns() {
+        return columns;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         SQLUnionQueryTableSource that = (SQLUnionQueryTableSource) o;
 
-        return union != null ? union.equals(that.union) : that.union == null;
+        if (union != null ? !union.equals(that.union) : that.union != null) return false;
+        return columns != null ? columns.equals(that.columns) : that.columns == null;
     }
 
     @Override
     public int hashCode() {
-        return union != null ? union.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + (union != null ? union.hashCode() : 0);
+        result = 31 * result + (columns != null ? columns.hashCode() : 0);
+        return result;
     }
 
     public SQLTableSource findTableSourceWithColumn(long columnNameHash, String columnName, int option) {
@@ -122,4 +135,5 @@ public class SQLUnionQueryTableSource extends SQLTableSourceImpl {
         }
         return null;
     }
+
 }

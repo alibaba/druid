@@ -42,6 +42,10 @@ public class OracleExceptionSorter implements ExceptionSorter, Serializable {
     }
     
     public void configFromProperties(Properties properties) {
+        if (properties == null) {
+            return;
+        }
+
         String property = properties.getProperty("druid.oracle.fatalErrorCodes");
         if (property != null) {
             String[] items = property.split("\\,");

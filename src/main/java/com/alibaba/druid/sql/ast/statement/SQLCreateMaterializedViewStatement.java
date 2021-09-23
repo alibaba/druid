@@ -28,8 +28,10 @@ import java.util.List;
  * Created by wenshao on 30/06/2017.
  */
 public class SQLCreateMaterializedViewStatement extends SQLStatementImpl implements OracleSegmentAttributes, SQLCreateStatement, SQLReplaceable {
+    protected SQLExpr lifyCycle;
     private SQLName name;
     private List<SQLName> columns = new ArrayList<SQLName>();
+    private boolean ifNotExists;
 
     private boolean refreshFast;
     private boolean refreshComplete;
@@ -81,6 +83,7 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
     protected List<SQLName> distributedBy = new ArrayList<SQLName>();
     protected final List<SQLAssignItem> tableOptions = new ArrayList<SQLAssignItem>();
     protected SQLExpr comment;
+    private List<SQLName> partitionedOn = new ArrayList<SQLName>();
 
     public SQLName getName() {
         return name;
@@ -91,6 +94,14 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
             name.setParent(this);
         }
         this.name = name;
+    }
+
+    public boolean isIfNotExists() {
+        return ifNotExists;
+    }
+
+    public void setIfNotExists(boolean ifNotExists) {
+        this.ifNotExists = ifNotExists;
     }
 
     public List<SQLName> getColumns() {
@@ -394,6 +405,10 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
         this.withRowId = withRowId;
     }
 
+    public List<SQLName> getPartitionedOn() {
+        return partitionedOn;
+    }
+
     public void addOption(String name, SQLExpr value) {
         SQLAssignItem assignItem = new SQLAssignItem(new SQLIdentifierExpr(name), value);
         assignItem.setParent(this);
@@ -427,11 +442,22 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
         return comment;
     }
 
-    public void setComment(SQLExpr comment) {
-        if (comment != null) {
-            comment.setParent(this);
+    public void setComment(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.comment = comment;
+        this.comment = x;
+    }
+
+    public SQLExpr getLifyCycle() {
+        return lifyCycle;
+    }
+
+    public void setLifyCycle(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.lifyCycle = x;
     }
 
     @Override

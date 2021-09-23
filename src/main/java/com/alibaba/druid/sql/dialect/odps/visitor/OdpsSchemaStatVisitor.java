@@ -16,9 +16,17 @@
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.repository.SchemaRepository;
+import com.alibaba.druid.stat.TableStat;
+
+import java.util.List;
 
 public class OdpsSchemaStatVisitor extends HiveSchemaStatVisitor implements OdpsASTVisitor {
 
@@ -53,4 +61,70 @@ public class OdpsSchemaStatVisitor extends HiveSchemaStatVisitor implements Odps
         return false;
     }
 
+    @Override
+    public boolean visit(OdpsAddTableStatement x) {
+        SQLExprTableSource table = x.getTable();
+        TableStat stat = getTableStatWithUnwrap(table.getExpr());
+        if (stat != null) {
+            stat.incrementAddCount();
+        }
+
+        resolvePartitions(table, x.getPartitions());
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(OdpsUnloadStatement x) {
+        SQLExprTableSource table = (SQLExprTableSource) x.getFrom();
+        TableStat stat = getTableStatWithUnwrap(table.getExpr());
+        if (stat != null) {
+            stat.incrementSelectCount();
+        }
+
+        resolvePartitions(table, x.getPartitions());
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(OdpsCountStatement x) {
+        SQLExprTableSource table = x.getTable();
+        TableStat stat = getTableStatWithUnwrap(table.getExpr());
+        if (stat != null) {
+            stat.incrementSelectCount();
+        }
+
+        resolvePartitions(table, x.getPartitions());
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(OdpsExstoreStatement x) {
+        SQLExprTableSource table = x.getTable();
+        TableStat stat = getTableStatWithUnwrap(table.getExpr());
+        if (stat != null) {
+            stat.incrementSelectCount();
+        }
+
+        resolvePartitions(table, x.getPartitions());
+
+        return false;
+    }
+
+    private void resolvePartitions(SQLExprTableSource table, List<SQLAssignItem> parttions) {
+        for (SQLAssignItem partition : parttions) {
+            SQLExpr target = partition.getTarget();
+            if (target instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr columnName = (SQLIdentifierExpr) target;
+                columnName.setResolvedTableSource(table);
+                columnName.accept(this);
+            }
+        }
+    }
+
+    public boolean visit(OdpsSelectQueryBlock x) {
+        return visit((SQLSelectQueryBlock) x);
+    }
 }

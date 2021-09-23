@@ -303,6 +303,11 @@ public class SchemaRepository {
                 if (stmtList.size() == 1) {
                     return schemaObject;
                 }
+            } else if (stmt instanceof SQLCreateViewStatement) {
+                SchemaObject schemaObject = acceptView((SQLCreateViewStatement) stmt);
+                if (stmtList.size() == 1) {
+                    return schemaObject;
+                }
             } else {
                 accept(stmt);
             }
@@ -343,6 +348,12 @@ public class SchemaRepository {
         return getDefaultSchema().getTables(x);
     }
 
+    public boolean removeTable(SQLName name) {
+        return getDefaultSchema()
+                .removeObject(
+                        name.nameHashCode64());
+    }
+
     public int getTableCount() {
         return getDefaultSchema().getTableCount();
     }
@@ -362,6 +373,15 @@ public class SchemaRepository {
 
         SchemaResolveVisitor resolveVisitor = createResolveVisitor(options);
         resolveVisitor.visit(stmt);
+    }
+
+    public void resolve(SQLSelect select, SchemaResolveVisitor.Option... options) {
+        if (select == null) {
+            return;
+        }
+
+        SchemaResolveVisitor resolveVisitor = createResolveVisitor(options);
+        resolveVisitor.visit(select);
     }
 
     public void resolve(SQLSelectQueryBlock queryBlock, SchemaResolveVisitor.Option... options) {
@@ -569,6 +589,66 @@ public class SchemaRepository {
             }
 
             return schemaObj.findTable(tableHashCode64);
+        }
+
+        return null;
+    }
+
+    public SchemaObject findView(SQLName name) {
+        if (name instanceof SQLIdentifierExpr) {
+            return findView(
+                    ((SQLIdentifierExpr) name).getName());
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) name;
+            SQLExpr owner = propertyExpr.getOwner();
+            String schema;
+            String catalog = null;
+            if (owner instanceof SQLIdentifierExpr) {
+                schema = ((SQLIdentifierExpr) owner).getName();
+            } else if (owner instanceof SQLPropertyExpr){
+                schema = ((SQLPropertyExpr) owner).getName();
+                catalog = ((SQLPropertyExpr) owner).getOwnernName();
+            } else {
+                return null;
+            }
+
+            long tableHashCode64 = propertyExpr.nameHashCode64();
+
+            Schema schemaObj = findSchema(schema, false);
+            if (schemaObj != null) {
+                SchemaObject table = schemaObj.findView(tableHashCode64);
+                if (table != null) {
+                    return table;
+                }
+            }
+
+            String ddl = loadDDL(catalog, schema, propertyExpr.getName());
+
+            if (ddl == null) {
+                schemaObj = findSchema(schema, true);
+            } else {
+                List<SQLStatement> stmtList = SQLUtils.parseStatements(ddl, schemaDbType);
+                for (SQLStatement stmt : stmtList) {
+                    accept(stmt);
+                }
+
+                if (stmtList.size() == 1) {
+                    SQLStatement stmt = stmtList.get(0);
+                    if (stmt instanceof SQLCreateTableStatement) {
+                        SQLCreateTableStatement createStmt = (SQLCreateTableStatement) stmt;
+                        String schemaName = createStmt.getSchema();
+                        schemaObj = findSchema(schemaName, true);
+                    }
+                }
+            }
+
+            if (schemaObj == null) {
+                return null;
+            }
+
+            return schemaObj.findView(tableHashCode64);
         }
 
         return null;
@@ -937,7 +1017,7 @@ public class SchemaRepository {
         return true;
     }
 
-    boolean acceptView(SQLCreateViewStatement x) {
+    SchemaObject acceptView(SQLCreateViewStatement x) {
         String schemaName = x.getSchema();
 
         Schema schema = findSchema(schemaName, true);
@@ -945,12 +1025,13 @@ public class SchemaRepository {
         String name = x.computeName();
         SchemaObject view = schema.findTableOrView(name);
         if (view != null) {
-            return false;
+            return view;
         }
 
         SchemaObject object = new SchemaObject(schema, name, SchemaObjectType.View, x.clone());
-        schema.objects.put(object.nameHashCode64(), object);
-        return true;
+        long nameHashCode64 = FnvHash.hashCode64(name);
+        schema.objects.put(nameHashCode64, object);
+        return object;
     }
 
     boolean acceptView(SQLAlterViewStatement x) {

@@ -30,6 +30,10 @@ public class WallProviderStatLoggerImpl extends WallProviderStatLoggerAdapter im
 
     @Override
     public void configFromProperties(Properties properties) {
+        if (properties == null) {
+            return;
+        }
+
         String property = properties.getProperty("druid.stat.loggerName");
         if (property != null && property.length() > 0) {
             setLoggerName(property);

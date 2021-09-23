@@ -142,6 +142,7 @@ public class SQLSetStatement extends SQLStatementImpl {
         PASSWORD, // mysql
         GLOBAL,
         SESSION,
-        LOCAL
+        LOCAL,
+        PROJECT
     }
 }

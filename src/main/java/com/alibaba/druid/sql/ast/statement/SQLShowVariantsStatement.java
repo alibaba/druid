@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.statement;
+package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlShowVariantsStatement extends MySqlStatementImpl implements MySqlShowStatement {
+public class SQLShowVariantsStatement extends SQLStatementImpl implements SQLShowStatement {
 
     private boolean global  = false;
     private boolean session = false;
@@ -58,7 +59,7 @@ public class MySqlShowVariantsStatement extends MySqlStatementImpl implements My
         this.where = where;
     }
 
-    public void accept0(MySqlASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, like);
             acceptChild(visitor, where);

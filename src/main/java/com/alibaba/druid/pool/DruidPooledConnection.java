@@ -167,6 +167,17 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
                 LOG.error("clear parameter error", ex);
             }
+
+            try {
+                rawStatement.clearBatch();
+            } catch (SQLException ex) {
+                this.handleException(ex, null);
+                if (rawStatement.getConnection().isClosed()) {
+                    return;
+                }
+
+                LOG.error("clear batch error", ex);
+            }
         }
 
         PreparedStatementHolder stmtHolder = stmt.getPreparedStatementHolder();

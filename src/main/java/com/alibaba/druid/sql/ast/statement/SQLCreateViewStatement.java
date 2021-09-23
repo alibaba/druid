@@ -18,10 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -49,6 +46,15 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
     private boolean withReadOnly;
 
     private SQLLiteralExpr comment;
+
+    private SQLVariantRefExpr returns; // odps
+    private SQLTableDataType returnsDataType; // odps
+
+    // clickhouse
+    protected boolean onCluster;
+    private SQLName to;
+
+    private SQLBlockStatement script;
 
     public SQLCreateViewStatement(){
 
@@ -308,6 +314,58 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
         }
     }
 
+    public boolean isOnCluster() {
+        return onCluster;
+    }
+
+    public void setOnCluster(boolean onCluster) {
+        this.onCluster = onCluster;
+    }
+
+    public SQLName getTo() {
+        return to;
+    }
+
+    public void setTo(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.to = x;
+    }
+
+    public SQLVariantRefExpr getReturns() {
+        return returns;
+    }
+
+    public void setReturns(SQLVariantRefExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.returns = x;
+    }
+
+    public SQLTableDataType getReturnsDataType() {
+        return returnsDataType;
+    }
+
+    public void
+    setReturnsDataType(SQLTableDataType x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.returnsDataType = x;
+    }
+
+    public SQLBlockStatement getScript() {
+        return script;
+    }
+
+    public void setScript(SQLBlockStatement x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.script = x;
+    }
 
     public SQLCreateViewStatement clone() {
         SQLCreateViewStatement x = new SQLCreateViewStatement();
@@ -339,6 +397,19 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
 
         if (comment != null) {
             x.setComment(comment.clone());
+        }
+
+        x.onCluster = onCluster;
+        if (x.to != null) {
+            to = x.to.clone();
+        }
+
+        if (x.returns != null) {
+            returns = x.returns.clone();
+        }
+
+        if (x.returnsDataType != null) {
+            returnsDataType = x.returnsDataType.clone();
         }
 
         return x;

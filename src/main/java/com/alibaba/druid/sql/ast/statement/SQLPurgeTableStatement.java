@@ -25,6 +25,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLPurgeTableStatement extends SQLStatementImpl implements SQLDropStatement {
 
     private SQLExprTableSource table;
+    private boolean all;
+    private int count;
 
     public SQLPurgeTableStatement() {
 
@@ -62,4 +64,19 @@ public class SQLPurgeTableStatement extends SQLStatementImpl implements SQLDropS
         this.table = x;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public boolean isAll() {
+        return all;
+    }
+
+    public void setAll(boolean all) {
+        this.all = all;
+    }
 }

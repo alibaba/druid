@@ -21,10 +21,14 @@ public class MetaSqlExtract  extends UDF {
         }
 
         String sql = xml.substring(p0, p1);
-        if (sql.startsWith("<![CDATA[")) {
-            sql = sql.substring("<![CDATA[".length(), sql.length() - 3);
+        int p2 = xml.indexOf("<![CDATA[");
+        if (p2 != -1) {
+            if (sql.length() > "<![CDATA[".length() + 3) {
+                return sql.substring("<![CDATA[".length(), sql.length() - 3);
+            } else {
+                return null;
+            }
         }
-
         return StringEscapeUtils.unescapeXml(sql);
     }
 

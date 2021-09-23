@@ -340,6 +340,10 @@ public class Schema {
         return this.objects.values();
     }
 
+    public boolean removeObject(Long nameHashCode64) {
+        return this.objects.remove(nameHashCode64) != null;
+    }
+
     public int getViewCount() {
         int count = 0;
         for (SchemaObject object : this.objects.values()) {

@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.dialect.odps.ast;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
@@ -31,7 +30,7 @@ public class OdpsCountStatement
 
     private SQLExprTableSource table;
 
-    private final List<SQLAssignItem> partitoins = new ArrayList<SQLAssignItem>();
+    private final List<SQLAssignItem> partitions = new ArrayList<SQLAssignItem>();
 
 
     public OdpsCountStatement() {
@@ -62,7 +61,7 @@ public class OdpsCountStatement
         this.setTable(new SQLExprTableSource(table));
     }
 
-    public List<SQLAssignItem> getPartitoins() {
-        return partitoins;
+    public List<SQLAssignItem> getPartitions() {
+        return partitions;
     }
 }

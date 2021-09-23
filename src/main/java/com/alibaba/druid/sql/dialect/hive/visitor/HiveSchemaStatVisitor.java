@@ -56,7 +56,7 @@ public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTV
         setMode(x, TableStat.Mode.Insert);
 
         SQLExprTableSource tableSource = x.getTableSource();
-        SQLExpr tableName = tableSource.getExpr();
+        SQLExpr tableName = tableSource != null ? tableSource.getExpr() : null;
 
         if (tableName instanceof SQLName) {
             TableStat stat = getTableStat((SQLName) tableName);

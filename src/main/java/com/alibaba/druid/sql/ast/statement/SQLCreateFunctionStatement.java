@@ -53,6 +53,7 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     private String             wrappedSource;
     private String             language;
     private boolean            temporary;
+    protected boolean          ifNotExists = false;
 
     public SQLCreateFunctionStatement() {
 
@@ -290,5 +291,13 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
 
     public void setTemporary(boolean temporary) {
         this.temporary = temporary;
+    }
+
+    public boolean isIfNotExists() {
+        return ifNotExists;
+    }
+
+    public void setIfNotExists(boolean ifNotExists) {
+        this.ifNotExists = ifNotExists;
     }
 }

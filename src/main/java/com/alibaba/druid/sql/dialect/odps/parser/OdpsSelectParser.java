@@ -72,8 +72,13 @@ public class OdpsSelectParser extends SQLSelectParser {
                     queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
                     lexer.nextToken();
                 } else if (lexer.token() == Token.UNIQUE) {
-                    queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
+                    Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
+                    if (lexer.token() == Token.DOT) {
+                        lexer.reset(mark);
+                    } else {
+                        queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
+                    }
                 } else if (lexer.token() == Token.ALL) {
                     String str = lexer.stringVal();
                     lexer.nextToken();
@@ -97,11 +102,16 @@ public class OdpsSelectParser extends SQLSelectParser {
             }
 
             if (lexer.token() == Token.COMMENT) {
+                Lexer.SavePoint mark = lexer.mark();
+
                 String tokenStr = lexer.stringVal();
                 lexer.nextToken();
                 if (lexer.token() == Token.COMMA) {
-                    queryBlock.addSelectItem(new SQLIdentifierExpr(tokenStr));
+                    SQLIdentifierExpr expr = new SQLIdentifierExpr(tokenStr);
+                    queryBlock.addSelectItem(expr);
                     lexer.nextToken();
+                } else {
+                    lexer.reset(mark);
                 }
             }
 
@@ -110,15 +120,32 @@ public class OdpsSelectParser extends SQLSelectParser {
                     queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
                     lexer.nextToken();
                 } else if (lexer.token() == Token.UNIQUE) {
-                    queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
-                    lexer.nextToken();
-                } else if (lexer.token() == Token.ALL) {
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
                     if (lexer.token() == Token.DOT || lexer.token() == Token.COMMA) {
                         lexer.reset(mark);
                     } else {
-                        queryBlock.setDistionOption(SQLSetQuantifier.ALL);
+                        queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
+                    }
+                } else if (lexer.token() == Token.ALL) {
+                    Lexer.SavePoint mark = lexer.mark();
+                    lexer.nextToken();
+                    switch (lexer.token()) {
+                        case DOT:
+                        case COMMA:
+                        case SUB:
+                        case PLUS:
+                        case SLASH:
+                        case GT:
+                        case GTEQ:
+                        case EQ:
+                        case LT:
+                        case LTEQ:
+                            lexer.reset(mark);
+                            break;
+                        default:
+                            queryBlock.setDistionOption(SQLSetQuantifier.ALL);
+                            break;
                     }
                 }
             }
@@ -159,6 +186,10 @@ public class OdpsSelectParser extends SQLSelectParser {
                     break;
                 }
             }
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.ZORDER)) {
+            queryBlock.setZOrderBy(this.exprParser.parseZOrderBy());
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.SORT)) {
@@ -214,6 +245,12 @@ public class OdpsSelectParser extends SQLSelectParser {
                     lexer.stringVal()
             );
             lexer.nextToken();
+
+            if (tableSource instanceof SQLLateralViewTableSource) {
+                if (lexer.token() == Token.AS) {
+                    parseLateralViewAs((SQLLateralViewTableSource) tableSource);
+                }
+            }
 
             tableSource = parseTableSourceRest(tableSource);
         }

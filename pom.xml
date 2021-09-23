@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.2.7_preview_05</version>
+	<version>1.2.7_preview_28</version>
 	<packaging>jar</packaging>
 	<name>druid</name>
 	<description>A JDBC datasource implementation.</description>
@@ -509,7 +509,7 @@
 		<dependency>
 			<groupId>com.aliyun.odps</groupId>
 			<artifactId>odps-sdk-udf</artifactId>
-			<version>0.17.3</version>
+			<version>0.37.10-public</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 			<exclusions>
@@ -722,6 +722,12 @@
 			<version>4.2.0</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.5</version>
+            <scope>compile</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 </project>

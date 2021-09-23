@@ -26,6 +26,7 @@ public class SQLOver extends SQLObjectImpl implements SQLReplaceable {
     protected SQLOrderBy          orderBy;
     protected SQLOrderBy          distributeBy;
     protected SQLOrderBy          sortBy;
+    protected SQLOrderBy          clusterBy;
 
     // for db2
     protected SQLName             of;
@@ -40,6 +41,8 @@ public class SQLOver extends SQLObjectImpl implements SQLReplaceable {
 
     protected SQLExpr             windowingBetweenEnd;
     protected WindowingBound      windowingBetweenEndBound;
+
+    protected boolean             excludeCurrentRow;
 
     public SQLOver(){
 
@@ -72,6 +75,10 @@ public class SQLOver extends SQLObjectImpl implements SQLReplaceable {
                 sortBy.accept(visitor);
             }
 
+            if (clusterBy != null) {
+                clusterBy.accept(visitor);
+            }
+
             if (of != null) {
                 of.accept(visitor);
             }
@@ -83,11 +90,22 @@ public class SQLOver extends SQLObjectImpl implements SQLReplaceable {
         return orderBy;
     }
 
-    public void setOrderBy(SQLOrderBy orderBy) {
-        if (orderBy != null) {
-            orderBy.setParent(this);
+    public void setOrderBy(SQLOrderBy x) {
+        if (x != null) {
+            x.setParent(this);
         }
-        this.orderBy = orderBy;
+        this.orderBy = x;
+    }
+
+    public SQLOrderBy getClusterBy() {
+        return clusterBy;
+    }
+
+    public void setClusterBy(SQLOrderBy x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.clusterBy = x;
     }
 
     public SQLOrderBy getDistributeBy() {
@@ -181,6 +199,14 @@ public class SQLOver extends SQLObjectImpl implements SQLReplaceable {
 
     public void setWindowingBetweenEndBound(WindowingBound windowingBetweenEndBound) {
         this.windowingBetweenEndBound = windowingBetweenEndBound;
+    }
+
+    public boolean isExcludeCurrentRow() {
+        return excludeCurrentRow;
+    }
+
+    public void setExcludeCurrentRow(boolean excludeCurrentRow) {
+        this.excludeCurrentRow = excludeCurrentRow;
     }
 
     @Override

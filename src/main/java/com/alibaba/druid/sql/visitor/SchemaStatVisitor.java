@@ -406,7 +406,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     private void orderByAddColumn(String table, String columnName, SQLObject expr) {
-        Column column = new Column(table, columnName);
+        Column column = new Column(table, columnName, dbType);
 
         SQLObject parent = expr.getParent();
         if (parent instanceof SQLSelectOrderByItem) {
@@ -1006,9 +1006,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         SQLExpr original = expr;
 
         for (int i = 0;;i++) {
-//            if (i > 100) {
-//                return null;
-//            }
+            if (i > 1000) {
+                return null;
+            }
 
             if (expr instanceof SQLMethodInvokeExpr) {
                 SQLMethodInvokeExpr methodInvokeExp = (SQLMethodInvokeExpr) expr;
@@ -1200,6 +1200,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLSelectQueryBlock x) {
         SQLTableSource from = x.getFrom();
 
+        setMode(x, Mode.Select);
+
         boolean isHiveMultiInsert = false;
         if (from == null) {
             isHiveMultiInsert = x.getParent() != null
@@ -1217,8 +1219,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
             return false;
         }
-
-        setMode(x, Mode.Select);
 
 //        if (x.getFrom() instanceof SQLSubqueryTableSource) {
 //            x.getFrom().accept(this);
@@ -2184,6 +2184,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         if (x.getSelect() != null) {
             x.getSelect().accept(this);
+            stat.incrementInsertCount();
         }
 
         SQLExprTableSource like = x.getLike();
@@ -2271,7 +2272,15 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             repository.resolve(x);
         }
 
-        x.getSubQuery().accept(this);
+        SQLSelect subQuery = x.getSubQuery();
+        if (subQuery != null) {
+            subQuery.accept(this);
+        }
+
+        SQLBlockStatement script = x.getScript();
+        if (script != null) {
+            script.accept(this);
+        }
         return false;
     }
 
@@ -2318,6 +2327,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         for (SQLAlterTableItem item : x.getItems()) {
             item.setParent(x);
+            if (item instanceof SQLAlterTableAddPartition
+                    || item instanceof SQLAlterTableRenamePartition
+                    || item instanceof SQLAlterTableMergePartition
+            ) {
+                stat.incrementAddPartitionCount();
+            }
+
             item.accept(this);
         }
 
@@ -3001,24 +3017,28 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             List<SQLSelectQuery> rights = new ArrayList<SQLSelectQuery>();
             rights.add(right);
 
-            for (; ; ) {
-                SQLSelectQuery leftLeft = leftUnion.getLeft();
-                SQLSelectQuery leftRight = leftUnion.getRight();
+            if (leftUnion.getRelations().size() > 2) {
+                rights.addAll(leftUnion.getRelations());
+            } else {
+                for (; ; ) {
+                    SQLSelectQuery leftLeft = leftUnion.getLeft();
+                    SQLSelectQuery leftRight = leftUnion.getRight();
 
-                if ((!leftUnion.isBracket())
-                        && leftUnion.getOrderBy() == null
-                        && (!leftLeft.isBracket())
-                        && (!leftRight.isBracket())
-                        && leftLeft instanceof SQLUnionQuery
-                        && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
-                    rights.add(leftRight);
-                    leftUnion = (SQLUnionQuery) leftLeft;
-                    continue;
-                } else {
-                    rights.add(leftRight);
-                    rights.add(leftLeft);
+                    if ((!leftUnion.isBracket())
+                            && leftUnion.getOrderBy() == null
+                            && (!leftLeft.isBracket())
+                            && (!leftRight.isBracket())
+                            && leftLeft instanceof SQLUnionQuery
+                            && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
+                        rights.add(leftRight);
+                        leftUnion = (SQLUnionQuery) leftLeft;
+                        continue;
+                    } else {
+                        rights.add(leftRight);
+                        rights.add(leftLeft);
+                    }
+                    break;
                 }
-                break;
             }
 
             for (int i = rights.size() - 1; i >= 0; i--) {
@@ -3054,7 +3074,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLAnalyzeTableStatement x) {
         for (SQLExprTableSource table : x.getTables()) {
-            table.accept(this);
+            if (table != null) {
+                TableStat stat = getTableStat(table.getName());
+                if (stat != null) {
+                    stat.incrementAnalyzeCount();
+                }
+            }
         }
 
         SQLExprTableSource table = x.getTables().size() == 1 ? x.getTables().get(0) : null;
@@ -3172,6 +3197,25 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
+    @Override
+    public boolean visit(SQLCloneTableStatement x) {
+        SQLExprTableSource from = x.getFrom();
+        if (from != null) {
+            TableStat stat = getTableStat(from.getName());
+            if (stat != null) {
+                stat.incrementSelectCount();
+            }
+        }
+
+        SQLExprTableSource to = x.getTo();
+        if (to != null) {
+            TableStat stat = getTableStat(to.getName());
+            if (stat != null) {
+                stat.incrementInsertCount();
+            }
+        }
+        return false;
+    }
 
     @Override
     public boolean visit(SQLSyncMetaStatement x) {
@@ -3193,5 +3237,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLSavePointStatement x) {
         return false;
+    }
+
+    public boolean visit(SQLShowPartitionsStmt x) {
+        setMode(x, Mode.DESC);
+        return true;
     }
 }

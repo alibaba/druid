@@ -145,6 +145,14 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
         return true;
     }
 
+    default void endVisit(OdpsShowChangelogsStatement x) {
+
+    }
+
+    default boolean visit(OdpsShowChangelogsStatement x) {
+        return true;
+    }
+
     default void endVisit(OdpsListStmt x) {
 
     }
@@ -245,6 +253,54 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsInstallPackageStatement x) {
+
+    }
+
+    default boolean visit(OdpsDeclareVariableStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsDeclareVariableStatement x) {
+
+    }
+
+    default boolean visit(OdpsAddAccountProviderStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsAddAccountProviderStatement x) {
+
+    }
+
+    default boolean visit(OdpsUnloadStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsUnloadStatement x) {
+
+    }
+
+    default boolean visit(OdpsAlterTableSetFileFormat x) {
+        return true;
+    }
+
+    default void endVisit(OdpsAlterTableSetFileFormat x) {
+
+    }
+
+    default boolean visit(OdpsRestoreStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsRestoreStatement x) {
+
+    }
+
+    default boolean visit(OdpsUndoTableStatement x) {
+        return true;
+    }
+
+    default void endVisit(OdpsUndoTableStatement x) {
 
     }
 

@@ -21,7 +21,7 @@ public class OracleExceptionSorterTest_setSavepointWithName extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
         
         dataSource = new DruidDataSource();
 
@@ -29,6 +29,7 @@ public class OracleExceptionSorterTest_setSavepointWithName extends TestCase {
 
         dataSource.setDriver(new OracleMockDriver());
         dataSource.setUrl("jdbc:mock:xxx");
+        dataSource.setFilters("log4j");
         dataSource.setPoolPreparedStatements(true);
         dataSource.setMaxOpenPreparedStatements(100);
     }
@@ -47,14 +48,14 @@ public class OracleExceptionSorterTest_setSavepointWithName extends TestCase {
             pstmt.close();
             conn.close();
 
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(1, dataSource.getPoolingCount());
-            Assert.assertEquals(1, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
+            assertEquals(1, dataSource.getPoolingCount());
+            assertEquals(1, dataSource.getCreateCount());
         }
 
         DruidPooledConnection conn = dataSource.getConnection();
         MockConnection mockConn = conn.unwrap(MockConnection.class);
-        Assert.assertNotNull(mockConn);
+        assertNotNull(mockConn);
         
         SQLException exception = new SQLException("xx", "xxx", 28);
         mockConn.setError(exception);
@@ -65,7 +66,7 @@ public class OracleExceptionSorterTest_setSavepointWithName extends TestCase {
         } catch (Exception ex) {
             setError = ex;
         }
-        Assert.assertNotNull(setError);
+        assertNotNull(setError);
         
         conn.close();
 
@@ -73,9 +74,9 @@ public class OracleExceptionSorterTest_setSavepointWithName extends TestCase {
             Connection conn2 = dataSource.getConnection();
             conn2.close();
         }
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(2, dataSource.getCreateCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertTrue(dataSource.getPoolingCount() >= 1);
+        assertTrue(dataSource.getCreateCount() >= 2);
     }
 
 }

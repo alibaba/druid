@@ -38,6 +38,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     protected boolean             natural = false;
     protected UDJ                 udj; // for maxcompute
     protected boolean             asof; // for clickhouse
+    protected boolean             global; // for clickhouse
 
     public SQLJoinTableSource(String alias){
         super(alias);
@@ -649,6 +650,14 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         return null;
     }
 
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        this.global = global;
+    }
+
     @Override
     public int hashCode() {
         int result = left != null ? left.hashCode() : 0;
@@ -657,6 +666,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         result = 31 * result + (condition != null ? condition.hashCode() : 0);
         result = 31 * result + using.hashCode();
         result = 31 * result + (natural ? 1 : 0);
+        result = 31 * result + (global ? 1 : 0);
         return result;
     }
 
@@ -664,15 +674,19 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         SQLJoinTableSource that = (SQLJoinTableSource) o;
 
         if (natural != that.natural) return false;
+        if (asof != that.asof) return false;
+        if (global != that.global) return false;
         if (left != null ? !left.equals(that.left) : that.left != null) return false;
         if (joinType != that.joinType) return false;
         if (right != null ? !right.equals(that.right) : that.right != null) return false;
         if (condition != null ? !condition.equals(that.condition) : that.condition != null) return false;
-        return using.equals(that.using);
+        if (using != null ? !using.equals(that.using) : that.using != null) return false;
+        return udj != null ? udj.equals(that.udj) : that.udj == null;
     }
 
     public void splitTo(List<SQLTableSource> outTableSources, JoinType joinType) {
@@ -694,10 +708,12 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     }
 
     public static class UDJ extends SQLObjectImpl {
-        protected String function;
+        protected SQLExpr function;
         protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
         protected String alias;
         protected final List<SQLName> columns = new ArrayList<SQLName>();
+        protected List<SQLSelectOrderByItem> sortBy = new ArrayList<SQLSelectOrderByItem>();
+        protected List<SQLAssignItem> properties = new ArrayList<SQLAssignItem>();
 
         public UDJ() {
 
@@ -712,9 +728,17 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             v.endVisit(this);
         }
 
+        public List<SQLSelectOrderByItem> getSortBy() {
+            return sortBy;
+        }
+
+        public UDJ(SQLExpr function) {
+            this.function = function;
+        }
+
         public UDJ clone() {
             UDJ x = new UDJ();
-            x.function = function;
+            x.function = function.clone();
             for (SQLExpr arg : arguments) {
                 SQLExpr t = arg.clone();
                 t.setParent(x);
@@ -726,18 +750,20 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
                 t.setParent(x);
                 x.columns.add(t);
             }
+
+            for (SQLAssignItem property : properties) {
+                SQLAssignItem c = property.clone();
+                c.setParent(x);
+                x.properties.add(c);
+            }
             return x;
         }
 
-        public UDJ(String function) {
-            this.function = function;
-        }
-
-        public String getFunction() {
+        public SQLExpr getFunction() {
             return function;
         }
 
-        public void setFunction(String function) {
+        public void setFunction(SQLExpr function) {
             this.function = function;
         }
 
@@ -755,6 +781,10 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
         public void setAlias(String alias) {
             this.alias = alias;
+        }
+
+        public List<SQLAssignItem> getProperties() {
+            return properties;
         }
     }
 }

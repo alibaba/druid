@@ -483,7 +483,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public boolean visit(MySqlShowVariantsStatement x) {
+    public boolean visit(SQLShowVariantsStatement x) {
         return false;
     }
 

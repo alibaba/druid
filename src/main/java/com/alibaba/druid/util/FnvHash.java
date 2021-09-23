@@ -374,6 +374,7 @@ public final class FnvHash {
         long REGEXP = fnv1a_64_lower("REGEXP");
         long RLIKE = fnv1a_64_lower("RLIKE");
         long USING = fnv1a_64_lower("USING");
+        long MATCHED = fnv1a_64_lower("MATCHED");
         long IGNORE = fnv1a_64_lower("IGNORE");
         long FORCE = fnv1a_64_lower("FORCE");
         long CROSS = fnv1a_64_lower("CROSS");
@@ -745,6 +746,7 @@ public final class FnvHash {
         long VARBIT = fnv1a_64_lower("VARBIT");
         long DECODE = fnv1a_64_lower("DECODE");
         long IF = fnv1a_64_lower("IF");
+        long FUNCTION = fnv1a_64_lower("FUNCTION");
         long EXTERNAL = fnv1a_64_lower("EXTERNAL");
         long SORTED = fnv1a_64_lower("SORTED");
         long CLUSTERED = fnv1a_64_lower("CLUSTERED");
@@ -783,11 +785,13 @@ public final class FnvHash {
         long ARRAY = fnv1a_64_lower("ARRAY");
         long SCALAR = fnv1a_64_lower("SCALAR");
         long STRUCT = fnv1a_64_lower("STRUCT");
+        long TABLE = fnv1a_64_lower("TABLE");
         long UNIONTYPE = fnv1a_64_lower("UNIONTYPE");
 
         long TDDL = fnv1a_64_lower("TDDL");
         long CONCURRENTLY = fnv1a_64_lower("CONCURRENTLY");
         long TABLES = fnv1a_64_lower("TABLES");
+        long ROLES = fnv1a_64_lower("ROLES");
         long NOCACHE = fnv1a_64_lower("NOCACHE");
         long NOPARALLEL = fnv1a_64_lower("NOPARALLEL");
         long EXIST = fnv1a_64_lower("EXIST");
@@ -934,6 +938,7 @@ public final class FnvHash {
         long ALWAYS = fnv1a_64_lower("ALWAYS");
         long VISIBLE = fnv1a_64_lower("VISIBLE");
         long INCLUDING = fnv1a_64_lower("INCLUDING");
+        long EXCLUDE = fnv1a_64_lower("EXCLUDE");
         long EXCLUDING = fnv1a_64_lower("EXCLUDING");
         long ROUTINE = fnv1a_64_lower("ROUTINE");
         long IDENTIFIED = fnv1a_64_lower("IDENTIFIED");
@@ -1001,6 +1006,8 @@ public final class FnvHash {
         long RECOVER = fnv1a_64_lower("RECOVER");
         long BACKUP = fnv1a_64_lower("BACKUP");
         long RESTORE = fnv1a_64_lower("RESTORE");
+        long EXSTORE = fnv1a_64_lower("EXSTORE");
+        long UNDO = fnv1a_64_lower("UNDO");
         long NOSCAN = fnv1a_64_lower("NOSCAN");
         long EXTENDED = fnv1a_64_lower("EXTENDED");
         long FORMATTED = fnv1a_64_lower("FORMATTED");
@@ -1031,7 +1038,9 @@ public final class FnvHash {
         long GROUP = fnv1a_64_lower("GROUP");
         long GROUPING = fnv1a_64_lower("GROUPING");
         long WITH = fnv1a_64_lower("WITH");
+        long FROM = fnv1a_64_lower("FROM");
         long WHO = fnv1a_64_lower("WHO");
+        long WHOAMI = fnv1a_64_lower("WHOAMI");
         long GRANTS = fnv1a_64_lower("GRANTS");
         long STATISTIC = fnv1a_64_lower("STATISTIC");
         long STATISTIC_LIST = fnv1a_64_lower("STATISTIC_LIST");
@@ -1124,5 +1133,8 @@ public final class FnvHash {
         long TUNNEL = fnv1a_64_lower("TUNNEL");
         long DOWNLOAD = fnv1a_64_lower("DOWNLOAD");
         long UPLOAD = fnv1a_64_lower("UPLOAD");
+        long CLONE = fnv1a_64_lower("CLONE");
+        long INSTALL = fnv1a_64_lower("INSTALL");
+        long UNLOAD = fnv1a_64_lower("UNLOAD");
     }
 }

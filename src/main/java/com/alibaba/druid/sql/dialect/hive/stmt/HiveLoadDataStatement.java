@@ -28,6 +28,7 @@ public class HiveLoadDataStatement extends SQLStatementImpl {
     private SQLExpr storedAs;
     private SQLExpr rowFormat;
     protected Map<String, SQLObject> serdeProperties = new LinkedHashMap<String, SQLObject>();
+    protected SQLExpr using;
 
     public HiveLoadDataStatement() {
         super(DbType.hive);
@@ -154,6 +155,18 @@ public class HiveLoadDataStatement extends SQLStatementImpl {
         }
 
         this.rowFormat = x;
+    }
+
+    public SQLExpr getUsing() {
+        return using;
+    }
+
+    public void setUsing(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+
+        this.using = x;
     }
 
     public Map<String, SQLObject> getSerdeProperties() {

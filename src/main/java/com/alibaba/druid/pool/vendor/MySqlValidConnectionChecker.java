@@ -68,6 +68,10 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
 
     @Override
     public void configFromProperties(Properties properties) {
+        if (properties == null) {
+            return;
+        }
+
         String property = properties.getProperty("druid.mysql.usePingMethod");
         if ("true".equals(property)) {
             setUsePingMethod(true);

@@ -39,6 +39,13 @@ public class TableStat {
     int createIndexCount = 0;
     int dropIndexCount   = 0;
     int referencedCount  = 0;
+    int addCount         = 0; // odps add table
+    int addPartitionCount= 0; // odps add partition
+    int analyzeCount     = 0; // odps analyze table
+
+    public TableStat() {
+
+    }
 
     public int getReferencedCount() {
         return referencedCount;
@@ -54,6 +61,22 @@ public class TableStat {
 
     public void incrementDropIndexCount() {
         this.dropIndexCount++;
+    }
+
+    public void incrementAddCount() {
+        this.addCount++;
+    }
+
+    public int getAddCount() {
+        return addCount;
+    }
+
+    public void incrementAddPartitionCount() {
+        this.addPartitionCount++;
+    }
+
+    public int getAddPartitionCount() {
+        return addPartitionCount;
     }
 
     public int getCreateIndexCount() {
@@ -148,6 +171,14 @@ public class TableStat {
         this.insertCount = insertCount;
     }
 
+    public int getAnalyzeCount() {
+        return analyzeCount;
+    }
+
+    public void incrementAnalyzeCount() {
+        this.analyzeCount++;
+    }
+
     public String toString() {
         StringBuilder buf = new StringBuilder(4);
         if (mergeCount > 0) {
@@ -179,6 +210,15 @@ public class TableStat {
         }
         if (dropIndexCount > 0) {
             buf.append("DropIndex");
+        }
+        if (addCount > 0) {
+            buf.append("Add");
+        }
+        if (addPartitionCount > 0) {
+            buf.append("AddPartition");
+        }
+        if (analyzeCount > 0) {
+            buf.append("Analyze");
         }
 
         return buf.toString();
@@ -595,6 +635,7 @@ public class TableStat {
         DropIndex(256), //
         CreateIndex(512), //
         Replace(1024),
+        DESC(2048)
         ; //
 
         public final int mark;

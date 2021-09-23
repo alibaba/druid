@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -31,6 +32,12 @@ public class SQLLateralViewTableSource extends SQLTableSourceImpl {
     private SQLMethodInvokeExpr method;
 
     private List<SQLName> columns = new ArrayList<SQLName>(2);
+
+    private SQLExpr on; // odps
+
+    public SQLLateralViewTableSource() {
+
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -147,5 +154,13 @@ public class SQLLateralViewTableSource extends SQLTableSourceImpl {
 
     public void setOuter(boolean outer) {
         this.outer = outer;
+    }
+
+    public SQLExpr getOn() {
+        return on;
+    }
+
+    public void setOn(SQLExpr on) {
+        this.on = on;
     }
 }

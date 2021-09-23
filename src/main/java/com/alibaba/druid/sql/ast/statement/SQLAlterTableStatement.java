@@ -48,12 +48,14 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     // odps
     private boolean                 mergeSmallFiles         = false;
+    protected boolean               range;
     protected final List<SQLSelectOrderByItem> clusteredBy      = new ArrayList<SQLSelectOrderByItem>();
     protected final List<SQLSelectOrderByItem> sortedBy         = new ArrayList<SQLSelectOrderByItem>();
     protected int                   buckets;
     protected int                   shards;
 
     private boolean                 ifExists                 = false;
+    private boolean                 notClustered             = false;
 
     public SQLAlterTableStatement(){
 
@@ -234,6 +236,18 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
         return null;
     }
 
+    public void setItems(List<SQLAlterTableItem> items) {
+        this.items = items;
+    }
+
+    public boolean isRange() {
+        return range;
+    }
+
+    public void setRange(boolean range) {
+        this.range = range;
+    }
+
     public List<SQLSelectOrderByItem> getClusteredBy() {
         return clusteredBy;
     }
@@ -266,5 +280,13 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     public void setShards(int shards) {
         this.shards = shards;
+    }
+
+    public boolean isNotClustered() {
+        return notClustered;
+    }
+
+    public void setNotClustered(boolean notClustered) {
+        this.notClustered = notClustered;
     }
 }

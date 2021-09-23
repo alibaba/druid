@@ -262,6 +262,8 @@ public enum Token {
     LITERAL_CHARS,
     LITERAL_NCHARS,
 
+    CODE, // odps
+
     LITERAL_PATH,
 
     LITERAL_ALIAS,
