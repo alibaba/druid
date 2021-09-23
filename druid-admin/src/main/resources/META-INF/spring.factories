@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+ com.alibaba.druid.admin.DruidAdminAutoConfigure,\
+ com.alibaba.druid.admin.service.MonitorStatService,\
+ com.alibaba.druid.admin.util.SpringContextUtils
