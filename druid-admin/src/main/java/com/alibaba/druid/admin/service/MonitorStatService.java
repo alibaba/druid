@@ -138,15 +138,10 @@ public class MonitorStatService implements DruidStatServiceMBean {
         }
 
         if (url.equals("/datasource.json")) {
-            String serviceName = StringUtils.subString(url, "serviceName=", "&sql-");
-            Integer id = StringUtils.subStringToInteger(url, "datasource-", ".");
             return getDataSourceStatData();
         }
 
-
         if (url.startsWith("/datasource-")) {
-            String serviceName = StringUtils.subString(url, "serviceName=", "&sql-");
-            Integer id = StringUtils.subStringToInteger(url, "datasource-", ".");
             Object result = getDataSourceStatData();
             return returnJSONResult(result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
         }
