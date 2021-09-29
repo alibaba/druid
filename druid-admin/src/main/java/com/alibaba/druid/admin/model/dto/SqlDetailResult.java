@@ -22,19 +22,19 @@ public class SqlDetailResult {
     @Data
     public static class ContentBean {
         @JSONField(name = "ExecuteAndResultSetHoldTime")
-        private int ExecuteAndResultSetHoldTime;
+        private long ExecuteAndResultSetHoldTime;
         @JSONField(name = "LastErrorMessage")
         private Object LastErrorMessage;
         @JSONField(name = "InputStreamOpenCount")
-        private int InputStreamOpenCount;
+        private long InputStreamOpenCount;
         @JSONField(name = "BatchSizeTotal")
-        private int BatchSizeTotal;
+        private long BatchSizeTotal;
         @JSONField(name = "FetchRowCountMax")
-        private int FetchRowCountMax;
+        private long FetchRowCountMax;
         @JSONField(name = "ErrorCount")
-        private int ErrorCount;
+        private long ErrorCount;
         @JSONField(name = "BatchSizeMax")
-        private int BatchSizeMax;
+        private long BatchSizeMax;
         @JSONField(name = "URL")
         private Object URL;
         @JSONField(name = "Name")
@@ -42,29 +42,29 @@ public class SqlDetailResult {
         @JSONField(name = "LastErrorTime")
         private Object LastErrorTime;
         @JSONField(name = "ReaderOpenCount")
-        private int ReaderOpenCount;
+        private long ReaderOpenCount;
         @JSONField(name = "parsedRelationships")
         private String parsedRelationships;
         @JSONField(name = "EffectedRowCountMax")
-        private int EffectedRowCountMax;
+        private long EffectedRowCountMax;
         @JSONField(name = "LastErrorClass")
         private Object LastErrorClass;
         @JSONField(name = "InTransactionCount")
-        private int InTransactionCount;
+        private long InTransactionCount;
         @JSONField(name = "LastErrorStackTrace")
         private Object LastErrorStackTrace;
         @JSONField(name = "ResultSetHoldTime")
-        private int ResultSetHoldTime;
+        private long ResultSetHoldTime;
         @JSONField(name = "TotalTime")
-        private int TotalTime;
+        private long TotalTime;
         @JSONField(name = "ID")
-        private int ID;
+        private long ID;
         @JSONField(name = "ConcurrentMax")
-        private int ConcurrentMax;
+        private long ConcurrentMax;
         @JSONField(name = "RunningCount")
-        private int RunningCount;
+        private long RunningCount;
         @JSONField(name = "FetchRowCount")
-        private int FetchRowCount;
+        private long FetchRowCount;
         @JSONField(name = "parsedFields")
         private String parsedFields;
         @JSONField(name = "MaxTimespanOccurTime")
@@ -72,7 +72,7 @@ public class SqlDetailResult {
         @JSONField(name = "LastSlowParameters")
         private Object LastSlowParameters;
         @JSONField(name = "ReadBytesLength")
-        private int ReadBytesLength;
+        private long ReadBytesLength;
         @JSONField(name = "formattedSql")
         private String formattedSql;
         @JSONField(name = "DbType")
@@ -86,23 +86,23 @@ public class SqlDetailResult {
         @JSONField(name = "LastError")
         private Object LastError;
         @JSONField(name = "MaxTimespan")
-        private int MaxTimespan;
+        private long MaxTimespan;
         @JSONField(name = "parsedTable")
         private String parsedTable;
         @JSONField(name = "parsedOrderbycolumns")
         private String parsedOrderbycolumns;
         @JSONField(name = "BlobOpenCount")
-        private int BlobOpenCount;
+        private long BlobOpenCount;
         @JSONField(name = "ExecuteCount")
-        private int ExecuteCount;
+        private long ExecuteCount;
         @JSONField(name = "EffectedRowCount")
-        private int EffectedRowCount;
+        private long EffectedRowCount;
         @JSONField(name = "ReadStringLength")
-        private int ReadStringLength;
+        private long ReadStringLength;
         @JSONField(name = "File")
         private Object File;
         @JSONField(name = "ClobOpenCount")
-        private int ClobOpenCount;
+        private long ClobOpenCount;
         @JSONField(name = "LastTime")
         private String LastTime;
         @JSONField(name = "parsedConditions")
