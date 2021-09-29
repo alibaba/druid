@@ -25,23 +25,23 @@ public class WallResult {
     @Data
     public static class ContentBean {
         @JSONField(name = "checkCount")
-        private int checkCount;
+        private long checkCount;
         @JSONField(name = "hardCheckCount")
-        private int hardCheckCount;
+        private long hardCheckCount;
         @JSONField(name = "violationCount")
-        private int violationCount;
+        private long violationCount;
         @JSONField(name = "violationEffectRowCount")
-        private int violationEffectRowCount;
+        private long violationEffectRowCount;
         @JSONField(name = "blackListHitCount")
-        private int blackListHitCount;
+        private long blackListHitCount;
         @JSONField(name = "blackListSize")
-        private int blackListSize;
+        private long blackListSize;
         @JSONField(name = "whiteListHitCount")
-        private int whiteListHitCount;
+        private long whiteListHitCount;
         @JSONField(name = "whiteListSize")
-        private int whiteListSize;
+        private long whiteListSize;
         @JSONField(name = "syntaxErrorCount")
-        private int syntaxErrorCount;
+        private long syntaxErrorCount;
         @JSONField(name = "tables")
         private List<TablesBean> tables = new ArrayList<>();
         @JSONField(name = "functions")
@@ -59,10 +59,10 @@ public class WallResult {
             private String name;
 
             @JSONField(name = "selectCount")
-            private int selectCount;
+            private long selectCount;
 
             @JSONField(name = "fetchRowCount")
-            private int fetchRowCount;
+            private long fetchRowCount;
 
             @JSONField(name = "fetchRowCountHistogram")
             private List<Integer> fetchRowCountHistogram;
@@ -74,7 +74,7 @@ public class WallResult {
             @JSONField(name = "name")
             private String name;
             @JSONField(name = "invokeCount")
-            private int invokeCount;
+            private long invokeCount;
         }
 
         @NoArgsConstructor
@@ -85,9 +85,9 @@ public class WallResult {
             @JSONField(name = "sample")
             private String sample;
             @JSONField(name = "executeCount")
-            private int executeCount;
+            private long executeCount;
             @JSONField(name = "fetchRowCount")
-            private int fetchRowCount;
+            private long fetchRowCount;
         }
     }
 

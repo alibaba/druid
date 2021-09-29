@@ -26,7 +26,7 @@ public class DataSourceResult {
         private String serviceId;
 
         @JSONField(name = "Identity")
-        private int Identity;
+        private long Identity;
         @JSONField(name = "Name")
         private String Name;
         @JSONField(name = "DbType")
@@ -38,35 +38,35 @@ public class DataSourceResult {
         @JSONField(name = "UserName")
         private String UserName;
         @JSONField(name = "WaitThreadCount")
-        private int WaitThreadCount;
+        private long WaitThreadCount;
         @JSONField(name = "NotEmptyWaitCount")
-        private int NotEmptyWaitCount;
+        private long NotEmptyWaitCount;
         @JSONField(name = "NotEmptyWaitMillis")
-        private int NotEmptyWaitMillis;
+        private long NotEmptyWaitMillis;
         @JSONField(name = "PoolingCount")
-        private int PoolingCount;
+        private long PoolingCount;
         @JSONField(name = "PoolingPeak")
-        private int PoolingPeak;
+        private long PoolingPeak;
         @JSONField(name = "PoolingPeakTime")
         private String PoolingPeakTime;
         @JSONField(name = "ActiveCount")
-        private int ActiveCount;
+        private long ActiveCount;
         @JSONField(name = "ActivePeak")
-        private int ActivePeak;
+        private long ActivePeak;
         @JSONField(name = "ActivePeakTime")
         private String ActivePeakTime;
         @JSONField(name = "InitialSize")
-        private int InitialSize;
+        private long InitialSize;
         @JSONField(name = "MinIdle")
-        private int MinIdle;
+        private long MinIdle;
         @JSONField(name = "MaxActive")
-        private int MaxActive;
+        private long MaxActive;
         @JSONField(name = "QueryTimeout")
-        private int QueryTimeout;
+        private long QueryTimeout;
         @JSONField(name = "TransactionQueryTimeout")
-        private int TransactionQueryTimeout;
+        private long TransactionQueryTimeout;
         @JSONField(name = "LoginTimeout")
-        private int LoginTimeout;
+        private long LoginTimeout;
         @JSONField(name = "ValidConnectionCheckerClassName")
         private String ValidConnectionCheckerClassName;
         @JSONField(name = "ExceptionSorterClassName")
@@ -84,71 +84,71 @@ public class DataSourceResult {
         @JSONField(name = "DefaultTransactionIsolation")
         private Object DefaultTransactionIsolation;
         @JSONField(name = "LogicConnectCount")
-        private int LogicConnectCount;
+        private long LogicConnectCount;
         @JSONField(name = "LogicCloseCount")
-        private int LogicCloseCount;
+        private long LogicCloseCount;
         @JSONField(name = "LogicConnectErrorCount")
-        private int LogicConnectErrorCount;
+        private long LogicConnectErrorCount;
         @JSONField(name = "PhysicalConnectCount")
-        private int PhysicalConnectCount;
+        private long PhysicalConnectCount;
         @JSONField(name = "PhysicalCloseCount")
-        private int PhysicalCloseCount;
+        private long PhysicalCloseCount;
         @JSONField(name = "PhysicalConnectErrorCount")
-        private int PhysicalConnectErrorCount;
+        private long PhysicalConnectErrorCount;
         @JSONField(name = "ExecuteCount")
-        private int ExecuteCount;
+        private long ExecuteCount;
         @JSONField(name = "ExecuteUpdateCount")
-        private int ExecuteUpdateCount;
+        private long ExecuteUpdateCount;
         @JSONField(name = "ExecuteQueryCount")
-        private int ExecuteQueryCount;
+        private long ExecuteQueryCount;
         @JSONField(name = "ExecuteBatchCount")
-        private int ExecuteBatchCount;
+        private long ExecuteBatchCount;
         @JSONField(name = "ErrorCount")
-        private int ErrorCount;
+        private long ErrorCount;
         @JSONField(name = "CommitCount")
-        private int CommitCount;
+        private long CommitCount;
         @JSONField(name = "RollbackCount")
-        private int RollbackCount;
+        private long RollbackCount;
         @JSONField(name = "PSCacheAccessCount")
-        private int PSCacheAccessCount;
+        private long PSCacheAccessCount;
         @JSONField(name = "PSCacheHitCount")
-        private int PSCacheHitCount;
+        private long PSCacheHitCount;
         @JSONField(name = "PSCacheMissCount")
-        private int PSCacheMissCount;
+        private long PSCacheMissCount;
         @JSONField(name = "StartTransactionCount")
-        private int StartTransactionCount;
+        private long StartTransactionCount;
         @JSONField(name = "RemoveAbandoned")
         private boolean RemoveAbandoned;
         @JSONField(name = "ClobOpenCount")
-        private int ClobOpenCount;
+        private long ClobOpenCount;
         @JSONField(name = "BlobOpenCount")
-        private int BlobOpenCount;
+        private long BlobOpenCount;
         @JSONField(name = "KeepAliveCheckCount")
-        private int KeepAliveCheckCount;
+        private long KeepAliveCheckCount;
         @JSONField(name = "KeepAlive")
         private boolean KeepAlive;
         @JSONField(name = "FailFast")
         private boolean FailFast;
         @JSONField(name = "MaxWait")
-        private int MaxWait;
+        private long MaxWait;
         @JSONField(name = "MaxWaitThreadCount")
-        private int MaxWaitThreadCount;
+        private long MaxWaitThreadCount;
         @JSONField(name = "PoolPreparedStatements")
         private boolean PoolPreparedStatements;
         @JSONField(name = "MaxPoolPreparedStatementPerConnectionSize")
-        private int MaxPoolPreparedStatementPerConnectionSize;
+        private long MaxPoolPreparedStatementPerConnectionSize;
         @JSONField(name = "MinEvictableIdleTimeMillis")
-        private int MinEvictableIdleTimeMillis;
+        private long MinEvictableIdleTimeMillis;
         @JSONField(name = "MaxEvictableIdleTimeMillis")
-        private int MaxEvictableIdleTimeMillis;
+        private long MaxEvictableIdleTimeMillis;
         @JSONField(name = "LogDifferentThread")
         private boolean LogDifferentThread;
         @JSONField(name = "RecycleErrorCount")
-        private int RecycleErrorCount;
+        private long RecycleErrorCount;
         @JSONField(name = "PreparedStatementOpenCount")
-        private int PreparedStatementOpenCount;
+        private long PreparedStatementOpenCount;
         @JSONField(name = "PreparedStatementClosedCount")
-        private int PreparedStatementClosedCount;
+        private long PreparedStatementClosedCount;
         @JSONField(name = "UseUnfairLock")
         private boolean UseUnfairLock;
         @JSONField(name = "InitGlobalVariants")

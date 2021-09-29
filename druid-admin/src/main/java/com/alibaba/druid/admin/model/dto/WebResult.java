@@ -25,47 +25,47 @@ public class WebResult {
         @JSONField(name = "URI")
         private String URI;
         @JSONField(name = "RunningCount")
-        private int RunningCount;
+        private long RunningCount;
         @JSONField(name = "ConcurrentMax")
-        private int ConcurrentMax;
+        private long ConcurrentMax;
         @JSONField(name = "RequestCount")
-        private int RequestCount;
+        private long RequestCount;
         @JSONField(name = "RequestTimeMillis")
-        private int RequestTimeMillis;
+        private long RequestTimeMillis;
         @JSONField(name = "ErrorCount")
-        private int ErrorCount;
+        private long ErrorCount;
         @JSONField(name = "LastAccessTime")
         private String LastAccessTime;
         @JSONField(name = "JdbcCommitCount")
-        private int JdbcCommitCount;
+        private long JdbcCommitCount;
         @JSONField(name = "JdbcRollbackCount")
-        private int JdbcRollbackCount;
+        private long JdbcRollbackCount;
         @JSONField(name = "JdbcExecuteCount")
-        private int JdbcExecuteCount;
+        private long JdbcExecuteCount;
         @JSONField(name = "JdbcExecuteErrorCount")
-        private int JdbcExecuteErrorCount;
+        private long JdbcExecuteErrorCount;
         @JSONField(name = "JdbcExecutePeak")
-        private int JdbcExecutePeak;
+        private long JdbcExecutePeak;
         @JSONField(name = "JdbcExecuteTimeMillis")
-        private int JdbcExecuteTimeMillis;
+        private long JdbcExecuteTimeMillis;
         @JSONField(name = "JdbcFetchRowCount")
-        private int JdbcFetchRowCount;
+        private long JdbcFetchRowCount;
         @JSONField(name = "JdbcFetchRowPeak")
-        private int JdbcFetchRowPeak;
+        private long JdbcFetchRowPeak;
         @JSONField(name = "JdbcUpdateCount")
-        private int JdbcUpdateCount;
+        private long JdbcUpdateCount;
         @JSONField(name = "JdbcUpdatePeak")
-        private int JdbcUpdatePeak;
+        private long JdbcUpdatePeak;
         @JSONField(name = "JdbcPoolConnectionOpenCount")
-        private int JdbcPoolConnectionOpenCount;
+        private long JdbcPoolConnectionOpenCount;
         @JSONField(name = "JdbcPoolConnectionCloseCount")
-        private int JdbcPoolConnectionCloseCount;
+        private long JdbcPoolConnectionCloseCount;
         @JSONField(name = "JdbcResultSetOpenCount")
-        private int JdbcResultSetOpenCount;
+        private long JdbcResultSetOpenCount;
         @JSONField(name = "JdbcResultSetCloseCount")
-        private int JdbcResultSetCloseCount;
+        private long JdbcResultSetCloseCount;
         @JSONField(name = "RequestTimeMillisMax")
-        private int RequestTimeMillisMax;
+        private long RequestTimeMillisMax;
         @JSONField(name = "RequestTimeMillisMaxOccurTime")
         private String RequestTimeMillisMaxOccurTime;
         @JSONField(name = "Histogram")
