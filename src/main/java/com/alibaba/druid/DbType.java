@@ -56,6 +56,8 @@ public enum DbType {
      */
     gaussdb       (1 << 38),
 
+    oscar          (1 << 36),
+
 
     ingres          (0),
     cloudscape          (0),
