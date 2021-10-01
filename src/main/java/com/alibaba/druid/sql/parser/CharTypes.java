@@ -43,9 +43,7 @@ public class CharTypes {
     private final static boolean[] firstIdentifierFlags = new boolean[256];
     static {
         for (char c = 0; c < firstIdentifierFlags.length; ++c) {
-            if (c >= 'A' && c <= 'Z') {
-                firstIdentifierFlags[c] = true;
-            } else if (c >= 'a' && c <= 'z') {
+            if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= 'À' && c <= 'ÿ')) {
                 firstIdentifierFlags[c] = true;
             }
         }
@@ -105,16 +103,16 @@ public class CharTypes {
         for (int i = 0; i <= 32; ++i) {
             whitespaceFlags[i] = true;
         }
-        
+
         whitespaceFlags[EOI] = false;
         for (int i = 0x7F; i <= 0xA0; ++i) {
             whitespaceFlags[i] = true;
         }
-   
+
         whitespaceFlags[160] = true; // 特别处理
-//        whitespaceFlags[223] = true; // 特别处理, odps
-//        whitespaceFlags[229] = true; // 特别处理, odps
-//        whitespaceFlags[231] = true; // 特别处理, odps ç
+        // whitespaceFlags[223] = true; // 特别处理, odps
+        // whitespaceFlags[229] = true; // 特别处理, odps
+        // whitespaceFlags[231] = true; // 特别处理, odps ç
     }
 
     /**
@@ -122,7 +120,7 @@ public class CharTypes {
      */
     public static boolean isWhitespace(char c) {
         return (c <= whitespaceFlags.length && whitespaceFlags[c]) //
-               || c == '　'; // Chinese space
+                || c == '　'; // Chinese space
     }
 
     public static String trim(String value) {
