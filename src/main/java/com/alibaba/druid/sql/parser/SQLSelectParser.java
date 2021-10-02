@@ -1680,6 +1680,7 @@ public class SQLSelectParser extends SQLParser {
                 primaryTableSourceRest(rightTableSource);
 
             } else if (rightTableSource.getAlias() == null && !(rightTableSource instanceof SQLValuesTableSource)) {
+                int line = lexer.line;
                 String tableAlias;
                 if (lexer.token == Token.AS) {
                     lexer.nextToken();
@@ -1695,6 +1696,12 @@ public class SQLSelectParser extends SQLParser {
 
                 if (tableAlias != null) {
                     rightTableSource.setAlias(tableAlias);
+
+                    if (line + 1 == lexer.line
+                            && lexer.hasComment()
+                            && lexer.getComments().get(0).startsWith("--")) {
+                        rightTableSource.addAfterComment(lexer.readAndResetComments());
+                    }
 
                     if (lexer.token == Token.LPAREN) {
                         if (rightTableSource instanceof SQLSubqueryTableSource) {

@@ -1763,6 +1763,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         print(')');
 
+        List<String> afterComments = x.getAfterCommentsDirect();
+        if (afterComments != null && !afterComments.isEmpty() && afterComments.get(0).startsWith("--")) {
+            print(' ');
+        }
+        printlnComment(afterComments);
+
         if (x.getHint() != null) {
             x.getHint().accept(this);
         }
@@ -5283,6 +5289,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLWithSubqueryClause.Entry x) {
+        if (isPrettyFormat() && x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+
         print0(x.getAlias());
 
         if (x.getColumns().size() > 0) {

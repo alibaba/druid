@@ -3112,7 +3112,13 @@ public class SQLExprParser extends SQLParser {
                     }
                 }
 
+                int line = lexer.line;
                 accept(Token.RPAREN);
+                if (line + 1 == lexer.line
+                        && lexer.hasComment()
+                        && lexer.getComments().get(0).startsWith("--")) {
+                    inListExpr.addAfterComment(lexer.readAndResetComments());
+                }
             } else {
                 SQLExpr itemExpr = primary();
                 itemExpr.setParent(inListExpr);

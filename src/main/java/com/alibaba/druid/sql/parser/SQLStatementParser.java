@@ -168,6 +168,7 @@ public class SQLStatementParser extends SQLParser {
                     return;
                 case SEMI: {
                     int line0 = lexer.getLine();
+                    char ch = lexer.ch;
                     lexer.nextToken();
                     int line1 = lexer.getLine();
 
@@ -176,9 +177,16 @@ public class SQLStatementParser extends SQLParser {
                         lastStmt.setAfterSemi(true);
 
                         if (lexer.isKeepComments()) {
-                            SQLStatement stmt = statementList.get(statementList.size() - 1);
+                            if (ch == '\n'
+                                    && lexer.getComments() != null
+                                    && !lexer.getComments().isEmpty()
+                                    && !(lastStmt instanceof SQLSetStatement)
+                            ) {
+                                lexer.getComments().add(0, new String("\n"));
+                            }
+
                             if (line1 - line0 <= 1) {
-                                stmt.addAfterComment(lexer.readAndResetComments());
+                                lastStmt.addAfterComment(lexer.readAndResetComments());
                             }
                         }
                     }
@@ -5394,6 +5402,10 @@ public class SQLStatementParser extends SQLParser {
         for (;;) {
             SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
             entry.setParent(withQueryClause);
+
+            if (lexer.hasComment() && lexer.isKeepComments()) {
+                entry.addBeforeComment(lexer.readAndResetComments());
+            }
 
             String alias = this.lexer.stringVal();
             lexer.nextToken();
