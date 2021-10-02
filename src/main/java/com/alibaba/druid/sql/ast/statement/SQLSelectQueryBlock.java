@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
-public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery, SQLReplaceable, SQLDbTypedObject {
+public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplaceable, SQLDbTypedObject {
     protected int                        distionOption;
     protected final List<SQLSelectItem>  selectList      = new ArrayList<SQLSelectItem>();
 
@@ -47,7 +47,6 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected SQLSelectGroupByClause     groupBy;
     protected List<SQLWindow>            windows;
     protected SQLOrderBy                 orderBy;
-    protected boolean                    parenthesized   = false;
     protected boolean                    forUpdate       = false;
     protected boolean                    noWait          = false;
     protected boolean                    skipLocked      = false;
@@ -1002,16 +1001,6 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         if (limit != null) {
             x.setLimit(limit.clone());
         }
-    }
-
-    @Override
-    public boolean isParenthesized() {
-        return parenthesized;
-    }
-
-    @Override
-    public void setParenthesized(boolean paren) {
-        this.parenthesized = paren;
     }
 
     public SQLTableSource findTableSource(String alias) {

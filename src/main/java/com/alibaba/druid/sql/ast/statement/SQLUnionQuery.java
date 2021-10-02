@@ -27,10 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLDbTypedObject {
-
-    private boolean parenthesized = false;
-
+public class SQLUnionQuery extends SQLSelectQueryBase implements SQLDbTypedObject {
     private List<SQLSelectQuery> relations = new ArrayList<SQLSelectQuery>();
     private SQLUnionOperator operator = SQLUnionOperator.UNION;
     private SQLOrderBy       orderBy;
@@ -166,14 +163,6 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
             limit.setParent(this);
         }
         this.limit = limit;
-    }
-
-    public boolean isParenthesized() {
-        return parenthesized;
-    }
-
-    public void setParenthesized(boolean paren) {
-        this.parenthesized = paren;
     }
 
     public SQLUnionQuery clone() {

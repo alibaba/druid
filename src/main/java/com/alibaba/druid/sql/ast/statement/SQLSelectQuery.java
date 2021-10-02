@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 
 public interface SQLSelectQuery extends SQLObject {
     boolean isParenthesized();
-    void setParenthesized(boolean paren);
+    void setParenthesized(boolean parenthesized);
 
     SQLSelectQuery clone();
 }

@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLValuesQuery extends SQLObjectImpl implements SQLSelectQuery {
-    private boolean parenthesized = false;
-
+public class SQLValuesQuery extends SQLSelectQueryBase {
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
     public List<SQLExpr> getValues() {
@@ -43,16 +41,6 @@ public class SQLValuesQuery extends SQLObjectImpl implements SQLSelectQuery {
             acceptChild(visitor, values);
         }
         visitor.endVisit(this);
-    }
-
-    @Override
-    public boolean isParenthesized() {
-        return parenthesized;
-    }
-
-    @Override
-    public void setParenthesized(boolean paren) {
-        this.parenthesized = paren;
     }
 
     public SQLValuesQuery clone() {
