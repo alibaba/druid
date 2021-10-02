@@ -6408,7 +6408,7 @@ public class SQLStatementParser extends SQLParser {
         insert.setDbType(dbType);
 
         if (lexer.isKeepComments() && lexer.hasComment()) {
-            insert.addBeforeComment(lexer.readAndResetComments());
+            insert.addInsertBeforeComment(lexer.readAndResetComments());
         }
 
         SQLSelectParser selectParser = createSQLSelectParser();

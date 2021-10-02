@@ -20,7 +20,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.support.opds.udf.SqlCodeStat;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -39,7 +43,30 @@ public class OdpsListResourcesTest extends TestCase {
         exec_test("bvt/parser/odps-3.sql");
     }
 
+    public static String readResource(String resource) throws Exception {
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+        Reader reader = new InputStreamReader(is, "UTF-8");
+        String input = Utils.read(reader);
+        return input;
+    }
+
+    public void test_8() throws Exception {
+        exec_test("bvt/parser/odps-8.txt");
+    }
+
+    public void format_resource(String resource) throws Exception {
+        InputStream is = null;
+
+        is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+        Reader reader = new InputStreamReader(is, "UTF-8");
+        String input = Utils.read(reader);
+        String formattedSql = SQLUtils.format(input, DbType.odps);
+        System.out.println(formattedSql);
+
+    }
+
     public void exec_test(String resource) throws Exception {
+//        System.out.println(resource);
         InputStream is = null;
 
         is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
@@ -48,13 +75,28 @@ public class OdpsListResourcesTest extends TestCase {
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
-        String expect = items[1].trim();
+        String expect = null;
+        if (items.length > 1) {
+            expect = items[1].trim();
+            if (expect != null) {
+                expect = expect.replaceAll("\\r\\n", "\n");
+            }
+        }
 
-        OdpsStatementParser parser = new OdpsStatementParser(sql);
+        new SqlCodeStat()
+                .evaluate(sql, "odps");
+
+        OdpsStatementParser parser = new OdpsStatementParser(sql
+                , SQLParserFeature.EnableSQLBinaryOpExprGroup
+                , SQLParserFeature.EnableMultiUnion
+                , SQLParserFeature.KeepComments);
         List<SQLStatement> statementList = parser.parseStatementList();
+        if (statementList.size() == 0) {
+            throw new Exception("empty");
+        }
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+//        Assert.assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = new OdpsSchemaStatVisitor();
         stmt.accept(visitor);
@@ -65,7 +107,16 @@ public class OdpsListResourcesTest extends TestCase {
 //
 //        System.out.println();
 //        System.out.println("---------------------------");
-//        System.out.println(SQLUtils.toOdpsString(stmt));
+        System.out.println(SQLUtils.toOdpsString(stmt));
+
+        if (expect != null && !expect.isEmpty()) {
+            assertEquals(expect, stmt.toString());
+        }
+
+        SchemaStatVisitor schemaStatVisitor = SQLUtils.createSchemaStatVisitor(DbType.odps);
+        for (SQLStatement item : statementList) {
+            item.accept(schemaStatVisitor);
+        }
     }
 
     void mergValidate(String sql, String expect) {
@@ -84,6 +135,7 @@ public class OdpsListResourcesTest extends TestCase {
 
         Assert.assertEquals(expect, out.toString());
     }
+
 
 
 }

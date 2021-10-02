@@ -3377,6 +3377,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
+        if (x.getInsertBeforeCommentsDirect() != null) {
+            printlnComments(x.getInsertBeforeCommentsDirect());
+        }
+
         SQLWithSubqueryClause with = x.getWith();
         if (with != null) {
             visit(with);
@@ -6481,7 +6485,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        if (comment.startsWith("--") && comment.length() > 2 && comment.charAt(2) != ' ') {
+        if (comment.startsWith("--")
+                && comment.length() > 2
+                && comment.charAt(2) != ' '
+        ) {
             print0("-- ");
             print0(comment.substring(2));
         } else {
@@ -6511,7 +6518,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         SQLName changeOwnerTo = x.getChangeOwnerTo();
-        if (to != null) {
+        if (changeOwnerTo != null) {
             print0(ucase ? " CHANGEOWNER TO " : " changeowner to ");
             printExpr(changeOwnerTo);
         }
