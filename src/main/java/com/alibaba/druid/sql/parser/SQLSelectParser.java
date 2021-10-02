@@ -1077,11 +1077,11 @@ public class SQLSelectParser extends SQLParser {
             		|| lexer.token == Token.SEL) {
                 SQLSelect select = select();
                 accept(Token.RPAREN);
-                if (select.getQuery() instanceof SQLSelectQueryBlock) {
-                    ((SQLSelectQueryBlock) select.getQuery()).setParenthesized(true);
-                }
+                SQLSelectQuery selectQuery = select.getQuery();
+                selectQuery.setParenthesized(true);
 
-                SQLSelectQuery query = queryRest(select.getQuery(), true);
+                boolean acceptUnion = !(selectQuery instanceof SQLUnionQuery);
+                SQLSelectQuery query = queryRest(selectQuery, acceptUnion);
                 if (query instanceof SQLUnionQuery) {
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                 } else {
