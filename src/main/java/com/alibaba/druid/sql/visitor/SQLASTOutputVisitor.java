@@ -6488,6 +6488,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (comment.startsWith("--")
                 && comment.length() > 2
                 && comment.charAt(2) != ' '
+                && comment.charAt(2) != '-'
         ) {
             print0("-- ");
             print0(comment.substring(2));
