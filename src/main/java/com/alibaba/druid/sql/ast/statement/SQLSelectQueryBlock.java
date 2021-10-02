@@ -20,9 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLParserUtils;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.util.FnvHash;
@@ -512,14 +509,6 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
         this.setFrom(from);
     }
-
-    public boolean isParenthesized() {
-		return parenthesized;
-	}
-
-	public void setParenthesized(boolean parenthesized) {
-		this.parenthesized = parenthesized;
-	}
 	
     public boolean isForUpdate() {
         return forUpdate;
@@ -1016,13 +1005,13 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     }
 
     @Override
-    public boolean isBracket() {
+    public boolean isParenthesized() {
         return parenthesized;
     }
 
     @Override
-    public void setBracket(boolean bracket) {
-        this.parenthesized = bracket;
+    public void setParenthesized(boolean paren) {
+        this.parenthesized = paren;
     }
 
     public SQLTableSource findTableSource(String alias) {

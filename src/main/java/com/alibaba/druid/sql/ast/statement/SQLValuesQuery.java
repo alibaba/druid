@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLValuesQuery extends SQLObjectImpl implements SQLSelectQuery {
-    private boolean          bracket  = false;
+    private boolean parenthesized = false;
 
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
@@ -46,18 +46,18 @@ public class SQLValuesQuery extends SQLObjectImpl implements SQLSelectQuery {
     }
 
     @Override
-    public boolean isBracket() {
-        return bracket;
+    public boolean isParenthesized() {
+        return parenthesized;
     }
 
     @Override
-    public void setBracket(boolean bracket) {
-        this.bracket = bracket;
+    public void setParenthesized(boolean paren) {
+        this.parenthesized = paren;
     }
 
     public SQLValuesQuery clone() {
         SQLValuesQuery x = new SQLValuesQuery();
-        x.bracket = bracket;
+        x.parenthesized = parenthesized;
 
         for (int i = 0; i < values.size(); ++i) {
             SQLExpr value = values.get(i).clone();

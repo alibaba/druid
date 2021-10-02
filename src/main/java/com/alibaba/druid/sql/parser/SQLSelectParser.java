@@ -100,9 +100,7 @@ public class SQLSelectParser extends SQLParser {
     }
 
     protected SQLUnionQuery createSQLUnionQuery() {
-        SQLUnionQuery union = new SQLUnionQuery();
-        union.setDbType(dbType);
-        return union;
+        return new SQLUnionQuery(dbType);
     }
 
     public SQLUnionQuery unionRest(SQLUnionQuery union) {
@@ -149,9 +147,7 @@ public class SQLSelectParser extends SQLParser {
                 }
 
                 SQLUnionQuery union = createSQLUnionQuery();
-                if (union.getRelations().isEmpty()) {
-                    union.setLeft(selectQuery);
-                }
+                union.setLeft(selectQuery);
 
                 if (lexer.token == Token.ALL) {
                     union.setOperator(SQLUnionOperator.UNION_ALL);

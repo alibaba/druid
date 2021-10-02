@@ -16,12 +16,10 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDbTypedObject;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -31,7 +29,7 @@ import java.util.List;
 
 public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLDbTypedObject {
 
-    private boolean          bracket  = false;
+    private boolean parenthesized = false;
 
     private List<SQLSelectQuery> relations = new ArrayList<SQLSelectQuery>();
     private SQLUnionOperator operator = SQLUnionOperator.UNION;
@@ -52,6 +50,10 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
 
     }
 
+    public SQLUnionQuery(DbType dbType){
+        this.dbType = dbType;
+    }
+
     public SQLUnionQuery(SQLSelectQuery left, SQLUnionOperator operator, SQLSelectQuery right){
         this.setLeft(left);
         this.operator = operator;
@@ -61,6 +63,10 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
 
     public List<SQLSelectQuery> getRelations() {
         return relations;
+    }
+
+    public boolean isEmpty() {
+        return relations.isEmpty();
     }
 
     public void addRelation(SQLSelectQuery relation) {
@@ -162,18 +168,18 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
         this.limit = limit;
     }
 
-    public boolean isBracket() {
-        return bracket;
+    public boolean isParenthesized() {
+        return parenthesized;
     }
 
-    public void setBracket(boolean bracket) {
-        this.bracket = bracket;
+    public void setParenthesized(boolean paren) {
+        this.parenthesized = paren;
     }
 
     public SQLUnionQuery clone() {
         SQLUnionQuery x = new SQLUnionQuery();
 
-        x.bracket = bracket;
+        x.parenthesized = parenthesized;
 
         for (SQLSelectQuery relation : relations) {
             SQLSelectQuery r = relation.clone();
@@ -234,7 +240,7 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
     }
 
     public List<SQLSelectQuery> getChildren() {
-        boolean bracket = this.bracket && !(parent instanceof SQLUnionQueryTableSource);
+        boolean bracket = this.parenthesized && !(parent instanceof SQLUnionQueryTableSource);
 
         if (relations.size() > 2) {
             return relations;
@@ -246,7 +252,7 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
         if ((!bracket)
                 && left instanceof SQLUnionQuery
                 && ((SQLUnionQuery) left).getOperator() == operator
-                && !right.isBracket()
+                && !right.isParenthesized()
                 && orderBy == null) {
 
             SQLUnionQuery leftUnion = (SQLUnionQuery) left;
@@ -258,10 +264,10 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
                 SQLSelectQuery leftLeft = leftUnion.getLeft();
                 SQLSelectQuery leftRight = leftUnion.getRight();
 
-                if ((!leftUnion.isBracket())
+                if ((!leftUnion.isParenthesized())
                         && leftUnion.getOrderBy() == null
-                        && (!leftLeft.isBracket())
-                        && (!leftRight.isBracket())
+                        && (!leftLeft.isParenthesized())
+                        && (!leftRight.isParenthesized())
                         && leftLeft instanceof SQLUnionQuery
                         && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
                     rights.add(leftRight);
@@ -288,7 +294,7 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
 
         SQLUnionQuery that = (SQLUnionQuery) o;
 
-        if (bracket != that.bracket) return false;
+        if (parenthesized != that.parenthesized) return false;
         if (relations != null ? !relations.equals(that.relations) : that.relations != null) return false;
         if (operator != that.operator) return false;
         if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) return false;
@@ -298,7 +304,7 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery, SQLD
 
     @Override
     public int hashCode() {
-        int result = (bracket ? 1 : 0);
+        int result = (parenthesized ? 1 : 0);
         result = 31 * result + (relations != null ? relations.hashCode() : 0);
         result = 31 * result + (operator != null ? operator.hashCode() : 0);
         result = 31 * result + (orderBy != null ? orderBy.hashCode() : 0);

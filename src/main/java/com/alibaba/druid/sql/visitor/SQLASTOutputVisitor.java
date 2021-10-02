@@ -582,7 +582,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     quote = true;
                     break;
                 default:
-                    quote = ((SQLBinaryOpExpr) testExpr).isBracket();
+                    quote = ((SQLBinaryOpExpr) testExpr).isParenthesized();
                     break;
             }
         } else if (testExpr instanceof SQLInListExpr
@@ -614,7 +614,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (beginExpr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpBegin = (SQLBinaryOpExpr) beginExpr;
             incrementIndent();
-            if (binaryOpBegin.isBracket()
+            if (binaryOpBegin.isParenthesized()
                     || binaryOpBegin.getOperator().isLogical()
                     || binaryOpBegin.getOperator().isRelational()) {
                 print('(');
@@ -647,7 +647,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (endExpr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpEnd = (SQLBinaryOpExpr) endExpr;
             incrementIndent();
-            if (binaryOpEnd.isBracket()
+            if (binaryOpEnd.isParenthesized()
                     || binaryOpEnd.getOperator().isLogical()
                     || binaryOpEnd.getOperator().isRelational()) {
                 print('(');
@@ -801,7 +801,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 if (itemOp.priority > operator.priority) {
                     bracket = true;
                 } else {
-                    bracket = binaryOpExpr.isBracket() & !parameterized;
+                    bracket = binaryOpExpr.isParenthesized() & !parameterized;
                 }
                 if (bracket) {
                     print('(');
@@ -1020,7 +1020,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     || rightOp == SQLBinaryOperator.BooleanOr;
 
             if (rightOp.priority >= op.priority
-                    || (binaryRight.isBracket()
+                    || (binaryRight.isParenthesized()
                     && rightOp != op
                     && rightOp.isLogical()
                     && op.isLogical()
@@ -1090,7 +1090,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 bracket = true;
             } else if ((leftOp == SQLBinaryOperator.Is || leftOp == SQLBinaryOperator.IsNot) && !op.isLogical()) {
                 bracket = true;
-            } else if (binaryLeft.isBracket()) {
+            } else if (binaryLeft.isParenthesized()) {
                 if (leftOp != op && ((leftOp.isLogical() && op.isLogical()) || op == SQLBinaryOperator.Is)) {
                     bracket = true;
                 } else {
@@ -1595,7 +1595,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     quote = true;
                     break;
                 default:
-                    quote = ((SQLBinaryOpExpr) expr).isBracket();
+                    quote = ((SQLBinaryOpExpr) expr).isParenthesized();
                     break;
             }
         } else if (expr instanceof SQLNotExpr
@@ -3713,13 +3713,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLSelectQuery left = x.getLeft();
         SQLSelectQuery right = x.getRight();
 
-        boolean bracket = x.isBracket() && !(x.getParent() instanceof SQLUnionQueryTableSource);
+        boolean bracket = x.isParenthesized() && !(x.getParent() instanceof SQLUnionQueryTableSource);
 
         SQLOrderBy orderBy = x.getOrderBy();
         if ((!bracket)
                 && left instanceof SQLUnionQuery
                 && ((SQLUnionQuery) left).getOperator() == operator
-                && !right.isBracket()
+                && !right.isParenthesized()
                 && x.getLimit() == null
                 && orderBy == null) {
 
@@ -3728,7 +3728,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if (right instanceof SQLSelectQueryBlock) {
                 SQLSelectQueryBlock rightQueryBlock = (SQLSelectQueryBlock) right;
                 if (rightQueryBlock.getOrderBy() != null || rightQueryBlock.getLimit() != null) {
-                    rightQueryBlock.setBracket(true);
+                    rightQueryBlock.setParenthesized(true);
                 }
             }
 
@@ -3745,14 +3745,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     if (leftRight instanceof SQLSelectQueryBlock) {
                         SQLSelectQueryBlock leftRightQueryBlock = (SQLSelectQueryBlock) leftRight;
                         if (leftRightQueryBlock.getOrderBy() != null || leftRightQueryBlock.getLimit() != null) {
-                            leftRightQueryBlock.setBracket(true);
+                            leftRightQueryBlock.setParenthesized(true);
                         }
                     }
 
-                    if ((!leftUnion.isBracket())
+                    if ((!leftUnion.isParenthesized())
                             && leftUnion.getOrderBy() == null
-                            && (!leftLeft.isBracket())
-                            && (!leftRight.isBracket())
+                            && (!leftLeft.isParenthesized())
+                            && (!leftRight.isParenthesized())
                             && leftLeft instanceof SQLUnionQuery
                             && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
                         rights.add(leftRight);
@@ -3792,7 +3792,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     } else {
                         SQLSelectQuery leftLeft = leftUnion.getLeft();
                         SQLSelectQuery leftRigt = leftUnion.getRight();
-                        if ((!leftUnion.isBracket())
+                        if ((!leftUnion.isParenthesized())
                                 && leftUnion.getRight() instanceof SQLSelectQueryBlock
                                 && leftUnion.getLeft() != null
                                 && leftUnion.getLimit() == null
@@ -3828,7 +3828,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
 
         boolean needParen = false;
-        if ((!right.isBracket())
+        if ((!right.isParenthesized())
                 && right instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock rightQuery = (SQLSelectQueryBlock) right;
             if (rightQuery.getOrderBy() != null || rightQuery.getLimit() != null) {
