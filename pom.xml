@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.2.8_preview_01</version>
+	<version>1.2.9_preview_01</version>
 	<packaging>jar</packaging>
 	<name>druid</name>
 	<description>A JDBC datasource implementation.</description>
@@ -722,12 +722,5 @@
 			<version>4.2.0</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.2.5</version>
-            <scope>compile</scope>
-        </dependency>
-
     </dependencies>
 </project>
