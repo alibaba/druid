@@ -1296,6 +1296,17 @@ public class SQLExprParser extends SQLParser {
                     break;
                 }
                 throw new ParserException("ERROR. " + lexer.info());
+            case ARRAY: {
+                SQLArrayExpr array = new SQLArrayExpr();
+                array.setExpr(new SQLIdentifierExpr("ARRAY"));
+                lexer.nextToken();
+
+                accept(Token.LBRACKET);
+                this.exprList(array.getValues(), array);
+                accept(Token.RBRACKET);
+                sqlExpr = array;
+                break;
+            }
             default:
                 throw new ParserException("ERROR. " + lexer.info());
         }

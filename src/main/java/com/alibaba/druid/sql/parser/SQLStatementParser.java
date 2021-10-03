@@ -4793,7 +4793,7 @@ public class SQLStatementParser extends SQLParser {
             }
         }
 
-        if (DbType.mysql == dbType || DbType.ads == dbType || DbType.presto == dbType) {
+        if (DbType.mysql == dbType || DbType.ads == dbType || DbType.presto == dbType || DbType.trino == dbType) {
             if (lexer.token == Token.LPAREN) {
                 lexer.nextToken();
 

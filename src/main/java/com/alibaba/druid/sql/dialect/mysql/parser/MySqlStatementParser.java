@@ -2447,6 +2447,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             case mysql:
             case ads:
             case presto:
+            case trino:
                 Lexer.SavePoint mark = lexer.mark();
 
                 if (lexer.token() == Token.LPAREN) {

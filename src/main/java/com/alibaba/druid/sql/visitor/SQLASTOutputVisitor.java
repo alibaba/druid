@@ -2314,6 +2314,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             this.indentCount--;
         } else if (parent instanceof SQLOpenStatement) {
             visit(subQuery);
+        } else if (parent instanceof SQLMethodInvokeExpr
+                && ((SQLMethodInvokeExpr) parent).getArguments().size() == 1
+                && (((SQLMethodInvokeExpr) parent).methodNameHashCode64() == FnvHash.Constants.LATERAL
+                    || ((SQLMethodInvokeExpr) parent).methodNameHashCode64() == FnvHash.Constants.ARRAY)
+        ) {
+            this.indentCount++;
+            println();
+            visit(subQuery);
+            this.indentCount--;
+            println();
         } else {
             print('(');
             this.indentCount++;
@@ -4752,7 +4762,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (x.getDbProperties().size() > 0) {
-            if (dbType == DbType.mysql || dbType == DbType.presto || dbType == DbType.ads || dbType == DbType.mariadb) {
+            if (dbType == DbType.mysql
+                    || dbType == DbType.presto
+                    || dbType == DbType.trino
+                    || dbType == DbType.ads
+                    || dbType == DbType.mariadb) {
                 println();
                 print0(ucase ? "WITH (" : "with (");
             } else if (dbType == DbType.hive) {
