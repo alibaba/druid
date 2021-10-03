@@ -8,11 +8,13 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.wall.WallUtils;
 import org.junit.Test;
 
 import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class Issue4442 {
     @Test
@@ -27,5 +29,6 @@ public class Issue4442 {
         statement.accept(visitor);
         Map<TableStat.Name, TableStat> tableMap = visitor.getTables();
         assertFalse(tableMap.isEmpty());
+        assertTrue(WallUtils.isValidatePostgres(sql));
     }
 }
