@@ -56,7 +56,7 @@ public class DruidDataSourceWrapper extends DruidDataSource implements Initializ
     }
 
     /**
-     * Ignore the 'maxEvictableIdleTimeMillis < minEvictableIdleTimeMillis' validate,
+     * Ignore the 'maxEvictableIdleTimeMillis &lt; minEvictableIdleTimeMillis' validate,
      * it will be validated again in {@link DruidDataSource#init()}.
      *
      * for fix issue #3084, #2763
