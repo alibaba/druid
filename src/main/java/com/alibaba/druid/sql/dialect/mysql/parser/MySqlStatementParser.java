@@ -457,6 +457,11 @@ public class MySqlStatementParser extends SQLStatementParser {
             return parseCreateMaterializedView();
         }
 
+        if(lexer.identifierEquals(FnvHash.Constants.ROLE)) {
+            lexer.reset(mark);
+            return parseCreateRole();
+        }
+
         throw new ParserException("TODO " + lexer.info());
     }
 
