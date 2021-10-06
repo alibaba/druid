@@ -775,7 +775,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public void setMinEvictableIdleTimeMillis(long minEvictableIdleTimeMillis) {
         if (minEvictableIdleTimeMillis < 1000 * 30) {
-            LOG.error("minEvictableIdleTimeMillis should be greater than 30000");
+            LOG.warn("minEvictableIdleTimeMillis should be greater than 30000");
         }
         
         this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
