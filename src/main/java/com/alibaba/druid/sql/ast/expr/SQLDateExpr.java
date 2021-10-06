@@ -206,6 +206,7 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
     public static long supportDbTypes = DbType.of(DbType.mysql
             , DbType.oracle
             , DbType.presto
+            , DbType.trino
             , DbType.postgresql
             , DbType.ads
             , DbType.hive

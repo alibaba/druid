@@ -53,13 +53,13 @@ public class PGSelectTest68 extends TestCase {
                 "\t\tELSE -1\n" +
                 "\tEND\n" +
                 "FROM (\n" +
-                "\t(SELECT ARRAY_TO_STRING(ARRAY((\n" +
+                "\t(SELECT ARRAY_TO_STRING(ARRAY(\n" +
                 "\t\t\tSELECT DISTINCT area_info\n" +
                 "\t\t\tFROM md_mesh\n" +
                 "\t\t\tWHERE mesh IN (\n" +
                 "\t\t\t\tSELECT regexp_split_to_table(?, ',')\n" +
                 "\t\t\t)\n" +
-                "\t\t)), ',') AS area_string)\n" +
+                "\t\t), ',') AS area_string)\n" +
                 ") t", SQLUtils.toPGString(stmt));
         
         assertEquals("select case \n" +
@@ -69,13 +69,13 @@ public class PGSelectTest68 extends TestCase {
                 "\t\telse -1\n" +
                 "\tend\n" +
                 "from (\n" +
-                "\t(select ARRAY_TO_STRING(ARRAY((\n" +
+                "\t(select ARRAY_TO_STRING(ARRAY(\n" +
                 "\t\t\tselect distinct area_info\n" +
                 "\t\t\tfrom md_mesh\n" +
                 "\t\t\twhere mesh in (\n" +
                 "\t\t\t\tselect regexp_split_to_table(?, ',')\n" +
                 "\t\t\t)\n" +
-                "\t\t)), ',') as area_string)\n" +
+                "\t\t), ',') as area_string)\n" +
                 ") t", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, stmtList.size());

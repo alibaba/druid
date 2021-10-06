@@ -350,7 +350,7 @@ public class SQLExprParser extends SQLParser {
                 }
 
                 if (sqlExpr instanceof SQLBinaryOpExpr) {
-                    ((SQLBinaryOpExpr) sqlExpr).setBracket(true);
+                    ((SQLBinaryOpExpr) sqlExpr).setParenthesized(true);
                 }
 
                 if ((lexer.token == Token.UNION || lexer.token == Token.MINUS || lexer.token == Token.EXCEPT)
@@ -1296,6 +1296,17 @@ public class SQLExprParser extends SQLParser {
                     break;
                 }
                 throw new ParserException("ERROR. " + lexer.info());
+            case ARRAY: {
+                SQLArrayExpr array = new SQLArrayExpr();
+                array.setExpr(new SQLIdentifierExpr("ARRAY"));
+                lexer.nextToken();
+
+                accept(Token.LBRACKET);
+                this.exprList(array.getValues(), array);
+                accept(Token.RBRACKET);
+                sqlExpr = array;
+                break;
+            }
             default:
                 throw new ParserException("ERROR. " + lexer.info());
         }
@@ -3112,7 +3123,13 @@ public class SQLExprParser extends SQLParser {
                     }
                 }
 
+                int line = lexer.line;
                 accept(Token.RPAREN);
+                if (line + 1 == lexer.line
+                        && lexer.hasComment()
+                        && lexer.getComments().get(0).startsWith("--")) {
+                    inListExpr.addAfterComment(lexer.readAndResetComments());
+                }
             } else {
                 SQLExpr itemExpr = primary();
                 itemExpr.setParent(inListExpr);
@@ -3293,7 +3310,7 @@ public class SQLExprParser extends SQLParser {
 
                     if (operator == SQLBinaryOperator.BooleanAnd
                             || operator == SQLBinaryOperator.BooleanOr) {
-                        if (binaryOpExpr.isBracket()) {
+                        if (binaryOpExpr.isParenthesized()) {
                             binaryOpExpr.setHint(new SQLCommentHint(text));
                         } else {
                             SQLExpr right = binaryOpExpr.getRight();

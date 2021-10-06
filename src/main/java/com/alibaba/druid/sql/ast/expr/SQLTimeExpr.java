@@ -145,7 +145,12 @@ public class SQLTimeExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
         return Collections.emptyList();
     }
 
-    public static long supportDbTypes = DbType.of(DbType.mysql, DbType.oracle, DbType.presto, DbType.postgresql);
+    public static long supportDbTypes = DbType.of(DbType.mysql
+            , DbType.oracle
+            , DbType.presto
+            , DbType.trino
+            , DbType.postgresql
+    );
 
     public static boolean isSupport(DbType dbType) {
         return (dbType.mask & supportDbTypes) != 0;

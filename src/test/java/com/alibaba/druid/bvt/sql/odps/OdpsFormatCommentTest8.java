@@ -13,25 +13,29 @@ public class OdpsFormatCommentTest8 extends TestCase {
                 + "\nselect * from table2;;select * from table3;" //
                 + "\n--comment2 goes here"
                 ;//
-        Assert.assertEquals("SELECT *"
-                + "\nFROM table1;"
-                + "\n"
-                + "\n-- comment1 goes here"
-                + "\nSELECT *"
-                + "\nFROM table2;"
-                + "\n"
-                + "\nSELECT *"
-                + "\nFROM table3;-- comment2 goes here", SQLUtils.formatOdps(sql));
+        Assert.assertEquals("SELECT *\n" +
+                "FROM table1;\n" +
+                "\n" +
+                "-- comment1 goes here\n" +
+                "SELECT *\n" +
+                "FROM table2;\n" +
+                "\n" +
+                "SELECT *\n" +
+                "FROM table3;\n" +
+                "\n" +
+                "-- comment2 goes here", SQLUtils.formatOdps(sql));
         
-        Assert.assertEquals("select *"
-                + "\nfrom table1;"
-                + "\n"
-                + "\n-- comment1 goes here"
-                + "\nselect *"
-                + "\nfrom table2;"
-                + "\n"
-                + "\nselect *"
-                + "\nfrom table3;-- comment2 goes here", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        Assert.assertEquals("select *\n" +
+                "from table1;\n" +
+                "\n" +
+                "-- comment1 goes here\n" +
+                "select *\n" +
+                "from table2;\n" +
+                "\n" +
+                "select *\n" +
+                "from table3;\n" +
+                "\n" +
+                "-- comment2 goes here", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
    

@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
@@ -114,7 +113,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             lexer.nextToken();
 
             SQLSelectQuery select = query();
-            select.setBracket(true);
+            select.setParenthesized(true);
             accept(Token.RPAREN);
 
             return queryRest(select, acceptUnion);
@@ -383,7 +382,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
                 SQLSelectQuery query = queryRest(select.getQuery(), false);
                 if (query instanceof SQLUnionQuery && select.getWithSubQuery() == null) {
-                    select.getQuery().setBracket(true);
+                    select.getQuery().setParenthesized(true);
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                 } else {
                     tableSource = new SQLSubqueryTableSource(select);
@@ -401,7 +400,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
                     SQLSelectQuery query = queryRest(select.getQuery(), true);
                     if (query instanceof SQLUnionQuery && select.getWithSubQuery() == null) {
-                        select.getQuery().setBracket(true);
+                        select.getQuery().setParenthesized(true);
                         tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                     } else {
                         tableSource = new SQLSubqueryTableSource(select);
@@ -416,7 +415,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
                     SQLSelectQuery query = queryRest(unionQuery, true);
                     if (query instanceof SQLUnionQuery) {
-                        unionQuery.setBracket(true);
+                        unionQuery.setParenthesized(true);
                         tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                     } else {
                         tableSource = new SQLSubqueryTableSource(unionQuery);
