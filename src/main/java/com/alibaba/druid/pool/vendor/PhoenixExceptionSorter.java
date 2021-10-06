@@ -24,7 +24,7 @@ import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
 public class PhoenixExceptionSorter implements ExceptionSorter {
-    private final static Log LOG              = LogFactory.getLog(OracleExceptionSorter.class);
+    private final static Log LOG              = LogFactory.getLog(PhoenixExceptionSorter.class);
 
     /**
      * 解决phoenix 的错误 --Connection is null or closed
@@ -33,8 +33,8 @@ public class PhoenixExceptionSorter implements ExceptionSorter {
      */
     @Override
     public boolean isExceptionFatal(SQLException e) {
-        if (e.getMessage().contains("Connection is null or closed")) {
-            LOG.error("剔除phoenix不可用的连接", e);
+        final String error_text = (e.getMessage()).toUpperCase();
+        if (error_text.contains("CONNECTION IS NULL OR CLOSED")) {
             return true;
         }
         
