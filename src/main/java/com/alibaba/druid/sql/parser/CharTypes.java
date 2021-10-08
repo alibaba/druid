@@ -98,7 +98,7 @@ public class CharTypes {
         return null;
     }
 
-    private final static boolean[] whitespaceFlags = new boolean[256];
+    private static final boolean[] whitespaceFlags = new boolean[256];
     static {
         for (int i = 0; i <= 32; ++i) {
             whitespaceFlags[i] = true;
