@@ -53,6 +53,11 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         if (x.hasBeforeComment()) {
             printlnComments(x.getBeforeCommentsDirect());
         }
+
+        if (x.getInsertBeforeCommentsDirect() != null) {
+            printlnComments(x.getInsertBeforeCommentsDirect());
+        }
+
         SQLExprTableSource tableSource = x.getTableSource();
 
         if (tableSource != null) {

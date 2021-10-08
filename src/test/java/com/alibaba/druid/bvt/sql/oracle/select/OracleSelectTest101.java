@@ -97,7 +97,7 @@ public class OracleSelectTest101 extends OracleTest {
                     "JOIN D0169 d ON d.viptype_id = c.viptype_id\n" +
                     "\tAND d.language_id = 'zh-cn' \n" +
                     "\tJOIN area_store_hn e ON a.department_id = e.department_id \n" +
-                    "WHERE a.vip_create_date BETWEEN TRUNC(SYSDATE) - 4 - 10 / 24 AND TRUNC(SYSDATE) - 10 / 24 -- --注册日期\n" +
+                    "WHERE a.vip_create_date BETWEEN TRUNC(SYSDATE) - 4 - 10 / 24 AND TRUNC(SYSDATE) - 10 / 24 ----注册日期\n" +
                     "\tAND (a.vip_state = '0'\n" +
                     "\t\tOR a.vip_state = '1')\n" +
                     "\tAND e.department_user_id IN (\n" +

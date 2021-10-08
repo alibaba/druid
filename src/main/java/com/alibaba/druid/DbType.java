@@ -55,9 +55,10 @@ public enum DbType {
      * 华为的mpp数据库
      */
     gaussdb       (1 << 38),
-
+  
     oscar          (1 << 36),
-
+  
+    trino          (1 << 39),
 
     ingres          (0),
     cloudscape          (0),

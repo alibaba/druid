@@ -131,7 +131,7 @@ public class SQLExprUtils {
         if (quote == '`') {
             expr = new SQLIdentifierExpr(str);
         } else if (quote == '"') {
-            if (dbType == DbType.oracle || dbType == DbType.presto) {
+            if (dbType == DbType.oracle || dbType == DbType.presto || dbType == DbType.trino) {
                 expr = new SQLIdentifierExpr(str);
             }
             else {

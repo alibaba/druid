@@ -62,6 +62,7 @@ public class SQLFunctionBuilder {
         switch (dbType) {
             case ads:
             case presto:
+            case trino:
             case odps:
                 return new SQLMethodInvokeExpr("coalesce", null, expr1, expr2);
             case oracle:

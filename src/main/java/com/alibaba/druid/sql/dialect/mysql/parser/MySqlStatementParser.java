@@ -457,6 +457,11 @@ public class MySqlStatementParser extends SQLStatementParser {
             return parseCreateMaterializedView();
         }
 
+        if(lexer.identifierEquals(FnvHash.Constants.ROLE)) {
+            lexer.reset(mark);
+            return parseCreateRole();
+        }
+
         throw new ParserException("TODO " + lexer.info());
     }
 
@@ -2442,6 +2447,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             case mysql:
             case ads:
             case presto:
+            case trino:
                 Lexer.SavePoint mark = lexer.mark();
 
                 if (lexer.token() == Token.LPAREN) {
