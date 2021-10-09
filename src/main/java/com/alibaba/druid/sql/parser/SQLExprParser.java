@@ -427,7 +427,7 @@ public class SQLExprParser extends SQLParser {
                     lexer.nextToken();
                     sqlExpr = dateExpr;
                 } else if (hash_lower == FnvHash.Constants.BOOLEAN && lexer.token == Token.LITERAL_CHARS) {
-                    sqlExpr = new SQLBooleanExpr(Boolean.valueOf(lexer.stringVal()));
+                    sqlExpr = new SQLBooleanExpr(Boolean.parseBoolean(lexer.stringVal()));
                     lexer.nextToken();
                 } else if (hash_lower == FnvHash.Constants.VARCHAR && lexer.token == Token.LITERAL_CHARS) {
                     if (dbType == DbType.mysql) {
@@ -5792,7 +5792,7 @@ public class SQLExprParser extends SQLParser {
                 String literal = lexer.stringVal();
                 lexer.nextToken();
 
-                SQLBooleanExpr ts = new SQLBooleanExpr(Boolean.valueOf(literal));
+                SQLBooleanExpr ts = new SQLBooleanExpr(Boolean.parseBoolean(literal));
                 expr = ts;
             } else if ((FnvHash.Constants.CHAR == hash_lower || FnvHash.Constants.VARCHAR == hash_lower)
                     && lexer.token == Token.LITERAL_CHARS

@@ -38,7 +38,7 @@ public class SQLRealExpr extends SQLNumericLiteralExpr implements SQLValuableExp
 
     public SQLRealExpr(String value) {
         super();
-        this.value = Float.valueOf(value);
+        this.value = Float.parseFloat(value);
     }
 
     public SQLRealExpr clone() {

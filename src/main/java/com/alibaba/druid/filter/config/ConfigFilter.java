@@ -148,7 +148,7 @@ public class ConfigFilter extends FilterAdapter {
             decrypterId = System.getProperty(SYS_PROP_CONFIG_DECRYPT);
         }
 
-        return Boolean.valueOf(decrypterId);
+        return Boolean.parseBoolean(decrypterId);
     }
 
     Properties loadPropertyFromConfigFile(Properties connectionProperties) {

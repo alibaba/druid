@@ -220,13 +220,11 @@ public final class DruidStatService implements DruidStatServiceMBean {
 
         // when parameters is null
         String orderBy, orderType = null;
-        Integer page = DEFAULT_PAGE;
-        Integer perPageCount = DEFAULT_PER_PAGE_COUNT;
+        int page = DEFAULT_PAGE;
+        int perPageCount = DEFAULT_PER_PAGE_COUNT;
         if (parameters == null) {
             orderBy = DEFAULT_ORDERBY;
             orderType = DEFAULT_ORDER_TYPE;
-            page = DEFAULT_PAGE;
-            perPageCount = DEFAULT_PER_PAGE_COUNT;
         } else {
             orderBy = parameters.get("orderBy");
             orderType = parameters.get("orderType");
