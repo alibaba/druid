@@ -39,7 +39,7 @@ public class ListDG {
     }
 
     // 邻接表中表对应的链表的顶点
-    private class ENode {
+    private static class ENode {
         int ivex;       // 该边所指向的顶点的位置
         ENode nextEdge; // 指向下一条弧的指针
     }
