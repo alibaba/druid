@@ -208,7 +208,7 @@ public class SqlTypeUDF extends UDF {
                 }
 
                 if (typeNameSet.size() > 0) {
-                    StringBuffer buf = new StringBuffer();
+                    StringBuilder buf = new StringBuilder();
                     for (String s : typeNameSet) {
                         if (buf.length() != 0) {
                             buf.append(',');

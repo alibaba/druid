@@ -616,7 +616,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     public void resultSet_close(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
         chain.resultSet_close(resultSet);
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("{conn-");
         buf.append(resultSet.getStatementProxy().getConnectionProxy().getId());
         buf.append(", ");
@@ -637,7 +637,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         if (moreRows) {
             if (resultSetNextAfterLogEnable && isResultSetLogEnabled()) {
                 try {
-                    StringBuffer buf = new StringBuffer();
+                    StringBuilder buf = new StringBuilder();
                     buf.append("{conn-");
                     buf.append(resultSet.getStatementProxy().getConnectionProxy().getId());
                     buf.append(", ");
@@ -737,7 +737,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected void resultSetOpenAfter(ResultSetProxy resultSet) {
         if (resultSetOpenAfterLogEnable && isResultSetLogEnabled()) {
             try {
-                StringBuffer buf = new StringBuffer();
+                StringBuilder buf = new StringBuilder();
                 buf.append("{conn-");
                 buf.append(resultSet.getStatementProxy().getConnectionProxy().getId());
                 buf.append(", ");
@@ -823,7 +823,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     }
 
     private String stmtId(StatementProxy statement) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         if (statement instanceof CallableStatementProxy) {
             buf.append("cstmt-");
         } else if (statement instanceof PreparedStatementProxy) {
@@ -839,7 +839,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected void logParameter(PreparedStatementProxy statement) {
         if (isStatementParameterSetLogEnabled()) {
             {
-                StringBuffer buf = new StringBuffer();
+                StringBuilder buf = new StringBuilder();
                 buf.append("{conn-");
                 buf.append(statement.getConnectionProxy().getId());
                 buf.append(", ");
@@ -871,7 +871,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                 statementLog(buf.toString());
             }
             {
-                StringBuffer buf = new StringBuffer();
+                StringBuilder buf = new StringBuilder();
                 buf.append("{conn-");
                 buf.append(statement.getConnectionProxy().getId());
                 buf.append(", ");

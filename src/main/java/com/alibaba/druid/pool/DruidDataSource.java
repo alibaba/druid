@@ -3030,8 +3030,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         buf.append("\n");
                     }
 
-                    buf.append("ownerThread current state is " + pooledConnection.getOwnerThread().getState()
-                               + ", current stackTrace\n");
+                    buf.append("ownerThread current state is ")
+                            .append(pooledConnection.getOwnerThread().getState())
+                            .append(", current stackTrace\n");
                     trace = pooledConnection.getOwnerThread().getStackTrace();
                     for (int i = 0; i < trace.length; i++) {
                         buf.append("\tat ");

@@ -49,18 +49,20 @@ public class MySqlShowColumnOutpuVisitor extends MySqlOutputVisitor {
                     name_len = name.length();
                 }
 
-                String dataType = column.getDataType().getName();
+                final String dataTypeName = column.getDataType().getName();
+                StringBuilder dataTypeBuilder = new StringBuilder(dataTypeName != null ? dataTypeName : "null");
                 if (column.getDataType().getArguments().size() > 0) {
-                    dataType += "(";
+                    dataTypeBuilder.append('(');
                     for (int i = 0; i < column.getDataType().getArguments().size(); i++) {
                         if (i != 0) {
-                            dataType += ",";
+                            dataTypeBuilder.append(',');
                         }
                         SQLExpr arg = column.getDataType().getArguments().get(i);
-                        dataType += arg.toString();
+                        dataTypeBuilder.append(arg.toString());
                     }
-                    dataType += ")";
+                    dataTypeBuilder.append(')');
                 }
+                final String dataType = dataTypeBuilder.toString();
 
                 if (dataType_len < dataType.length()) {
                     dataType_len = dataType.length();

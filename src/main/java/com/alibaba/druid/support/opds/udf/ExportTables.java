@@ -47,7 +47,7 @@ public class ExportTables extends UDF {
                 stmt.accept(visitor);
             }
 
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
 
             for (Map.Entry<TableStat.Name, TableStat> entry : visitor.getTables().entrySet()) {
                 TableStat.Name name = entry.getKey();

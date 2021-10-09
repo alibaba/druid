@@ -57,10 +57,12 @@ public class Lpad implements Function {
         if (result.length() > len) {
             return result.substring(0, len);
         }
-        
-        while (result.length() < len) {
-            result = strValue1 + result;
+
+        StringBuilder resultBuilder = new StringBuilder(result);
+        while (resultBuilder.length() < len) {
+            resultBuilder.insert(0, strValue1);
         }
+        result = resultBuilder.toString();
 
         return result;
     }

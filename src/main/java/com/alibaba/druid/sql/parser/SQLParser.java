@@ -419,7 +419,7 @@ public class SQLParser {
     }
 
     protected String as() {
-        String alias = null;
+        StringBuilder alias = null;
 
         final Token token = lexer.token;
 
@@ -438,17 +438,17 @@ public class SQLParser {
                 return null;
             }
 
-            alias = lexer.stringVal();
+            alias = new StringBuilder(lexer.stringVal());
             lexer.nextToken();
 
             if (alias != null) {
                 while (lexer.token == Token.DOT) {
                     lexer.nextToken();
-                    alias += ('.' + lexer.token.name());
+                    alias.append('.').append(lexer.token.name());
                     lexer.nextToken();
                 }
 
-                return alias;
+                return alias.toString();
             }
 
             if (lexer.token == Token.LPAREN) {
@@ -459,13 +459,13 @@ public class SQLParser {
         }
 
         if (lexer.token == Token.LITERAL_ALIAS) {
-            alias = lexer.stringVal();
+            alias = new StringBuilder(lexer.stringVal());
             lexer.nextToken();
         } else if (lexer.token == Token.IDENTIFIER) {
-            alias = lexer.stringVal();
+            alias = new StringBuilder(lexer.stringVal());
             lexer.nextToken();
         } else if (lexer.token == Token.LITERAL_CHARS) {
-            alias = "'" + lexer.stringVal() + "'";
+            alias = new StringBuilder("'" + lexer.stringVal() + "'");
             lexer.nextToken();
         } else {
             switch (lexer.token) {
@@ -502,7 +502,7 @@ public class SQLParser {
                 case ENABLE:
                 case DISABLE:
                 case REPLACE:
-                    alias = lexer.stringVal();
+                    alias = new StringBuilder(lexer.stringVal());
                     lexer.nextToken();
                     break;
                 case INTERSECT:
@@ -524,7 +524,7 @@ public class SQLParser {
                 case INTO:
                 case ASC:
                 {
-                    alias = lexer.stringVal();
+                    alias = new StringBuilder(lexer.stringVal());
 
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
@@ -556,7 +556,7 @@ public class SQLParser {
                 case LEFT:
                 case DATABASE:
                     if (dbType == DbType.odps || dbType == DbType.hive) {
-                        alias = lexer.stringVal();
+                        alias = new StringBuilder(lexer.stringVal());
                         lexer.nextToken();
                         break;
                     }
@@ -567,7 +567,7 @@ public class SQLParser {
                 case DEFAULT:
                     if (dbType == DbType.odps || dbType == DbType.hive) {
                         Lexer.SavePoint mark = lexer.mark();
-                        alias = lexer.stringVal();
+                        alias = new StringBuilder(lexer.stringVal());
                         lexer.nextToken();
                         if (lexer.token == Token.BY) {
                             lexer.reset(mark);
@@ -585,17 +585,17 @@ public class SQLParser {
             case KEY:
             case INTERVAL:
             case CONSTRAINT:
-                alias = lexer.token.name();
+                alias = new StringBuilder(lexer.token.name());
                 lexer.nextToken();
-                return alias;
+                return alias.toString();
             default:
                 break;
         }
 
         if (isEnabled(SQLParserFeature.IgnoreNameQuotes) && alias != null && alias.length() > 1) {
-            alias = StringUtils.removeNameQuotes(alias);
+            alias = new StringBuilder(StringUtils.removeNameQuotes(alias.toString()));
         }
-        return alias;
+        return alias.toString();
     }
 
     protected String alias() {

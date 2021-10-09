@@ -1134,17 +1134,17 @@ public class OracleExprParser extends SQLExprParser {
             dbLink.setExpr(name);
 
 
-            String link = lexer.stringVal();
+            StringBuilder link = new StringBuilder(lexer.stringVal());
             lexer.nextToken();
             while (lexer.token() == Token.DOT) {
                 lexer.nextToken();
 
                 String stringVal = lexer.stringVal();
                 accept(Token.IDENTIFIER);
-                link += "." + stringVal;
+                link.append(".").append(stringVal);
             }
 
-            dbLink.setDbLink(link);
+            dbLink.setDbLink(link.toString());
             return dbLink;
         }
 //

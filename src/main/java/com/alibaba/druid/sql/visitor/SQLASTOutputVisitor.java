@@ -4136,7 +4136,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     static String[] variantValuesCache = new String[64];
     static {
         for (int len = 0; len < variantValuesCache_1.length; ++len) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append('(');
             for (int i = 0; i < len; ++i) {
                 if (i != 0) {
@@ -4152,7 +4152,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         for (int len = 0; len < variantValuesCache.length; ++len) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append('(');
             for (int i = 0; i < len; ++i) {
                 if (i != 0) {
