@@ -188,7 +188,7 @@ public class ListDG {
      * 打印矩阵队列图
      */
     public void print() {
-        System.out.printf("== List Graph:\n");
+        System.out.print("== List Graph:\n");
         for (int i = 0; i < mVexs.size(); i++) {
             System.out.printf("%d(%c): ", i, mVexs.get(i).data);
             ENode node = mVexs.get(i).firstEdge;
