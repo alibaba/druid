@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -520,10 +521,10 @@ public class MySqlUtils {
 
     public final static Charset GBK                 = Charset.forName("GBK");
     public final static Charset BIG5                 = Charset.forName("BIG5");
-    public final static Charset UTF8                 = Charset.forName("UTF-8");
-    public final static Charset UTF16                = Charset.forName("UTF-16");
+    public final static Charset UTF8                 = StandardCharsets.UTF_8;
+    public final static Charset UTF16                = StandardCharsets.UTF_16;
     public final static Charset UTF32                = Charset.forName("UTF-32");
-    public final static Charset ASCII                = Charset.forName("ASCII");
+    public final static Charset ASCII                = StandardCharsets.US_ASCII;
 
 
     public static void loadDataTypes(Set<String> dataTypes) {

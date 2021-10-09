@@ -17,6 +17,7 @@ package com.alibaba.druid.filter.config;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -183,7 +184,7 @@ public class ConfigTools {
             cipher.init(Cipher.ENCRYPT_MODE, fakePublicKey);
         }
 
-		byte[] encryptedBytes = cipher.doFinal(plainText.getBytes("UTF-8"));
+		byte[] encryptedBytes = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
 		String encryptedString = Base64.byteArrayToBase64(encryptedBytes);
 
 		return encryptedString;

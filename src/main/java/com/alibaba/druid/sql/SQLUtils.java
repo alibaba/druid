@@ -56,6 +56,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.*;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,6 @@ import java.util.Map;
 import java.util.TimeZone;
 
 public class SQLUtils {
-    public final static Charset UTF8                             = Charset.forName("UTF-8");
 
     private final static SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
             SQLParserFeature.KeepComments,

@@ -26,6 +26,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -42,12 +43,7 @@ public class Utils {
             return null;
         }
 
-        InputStreamReader reader;
-        try {
-            reader = new InputStreamReader(in, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
+        InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
         return read(reader);
     }
 

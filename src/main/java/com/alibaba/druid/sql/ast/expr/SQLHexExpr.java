@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.HexBin;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
 
@@ -103,7 +104,7 @@ public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuab
         if (bytes == null) {
             return null;
         }
-        String str = new String(bytes, SQLUtils.UTF8);
+        String str = new String(bytes, StandardCharsets.UTF_8);
         return new SQLCharExpr(str);
     }
 }
