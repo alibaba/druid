@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.dialect.blink.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.blink.ast.BlinkCreateTableStatement;
 import com.alibaba.druid.sql.parser.ParserException;

@@ -2,7 +2,6 @@ package com.alibaba.druid.sql.dialect.hive.ast;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class HiveInputOutputFormat extends SQLExprImpl {

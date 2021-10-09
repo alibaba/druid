@@ -17,7 +17,6 @@ package com.alibaba.druid.pool.ha;
 
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

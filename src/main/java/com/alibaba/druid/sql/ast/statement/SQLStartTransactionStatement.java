@@ -25,8 +25,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
-
 public class SQLStartTransactionStatement extends SQLStatementImpl {
 
     private boolean              consistentSnapshot = false;

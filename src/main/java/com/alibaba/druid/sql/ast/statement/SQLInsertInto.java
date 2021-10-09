@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public abstract class SQLInsertInto extends SQLStatementImpl implements SQLReplaceable {

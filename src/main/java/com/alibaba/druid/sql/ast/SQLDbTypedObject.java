@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface SQLDbTypedObject extends SQLObject {
     DbType getDbType();

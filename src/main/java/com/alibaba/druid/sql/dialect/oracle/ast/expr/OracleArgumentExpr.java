@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
-import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLReplaceable;

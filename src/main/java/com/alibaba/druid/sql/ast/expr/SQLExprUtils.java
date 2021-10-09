@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.util.FnvHash;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

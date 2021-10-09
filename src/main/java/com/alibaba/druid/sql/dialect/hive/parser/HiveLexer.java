@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.parser.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
-
 public class HiveLexer extends Lexer {
     public final static Keywords DEFAULT_HIVE_KEYWORDS;
 

@@ -15,14 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.hive.parser;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
-import com.alibaba.druid.sql.ast.expr.SQLSizeExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.parser.*;
-import com.alibaba.druid.util.FnvHash;
 
 public class HiveSelectParser extends SQLSelectParser {
 

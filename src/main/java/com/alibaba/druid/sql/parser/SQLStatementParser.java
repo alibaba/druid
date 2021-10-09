@@ -46,19 +46,6 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import static com.alibaba.druid.sql.parser.Token.*;
-import static com.alibaba.druid.sql.parser.Token.ALL;
-import static com.alibaba.druid.sql.parser.Token.ALTER;
-import static com.alibaba.druid.sql.parser.Token.CASCADE;
-import static com.alibaba.druid.sql.parser.Token.COMMA;
-import static com.alibaba.druid.sql.parser.Token.GROUP;
-import static com.alibaba.druid.sql.parser.Token.LINE_COMMENT;
-import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
-import static com.alibaba.druid.sql.parser.Token.LPAREN;
-import static com.alibaba.druid.sql.parser.Token.MULTI_LINE_COMMENT;
-import static com.alibaba.druid.sql.parser.Token.RESTRICT;
-import static com.alibaba.druid.sql.parser.Token.RPAREN;
-import static com.alibaba.druid.sql.parser.Token.SELECT;
-import static com.alibaba.druid.sql.parser.Token.TABLE;
 
 public class SQLStatementParser extends SQLParser {
     protected SchemaRepository   repository;

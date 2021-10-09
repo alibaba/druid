@@ -1,7 +1,6 @@
 package com.alibaba.druid.sql.dialect.odps.ast;
 
 import com.alibaba.druid.FastsqlException;
-import com.alibaba.druid.sql.ast.SQLArgument;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;

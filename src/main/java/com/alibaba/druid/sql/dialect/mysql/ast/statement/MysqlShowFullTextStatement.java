@@ -1,6 +1,5 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.ast.FullTextType;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 

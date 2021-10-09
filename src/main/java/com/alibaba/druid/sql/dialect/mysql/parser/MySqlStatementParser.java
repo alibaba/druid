@@ -38,17 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.alibaba.druid.sql.parser.Token.*;
-import static com.alibaba.druid.sql.parser.Token.COLUMN;
-import static com.alibaba.druid.sql.parser.Token.COMMA;
-import static com.alibaba.druid.sql.parser.Token.DATABASE;
-import static com.alibaba.druid.sql.parser.Token.EQ;
-import static com.alibaba.druid.sql.parser.Token.GROUP;
-import static com.alibaba.druid.sql.parser.Token.LPAREN;
-import static com.alibaba.druid.sql.parser.Token.RPAREN;
-import static com.alibaba.druid.sql.parser.Token.TABLE;
-import static com.alibaba.druid.sql.parser.Token.VIEW;
-import static com.alibaba.druid.sql.parser.Token.WHERE;
-import static com.alibaba.druid.sql.parser.Token.WITH;
 
 public class MySqlStatementParser extends SQLStatementParser {
 

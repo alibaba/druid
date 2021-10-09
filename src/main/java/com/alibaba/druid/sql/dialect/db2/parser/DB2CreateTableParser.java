@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.db2.parser;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionByHash;
 import com.alibaba.druid.sql.ast.statement.*;

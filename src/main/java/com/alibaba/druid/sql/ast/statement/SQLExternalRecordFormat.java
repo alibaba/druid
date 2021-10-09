@@ -4,9 +4,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SQLExternalRecordFormat extends SQLObjectImpl {
     private SQLExpr delimitedBy;
     private SQLExpr terminatedBy;

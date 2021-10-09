@@ -20,7 +20,6 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
 import java.sql.SQLException;
-import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
 public class PhoenixExceptionSorter implements ExceptionSorter {

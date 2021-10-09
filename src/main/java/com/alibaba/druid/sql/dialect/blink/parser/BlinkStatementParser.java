@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.blink.parser;
 
-import com.alibaba.druid.sql.dialect.odps.parser.OdpsCreateTableParser;
 import com.alibaba.druid.sql.parser.*;
 
 public class BlinkStatementParser extends SQLStatementParser {

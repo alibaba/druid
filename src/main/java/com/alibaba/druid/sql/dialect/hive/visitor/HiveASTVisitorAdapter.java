@@ -15,14 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateFunctionStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveMsckRepairStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class HiveASTVisitorAdapter extends SQLASTVisitorAdapter implements HiveASTVisitor {

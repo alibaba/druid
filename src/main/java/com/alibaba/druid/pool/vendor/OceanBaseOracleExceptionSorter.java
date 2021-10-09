@@ -1,13 +1,11 @@
 package com.alibaba.druid.pool.vendor;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import com.alibaba.druid.pool.ExceptionSorter;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
