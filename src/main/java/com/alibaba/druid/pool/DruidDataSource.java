@@ -1351,41 +1351,48 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         for (Class<?> driverClass = driver.getClass();;) {
             String realDriverClassName = driverClass.getName();
-            if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
-                    || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)) {
-                this.exceptionSorter = new MySqlExceptionSorter();
-                this.isMySql = true;
-            } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
-                    || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
-                this.exceptionSorter = new OracleExceptionSorter();
-            } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)) { // 写一个真实的 TestCase
-                if (JdbcUtils.OCEANBASE_ORACLE.name().equalsIgnoreCase(dbTypeName)) {
-                    this.exceptionSorter = new OceanBaseOracleExceptionSorter();
-                } else {
+            switch (realDriverClassName) {
+                case JdbcConstants.MYSQL_DRIVER:
+                case JdbcConstants.MYSQL_DRIVER_6:
                     this.exceptionSorter = new MySqlExceptionSorter();
-                }
-            } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
-                this.exceptionSorter = new InformixExceptionSorter();
-
-            } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
-                this.exceptionSorter = new SybaseExceptionSorter();
-
-            } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
-                    || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
-                    || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
-                this.exceptionSorter = new PGExceptionSorter();
-
-            } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
-                this.exceptionSorter = new MockExceptionSorter();
-            } else if (realDriverClassName.contains("DB2")) {
-                this.exceptionSorter = new DB2ExceptionSorter();
-
-            } else {
-                Class<?> superClass = driverClass.getSuperclass();
-                if (superClass != null && superClass != Object.class) {
-                    driverClass = superClass;
-                    continue;
-                }
+                    this.isMySql = true;
+                    break;
+                case JdbcConstants.ORACLE_DRIVER:
+                case JdbcConstants.ORACLE_DRIVER2:
+                    this.exceptionSorter = new OracleExceptionSorter();
+                    break;
+                case JdbcConstants.OCEANBASE_DRIVER:  // 写一个真实的 TestCase
+                    if (JdbcUtils.OCEANBASE_ORACLE.name().equalsIgnoreCase(dbTypeName)) {
+                        this.exceptionSorter = new OceanBaseOracleExceptionSorter();
+                    } else {
+                        this.exceptionSorter = new MySqlExceptionSorter();
+                    }
+                    break;
+                case "com.informix.jdbc.IfxDriver":
+                    this.exceptionSorter = new InformixExceptionSorter();
+                    break;
+                case "com.sybase.jdbc2.jdbc.SybDriver":
+                    this.exceptionSorter = new SybaseExceptionSorter();
+                    break;
+                case JdbcConstants.POSTGRESQL_DRIVER:
+                case JdbcConstants.ENTERPRISEDB_DRIVER:
+                case JdbcConstants.POLARDB_DRIVER:
+                    this.exceptionSorter = new PGExceptionSorter();
+                    break;
+                case "com.alibaba.druid.mock.MockDriver":
+                    this.exceptionSorter = new MockExceptionSorter();
+                    break;
+                default:
+                    if (realDriverClassName.contains("DB2")) {
+                        this.exceptionSorter = new DB2ExceptionSorter();
+                    } else {
+                        Class<?> superClass = driverClass.getSuperclass();
+                        if (superClass != null && superClass != Object.class) {
+                            driverClass = superClass;
+                            continue;
+                        }
+                    }
+                    break;
             }
 
             break;

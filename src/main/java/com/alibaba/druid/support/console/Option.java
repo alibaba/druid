@@ -113,23 +113,31 @@ public class Option {
             } else if ( i == args.length -1 ) {
 				option.setPid(v1);
 			}
-		
-            if (args[i].equals("-sql")) {
-                option.addPrintDataType(SQL);
-            } else if (args[i].equals("-ds")) {
-                option.addPrintDataType(DATA_SOURCE);
-            }  else if (args[i].equals("-act")) {
-                option.addPrintDataType(ACTIVE_CONN);
-            }  else if (args[i].equals("-detail")) {
-				option.setDetailPrint(true);
-            } else if (args[i].equals("-id")) {
-            	 try {
-                     int id = Integer.parseInt(args[i+1]);
-                     option.setId(id);
-					 i++;
-                 } catch (NumberFormatException e) {
-                     throw new OptionParseException("id参数必须是整数");
-                 }
+
+            switch (args[i]) {
+                case "-sql":
+                    option.addPrintDataType(SQL);
+                    break;
+                case "-ds":
+                    option.addPrintDataType(DATA_SOURCE);
+                    break;
+                case "-act":
+                    option.addPrintDataType(ACTIVE_CONN);
+                    break;
+                case "-detail":
+                    option.setDetailPrint(true);
+                    break;
+                case "-id":
+                    try {
+                        int id = Integer.parseInt(args[i + 1]);
+                        option.setId(id);
+                        i++;
+                    } catch (NumberFormatException e) {
+                        throw new OptionParseException("id参数必须是整数");
+                    }
+                    break;
+                default:
+                    // do nothing
             }
             i++;
 		}

@@ -373,45 +373,51 @@ public class SQLTransformUtils {
         final String dataTypeName = x.getName().toLowerCase();
         SQLDataType dataType;
 
-        if (dataTypeName.equals("varchar2")
-                || dataTypeName.equals("varchar")
-                || dataTypeName.equals("char")
-                || dataTypeName.equals("nchar")
-                || dataTypeName.equals("nvarchar")
-                || dataTypeName.equals("nvarchar2")
-                || dataTypeName.equals("clob")
-                || dataTypeName.equals("nclob")
-                || dataTypeName.equals("blob")
-                || dataTypeName.equals("long")
-                || dataTypeName.equals("long raw")
-                || dataTypeName.equals("raw")
-                ) {
-            dataType = new SQLCharacterDataType("varchar");
-        } else if (dataTypeName.equals("number")
-                || dataTypeName.equals("decimal")
-                || dataTypeName.equals("dec")
-                || dataTypeName.equals("numeric")) {
-            int scale = 0;
-            if (x.getArguments().size() > 1) {
-                scale = ((SQLIntegerExpr) x.getArguments().get(1)).getNumber().intValue();
-            }
-            if (scale == 0) {
-                dataType = new SQLDataTypeImpl("bigint");
-            } else {
+        switch (dataTypeName) {
+            case "varchar2":
+            case "varchar":
+            case "char":
+            case "nchar":
+            case "nvarchar":
+            case "nvarchar2":
+            case "clob":
+            case "nclob":
+            case "blob":
+            case "long":
+            case "long raw":
+            case "raw":
+                dataType = new SQLCharacterDataType("varchar");
+                break;
+            case "number":
+            case "decimal":
+            case "dec":
+            case "numeric":
+                int scale = 0;
+                if (x.getArguments().size() > 1) {
+                    scale = ((SQLIntegerExpr) x.getArguments().get(1)).getNumber().intValue();
+                }
+                if (scale == 0) {
+                    dataType = new SQLDataTypeImpl("bigint");
+                } else {
+                    dataType = new SQLDataTypeImpl("double");
+                }
+                break;
+            case "date":
+            case "datetime":
+            case "timestamp":
+                dataType = new SQLDataTypeImpl("timestamp");
+                break;
+            case "float":
+            case "binary_float":
+                dataType = new SQLDataTypeImpl("float");
+                break;
+            case "double":
+            case "binary_double":
                 dataType = new SQLDataTypeImpl("double");
-            }
-        } else if (dataTypeName.equals("date")
-                || dataTypeName.equals("datetime")
-                || dataTypeName.equals("timestamp")) {
-            dataType = new SQLDataTypeImpl("timestamp");
-        } else if (dataTypeName.equals("float")
-                || dataTypeName.equals("binary_float")) {
-            dataType = new SQLDataTypeImpl("float");
-        } else if (dataTypeName.equals("double")
-                || dataTypeName.equals("binary_double")) {
-            dataType = new SQLDataTypeImpl("double");
-        } else {
-            dataType = x;
+                break;
+            default:
+                dataType = x;
+                break;
         }
 
         if (dataType != x) {
