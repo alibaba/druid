@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.Utils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -75,11 +76,7 @@ public class OneParamFunctions implements Function {
         
         if ("space".equalsIgnoreCase(method)) {
             int intVal = SQLEvalVisitorUtils.castToInteger(paramValue);
-            char[] chars = new char[intVal];
-            for (int i = 0; i < chars.length; ++i) {
-                chars[i] = ' ';
-            }
-            return new String(chars);
+            return StringUtils.repeat(' ', intVal);
         }
 
         throw new UnsupportedOperationException(method);
