@@ -98,7 +98,6 @@ public abstract class DruidPanel extends JPanel {
      * 是否大于对象初始化时设定的时间间隔来判断是否刷新表格数据。
      * 
      * @param url service的地址
-     * @param conn MBeanServerConnection对象
      * @throws Exception
      */
     protected void addOrRefreshTable(String url) throws Exception {

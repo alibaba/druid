@@ -766,7 +766,6 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
     /**
      * only for parameterized output
      * @param item
-     * @return
      */
     private void addMergedItem(SQLBinaryOpExpr item) {
         if (mergedList == null) {

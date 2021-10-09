@@ -257,9 +257,7 @@ public class DruidSqlDetailFrame extends JFrame {
     }
 
     /**
-     * 获取各个数据表格中最大的数据列长度
-     * 
-     * @return the max list len
+     * 获取各个数据表格中最大的数据列长度，存入maxListLen
      */
     private void getMaxListLen() {
         maxListLen = PARESE_TITLE_LIST.size();
@@ -336,7 +334,7 @@ public class DruidSqlDetailFrame extends JFrame {
      * 将表格添加到contentPanel对象内部。
      * 
      * @param contentPanel JPanel对象
-     * @param 当前表格的标题
+     * @param title 当前表格的标题
      * @param data 当前表格的数据
      */
     private void addTable(JPanel contentPanel, String title, ArrayList<LinkedHashMap<String, Object>> data) {

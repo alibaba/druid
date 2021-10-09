@@ -111,7 +111,7 @@ public class IPAddress implements Cloneable {
      * 
      * @param ipAddressStr Decimal-dotted notation (xxx.xxx.xxx.xxx) of the IP address.
      * @return Return the 32 bits integer representation of the IP address.
-     * @exception InvalidIPAddressException Throws this exception if the specified IP address is not compliant to the
+     * @exception IllegalArgumentException Throws this exception if the specified IP address is not compliant to the
      * decimal-dotted notation xxx.xxx.xxx.xxx.
      */
     final int parseIPAddress(String ipAddressStr) {
