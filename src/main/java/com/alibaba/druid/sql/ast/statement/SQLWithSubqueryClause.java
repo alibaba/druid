@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLWithSubqueryClause extends SQLObjectImpl {
 
@@ -220,8 +221,8 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
             Entry entry = (Entry) o;
 
             if (!columns.equals(entry.columns)) return false;
-            if (subQuery != null ? !subQuery.equals(entry.subQuery) : entry.subQuery != null) return false;
-            return returningStatement != null ? returningStatement.equals(entry.returningStatement) : entry.returningStatement == null;
+            if (!Objects.equals(subQuery, entry.subQuery)) return false;
+            return Objects.equals(returningStatement, entry.returningStatement);
         }
 
         @Override
@@ -255,7 +256,7 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
 
         SQLWithSubqueryClause that = (SQLWithSubqueryClause) o;
 
-        if (recursive != null ? !recursive.equals(that.recursive) : that.recursive != null) return false;
+        if (!Objects.equals(recursive, that.recursive)) return false;
         return entries.equals(that.entries);
     }
 

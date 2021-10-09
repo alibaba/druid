@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class SQLUpdateSetItem extends SQLObjectImpl implements SQLReplaceable {
 
@@ -139,8 +140,8 @@ public class SQLUpdateSetItem extends SQLObjectImpl implements SQLReplaceable {
 
         SQLUpdateSetItem that = (SQLUpdateSetItem) o;
 
-        if (column != null ? !column.equals(that.column) : that.column != null) return false;
-        return value != null ? value.equals(that.value) : that.value == null;
+        if (!Objects.equals(column, that.column)) return false;
+        return Objects.equals(value, that.value);
     }
 
     @Override

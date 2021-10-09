@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceable {
     protected SQLWithSubqueryClause with; // for pg
@@ -354,13 +355,13 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
         SQLUpdateStatement that = (SQLUpdateStatement) o;
 
-        if (with != null ? !with.equals(that.with) : that.with != null) return false;
+        if (!Objects.equals(with, that.with)) return false;
         if (!items.equals(that.items)) return false;
-        if (where != null ? !where.equals(that.where) : that.where != null) return false;
-        if (from != null ? !from.equals(that.from) : that.from != null) return false;
-        if (tableSource != null ? !tableSource.equals(that.tableSource) : that.tableSource != null) return false;
-        if (returning != null ? !returning.equals(that.returning) : that.returning != null) return false;
-        return orderBy != null ? orderBy.equals(that.orderBy) : that.orderBy == null;
+        if (!Objects.equals(where, that.where)) return false;
+        if (!Objects.equals(from, that.from)) return false;
+        if (!Objects.equals(tableSource, that.tableSource)) return false;
+        if (!Objects.equals(returning, that.returning)) return false;
+        return Objects.equals(orderBy, that.orderBy);
     }
 
     @Override

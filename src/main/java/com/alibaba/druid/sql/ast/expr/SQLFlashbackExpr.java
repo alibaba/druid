@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by wenshao on 14/06/2017.
@@ -97,7 +98,7 @@ public class SQLFlashbackExpr extends SQLExprImpl implements SQLReplaceable {
         SQLFlashbackExpr that = (SQLFlashbackExpr) o;
 
         if (type != that.type) return false;
-        return expr != null ? expr.equals(that.expr) : that.expr == null;
+        return Objects.equals(expr, that.expr);
     }
 
     @Override

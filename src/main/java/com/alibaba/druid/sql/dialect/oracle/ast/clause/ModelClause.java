@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ModelClause extends OracleSQLObjectImpl {
 
@@ -446,7 +447,7 @@ public class ModelClause extends OracleSQLObjectImpl {
 
             CellAssignment that = (CellAssignment) o;
 
-            if (measureColumn != null ? !measureColumn.equals(that.measureColumn) : that.measureColumn != null)
+            if (!Objects.equals(measureColumn, that.measureColumn))
                 return false;
             return conditions.equals(that.conditions);
         }

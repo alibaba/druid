@@ -24,6 +24,7 @@ import com.alibaba.druid.util.FnvHash;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDbTypedObject {
 
@@ -112,11 +113,11 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
 
         SQLDataTypeImpl dataType = (SQLDataTypeImpl) o;
 
-        if (name != null ? !name.equals(dataType.name) : dataType.name != null) return false;
+        if (!Objects.equals(name, dataType.name)) return false;
         if (!arguments.equals(dataType.arguments)){
             return false;
         }
-        return withTimeZone != null ? withTimeZone.equals(dataType.withTimeZone) : dataType.withTimeZone == null;
+        return Objects.equals(withTimeZone, dataType.withTimeZone);
     }
 
     @Override

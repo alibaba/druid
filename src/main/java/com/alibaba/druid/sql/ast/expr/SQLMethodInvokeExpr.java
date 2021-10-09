@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
 
@@ -256,9 +257,9 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         if (methodNameHashCode64() != that.methodNameHashCode64()) {
             return false;
         }
-        if (owner != null ? !owner.equals(that.owner) : that.owner != null) return false;
+        if (!Objects.equals(owner, that.owner)) return false;
         if (!arguments.equals(that.arguments)) return false;
-        return from != null ? from.equals(that.from) : that.from == null;
+        return Objects.equals(from, that.from);
 
     }
 

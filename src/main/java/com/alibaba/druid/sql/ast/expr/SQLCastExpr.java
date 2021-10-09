@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, SQLReplaceable {
     protected boolean     isTry;
@@ -92,8 +93,8 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
         SQLCastExpr castExpr = (SQLCastExpr) o;
 
         if (isTry != castExpr.isTry) return false;
-        if (expr != null ? !expr.equals(castExpr.expr) : castExpr.expr != null) return false;
-        return dataType != null ? dataType.equals(castExpr.dataType) : castExpr.dataType == null;
+        if (!Objects.equals(expr, castExpr.expr)) return false;
+        return Objects.equals(dataType, castExpr.dataType);
     }
 
     @Override

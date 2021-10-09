@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLUnionQueryTableSource extends SQLTableSourceImpl {
 
@@ -109,8 +110,8 @@ public class SQLUnionQueryTableSource extends SQLTableSourceImpl {
 
         SQLUnionQueryTableSource that = (SQLUnionQueryTableSource) o;
 
-        if (union != null ? !union.equals(that.union) : that.union != null) return false;
-        return columns != null ? columns.equals(that.columns) : that.columns == null;
+        if (!Objects.equals(union, that.union)) return false;
+        return Objects.equals(columns, that.columns);
     }
 
     @Override

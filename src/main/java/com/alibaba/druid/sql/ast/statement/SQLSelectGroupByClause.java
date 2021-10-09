@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLSelectGroupByClause extends SQLObjectImpl implements SQLReplaceable {
 
@@ -212,10 +213,10 @@ public class SQLSelectGroupByClause extends SQLObjectImpl implements SQLReplacea
         if (items != null ? !items.equals(that.items) : that.items != null) {
             return false;
         }
-        if (having != null ? !having.equals(that.having) : that.having != null) {
+        if (!Objects.equals(having, that.having)) {
             return false;
         }
-        return hint != null ? hint.equals(that.hint) : that.hint == null;
+        return Objects.equals(hint, that.hint);
     }
 
     @Override

@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLSelect extends SQLObjectImpl implements SQLDbTypedObject {
 
@@ -335,22 +336,22 @@ public class SQLSelect extends SQLObjectImpl implements SQLDbTypedObject {
         SQLSelect sqlSelect = (SQLSelect) o;
 
         if (forBrowse != sqlSelect.forBrowse) return false;
-        if (withSubQuery != null ? !withSubQuery.equals(sqlSelect.withSubQuery) : sqlSelect.withSubQuery != null)
+        if (!Objects.equals(withSubQuery, sqlSelect.withSubQuery))
             return false;
-        if (query != null ? !query.equals(sqlSelect.query) : sqlSelect.query != null) {
+        if (!Objects.equals(query, sqlSelect.query)) {
             return false;
         }
-        if (orderBy != null ? !orderBy.equals(sqlSelect.orderBy) : sqlSelect.orderBy != null) return false;
-        if (limit != null ? !limit.equals(sqlSelect.limit) : sqlSelect.limit != null) return false;
-        if (hints != null ? !hints.equals(sqlSelect.hints) : sqlSelect.hints != null) return false;
-        if (restriction != null ? !restriction.equals(sqlSelect.restriction) : sqlSelect.restriction != null)
+        if (!Objects.equals(orderBy, sqlSelect.orderBy)) return false;
+        if (!Objects.equals(limit, sqlSelect.limit)) return false;
+        if (!Objects.equals(hints, sqlSelect.hints)) return false;
+        if (!Objects.equals(restriction, sqlSelect.restriction))
             return false;
-        if (forXmlOptions != null ? !forXmlOptions.equals(sqlSelect.forXmlOptions) : sqlSelect.forXmlOptions != null)
+        if (!Objects.equals(forXmlOptions, sqlSelect.forXmlOptions))
             return false;
-        if (xmlPath != null ? !xmlPath.equals(sqlSelect.xmlPath) : sqlSelect.xmlPath != null) return false;
-        if (rowCount != null ? !rowCount.equals(sqlSelect.rowCount) : sqlSelect.rowCount != null) return false;
-        if (offset != null ? !offset.equals(sqlSelect.offset) : sqlSelect.offset != null) return false;
-        return headHint != null ? headHint.equals(sqlSelect.headHint) : sqlSelect.headHint == null;
+        if (!Objects.equals(xmlPath, sqlSelect.xmlPath)) return false;
+        if (!Objects.equals(rowCount, sqlSelect.rowCount)) return false;
+        if (!Objects.equals(offset, sqlSelect.offset)) return false;
+        return Objects.equals(headHint, sqlSelect.headHint);
     }
 
     @Override

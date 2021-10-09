@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLCaseStatement extends SQLStatementImpl implements Serializable {
     private final List<Item>    items            = new ArrayList<Item>();
@@ -178,8 +179,8 @@ public class SQLCaseStatement extends SQLStatementImpl implements Serializable {
         SQLCaseStatement that = (SQLCaseStatement) o;
 
         if (!items.equals(that.items)) return false;
-        if (valueExpr != null ? !valueExpr.equals(that.valueExpr) : that.valueExpr != null) return false;
-        return elseStatements != null ? elseStatements.equals(that.elseStatements) : that.elseStatements == null;
+        if (!Objects.equals(valueExpr, that.valueExpr)) return false;
+        return Objects.equals(elseStatements, that.elseStatements);
     }
 
     @Override

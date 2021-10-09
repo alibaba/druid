@@ -1,5 +1,7 @@
 package com.alibaba.druid.sql.ast;
 
+import java.util.Objects;
+
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDataTypeRefExpr extends SQLExprImpl {
@@ -27,7 +29,7 @@ public class SQLDataTypeRefExpr extends SQLExprImpl {
 
         SQLDataTypeRefExpr that = (SQLDataTypeRefExpr) o;
 
-        return dataType != null ? dataType.equals(that.dataType) : that.dataType == null;
+        return Objects.equals(dataType, that.dataType);
     }
 
     @Override

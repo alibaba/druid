@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLJSONExpr extends SQLExprImpl implements SQLValuableExpr {
     public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("JSON");
@@ -62,7 +63,7 @@ public class SQLJSONExpr extends SQLExprImpl implements SQLValuableExpr {
 
         SQLJSONExpr that = (SQLJSONExpr) o;
 
-        return literal != null ? literal.equals(that.literal) : that.literal == null;
+        return Objects.equals(literal, that.literal);
     }
 
     @Override

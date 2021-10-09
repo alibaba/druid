@@ -27,6 +27,7 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.TreeSet;
 
 public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplaceable, SQLDbTypedObject {
@@ -783,24 +784,24 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
         if (selectList != null ? !selectList.equals(that.selectList) : that.selectList != null) {
             return false;
         }
-        if (from != null ? !from.equals(that.from) : that.from != null) return false;
-        if (into != null ? !into.equals(that.into) : that.into != null) return false;
-        if (where != null ? !where.equals(that.where) : that.where != null) return false;
-        if (startWith != null ? !startWith.equals(that.startWith) : that.startWith != null) return false;
-        if (connectBy != null ? !connectBy.equals(that.connectBy) : that.connectBy != null) return false;
-        if (orderBySiblings != null ? !orderBySiblings.equals(that.orderBySiblings) : that.orderBySiblings != null)
+        if (!Objects.equals(from, that.from)) return false;
+        if (!Objects.equals(into, that.into)) return false;
+        if (!Objects.equals(where, that.where)) return false;
+        if (!Objects.equals(startWith, that.startWith)) return false;
+        if (!Objects.equals(connectBy, that.connectBy)) return false;
+        if (!Objects.equals(orderBySiblings, that.orderBySiblings))
             return false;
-        if (groupBy != null ? !groupBy.equals(that.groupBy) : that.groupBy != null) return false;
-        if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) return false;
-        if (waitTime != null ? !waitTime.equals(that.waitTime) : that.waitTime != null) return false;
-        if (limit != null ? !limit.equals(that.limit) : that.limit != null) return false;
-        if (forUpdateOf != null ? !forUpdateOf.equals(that.forUpdateOf) : that.forUpdateOf != null) return false;
-        if (distributeBy != null ? !distributeBy.equals(that.distributeBy) : that.distributeBy != null) return false;
-        if (sortBy != null ? !sortBy.equals(that.sortBy) : that.sortBy != null) return false;
-        if (cachedSelectList != null ? !cachedSelectList.equals(that.cachedSelectList) : that.cachedSelectList != null)
+        if (!Objects.equals(groupBy, that.groupBy)) return false;
+        if (!Objects.equals(orderBy, that.orderBy)) return false;
+        if (!Objects.equals(waitTime, that.waitTime)) return false;
+        if (!Objects.equals(limit, that.limit)) return false;
+        if (!Objects.equals(forUpdateOf, that.forUpdateOf)) return false;
+        if (!Objects.equals(distributeBy, that.distributeBy)) return false;
+        if (!Objects.equals(sortBy, that.sortBy)) return false;
+        if (!Objects.equals(cachedSelectList, that.cachedSelectList))
             return false;
         if (dbType != that.dbType) return false;
-        return hints != null ? hints.equals(that.hints) : that.hints == null;
+        return Objects.equals(hints, that.hints);
     }
 
     @Override
@@ -848,21 +849,21 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
         if (noWait != that.noWait) return false;
         if (cachedSelectListHash != that.cachedSelectListHash) return false;
         if (selectList != null ? !selectList.equals(that.selectList) : that.selectList != null) return false;
-        if (from != null ? !from.equals(that.from) : that.from != null) return false;
-        if (into != null ? !into.equals(that.into) : that.into != null) return false;
+        if (!Objects.equals(from, that.from)) return false;
+        if (!Objects.equals(into, that.into)) return false;
 //        if (where != null ? !where.equals(that.where) : that.where != null) return false;
-        if (startWith != null ? !startWith.equals(that.startWith) : that.startWith != null) return false;
-        if (connectBy != null ? !connectBy.equals(that.connectBy) : that.connectBy != null) return false;
-        if (orderBySiblings != null ? !orderBySiblings.equals(that.orderBySiblings) : that.orderBySiblings != null)
+        if (!Objects.equals(startWith, that.startWith)) return false;
+        if (!Objects.equals(connectBy, that.connectBy)) return false;
+        if (!Objects.equals(orderBySiblings, that.orderBySiblings))
             return false;
-        if (groupBy != null ? !groupBy.equals(that.groupBy) : that.groupBy != null) return false;
-        if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) return false;
-        if (waitTime != null ? !waitTime.equals(that.waitTime) : that.waitTime != null) return false;
-        if (limit != null ? !limit.equals(that.limit) : that.limit != null) return false;
-        if (forUpdateOf != null ? !forUpdateOf.equals(that.forUpdateOf) : that.forUpdateOf != null) return false;
-        if (distributeBy != null ? !distributeBy.equals(that.distributeBy) : that.distributeBy != null) return false;
-        if (sortBy != null ? !sortBy.equals(that.sortBy) : that.sortBy != null) return false;
-        if (cachedSelectList != null ? !cachedSelectList.equals(that.cachedSelectList) : that.cachedSelectList != null)
+        if (!Objects.equals(groupBy, that.groupBy)) return false;
+        if (!Objects.equals(orderBy, that.orderBy)) return false;
+        if (!Objects.equals(waitTime, that.waitTime)) return false;
+        if (!Objects.equals(limit, that.limit)) return false;
+        if (!Objects.equals(forUpdateOf, that.forUpdateOf)) return false;
+        if (!Objects.equals(distributeBy, that.distributeBy)) return false;
+        if (!Objects.equals(sortBy, that.sortBy)) return false;
+        if (!Objects.equals(cachedSelectList, that.cachedSelectList))
             return false;
         return dbType == that.dbType;
     }

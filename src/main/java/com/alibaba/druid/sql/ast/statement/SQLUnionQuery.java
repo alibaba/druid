@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLUnionQuery extends SQLSelectQueryBase implements SQLDbTypedObject {
     private List<SQLSelectQuery> relations = new ArrayList<SQLSelectQuery>();
@@ -284,10 +285,10 @@ public class SQLUnionQuery extends SQLSelectQueryBase implements SQLDbTypedObjec
         SQLUnionQuery that = (SQLUnionQuery) o;
 
         if (parenthesized != that.parenthesized) return false;
-        if (relations != null ? !relations.equals(that.relations) : that.relations != null) return false;
+        if (!Objects.equals(relations, that.relations)) return false;
         if (operator != that.operator) return false;
-        if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) return false;
-        if (limit != null ? !limit.equals(that.limit) : that.limit != null) return false;
+        if (!Objects.equals(orderBy, that.orderBy)) return false;
+        if (!Objects.equals(limit, that.limit)) return false;
         return dbType == that.dbType;
     }
 

@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLSelectStatement extends SQLStatementImpl {
 
@@ -103,7 +104,7 @@ public class SQLSelectStatement extends SQLStatementImpl {
 
         SQLSelectStatement that = (SQLSelectStatement) o;
 
-        return select != null ? select.equals(that.select) : that.select == null;
+        return Objects.equals(select, that.select);
     }
 
     @Override

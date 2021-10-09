@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlStatement {
     private SQLLimit                limit;
@@ -177,8 +178,8 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
         if (rollBackOnFail != that.rollBackOnFail) return false;
         if (queryOnPk != that.queryOnPk) return false;
         if (this.hints != null ? hints.equals(that.hints) : that.hints != null) return false;
-        if (limit != null ? !limit.equals(that.limit) : that.limit != null) return false;
-        return targetAffectRow != null ? targetAffectRow.equals(that.targetAffectRow) : that.targetAffectRow == null;
+        if (!Objects.equals(limit, that.limit)) return false;
+        return Objects.equals(targetAffectRow, that.targetAffectRow);
     }
 
     @Override

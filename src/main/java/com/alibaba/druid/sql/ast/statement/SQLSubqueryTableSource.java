@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
@@ -134,7 +135,7 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
         SQLSubqueryTableSource that = (SQLSubqueryTableSource) o;
 
-        return select != null ? select.equals(that.select) : that.select == null;
+        return Objects.equals(select, that.select);
     }
 
     @Override

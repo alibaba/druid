@@ -33,6 +33,7 @@ import com.alibaba.druid.util.FnvHash;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
@@ -186,13 +187,11 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         if (alias_hash() != that.alias_hash()) {
             return false;
         }
-        if (expr != null ? !expr.equals(that.expr) : that.expr != null) {
+        if (!Objects.equals(expr, that.expr)) {
             return false;
         }
 
-        return aliasList != null
-                ? aliasList.equals(that.aliasList)
-                : that.aliasList == null;
+        return Objects.equals(aliasList, that.aliasList);
     }
 
     @Override

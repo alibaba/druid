@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLSizeExpr extends SQLExprImpl {
 
@@ -100,7 +101,7 @@ public class SQLSizeExpr extends SQLExprImpl {
 
         SQLSizeExpr that = (SQLSizeExpr) o;
 
-        if (value != null ? !value.equals(that.value) : that.value != null) return false;
+        if (!Objects.equals(value, that.value)) return false;
         return unit == that.unit;
     }
 

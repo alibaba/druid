@@ -27,6 +27,7 @@ import com.alibaba.druid.util.FnvHash;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplaceable {
 
@@ -681,12 +682,12 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         if (natural != that.natural) return false;
         if (asof != that.asof) return false;
         if (global != that.global) return false;
-        if (left != null ? !left.equals(that.left) : that.left != null) return false;
+        if (!Objects.equals(left, that.left)) return false;
         if (joinType != that.joinType) return false;
-        if (right != null ? !right.equals(that.right) : that.right != null) return false;
-        if (condition != null ? !condition.equals(that.condition) : that.condition != null) return false;
+        if (!Objects.equals(right, that.right)) return false;
+        if (!Objects.equals(condition, that.condition)) return false;
         if (using != null ? !using.equals(that.using) : that.using != null) return false;
-        return udj != null ? udj.equals(that.udj) : that.udj == null;
+        return Objects.equals(udj, that.udj);
     }
 
     public void splitTo(List<SQLTableSource> outTableSources, JoinType joinType) {

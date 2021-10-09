@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlObject {
     private boolean              hignPriority;
@@ -178,13 +179,12 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
         if (bufferResult != that.bufferResult) return false;
         if (calcFoundRows != that.calcFoundRows) return false;
         if (lockInShareMode != that.lockInShareMode) return false;
-        if (cache != null ? !cache.equals(that.cache) : that.cache != null) return false;
-        if (procedureName != null ? !procedureName.equals(that.procedureName) : that.procedureName != null)
+        if (!Objects.equals(cache, that.cache)) return false;
+        if (!Objects.equals(procedureName, that.procedureName))
             return false;
-        if (procedureArgumentList != null ? !procedureArgumentList.equals(that.procedureArgumentList) :
-                that.procedureArgumentList != null) return false;
-        if (hints != null ? !hints.equals(that.hints) : that.hints != null) return false;
-        if (forcePartition != null ? !forcePartition.equals(that.forcePartition) : that.forcePartition != null)
+        if (!Objects.equals(procedureArgumentList, that.procedureArgumentList)) return false;
+        if (!Objects.equals(hints, that.hints)) return false;
+        if (!Objects.equals(forcePartition, that.forcePartition))
             return false;
 
         return true;

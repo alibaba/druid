@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class OracleIsOfTypeExpr extends SQLExprImpl implements OracleExpr, SQLReplaceable {
     private SQLExpr expr;
@@ -36,8 +37,8 @@ public class OracleIsOfTypeExpr extends SQLExprImpl implements OracleExpr, SQLRe
 
         OracleIsOfTypeExpr that = (OracleIsOfTypeExpr) o;
 
-        if (expr != null ? !expr.equals(that.expr) : that.expr != null) return false;
-        return types != null ? types.equals(that.types) : that.types == null;
+        if (!Objects.equals(expr, that.expr)) return false;
+        return Objects.equals(types, that.types);
     }
 
     @Override

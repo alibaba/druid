@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import java.util.Objects;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -109,10 +111,10 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
         OracleSelectTableReference that = (OracleSelectTableReference) o;
 
         if (only != that.only) return false;
-        if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) return false;
-        if (partition != null ? !partition.equals(that.partition) : that.partition != null) return false;
-        if (sampleClause != null ? !sampleClause.equals(that.sampleClause) : that.sampleClause != null) return false;
-        return flashback != null ? flashback.equals(that.flashback) : that.flashback == null;
+        if (!Objects.equals(pivot, that.pivot)) return false;
+        if (!Objects.equals(partition, that.partition)) return false;
+        if (!Objects.equals(sampleClause, that.sampleClause)) return false;
+        return Objects.equals(flashback, that.flashback);
     }
 
     @Override

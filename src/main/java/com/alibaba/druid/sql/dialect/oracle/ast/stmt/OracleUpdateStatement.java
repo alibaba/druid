@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class OracleUpdateStatement extends SQLUpdateStatement implements OracleStatement, SQLReplaceable {
 
@@ -139,10 +140,10 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
         if (!items.equals(that.getItems())) return false;
         if (where != null ? !where.equals(that.getWhere()) : that.getWhere() != null) return false;
         if (from != null ? !from.equals(that.getFrom()) : that.getFrom() != null) return false;
-        if (hints != null ? !hints.equals(that.hints) : that.hints != null) return false;
-        if (tableSource != null ? !tableSource.equals(that.tableSource) : that.tableSource != null) return false;
-        if (returning != null ? !returning.equals(that.returning) : that.returning != null) return false;
-        return orderBy != null ? orderBy.equals(that.orderBy) : that.orderBy == null;
+        if (!Objects.equals(hints, that.hints)) return false;
+        if (!Objects.equals(tableSource, that.tableSource)) return false;
+        if (!Objects.equals(returning, that.returning)) return false;
+        return Objects.equals(orderBy, that.orderBy);
     }
 
     @Override

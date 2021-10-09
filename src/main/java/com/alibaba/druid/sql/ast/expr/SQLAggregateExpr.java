@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializable, SQLReplaceable {
 
@@ -221,12 +222,12 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
         SQLAggregateExpr that = (SQLAggregateExpr) o;
 
         if (option != that.option) return false;
-        if (keep != null ? !keep.equals(that.keep) : that.keep != null) return false;
-        if (filter != null ? !filter.equals(that.filter) : that.filter != null) return false;
-        if (over != null ? !over.equals(that.over) : that.over != null) return false;
-        if (overRef != null ? !overRef.equals(that.overRef) : that.overRef != null) return false;
-        if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) return false;
-        return ignoreNulls != null ? ignoreNulls.equals(that.ignoreNulls) : that.ignoreNulls == null;
+        if (!Objects.equals(keep, that.keep)) return false;
+        if (!Objects.equals(filter, that.filter)) return false;
+        if (!Objects.equals(over, that.over)) return false;
+        if (!Objects.equals(overRef, that.overRef)) return false;
+        if (!Objects.equals(orderBy, that.orderBy)) return false;
+        return Objects.equals(ignoreNulls, that.ignoreNulls);
     }
 
     @Override

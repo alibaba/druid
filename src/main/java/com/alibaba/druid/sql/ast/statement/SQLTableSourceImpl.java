@@ -23,6 +23,7 @@ import com.alibaba.druid.util.FnvHash;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTableSource {
     protected String        alias;
@@ -195,8 +196,8 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
         SQLTableSourceImpl that = (SQLTableSourceImpl) o;
 
         if (aliasHashCode64() != that.aliasHashCode64()) return false;
-        if (hints != null ? !hints.equals(that.hints) : that.hints != null) return false;
-        return flashback != null ? flashback.equals(that.flashback) : that.flashback == null;
+        if (!Objects.equals(hints, that.hints)) return false;
+        return Objects.equals(flashback, that.flashback);
     }
 
     @Override

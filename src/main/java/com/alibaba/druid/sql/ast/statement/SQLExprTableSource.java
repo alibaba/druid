@@ -27,6 +27,7 @@ import com.alibaba.druid.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplaceable {
 
@@ -516,11 +517,11 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
 
         SQLExprTableSource that = (SQLExprTableSource) o;
 
-        if (expr != null ? !expr.equals(that.expr) : that.expr != null) return false;
-        if (partitions != null ? !partitions.equals(that.partitions) : that.partitions != null) return false;
-        if (sampling != null ? !sampling.equals(that.sampling) : that.sampling != null) return false;
-        if (schemaObject != null ? !schemaObject.equals(that.schemaObject) : that.schemaObject != null) return false;
-        return columns != null ? columns.equals(that.columns) : that.columns == null;
+        if (!Objects.equals(expr, that.expr)) return false;
+        if (!Objects.equals(partitions, that.partitions)) return false;
+        if (!Objects.equals(sampling, that.sampling)) return false;
+        if (!Objects.equals(schemaObject, that.schemaObject)) return false;
+        return Objects.equals(columns, that.columns);
     }
 
     @Override

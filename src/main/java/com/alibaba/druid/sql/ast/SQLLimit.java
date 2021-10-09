@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Created by wenshao on 16/9/25.
@@ -184,8 +185,8 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
 
         SQLLimit limit = (SQLLimit) o;
 
-        if (rowCount != null ? !rowCount.equals(limit.rowCount) : limit.rowCount != null) return false;
-        return offset != null ? offset.equals(limit.offset) : limit.offset == null;
+        if (!Objects.equals(rowCount, limit.rowCount)) return false;
+        return Objects.equals(offset, limit.offset);
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SQLAssignItem extends SQLExprImpl implements SQLReplaceable {
 
@@ -36,8 +37,8 @@ public class SQLAssignItem extends SQLExprImpl implements SQLReplaceable {
 
         SQLAssignItem that = (SQLAssignItem) o;
 
-        if (target != null ? !target.equals(that.target) : that.target != null) return false;
-        return value != null ? value.equals(that.value) : that.value == null;
+        if (!Objects.equals(target, that.target)) return false;
+        return Objects.equals(value, that.value);
     }
 
     @Override

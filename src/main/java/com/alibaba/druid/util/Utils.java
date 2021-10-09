@@ -30,6 +30,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
@@ -363,7 +364,7 @@ public static long murmurhash2_64(final byte[] data, int length, int seed) {
     }
 
     public static boolean equals(Object a, Object b) {
-        return (a == b) || (a != null && a.equals(b));
+        return Objects.equals(a, b);
     }
 
     public static String hex(int hash) {

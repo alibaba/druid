@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /*
  * Copyright 1999-2017 Alibaba Group Holding Ltd.
@@ -219,13 +220,13 @@ public class SQLOver extends SQLObjectImpl implements SQLReplaceable {
         if (windowingPreceding != sqlOver.windowingPreceding) return false;
         if (windowingFollowing != sqlOver.windowingFollowing) return false;
         if (!partitionBy.equals(sqlOver.partitionBy)) return false;
-        if (orderBy != null ? !orderBy.equals(sqlOver.orderBy) : sqlOver.orderBy != null) return false;
-        if (of != null ? !of.equals(sqlOver.of) : sqlOver.of != null) return false;
+        if (!Objects.equals(orderBy, sqlOver.orderBy)) return false;
+        if (!Objects.equals(of, sqlOver.of)) return false;
         if (windowingType != sqlOver.windowingType) return false;
-        if (windowingBetweenBegin != null ? !windowingBetweenBegin.equals(sqlOver.windowingBetweenBegin) : sqlOver.windowingBetweenBegin != null)
+        if (!Objects.equals(windowingBetweenBegin, sqlOver.windowingBetweenBegin))
             return false;
         if (windowingBetweenBeginBound != sqlOver.windowingBetweenBeginBound) return false;
-        if (windowingBetweenEnd != null ? !windowingBetweenEnd.equals(sqlOver.windowingBetweenEnd) : sqlOver.windowingBetweenEnd != null)
+        if (!Objects.equals(windowingBetweenEnd, sqlOver.windowingBetweenEnd))
             return false;
         return windowingBetweenEndBound == sqlOver.windowingBetweenEndBound;
     }

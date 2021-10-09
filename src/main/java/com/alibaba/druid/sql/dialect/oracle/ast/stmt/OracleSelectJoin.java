@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import java.util.Objects;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -78,8 +80,8 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
         OracleSelectJoin that = (OracleSelectJoin) o;
 
-        if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) return false;
-        return flashback != null ? flashback.equals(that.flashback) : that.flashback == null;
+        if (!Objects.equals(pivot, that.pivot)) return false;
+        return Objects.equals(flashback, that.flashback);
     }
 
     @Override
