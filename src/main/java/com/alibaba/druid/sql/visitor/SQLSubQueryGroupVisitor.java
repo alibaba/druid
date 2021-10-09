@@ -22,11 +22,10 @@ public class SQLSubQueryGroupVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLSubqueryTableSource x) {
         String sql = SQLUtils.toSQLString(x.getSelect(), dbType);
         long hashCode64 = FnvHash.fnv1a_64(sql);
-        List<SQLSubqueryTableSource> list = tableSourceMap.get(hashCode64);
-        if (list == null) {
-            list = new ArrayList<SQLSubqueryTableSource>();
-            tableSourceMap.put(hashCode64, list);
-        }
+        List<SQLSubqueryTableSource> list = tableSourceMap.computeIfAbsent(
+                hashCode64,
+                k -> new ArrayList<>()
+        );
         list.add(x);
 
         return true;

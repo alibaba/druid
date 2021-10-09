@@ -710,11 +710,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                         edges.add(new ListDG.Edge(stmt, refTable));
                     }
 
-                    List<SQLCreateTableStatement> referencedList = referencedTables.get(refTableName);
-                    if (referencedList == null) {
-                        referencedList = new ArrayList<SQLCreateTableStatement>();
-                        referencedTables.put(refTableName, referencedList);
-                    }
+                    List<SQLCreateTableStatement> referencedList = referencedTables.computeIfAbsent(
+                            refTableName,
+                            k -> new ArrayList<>()
+                    );
                     referencedList.add(stmt);
                 }
             }
