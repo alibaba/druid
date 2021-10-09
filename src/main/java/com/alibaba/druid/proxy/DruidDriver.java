@@ -265,9 +265,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
         Driver rawDriver;
         try {
             rawDriver = (Driver) rawDriverClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new SQLException("create driver instance error, driver className '" + className + "'", e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new SQLException("create driver instance error, driver className '" + className + "'", e);
         }
 

@@ -59,9 +59,7 @@ public class ExportTables extends UDF {
             }
 
             return buf.toString();
-        } catch (Exception ignored) {
-            // skip
-        } catch (StackOverflowError ignored) {
+        } catch (Exception | StackOverflowError ignored) {
             // skip
         }
 

@@ -28,9 +28,7 @@ public class SymbolTable {
         String version = null;
         try {
             version = System.getProperty("java.specification.version");
-        } catch (IllegalArgumentException ex) {
-            // skip
-        } catch (SecurityException error) {
+        } catch (IllegalArgumentException | SecurityException ex) {
             // skip
         }
         JVM_16 = "1.6".equals(version);

@@ -146,9 +146,7 @@ public class DruidStat {
         agent = f.getCanonicalPath();
         try {
             vm.loadAgent(agent, "com.sun.management.jmxremote");
-        } catch (AgentLoadException x) {
-            throw new IOException(x.getMessage(), x);
-        } catch (AgentInitializationException x) {
+        } catch (AgentLoadException | AgentInitializationException x) {
             throw new IOException(x.getMessage(), x);
         }
 

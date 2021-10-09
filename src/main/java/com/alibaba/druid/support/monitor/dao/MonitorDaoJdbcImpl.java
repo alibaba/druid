@@ -393,9 +393,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         }
         try {
             field.getField().set(object, fieldValue);
-        } catch (IllegalArgumentException e) {
-            throw new DruidRuntimeException("set field error" + field.getField(), e);
-        } catch (IllegalAccessException e) {
+        } catch (IllegalArgumentException | IllegalAccessException e) {
             throw new DruidRuntimeException("set field error" + field.getField(), e);
         }
     }
@@ -419,9 +417,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                     value = getConstValueFromDb(domain, app, hashField.getHashForType(), hash);
                 }
                 hashField.getHashFor().set(statValue, value);
-            } catch (IllegalArgumentException e) {
-                throw new DruidRuntimeException("set field error" + hashField.getField(), e);
-            } catch (IllegalAccessException e) {
+            } catch (IllegalArgumentException | IllegalAccessException e) {
                 throw new DruidRuntimeException("set field error" + hashField.getField(), e);
             }
         }
@@ -489,9 +485,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                     }
                     cachePut(hashField.getHashForType(), hash, value);
                 }
-            } catch (IllegalArgumentException e) {
-                throw new DruidRuntimeException("set field error" + hashField.getField(), e);
-            } catch (IllegalAccessException e) {
+            } catch (IllegalArgumentException | IllegalAccessException e) {
                 throw new DruidRuntimeException("set field error" + hashField.getField(), e);
             }
         }
@@ -574,9 +568,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     public Object createInstance(BeanInfo beanInfo) {
         try {
             return beanInfo.getClazz().newInstance();
-        } catch (InstantiationException ex) {
-            throw new DruidRuntimeException("create instance error", ex);
-        } catch (IllegalAccessException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {
             throw new DruidRuntimeException("create instance error", ex);
         }
     }

@@ -125,11 +125,7 @@ public class FilterManager {
                 } catch (ClassCastException e) {
                     LOG.error("load filter error.", e);
                     continue;
-                } catch (InstantiationException e) {
-                    throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
-                } catch (IllegalAccessException e) {
-                    throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
-                } catch (RuntimeException e) {
+                } catch (InstantiationException | RuntimeException | IllegalAccessException e) {
                     throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
                 }
 

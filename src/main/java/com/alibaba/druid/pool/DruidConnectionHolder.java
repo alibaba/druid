@@ -124,10 +124,7 @@ public final class DruidConnectionHolder {
             if (initUnderlyHoldability) {
                 try {
                     this.underlyingHoldability = conn.getHoldability();
-                } catch (UnsupportedOperationException e) {
-                    holdabilityUnsupported = true;
-                    LOG.warn("getHoldability unsupported", e);
-                } catch (SQLFeatureNotSupportedException e) {
+                } catch (UnsupportedOperationException | SQLFeatureNotSupportedException e) {
                     holdabilityUnsupported = true;
                     LOG.warn("getHoldability unsupported", e);
                 } catch (SQLException e) {

@@ -122,16 +122,7 @@ public class WebStatFilter extends AbstractWebStatImpl implements Filter {
         Throwable error = null;
         try {
             chain.doFilter(request, responseWrapper);
-        } catch (IOException e) {
-            error = e;
-            throw e;
-        } catch (ServletException e) {
-            error = e;
-            throw e;
-        } catch (RuntimeException e) {
-            error = e;
-            throw e;
-        } catch (Error e) {
+        } catch (IOException | Error | RuntimeException | ServletException e) {
             error = e;
             throw e;
         } finally {

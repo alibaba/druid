@@ -190,13 +190,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             statementExecuteAfter(statement, sql, firstResult);
 
             return firstResult;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, sql, error);
             throw error;
         }
@@ -213,13 +207,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             this.statementExecuteAfter(statement, sql, firstResult);
 
             return firstResult;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, sql, error);
             throw error;
         }
@@ -236,13 +224,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             this.statementExecuteAfter(statement, sql, firstResult);
 
             return firstResult;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, sql, error);
             throw error;
         }
@@ -259,13 +241,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             this.statementExecuteAfter(statement, sql, firstResult);
 
             return firstResult;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, sql, error);
             throw error;
         }
@@ -281,13 +257,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             statementExecuteBatchAfter(statement, result);
 
             return result;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, statement.getBatchSql(), error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, statement.getBatchSql(), error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, statement.getBatchSql(), error);
             throw error;
         }
@@ -307,13 +277,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             }
 
             return resultSet;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, sql, error);
             throw error;
         }
@@ -329,13 +293,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             statementExecuteUpdateAfter(statement, sql, updateCount);
 
             return updateCount;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, sql, error);
             throw error;
         }
@@ -352,13 +310,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             statementExecuteUpdateAfter(statement, sql, updateCount);
 
             return updateCount;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, sql, error);
             throw error;
         }
@@ -375,13 +327,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             statementExecuteUpdateAfter(statement, sql, updateCount);
 
             return updateCount;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, sql, error);
             throw error;
         }
@@ -398,13 +344,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             statementExecuteUpdateAfter(statement, sql, updateCount);
 
             return updateCount;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, sql, error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, sql, error);
             throw error;
         }
@@ -443,13 +383,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
 
             return firstResult;
 
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, statement.getSql(), error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, statement.getSql(), error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, statement.getSql(), error);
             throw error;
         }
@@ -471,13 +405,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             }
 
             return resultSet;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, statement.getSql(), error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, statement.getSql(), error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, statement.getSql(), error);
             throw error;
         }
@@ -493,13 +421,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
             statementExecuteUpdateAfter(statement, statement.getSql(), updateCount);
 
             return updateCount;
-        } catch (SQLException error) {
-            statement_executeErrorAfter(statement, statement.getSql(), error);
-            throw error;
-        } catch (RuntimeException error) {
-            statement_executeErrorAfter(statement, statement.getSql(), error);
-            throw error;
-        } catch (Error error) {
+        } catch (SQLException | Error | RuntimeException error) {
             statement_executeErrorAfter(statement, statement.getSql(), error);
             throw error;
         }

@@ -1735,11 +1735,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
             setFailContinuous(false);
             setCreateError(null);
-        } catch (SQLException ex) {
-            setCreateError(ex);
-            JdbcUtils.close(conn);
-            throw ex;
-        } catch (RuntimeException ex) {
+        } catch (SQLException | RuntimeException ex) {
             setCreateError(ex);
             JdbcUtils.close(conn);
             throw ex;

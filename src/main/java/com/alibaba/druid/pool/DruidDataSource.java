@@ -969,18 +969,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
 
-        } catch (SQLException e) {
+        } catch (SQLException | Error | RuntimeException e) {
             LOG.error("{dataSource-" + this.getID() + "} init error", e);
             throw e;
         } catch (InterruptedException e) {
             throw new SQLException(e.getMessage(), e);
-        } catch (RuntimeException e){
-            LOG.error("{dataSource-" + this.getID() + "} init error", e);
-            throw e;
-        } catch (Error e){
-            LOG.error("{dataSource-" + this.getID() + "} init error", e);
-            throw e;
-
         } finally {
             inited = true;
             lock.unlock();

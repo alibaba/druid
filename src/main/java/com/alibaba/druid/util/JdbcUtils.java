@@ -686,9 +686,7 @@ public final class JdbcUtils implements JdbcConstants {
 
         try {
             return (Driver) clazz.newInstance();
-        } catch (IllegalAccessException e) {
-            throw new SQLException(e.getMessage(), e);
-        } catch (InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException e) {
             throw new SQLException(e.getMessage(), e);
         }
     }
