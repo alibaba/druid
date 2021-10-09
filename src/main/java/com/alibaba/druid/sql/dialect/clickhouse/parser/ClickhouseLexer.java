@@ -13,9 +13,8 @@ public class ClickhouseLexer extends Lexer {
     public final static Keywords DEFAULT_KEYWORDS;
 
     static {
-        Map<String, Token> map = new HashMap<String, Token>();
 
-        map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+        Map<String, Token> map = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
         map.put("OF", Token.OF);
         map.put("CONCAT", Token.CONCAT);

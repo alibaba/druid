@@ -164,10 +164,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
                     if (item instanceof SQLInListExpr) {
                         SQLInListExpr inListItem = (SQLInListExpr) item;
                         if (inListExpr.getExpr().equals(inListItem.getExpr())) {
-                            TreeSet<SQLExpr> set = new TreeSet<SQLExpr>();
-                            for (SQLExpr itemItem : inListItem.getTargetList()) {
-                                set.add(itemItem);
-                            }
+                            TreeSet<SQLExpr> set = new TreeSet<>(inListItem.getTargetList());
 
                             List<SQLExpr> andList = new ArrayList<SQLExpr>();
                             for (SQLExpr exprItem : inListExpr.getTargetList()) {
@@ -236,10 +233,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
                         if (item instanceof SQLInListExpr) {
                             SQLInListExpr inListItem = (SQLInListExpr) item;
                             if (inListExpr.getExpr().equals(inListItem.getExpr())) {
-                                TreeSet<SQLExpr> set = new TreeSet<SQLExpr>();
-                                for (SQLExpr itemItem : inListItem.getTargetList()) {
-                                    set.add(itemItem);
-                                }
+                                TreeSet<SQLExpr> set = new TreeSet<>(inListItem.getTargetList());
                                 for (SQLExpr exprItem : inListExpr.getTargetList()) {
                                     if (!set.contains(exprItem)) {
                                         inListItem.addTarget(exprItem.clone());

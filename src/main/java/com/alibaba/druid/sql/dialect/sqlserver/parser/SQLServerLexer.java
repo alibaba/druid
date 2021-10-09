@@ -28,9 +28,8 @@ public class SQLServerLexer extends Lexer {
     public final static Keywords DEFAULT_SQL_SERVER_KEYWORDS;
 
     static {
-        Map<String, Token> map = new HashMap<String, Token>();
-        
-        map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+
+        Map<String, Token> map = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
         
         map.put("CURSOR", Token.CURSOR);
         map.put("TOP", Token.TOP);

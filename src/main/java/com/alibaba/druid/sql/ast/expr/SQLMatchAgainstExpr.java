@@ -129,8 +129,7 @@ public class SQLMatchAgainstExpr extends SQLExprImpl implements SQLReplaceable {
 
     @Override
     public List getChildren() {
-        List<SQLObject> children = new ArrayList<SQLObject>();
-        children.addAll(this.columns);
+        List<SQLObject> children = new ArrayList<>(this.columns);
         children.add(this.against);
         return children;
     }

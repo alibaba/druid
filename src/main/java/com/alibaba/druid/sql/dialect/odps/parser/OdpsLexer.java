@@ -29,9 +29,8 @@ public class OdpsLexer extends Lexer {
     public final static Keywords DEFAULT_ODPS_KEYWORDS;
 
     static {
-        Map<String, Token> map = new HashMap<String, Token>();
 
-        map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+        Map<String, Token> map = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
         
         map.put("SHOW", Token.SHOW);
         map.put("PARTITION", Token.PARTITION);

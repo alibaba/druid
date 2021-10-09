@@ -50,8 +50,7 @@ public class OracleAnalytic extends SQLOver implements SQLReplaceable, OracleExp
 
     @Override
     public List<SQLObject> getChildren() {
-        List<SQLObject> children = new ArrayList<SQLObject>();
-        children.addAll(this.partitionBy);
+        List<SQLObject> children = new ArrayList<>(this.partitionBy);
         if (this.orderBy != null) {
             children.add(orderBy);
         }

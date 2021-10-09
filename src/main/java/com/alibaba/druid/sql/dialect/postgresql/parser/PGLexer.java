@@ -29,9 +29,8 @@ public class PGLexer extends Lexer {
     public final static Keywords DEFAULT_PG_KEYWORDS;
 
     static {
-        Map<String, Token> map = new HashMap<String, Token>();
 
-        map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+        Map<String, Token> map = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
         map.put("BEGIN", Token.BEGIN);
         map.put("CASCADE", Token.CASCADE);

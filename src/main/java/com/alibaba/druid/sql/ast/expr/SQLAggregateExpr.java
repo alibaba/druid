@@ -186,8 +186,7 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
 
     @Override
     public List getChildren() {
-        List<SQLObject> children = new ArrayList<SQLObject>();
-        children.addAll(this.arguments);
+        List<SQLObject> children = new ArrayList<>(this.arguments);
         if (keep != null) {
             children.add(this.keep);
         }

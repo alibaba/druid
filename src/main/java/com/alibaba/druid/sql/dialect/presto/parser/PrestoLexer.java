@@ -13,9 +13,8 @@ public class PrestoLexer extends Lexer {
     public final static Keywords DEFAULT_PHOENIX_KEYWORDS;
 
     static {
-        Map<String, Token> map = new HashMap<String, Token>();
 
-        map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+        Map<String, Token> map = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
         map.put("FETCH", Token.FETCH);
         map.put("FIRST", Token.FIRST);

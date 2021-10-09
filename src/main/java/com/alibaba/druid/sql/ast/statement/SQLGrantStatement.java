@@ -63,8 +63,7 @@ public class SQLGrantStatement extends SQLPrivilegeStatement {
 
     @Override
     public List<SQLObject> getChildren() {
-        List<SQLObject> children = new ArrayList<SQLObject>();
-        children.addAll(privileges);
+        List<SQLObject> children = new ArrayList<>(privileges);
         if (resource != null) {
             children.add(resource);
         }

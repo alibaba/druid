@@ -165,18 +165,16 @@ public class Keywords {
         DEFAULT_KEYWORDS = new Keywords(map);
 
         {
-            Map<String, Token> sqlitemap = new HashMap<String, Token>();
 
-            sqlitemap.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+            Map<String, Token> sqlitemap = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
             sqlitemap.put("LIMIT", Token.LIMIT);
             SQLITE_KEYWORDS = new Keywords(sqlitemap);
         }
 
         {
-            Map<String, Token> sqlitemap = new HashMap<String, Token>();
 
-            sqlitemap.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+            Map<String, Token> sqlitemap = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
             sqlitemap.put("MERGE", Token.MERGE);
             sqlitemap.put("MATCHED", Token.MATCHED);

@@ -32,9 +32,8 @@ public class MySqlLexer extends Lexer {
     public final static Keywords DEFAULT_MYSQL_KEYWORDS;
 
     static {
-        Map<String, Token> map = new HashMap<String, Token>();
 
-        map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+        Map<String, Token> map = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
         map.put("DUAL", Token.DUAL);
         map.put("FALSE", Token.FALSE);

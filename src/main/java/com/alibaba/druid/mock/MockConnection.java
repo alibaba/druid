@@ -292,8 +292,8 @@ public class MockConnection extends ConnectionBase implements Connection {
         if (index == -1) {
             throw new SQLException("savepoint not contained");
         }
-        for (int i = savepoints.size() - 1; i >= index; --i) {
-            savepoints.remove(i);
+        if (savepoints.size() > index) {
+            savepoints.subList(index, savepoints.size()).clear();
         }
     }
 
