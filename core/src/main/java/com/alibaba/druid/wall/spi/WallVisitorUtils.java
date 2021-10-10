@@ -615,7 +615,7 @@ public class WallVisitorUtils {
         if (x instanceof MySqlInsertStatement) {
             valuesClauses = ((MySqlInsertStatement) x).getValuesList();
         } else if (x instanceof SQLServerInsertStatement) {
-            valuesClauses = ((MySqlInsertStatement) x).getValuesList();
+            valuesClauses = ((SQLServerInsertStatement) x).getValuesList();
         } else {
             valuesClause = x.getValues();
         }
