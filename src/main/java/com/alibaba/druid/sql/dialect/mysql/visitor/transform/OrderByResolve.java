@@ -51,9 +51,7 @@ public class OrderByResolve extends OracleASTVisitorAdapter {
             return super.visit(x);
         }
 
-
         if (!queryBlock.selectItemHasAllColumn(false)) {
-            List<SQLSelectOrderByItem> notContainsOrderBy = new ArrayList<SQLSelectOrderByItem>();
 
             for (SQLSelectOrderByItem orderByItem : orderBy.getItems()) {
                 SQLExpr orderByExpr = orderByItem.getExpr();
@@ -71,18 +69,7 @@ public class OrderByResolve extends OracleASTVisitorAdapter {
                 }
             }
 
-            if (notContainsOrderBy.size() > 0) {
-                for (SQLSelectOrderByItem orderByItem : notContainsOrderBy) {
-                    queryBlock.addSelectItem(orderByItem.getExpr());
-                }
-
-                OracleSelectQueryBlock queryBlock1 = new OracleSelectQueryBlock();
-                queryBlock1.setFrom(queryBlock, "x");
-                x.setQuery(queryBlock1);
-            }
         }
-
-
 
         return super.visit(x);
     }
