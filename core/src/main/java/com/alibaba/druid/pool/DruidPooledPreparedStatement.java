@@ -979,7 +979,12 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             return resultSetHoldability;
         }
 
+        @Override
         public boolean equals(Object object) {
+            if (!(object instanceof PreparedStatementKey)) {
+                return false;
+            }
+
             PreparedStatementKey that = (PreparedStatementKey) object;
 
             if (!this.sql.equals(that.sql)) {
