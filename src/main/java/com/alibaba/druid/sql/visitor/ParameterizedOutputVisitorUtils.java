@@ -480,7 +480,7 @@ public class ParameterizedOutputVisitorUtils {
 
                 if (c0 == '#' && c1 == '{' && c1x == '}') {
                     String key = name.substring(2, name.length() - 1);
-                    Object value = parameters.get(x);
+                    Object value = parameters.get(key);
                     SQLExpr expr = SQLExprUtils.fromJavaObject(value, timeZone);
                     SQLUtils.replaceInParent(x, expr);
                 }
