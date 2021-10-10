@@ -2317,6 +2317,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit(subQuery);
             print(')');
             println();
+        } else if (parent instanceof SQLOpenStatement) {
+            visit(subQuery);
         } else if ((parent instanceof SQLStatement
                 && !(parent instanceof OracleForStatement))
                 || parent instanceof OracleSelectPivot.Item) {
@@ -2326,8 +2328,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit(subQuery);
 
             this.indentCount--;
-        } else if (parent instanceof SQLOpenStatement) {
-            visit(subQuery);
         } else if (parent instanceof SQLMethodInvokeExpr
                 && ((SQLMethodInvokeExpr) parent).getArguments().size() == 1
                 && (((SQLMethodInvokeExpr) parent).methodNameHashCode64() == FnvHash.Constants.LATERAL
