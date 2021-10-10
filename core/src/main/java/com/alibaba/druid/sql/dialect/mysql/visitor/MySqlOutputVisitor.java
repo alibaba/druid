@@ -3494,23 +3494,26 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             if (i != 0) {
                 print(' ');
             }
-            print0(ucase ? key.toString().toUpperCase() : key.toString().toLowerCase());
+            final String keyString = key.toString();
+            final String keyStringLowerCase = keyString.toLowerCase();
+            final String keyStringUpperCase = keyString.toUpperCase();
+            print0(ucase ? keyStringUpperCase : keyStringLowerCase);
 
-            if ("TABLESPACE".equals(key)) {
-                print(' ');
-                item.getValue().accept(this);
-                continue;
-            } else if ("UNION".equals(key)) {
-                print0(" = (");
-                item.getValue().accept(this);
-                print(')');
-                continue;
+            switch (keyStringUpperCase) {
+                case "TABLESPACE":
+                    print(' ');
+                    item.getValue().accept(this);
+                    continue;
+                case "UNION":
+                    print0(" = (");
+                    item.getValue().accept(this);
+                    print(')');
+                    continue;
+                default:
+                    print0(" = ");
+                    item.getValue().accept(this);
+                    i++;
             }
-
-            print0(" = ");
-
-            item.getValue().accept(this);
-            i++;
         }
 
         SQLPartitionBy partitionBy = x.getPartition();
