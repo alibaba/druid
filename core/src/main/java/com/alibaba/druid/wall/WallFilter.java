@@ -102,7 +102,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         }
 
         DbType dbType = DbType.of(this.dbTypeName);
-
+        if (dbType == null) {
+            throw new IllegalStateException("dbType not support : " + this.dbTypeName + ", url " + dataSource.getUrl());
+        }
         switch (dbType) {
             case mysql:
             case oceanbase:
