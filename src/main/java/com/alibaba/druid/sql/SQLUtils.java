@@ -60,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class SQLUtils {
@@ -890,28 +891,7 @@ public class SQLUtils {
     }
 
     public static long hash(String sql, DbType dbType) {
-        Lexer lexer = SQLParserUtils.createLexer(sql, dbType);
-
-        StringBuilder buf = new StringBuilder(sql.length());
-
-        for (;;) {
-            lexer.nextToken();
-
-            Token token = lexer.token();
-            if (token == Token.EOF) {
-                break;
-            }
-
-            if (token == Token.ERROR) {
-                return Utils.fnv_64(sql);
-            }
-
-            if (buf.length() != 0) {
-
-            }
-        }
-
-        return buf.hashCode();
+        return Objects.hash(sql) + (dbType == null ? 0 : dbType.hashCode64);
     }
 
     public static SQLExpr not(SQLExpr expr) {
