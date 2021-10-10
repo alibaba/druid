@@ -36,7 +36,7 @@ public class Schema {
     private         String                  catalog;
     private         String                  name;
     protected final Map<Long, SchemaObject> objects    = new ConcurrentHashMap<Long, SchemaObject>(16, 0.75f, 1);
-    protected final Map<Long, SchemaObject> functions  = new ConcurrentHashMap<Long, SchemaObject>(16, 0.75f, 1);
+    protected final Map<String, SchemaObject> functions  = new ConcurrentHashMap<String, SchemaObject>(16, 0.75f, 1);
     private         SchemaRepository        repository;
 
     protected Schema(SchemaRepository repository) {

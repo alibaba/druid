@@ -1086,7 +1086,7 @@ public class SchemaRepository {
 
         String name = x.getName().getSimpleName();
         SchemaObject object = new SchemaObject(schema, name, SchemaObjectType.Function, x.clone());
-        schema.functions.put(object.nameHashCode64(), object);
+        schema.functions.put(object.getName(), object);
 
         return true;
     }
