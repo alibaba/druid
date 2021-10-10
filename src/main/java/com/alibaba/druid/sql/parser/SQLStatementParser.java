@@ -182,7 +182,7 @@ public class SQLStatementParser extends SQLParser {
                                     && !lexer.getComments().isEmpty()
                                     && !(lastStmt instanceof SQLSetStatement)
                             ) {
-                                lexer.getComments().add(0, new String("\n"));
+                                lexer.getComments().add(0, "\n");
                             }
 
                             if (line1 - line0 <= 1) {

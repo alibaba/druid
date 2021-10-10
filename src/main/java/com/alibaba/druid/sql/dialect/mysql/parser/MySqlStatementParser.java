@@ -2120,7 +2120,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setFromInsIp(exprParser.charExpr());
 
             String variant = lexer.stringVal();
-            Integer number = Integer.valueOf(variant.substring(1, variant.length()));
+            Integer number = Integer.valueOf(variant.substring(1));
             stmt.setFromInsPort(new SQLIntegerExpr(number));
             accept(Token.VARIANT);
 
@@ -2136,7 +2136,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setToInsIp(exprParser.charExpr());
 
             String variant = lexer.stringVal();
-            Integer number = Integer.valueOf(variant.substring(1, variant.length()));
+            Integer number = Integer.valueOf(variant.substring(1));
             stmt.setToInsPort(new SQLIntegerExpr(number));
             accept(Token.VARIANT);
 

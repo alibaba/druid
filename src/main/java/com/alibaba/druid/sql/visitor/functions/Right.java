@@ -49,7 +49,7 @@ public class Right implements Function {
         if (start < 0) {
             start = 0;
         }
-        String result = strValue.substring(start, strValue.length());
+        String result = strValue.substring(start);
         return result;
     }
 }

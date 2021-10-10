@@ -161,14 +161,14 @@ public class HiveExprParser extends SQLExprParser {
                 if (next == '\\') {
                     if (buf == null) {
                         buf = new StringBuilder();
-                        buf.append(chars.substring(0, i));
+                        buf.append(chars, 0, i);
                     }
                     buf.append('\\');
                     ++i;
                 } else if (next == '\"') {
                     if (buf == null) {
                         buf = new StringBuilder();
-                        buf.append(chars.substring(0, i));
+                        buf.append(chars, 0, i);
                     }
                     buf.append('"');
                     ++i;

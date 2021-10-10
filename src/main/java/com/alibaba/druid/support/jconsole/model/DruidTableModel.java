@@ -79,7 +79,7 @@ public class DruidTableModel implements TableModel {
         if (showKeys != null && showKeys.size() > 0) {
             String keyNow = showKeys.get(columnIndex);
             if (keyNow != null) {
-                return keyNow.substring(keyNow.indexOf('-') + 1, keyNow.length());
+                return keyNow.substring(keyNow.indexOf('-') + 1);
             }
         }
         if (list != null && list.size() > 0) {
