@@ -106,7 +106,7 @@ public class SQLMatchAgainstExpr extends SQLExprImpl implements SQLReplaceable {
 
         SearchModifier(String name) {
             this.name = name;
-            this.nameLCase = name.toLowerCase();
+            this.nameLCase = name == null ? null : name.toLowerCase();
         }
     }
 
