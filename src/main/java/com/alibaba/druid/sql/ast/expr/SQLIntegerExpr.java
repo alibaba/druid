@@ -199,7 +199,7 @@ public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuable
         }
 
         if (this.number instanceof Double && o.number instanceof Double) {
-            return ((Float) this.number).compareTo((Float) o.number);
+            return ((Double) this.number).compareTo((Double) o.number);
         }
 
         return -1;
