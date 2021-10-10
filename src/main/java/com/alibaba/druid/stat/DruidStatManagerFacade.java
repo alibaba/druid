@@ -167,7 +167,7 @@ public final class DruidStatManagerFacade {
         }
 
         for (Object datasource : dataSources) {
-            if (dataSourceId != null && dataSourceId.intValue() != System.identityHashCode(datasource)) {
+            if (dataSourceId != System.identityHashCode(datasource)) {
                 continue;
             }
 
@@ -193,7 +193,7 @@ public final class DruidStatManagerFacade {
         }
 
         for (Object datasource : dataSources) {
-            if (dataSourceId != null && dataSourceId.intValue() != System.identityHashCode(datasource)) {
+            if (dataSourceId != System.identityHashCode(datasource)) {
                 continue;
             }
 

@@ -297,10 +297,8 @@ public class HiveStatementParser extends SQLStatementParser {
                         lexer.nextToken();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
-                        if (table instanceof SQLIdentifierExpr) {
-                            SQLIdentifierExpr ident = (SQLIdentifierExpr) table;
-                            table = new SQLIdentifierExpr(ident.getName() + "-" + strVal);
-                        }
+                        SQLIdentifierExpr ident = (SQLIdentifierExpr) table;
+                        table = new SQLIdentifierExpr(ident.getName() + "-" + strVal);
                     }
                     stmt.setTable(table);
                 }

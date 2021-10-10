@@ -214,60 +214,28 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
             return Types.REF;
         }
 
-        if (nameNash == FnvHash.Constants.TINYINT || nameNash == FnvHash.Constants.TINY) {
+        if (nameNash == FnvHash.Constants.TINY) {
             return Types.TINYINT;
         }
 
-        if (nameNash == FnvHash.Constants.SMALLINT || nameNash == FnvHash.Constants.SHORT) {
+        if (nameNash == FnvHash.Constants.SHORT) {
             return Types.SMALLINT;
         }
 
-        if (nameNash == FnvHash.Constants.INT
-                || nameNash == FnvHash.Constants.INT24
-                || nameNash == FnvHash.Constants.INTEGER) {
+        if (nameNash == FnvHash.Constants.INT24) {
             return Types.INTEGER;
         }
 
-        if (nameNash == FnvHash.Constants.NUMBER || nameNash == FnvHash.Constants.NUMERIC) {
-            return Types.NUMERIC;
-        }
-
-        if (nameNash == FnvHash.Constants.BOOLEAN) {
-            return Types.BOOLEAN;
-        }
-
-        if (nameNash == FnvHash.Constants.DATE
-                || nameNash == FnvHash.Constants.YEAR
-                || nameNash == FnvHash.Constants.NEWDATE) {
+        if (nameNash == FnvHash.Constants.YEAR) {
             return Types.DATE;
-        }
-
-        if (nameNash == FnvHash.Constants.DATETIME || nameNash == FnvHash.Constants.TIMESTAMP) {
-            return Types.TIMESTAMP;
-        }
-
-        if (nameNash == FnvHash.Constants.TIME) {
-            return Types.TIME;
         }
 
         if (nameNash == FnvHash.Constants.TINYBLOB) {
             return Types.VARBINARY;
         }
 
-        if (nameNash == FnvHash.Constants.BLOB) {
-            return Types.BLOB;
-        }
-
         if (nameNash == FnvHash.Constants.LONGBLOB) {
             return Types.LONGVARBINARY;
-        }
-
-        if (nameNash == FnvHash.Constants.ROWID) {
-            return Types.ROWID;
-        }
-
-        if (nameNash == FnvHash.Constants.REF) {
-            return Types.REF;
         }
 
         if (nameNash == FnvHash.Constants.BINARY || nameNash == FnvHash.Constants.GEOMETRY) {
@@ -290,55 +258,6 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
                 || nameNash == FnvHash.Constants.ENUM
                 || nameNash == FnvHash.Constants.SET
                 || nameNash == FnvHash.Constants.JSON) {
-            return Types.CHAR;
-        }
-
-        if (nameNash == FnvHash.Constants.VARCHAR
-                || nameNash == FnvHash.Constants.VARCHAR2
-                || nameNash == FnvHash.Constants.STRING) {
-            return Types.VARCHAR;
-        }
-
-        if (nameNash == FnvHash.Constants.NVARCHAR || nameNash == FnvHash.Constants.NVARCHAR2) {
-            return Types.NVARCHAR;
-        }
-
-        if (nameNash == FnvHash.Constants.CLOB
-                || nameNash == FnvHash.Constants.TEXT
-                || nameNash == FnvHash.Constants.TINYTEXT
-                || nameNash == FnvHash.Constants.MEDIUMTEXT
-                || nameNash == FnvHash.Constants.LONGTEXT) {
-            return Types.CLOB;
-        }
-
-        if (nameNash == FnvHash.Constants.NCLOB) {
-            return Types.NCLOB;
-        }
-
-
-        if (nameNash == FnvHash.Constants.TINYBLOB) {
-            return Types.VARBINARY;
-        }
-
-        if (nameNash == FnvHash.Constants.LONGBLOB) {
-            return Types.LONGVARBINARY;
-        }
-
-        if (nameNash == FnvHash.Constants.BINARY || nameNash == FnvHash.Constants.GEOMETRY) {
-            return Types.BINARY;
-        }
-
-        if (nameNash == FnvHash.Constants.SQLXML) {
-            return Types.SQLXML;
-        }
-
-        //
-
-        if (nameNash == FnvHash.Constants.NCHAR) {
-            return Types.NCHAR;
-        }
-
-        if (nameNash == FnvHash.Constants.CHAR || nameNash == FnvHash.Constants.JSON) {
             return Types.CHAR;
         }
 

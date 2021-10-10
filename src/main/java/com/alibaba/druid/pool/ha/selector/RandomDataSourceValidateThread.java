@@ -151,8 +151,7 @@ public class RandomDataSourceValidateThread implements Runnable {
             }
             if (count == null || count <= 0) {
                 selector.removeBlacklist(dataSource);
-            } else if (count != null && count >= blacklistThreshold
-                    && !selector.containInBlacklist(dataSource)) {
+            } else if (count >= blacklistThreshold && !selector.containInBlacklist(dataSource)) {
                 LOG.warn("Adding " + name + " to blacklist.");
                 selector.addBlacklist(dataSource);
             }

@@ -243,7 +243,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     @Override
     public boolean visit(InsertIntoClause x) {
 
-        if (x.getTableName() instanceof SQLName) {
+        if (x.getTableName() != null) {
             TableStat stat = getTableStat(x.getTableName());
             stat.incrementInsertCount();
         }

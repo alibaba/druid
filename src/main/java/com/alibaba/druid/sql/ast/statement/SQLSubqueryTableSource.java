@@ -156,7 +156,7 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
         if (queryBlock != null) {
             return queryBlock.findColumn(columnNameHash);
         } else {
-            if (select.getQuery() instanceof SQLUnionQuery && ((SQLUnionQuery) select.getQuery()).getFirstQueryBlock() instanceof SQLSelectQueryBlock) {
+            if (select.getQuery() instanceof SQLUnionQuery && ((SQLUnionQuery) select.getQuery()).getFirstQueryBlock() != null) {
                 SQLSelectQueryBlock left = ((SQLUnionQuery) select.getQuery()).getFirstQueryBlock();
                 return ((SQLSelectQueryBlock) left).findColumn(columnNameHash);
             }

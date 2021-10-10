@@ -245,9 +245,6 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
         }
 
         int year = (c0 - '0') * 1000 + (c1 - '0') * 100 + (c2 - '0') * 10 + (c3 - '0');
-        if (year < 1000) {
-            return false;
-        }
 
         if(c4 != '-') {
             return false;

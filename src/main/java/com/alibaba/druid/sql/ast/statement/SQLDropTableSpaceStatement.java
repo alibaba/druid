@@ -59,12 +59,7 @@ public class SQLDropTableSpaceStatement extends SQLStatementImpl implements SQLD
         if (name == null) {
             return null;
         }
-
-        if (name instanceof SQLName) {
-            return name.getSimpleName();
-        }
-
-        return null;
+        return name.getSimpleName();
     }
 
     public SQLExpr getEngine() {

@@ -137,19 +137,15 @@ public class MySqlInsertStatement extends SQLInsertStatement {
                 tableSource.accept(visitor);
             }
 
-            if (columns != null) {
-                for (SQLExpr column : columns) {
-                    if (column != null) {
-                        column.accept(visitor);
-                    }
+            for (SQLExpr column : columns) {
+                if (column != null) {
+                    column.accept(visitor);
                 }
             }
 
-            if (valuesList != null) {
-                for (ValuesClause values : valuesList) {
-                    if (values != null) {
-                        values.accept(visitor);
-                    }
+            for (ValuesClause values : valuesList) {
+                if (values != null) {
+                    values.accept(visitor);
                 }
             }
 
@@ -157,11 +153,9 @@ public class MySqlInsertStatement extends SQLInsertStatement {
                 query.accept(visitor);
             }
 
-            if (duplicateKeyUpdate != null) {
-                for (SQLExpr item : duplicateKeyUpdate) {
-                    if (item != null) {
-                        item.accept(visitor);
-                    }
+            for (SQLExpr item : duplicateKeyUpdate) {
+                if (item != null) {
+                    item.accept(visitor);
                 }
             }
         }

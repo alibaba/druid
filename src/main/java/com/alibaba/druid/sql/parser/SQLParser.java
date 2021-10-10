@@ -532,7 +532,6 @@ public class SQLParser {
                             && lexer.token() != Token.RPAREN
                             && lexer.token() != Token.FROM
                             && lexer.token() != Token.SEMI
-                            && lexer.token() != Token.SEMI
                     ) {
                         alias = null;
                         lexer.reset(mark);

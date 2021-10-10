@@ -934,14 +934,10 @@ public class Lexer {
             return SQLType.EXSTORE;
         } else if (hashCode == FnvHash.Constants.UNDO) {
             return SQLType.UNDO;
-        } else if (hashCode == FnvHash.Constants.REMOVE) {
-            return SQLType.REMOVE;
         } else if (hashCode == FnvHash.Constants.FROM) {
             if (dbType == DbType.odps || dbType == DbType.hive) {
                 return SQLType.INSERT_MULTI;
             }
-        } else if (hashCode == FnvHash.Constants.ADD) {
-            return SQLType.ADD;
         } else if (hashCode == FnvHash.Constants.IF) {
             return SQLType.SCRIPT;
         } else if (hashCode == FnvHash.Constants.FUNCTION) {

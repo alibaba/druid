@@ -358,7 +358,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
                 SQLSelectQueryBlock innerQuery = select.getQueryBlock();
 
-                boolean noOrderByAndLimit = innerQuery instanceof SQLSelectQueryBlock
+                boolean noOrderByAndLimit = innerQuery != null
                         && ((SQLSelectQueryBlock) innerQuery).getOrderBy() == null
                         && ((SQLSelectQueryBlock) select.getQuery()).getLimit() == null;
 

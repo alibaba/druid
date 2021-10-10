@@ -1692,9 +1692,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                             for (SQLExpr target : x.getTargetList()) {
                                 ExportParameterVisitorUtils.exportParameter(subList, target);
                             }
-                            if (subList != null) {
-                                parameters.add(subList);
-                            }
+                            parameters.add(subList);
                         } else {
                             for (SQLExpr target : x.getTargetList()) {
                                 ExportParameterVisitorUtils.exportParameter(this.parameters, target);
@@ -2202,8 +2200,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (appender instanceof StringBuilder) {
             x.output((StringBuilder) appender);
-        } else if (appender instanceof StringBuilder) {
-            x.output((StringBuilder) appender);
+        } else if (appender instanceof StringBuffer) {
+            x.output((StringBuffer) appender);
         } else {
             print0(x.getNumber().toString());
         }
@@ -2856,8 +2854,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 return;
             }
 
-            boolean shardingSupport = this.shardingSupport
-                    && this.parameterized;
+            boolean shardingSupport = this.shardingSupport;
 
             if (shardingSupport) {
                 String nameUnwrappe = unwrapShardingTable(name);
@@ -2897,8 +2894,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 return;
             }
 
-            boolean shardingSupport = this.shardingSupport
-                    && this.parameterized;
+            boolean shardingSupport = this.shardingSupport;
 
             if (shardingSupport) {
                 String nameUnwrappe = unwrapShardingTable(name);
@@ -3246,7 +3242,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         for (SQLColumnConstraint item : x.getConstraints()) {
             boolean newLine = item instanceof SQLForeignKeyConstraint //
                               || item instanceof SQLPrimaryKey //
-                              || item instanceof SQLColumnCheck //
                               || item instanceof SQLColumnCheck //
                               || item.getName() != null;
             if (newLine) {
@@ -4239,10 +4234,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(", ");
             }
 
-            Object value = values.get(i);
+            SQLExpr expr = values.get(i);
 
-            if (value instanceof SQLExpr) {
-                SQLExpr expr = values.get(i);
+            if (expr != null) {
 
                 if (this.parameterized &&
                         (expr instanceof SQLIntegerExpr
@@ -4270,24 +4264,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 } else {
                     expr.accept(this);
                 }
-            } else if (value instanceof Integer){
-                print(((Integer) value).intValue());
-            } else if (value instanceof Long){
-                print(((Long) value).longValue());
-            } else if (value instanceof String){
-                printChars((String) value);
-            } else if (value instanceof Float) {
-                print(((Float) value).floatValue());
-            } else if (value instanceof Double) {
-                print(((Double) value).doubleValue());
-            } else if (value instanceof Date) {
-                print((Date) value);
-            } else if (value instanceof BigDecimal) {
-                print(value.toString());
-            } else if (value == null) {
-                print0(ucase ? "NULL" : "null");
             } else {
-                throw new UnsupportedOperationException();
+                print0(ucase ? "NULL" : "null");
             }
         }
 

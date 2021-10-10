@@ -336,7 +336,7 @@ public final class DruidStatService implements DruidStatServiceMBean {
             map.put("MaxTimespanOccurTime", format.format(maxTimespanOccurTime));
         }
 
-        return returnJSONResult(map == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, map);
+        return returnJSONResult(RESULT_CODE_SUCCESS, map);
     }
 
     private String returnJSONActiveConnectionStackTrace(Integer id) {

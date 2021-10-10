@@ -200,11 +200,8 @@ public class SQLCreateDatabaseStatement extends SQLStatementImpl implements SQLC
             return null;
         }
 
-        if (name instanceof SQLName) {
-            return ((SQLName) name).getSimpleName();
-        }
+        return name.getSimpleName();
 
-        return null;
     }
 
     public void setDatabase(String database) {

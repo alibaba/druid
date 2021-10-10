@@ -345,7 +345,7 @@ public class SQLSelectParser extends SQLParser {
             return queryRest(union, true);
         }
 
-        if (acceptUnion && lexer.token == Token.MINUS) {
+        if (lexer.token == Token.MINUS) {
             lexer.nextToken();
 
             SQLUnionQuery union = new SQLUnionQuery();

@@ -767,7 +767,7 @@ public class SQLStatementParser extends SQLParser {
                 break;
             }
             default:
-                if (lexer.token == Token.TABLE || lexer.identifierEquals("TEMPORARY")  || lexer.identifierEquals(FnvHash.Constants.PARTITIONED)) {
+                if (lexer.identifierEquals("TEMPORARY") || lexer.identifierEquals(Constants.PARTITIONED)) {
                     SQLDropTableStatement dropTable = parseDropTable(false);
                     if (hints != null) {
                         dropTable.setHints(hints);
@@ -5663,7 +5663,7 @@ public class SQLStatementParser extends SQLParser {
                                     }
                                 }
 
-                                if (number instanceof BigDecimal) {
+                                if (number != null) {
                                     number = MySqlUtils.decimal(number, precision, scale);
                                 }
                             }
@@ -6668,10 +6668,8 @@ public class SQLStatementParser extends SQLParser {
                 lexer.nextToken();
                 String strVal = lexer.stringVal();
                 lexer.nextToken();
-                if (database instanceof SQLIdentifierExpr) {
-                    SQLIdentifierExpr ident = (SQLIdentifierExpr) database;
-                    database = new SQLIdentifierExpr(ident.getName() + "-" + strVal);
-                }
+                SQLIdentifierExpr ident = (SQLIdentifierExpr) database;
+                database = new SQLIdentifierExpr(ident.getName() + "-" + strVal);
             }
             stmt.setDatabase(database);
         }

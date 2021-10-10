@@ -332,13 +332,11 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLRe
     }
 
     public SQLDataType computeDataType() {
-        if (resolvedColumn instanceof SQLColumnDefinition
-                && resolvedColumn != null) {
+        if (resolvedColumn instanceof SQLColumnDefinition) {
             return ((SQLColumnDefinition) resolvedColumn).getDataType();
         }
 
-        if (resolvedColumn instanceof SQLSelectItem
-                && resolvedColumn != null) {
+        if (resolvedColumn instanceof SQLSelectItem) {
             return ((SQLSelectItem) resolvedColumn).computeDataType();
         }
 

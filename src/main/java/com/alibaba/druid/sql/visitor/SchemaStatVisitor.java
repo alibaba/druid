@@ -1165,7 +1165,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setMode(x, Mode.Insert);
 
-        if (x.getTableName() instanceof SQLName) {
+        if (x.getTableName() != null) {
             String ident = ((SQLName) x.getTableName()).toString();
 
             TableStat stat = getTableStat(x.getTableName());
@@ -1225,9 +1225,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 //            return false;
 //        }
 
-        if (from != null) {
-            from.accept(this); // 提前执行，获得aliasMap
-        }
+        from.accept(this); // 提前执行，获得aliasMap
 
         SQLExprTableSource into = x.getInto();
         if (into != null && into.getExpr() instanceof SQLName) {

@@ -37,8 +37,6 @@ public class ExportTables extends UDF {
 
     public String evaluate(String sql, String dbTypeName, boolean throwError) throws Throwable {
         DbType dbType = dbTypeName == null ? null : DbType.valueOf(dbTypeName);
-
-        Throwable error = null;
         try {
             List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
             SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
@@ -59,14 +57,8 @@ public class ExportTables extends UDF {
             }
 
             return buf.toString();
-        } catch (Exception ignored) {
+        } catch (Exception | StackOverflowError ignored) {
             // skip
-        } catch (StackOverflowError ignored) {
-            // skip
-        }
-
-        if (throwError && error != null) {
-            throw error;
         }
 
         return null;

@@ -1604,7 +1604,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         LOG.debug("conn-direct_create ");
                     }
 
-                    boolean discard = false;
                     lock.lock();
                     try {
                         if (activeCount < maxActive) {
@@ -1615,16 +1614,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 activePeakTime = System.currentTimeMillis();
                             }
                             break;
-                        } else {
-                            discard = true;
                         }
                     } finally {
                         lock.unlock();
                     }
 
-                    if (discard) {
-                        JdbcUtils.close(pyConnInfo.getPhysicalConnection());
-                    }
+                    JdbcUtils.close(pyConnInfo.getPhysicalConnection());
                 }
             }
 

@@ -63,12 +63,7 @@ public class SQLDropTableGroupStatement extends SQLStatementImpl implements SQLD
         if (name == null) {
             return null;
         }
-
-        if (name instanceof SQLName) {
-            return name.getSimpleName();
-        }
-
-        return null;
+        return name.getSimpleName();
     }
 
     public boolean isIfExists() {

@@ -147,7 +147,6 @@ public class SQLExprUtils {
     }
 
     public static SQLDataType createDataTypeFromJdbc(DbType dbType, int jdbType, Integer precision, Integer scale) {
-        SQLDataType dataType = null;
 
         switch (jdbType) {
             case Types.INTEGER:
@@ -174,13 +173,6 @@ public class SQLExprUtils {
                 break;
         }
 
-        if (dataType != null) {
-            if (dbType != null) {
-                dataType.setDbType(dbType);
-            }
-
-            return dataType;
-        }
         throw new FastsqlException("type " + jdbType + " not support");
     }
 }

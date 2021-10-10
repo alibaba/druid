@@ -316,10 +316,6 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         } else {
                             stmt.getTableElementList().add(parseConstraint());
                         }
-                    } else if (lexer.token() == (Token.PRIMARY)) {
-                        SQLTableConstraint pk = parseConstraint();
-                        pk.setParent(stmt);
-                        stmt.getTableElementList().add(pk);
                     } else if (lexer.token() == (Token.FOREIGN)) {
                         SQLForeignKeyConstraint fk = this.getExprParser().parseForeignKey();
                         fk.setParent(stmt);

@@ -239,7 +239,7 @@ public class RandomDataSourceSelector implements DataSourceSelector {
 
     private DataSource getRandomDataSource(Collection<DataSource> dataSourceSet) {
         DataSource[] dataSources = dataSourceSet.toArray(new DataSource[] {});
-        if (dataSources != null && dataSources.length > 0) {
+        if (dataSources.length > 0) {
             return dataSources[random.nextInt(dataSourceSet.size())];
         }
         return null;
