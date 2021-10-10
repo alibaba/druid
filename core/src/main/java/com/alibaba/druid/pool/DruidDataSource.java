@@ -752,14 +752,12 @@ public class DruidDataSource extends DruidAbstractDataSource
         if (properties.size() == this.connectProperties.size()) {
             equals = true;
             for (Map.Entry entry : properties.entrySet()) {
-                Object value = this.connectProperties.get(entry.getKey());
-                Object entryValue = entry.getValue();
-                if (value == null && entryValue != null) {
-                    equals = false;
-                    break;
-                }
-
-                if (!value.equals(entry.getValue())) {
+                if (
+                    !Objects.equals(
+                        this.connectProperties.get(entry.getKey()),
+                        entry.getValue()
+                    )
+                ) {
                     equals = false;
                     break;
                 }
