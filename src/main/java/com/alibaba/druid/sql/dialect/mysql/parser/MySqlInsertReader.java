@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.util.JdbcUtils;
+import org.apache.commons.io.IOUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class MySqlInsertReader implements Closeable {
     }
 
     public MySqlInsertStatement parseStatement() throws IOException {
-        in.read(buf);
+        IOUtils.read(in, buf);
         String text = new String(buf);
         parser = new MySqlStatementParser(text, SQLParserFeature.InsertReader);
 
