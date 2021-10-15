@@ -582,6 +582,7 @@ public class MySqlLexer extends Lexer {
         mark = pos;
         bufPos = 0;
         scanChar();
+        bufPos++;
 
         // /*+ */
         if (ch == '*') {
@@ -594,7 +595,7 @@ public class MySqlLexer extends Lexer {
             }
 
             boolean isHint = false;
-            int startHintSp = bufPos + 1;
+            int startHintSp = bufPos;
             if (ch == '!' //
                     || ch == '+' // oceanbase hints
 
@@ -678,7 +679,7 @@ public class MySqlLexer extends Lexer {
                 bufPos++;
             }
 
-            int startHintSp = bufPos + 1;
+            int startHintSp = bufPos;
 
             int starIndex = pos;
 
