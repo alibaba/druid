@@ -673,7 +673,10 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\t\tGROUP BY tran.id\n" +
                 "\t) salesTeam\n" +
                 "\tON salesTeam.id = tran.id\n" +
-                "WHERE contract.status_code IN ('SD040501', 'SD040502')\n" +
+                "WHERE contract.status_code IN ('SD040501', 'SD040502') -- <orgId> AND org.id in (?{orgId}) </orgId>\n" +
+                "-- <projectId> AND tran.project_id in ( ?{projectId} )</projectId>\n" +
+                "-- <startDate2>AND contract.vesting_date >= ?{startDate2} </startDate2>\n" +
+                "-- <endDate2> AND  contract.vesting_date <= ?{endDate2} </endDate2>\n" +
                 "GROUP BY contract.id", stmt.toString());
 
         System.out.println(stmt.toString());

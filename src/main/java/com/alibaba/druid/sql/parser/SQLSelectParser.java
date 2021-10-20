@@ -100,9 +100,7 @@ public class SQLSelectParser extends SQLParser {
     }
 
     protected SQLUnionQuery createSQLUnionQuery() {
-        SQLUnionQuery union = new SQLUnionQuery();
-        union.setDbType(dbType);
-        return union;
+        return new SQLUnionQuery(dbType);
     }
 
     public SQLUnionQuery unionRest(SQLUnionQuery union) {
@@ -149,9 +147,7 @@ public class SQLSelectParser extends SQLParser {
                 }
 
                 SQLUnionQuery union = createSQLUnionQuery();
-                if (union.getRelations().isEmpty()) {
-                    union.setLeft(selectQuery);
-                }
+                union.setLeft(selectQuery);
 
                 if (lexer.token == Token.ALL) {
                     union.setOperator(SQLUnionOperator.UNION_ALL);
@@ -1081,11 +1077,11 @@ public class SQLSelectParser extends SQLParser {
             		|| lexer.token == Token.SEL) {
                 SQLSelect select = select();
                 accept(Token.RPAREN);
-                if (select.getQuery() instanceof SQLSelectQueryBlock) {
-                    ((SQLSelectQueryBlock) select.getQuery()).setParenthesized(true);
-                }
+                SQLSelectQuery selectQuery = select.getQuery();
+                selectQuery.setParenthesized(true);
 
-                SQLSelectQuery query = queryRest(select.getQuery(), true);
+                boolean acceptUnion = !(selectQuery instanceof SQLUnionQuery);
+                SQLSelectQuery query = queryRest(selectQuery, acceptUnion);
                 if (query instanceof SQLUnionQuery) {
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                 } else {
@@ -1680,6 +1676,7 @@ public class SQLSelectParser extends SQLParser {
                 primaryTableSourceRest(rightTableSource);
 
             } else if (rightTableSource.getAlias() == null && !(rightTableSource instanceof SQLValuesTableSource)) {
+                int line = lexer.line;
                 String tableAlias;
                 if (lexer.token == Token.AS) {
                     lexer.nextToken();
@@ -1695,6 +1692,12 @@ public class SQLSelectParser extends SQLParser {
 
                 if (tableAlias != null) {
                     rightTableSource.setAlias(tableAlias);
+
+                    if (line + 1 == lexer.line
+                            && lexer.hasComment()
+                            && lexer.getComments().get(0).startsWith("--")) {
+                        rightTableSource.addAfterComment(lexer.readAndResetComments());
+                    }
 
                     if (lexer.token == Token.LPAREN) {
                         if (rightTableSource instanceof SQLSubqueryTableSource) {

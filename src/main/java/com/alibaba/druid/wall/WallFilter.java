@@ -136,6 +136,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             case mariadb:
             case h2:
             case presto:
+            case trino:
                 if (config == null) {
                     config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
                 }

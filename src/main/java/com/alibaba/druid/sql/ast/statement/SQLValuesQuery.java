@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLValuesQuery extends SQLObjectImpl implements SQLSelectQuery {
-    private boolean          bracket  = false;
-
+public class SQLValuesQuery extends SQLSelectQueryBase {
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
     public List<SQLExpr> getValues() {
@@ -45,19 +43,9 @@ public class SQLValuesQuery extends SQLObjectImpl implements SQLSelectQuery {
         visitor.endVisit(this);
     }
 
-    @Override
-    public boolean isBracket() {
-        return bracket;
-    }
-
-    @Override
-    public void setBracket(boolean bracket) {
-        this.bracket = bracket;
-    }
-
     public SQLValuesQuery clone() {
         SQLValuesQuery x = new SQLValuesQuery();
-        x.bracket = bracket;
+        x.parenthesized = parenthesized;
 
         for (int i = 0; i < values.size(); ++i) {
             SQLExpr value = values.get(i).clone();

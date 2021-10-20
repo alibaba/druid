@@ -1231,6 +1231,8 @@ public class MySqlExprParser extends SQLExprParser {
             if (lexer.identifierEquals(FnvHash.Constants.UNSIGNED)) {
                 lexer.nextToken();
                 ((SQLDataTypeImpl) dataType).setUnsigned(true);
+            } else if (lexer.identifierEquals(FnvHash.Constants.SIGNED)) {
+                lexer.nextToken(); // skip
             } else if (lexer.identifierEquals(FnvHash.Constants.ZEROFILL)) {
                 lexer.nextToken();
                 ((SQLDataTypeImpl) dataType).setZerofill(true);

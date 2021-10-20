@@ -56,7 +56,10 @@ public enum DbType {
      */
     gaussdb       (1 << 38),
 
-    oscar          (1 << 36),
+    trino          (1 << 39),
+ 
+    oscar          (1 << 40),
+
 
 
     ingres          (0),
