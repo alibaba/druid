@@ -2718,7 +2718,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         List<SQLSelectOrderByItem> items = x.getItems();
 
         if (items.size() > 0) {
-            if (x.isSibings()) {
+            if (x.isSiblings()) {
                 print0(ucase ? "ORDER SIBLINGS BY " : "order siblings by ");
             } else {
                 print0(ucase ? "ORDER BY " : "order by ");
