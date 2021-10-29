@@ -26,7 +26,7 @@ public final class SQLOrderBy extends SQLObjectImpl implements SQLReplaceable {
     protected final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
     
     // for postgres
-    private boolean                            sibings;
+    private boolean siblings;
 
     public SQLOrderBy(){
 
@@ -57,12 +57,12 @@ public final class SQLOrderBy extends SQLObjectImpl implements SQLReplaceable {
         return this.items;
     }
     
-    public boolean isSibings() {
-        return this.sibings;
+    public boolean isSiblings() {
+        return this.siblings;
     }
 
-    public void setSibings(boolean sibings) {
-        this.sibings = sibings;
+    public void setSiblings(boolean siblings) {
+        this.siblings = siblings;
     }
 
     protected void accept0(SQLASTVisitor v) {
@@ -83,14 +83,14 @@ public final class SQLOrderBy extends SQLObjectImpl implements SQLReplaceable {
 
         SQLOrderBy order = (SQLOrderBy) o;
 
-        if (sibings != order.sibings) return false;
+        if (siblings != order.siblings) return false;
         return items.equals(order.items);
     }
 
     @Override
     public int hashCode() {
         int result = items.hashCode();
-        result = 31 * result + (sibings ? 1 : 0);
+        result = 31 * result + (siblings ? 1 : 0);
         return result;
     }
 
@@ -126,7 +126,7 @@ public final class SQLOrderBy extends SQLObjectImpl implements SQLReplaceable {
             x.items.add(item1);
         }
 
-        x.sibings = sibings;
+        x.siblings = siblings;
 
         return x;
     }
