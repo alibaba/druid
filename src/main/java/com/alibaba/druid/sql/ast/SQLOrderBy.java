@@ -26,7 +26,7 @@ public final class SQLOrderBy extends SQLObjectImpl implements SQLReplaceable {
     protected final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
     
     // for postgres
-    private boolean siblings;
+    private boolean                            siblings;
 
     public SQLOrderBy(){
 
