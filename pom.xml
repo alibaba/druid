@@ -80,6 +80,8 @@
 					<encoding>UTF-8</encoding>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
+					<fork>true</fork>
+					<useIncrementalCompilation>true</useIncrementalCompilation>
 				</configuration>
 			</plugin>
 
