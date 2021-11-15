@@ -19,7 +19,13 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import static org.apache.commons.lang3.ArrayUtils.*;
 
 public class MySqlCreateExternalCatalogTest1 extends MysqlTest {
 
@@ -34,13 +40,25 @@ public class MySqlCreateExternalCatalogTest1 extends MysqlTest {
         assertEquals(1, stmtList.size());
 
         SQLStatement stmt = stmtList.get(0);
-
-        assertEquals("CREATE EXTERNAL CATALOG IF NOT EXISTS kafka_1 PROPERTIES (\n"
-                     + "'connector.name'='kafka'\n"
-                     + "'kafka.nodes'='1.1.1.1:10000,1.1.1.2:10000'\n"
-                     + "'kafka.table-names'='table1,table2')\n"
-                     + "COMMENT 'this is a kafka connector test.'", stmt.toString());
+        Set<String> allPossibleRes = generateAllPossibleRes4test0();
+        assertTrue(allPossibleRes.contains(stmt.toString()));
     }
+
+    private Set<String> generateAllPossibleRes4test0() {
+        Set<String> possibleRes = new HashSet<>();
+        List<String> list = new ArrayList<>();
+        list.add("'connector.name'='kafka'");
+        list.add("'kafka.nodes'='1.1.1.1:10000,1.1.1.2:10000'");
+        list.add("'kafka.table-names'='table1,table2'");
+        List<int[]> allPermutation = getAllPermutation(list.size());
+        for (int[] cur : allPermutation) {
+            possibleRes.add("CREATE EXTERNAL CATALOG IF NOT EXISTS kafka_1 PROPERTIES (\n"
+                    + list.get(cur[0]) + "\n" + list.get(cur[1]) + "\n" + list.get(cur[2]) + ")\n"
+                    + "COMMENT 'this is a kafka connector test.'");
+        }
+        return possibleRes;
+    }
+
     public void test_1() throws Exception {
          String sql = "CREATE EXTERNAL CATALOG user_db.mysql_1 PROPERTIES ("
                       + "'connector.name'='mysql' "
@@ -54,13 +72,55 @@ public class MySqlCreateExternalCatalogTest1 extends MysqlTest {
         assertEquals(1, stmtList.size());
 
         SQLStatement stmt = stmtList.get(0);
-
-        assertEquals("CREATE EXTERNAL CATALOG user_db.mysql_1 PROPERTIES (\n"
-                     + "'connector.name'='mysql'\n"
-                     + "'connection-url'='jdbc:mysql://1.1.1.1:3306'\n"
-                     + "'connection-user'=\"x'!xx\"\n"
-                     + "'connection-password'=\"x'xx\")", stmt.toString());
+        Set<String> allPossibleRes = generateAllPossibleRes4test1();
+        assertTrue(allPossibleRes.contains(stmt.toString()));
     }
 
+    private Set<String> generateAllPossibleRes4test1() {
+        Set<String> res = new HashSet<>();
+        List<String> list = new ArrayList<>();
+        list.add("'connector.name'='mysql'");
+        list.add("'connection-url'='jdbc:mysql://1.1.1.1:3306'");
+        list.add("'connection-user'=\"x'!xx\"");
+        list.add("'connection-password'=\"x'xx\"");
+        List<int[]> allPermutation = getAllPermutation(list.size());
+        for (int[] cur : allPermutation) {
+            res.add("CREATE EXTERNAL CATALOG user_db.mysql_1 PROPERTIES (\n"
+                    + list.get(cur[0]) + "\n" + list.get(cur[1]) + "\n" + list.get(cur[2]) + "\n" + list.get(cur[3]) + ")");
+        }
+        return res;
+    }
 
+    private static List<int[]> getAllPermutation(int n) {
+        List<int[]> res = new ArrayList<>();
+        int total = 1;
+        int[] permutation = new int[n];
+        for (int i = 1; i <= n; ++i) {
+            permutation[i - 1] = i - 1;
+            total *= i;
+        }
+
+        for (int i = 0; i < total; ++i) {
+            res.add(Arrays.copyOf(permutation,n));
+            nexPermutation(permutation);
+        }
+        return res;
+    }
+
+    private static void nexPermutation(int[] nums) {
+        if (nums == null || nums.length == 0) return;
+        int i = nums.length - 2;
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
+            --i;
+        }
+        if (i == -1) {
+            return;
+        }
+        int j = i + 1;
+        while (j < nums.length && nums[j] > nums[i]) {
+            ++j;
+        }
+        swap(nums, i, j - 1);
+        reverse(nums, i + 1, nums.length);
+    }
 }
