@@ -23,6 +23,14 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.apache.commons.lang3.ArrayUtils.*;
+
 public class MySqlCreateDatabaseTest extends MysqlTest {
 
     @Test
@@ -48,7 +56,55 @@ public class MySqlCreateDatabaseTest extends MysqlTest {
         SQLStatement stmt = parser.parseStatement();
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE test_cascade FOR 'ALIYUN$test@aliyun.com' OPTIONS (ecu_type=c1 ecu_count=2 resourceType=ecu )", output);
+        Set<String> allPossibleRes = generateAllPossibleRes();
+        assertTrue(allPossibleRes.contains(output));
+    }
+
+    private Set<String> generateAllPossibleRes() {
+        Set<String> res = new HashSet<>();
+        List<String> list = new ArrayList<>();
+        list.add("ecu_type=c1");
+        list.add("ecu_count=2");
+        list.add("resourceType=ecu");
+        List<int[]> allPermutation = getAllPermutation(list.size());
+        for (int[] cur : allPermutation) {
+            res.add("CREATE DATABASE test_cascade FOR 'ALIYUN$test@aliyun.com' OPTIONS ("
+                    + list.get(cur[0]) + " " + list.get(cur[1]) + " " + list.get(cur[2]) + " )");
+        }
+        return res;
+    }
+
+    private static List<int[]> getAllPermutation(int n) {
+        List<int[]> res = new ArrayList<>();
+        int total = 1;
+        int[] permutation = new int[n];
+        for (int i = 1; i <= n; ++i) {
+            permutation[i - 1] = i - 1;
+            total *= i;
+        }
+
+        for (int i = 0; i < total; ++i) {
+            res.add(Arrays.copyOf(permutation,n));
+            nexPermutation(permutation);
+        }
+        return res;
+    }
+
+    private static void nexPermutation(int[] nums) {
+        if (nums == null || nums.length == 0) return;
+        int i = nums.length - 2;
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
+            --i;
+        }
+        if (i == -1) {
+            return;
+        }
+        int j = i + 1;
+        while (j < nums.length && nums[j] > nums[i]) {
+            ++j;
+        }
+        swap(nums, i, j - 1);
+        reverse(nums, i + 1, nums.length);
     }
 
     // for ads
