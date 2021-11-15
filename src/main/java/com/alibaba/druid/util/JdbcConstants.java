@@ -141,4 +141,10 @@ public interface JdbcConstants {
      */
     DbType GREENPLUM                    = DbType.greenplum;
     String GREENPLUM_DRIVER             = "com.pivotal.jdbc.GreenplumDriver";
+
+    /**
+     * oscar
+     */
+    DbType OSCAR                      = DbType.oscar;
+    String OSCAR_DRIVER               = "com.oscar.Driver";
 }

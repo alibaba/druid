@@ -525,6 +525,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.POLARDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:highgo:")) {
             return "com.highgo.jdbc.Driver";
+        } else if (rawUrl.startsWith("jdbc:oscar")) {
+            return JdbcConstants.OSCAR_DRIVER;
         } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }
