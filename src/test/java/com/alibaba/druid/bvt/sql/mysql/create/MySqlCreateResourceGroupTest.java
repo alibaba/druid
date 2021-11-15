@@ -23,7 +23,13 @@ import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import static org.apache.commons.lang3.ArrayUtils.*;
 
 public class MySqlCreateResourceGroupTest
         extends MysqlTest {
@@ -39,7 +45,8 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE RESOURCE GROUP sql_thread THREAD_PRIORITY = -20 VCPU = 1,3 TYPE = USER", output);
+        Set<String> allPossibleRes = generateAllPossibleRes("CREATE RESOURCE GROUP sql_thread ", "");
+        assertTrue(allPossibleRes.contains(output));
     }
 
     @Test
@@ -53,7 +60,8 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE RESOURCE GROUP sql_thread THREAD_PRIORITY = -20 VCPU = 1,3 TYPE = USER DISABLE", output);
+        Set<String> allPossibleRes = generateAllPossibleRes("CREATE RESOURCE GROUP sql_thread ", " DISABLE");
+        assertTrue(allPossibleRes.contains(output));
     }
 
     @Test
@@ -99,7 +107,21 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER RESOURCE GROUP sql_thread THREAD_PRIORITY = -20 VCPU = 1,3 TYPE = USER", output);
+        Set<String> allPossibleRes = generateAllPossibleRes("ALTER RESOURCE GROUP sql_thread ", "");
+        assertTrue(allPossibleRes.contains(output));
+    }
+
+    private Set<String> generateAllPossibleRes(String prefix, String suffix) {
+        Set<String> res = new HashSet<>();
+        List<String> list = new ArrayList<>();
+        list.add("THREAD_PRIORITY = -20");
+        list.add("VCPU = 1,3");
+        list.add("TYPE = USER");
+        List<int[]> allPermutation = getAllPermutation(list.size());
+        for (int[] cur : allPermutation) {
+            res.add(prefix + list.get(cur[0]) + " " + list.get(cur[1]) + " " + list.get(cur[2]) + suffix);
+        }
+        return res;
     }
 
     @Test
@@ -176,4 +198,36 @@ public class MySqlCreateResourceGroupTest
         Assert.assertEquals("LIST RESOURCE GROUP", output);
     }
 
+    private List<int[]> getAllPermutation(int n) {
+        List<int[]> res = new ArrayList<>();
+        int total = 1;
+        int[] permutation = new int[n];
+        for (int i = 1; i <= n; ++i) {
+            permutation[i - 1] = i - 1;
+            total *= i;
+        }
+
+        for (int i = 0; i < total; ++i) {
+            res.add(Arrays.copyOf(permutation,n));
+            nexPermutation(permutation);
+        }
+        return res;
+    }
+
+    private void nexPermutation(int[] nums) {
+        if (nums == null || nums.length == 0) return;
+        int i = nums.length - 2;
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
+            --i;
+        }
+        if (i == -1) {
+            return;
+        }
+        int j = i + 1;
+        while (j < nums.length && nums[j] > nums[i]) {
+            ++j;
+        }
+        swap(nums, i, j - 1);
+        reverse(nums, i + 1, nums.length);
+    }
 }
