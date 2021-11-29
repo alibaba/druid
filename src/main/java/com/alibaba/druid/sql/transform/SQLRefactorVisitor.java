@@ -29,6 +29,7 @@ public class SQLRefactorVisitor extends SQLASTVisitorAdapter {
         switch (dbType) {
             case mysql:
             case mariadb:
+            case tidb:
             case ads:
                 quote = '`';
                 break;

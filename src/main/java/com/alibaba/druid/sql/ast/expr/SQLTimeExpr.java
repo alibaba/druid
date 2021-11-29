@@ -150,6 +150,8 @@ public class SQLTimeExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
             , DbType.presto
             , DbType.trino
             , DbType.postgresql
+            , DbType.mariadb
+            , DbType.tidb
     );
 
     public static boolean isSupport(DbType dbType) {

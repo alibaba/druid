@@ -161,6 +161,7 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
         switch (dbType) {
             case mysql:
             case mariadb:
+            case tidb:
                 return new MySqlUpdateStatement();
             case oracle:
                 return new OracleUpdateStatement();

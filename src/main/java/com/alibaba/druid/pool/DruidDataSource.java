@@ -843,10 +843,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             DbType dbType = DbType.of(this.dbTypeName);
-            if (dbType == DbType.mysql
-                    || dbType == DbType.mariadb
-                    || dbType == DbType.oceanbase
-                    || dbType == DbType.ads) {
+            if (JdbcUtils.isMysqlDbType(dbType)) {
                 boolean cacheServerConfigurationSet = false;
                 if (this.connectProperties.containsKey("cacheServerConfiguration")) {
                     cacheServerConfigurationSet = true;

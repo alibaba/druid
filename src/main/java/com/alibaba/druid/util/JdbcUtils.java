@@ -418,6 +418,8 @@ public final class JdbcUtils implements JdbcConstants {
             return LOG4JDBC_DRIVER;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
             return MARIADB_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:tidb:")) {
+            return TIDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:oracle:") //
                    || rawUrl.startsWith("JDBC:oracle:")) {
             return ORACLE_DRIVER;
@@ -544,6 +546,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.mysql;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
             return DbType.mariadb;
+        } else if (rawUrl.startsWith("jdbc:tidb:")) {
+            return DbType.tidb;
         } else if (rawUrl.startsWith("jdbc:oracle:") || rawUrl.startsWith("jdbc:log4jdbc:oracle:")) {
             return DbType.oracle;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
@@ -886,7 +890,7 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static List<String> showTables(Connection conn, DbType dbType) throws SQLException {
-        if (DbType.mysql == dbType || DbType.oceanbase == dbType) {
+        if (isMysqlDbType(dbType)) {
             return MySqlUtils.showTables(conn);
         }
 
@@ -905,7 +909,7 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static String getCreateTableScript(Connection conn, DbType dbType, boolean sorted, boolean simplify) throws SQLException {
-        if (DbType.mysql == dbType || DbType.oceanbase == dbType) {
+        if (isMysqlDbType(dbType)) {
             return MySqlUtils.getCreateTableScript(conn, sorted, simplify);
         }
 
@@ -947,8 +951,10 @@ public final class JdbcUtils implements JdbcConstants {
         switch (dbType) {
             case mysql:
             case oceanbase:
+            case ads:
             case drds:
             case mariadb:
+            case tidb:
             case h2:
                 return true;
             default:

@@ -56,6 +56,9 @@ public interface JdbcConstants {
     String MARIADB                    = "mariadb";
     String MARIADB_DRIVER             = "org.mariadb.jdbc.Driver";
 
+    DbType TIDB                       = DbType.tidb;
+    String TIDB_DRIVER                = "io.tidb.bigdata.jdbc.TiDBDriver";
+
     DbType DERBY                      = DbType.derby;
 
     String HBASE                      = "hbase";

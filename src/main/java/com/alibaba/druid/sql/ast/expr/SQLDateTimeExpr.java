@@ -149,6 +149,8 @@ public class SQLDateTimeExpr extends SQLExprImpl implements SQLLiteralExpr, SQLV
             , DbType.presto
             , DbType.trino
             , DbType.postgresql
+            , DbType.mariadb
+            , DbType.tidb
     );
 
     public static boolean isSupport(DbType dbType) {
