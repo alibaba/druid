@@ -119,7 +119,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int                             minIdle                                   = DEFAULT_MIN_IDLE;
     protected volatile int                             maxIdle                                   = DEFAULT_MAX_IDLE;
     protected volatile long                            maxWait                                   = DEFAULT_MAX_WAIT;
-    protected int                                      notFullTimeoutRetryCount                  = 0;
+    protected int                                      notFullTimeoutRetryCount                  = 1;
 
     protected volatile String                          validationQuery                           = DEFAULT_VALIDATION_QUERY;
     protected volatile int                             validationQueryTimeout                    = -1;

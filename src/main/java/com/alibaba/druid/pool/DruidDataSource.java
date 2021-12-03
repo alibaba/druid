@@ -1426,7 +1426,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             try {
                 poolableConnection = getConnectionInternal(maxWaitMillis);
             } catch (GetConnectionTimeoutException ex) {
-                if (notFullTimeoutRetryCnt <= this.notFullTimeoutRetryCount && !isFull()) {
+                if (notFullTimeoutRetryCnt < this.notFullTimeoutRetryCount && !isFull()) {
                     notFullTimeoutRetryCnt++;
                     if (LOG.isWarnEnabled()) {
                         LOG.warn("get connection timeout retry : " + notFullTimeoutRetryCnt);
