@@ -2060,7 +2060,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         boolean withGroup = x.isWithinGroup();
         if (withGroup) {
-            print0(ucase ? ") WITHIN GROUP (" : " within group (");
+            print0(ucase ? ") WITHIN GROUP (" : ") within group (");
         }
 
         visitAggreateRest(x);
