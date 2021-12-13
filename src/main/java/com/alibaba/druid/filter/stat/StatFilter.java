@@ -23,6 +23,7 @@ import java.sql.NClob;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -271,6 +272,15 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         return connection;
+    }
+
+    @Override
+    public boolean connection_isClosed(FilterChain chain, ConnectionProxy connection) throws SQLException {
+        JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
+        if(Objects.nonNull(connection) && dataSourceStat.getConnections().containsKey(connection.getId())) {
+            return false;
+        }
+        return super.connection_isClosed(chain, connection);
     }
 
     @Override
