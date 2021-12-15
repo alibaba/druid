@@ -1267,7 +1267,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
                 int removedCount = 0;
                 for (int i = items.size() - 1; i >= 0; i--) {
                     SQLExpr item = items.get(i);
-                    if (item.equals(condition)) {
+                    if (item.equals(condition)||(item,condition)) {
                         if (SQLUtils.replaceInParent(item, null)) {
                             removedCount++;
                         }
@@ -1453,4 +1453,38 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
         return removeCount > 0;
     }
+	
+	  /**
+      * @Author:bin.chen
+      * @Description:带别名的条件比较，如tt.name='zhangsan' 和 name= 'zhangsan'
+      * @param item : sql中的条件
+      * @para conditon :需要比较的条件
+      * @return 比较结果相同时为true，否则为false;
+     */
+  public boolean compareExpr(SQLExpr item,SQLExpr condition){
+	    
+	    try{        
+	        String leftFieldName=null;
+	        SQLExpr left = ((SQLBinaryOpExpr)item).getLeft();
+	        if(left instanceof SQLPropertyExpr)
+	        leftFieldName=((SQLPropertyExpr)left).getName();
+	        else if(left instanceof SQLIdentifierExpr)
+	        leftFieldName=((SQLIdentifierExpr)left).getName();
+	        else return false;
+	        SQLBinaryOperator leftOperator=((SQLBinaryOpExpr)item).getOperator();
+	        String leftOperatorName=leftOperator.getName();
+	        
+	        SQLExpr conditonLeft = ((SQLBinaryOpExpr)condition).getLeft();
+	        String conditionLeftName=((SQLIdentifierExpr)conditonLeft).getName();
+	        SQLBinaryOperator conditonOperator=((SQLBinaryOpExpr)condition).getOperator();
+	        String conditonOperatorName=conditonOperator.getName();
+
+             if(leftFieldName.equalsIgnoreCase(conditionLeftName) && leftOperatorName.equals(conditonOperatorName))
+             return true;   	        
+	    }catch (Exception ex){	        
+	        return false;
+	    }
+	
+	  return false;
+	}
 }
