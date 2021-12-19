@@ -1534,6 +1534,7 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token == Token.LPAREN) {
                 lexer.nextToken();
                 if (lexer.token == Token.SELECT
+                        || (lexer.token == Token.WITH && dbType == DbType.mysql)
                         || (lexer.token == Token.FROM && (dbType == DbType.odps || dbType == DbType.hive))) {
                     SQLSelect select = this.select();
                     rightTableSource = new SQLSubqueryTableSource(select);
