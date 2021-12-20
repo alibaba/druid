@@ -483,4 +483,62 @@ public class SQLParserUtils {
 
         return buf.toString();
     }
+
+    public static String removeComment(String sql, DbType dbType) {
+        if (dbType == null) {
+            dbType = DbType.other;
+        }
+
+        boolean containsComment = false;
+        {
+            Lexer lexer = createLexer(sql, dbType);
+            lexer.config(SQLParserFeature.SkipComments, false);
+            lexer.config(SQLParserFeature.KeepComments, true);
+
+            while (lexer.token != Token.EOF) {
+                if (lexer.token == Token.LINE_COMMENT || lexer.token == Token.MULTI_LINE_COMMENT) {
+                    containsComment = true;
+                    break;
+                }
+                lexer.nextToken();
+            }
+
+            if (!containsComment) {
+                return sql;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        Lexer lexer = createLexer(sql, dbType);
+        lexer.config(SQLParserFeature.SkipComments, false);
+        lexer.config(SQLParserFeature.KeepComments, true);
+
+        int start = 0;
+        Token token = lexer.token;
+        for (;lexer.token != Token.EOF;) {
+            if (token == Token.LINE_COMMENT) {
+                int len = lexer.startPos - start;
+                if (len > 0) {
+                    sb.append(sql.substring(start, lexer.startPos));
+                }
+                start = lexer.startPos + lexer.stringVal().length();
+            } else if (token == Token.MULTI_LINE_COMMENT) {
+                int len = lexer.startPos - start;
+                if (len > 0) {
+                    sb.append(sql.substring(start, lexer.startPos));
+                }
+                start = lexer.startPos + lexer.stringVal().length();
+            }
+
+            lexer.nextToken();
+            token = lexer.token;
+        }
+
+        if (start != sql.length() && token != Token.LINE_COMMENT && token != Token.MULTI_LINE_COMMENT) {
+            sb.append(sql.substring(start, sql.length()));
+        }
+
+        return sb.toString();
+    }
 }
