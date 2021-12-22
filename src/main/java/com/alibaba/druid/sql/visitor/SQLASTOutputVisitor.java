@@ -10673,6 +10673,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
+        SQLExpr storedBy = x.getStoredBy();
+        if (storedBy != null) {
+            println();
+            print0(ucase ? "STORED BY" : "stored by");
+            print(' ');
+            printExpr(storedBy, parameterized);
+        }
+
         SQLExpr location = x.getLocation();
         if (location != null) {
             println();

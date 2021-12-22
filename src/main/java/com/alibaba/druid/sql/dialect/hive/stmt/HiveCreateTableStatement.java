@@ -39,6 +39,7 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
     protected List<SQLAssignItem>    mappedBy        = new ArrayList<SQLAssignItem>(1);
     protected SQLExpr                intoBuckets;
     protected SQLExpr                using;
+    protected SQLExpr storedBy;
 
     public HiveCreateTableStatement() {
         this.dbType = DbType.hive;
@@ -174,5 +175,15 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
             x.setParent(this);
         }
         this.using = x;
+    }
+    public void setStoredBy(SQLExpr storedBy) {
+        if (storedBy != null) {
+            storedBy.setParent(this);
+        }
+        this.storedBy = storedBy;
+    }
+
+    public SQLExpr getStoredBy() {
+        return storedBy;
     }
 }
