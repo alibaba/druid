@@ -55,4 +55,18 @@ public class DruidDataSourceAutoConfigure {
         LOGGER.info("Init DruidDataSource");
         return new DruidDataSourceWrapper();
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean({MeterRegistry.class, DruidDataSource.class})
+    public DataSourcePoolMetadataProvider druidPoolDataSourceMetadataProvider() {
+        return (dataSource) -> {
+            DruidDataSource ds = DataSourceUnwrapper.unwrap(dataSource,
+                DruidDataSource.class);
+            if (ds != null) {
+                return new DruidDataSourcePoolMetadata(ds);
+            }
+            return null;
+        };
+    }
 }
