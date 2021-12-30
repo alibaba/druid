@@ -5114,11 +5114,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
-        SQLOrderBy sortBy = x.getDistributeBy();
+        SQLOrderBy sortBy = x.getSortBy();
         if (sortBy != null) {
             List<SQLSelectOrderByItem> items = sortBy.getItems();
 
             if (items.size() > 0) {
+                if (distributeBy != null) {
+                    print0(" ");
+                }
                 print0(ucase ? "SORT BY " : "sort by ");
 
                 for (int i = 0, size = items.size(); i < size; ++i) {
