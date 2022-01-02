@@ -15,30 +15,40 @@
  */
 package com.alibaba.druid.spring.boot.autoconfigure;
 
-import javax.sql.DataSource;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.properties.DruidStatProperties;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidSpringAopConfiguration;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidStatViewServletConfiguration;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidWebStatFilterConfiguration;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import javax.sql.DataSource;
+
 /**
+ * 单数据源时，对spring.datasource.type 配置项的支持
+ * <p>
+ * 可以通过配置 spring.datasource.type = com.zaxxer.hikari.HikariDataSource 来切换数据源
+ * <p>
+ * 若未对该配置项进行配置时，则默认使用DruidDataSource，它的优先级更高。
+ *
  * @author lihengming [89921218@qq.com]
  */
 @Configuration
+@ConditionalOnProperty(name = "spring.datasource.type",
+        havingValue = "com.alibaba.druid.pool.DruidDataSource",
+        matchIfMissing = true)
 @ConditionalOnClass(DruidDataSource.class)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties({DruidStatProperties.class, DataSourceProperties.class})
