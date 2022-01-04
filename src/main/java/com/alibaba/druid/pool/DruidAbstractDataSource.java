@@ -1856,7 +1856,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             }
 
             DbType dbType = DbType.of(this.dbTypeName);
-            if (dbType == DbType.mysql || dbType == DbType.ads) {
+            if (JdbcUtils.isMysqlDbType(dbType)) {
                 if (variables != null) {
                     ResultSet rs = null;
                     try {

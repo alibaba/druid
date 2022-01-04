@@ -478,6 +478,7 @@ public class SQLUtils {
                 }
             case mysql:
             case mariadb:
+            case tidb:
                 return new MySqlOutputVisitor(out);
             case postgresql:
                 return new PGOutputVisitor(out);
@@ -532,6 +533,7 @@ public class SQLUtils {
                 return new OracleSchemaStatVisitor(repository);
             case mysql:
             case mariadb:
+            case tidb:
             case elastic_search:
                 return new MySqlSchemaStatVisitor(repository);
             case postgresql:
@@ -639,7 +641,7 @@ public class SQLUtils {
             dbType = DbType.mysql;
         }
         String formatMethod = "";
-        if (DbType.mysql == dbType) {
+        if (JdbcUtils.isMysqlDbType(dbType)) {
             formatMethod = "STR_TO_DATE";
             if (StringUtils.isEmpty(pattern)) pattern = "%Y-%m-%d %H:%i:%s";
         } else if (DbType.oracle == dbType) {
@@ -1011,7 +1013,7 @@ public class SQLUtils {
                         if (OracleUtils.isKeyword(normalizeName)) {
                             return name;
                         }
-                    } else if (DbType.mysql == dbType) {
+                    } else if (JdbcUtils.isMysqlDbType(dbType)) {
                         if (MySqlUtils.isKeyword(normalizeName)) {
                             return name;
                         }

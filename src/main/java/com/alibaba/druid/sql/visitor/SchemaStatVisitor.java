@@ -602,6 +602,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         final SQLASTVisitor orderByVisitor;
         switch (dbType) {
             case mysql:
+            case mariadb:
+            case tidb:
                 return new MySqlOrderByStatVisitor(x);
             case postgresql:
                 return new PGOrderByStatVisitor(x);

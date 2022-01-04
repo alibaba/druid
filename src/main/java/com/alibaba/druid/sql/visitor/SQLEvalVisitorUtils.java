@@ -118,6 +118,7 @@ public class SQLEvalVisitorUtils {
         switch (dbType) {
             case mysql:
             case mariadb:
+            case tidb:
             case h2:
                 return new MySqlEvalVisitorImpl();
             case oracle:
