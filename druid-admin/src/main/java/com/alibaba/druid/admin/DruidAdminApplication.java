@@ -2,6 +2,7 @@ package com.alibaba.druid.admin;
 
 import com.alibaba.druid.admin.config.MonitorProperties;
 import com.alibaba.druid.admin.servlet.MonitorViewServlet;
+import com.alibaba.druid.util.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -21,7 +22,7 @@ public class DruidAdminApplication {
     public ServletRegistrationBean statViewServletRegistrationBean(MonitorProperties properties) {
         ServletRegistrationBean registrationBean = new ServletRegistrationBean();
         registrationBean.setServlet(new MonitorViewServlet());
-        registrationBean.addUrlMappings("/druid/*");
+        registrationBean.addUrlMappings(getUrlMappings(properties));
         if (properties.getLoginUsername() != null) {
             registrationBean.addInitParameter("loginUsername", properties.getLoginUsername());
         }
@@ -30,4 +31,18 @@ public class DruidAdminApplication {
         }
         return registrationBean;
     }
+
+
+    private String getUrlMappings(MonitorProperties properties) {
+        String urlMapping = "/druid/*";
+        if(StringUtils.isEmpty(properties.getContextPath())) {
+            return urlMapping;
+        }
+
+        if(!properties.getContextPath().startsWith("/") || properties.getContextPath().endsWith("/")) {
+            throw new IllegalArgumentException("Druid ContextPath must start with '/' and not end with '/'");
+        }
+        return properties.getContextPath() + "/*";
+    }
+
 }
