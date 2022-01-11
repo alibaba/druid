@@ -106,6 +106,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected volatile String                          username;
     protected volatile String                          password;
+    protected volatile String                          xpseqbtt;
     protected volatile String                          jdbcUrl;
     protected volatile String                          driverClass;
     protected volatile ClassLoader                     driverClassLoader;
@@ -1124,6 +1125,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         this.username = username;
+    }
+
+    public String getXpseqbtt() {
+        return xpseqbtt;
+    }
+
+    public void setXpseqbtt(String xpseqbtt) {
+        this.xpseqbtt = xpseqbtt;
+        setPassword(xpseqbtt);
     }
 
     public String getPassword() {
