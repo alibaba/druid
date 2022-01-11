@@ -413,6 +413,7 @@ public class SchemaRepository {
         switch (dbType) {
             case mysql:
             case mariadb:
+            case tidb:
             case sqlite:
                 resolveVisitor = new SchemaResolveVisitorFactory.MySqlResolveVisitor(this, optionsValue);
                 break;

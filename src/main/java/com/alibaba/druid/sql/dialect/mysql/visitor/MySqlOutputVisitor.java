@@ -94,7 +94,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(MySqlSelectQueryBlock x) {
-        final boolean bracket = x.isBracket();
+        final boolean bracket = x.isParenthesized();
         if (bracket) {
             print('(');
         }

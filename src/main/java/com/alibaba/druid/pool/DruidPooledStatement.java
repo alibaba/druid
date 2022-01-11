@@ -138,7 +138,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             return;
         }
 
-        if (DbType.mysql != DbType.of(dataSource.dbTypeName)) {
+        if (!JdbcUtils.isMysqlDbType(dataSource.dbTypeName)) {
             return;
         }
 

@@ -602,6 +602,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         final SQLASTVisitor orderByVisitor;
         switch (dbType) {
             case mysql:
+            case mariadb:
+            case tidb:
                 return new MySqlOrderByStatVisitor(x);
             case postgresql:
                 return new PGOrderByStatVisitor(x);
@@ -3004,12 +3006,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         SQLSelectQuery left = x.getLeft();
         SQLSelectQuery right = x.getRight();
 
-        boolean bracket = x.isBracket() && !(x.getParent() instanceof SQLUnionQueryTableSource);
+        boolean bracket = x.isParenthesized() && !(x.getParent() instanceof SQLUnionQueryTableSource);
 
         if ((!bracket)
                 && left instanceof SQLUnionQuery
                 && ((SQLUnionQuery) left).getOperator() == operator
-                && !right.isBracket()
+                && !right.isParenthesized()
                 && x.getOrderBy() == null) {
 
             SQLUnionQuery leftUnion = (SQLUnionQuery) left;
@@ -3024,10 +3026,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                     SQLSelectQuery leftLeft = leftUnion.getLeft();
                     SQLSelectQuery leftRight = leftUnion.getRight();
 
-                    if ((!leftUnion.isBracket())
+                    if ((!leftUnion.isParenthesized())
                             && leftUnion.getOrderBy() == null
-                            && (!leftLeft.isBracket())
-                            && (!leftRight.isBracket())
+                            && (!leftLeft.isParenthesized())
+                            && (!leftRight.isParenthesized())
                             && leftLeft instanceof SQLUnionQuery
                             && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
                         rights.add(leftRight);

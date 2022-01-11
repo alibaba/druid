@@ -44,7 +44,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.PGUtils;
@@ -2382,12 +2381,12 @@ class SchemaResolveVisitorFactory {
         SQLSelectQuery left = x.getLeft();
         SQLSelectQuery right = x.getRight();
 
-        boolean bracket = x.isBracket() && !(x.getParent() instanceof SQLUnionQueryTableSource);
+        boolean bracket = x.isParenthesized() && !(x.getParent() instanceof SQLUnionQueryTableSource);
 
         if ((!bracket)
                 && left instanceof SQLUnionQuery
                 && ((SQLUnionQuery) left).getOperator() == operator
-                && !right.isBracket()
+                && !right.isParenthesized()
                 && x.getOrderBy() == null) {
 
             SQLUnionQuery leftUnion = (SQLUnionQuery) left;
@@ -2402,10 +2401,10 @@ class SchemaResolveVisitorFactory {
                     SQLSelectQuery leftLeft = leftUnion.getLeft();
                     SQLSelectQuery leftRight = leftUnion.getRight();
 
-                    if ((!leftUnion.isBracket())
+                    if ((!leftUnion.isParenthesized())
                             && leftUnion.getOrderBy() == null
-                            && (!leftLeft.isBracket())
-                            && (!leftRight.isBracket())
+                            && (!leftLeft.isParenthesized())
+                            && (!leftRight.isParenthesized())
                             && leftLeft instanceof SQLUnionQuery
                             && ((SQLUnionQuery) leftLeft).getOperator() == operator) {
                         rights.add(leftRight);

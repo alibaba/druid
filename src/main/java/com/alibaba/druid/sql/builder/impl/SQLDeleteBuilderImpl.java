@@ -127,6 +127,8 @@ public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
             case oracle:
                 return new OracleDeleteStatement();
             case mysql:
+            case mariadb:
+            case tidb:
                 return new MySqlDeleteStatement();
             case postgresql:
                 return new PGDeleteStatement();

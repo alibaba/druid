@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.2.7_preview_28</version>
+	<version>1.2.9_preview_01</version>
 	<packaging>jar</packaging>
 	<name>druid</name>
 	<description>A JDBC datasource implementation.</description>
@@ -428,7 +428,7 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.13.2</version>
+			<version>2.17.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -722,12 +722,5 @@
 			<version>4.2.0</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.2.5</version>
-            <scope>compile</scope>
-        </dependency>
-
     </dependencies>
 </project>

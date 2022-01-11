@@ -38,6 +38,6 @@ public class MySqlError_test_3 extends MysqlTest {
 
         Assert.assertNotNull(error);
 //        error.printStackTrace();
-        Assert.assertEquals("syntax error, error in :'us = LIMIT ?, ?, pos 248, line 1, column 248, token ?", error.getMessage());
+        Assert.assertEquals("not supported.pos 248, line 1, column 248, token ?", error.getMessage());
     }
 }

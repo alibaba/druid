@@ -39,7 +39,7 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
 
 
 
-    private boolean             bracket  = false;
+    private boolean parenthesized = false;
 
     // only for parameterized output
     protected transient List<SQLObject> mergedList;
@@ -154,12 +154,12 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         this.operator = operator;
     }
 
-    public boolean isBracket() {
-        return bracket;
+    public boolean isParenthesized() {
+        return parenthesized;
     }
 
-    public void setBracket(boolean bracket) {
-        this.bracket = bracket;
+    public void setParenthesized(boolean parenthesized) {
+        this.parenthesized = parenthesized;
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -244,7 +244,7 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         }
         x.operator = operator;
         x.dbType = dbType;
-        x.bracket = bracket;
+        x.parenthesized = parenthesized;
 
         if (hint != null) {
             x.hint = hint.clone();

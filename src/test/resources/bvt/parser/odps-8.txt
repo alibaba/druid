@@ -1,0 +1,42 @@
+select *
+from (
+    select id, collectId, 3 as c_0
+    from (
+        SELECT *
+        FROM tc_merchant
+        where collectId in (select collect_id from cte_merchant)
+        UNION
+        SELECT *
+        FROM st_merchant
+        where collectId in (select collect_id from st_merchant_tmp)
+        )
+        union
+        select id, collectId, c2
+        from (select id, collectId, c2 from table_2)
+)
+---------------------------
+SELECT *
+FROM (
+	SELECT id, collectId, 3 AS c_0
+	FROM (
+		SELECT *
+		FROM tc_merchant
+		WHERE collectId IN (
+			SELECT collect_id
+			FROM cte_merchant
+		)
+		UNION
+		SELECT *
+		FROM st_merchant
+		WHERE collectId IN (
+			SELECT collect_id
+			FROM st_merchant_tmp
+		)
+	)
+	UNION
+	SELECT id, collectId, c2
+	FROM (
+		SELECT id, collectId, c2
+		FROM table_2
+	)
+)

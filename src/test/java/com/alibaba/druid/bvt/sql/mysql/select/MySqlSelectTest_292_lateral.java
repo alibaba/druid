@@ -31,9 +31,9 @@ public class MySqlSelectTest_292_lateral extends MysqlTest {
 
         assertEquals("SELECT *\n" +
                 "FROM t\n" +
-                "\tCROSS JOIN LATERAL((\n" +
+                "\tCROSS JOIN LATERAL(\n" +
                 "\t\tVALUES (1)\n" +
-                "\t))", stmt.toString());
+                "\t)", stmt.toString());
 
         System.out.println(stmt.toString());
     }
@@ -46,9 +46,9 @@ public class MySqlSelectTest_292_lateral extends MysqlTest {
 
         assertEquals("SELECT *\n" +
                 "FROM t\n" +
-                "\tFULL JOIN LATERAL((\n" +
+                "\tFULL JOIN LATERAL(\n" +
                 "\t\tVALUES (1)\n" +
-                "\t)) ON true", stmt.toString());
+                "\t) ON true", stmt.toString());
 
         System.out.println(stmt.toString());
     }
@@ -60,9 +60,9 @@ public class MySqlSelectTest_292_lateral extends MysqlTest {
                 .parseSingleStatement(sql, DbType.mysql);
 
         assertEquals("SELECT *\n" +
-                "FROM t, LATERAL((\n" +
+                "FROM t, LATERAL(\n" +
                 "\t\tVALUES (1)\n" +
-                "\t))  AS a (x)", stmt.toString());
+                "\t)  AS a (x)", stmt.toString());
 
         System.out.println(stmt.toString());
     }

@@ -130,6 +130,7 @@ public class SQLParserUtils {
             case hive:
                 return new HiveStatementParser(sql, features);
             case presto:
+            case trino:
                 return new PrestoStatementParser(sql);
             case ads:
                 return new AdsStatementParser(sql);
@@ -173,6 +174,7 @@ public class SQLParserUtils {
             case phoenix:
                 return new PhoenixExprParser(sql, features);
             case presto:
+            case trino:
                 return new PrestoExprParser(sql, features);
             case hive:
                 return new HiveExprParser(sql, features);
@@ -213,6 +215,7 @@ public class SQLParserUtils {
             case phoenix:
                 return new PhoenixLexer(sql);
             case presto:
+            case trino:
                 return new PrestoLexer(sql);
             case antspark:
                 return new AntsparkLexer(sql);

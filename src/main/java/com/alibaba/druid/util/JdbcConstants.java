@@ -56,6 +56,9 @@ public interface JdbcConstants {
     String MARIADB                    = "mariadb";
     String MARIADB_DRIVER             = "org.mariadb.jdbc.Driver";
 
+    DbType TIDB                       = DbType.tidb;
+    String TIDB_DRIVER                = "io.tidb.bigdata.jdbc.TiDBDriver";
+
     DbType DERBY                      = DbType.derby;
 
     String HBASE                      = "hbase";
@@ -71,7 +74,7 @@ public interface JdbcConstants {
 
     DbType KINGBASE                   = DbType.kingbase;
     String KINGBASE_DRIVER            = "com.kingbase.Driver";
-    String KINGBASE8_DRIVER           = "om.kingbase8.Driver";
+    String KINGBASE8_DRIVER           = "com.kingbase8.Driver";
 
     DbType GBASE                      = DbType.gbase;
     String GBASE_DRIVER               = "com.gbase.jdbc.Driver";
@@ -141,4 +144,10 @@ public interface JdbcConstants {
      */
     DbType GREENPLUM                    = DbType.greenplum;
     String GREENPLUM_DRIVER             = "com.pivotal.jdbc.GreenplumDriver";
+
+    /**
+     * oscar
+     */
+    DbType OSCAR                      = DbType.oscar;
+    String OSCAR_DRIVER               = "com.oscar.Driver";
 }

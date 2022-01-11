@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsObject;
-import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ import java.util.List;
  * Created by wenshao on 23/02/2017.
  */
 public class SQLValuesTableSource extends SQLTableSourceImpl implements SQLSelectQuery, SQLReplaceable {
-    private boolean bracket;
+    private boolean parenthesized;
     private List<SQLListExpr> values = new ArrayList<SQLListExpr>();
     private List<SQLName> columns = new ArrayList<SQLName>();
 
@@ -76,13 +74,13 @@ public class SQLValuesTableSource extends SQLTableSourceImpl implements SQLSelec
     }
 
     @Override
-    public boolean isBracket() {
-        return bracket;
+    public boolean isParenthesized() {
+        return parenthesized;
     }
 
     @Override
-    public void setBracket(boolean bracket) {
-        this.bracket = bracket;
+    public void setParenthesized(boolean paren) {
+        this.parenthesized = paren;
     }
 
     @Override
