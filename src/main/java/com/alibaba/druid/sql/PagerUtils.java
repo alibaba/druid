@@ -161,6 +161,7 @@ public class PagerUtils {
             case tidb:
             case h2:
             case ads:
+            case clickhouse:
                 return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
             case postgresql:
             case hive:
