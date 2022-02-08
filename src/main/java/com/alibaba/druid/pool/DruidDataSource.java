@@ -1333,7 +1333,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
+        } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)
+            || (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER2))) {
+            DbType dbType = DbType.of(this.dbTypeName);
+            this.validConnectionChecker = new OceanBaseValidConnectionChecker(dbType);
         }
+
     }
 
     private void initExceptionSorter() {

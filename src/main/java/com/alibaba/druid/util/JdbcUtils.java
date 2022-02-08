@@ -928,13 +928,13 @@ public final class JdbcUtils implements JdbcConstants {
 
     public static boolean isOracleDbType(String dbType) {
         return DbType.oracle.name().equals(dbType) || //
-                DbType.oceanbase.name().equals(dbType) || //
+                DbType.oceanbase_oracle.name().equals(dbType) || //
                 DbType.ali_oracle.name().equalsIgnoreCase(dbType);
     }
 
     public static boolean isOracleDbType(DbType dbType) {
         return DbType.oracle == dbType || //
-                DbType.oceanbase == dbType || //
+                DbType.oceanbase_oracle == dbType || //
                 DbType.ali_oracle == dbType;
     }
 
