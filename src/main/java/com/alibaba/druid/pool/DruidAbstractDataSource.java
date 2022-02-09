@@ -1480,23 +1480,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     holder.lastExecTimeMillis = currentTimeMillis;
                 }
 
-                if (valid && isMySql) { // unexcepted branch
-                    long lastPacketReceivedTimeMs = MySqlUtils.getLastPacketReceivedTimeMs(conn);
-                    if (lastPacketReceivedTimeMs > 0) {
-                        long mysqlIdleMillis = currentTimeMillis - lastPacketReceivedTimeMs;
-                        if (lastPacketReceivedTimeMs > 0 //
-                                && mysqlIdleMillis >= timeBetweenEvictionRunsMillis) {
-                            discardConnection(holder);
-                            String errorMsg = "discard long time none received connection. "
-                                    + ", jdbcUrl : " + jdbcUrl
-                                    + ", version : " + VERSION.getVersionNumber()
-                                    + ", lastPacketReceivedIdleMillis : " + mysqlIdleMillis;
-                            LOG.warn(errorMsg);
-                            return false;
-                        }
-                    }
-                }
-
                 if (valid && onFatalError) {
                     lock.lock();
                     try {
