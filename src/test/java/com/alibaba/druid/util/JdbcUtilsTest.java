@@ -51,4 +51,16 @@ public class JdbcUtilsTest extends TestCase {
         assertTrue("TiDB suppose to be a MySQL compatible DB", JdbcUtils.isMysqlDbType("tidb"));
         assertTrue("TiDB suppose to be a MySQL compatible DB", JdbcUtils.isMySqlDriver(JdbcUtils.TIDB_DRIVER));
     }
+
+    public void testGetTypeOceanBase_mysql() {
+        String jdbcUrl = "jdbc:oceanbase://localhost:3306/test";
+        String dbType = JdbcUtils.getDbType(jdbcUrl, null);
+        assertEquals("Does not support OceanBase, for url like jdbc:oceanbase:...", DbType.oceanbase, dbType);
+    }
+
+    public void testGetTypeOceanBase_oracle() {
+        String jdbcUrl = "jdbc:oceanbase:oracle://localhost:3306/test";
+        String dbType = JdbcUtils.getDbType(jdbcUrl, null);
+        assertEquals("Does not support OceanBase, for url like jdbc:oceanbase:oracle:...", DbType.oceanbase_oracle, dbType);
+    }
 }
