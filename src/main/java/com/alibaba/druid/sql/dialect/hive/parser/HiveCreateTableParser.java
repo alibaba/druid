@@ -251,21 +251,29 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.identifierEquals(FnvHash.Constants.STORED)) {
             lexer.nextToken();
-            accept(Token.AS);
-
-            if (lexer.identifierEquals(FnvHash.Constants.INPUTFORMAT)) {
-                HiveInputOutputFormat format = new HiveInputOutputFormat();
+            if (lexer.token() == Token.AS) {
                 lexer.nextToken();
-                format.setInput(this.exprParser.primary());
-
-                if (lexer.identifierEquals(FnvHash.Constants.OUTPUTFORMAT)) {
+                if (lexer.identifierEquals(FnvHash.Constants.INPUTFORMAT)) {
+                    HiveInputOutputFormat format = new HiveInputOutputFormat();
                     lexer.nextToken();
-                    format.setOutput(this.exprParser.primary());
+                    format.setInput(this.exprParser.primary());
+
+                    if (lexer.identifierEquals(FnvHash.Constants.OUTPUTFORMAT)) {
+                        lexer.nextToken();
+                        format.setOutput(this.exprParser.primary());
+                    }
+                    stmt.setStoredAs(format);
+                } else {
+                    SQLName name = this.exprParser.name();
+                    stmt.setStoredAs(name);
                 }
-                stmt.setStoredAs(format);
+            } else if (lexer.token() == Token.BY) {
+                lexer.nextToken();
+                SQLExpr storedBy = this.exprParser.expr();
+                stmt.setStoredBy(storedBy);
             } else {
-                SQLName name = this.exprParser.name();
-                stmt.setStoredAs(name);
+                setErrorEndPos(lexer.pos());
+                printError(lexer.token());
             }
         }
 
