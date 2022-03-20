@@ -843,10 +843,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             DbType dbType = DbType.of(this.dbTypeName);
-            if (dbType == DbType.mysql
-                    || dbType == DbType.mariadb
-                    || dbType == DbType.oceanbase
-                    || dbType == DbType.ads) {
+            if (JdbcUtils.isMysqlDbType(dbType)) {
                 boolean cacheServerConfigurationSet = false;
                 if (this.connectProperties.containsKey("cacheServerConfiguration")) {
                     cacheServerConfigurationSet = true;
@@ -1321,7 +1318,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         String realDriverClassName = driver.getClass().getName();
         if (JdbcUtils.isMySqlDriver(realDriverClassName)) {
-            this.validConnectionChecker = new MySqlValidConnectionChecker();
+            this.validConnectionChecker = new MySqlValidConnectionChecker(usePingMethod);
 
         } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
@@ -1336,7 +1333,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
+        } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)
+            || (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER2))) {
+            DbType dbType = DbType.of(this.dbTypeName);
+            this.validConnectionChecker = new OceanBaseValidConnectionChecker(dbType);
         }
+
     }
 
     private void initExceptionSorter() {

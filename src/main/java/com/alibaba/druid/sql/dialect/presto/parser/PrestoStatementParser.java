@@ -18,7 +18,8 @@ package com.alibaba.druid.sql.dialect.presto.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
-import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixExprParser;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -33,6 +34,18 @@ public class PrestoStatementParser extends SQLStatementParser {
 
     public PrestoStatementParser(Lexer lexer){
         super(new PrestoExprParser(lexer));
+    }
+
+    @Override
+    public PrestoSelectParser createSQLSelectParser() {
+        return new PrestoSelectParser(this.exprParser, selectListCache);
+    }
+
+    @Override
+    public PGSelectStatement parseSelect() {
+        PrestoSelectParser selectParser = createSQLSelectParser();
+        SQLSelect select = selectParser.select();
+        return new PGSelectStatement(select);
     }
 
     @Override

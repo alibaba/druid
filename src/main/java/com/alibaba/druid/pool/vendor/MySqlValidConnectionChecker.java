@@ -45,7 +45,7 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
     private Method   ping;
     private boolean  usePingMethod = false;
 
-    public MySqlValidConnectionChecker(){
+    public MySqlValidConnectionChecker(boolean usePingMethod){
         try {
             clazz = Utils.loadClass("com.mysql.jdbc.MySQLConnection");
             if (clazz == null) {
@@ -56,8 +56,8 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
                 ping = clazz.getMethod("pingInternal", boolean.class, int.class);
             }
 
-            if (ping != null) {
-                usePingMethod = true;
+            if (ping != null && usePingMethod == true) {
+                this.usePingMethod = true;
             }
         } catch (Exception e) {
             LOG.warn("Cannot resolve com.mysql.jdbc.Connection.ping method.  Will use 'SELECT 1' instead.", e);

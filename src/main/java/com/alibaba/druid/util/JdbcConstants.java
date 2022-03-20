@@ -56,6 +56,9 @@ public interface JdbcConstants {
     String MARIADB                    = "mariadb";
     String MARIADB_DRIVER             = "org.mariadb.jdbc.Driver";
 
+    DbType TIDB                       = DbType.tidb;
+    String TIDB_DRIVER                = "io.tidb.bigdata.jdbc.TiDBDriver";
+
     DbType DERBY                      = DbType.derby;
 
     String HBASE                      = "hbase";
@@ -82,6 +85,7 @@ public interface JdbcConstants {
     DbType OCEANBASE                  = DbType.oceanbase;
     DbType OCEANBASE_ORACLE           = DbType.oceanbase_oracle;
     String OCEANBASE_DRIVER           = "com.alipay.oceanbase.jdbc.Driver";
+    String OCEANBASE_DRIVER2          = "com.oceanbase.jdbc.Driver";
 
     DbType INFORMIX                   = DbType.informix;
     
@@ -147,4 +151,5 @@ public interface JdbcConstants {
      */
     DbType OSCAR                      = DbType.oscar;
     String OSCAR_DRIVER               = "com.oscar.Driver";
+
 }

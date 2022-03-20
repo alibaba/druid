@@ -43,6 +43,7 @@ public final class ExportParameterVisitorUtils {
         switch (dbType) {
             case mysql:
             case mariadb:
+            case tidb:
                 return new MySqlExportParameterVisitor(out);
             case oracle:
                 return new OracleExportParameterVisitor(out);

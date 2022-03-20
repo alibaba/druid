@@ -40,4 +40,27 @@ public class JdbcUtilsTest extends TestCase {
         assertEquals("not support log4jdbc mysql, url like jdbc:log4jdbc:mysql:...", DbType.mysql, dbType);
     }
 
+    public void testGetDbTypeTiDB() {
+        String jdbcUrl = "jdbc:tidb://localhost:4000/test";
+        String dbType = JdbcUtils.getDbType(jdbcUrl, null);
+        assertEquals("Does not support TiDB, for url like jdbc:tidb:...", DbType.tidb, dbType);
+    }
+
+    public void testTiDBIsMySQLDBType() {
+        assertTrue("TiDB suppose to be a MySQL compatible DB", JdbcUtils.isMysqlDbType(DbType.tidb));
+        assertTrue("TiDB suppose to be a MySQL compatible DB", JdbcUtils.isMysqlDbType("tidb"));
+        assertTrue("TiDB suppose to be a MySQL compatible DB", JdbcUtils.isMySqlDriver(JdbcUtils.TIDB_DRIVER));
+    }
+
+    public void testGetTypeOceanBase_mysql() {
+        String jdbcUrl = "jdbc:oceanbase://localhost:3306/test";
+        String dbType = JdbcUtils.getDbType(jdbcUrl, null);
+        assertEquals("Does not support OceanBase, for url like jdbc:oceanbase:...", DbType.oceanbase, dbType);
+    }
+
+    public void testGetTypeOceanBase_oracle() {
+        String jdbcUrl = "jdbc:oceanbase:oracle://localhost:3306/test";
+        String dbType = JdbcUtils.getDbType(jdbcUrl, null);
+        assertEquals("Does not support OceanBase, for url like jdbc:oceanbase:oracle:...", DbType.oceanbase_oracle, dbType);
+    }
 }
