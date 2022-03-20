@@ -565,7 +565,7 @@ public class SQLUtils {
         List<SQLStatement> stmtList = new ArrayList<SQLStatement>();
         parser.parseStatementList(stmtList, -1, null);
         if (parser.getLexer().token() != Token.EOF) {
-            throw new ParserException("syntax error : " + sql);
+            throw new ParserException("syntax error : " + parser.getLexer().info());
         }
         return stmtList;
     }
