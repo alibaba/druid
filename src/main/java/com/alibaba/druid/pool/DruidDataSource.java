@@ -1318,7 +1318,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         String realDriverClassName = driver.getClass().getName();
         if (JdbcUtils.isMySqlDriver(realDriverClassName)) {
-            this.validConnectionChecker = new MySqlValidConnectionChecker();
+            this.validConnectionChecker = new MySqlValidConnectionChecker(usePingMethod);
 
         } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
