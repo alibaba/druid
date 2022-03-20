@@ -1054,7 +1054,15 @@ public class SQLSelectParser extends SQLParser {
                 break;
             }
 
+            int line = lexer.line;
             lexer.nextToken();
+            if (lexer.hasComment()
+                    && lexer.isKeepComments()
+                    && lexer.getComments().size() == 1
+                    && lexer.getComments().get(0).startsWith("--")
+                    && lexer.line == line + 1) {
+                selectItem.addAfterComment(lexer.readAndResetComments());
+            }
         }
     }
 
@@ -1080,7 +1088,7 @@ public class SQLSelectParser extends SQLParser {
                 SQLSelectQuery selectQuery = select.getQuery();
                 selectQuery.setParenthesized(true);
 
-                boolean acceptUnion = !(selectQuery instanceof SQLUnionQuery);
+                boolean acceptUnion = !(selectQuery instanceof SQLUnionQuery) && dbType != DbType.odps;
                 SQLSelectQuery query = queryRest(selectQuery, acceptUnion);
                 if (query instanceof SQLUnionQuery) {
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);

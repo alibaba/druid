@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.odps.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
@@ -25,6 +26,7 @@ import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -222,8 +224,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             print(')');
         }
 
-        this.printTblProperties(x);
-
         SQLExpr location = x.getLocation();
         if (location != null) {
             println();
@@ -231,12 +231,22 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             location.accept(this);
         }
 
+        this.printTblProperties(x);
+
         SQLExpr using = x.getUsing();
         if (using != null) {
             println();
             print0(ucase ? "USING " : "using ");
             using.accept(this);
         }
+
+        return false;
+    }
+
+    public boolean visit(SQLDecimalExpr x) {
+        BigDecimal value = x.getValue();
+        print(value.toString());
+        print("BD");
 
         return false;
     }

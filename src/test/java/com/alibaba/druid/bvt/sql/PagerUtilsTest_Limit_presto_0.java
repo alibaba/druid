@@ -16,7 +16,7 @@ public class PagerUtilsTest_Limit_presto_0 extends TestCase {
     public void test_presto_0() throws Exception {
         String result = PagerUtils.limit("SELECT * FROM test", DbType.presto, 0, 10);
         System.out.println(result);
-        String sureResult = "SELECT *\n" + "FROM test\n" + " OFFSET 1 LIMIT 10";
+        String sureResult = "SELECT *\n" + "FROM test\n" + " LIMIT 10";
         Assert.assertEquals(sureResult, result);
     }
 

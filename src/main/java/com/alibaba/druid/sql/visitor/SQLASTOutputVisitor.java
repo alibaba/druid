@@ -11216,6 +11216,34 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public boolean visit(SQLOptimizeStatement x) {
+        print0(ucase ? "OPTIMIZE TABLE " : "optimize table ");
+
+        printAndAccept(x.getTableSources(), ", ");
+
+        SQLName cluster = x.getCluster();
+        if (cluster != null) {
+            print0(ucase ? " ON CLUSTER " : " on cluster ");
+            cluster.accept(this);
+        }
+
+        if (x.isFinal()) {
+            print0(ucase ? " FINAL" : " final");
+        }
+
+        if (x.isDeduplicate()) {
+            print0(ucase ? " DEDUPLICATE" : " deduplicate");
+
+            SQLExpr deduplicateBy = x.getDeduplicateBy();
+            if (deduplicateBy != null) {
+                print0(ucase ? " BY " : " by ");
+                deduplicateBy.accept(this);
+            }
+        }
+
+        return false;
+    }
+
     public char getNameQuote() {
         return quote;
     }

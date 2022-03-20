@@ -30,7 +30,7 @@ public class PGSelectTest83
                         ") a"
                 , stmt.toString());
 
-        assertEquals("select percentile_cont(0.5 within group (order by m asc)\n" +
+        assertEquals("select percentile_cont(0.5) within group (order by m asc)\n" +
                 "from (\n" +
                 "\t(select distinct extract(month from paidon) as m\n" +
                 "\tfrom core_order\n" +

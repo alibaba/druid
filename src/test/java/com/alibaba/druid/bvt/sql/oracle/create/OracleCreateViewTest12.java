@@ -220,7 +220,8 @@ public class OracleCreateViewTest12 extends OracleTest {
                         "\t\t\t, 'OSG' AS item_type, HEADER.QUANTITY AS item_quantity\n" +
                         "\t\t\t, LINE.REF_PRICE + nvl(REPLY.MARKET_REFERENCE_PRICE, 0) AS COST_PRICE\n" +
                         "\t\t\t, 1 AS COST_PRICE_PARAMETER, 'Y' AS CONFIRM_FLAG, 0 AS COST_PRICE04, 1 AS CONFIRM_ITEM_PARAM, 'Y' AS CONFIRM_FLAG04\n" +
-                        "\t\t\t, 1 AS OLD_COST, HEADER.LIST_PRICE AS LIST_PRICE, '+Mn\u0016-�' AS ITEM_CODE\n" +
+                        "\t\t\t, 1 AS OLD_COST -- LINE.PRICE+nvl(REPLY.LIST_PRICE,0) LIST_PRICE,\n" +
+                        "\t\t\t, HEADER.LIST_PRICE AS LIST_PRICE, '+Mn\u0016-�' AS ITEM_CODE\n" +
                         "\t\t\t, LINE.COST + nvl(REPLY.RMBPRICE_WITHTAX, 0) AS CONFIRM_COST_PRICE04\n" +
                         "\t\tFROM TCP_CPR.DIFF_CON_OSG3_HEADERS HEADER, ERP_ZTE.ZTE_KX_OSG3_SERIALS ser, ERP_ZTE.zte_kx_osg3_reply_headers REPLY, (\n" +
                         "\t\t\tSELECT LINE.OSG_HEADER_ID, SUM((LINE.QUANTITY - LINE.THEORETIC_QTY) * PART.rmbprice_withtax) AS COST\n" +
@@ -238,8 +239,8 @@ public class OracleCreateViewTest12 extends OracleTest {
                         "\t\tUNION ALL\n" +
                         "\t\tSELECT item.osg_type_id AS osg_type_id, ITEM.PARENT_ID AS CONTRACT_MODULE_ID, item.osg_item_id AS item_id, ITEM.OSG_ITEM_ID AS CONTRACT_ITEM_ID, SYS_ITEM.DESCRIPTION AS item_name\n" +
                         "\t\t\t, 'SINGLEOSG' AS item_type, ITEM.QUANTITY AS item_quantity, SYS_ITEM.MARKET_REFERENCE_PRICE AS COST_PRICE, 1 AS COST_PRICE_PARAMETER, SYS_ITEM.ENABLED_FLAG AS CONFIRM_FLAG\n" +
-                        "\t\t\t, 0 AS COST_PRICE04, 1 AS CONFIRM_ITEM_PARAM, 'Y' AS CONFIRM_FLAG04, 1 AS OLD_COST, ITEM.LIST_PRICE AS LIST_PRICE\n" +
-                        "\t\t\t, SYS_ITEM.INVENTORY_ID || '\n" +
+                        "\t\t\t, 0 AS COST_PRICE04, 1 AS CONFIRM_ITEM_PARAM, 'Y' AS CONFIRM_FLAG04, 1 AS OLD_COST -- SYS_ITEM.LIST_PRICE LIST_PRICE,\n" +
+                        "\t\t\t, ITEM.LIST_PRICE AS LIST_PRICE, SYS_ITEM.INVENTORY_ID || '\n" +
                         "+Mn\u0016-�' AS ITEM_CODE, SYS_ITEM.PRICE AS CONFIRM_COST_PRICE04\n" +
                         "\t\tFROM TCP_CPR.DIFF_CON_OSG3A_HEADERS ITEM, ERP_ZTE.ZTE_KX_OSG3_ITEMS SYS_ITEM\n" +
                         "\t\tWHERE ITEM.OSG_ITEM_ID = SYS_ITEM.OSG_ITEM_ID\n" +

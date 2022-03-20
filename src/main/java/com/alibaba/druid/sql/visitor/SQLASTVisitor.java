@@ -2713,4 +2713,12 @@ public interface SQLASTVisitor {
 
     }
 
+    default boolean visit(SQLOptimizeStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLOptimizeStatement x) {
+
+    }
+
 }

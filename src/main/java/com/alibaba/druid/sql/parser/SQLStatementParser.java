@@ -605,6 +605,13 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.identifierEquals("OPTIMIZE")) {
+                SQLStatement stmt = parseOptimize();
+                statementList.add(stmt);
+                stmt.setParent(parent);
+                continue;
+            }
+
             int size = statementList.size();
             if (parseStatementListDialect(statementList)) {
                 if (parent != null) {
@@ -624,6 +631,44 @@ public class SQLStatementParser extends SQLParser {
         }
 
 
+    }
+
+    public SQLStatement parseOptimize() {
+        acceptIdentifier("OPTIMIZE");
+        accept(TABLE);
+
+        SQLOptimizeStatement stmt = new SQLOptimizeStatement();
+        List<SQLName> names = new ArrayList<SQLName>();
+        this.exprParser.names(names, stmt);
+
+        for (SQLName name : names) {
+            stmt.addTableSource(new SQLExprTableSource(name));
+        }
+
+        if (lexer.token == ON) {
+            lexer.nextToken();
+            acceptIdentifier("CLUSTER");
+            SQLName cluster = this.exprParser.name();
+            stmt.setCluster(cluster);
+        }
+
+        if (lexer.identifierEquals("FINAL")) {
+            lexer.nextToken();
+            stmt.setFinal(true);
+        }
+
+        if (lexer.identifierEquals("DEDUPLICATE")) {
+            lexer.nextToken();
+            stmt.setDeduplicate(true);
+            if (lexer.token == BY) {
+                lexer.nextToken();
+                stmt.setDeduplicateBy(
+                        this.exprParser.expr()
+                );
+            }
+        }
+
+        return stmt;
     }
 
     public SQLStatement parseCopy() {
@@ -7253,8 +7298,10 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token() == Token.AS) {
             lexer.setToken(Token.IDENTIFIER);
             lexer.nextToken();
-            SQLExpr className = this.exprParser.expr();
-            stmt.setClassName(className);
+            if (lexer.token != BEGIN && !lexer.identifierEquals(Constants.BEGIN)) {
+                SQLExpr className = this.exprParser.expr();
+                stmt.setClassName(className);
+            }
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.LOCATION)) {

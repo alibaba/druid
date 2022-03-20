@@ -17,6 +17,7 @@ public class ClickhouseLexer extends Lexer {
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
+        map.put("IF", Token.IF);
         map.put("OF", Token.OF);
         map.put("CONCAT", Token.CONCAT);
         map.put("CONTINUE", Token.CONTINUE);

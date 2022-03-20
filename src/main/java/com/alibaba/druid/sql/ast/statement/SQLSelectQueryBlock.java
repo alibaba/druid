@@ -1189,6 +1189,19 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
                     && ((SQLPropertyExpr) selectItemExpr).getName().equals("*")) {
                 SQLTableSource resolvedTableSource = ((SQLPropertyExpr) selectItemExpr).getResolvedTableSource();
                 if (resolvedTableSource instanceof SQLSubqueryTableSource) {
+
+                    boolean isParentTableSource = false;
+                    for (SQLObject parent = this.getParent(); parent != null; parent = parent.getParent()) {
+                        if (parent == resolvedTableSource) {
+                            isParentTableSource = true;
+                            break;
+                        }
+                    }
+
+                    if (isParentTableSource) {
+                        return null;
+                    }
+
                     SQLObject resolveColumn = resolvedTableSource.resolveColum(columnNameHash);
                     if (resolveColumn != null) {
                         return resolveColumn;
