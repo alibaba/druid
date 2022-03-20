@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.utils;
 
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +54,7 @@ public class JdbcUtilsTest extends TestCase {
             Assert.assertEquals(0, list.size());
         }
         {
-            Map<String, Object> data = new HashMap<String, Object>();
+            Map<String, Object> data = new LinkedHashMap<String, Object>();
             data.put("id", 123);
             data.put("name", "高傲的羊");
             JdbcUtils.insertToTable(dataSource, "user", data);
