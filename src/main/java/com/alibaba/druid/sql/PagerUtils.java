@@ -698,6 +698,7 @@ public class PagerUtils {
     private static class OracleUnorderedLimitDetectVisitor extends OracleASTVisitorAdapter {
         public int unorderedLimitCount;
 
+        @Override
         public boolean visit(SQLBinaryOpExpr x) {
             SQLExpr left = x.getLeft();
             SQLExpr right = x.getRight();
