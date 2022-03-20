@@ -165,6 +165,7 @@ public class PagerUtils {
             case postgresql:
             case hive:
             case odps:
+            case presto:
                 return limitSQLQueryBlock(queryBlock, dbType, offset, count, check);
             case oracle:
             case oceanbase_oracle:

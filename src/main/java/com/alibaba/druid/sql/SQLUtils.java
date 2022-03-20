@@ -43,6 +43,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleToMySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.*;
@@ -499,6 +500,8 @@ public class SQLUtils {
                 return new BlinkOutputVisitor(out);
             case antspark:
                 return new AntsparkOutputVisitor(out);
+            case presto:
+                return new PrestoOutputVisitor(out);
             case clickhouse:
                 return new ClickhouseOutputVisitor(out);
             default:

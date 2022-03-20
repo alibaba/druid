@@ -34,6 +34,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTParameterizedVisito
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
+import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -78,7 +79,7 @@ public class ParameterizedOutputVisitorUtils {
         return parameterize(sql, dbType, null, null);
     }
 
-    public static String parameterize(String sql, DbType dbType, VisitorFeature ...features) {
+    public static String parameterize(String sql, DbType dbType, VisitorFeature...features) {
         return parameterize(sql, dbType, null, features);
     }
 
@@ -408,6 +409,8 @@ public class ParameterizedOutputVisitorUtils {
                 return new DB2OutputVisitor(out, true);
             case phoenix:
                 return new PhoenixOutputVisitor(out, true);
+            case presto:
+                return new PrestoOutputVisitor(out, true);
             default:
                 return new SQLASTOutputVisitor(out, true);
         }
