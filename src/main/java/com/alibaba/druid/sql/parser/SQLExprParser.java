@@ -2695,7 +2695,7 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.SIBLINGS)) {
                 lexer.nextToken();
-                orderBy.setSibings(true);
+                orderBy.setSiblings(true);
             }
 
             accept(Token.BY);
@@ -2745,7 +2745,7 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.SIBLINGS)) {
                 lexer.nextToken();
-                orderBy.setSibings(true);
+                orderBy.setSiblings(true);
             }
 
             accept(Token.BY);
@@ -2770,7 +2770,7 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.SIBLINGS)) {
                 lexer.nextToken();
-                orderBy.setSibings(true);
+                orderBy.setSiblings(true);
             }
 
             accept(Token.BY);
@@ -2795,7 +2795,7 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.SIBLINGS)) {
                 lexer.nextToken();
-                orderBy.setSibings(true);
+                orderBy.setSiblings(true);
             }
 
             accept(Token.BY);
