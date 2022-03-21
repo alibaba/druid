@@ -3190,10 +3190,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         SQLExprTableSource table = x.getTable();
         if (table != null) {
             table.accept(this);
-        }
-
-        for (SQLName column : x.getColumns()) {
-            addColumn(table.getName(), column.getSimpleName());
+            for (SQLName column : x.getColumns()) {
+                addColumn(table.getName(), column.getSimpleName());
+            }
         }
 
         return false;
