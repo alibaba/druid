@@ -47,7 +47,7 @@ public class SQLShowGrantsStatement extends SQLStatementImpl implements SQLShowS
     }
 
     public void setOn(SQLExpr x) {
-        if (x == null) {
+        if (x != null) {
             x.setParent(this);
         }
         this.on = x;
