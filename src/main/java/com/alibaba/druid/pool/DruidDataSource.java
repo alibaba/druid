@@ -1447,13 +1447,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     long idleMillis                    = currentTimeMillis - lastActiveTimeMillis;
 
-                    long timeBetweenEvictionRunsMillis = this.timeBetweenEvictionRunsMillis;
-
-                    if (timeBetweenEvictionRunsMillis <= 0) {
-                        timeBetweenEvictionRunsMillis = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
+                    long evictableIdleTimeMillis = this.timeBetweenEvictionRunsMillis + this.minEvictableIdleTimeMillis;
+                    if (evictableIdleTimeMillis <= 0) {
+                        evictableIdleTimeMillis = DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
                     }
 
-                    if (idleMillis >= timeBetweenEvictionRunsMillis
+                    if (idleMillis >= evictableIdleTimeMillis
                             || idleMillis < 0 // unexcepted branch
                             ) {
                         boolean validate = testConnectionInternal(poolableConnection.holder, poolableConnection.conn);
