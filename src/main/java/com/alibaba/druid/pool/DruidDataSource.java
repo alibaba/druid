@@ -3847,16 +3847,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 throw new SQLException("interrupt", e);
             }
 
+            boolean result;
             try {
                 if (!this.isFillable(toCount)) {
                     JdbcUtils.close(holder.getConnection());
                     LOG.info("fill connections skip.");
                     break;
                 }
-                this.putLast(holder, System.currentTimeMillis());
+                result = this.putLast(holder, System.currentTimeMillis());
                 fillCount++;
             } finally {
                 lock.unlock();
+            }
+
+            if (!result) {
+                JdbcUtils.close(holder.getConnection());
+                LOG.info("connection fill failed.");
             }
         }
 
