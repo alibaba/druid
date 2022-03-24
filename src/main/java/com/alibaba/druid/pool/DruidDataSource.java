@@ -2184,7 +2184,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     boolean putLast(DruidConnectionHolder e, long lastActiveTimeMillis) {
-        if (poolingCount >= maxActive || e.discard || this.closed) {
+        if (poolingCount >= maxActive || e.discard || this.closed || this.closing) {
             return false;
         }
 
