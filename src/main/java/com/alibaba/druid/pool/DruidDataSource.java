@@ -1826,7 +1826,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final ReentrantLock lock = conn.lock;
         lock.lock();
         try {
-            if ((!conn.isClosed()) || !conn.isDisable()) {
+            if ((!conn.isClosed()) && !conn.isDisable()) {
                 conn.disable(error);
                 requireDiscard = true;
             }
