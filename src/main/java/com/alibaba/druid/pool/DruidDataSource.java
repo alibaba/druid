@@ -2787,6 +2787,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 } catch (InterruptedException e2) {
                     break;
                 }
+                // if the datasource is closing or  closed
+                if (closing || closed){
+                   Thread.currentThread().interrupt();
+                   break;
+                }
 
                 long discardCount = DruidDataSource.this.discardCount;
                 boolean discardChanged = discardCount - lastDiscardCount > 0;
