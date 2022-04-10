@@ -517,7 +517,7 @@ public class SQLParserUtils {
         {
             Lexer lexer = createLexer(sql, dbType);
             lexer.nextToken();
-            if (lexer.identifierEquals("pai")) {
+            if (lexer.identifierEquals("pai") || lexer.identifierEquals("jar")) {
                 return Collections.singletonList(sql);
             }
         }
@@ -587,6 +587,11 @@ public class SQLParserUtils {
     public static String removeComment(String sql, DbType dbType) {
         if (dbType == null) {
             dbType = DbType.other;
+        }
+
+        sql = sql.trim();
+        if (sql.startsWith("jar")) {
+            return sql;
         }
 
         boolean containsComment = false;
