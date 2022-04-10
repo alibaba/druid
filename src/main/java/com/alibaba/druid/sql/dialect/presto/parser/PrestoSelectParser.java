@@ -31,8 +31,8 @@ import com.alibaba.druid.util.FnvHash;
 /**
  * presto的 选择解析器
  *
- * @author zhangcanlong
- * @date 2022/01/11
+ * author zhangcanlong
+ * date 2022/01/11
  */
 public class PrestoSelectParser extends SQLSelectParser {
 

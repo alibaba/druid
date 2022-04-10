@@ -25,8 +25,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 /**
  * presto 的 select语句
  *
- * @author zhangcanlong
- * @date 2022/01/11
+ * author zhangcanlong
+ * date 2022/01/11
  */
 public class PrestoSelectStatement extends SQLSelectStatement implements SQLStatement {
 
