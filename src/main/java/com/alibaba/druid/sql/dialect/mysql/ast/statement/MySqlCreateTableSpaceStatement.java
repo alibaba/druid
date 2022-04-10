@@ -70,7 +70,7 @@ public class MySqlCreateTableSpaceStatement extends MySqlStatementImpl implement
         if (x != null) {
             x.setParent(this);
         }
-        this.addDataFile = addDataFile;
+        this.addDataFile = x;
     }
 
     public SQLExpr getInitialSize() {
