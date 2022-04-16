@@ -36,7 +36,7 @@ public class ToDate implements Function {
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         final List<SQLExpr> arguments = x.getArguments();
-        if (arguments.size() == 0) {
+        if (arguments.isEmpty()) {
             return EVAL_ERROR;
         }
 

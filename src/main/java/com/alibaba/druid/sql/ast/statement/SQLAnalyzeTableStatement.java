@@ -66,7 +66,7 @@ public class SQLAnalyzeTableStatement extends SQLStatementImpl {
     }
 
     public SQLExprTableSource getTable() {
-        if (tableSources.size() == 0) {
+        if (tableSources.isEmpty()) {
             return null;
         }
 
@@ -86,7 +86,7 @@ public class SQLAnalyzeTableStatement extends SQLStatementImpl {
             table.setParent(this);
         }
 
-        if (tableSources.size() == 0) {
+        if (tableSources.isEmpty()) {
             if (table == null) {
                 return;
             }

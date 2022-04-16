@@ -33,6 +33,6 @@ public class PGAlterTableDropConstraint extends PGTest {
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("products")).getDropCount() == 0);
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("products")).getAlterCount() == 1);
 
-        Assert.assertTrue(visitor.getColumns().size() == 0);
+        Assert.assertTrue(visitor.getColumns().isEmpty());
     }
 }

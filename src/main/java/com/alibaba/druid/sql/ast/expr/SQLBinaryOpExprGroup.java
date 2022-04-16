@@ -158,7 +158,7 @@ public class SQLBinaryOpExprGroup extends SQLExprImpl implements SQLReplaceable 
             SQLUtils.replaceInParent(this, items.get(0));
         }
 
-        if (items.size() == 0) {
+        if (items.isEmpty()) {
             SQLUtils.replaceInParent(this, null);
         }
 

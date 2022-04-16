@@ -91,7 +91,7 @@ public class OdpsListResourcesTest extends TestCase {
                 , SQLParserFeature.EnableMultiUnion
                 , SQLParserFeature.KeepComments);
         List<SQLStatement> statementList = parser.parseStatementList();
-        if (statementList.size() == 0) {
+        if (statementList.isEmpty()) {
             throw new Exception("empty");
         }
         SQLStatement stmt = statementList.get(0);

@@ -684,7 +684,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         boolean isRoot = parent instanceof SQLSelectQueryBlock || parent instanceof SQLBinaryOpExprGroup;
 
         List<SQLExpr> items = x.getItems();
-        if (items.size() == 0) {
+        if (items.isEmpty()) {
             print("true");
             return false;
         }
@@ -4801,7 +4801,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         final List<List<SQLAssignItem>> storedBy = x.getStoredBy();
-        if (storedBy.size() != 0) {
+        if (!storedBy.isEmpty()) {
             println();
             print0(ucase ? "STORED BY " : "stored by ");
 
@@ -6719,7 +6719,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterTableEnableLifecycle x) {
-        if (x.getPartition().size() != 0) {
+        if (!x.getPartition().isEmpty()) {
             print0(ucase ? "PARTITION (" : "partition (");
             printAndAccept(x.getPartition(), ", ");
             print0(") ");
@@ -6731,7 +6731,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterTableDisableLifecycle x) {
-        if (x.getPartition().size() != 0) {
+        if (!x.getPartition().isEmpty()) {
             print0(ucase ? "PARTITION (" : "partition (");
             printAndAccept(x.getPartition(), ", ");
             print0(") ");
@@ -6743,7 +6743,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterTablePartition x) {
-        if (x.getPartition().size() != 0) {
+        if (!x.getPartition().isEmpty()) {
             print0(ucase ? "PARTITION (" : "partition (");
             printAndAccept(x.getPartition(), ", ");
             print0(") ");
@@ -6753,13 +6753,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterTablePartitionSetProperties x) {
-        if (x.getPartition().size() != 0) {
+        if (!x.getPartition().isEmpty()) {
             print0(ucase ? "PARTITION (" : "partition (");
             printAndAccept(x.getPartition(), ", ");
             print0(") ");
         }
 
-        if (x.getPartitionProperties().size() != 0) {
+        if (!x.getPartitionProperties().isEmpty()) {
             print0(ucase ? "SET PARTITIONPROPERTIES (" : "set partitionproperties (");
             printAndAccept(x.getPartitionProperties(), ", ");
             print0(") ");
@@ -6770,7 +6770,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLAlterTableTouch x) {
         print0(ucase ? "TOUCH" : "touch");
-        if (x.getPartition().size() != 0) {
+        if (!x.getPartition().isEmpty()) {
             print0(ucase ? " PARTITION (" : " partition (");
             printAndAccept(x.getPartition(), ", ");
             print(')');
@@ -7290,7 +7290,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLPartitionByRange x) {
         SQLExpr interval = x.getInterval();
-        if (x.getColumns().size() == 0
+        if (x.getColumns().isEmpty()
                 && (interval instanceof SQLBetweenExpr || interval instanceof SQLMethodInvokeExpr))
         {
             interval.accept(this);
@@ -8911,7 +8911,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLBlockStatement x) {
-        if (x.getParameters().size() != 0) {
+        if (!x.getParameters().isEmpty()) {
             this.indentCount++;
             if (x.getParent() instanceof SQLCreateProcedureStatement) {
                 SQLCreateProcedureStatement procedureStatement = (SQLCreateProcedureStatement) x.getParent();

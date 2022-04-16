@@ -405,7 +405,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
             List<SQLName> columns = x.getColumns();
 
             SqlNode[] operands;
-            if (columns.size() == 0) {
+            if (columns.isEmpty()) {
                 operands = new SqlNode[] { sqlNode, aliasIdentifier };
             } else {
                 operands = new SqlNode[columns.size() + 2];

@@ -176,7 +176,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
                                 }
                             }
 
-                            if (andList.size() == 0) {
+                            if (andList.isEmpty()) {
                                 SQLUtils.replaceInParent(item, new SQLBooleanExpr(false));
                                 return;
                             }
@@ -1251,7 +1251,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
                     removedCount++;
                 }
             }
-            if (items.size() == 0) {
+            if (items.isEmpty()) {
                 where = null;
             }
 

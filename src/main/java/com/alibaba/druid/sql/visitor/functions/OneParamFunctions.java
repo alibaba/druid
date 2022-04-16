@@ -32,7 +32,7 @@ public class OneParamFunctions implements Function {
     public final static OneParamFunctions instance = new OneParamFunctions();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getArguments().size() == 0) {
+        if (x.getArguments().isEmpty()) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 

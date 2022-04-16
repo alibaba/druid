@@ -83,7 +83,7 @@ public class DruidStat {
        
         if (option.printActiveConn()) {
             List<List<String>> content = (List<List<String>>) invokeService(jmxConn, Option.ACTIVE_CONN);
-			if (content == null || content.size() == 0 ) {
+			if (content == null || content.isEmpty() ) {
 				out.println("目前无活动中的数据库连接");
 			} else {
 				TabledDataPrinter.printActiveConnStack(content, option);

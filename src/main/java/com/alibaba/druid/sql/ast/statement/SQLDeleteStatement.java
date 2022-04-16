@@ -267,7 +267,7 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
                     removedCount++;
                 }
             }
-            if (items.size() == 0) {
+            if (items.isEmpty()) {
                 where = null;
             }
 

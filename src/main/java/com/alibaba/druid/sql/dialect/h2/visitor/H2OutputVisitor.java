@@ -58,7 +58,7 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
         }
 
         List<SQLInsertStatement.ValuesClause> valuesClauseList = x.getValuesList();
-        if (valuesClauseList.size() != 0) {
+        if (!valuesClauseList.isEmpty()) {
             println();
             print0(ucase ? "VALUES " : "values ");
             int size = valuesClauseList.size();

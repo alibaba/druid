@@ -60,7 +60,7 @@ public class ExportConditions extends UDF {
                 row.add(column.getTable());
                 row.add(column.getName());
                 row.add(operator);
-                if (values.size() == 0) {
+                if (values.isEmpty()) {
                     row.add(null);
                 } else if (values.size() == 1) {
                     if (compactValues != null && compactValues.booleanValue()) {

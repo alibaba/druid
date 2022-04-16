@@ -60,7 +60,7 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
             throw new SQLException("not support multi-statment. " + sql);
         }
 
-        if (stmtList.size() == 0) {
+        if (stmtList.isEmpty()) {
             throw new SQLException("executeQueryError : " + sql);
         }
 

@@ -40,7 +40,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
     public SQLSelectBuilderImpl(String sql, DbType dbType){
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
-        if (stmtList.size() == 0) {
+        if (stmtList.isEmpty()) {
             throw new IllegalArgumentException("not support empty-statement :" + sql);
         }
 
