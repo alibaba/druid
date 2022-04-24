@@ -320,15 +320,7 @@ public abstract class ResourceServlet extends HttpServlet {
                     || path.startsWith("/css")//
                     || path.startsWith("/js") //
                     || path.startsWith("/img"))) {
-                if (contextPath.equals("") || contextPath.equals("/")) {
-                    response.sendRedirect("/druid/login.html");
-                } else {
-                    if ("".equals(path)) {
-                        response.sendRedirect("druid/login.html");
-                    } else {
-                        response.sendRedirect("login.html");
-                    }
-                }
+                response.sendRedirect("login.html");
                 return;
             }
 
