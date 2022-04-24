@@ -35,7 +35,7 @@ public class ClickhouseWallProvider extends WallProvider {
     }
 
     public ClickhouseWallProvider(WallConfig config){
-        super(config, DbType.postgresql);
+        super(config, DbType.clickhouse);
     }
 
     @Override
