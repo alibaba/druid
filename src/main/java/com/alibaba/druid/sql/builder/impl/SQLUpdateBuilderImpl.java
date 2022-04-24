@@ -45,7 +45,7 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
     public SQLUpdateBuilderImpl(String sql, DbType dbType){
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
-        if (stmtList.size() == 0) {
+        if (stmtList.isEmpty()) {
             throw new IllegalArgumentException("not support empty-statement :" + sql);
         }
 

@@ -462,7 +462,7 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
     }
 
     public static SQLExpr or(List<? extends SQLExpr> list) {
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             return null;
         }
         SQLExpr first = list.get(0);

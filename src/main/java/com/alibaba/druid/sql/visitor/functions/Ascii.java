@@ -27,7 +27,7 @@ public class Ascii implements Function {
     public final static Ascii instance = new Ascii();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getArguments().size() == 0) {
+        if (x.getArguments().isEmpty()) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
         SQLExpr param = x.getArguments().get(0);

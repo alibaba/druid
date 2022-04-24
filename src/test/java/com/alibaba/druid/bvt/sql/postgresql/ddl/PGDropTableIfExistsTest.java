@@ -32,6 +32,6 @@ public class PGDropTableIfExistsTest extends PGTest {
         
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("t_report_1_19")).getDropCount() == 1);
 
-        Assert.assertTrue(visitor.getColumns().size() == 0);
+        Assert.assertTrue(visitor.getColumns().isEmpty());
     }
 }

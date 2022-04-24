@@ -19,6 +19,6 @@ public class Issue1759 extends TestCase {
 
         WallCheckResult result1 = provider.check(sql);
 
-        assertTrue(result1.getViolations().size() == 0);
+        assertTrue(result1.getViolations().isEmpty());
     }
 }

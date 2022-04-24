@@ -155,7 +155,7 @@ public class SqlTypeUDF extends UDF {
         try {
             List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
-            if (stmtList.size() == 0) {
+            if (stmtList.isEmpty()) {
                 return SQLType.EMPTY.name();
             }
 

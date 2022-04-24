@@ -48,7 +48,7 @@ public class MySqlKillStatement extends SQLStatementImpl {
     }
 
     public void setThreadId(SQLExpr threadId) {
-        if (this.threadIds.size() == 0) {
+        if (this.threadIds.isEmpty()) {
             this.threadIds.add(threadId);
             return;
         }

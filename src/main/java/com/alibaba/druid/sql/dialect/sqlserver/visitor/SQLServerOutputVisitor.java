@@ -156,7 +156,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             x.getOutput().accept(this);
         }
 
-        if (x.getValuesList().size() != 0) {
+        if (!x.getValuesList().isEmpty()) {
             println();
             print0(ucase ? "VALUES " : "values ");
             for (int i = 0, size = x.getValuesList().size(); i < size; ++i) {

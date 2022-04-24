@@ -255,7 +255,7 @@ public abstract class ResourceServlet extends HttpServlet {
             boolean ipV6 = remoteAddress != null && remoteAddress.indexOf(':') != -1;
 
             if (ipV6) {
-                return "0:0:0:0:0:0:0:1".equals(remoteAddress) || (denyList.size() == 0 && allowList.size() == 0);
+                return "0:0:0:0:0:0:0:1".equals(remoteAddress) || (denyList.isEmpty() && allowList.isEmpty());
             }
 
             IPAddress ipAddress = new IPAddress(remoteAddress);

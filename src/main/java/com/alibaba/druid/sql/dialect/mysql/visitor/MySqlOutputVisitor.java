@@ -1244,7 +1244,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         List<SQLExpr> duplicateKeyUpdate = x.getDuplicateKeyUpdate();
-        if (duplicateKeyUpdate.size() != 0) {
+        if (!duplicateKeyUpdate.isEmpty()) {
             println();
             print0(ucase ? "ON DUPLICATE KEY UPDATE " : "on duplicate key update ");
             for (int i = 0, size = duplicateKeyUpdate.size(); i < size; ++i) {
@@ -1278,7 +1278,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                         SQLExpr value = values.get(i);
                         if (value instanceof SQLLiteralExpr || value instanceof SQLVariantRefExpr) {
                             continue;
-                        } else if (value instanceof SQLMethodInvokeExpr && ((SQLMethodInvokeExpr) value).getArguments().size() == 0) {
+                        } else if (value instanceof SQLMethodInvokeExpr && ((SQLMethodInvokeExpr) value).getArguments().isEmpty()) {
                             continue;
                         }
                         allConst = false;
@@ -1433,13 +1433,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? " LINES" : " lines");
         }
 
-        if (x.getColumns().size() != 0) {
+        if (!x.getColumns().isEmpty()) {
             print0(" (");
             printAndAccept(x.getColumns(), ", ");
             print(')');
         }
 
-        if (x.getSetList().size() != 0) {
+        if (!x.getSetList().isEmpty()) {
             print0(ucase ? " SET " : " set ");
             printAndAccept(x.getSetList(), ", ");
         }
@@ -1516,7 +1516,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         List<SQLInsertStatement.ValuesClause> valuesClauseList = x.getValuesList();
-        if (valuesClauseList.size() != 0) {
+        if (!valuesClauseList.isEmpty()) {
             println();
             print0(ucase ? "VALUES " : "values ");
             int size = valuesClauseList.size();
@@ -1758,7 +1758,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getRowsIdentifiedBy().accept(this);
         }
 
-        if (x.getSetList().size() != 0) {
+        if (!x.getSetList().isEmpty()) {
             print0(ucase ? " SET " : " set ");
             printAndAccept(x.getSetList(), ", ");
         }
@@ -4218,7 +4218,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         List<SQLParameter> parameters = x.getParameters();
-        if (parameters.size() != 0) {
+        if (!parameters.isEmpty()) {
             this.indentCount++;
             if (parent instanceof SQLCreateProcedureStatement) {
                 printIndent();
@@ -4600,7 +4600,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(")");
         }
 
-        if (x.getOptions().size() != 0) {
+        if (!x.getOptions().isEmpty()) {
             println();
             print0(ucase ? "SUBPARTITION OPTIONS (" : "subpartition options (");
             printAndAccept(x.getOptions(), ", ");

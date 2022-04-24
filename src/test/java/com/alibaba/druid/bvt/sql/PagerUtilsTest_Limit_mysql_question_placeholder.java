@@ -32,7 +32,7 @@ public class PagerUtilsTest_Limit_mysql_question_placeholder extends TestCase {
             Assert.fail(e.getMessage());
             return;
         }
-        if (statements == null || statements.size() == 0){
+        if (statements == null || statements.isEmpty()){
             Assert.fail("no sql found!");
             return;
         }

@@ -75,7 +75,7 @@ public class SQLUnionQuery extends SQLSelectQueryBase implements SQLDbTypedObjec
     }
 
     public SQLSelectQuery getLeft() {
-        if (relations.size() == 0) {
+        if (relations.isEmpty()) {
             return null;
         }
         return relations.get(0);
@@ -86,7 +86,7 @@ public class SQLUnionQuery extends SQLSelectQueryBase implements SQLDbTypedObjec
             left.setParent(this);
         }
 
-        if (relations.size() == 0) {
+        if (relations.isEmpty()) {
             relations.add(left);
         } else if (relations.size() <= 2) {
             relations.set(0, left);
@@ -111,7 +111,7 @@ public class SQLUnionQuery extends SQLSelectQueryBase implements SQLDbTypedObjec
             right.setParent(this);
         }
 
-        if (relations.size() == 0) {
+        if (relations.isEmpty()) {
             relations.add(null);
         }
 

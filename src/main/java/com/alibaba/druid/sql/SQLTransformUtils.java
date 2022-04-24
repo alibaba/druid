@@ -158,7 +158,7 @@ public class SQLTransformUtils {
             dataType = new SQLDataTypeImpl("double");
 
         } else if (nameHash == FnvHash.Constants.NUMBER) {
-            if (argumentns.size() == 0) {
+            if (argumentns.isEmpty()) {
                 dataType = new SQLDataTypeImpl("decimal", 38);
             } else {
                 SQLExpr arg0 = argumentns.get(0);
@@ -230,7 +230,7 @@ public class SQLTransformUtils {
         } else if (nameHash == FnvHash.Constants.RAW) {
             int len;
 
-            if (argumentns.size() == 0) {
+            if (argumentns.isEmpty()) {
                 len = -1;
             } else if (argumentns.size() == 1) {
                 SQLExpr arg0 = argumentns.get(0);
@@ -267,7 +267,7 @@ public class SQLTransformUtils {
                 } else {
                     dataType = new SQLCharacterDataType("varchar", len);
                 }
-            } else if (argumentns.size() == 0) {
+            } else if (argumentns.isEmpty()) {
                 dataType = new SQLCharacterDataType("char");
             } else {
                 throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
@@ -289,7 +289,7 @@ public class SQLTransformUtils {
                 } else {
                     dataType = new SQLCharacterDataType("nvarchar", len);
                 }
-            } else if (argumentns.size() == 0) {
+            } else if (argumentns.isEmpty()) {
                 dataType = new SQLCharacterDataType("nchar");
             } else {
                 throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
@@ -462,7 +462,7 @@ public class SQLTransformUtils {
             dataType = new SQLDataTypeImpl(SQLDataType.Constants.DOUBLE_PRECISION);
 
         } else if (nameHash == FnvHash.Constants.NUMBER) {
-            if (argumentns.size() == 0) {
+            if (argumentns.isEmpty()) {
                 dataType = new SQLDataTypeImpl(SQLDataType.Constants.DECIMAL, 38);
             } else {
                 SQLExpr arg0 = argumentns.get(0);
@@ -536,7 +536,7 @@ public class SQLTransformUtils {
                     throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
                 }
                 dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR, len);
-            } else if (argumentns.size() == 0) {
+            } else if (argumentns.isEmpty()) {
                 dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR);
             } else {
                 throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
@@ -558,7 +558,7 @@ public class SQLTransformUtils {
                 } else {
                     dataType = new SQLCharacterDataType(SQLDataType.Constants.TEXT);
                 }
-            } else if (argumentns.size() == 0) {
+            } else if (argumentns.isEmpty()) {
                 dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR);
             } else {
                 throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
@@ -684,7 +684,7 @@ public class SQLTransformUtils {
         }
 
         if (nameHashCode64 == FnvHash.Constants.CURRENT_TIMESTAMP) {
-            if (parameters.size() == 0 && x.getParent() instanceof SQLColumnDefinition) {
+            if (parameters.isEmpty() && x.getParent() instanceof SQLColumnDefinition) {
                 SQLDataType dataType = ((SQLColumnDefinition) x.getParent()).getDataType();
                 if (dataType.nameHashCode64() == FnvHash.Constants.TIMESTAMP
                         && dataType.getArguments().size() == 1) {
@@ -895,7 +895,7 @@ public class SQLTransformUtils {
                     throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
                 }
                 dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR, len);
-            } else if (argumentns.size() == 0) {
+            } else if (argumentns.isEmpty()) {
                 dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR);
             } else {
                 throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
@@ -917,7 +917,7 @@ public class SQLTransformUtils {
                 } else {
                     dataType = new SQLCharacterDataType(SQLDataType.Constants.TEXT);
                 }
-            } else if (argumentns.size() == 0) {
+            } else if (argumentns.isEmpty()) {
                 dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR);
             } else {
                 throw new UnsupportedOperationException(SQLUtils.toOracleString(x));

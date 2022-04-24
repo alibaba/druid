@@ -50,7 +50,7 @@ public class PGDeleteTest7 extends PGTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("foo")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("bar")));
 
-        Assert.assertTrue(visitor.getColumns().size() == 0);
+        Assert.assertTrue(visitor.getColumns().isEmpty());
         
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("products", "date")));
     }

@@ -24,7 +24,7 @@ public class WallUpdateCheckTest extends TestCase {
     public void test_update_check_handler() throws Exception {
         {
             WallCheckResult result = wallProvider.check("update t_orders set status = 3 where id = 3 and status = 4");
-            assertTrue(result.getViolations().size() == 0);
+            assertTrue(result.getViolations().isEmpty());
         }
         wallProvider.getConfig().setUpdateCheckHandler(new WallUpdateCheckHandler() {
 
@@ -46,7 +46,7 @@ public class WallUpdateCheckTest extends TestCase {
         });
         {
             WallCheckResult result = wallProvider.check("update t_orders set status = 3 where id = 3 and status = 4");
-            assertTrue(result.getViolations().size() == 0);
+            assertTrue(result.getViolations().isEmpty());
         }
         assertEquals(0, wallProvider.getWhiteListHitCount());
         assertEquals(0, wallProvider.getBlackListHitCount());
@@ -61,11 +61,11 @@ public class WallUpdateCheckTest extends TestCase {
         });
         {
             WallCheckResult result = wallProvider.check("update t_orders set status = 3 where id = 3 and status in (1, 2)");
-            assertTrue(result.getViolations().size() == 0);
+            assertTrue(result.getViolations().isEmpty());
         }
         {
             WallCheckResult result = wallProvider.check("update t_orders set status = 3 where id = 3 and status = 3 and status in (3, 4)");
-            assertTrue(result.getViolations().size() == 0);
+            assertTrue(result.getViolations().isEmpty());
         }
     }
 }

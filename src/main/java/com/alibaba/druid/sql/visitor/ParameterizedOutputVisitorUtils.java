@@ -152,7 +152,7 @@ public class ParameterizedOutputVisitorUtils {
         }
 
         List<SQLStatement> statementList = parser.parseStatementList();
-        if (statementList.size() == 0) {
+        if (statementList.isEmpty()) {
             return sql;
         }
 

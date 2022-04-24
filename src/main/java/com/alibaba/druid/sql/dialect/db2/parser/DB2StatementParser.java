@@ -70,7 +70,7 @@ public class DB2StatementParser extends SQLStatementParser {
         SQLAlterTableAlterColumn alterColumn = new SQLAlterTableAlterColumn();
         alterColumn.setColumn(column);
 
-        if (column.getDataType() == null && column.getConstraints().size() == 0) {
+        if (column.getDataType() == null && column.getConstraints().isEmpty()) {
             if (lexer.token() == Token.SET) {
                 lexer.nextToken();
                 if (lexer.token() == Token.NOT) {

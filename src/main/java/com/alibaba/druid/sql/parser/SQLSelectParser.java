@@ -1113,7 +1113,7 @@ public class SQLSelectParser extends SQLParser {
                 tableSource.setAlias(alias);
 
                 if (tableSource instanceof SQLValuesTableSource
-                        && ((SQLValuesTableSource) tableSource).getColumns().size() == 0) {
+                        && ((SQLValuesTableSource) tableSource).getColumns().isEmpty()) {
                     SQLValuesTableSource values = (SQLValuesTableSource) tableSource;
                     accept(Token.LPAREN);
                     this.exprParser.names(values.getColumns(), values);
@@ -1351,7 +1351,7 @@ public class SQLSelectParser extends SQLParser {
                             tableSource.setAlias(alias);
 
                             if ((tableSource instanceof SQLValuesTableSource)
-                                    && ((SQLValuesTableSource) tableSource).getColumns().size() == 0) {
+                                    && ((SQLValuesTableSource) tableSource).getColumns().isEmpty()) {
                                 SQLValuesTableSource values = (SQLValuesTableSource) tableSource;
                                 accept(Token.LPAREN);
                                 this.exprParser.names(values.getColumns(), values);
@@ -1565,7 +1565,7 @@ public class SQLSelectParser extends SQLParser {
                 if (rightTableSource instanceof SQLValuesTableSource
                         && (lexer.token == Token.AS || lexer.token == Token.IDENTIFIER)
                         && rightTableSource.getAlias() == null
-                        && ((SQLValuesTableSource) rightTableSource).getColumns().size() == 0
+                        && ((SQLValuesTableSource) rightTableSource).getColumns().isEmpty()
                 ) {
                     if (lexer.token == Token.AS) {
                         lexer.nextToken();
@@ -1708,7 +1708,7 @@ public class SQLSelectParser extends SQLParser {
                         } else if (rightTableSource instanceof SQLExprTableSource
                                 && ((SQLExprTableSource) rightTableSource).getExpr() instanceof SQLMethodInvokeExpr) {
                             List<SQLName> columns = ((SQLExprTableSource) rightTableSource).getColumns();
-                            if (columns.size() == 0) {
+                            if (columns.isEmpty()) {
                                 lexer.nextToken();
                                 this.exprParser.names(columns, rightTableSource);
                                 accept(Token.RPAREN);

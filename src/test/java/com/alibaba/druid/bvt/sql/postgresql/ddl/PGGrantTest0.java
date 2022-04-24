@@ -33,6 +33,6 @@ public class PGGrantTest0 extends PGTest {
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("accounts")).getDropCount() == 0);
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("accounts")).getAlterCount() == 0);
 
-        Assert.assertTrue(visitor.getColumns().size() == 0);
+        Assert.assertTrue(visitor.getColumns().isEmpty());
     }
 }

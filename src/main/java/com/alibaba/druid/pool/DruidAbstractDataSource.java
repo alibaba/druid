@@ -1663,7 +1663,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public Connection createPhysicalConnection(String url, Properties info) throws SQLException {
         Connection conn;
-        if (getProxyFilters().size() == 0) {
+        if (getProxyFilters().isEmpty()) {
             conn = getDriver().connect(url, info);
         } else {
             conn = new FilterChainImpl(this).connection_connect(info);
@@ -1847,7 +1847,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         Collection<String> initSqls = getConnectionInitSqls();
-        if (initSqls.size() == 0
+        if (initSqls.isEmpty()
                 && variables == null
                 && globalVariables == null) {
             return;
