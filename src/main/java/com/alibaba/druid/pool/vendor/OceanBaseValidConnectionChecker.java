@@ -19,7 +19,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.util.JdbcUtils;
-import sun.security.pkcs11.Secmod;
 
 import java.sql.Connection;
 import java.sql.SQLException;
