@@ -49,7 +49,7 @@ public class DropTableTest extends MysqlTest {
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("films")).getDropCount() == 1);
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("distributors")).getDropCount() == 1);
 
-        Assert.assertTrue(visitor.getColumns().size() == 0);
+        Assert.assertTrue(visitor.getColumns().isEmpty());
     }
 
    

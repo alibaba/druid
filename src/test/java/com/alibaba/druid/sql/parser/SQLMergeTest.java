@@ -141,7 +141,7 @@ public class SQLMergeTest extends TestCase {
                     print(")");
                 }
 
-                if (x.getValuesList().size() != 0) {
+                if (!x.getValuesList().isEmpty()) {
                     print(" VALUES ");
                     int size = x.getValuesList().size();
                     if (size == 0) {
@@ -160,7 +160,7 @@ public class SQLMergeTest extends TestCase {
                     x.getQuery().accept(this);
                 }
 
-                if (x.getDuplicateKeyUpdate().size() != 0) {
+                if (!x.getDuplicateKeyUpdate().isEmpty()) {
                     print(" ON DUPLICATE KEY UPDATE ");
                     printAndAccept(x.getDuplicateKeyUpdate(), ", ");
                 }

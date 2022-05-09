@@ -498,7 +498,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     }
 
     private void save(BeanInfo beanInfo, MonitorContext ctx, List<?> list) {
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             return;
         }
 

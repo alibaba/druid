@@ -127,7 +127,7 @@ public class SQLDataTypeValidator extends SQLASTVisitorAdapter {
     }
 
     public static void check(List<SQLStatement> stmtList) {
-        if (stmtList.size() == 0) {
+        if (stmtList.isEmpty()) {
             return;
         }
 
@@ -138,7 +138,7 @@ public class SQLDataTypeValidator extends SQLASTVisitorAdapter {
     }
 
     public static void check(List<SQLStatement> stmtList, DbType dbType) {
-        if (stmtList.size() == 0) {
+        if (stmtList.isEmpty()) {
             return;
         }
 

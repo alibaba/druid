@@ -46,7 +46,7 @@ public class PGDeleteTest2 extends PGTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tasks")));
 
-        Assert.assertTrue(visitor.getColumns().size() == 0);
+        Assert.assertTrue(visitor.getColumns().isEmpty());
     }
 
     

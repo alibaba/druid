@@ -675,7 +675,7 @@ public class PagerUtils {
             SQLOrderBy orderBy = x.getOrderBy();
             SQLLimit limit = x.getLimit();
 
-            if (limit != null && (orderBy == null || orderBy.getItems().size() == 0)) {
+            if (limit != null && (orderBy == null || orderBy.getItems().isEmpty())) {
                 boolean subQueryHasOrderBy = false;
                 SQLTableSource from = x.getFrom();
                 if (from instanceof SQLSubqueryTableSource) {
@@ -747,7 +747,7 @@ public class PagerUtils {
                     orderBy = select.getOrderBy();
                 }
 
-                if (orderBy == null || orderBy.getItems().size() == 0) {
+                if (orderBy == null || orderBy.getItems().isEmpty()) {
                     unorderedLimitCount++;
                 }
             }
@@ -785,7 +785,7 @@ public class PagerUtils {
 
             SQLSelect select = (SQLSelect) parent;
 
-            if (select.getOrderBy() == null || select.getOrderBy().getItems().size() == 0) {
+            if (select.getOrderBy() == null || select.getOrderBy().getItems().isEmpty()) {
                 unorderedLimitCount++;
             }
 

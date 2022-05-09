@@ -61,7 +61,9 @@ public enum DbType {
     oscar          (1 << 40),
 
     tidb           ( 1 << 41),
-
+    
+    tydb           ( 1 << 42),
+    
     ingres          (0),
     cloudscape          (0),
     timesten          (0),

@@ -16,13 +16,15 @@
 package com.alibaba.druid.sql.dialect.h2.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
+import java.util.Map;
 
 public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor {
     public H2OutputVisitor(Appendable appender) {
@@ -58,7 +60,7 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
         }
 
         List<SQLInsertStatement.ValuesClause> valuesClauseList = x.getValuesList();
-        if (valuesClauseList.size() != 0) {
+        if (!valuesClauseList.isEmpty()) {
             println();
             print0(ucase ? "VALUES " : "values ");
             int size = valuesClauseList.size();
@@ -81,4 +83,59 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
 
         return false;
     }
+
+    @Override
+    public boolean visit(SQLCreateDatabaseStatement x) {
+
+        /*
+        https://h2database.com/html/commands.html#create_schema
+        CREATE SCHEMA [ IF NOT EXISTS ]
+        { name [ AUTHORIZATION ownerName ] | [ AUTHORIZATION ownerName ] }
+        [ WITH tableEngineParamName [,...] ]
+         */
+
+        printUcase("CREATE SCHEMA ");
+
+        if (x.isIfNotExists()) {
+            printUcase("IF NOT EXISTS ");
+        }
+        x.getName().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateIndexStatement x) {
+
+        /* h2 CREATE INDEX BNF: https://h2database.com/html/commands.html#create_index
+        CREATE [ UNIQUE | SPATIAL ] INDEX
+        [ [ IF NOT EXISTS ] [schemaName.]indexName ]
+        ON [schemaName.]tableName ( indexColumn [,...] )
+        [ INCLUDE ( indexColumn [,...] ) ]
+         */
+
+        printUcase("CREATE ");
+
+        String type = x.getType();
+        if ( "UNIQUE".equalsIgnoreCase(type) || "SPATIAL".equalsIgnoreCase(type) ) {
+            printUcase(type + ' ');
+        }
+
+        printUcase("INDEX ");
+
+        if (x.isIfNotExists()) {
+            printUcase("IF NOT EXISTS ");
+        }
+
+        x.getName().accept(this);
+
+        printUcase(" ON ");
+        x.getTable().accept(this);
+        print0(" (");
+        printAndAccept(x.getItems(), ", ");
+        print(')');
+
+        return false;
+    }
+
 }

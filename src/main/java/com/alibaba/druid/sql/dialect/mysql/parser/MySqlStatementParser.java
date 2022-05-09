@@ -1706,7 +1706,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     break;
             }
             if (hints.size() >= 1
-                    && statementList.size() == 0
+                    && statementList.isEmpty()
                     && acceptHint) {
                 SQLCommentHint hint = hints.get(0);
                 String hintText = hint.getText().toUpperCase();
@@ -2346,7 +2346,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 break;
             }
 
-            if (stmt.getTables().size() != 0) {
+            if (!stmt.getTables().isEmpty()) {
                 if (lexer.token() == Token.FOR) {
                     lexer.nextToken();
                     acceptIdentifier("EXPORT");

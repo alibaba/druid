@@ -164,14 +164,14 @@ public abstract class SQLInsertInto extends SQLStatementImpl implements SQLRepla
     }
 
     public ValuesClause getValues() {
-        if (valuesList.size() == 0) {
+        if (valuesList.isEmpty()) {
             return null;
         }
         return valuesList.get(0);
     }
 
     public void setValues(ValuesClause values) {
-        if (valuesList.size() == 0) {
+        if (valuesList.isEmpty()) {
             valuesList.add(values);
         } else {
             valuesList.set(0, values);

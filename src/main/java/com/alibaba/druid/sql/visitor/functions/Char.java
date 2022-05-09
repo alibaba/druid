@@ -28,7 +28,7 @@ public class Char implements Function {
     public final static Char instance = new Char();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getArguments().size() == 0) {
+        if (x.getArguments().isEmpty()) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 

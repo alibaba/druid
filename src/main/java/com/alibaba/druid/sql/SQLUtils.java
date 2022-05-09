@@ -706,7 +706,7 @@ public class SQLUtils {
 
         List<SQLStatement> stmtList = parseStatements(sql, dbType);
 
-        if (stmtList.size() == 0) {
+        if (stmtList.isEmpty()) {
             throw new IllegalArgumentException("not support empty-statement :" + sql);
         }
 
@@ -779,7 +779,7 @@ public class SQLUtils {
     public static String addSelectItem(String selectSql, String expr, String alias, boolean first, DbType dbType) {
         List<SQLStatement> stmtList = parseStatements(selectSql, dbType);
 
-        if (stmtList.size() == 0) {
+        if (stmtList.isEmpty()) {
             throw new IllegalArgumentException("not support empty-statement :" + selectSql);
         }
 

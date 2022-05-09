@@ -217,10 +217,10 @@ public class SQLSelect extends SQLObjectImpl implements SQLDbTypedObject {
 
     public boolean isSimple() {
         return withSubQuery == null
-                && (hints == null || hints.size() == 0)
+                && (hints == null || hints.isEmpty())
                 && restriction == null
                 && (!forBrowse)
-                && (forXmlOptions == null || forXmlOptions.size() == 0)
+                && (forXmlOptions == null || forXmlOptions.isEmpty())
                 && xmlPath == null
                 && rowCount == null
                 && offset == null;

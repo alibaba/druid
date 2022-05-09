@@ -152,4 +152,6 @@ public interface JdbcConstants {
     DbType OSCAR                      = DbType.oscar;
     String OSCAR_DRIVER               = "com.oscar.Driver";
 
+    DbType TYDB                      = DbType.tydb;
+    String TYDB_DRIVER               = "com.dbcp.jdbc.Driver";
 }

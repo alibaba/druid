@@ -529,6 +529,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "com.highgo.jdbc.Driver";
         } else if (rawUrl.startsWith("jdbc:oscar")) {
             return JdbcConstants.OSCAR_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:dbcp:")) {
+            return JdbcConstants.TYDB_DRIVER;
         } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }

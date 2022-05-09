@@ -106,6 +106,9 @@
           "value": "kingbase"
         },
         {
+          "value": "tydb"
+        },
+        {
           "value": "oceanbase"
         },
         {
@@ -170,6 +173,9 @@
         },
         {
           "value": "kingbase"
+        },
+        {
+          "value": "tydb"
         },
         {
           "value": "oceanbase"

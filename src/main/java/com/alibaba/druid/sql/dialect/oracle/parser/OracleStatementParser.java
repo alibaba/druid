@@ -2157,7 +2157,7 @@ public class OracleStatementParser extends SQLStatementParser {
         while (lexer.token() == Token.INTO) {
             OracleMultiInsertStatement.InsertIntoClause clause = new OracleMultiInsertStatement.InsertIntoClause();
 
-            boolean acceptSubQuery = stmt.getEntries().size() == 0;
+            boolean acceptSubQuery = stmt.getEntries().isEmpty();
             parseInsert0(clause, acceptSubQuery);
 
             clause.setReturning(parseReturningClause());
