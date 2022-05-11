@@ -15,12 +15,22 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.dialect.h2.visitor.H2ASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlUnlockTablesStatement extends MySqlStatementImpl {
 
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
+    }
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof H2ASTVisitor) {
+            return;
+        }
+        super.accept0(visitor);
     }
 }

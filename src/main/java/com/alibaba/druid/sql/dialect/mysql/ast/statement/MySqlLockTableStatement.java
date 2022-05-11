@@ -16,12 +16,12 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLLockTableStatement;
+import com.alibaba.druid.sql.dialect.h2.visitor.H2ASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,14 @@ import java.util.List;
 public class MySqlLockTableStatement extends MySqlStatementImpl implements SQLLockTableStatement {
 
     private List<Item> items = new ArrayList<Item>();
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof H2ASTVisitor) {
+            return;
+        }
+        super.accept0(visitor);
+    }
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {
