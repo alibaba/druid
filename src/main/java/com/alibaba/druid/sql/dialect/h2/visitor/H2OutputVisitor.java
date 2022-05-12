@@ -17,12 +17,14 @@ package com.alibaba.druid.sql.dialect.h2.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
@@ -148,8 +150,10 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
                     printUcase("UNIQUE ");
                 }
                 printUcase("KEY ");
-                print(((SQLUnique) element).getName().getSimpleName().replaceFirst("`$", System.nanoTime() + "`"));
+                print(addIndexNameSuffixForH2(((SQLUnique) element).getName()));
                 acceptChildName(((SQLUnique) element).getColumns());
+            } else if (element instanceof MySqlTableIndex) {
+                visit((MySqlTableIndex) element);
             } else {
                 element.accept(this);
             }
@@ -169,6 +173,34 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
         this.indentCount--;
         println();
         print(')');
+    }
+
+    private String addIndexNameSuffixForH2(SQLName name) {
+        String simpleName = name.getSimpleName();
+        if (simpleName.endsWith("`")) {
+            return simpleName.replaceFirst("`$", System.nanoTime() + "`");
+        } else {
+            return simpleName + System.nanoTime();
+        }
+    }
+
+    public boolean visit(MySqlTableIndex x) {
+        print0(ucase ? "INDEX" : "index");
+        if (x.getName() != null) {
+            print(' ');
+            x.getName().accept(this);
+        }
+
+        print('(');
+        for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            x.getColumns().get(i).accept(this);
+        }
+        print(')');
+
+        return false;
     }
 
     private void acceptChildName(List<SQLSelectOrderByItem> children) {
@@ -291,6 +323,7 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
             }
 
             printTableSourceExpr(x.getName());
+            print(' ');
 
             SQLAlterTableItem item = x.getItems().get(i);
             accept(item);
@@ -321,10 +354,28 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
 
         if (x.getConstraint().getParent() instanceof SQLAlterTableAddConstraint && x.getConstraint() instanceof SQLForeignKeyImpl) {
             this.visit((SQLForeignKeyImpl) x.getConstraint());
+        } else if (x.getConstraint().getParent() instanceof SQLAlterTableAddConstraint && x.getConstraint() instanceof SQLUnique) {
+            this.visit((SQLUnique) x.getConstraint());
         } else {
             x.getConstraint().accept(this);
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLUnique x) {
+        SQLName name = x.getName();
+        if (name != null) {
+            this.print0(this.ucase ? "CONSTRAINT " : "constraint ");
+            print(addIndexNameSuffixForH2(name));
+
+            this.print(' ');
+        }
+
+        this.print0(this.ucase ? "UNIQUE (" : "unique (");
+        this.printAndAccept(x.getColumns(), ", ");
+        this.print(')');
         return false;
     }
 

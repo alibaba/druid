@@ -135,7 +135,6 @@ public class H2OutputVisitorTest {
     @Test
     public void testScriptCreateTableWithKey() throws Exception {
         loadScript("create-table-with-key.sql");
-
     }
 
     @Test
