@@ -243,4 +243,16 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         assertEquals(0, statementList.size());
     }
+
+    public void test_23() {
+        // https://dev.mysql.com/doc/refman/8.0/en/ansi-diff-comments.html
+        String sql = "--This is a valid comment in standard SQL, but not in MySQL. " +
+                "But as explained in reference: `mysql command-line client ignores lines that start with --.` " +
+                "Parse the lines that start with -- as a comment line for compatibility.";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        assertEquals(0, statementList.size());
+    }
+
 }

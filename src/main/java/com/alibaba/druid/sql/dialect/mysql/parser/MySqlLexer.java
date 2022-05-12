@@ -560,7 +560,8 @@ public class MySqlLexer extends Lexer {
                 scanChar();
                 token = Token.SUB;
                 return;
-            } else if ((before_1 == ' ' || (before_1 != '-' && before_1 != '+')) && (next_2 == ' ' || next_2 == EOI || next_2 == '\n')) {
+            } else if ( ((before_1 == ' ' || (before_1 != '-' && before_1 != '+')) && (next_2 == ' ' || next_2 == EOI || next_2 == '\n'))
+                    || ((lastToken == null || Token.SEMI.equals(lastToken)) && charAt(pos + 1) == '-')) {
                 // it is comments
             } else if ((before_1 == '-' || before_1 == '+') && next_2 == ' ') {
                 throw new ParserException("illegal state. " + info());
