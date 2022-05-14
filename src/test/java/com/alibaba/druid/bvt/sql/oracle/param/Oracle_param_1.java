@@ -7,9 +7,9 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONWriter;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -43,10 +43,10 @@ public class Oracle_param_1 extends TestCase {
         String psql = out.toString();
         assertEquals("SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD')\n" +
                 "FROM dual;", psql);
-        String params_json = JSONArray.toJSONString(parameters, SerializerFeature.WriteClassName);
+        String params_json = JSON.toJSONString(parameters, JSONWriter.Feature.WriteClassName);
         System.out.println(params_json);
         JSONArray jsonArray = JSON.parseArray(params_json);
-        String json = JSONArray.toJSONString(jsonArray, SerializerFeature.WriteClassName);
+        String json = JSON.toJSONString(jsonArray, JSONWriter.Feature.WriteClassName);
         assertEquals("[]", json);
 
         String rsql = SQLUtils.toSQLString(SQLUtils.parseStatements(psql, dbType), dbType, jsonArray);

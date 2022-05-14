@@ -18,8 +18,9 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONWriter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -187,7 +188,7 @@ public class SqlHolder {
         visitor.setParameterizedMergeInList(true);
         visitor.setParameters(parameters);
         ast.accept(visitor);
-        String params = JSONArray.toJSONString(parameters, SerializerFeature.WriteClassName);
+        String params = JSON.toJSONString(parameters, JSONWriter.Feature.WriteClassName);
         params = StringUtils.replace(params, "\"", "\\\"");
         return params;
     }

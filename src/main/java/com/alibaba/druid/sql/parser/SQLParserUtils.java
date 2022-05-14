@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -64,9 +65,7 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class SQLParserUtils {
 
@@ -528,21 +527,22 @@ public class SQLParserUtils {
         lexer.config(SQLParserFeature.SkipComments, false);
         lexer.config(SQLParserFeature.KeepComments, true);
 
+        boolean set = false;
         int start = 0;
         Token token = lexer.token;
         for (;lexer.token != Token.EOF;) {
             if (token == Token.SEMI) {
                 int len = lexer.startPos - start;
                 if (len > 0) {
-                    String splitSql = removeComment(
-                            sql.substring(start, lexer.startPos)
-                            , dbType
+                    String lineSql = sql.substring(start, lexer.startPos);
+                    String splitSql = set ? lineSql.trim() : removeComment(lineSql, dbType
                     ).trim();
                     if (!splitSql.isEmpty()) {
                         list.add(splitSql);
                     }
                 }
                 start = lexer.startPos + 1;
+                set = false;
             } else if (token == Token.MULTI_LINE_COMMENT) {
                 int len = lexer.startPos - start;
                 if (len > 0) {
@@ -565,6 +565,14 @@ public class SQLParserUtils {
 
                 token = lexer.token;
                 continue;
+            } else if (set && token == Token.EQ && dbType == DbType.odps) {
+                lexer.nextTokenForSet();
+                token = lexer.token;
+                continue;
+            }
+
+            if (lexer.token == Token.SET) {
+                set = true;
             }
 
             lexer.nextToken();
@@ -645,5 +653,92 @@ public class SQLParserUtils {
         }
 
         return sb.toString();
+    }
+
+    public static List<String> getTables(String sql, DbType dbType) {
+
+        Set<String> tables = new LinkedHashSet<>();
+
+        boolean set = false;
+        Lexer lexer = createLexer(sql, dbType);
+        lexer.nextToken();
+
+        SQLExprParser exprParser;
+        switch (dbType) {
+            case odps:
+                exprParser = new OdpsExprParser(lexer);
+                break;
+            case mysql:
+                exprParser = new MySqlExprParser(lexer);
+                break;
+            default:
+                exprParser = new SQLExprParser(lexer);
+                break;
+        }
+
+
+        for_:
+        for (;lexer.token != Token.EOF;) {
+            switch (lexer.token) {
+                case CREATE:
+                case DROP:
+                case ALTER:
+                    set = false;
+                    lexer.nextToken();
+
+                    if (lexer.token == Token.TABLE) {
+                        lexer.nextToken();
+
+                        if (lexer.token == Token.IF) {
+                            lexer.nextToken();
+
+                            if (lexer.token == Token.NOT) {
+                                lexer.nextToken();
+                            }
+
+                            if (lexer.token == Token.EXISTS) {
+                                lexer.nextToken();
+                            }
+                        }
+
+                        SQLName name = exprParser.name();
+                        tables.add(name.toString());
+
+                        if (lexer.token == Token.AS) {
+                            lexer.nextToken();
+                        }
+                    }
+                    continue for_;
+                case FROM:
+                case JOIN:
+                    lexer.nextToken();
+                    if (lexer.token != Token.LPAREN
+                            && lexer.token != Token.VALUES
+                    ) {
+                        SQLName name = exprParser.name();
+                        tables.add(name.toString());
+                    }
+                    continue for_;
+                case SEMI:
+                    set = false;
+                    break;
+                case SET:
+                    set = true;
+                    break;
+                case EQ:
+                    if (set && dbType == DbType.odps) {
+                        lexer.nextTokenForSet();
+                        continue for_;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            lexer.nextToken();
+
+        }
+
+        return new ArrayList<>(tables);
     }
 }

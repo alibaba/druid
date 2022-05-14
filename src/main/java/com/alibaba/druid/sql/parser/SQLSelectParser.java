@@ -1101,13 +1101,23 @@ public class SQLSelectParser extends SQLParser {
                 while ((lexer.token == Token.UNION
                         || lexer.token == Token.EXCEPT
                         || lexer.token == Token.INTERSECT
-                        || lexer.token == Token.MINUS)
-                        && tableSource instanceof SQLUnionQueryTableSource) {
-                    SQLUnionQueryTableSource unionQueryTableSource = (SQLUnionQueryTableSource) tableSource;
-                    SQLUnionQuery union = unionQueryTableSource.getUnion();
-                    unionQueryTableSource.setUnion(
-                            (SQLUnionQuery) queryRest(union)
-                    );
+                        || lexer.token == Token.MINUS)) {
+                    if (tableSource instanceof SQLUnionQueryTableSource) {
+                        SQLUnionQueryTableSource unionQueryTableSource = (SQLUnionQueryTableSource) tableSource;
+                        SQLUnionQuery union = unionQueryTableSource.getUnion();
+                        unionQueryTableSource.setUnion(
+                                (SQLUnionQuery) queryRest(union)
+                        );
+                    } else if (tableSource instanceof SQLSubqueryTableSource) {
+                        SQLSelect select = ((SQLSubqueryTableSource) tableSource).getSelect();
+                        if (select != null) {
+                            SQLSelectQuery query = select.getQuery();
+                            SQLSelectQuery queryRest = queryRest(query, true);
+                            select.setQuery(queryRest);
+                        }
+                    } else {
+                        break;
+                    }
                 }
                 accept(Token.RPAREN);
             } else {

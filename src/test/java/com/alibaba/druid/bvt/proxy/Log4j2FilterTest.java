@@ -41,7 +41,12 @@ public class Log4j2FilterTest extends TestCase {
     }
 
     public void test_logger() throws Exception {
-        Log4j2Filter filter = new Log4j2Filter();
+        Log4j2Filter filter = null;
+        try {
+            filter = new Log4j2Filter();
+        } catch (NoSuchFieldError ignored) {
+            return;
+        }
 
         filter.setDataSourceLoggerName("_datasource_name_");
         filter.setConnectionLoggerName("_connection_name_");
