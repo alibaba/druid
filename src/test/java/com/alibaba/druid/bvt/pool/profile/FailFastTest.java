@@ -13,8 +13,6 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.DataSourceNotAvailableException;
 import com.alibaba.druid.pool.DruidDataSource;
 
-import junit.framework.TestCase;
-
 public class FailFastTest extends PoolTestCase {
 
     private DruidDataSource dataSource;
@@ -50,7 +48,7 @@ public class FailFastTest extends PoolTestCase {
         
         Properties properties = new Properties();
         properties.setProperty("druid.failFast", "true");
-        dataSource.configFromPropety(properties);
+        dataSource.configFromProperties(properties);
     }
 
     protected void tearDown() throws Exception {
@@ -91,7 +89,7 @@ public class FailFastTest extends PoolTestCase {
             if (!dataSource.isFailContinuous()) {
                 break;
             }
-            Thread.sleep(100 * 1);
+            Thread.sleep(100);
         }
     }
 
