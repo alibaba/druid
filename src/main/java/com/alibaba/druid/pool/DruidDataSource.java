@@ -185,7 +185,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public DruidDataSource(boolean fairLock){
         super(fairLock);
 
-        configFromPropety(System.getProperties());
+        configFromProperties(System.getProperties());
     }
 
     public boolean isAsyncInit() {
@@ -196,7 +196,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         this.asyncInit = asyncInit;
     }
 
-    public void configFromPropety(Properties properties) {
+    public void configFromProperties(Properties properties) {
         {
             String property = properties.getProperty("druid.name");
             if (property != null) {
@@ -590,7 +590,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.closed = false;
 
             if (properties != null) {
-                configFromPropety(properties);
+                configFromProperties(properties);
             }
         } finally {
             lock.unlock();
@@ -775,7 +775,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 LOG.info("connectProperties changed : " + this.connectProperties + " -> " + properties);
             }
 
-            configFromPropety(properties);
+            configFromProperties(properties);
 
             for (Filter filter : this.filters) {
                 filter.configFromProperties(properties);
