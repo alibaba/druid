@@ -89,7 +89,7 @@ public class FailFastTest extends PoolTestCase {
             if (!dataSource.isFailContinuous()) {
                 break;
             }
-            Thread.sleep(100 * 1);
+            Thread.sleep(100);
         }
     }
 
