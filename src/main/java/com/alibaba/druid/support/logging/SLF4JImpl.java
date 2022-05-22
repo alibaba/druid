@@ -81,7 +81,7 @@ public class SLF4JImpl implements Log {
     @Override
     public void debug(String msg, Throwable e) {
         debugCount++;
-        log.log(null, callerFQCN, LocationAwareLogger.ERROR_INT, msg, null, e);
+        log.log(null, callerFQCN, LocationAwareLogger.DEBUG_INT, msg, null, e);
     }
 
     @Override
