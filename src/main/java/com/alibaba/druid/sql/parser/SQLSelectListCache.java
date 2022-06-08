@@ -87,6 +87,7 @@ public class SQLSelectListCache {
                 queryBlock.setCachedSelectList(entry.printSql, entry.printSqlHash);
 
                 int len = pos + block.length();
+                //todo fix reset
                 lexer.reset(len, text.charAt(len), Token.FROM);
                 return true;
             }

@@ -178,6 +178,7 @@ public class Lexer {
 
     public static class SavePoint {
         int   bp;
+        int startPos;
         int   sp;
         int   np;
         char  ch;
@@ -191,7 +192,13 @@ public class Lexer {
         return keywords;
     }
 
+    //出现多次调用mark()后调用reset()会有问题
+    @Deprecated
     public SavePoint mark() {
+        return this.savePoint = markOut();
+    }
+
+    public SavePoint markOut() {
         SavePoint savePoint = new SavePoint();
         savePoint.bp = pos;
         savePoint.sp = bufPos;
@@ -201,8 +208,10 @@ public class Lexer {
         savePoint.stringVal = stringVal;
         savePoint.hash = hash;
         savePoint.hash_lower = hash_lower;
-        return this.savePoint = savePoint;
+        savePoint.startPos = startPos;
+        return savePoint;
     }
+
 
     public void reset(SavePoint savePoint) {
         this.pos = savePoint.bp;
@@ -213,8 +222,10 @@ public class Lexer {
         this.stringVal = savePoint.stringVal;
         this.hash = savePoint.hash;
         this.hash_lower = savePoint.hash_lower;
+        this.startPos = savePoint.startPos;
     }
-
+    //出现多次调用mark()后调用reset()会有问题
+    @Deprecated
     public void reset() {
         this.reset(this.savePoint);
     }
@@ -3123,6 +3134,8 @@ public class Lexer {
         return this.ch;
     }
 
+    //todo fix reset reset字段会导致lexer的游标不对齐 不建议使用
+    @Deprecated
     public void reset(int mark, char markChar, Token token) {
         this.pos = mark;
         this.ch = markChar;

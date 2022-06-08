@@ -570,8 +570,7 @@ public class SQLStatementParser extends SQLParser {
             }
 
             if (lexer.token == Token.LPAREN) {
-                char markChar = lexer.current();
-                int markBp = lexer.bp();
+                Lexer.SavePoint savePoint = lexer.markOut();
 
                 int parenCount = 0;
                 do {
@@ -585,7 +584,7 @@ public class SQLStatementParser extends SQLParser {
                 }
 
                 if (lexer.token == Token.SELECT) {
-                    lexer.reset(markBp, markChar, Token.LPAREN);
+                    lexer.reset(savePoint);
                     SQLStatement stmt = parseSelect();
                     statementList.add(stmt);
                     continue;
