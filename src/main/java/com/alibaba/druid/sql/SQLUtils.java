@@ -507,7 +507,7 @@ public class SQLUtils {
             case clickhouse:
                 return new ClickhouseOutputVisitor(out);
             case oscar:
-                return new OscarPermissionOutputVisitor(out);
+                return new OscarOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }
