@@ -1752,8 +1752,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.IDENTIFIER) {
             String label = lexer.stringVal();
-            char ch = lexer.current();
-            int bp = lexer.bp();
+            Lexer.SavePoint savePoint = lexer.markOut();
             lexer.nextToken();
             if (lexer.token() == Token.VARIANT && lexer.stringVal().equals(":")) {
                 lexer.nextToken();
@@ -1773,7 +1772,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
                 return true;
             } else {
-                lexer.reset(bp, ch, Token.IDENTIFIER);
+                lexer.reset(savePoint);
             }
 
         }
@@ -7909,26 +7908,24 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             if (dbType !=  DbType.mysql) {
                 while (lexer.token() == Token.COMMA) {
-                    char markChar = lexer.current();
-                    int markBp = lexer.bp();
-
+                    Lexer.SavePoint savePoint = lexer.markOut();
                     lexer.nextToken();
                     if (lexer.identifierEquals(FnvHash.Constants.CHANGE)
                             || lexer.identifierEquals(FnvHash.Constants.MODIFY)) {
-                        lexer.reset(markBp, markChar, Token.COMMA);
+                        lexer.reset(savePoint);
                         break;
                     }
 
                     if (lexer.token() == Token.IDENTIFIER) {
                         if ("ADD".equalsIgnoreCase(lexer.stringVal())) {
-                            lexer.reset(markBp, markChar, Token.COMMA);
+                            lexer.reset(savePoint);
                             break;
                         }
                         name = exprParser.name();
                         name.setParent(item);
                         item.addColumn(name);
                     } else {
-                        lexer.reset(markBp, markChar, Token.COMMA);
+                        lexer.reset(savePoint);
                         break;
                     }
                 }
@@ -8718,12 +8715,11 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             // select
             if (lexer.token() == Token.LPAREN) {
-                char ch = lexer.current();
-                int bp = lexer.bp();
+                Lexer.SavePoint savePoint = lexer.markOut();
                 lexer.nextToken();
 
                 if (lexer.token() == Token.SELECT) {
-                    lexer.reset(bp, ch, Token.LPAREN);
+                    lexer.reset(savePoint);
                     statementList.add(this.parseSelect());
                     continue;
                 } else {
@@ -8811,8 +8807,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             if (lexer.token() == Token.IDENTIFIER) {
                 String label = lexer.stringVal();
-                char ch = lexer.current();
-                int bp = lexer.bp();
+                Lexer.SavePoint savePoint = lexer.markOut();
                 lexer.nextToken();
                 if (lexer.token() == Token.VARIANT && lexer.stringVal().equals(":")) {
                     lexer.nextToken();
@@ -8831,7 +8826,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     }
                     continue;
                 } else {
-                    lexer.reset(bp, ch, Token.IDENTIFIER);
+                    lexer.reset(savePoint);
                 }
 
             }
@@ -9040,30 +9035,29 @@ public class MySqlStatementParser extends SQLStatementParser {
      * parse declare statement
      */
     public SQLStatement parseDeclare() {
-        char markChar = lexer.current();
-        int markBp = lexer.bp();
+        Lexer.SavePoint savePoint = lexer.markOut();
 
         lexer.nextToken();
 
         if (lexer.token() == Token.CONTINUE) {
-            lexer.reset(markBp, markChar, Token.DECLARE);
+            lexer.reset(savePoint);
             return this.parseDeclareHandler();
         }
 
         lexer.nextToken();
         if (lexer.token() == Token.CURSOR) {
-            lexer.reset(markBp, markChar, Token.DECLARE);
+            lexer.reset(savePoint);
             return this.parseCursorDeclare();
         } else if (lexer.identifierEquals("HANDLER")) {
             //DECLARE异常处理程序 [add by zhujun 2016-04-16]
-            lexer.reset(markBp, markChar, Token.DECLARE);
+            lexer.reset(savePoint);
             return this.parseDeclareHandler();
         } else if (lexer.token() == Token.CONDITION) {
             //DECLARE异常 [add by zhujun 2016-04-17]
-            lexer.reset(markBp, markChar, Token.DECLARE);
+            lexer.reset(savePoint);
             return this.parseDeclareCondition();
         } else {
-            lexer.reset(markBp, markChar, Token.DECLARE);
+            lexer.reset(savePoint);
         }
 
         MySqlDeclareStatement stmt = new MySqlDeclareStatement();
@@ -9274,12 +9268,11 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         // select
         if (lexer.token() == Token.LPAREN) {
-            char ch = lexer.current();
-            int bp = lexer.bp();
+            Lexer.SavePoint savePoint = lexer.markOut();
             lexer.nextToken();
 
             if (lexer.token() == Token.SELECT) {
-                lexer.reset(bp, ch, Token.LPAREN);
+                lexer.reset(savePoint);
                 return this.parseSelect();
             } else {
                 throw new ParserException("TODO. " + lexer.info());
