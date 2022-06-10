@@ -68,6 +68,7 @@ public enum Token {
     FOR("FOR"), 
     IF("IF"),
 
+    LOCAL("LOCAL"),
     GLOBAL("GLOBAL"),
     ALL("ALL"),
     UNION("UNION"),

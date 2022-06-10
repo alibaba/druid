@@ -451,6 +451,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.oscar</groupId>
+			<artifactId>oscarJDBC</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.oracle.ojdbc</groupId>
 			<artifactId>ojdbc8</artifactId>
 			<version>19.3.0.0</version>

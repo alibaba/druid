@@ -48,6 +48,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleLexer;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.oscar.parser.OscarLexer;
+import com.alibaba.druid.sql.dialect.oscar.visitor.OscarStatementParser;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixExprParser;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixLexer;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixStatementParser;
@@ -141,6 +144,8 @@ public class SQLParserUtils {
                 return new AntsparkStatementParser(sql);
             case clickhouse:
                 return new ClickhouseStatementParser(sql);
+            case oscar:
+                return new OscarStatementParser(sql);
             default:
                 return new SQLStatementParser(sql, dbType);
         }
@@ -181,6 +186,8 @@ public class SQLParserUtils {
                 return new PrestoExprParser(sql, features);
             case hive:
                 return new HiveExprParser(sql, features);
+            /*case oscar:
+                return new OscarExprParser(sql,features);*/
             default:
                 return new SQLExprParser(sql, dbType, features);
         }
@@ -222,6 +229,8 @@ public class SQLParserUtils {
                 return new PrestoLexer(sql);
             case antspark:
                 return new AntsparkLexer(sql);
+            case oscar:
+                return new OscarLexer(sql);
             default:
                 return new Lexer(sql, null, dbType);
         }
@@ -245,6 +254,8 @@ public class SQLParserUtils {
                 return new OdpsSelectQueryBlock();
             case sqlserver:
                 return new SQLServerSelectQueryBlock();
+            case oscar:
+                return new OscarSelectQueryBlock();
             default:
                 return new SQLSelectQueryBlock(dbType);
         }
