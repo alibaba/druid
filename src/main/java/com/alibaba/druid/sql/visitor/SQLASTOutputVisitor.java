@@ -4053,7 +4053,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print(' ');
 
         SQLTableSource right = x.getRight();
-        if (right instanceof SQLJoinTableSource) {
+        if (right instanceof SQLJoinTableSource && ((SQLJoinTableSource) right).getJoinType() == JoinType.COMMA) {
             print('(');
             printTableSource(right);
             print(')');
