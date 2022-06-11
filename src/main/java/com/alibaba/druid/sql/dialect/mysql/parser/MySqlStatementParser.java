@@ -6093,9 +6093,20 @@ public class MySqlStatementParser extends SQLStatementParser {
                             }
                             if (lexer.token() == Token.LPAREN) {
                                 lexer.nextToken();
-                                SQLPartition partition = this.getExprParser().parsePartition();
+
+                                for (;;) {
+                                    SQLPartition partition = this.getExprParser().parsePartition();
+                                    item.addPartition(partition);
+                                    if (lexer.token() == COMMA) {
+                                        lexer.nextToken();
+
+                                        if(lexer.token() == PARTITION) {
+                                            continue;
+                                        }
+                                    }
+                                    break;
+                                }
                                 accept(Token.RPAREN);
-                                item.addPartition(partition);
                             }
                             stmt.addItem(item);
                             return true;
