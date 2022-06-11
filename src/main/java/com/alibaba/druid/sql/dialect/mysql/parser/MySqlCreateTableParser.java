@@ -396,6 +396,28 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
+            if (lexer.identifierEquals("PAGE_CHECKSUM")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
+                SQLExpr expr = this.exprParser.expr();
+                stmt.setPageChecksum(expr);
+                continue;
+            }
+
+            if (lexer.identifierEquals("TRANSACTIONAL")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
+                SQLExpr expr = this.exprParser.expr();
+                stmt.setTransactional(expr);
+                continue;
+            }
+
             if (lexer.identifierEquals(FnvHash.Constants.BLOCK_SIZE)) {
                 lexer.nextToken();
                 if (lexer.token() == Token.EQ) {

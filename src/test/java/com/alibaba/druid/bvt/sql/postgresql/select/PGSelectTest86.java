@@ -25,4 +25,25 @@ public class PGSelectTest86
                 "from xxx_point point\n" +
                 "\tinner join xxx_cc cc on point.id = cc.point_id", stmt.toLowerCaseString());
     }
+
+    public void test_1() throws Exception {
+        String sql =  "select\n" +
+                "        COUNT(1) res\n" +
+                "        from TB_EXPERIENCE exp\n" +
+                "        where exp.creatdate>DATE_SUB(CURDATE(), interval 1 MONTH)\n" +
+                "        and exp.cstatus = 1";
+
+        final List<SQLStatement> statements = SQLUtils.parseStatements(sql, JdbcConstants.POSTGRESQL);
+        assertEquals(1, statements.size());
+        final SQLStatement stmt = statements.get(0);
+
+        assertEquals("SELECT *\n" +
+                        "FROM xxx_point point\n" +
+                        "\tINNER JOIN xxx_cc cc ON point.id = cc.point_id"
+                , stmt.toString());
+
+        assertEquals("select *\n" +
+                "from xxx_point point\n" +
+                "\tinner join xxx_cc cc on point.id = cc.point_id", stmt.toLowerCaseString());
+    }
 }

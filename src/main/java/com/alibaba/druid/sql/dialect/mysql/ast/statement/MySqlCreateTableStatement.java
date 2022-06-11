@@ -665,4 +665,18 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         }
         addOption("ENGINE", x);
     }
+
+    public void setPageChecksum(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        addOption("PAGE_CHECKSUM", x);
+    }
+
+    public void setTransactional(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        addOption("TRANSACTIONAL", x);
+    }
 }
