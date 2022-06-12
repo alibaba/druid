@@ -22,11 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class OracleSelectPivotBase extends OracleSQLObjectImpl {
-
     protected final List<SQLExpr> pivotFor = new ArrayList<SQLExpr>();
 
-    public OracleSelectPivotBase(){
-
+    public OracleSelectPivotBase() {
     }
 
     public List<SQLExpr> getPivotFor() {

@@ -24,18 +24,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest84 extends TestCase {
-
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         Assert.assertTrue(provider.checkValid(//
-        "CREATE INDEX part_of_name ON customer (name(10));"));
+                "CREATE INDEX part_of_name ON customer (name(10));"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

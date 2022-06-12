@@ -26,18 +26,18 @@ import java.util.List;
 import java.util.Map;
 
 public class H2EvalVisitor extends H2ASTVisitorAdapter implements SQLEvalVisitor {
-    private Map<String, Function> functions        = new HashMap<String, Function>();
-    private List<Object>          parameters       = new ArrayList<Object>();
+    private Map<String, Function> functions = new HashMap<String, Function>();
+    private List<Object> parameters = new ArrayList<Object>();
 
-    private int                   variantIndex     = -1;
+    private int variantIndex = -1;
 
-    private boolean               markVariantIndex = true;
+    private boolean markVariantIndex = true;
 
-    public H2EvalVisitor(){
+    public H2EvalVisitor() {
         this(new ArrayList<Object>(1));
     }
 
-    public H2EvalVisitor(List<Object> parameters){
+    public H2EvalVisitor(List<Object> parameters) {
         this.parameters = parameters;
     }
 

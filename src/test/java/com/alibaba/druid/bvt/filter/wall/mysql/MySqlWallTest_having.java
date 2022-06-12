@@ -23,25 +23,24 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest_having extends TestCase {
-
     public void test_having() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "select id, count(*) from t group by id having 1 = 1"));
+                "select id, count(*) from t group by id having 1 = 1"));
     }
-    
+
     public void test_having_true_first() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "select id, count(*) from t group by id having 1 = 1 AND count(*) > 2"));
+                "select id, count(*) from t group by id having 1 = 1 AND count(*) > 2"));
     }
 
     public void test_having_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "select id, count(*) from t group by id having count(*) > 2 OR 1 = 1"));
+                "select id, count(*) from t group by id having count(*) > 2 OR 1 = 1"));
     }
 }

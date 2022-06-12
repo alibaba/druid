@@ -12,10 +12,9 @@ import java.util.List;
  * Date 2019-07-22 17:01
  */
 public class DrdsChangeDDLJob extends MySqlStatementImpl implements SQLStatement {
-
-    private long jobId = 0;
-    private boolean skip = false;
-    private boolean add = false;
+    private long jobId;
+    private boolean skip;
+    private boolean add;
     private List<String> groupAndTableNameList = new ArrayList<String>();
 
     public void accept0(MySqlASTVisitor visitor) {

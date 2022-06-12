@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class SQLServerSelectTest29 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = //
                 "WITH A AS (\n" +

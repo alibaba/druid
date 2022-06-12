@@ -34,7 +34,6 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 
 public class OdpsSelect_distribute_by_Test extends TestCase {
-
     public void test_0() throws Exception {
         exec_test("bvt/parser/odps-1.sql");
         exec_test("bvt/parser/odps-2.sql");
@@ -72,7 +71,6 @@ public class OdpsSelect_distribute_by_Test extends TestCase {
     }
 
     void mergValidate(String sql, String expect) {
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
@@ -87,6 +85,5 @@ public class OdpsSelect_distribute_by_Test extends TestCase {
 
         Assert.assertEquals(expect, out.toString());
     }
-
 
 }

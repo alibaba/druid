@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OdpsAddAccountProviderStatement extends SQLStatementImpl {
-
     private SQLName provider;
 
     public OdpsAddAccountProviderStatement() {

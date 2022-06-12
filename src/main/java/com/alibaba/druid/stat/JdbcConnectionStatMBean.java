@@ -18,7 +18,6 @@ package com.alibaba.druid.stat;
 import java.util.Date;
 
 public interface JdbcConnectionStatMBean {
-
     long getConnectCount();
 
     long getCloseCount();

@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -26,7 +25,6 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.List;
 
 public class SQLCreateTableParser extends SQLDDLParser {
-
     public SQLCreateTableParser(String sql) {
         super(sql);
     }
@@ -104,12 +102,12 @@ public class SQLCreateTableParser extends SQLDDLParser {
             for (; ; ) {
                 Token token = lexer.token;
                 if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)
-                    && DbType.oracle == dbType) {
+                        && DbType.oracle == dbType) {
                     SQLTableElement element = this.parseCreateTableSupplementalLogingProps();
                     element.setParent(createTable);
                     createTable.getTableElementList().add(element);
                 } else if (token == Token.IDENTIFIER //
-                           || token == Token.LITERAL_ALIAS) {
+                        || token == Token.LITERAL_ALIAS) {
                     SQLColumnDefinition column = this.exprParser.parseColumn(createTable);
                     column.setParent(createTable);
                     createTable.getTableElementList().add(column);
@@ -122,7 +120,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                     constraint.setParent(createTable);
                     createTable.getTableElementList().add((SQLTableElement) constraint);
                 } else if (token == Token.TABLESPACE) {
-                    throw new ParserException("TODO "  + lexer.info());
+                    throw new ParserException("TODO " + lexer.info());
                 } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     createTable.getTableElementList().add(column);
@@ -155,7 +153,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             lexer.nextToken();
 
             SQLSelect select = null;
-            if(DbType.oracle == dbType) {
+            if (DbType.oracle == dbType) {
                 select = new OracleSelectParser(this.exprParser).select();
             } else {
                 select = this.createSQLSelectParser().select();
@@ -173,7 +171,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
         if (lexer.token == Token.TABLESPACE) {
             lexer.nextToken();
             createTable.setTablespace(
-                this.exprParser.name()
+                    this.exprParser.name()
             );
         }
 
@@ -188,7 +186,6 @@ public class SQLCreateTableParser extends SQLDDLParser {
     }
 
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
-
     }
 
     public SQLPartitionBy parsePartitionBy() {

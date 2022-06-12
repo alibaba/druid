@@ -41,7 +41,6 @@ public class MySqlParameterizedOutputVisitorTest_45 extends TestCase {
 
         System.out.println(psql);
 
-
         assertEquals("(SELECT `t_like_count`.`id`, `t_like_count`.`target_id`, `t_like_count`.`target_type`, `t_like_count`.`like_type`, `t_like_count`.`like_count`\n" +
                 "\t, `t_like_count`.`like_optimalize_count`, `t_like_count`.`create_time`, `t_like_count`.`update_time`\n" +
                 "FROM t_like_count `t_like_count`\n" +

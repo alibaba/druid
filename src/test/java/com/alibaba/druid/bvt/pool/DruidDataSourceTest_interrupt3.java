@@ -11,7 +11,6 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceTest_interrupt3 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -39,7 +38,6 @@ public class DruidDataSourceTest_interrupt3 extends TestCase {
         final CountDownLatch endLatch = new CountDownLatch(1);
         final AtomicInteger errorCount = new AtomicInteger();
         Thread thread = new Thread() {
-
             public void run() {
                 try {
                     startLatch.countDown();

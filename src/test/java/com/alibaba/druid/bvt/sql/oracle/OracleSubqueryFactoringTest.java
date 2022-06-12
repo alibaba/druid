@@ -23,15 +23,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class OracleSubqueryFactoringTest extends TestCase {
-
     public void test_interval() throws Exception {
         String sql = "WITH dept_costs AS (\n"
-                     + "SELECT department_name, SUM(salary) dept_total\n"
-                     + "FROM employees e, departments d\n"
-                     + "WHERE e.department_id = d.department_id\n"
-                     + "GROUP BY department_name), "
-                     + "avg_cost AS (SELECT SUM(dept_total)/COUNT(*) avg FROM dept_costs)\n"
-                     + "SELECT * FROM dept_costs WHERE dept_total > (SELECT avg FROM avg_cost) ORDER BY department_name;";
+                + "SELECT department_name, SUM(salary) dept_total\n"
+                + "FROM employees e, departments d\n"
+                + "WHERE e.department_id = d.department_id\n"
+                + "GROUP BY department_name), "
+                + "avg_cost AS (SELECT SUM(dept_total)/COUNT(*) avg FROM dept_costs)\n"
+                + "SELECT * FROM dept_costs WHERE dept_total > (SELECT avg FROM avg_cost) ORDER BY department_name;";
 
         String expected = "WITH dept_costs AS (\n" +
                 "\t\tSELECT department_name, SUM(salary) AS dept_total\n" +

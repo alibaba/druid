@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE tnhash ( id INT, name VARCHAR(5) ) PARTITION BY HASH(id) PARTITIONS 2;"; //
 
@@ -37,22 +36,22 @@ public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE tnhash ("
-                    + "\n\tid INT,"
-                    + "\n\tname VARCHAR(5)"
-                    + "\n)"
-                    + "\nPARTITION BY HASH (id) PARTITIONS 2;",
-                                result);
+                            + "\n\tid INT,"
+                            + "\n\tname VARCHAR(5)"
+                            + "\n)"
+                            + "\nPARTITION BY HASH (id) PARTITIONS 2;",
+                    result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table tnhash ("
-                    + "\n\tid INT,"
-                    + "\n\tname VARCHAR(5)"
-                    + "\n)"
-                    + "\npartition by hash (id) partitions 2;",
-                                result);
+                            + "\n\tid INT,"
+                            + "\n\tname VARCHAR(5)"
+                            + "\n)"
+                            + "\npartition by hash (id) partitions 2;",
+                    result);
         }
-        
+
         Assert.assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();

@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGAlterTableTest3 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "ALTER TABLE issues "//
                 + "ADD COLUMN issue_creation_date_ms BIGINT NULL, "//
@@ -50,11 +49,11 @@ public class PGAlterTableTest3 extends PGTest {
 //        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("issues")));
-        
+
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("issues")).getAlterCount() == 1);
 
         Assert.assertEquals(visitor.getColumns().size(), 6);
     }
 
-   
+
 }

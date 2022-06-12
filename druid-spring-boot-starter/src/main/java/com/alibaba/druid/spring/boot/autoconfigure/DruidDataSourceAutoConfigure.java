@@ -47,7 +47,6 @@ import org.springframework.context.annotation.Import;
     DruidWebStatFilterConfiguration.class,
     DruidFilterConfiguration.class})
 public class DruidDataSourceAutoConfigure {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(DruidDataSourceAutoConfigure.class);
 
     @Bean(initMethod = "init")

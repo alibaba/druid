@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class OdpsAlterTableChangeColumnTest4 extends TestCase {
-
     public void test_select() throws Exception {
         String sql = "ALTER TABLE table_name CHANGE COLUMN old_col_name new_col_name column_type COMMENT '';";//
         assertEquals("ALTER TABLE table_name\n" +

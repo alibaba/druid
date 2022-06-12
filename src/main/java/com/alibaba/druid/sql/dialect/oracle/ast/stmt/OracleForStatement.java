@@ -22,11 +22,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleForStatement extends SQLForStatement implements OracleStatement {
+    private boolean all;
 
-
-    private boolean            all;
-
-    private SQLName           endLabel;
+    private SQLName endLabel;
 
     @Override
     protected void accept0(SQLASTVisitor v) {

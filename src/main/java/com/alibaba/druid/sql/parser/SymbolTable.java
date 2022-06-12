@@ -39,9 +39,9 @@ public class SymbolTable {
     public static SymbolTable global = new SymbolTable(32768);
 
     private final Entry[] entries;
-    private final int      indexMask;
+    private final int indexMask;
 
-    public SymbolTable(int tableSize){
+    public SymbolTable(int tableSize) {
         this.indexMask = tableSize - 1;
         this.entries = new Entry[tableSize];
     }

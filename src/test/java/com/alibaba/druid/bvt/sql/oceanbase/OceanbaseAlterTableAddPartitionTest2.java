@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseAlterTableAddPartitionTest2 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "alter table clients add partition partitions 18;"; //
 
@@ -37,14 +36,14 @@ public class OceanbaseAlterTableAddPartitionTest2 extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("ALTER TABLE clients"
-                    + "\n\tADD PARTITION PARTITIONS 18;",
-                                result);
+                            + "\n\tADD PARTITION PARTITIONS 18;",
+                    result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("alter table clients"
-                    + "\n\tadd partition partitions 18;",
-                                result);
+                            + "\n\tadd partition partitions 18;",
+                    result);
         }
 
         Assert.assertEquals(1, stmtList.size());

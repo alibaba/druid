@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class CobarShowStatus extends MySqlStatementImpl {
-
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
 

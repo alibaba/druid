@@ -23,15 +23,14 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest26 extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "delete from cmsdj_feed where DATEDIFF(DATE(cd_addtime),?)<=-?")); //
+                "delete from cmsdj_feed where DATEDIFF(DATE(cd_addtime),?)<=-?")); //
     }
 }

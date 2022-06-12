@@ -16,7 +16,6 @@ import java.util.List;
  * @Date 2019-07-02 15:27
  */
 public class MySqlAlterTable_refactor_test extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "alter table test001\n" +
                 "add column x int first," +

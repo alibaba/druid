@@ -16,18 +16,15 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLLateralViewTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSourceImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 // just for alibaba mysql
 public class MySqlUpdateTableSource extends SQLTableSourceImpl {
-
     private MySqlUpdateStatement update;
 
-    public MySqlUpdateTableSource(MySqlUpdateStatement update){
+    public MySqlUpdateTableSource(MySqlUpdateStatement update) {
         this.update = update;
     }
 
@@ -57,8 +54,6 @@ public class MySqlUpdateTableSource extends SQLTableSourceImpl {
 
     @Override
     public MySqlUpdateTableSource clone() {
-
-
         MySqlUpdateTableSource x = new MySqlUpdateTableSource(this.update);
 
         x.setAlias(this.alias);

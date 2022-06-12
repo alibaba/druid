@@ -16,22 +16,21 @@
 package com.alibaba.druid;
 
 public class FastsqlException extends RuntimeException {
-
     private static final long serialVersionUID = 1L;
 
-    public FastsqlException(){
+    public FastsqlException() {
         super();
     }
 
-    public FastsqlException(String message, Throwable cause){
+    public FastsqlException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public FastsqlException(String message){
+    public FastsqlException(String message) {
         super(message);
     }
 
-    public FastsqlException(Throwable cause){
+    public FastsqlException(Throwable cause) {
         super(cause);
     }
 

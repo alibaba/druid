@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.util.Set;
 
 public interface WallFilterMBean {
-
     String getDbType();
 
     boolean isLogViolation();
@@ -27,22 +26,22 @@ public interface WallFilterMBean {
     void setLogViolation(boolean logViolation);
 
     boolean isThrowException();
-    
+
     void setThrowException(boolean throwException);
-    
+
     boolean isInited();
-    
+
     void clearProviderCache();
-    
+
     Set<String> getProviderWhiteList();
-    
+
     String check(String sql) throws SQLException;
-    
+
     long getViolationCount();
-    
+
     void resetViolationCount();
-    
+
     void clearWhiteList();
-    
+
     boolean checkValid(String sql);
 }

@@ -49,7 +49,7 @@ public class PGSelectTest57 extends TestCase {
                 "\t, IFNULL(spare1, 0)\n" +
                 "FROM clu$\n" +
                 "WHERE obj# = '633'", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select ts#, file#, block#, cols\n" +
                 "\t, IFNULL(size$, -1), pctfree$\n" +
                 "\t, pctused$, initrans, maxtrans, hashkeys, func\n" +

@@ -28,7 +28,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2SelectTest_28 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "select a from (select b from d)";
 

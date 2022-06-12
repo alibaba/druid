@@ -22,13 +22,12 @@ import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
 
 public class MySqlAlterViewTest_0 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "alter definer = 'ivan'@'%' view my_view3 as select count(*) from t3;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         assertEquals("ALTER DEFINER = 'ivan'@'%'\n" +
                 "\tVIEW my_view3\n" +
                 "AS\n" +

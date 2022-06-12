@@ -26,27 +26,26 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleBlockTest9 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE" + //
-                     "  my_emp_id NUMBER(6);" + //
-                     "  my_job_id VARCHAR2(10);" + //
-                     "  my_sal    NUMBER(8,2);" + //
-                     "  CURSOR c1 IS" + //
-                     "    SELECT employee_id, job_id, salary" + //
-                     "    FROM employees FOR UPDATE;" + //
-                     "BEGIN" + //
-                     "  OPEN c1;" + //
-                     "  LOOP" + //
-                     "    FETCH c1 INTO my_emp_id, my_job_id, my_sal;" + //
-                     "    IF my_job_id = 'SA_REP' THEN" + //
-                     "      UPDATE employees" + //
-                     "      SET salary = salary * 1.02" + //
-                     "      WHERE CURRENT OF c1;" + //
-                     "    END IF;" + //
-                     "    EXIT WHEN c1%NOTFOUND;" + //
-                     "  END LOOP;" + //
-                     "END;"; //
+                "  my_emp_id NUMBER(6);" + //
+                "  my_job_id VARCHAR2(10);" + //
+                "  my_sal    NUMBER(8,2);" + //
+                "  CURSOR c1 IS" + //
+                "    SELECT employee_id, job_id, salary" + //
+                "    FROM employees FOR UPDATE;" + //
+                "BEGIN" + //
+                "  OPEN c1;" + //
+                "  LOOP" + //
+                "    FETCH c1 INTO my_emp_id, my_job_id, my_sal;" + //
+                "    IF my_job_id = 'SA_REP' THEN" + //
+                "      UPDATE employees" + //
+                "      SET salary = salary * 1.02" + //
+                "      WHERE CURRENT OF c1;" + //
+                "    END IF;" + //
+                "    EXIT WHEN c1%NOTFOUND;" + //
+                "  END LOOP;" + //
+                "END;"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

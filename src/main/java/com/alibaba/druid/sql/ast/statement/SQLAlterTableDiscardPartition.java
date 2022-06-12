@@ -23,19 +23,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableDiscardPartition extends SQLObjectImpl implements SQLAlterTableItem {
-
     private final List<SQLName> partitions = new ArrayList<SQLName>(4);
 
     private boolean tablespace;
 
     public SQLAlterTableDiscardPartition() {
-
     }
 
     public List<SQLName> getPartitions() {
         return partitions;
     }
-    
+
     public void addPartition(SQLName partition) {
         if (partition != null) {
             partition.setParent(this);

@@ -21,7 +21,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class MySqlParameterizedOutputVisitorTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT appsheetserialno FROM app_trans WHERE nodeid = _gbk '619' "
                 + " AND alino = _gbk '2013110900031031001700thfund00163619'"

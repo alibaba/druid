@@ -18,7 +18,6 @@ package com.alibaba.druid.wall;
 import java.util.Set;
 
 public interface WallConfigMBean {
-
     boolean isInited();
 
     String getDir();

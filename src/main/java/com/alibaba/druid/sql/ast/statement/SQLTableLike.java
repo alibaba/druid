@@ -1,13 +1,12 @@
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLTableLike extends SQLObjectImpl implements SQLTableElement {
     private SQLExprTableSource table;
-    private boolean includeProperties = false;
-    private boolean excludeProperties = false;
+    private boolean includeProperties;
+    private boolean excludeProperties;
 
     @Override
     protected void accept0(SQLASTVisitor v) {

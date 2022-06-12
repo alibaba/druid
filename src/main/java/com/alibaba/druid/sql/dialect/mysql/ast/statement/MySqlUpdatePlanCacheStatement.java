@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlUpdatePlanCacheStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
     private SQLSelect formSelect;
     private SQLSelect toSelect;
 

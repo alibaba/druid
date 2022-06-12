@@ -9,7 +9,6 @@ import java.util.List;
 
 public class MySqlCreateTableTest154_hint
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `ngram_2_t1_1` (\n" +
                 "  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,\n" +
@@ -22,7 +21,7 @@ public class MySqlCreateTableTest154_hint
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -46,9 +45,6 @@ public class MySqlCreateTableTest154_hint
                 ") engine = InnoDB auto_increment = 3 charset = gb2312", stmt.toLowerCaseString());
 
     }
-
-
-
 
 
 }

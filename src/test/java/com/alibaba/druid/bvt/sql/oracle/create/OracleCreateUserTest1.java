@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import java.util.List;
 
 public class OracleCreateUserTest1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "create user DZFP_CX identified by oracle;"; //

@@ -15,26 +15,21 @@
  */
 package com.alibaba.druid.sql.dialect.hive.parser;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
-import com.alibaba.druid.sql.ast.expr.SQLSizeExpr;
-import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
-import com.alibaba.druid.sql.parser.*;
-import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectListCache;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
 
 public class HiveSelectParser extends SQLSelectParser {
-
-    public HiveSelectParser(SQLExprParser exprParser){
+    public HiveSelectParser(SQLExprParser exprParser) {
         super(exprParser);
     }
 
-    public HiveSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+    public HiveSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
         super(exprParser, selectListCache);
     }
 
-    public HiveSelectParser(String sql){
+    public HiveSelectParser(String sql) {
         this(new HiveExprParser(sql));
     }
 

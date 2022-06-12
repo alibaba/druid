@@ -26,7 +26,7 @@ public class OdpsShowGrantsStmt extends SQLStatementImpl {
     private SQLExpr user;
 
     private SQLExpr objectType;
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OdpsASTVisitor) visitor);

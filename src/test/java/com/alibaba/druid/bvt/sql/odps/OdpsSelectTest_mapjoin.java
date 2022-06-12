@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
 
 public class OdpsSelectTest_mapjoin extends TestCase {
-
     public void test_column_comment() throws Exception {
         String sql = " select /* + mapjoin(a) */"
                 + "\na.shop_name,"
@@ -36,6 +35,5 @@ public class OdpsSelectTest_mapjoin extends TestCase {
                 "ON a.shop_name = b.shop_name\n" +
                 "\tAND b.ds = '20150101';", SQLUtils.formatOdps(sql));
     }
-
 
 }

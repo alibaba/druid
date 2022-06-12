@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlInsertTest_9 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "insert into sequence values('seq_wlb_order_log',268234128+10000000,now());";
 

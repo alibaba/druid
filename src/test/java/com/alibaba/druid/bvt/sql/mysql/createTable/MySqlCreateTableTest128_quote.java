@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest128_quote extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE \"linxi_test\".\"linxi_subpart11\" (\n" +
                 "  \"id\"       BIGINT  NOT NULL\n" +
@@ -26,7 +25,7 @@ public class MySqlCreateTableTest128_quote extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -44,7 +43,6 @@ public class MySqlCreateTableTest128_quote extends MysqlTest {
                 "TABLEGROUP group2", stmt.toString());
 
     }
-
 
 
 }

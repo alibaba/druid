@@ -45,7 +45,7 @@ public class PGSelectTest59_lateral extends TestCase {
                 "                            3\n" +
                 "                         }'\n" +
                 "GROUP BY id", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select id, sum(uv[1]) as uv1, sum(uv[2]) as uv2\n" +
                 "from xxxxx\n" +
                 "where a in (?)\n" +

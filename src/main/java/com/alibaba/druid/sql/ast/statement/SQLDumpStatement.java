@@ -10,7 +10,6 @@ public class SQLDumpStatement extends SQLStatementImpl {
     private SQLSelect select;
 
     public SQLDumpStatement() {
-
     }
 
     public SQLSelect getSelect() {

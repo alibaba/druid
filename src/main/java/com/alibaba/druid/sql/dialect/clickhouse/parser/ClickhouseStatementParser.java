@@ -5,17 +5,16 @@ import com.alibaba.druid.sql.parser.*;
 
 public class ClickhouseStatementParser extends SQLStatementParser {
     public ClickhouseStatementParser(String sql) {
-        super (new ClickhouseExprParser(sql));
+        super(new ClickhouseExprParser(sql));
     }
 
     public ClickhouseStatementParser(String sql, SQLParserFeature... features) {
-        super (new ClickhouseExprParser(sql, features));
+        super(new ClickhouseExprParser(sql, features));
     }
 
-    public ClickhouseStatementParser(Lexer lexer){
+    public ClickhouseStatementParser(Lexer lexer) {
         super(new ClickhouseExprParser(lexer));
     }
-
 
     @Override
     public SQLWithSubqueryClause parseWithQuery() {

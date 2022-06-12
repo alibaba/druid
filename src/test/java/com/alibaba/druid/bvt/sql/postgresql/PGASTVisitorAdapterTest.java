@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
 import junit.framework.TestCase;
 
 public class PGASTVisitorAdapterTest extends TestCase {
-
     public void test_adapter() throws Exception {
         PGASTVisitorAdapter adapter = new PGASTVisitorAdapter();
 

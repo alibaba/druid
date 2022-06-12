@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OdpsAlterTableChangeColumnTest3 extends TestCase {
-
     public void test_select() throws Exception {
         String sql = "ALTER TABLE table_name CHANGE COLUMN old_col_name new_col_name bigint COMMENT column_comment;";//
         Assert.assertEquals("ALTER TABLE table_name\n" +

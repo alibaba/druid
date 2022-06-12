@@ -24,12 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SampleClause extends OracleSQLObjectImpl implements SQLReplaceable {
-
-    private boolean             block   = false;
+    private boolean block;
 
     private final List<SQLExpr> percent = new ArrayList<SQLExpr>();
 
-    private SQLExpr             seedValue;
+    private SQLExpr seedValue;
 
     public boolean isBlock() {
         return block;
@@ -92,7 +91,6 @@ public class SampleClause extends OracleSQLObjectImpl implements SQLReplaceable 
 
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
-
         for (int i = percent.size() - 1; i >= 0; i--) {
             if (percent.get(i) == expr) {
                 percent.set(i, target);

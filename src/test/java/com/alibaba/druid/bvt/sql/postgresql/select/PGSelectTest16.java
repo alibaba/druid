@@ -24,7 +24,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGSelectTest16 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "WITH RECURSIVE search_graph(id, link, data, depth, path, cycle) AS ("
                 + "        SELECT g.id, g.link, g.data, 1,"
@@ -57,7 +56,7 @@ public class PGSelectTest16 extends PGTest {
 
         assertEquals(3, visitor.getColumns().size());
         assertEquals(1, visitor.getTables().size());
-        
+
         assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "id")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "link")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "data")));

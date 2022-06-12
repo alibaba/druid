@@ -27,7 +27,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestSharePreparedStatements extends TestCase {
-
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
@@ -37,7 +36,6 @@ public class TestSharePreparedStatements extends TestCase {
     }
 
     public void test_sharePreparedStatements() throws Exception {
-
         // sharePreparedStatements
 
         DruidDataSource dataSource = new DruidDataSource();
@@ -59,7 +57,7 @@ public class TestSharePreparedStatements extends TestCase {
 
             conn.close();
         }
-        
+
         {
             Connection conn = dataSource.getConnection();
 
@@ -86,18 +84,18 @@ public class TestSharePreparedStatements extends TestCase {
 
             conn.close();
         }
-        
+
         {
             Connection conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-            
+
             PreparedStatement stmt = conn.prepareStatement(sql);
             Assert.assertSame(mockStmt, stmt.unwrap(MockPreparedStatement.class));
             ResultSet rs = stmt.executeQuery();
             rs.next();
             rs.close();
             stmt.close();
-            
+
             conn.close();
         }
 

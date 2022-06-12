@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class MySqlCreateTableTest83 extends MysqlTest {
-
     public void test_one() throws Exception {
         String sql = "CREATE TABLE t1 (\n" +
                 "  ts1 TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,     -- default 0\n" +
@@ -48,7 +47,7 @@ public class MySqlCreateTableTest83 extends MysqlTest {
                     "\tts2 TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP -- default NULL\n" +
                     ")", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("create table t1 (\n" +

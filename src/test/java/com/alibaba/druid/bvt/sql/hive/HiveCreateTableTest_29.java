@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_29 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE dataphin_test (id STRING, name STRING) \n" +

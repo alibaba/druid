@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OdpsSelectTest22 extends TestCase {
-
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "select bucket_id,sum(pv) as pv, sum(clk) as clk,sum(clk)/(sum(pv)+1e-10) as ctr,sum(ut_ad_clk) as ut_ad_clk,sum(ad_clk) as ad_clk,sum(cost) as cost\n" +
@@ -132,30 +131,29 @@ public class OdpsSelectTest22 extends TestCase {
                 "\t\tor CLK.clk > 0\n" +
                 ") A\n" +
                 "group by bucket_id;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
         System.out.println(stmt);
 
         assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
 //        System.out.println("Tables : " + visitor.getTables());
-      System.out.println("fields : " + visitor.getColumns());
-      System.out.println("coditions : " + visitor.getConditions());
-      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+
         assertEquals(2, visitor.getTables().size());
         assertEquals(15, visitor.getColumns().size());
         assertEquals(6, visitor.getConditions().size());
 
         System.out.println(SQLUtils.formatOdps(sql));
-        
+
         assertTrue(visitor.containsColumn("alimama_algo.fund_mlr_n_chicago_user_track_distinct_shark", "item_id"));
     }
-
 
 }

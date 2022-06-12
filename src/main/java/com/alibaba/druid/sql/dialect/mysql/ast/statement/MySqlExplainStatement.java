@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
@@ -31,16 +30,15 @@ public class MySqlExplainStatement extends SQLExplainStatement implements MySqlS
     private SQLExpr wild;
     private SQLExpr connectionId;
 
-    private boolean distributeInfo = false; // for ads
+    private boolean distributeInfo; // for ads
 
     public MySqlExplainStatement() {
-        super (DbType.mysql);
+        super(DbType.mysql);
     }
 
     public MySqlExplainStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
-
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {

@@ -29,10 +29,10 @@ import com.alibaba.druid.sql.parser.Token;
  */
 public class PrestoStatementParser extends SQLStatementParser {
     public PrestoStatementParser(String sql) {
-        super (new PrestoExprParser(sql));
+        super(new PrestoExprParser(sql));
     }
 
-    public PrestoStatementParser(Lexer lexer){
+    public PrestoStatementParser(Lexer lexer) {
         super(new PrestoExprParser(lexer));
     }
 
@@ -50,11 +50,11 @@ public class PrestoStatementParser extends SQLStatementParser {
 
     @Override
     protected void parseInsertColumns(SQLInsertInto insert) {
-        if (lexer.token() == Token.RPAREN ) {
+        if (lexer.token() == Token.RPAREN) {
             return;
         }
 
-        for (;;) {
+        for (; ; ) {
             SQLName expr = this.exprParser.name();
             expr.setParent(insert);
             insert.getColumns().add(expr);
@@ -62,11 +62,11 @@ public class PrestoStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.IDENTIFIER) {
                 String text = lexer.stringVal();
                 if (text.equalsIgnoreCase("TINYINT")
-                    || text.equalsIgnoreCase("BIGINT")
-                    || text.equalsIgnoreCase("INTEGER")
-                    || text.equalsIgnoreCase("DOUBLE")
-                    || text.equalsIgnoreCase("DATE")
-                    || text.equalsIgnoreCase("VARCHAR")) {
+                        || text.equalsIgnoreCase("BIGINT")
+                        || text.equalsIgnoreCase("INTEGER")
+                        || text.equalsIgnoreCase("DOUBLE")
+                        || text.equalsIgnoreCase("DATE")
+                        || text.equalsIgnoreCase("VARCHAR")) {
                     expr.getAttributes().put("dataType", text);
                     lexer.nextToken();
                 } else if (text.equalsIgnoreCase("CHAR")) {

@@ -21,7 +21,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class MySqlAlterSequence_1_change_to extends TestCase {
-
     public void test_alter_seq_0() throws Exception {
         String sql = "ALTER SEQUENCE seq1 CHANGE TO SIMPLE WITH CACHE START WITH 1000000;";
         SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL).get(0);
@@ -42,8 +41,6 @@ public class MySqlAlterSequence_1_change_to extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("ALTER SEQUENCE seq1 CHANGE TO GROUP START WITH 1000000;", output);
     }
-
-
 
     public void test_alter_seq_3() throws Exception {
         String sql = "ALTER SEQUENCE seq1 CHANGE TO TIME START WITH 1000000;";

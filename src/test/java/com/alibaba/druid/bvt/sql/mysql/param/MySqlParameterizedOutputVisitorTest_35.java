@@ -18,7 +18,6 @@ public class MySqlParameterizedOutputVisitorTest_35 extends TestCase {
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 
-
         String sql = "/*+TDDL({'extra':{'SOCKET_TIMEOUT':'3600000'}})*/\n" +
                 "select sample_table_schema, \n" +
                 "sample_table_name,\n" +
@@ -53,8 +52,6 @@ public class MySqlParameterizedOutputVisitorTest_35 extends TestCase {
                 "    AND sample_column_table_name = 'product_0096'\n" +
                 "    ORDER BY id DESC LIMIT 1 \n" +
                 "    order by type, quantileno)";
-
-
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();

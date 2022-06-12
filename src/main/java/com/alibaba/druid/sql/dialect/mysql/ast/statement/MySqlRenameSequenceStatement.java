@@ -17,11 +17,9 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlRenameSequenceStatement extends MySqlStatementImpl implements SQLAlterStatement  {
-
+public class MySqlRenameSequenceStatement extends MySqlStatementImpl implements SQLAlterStatement {
     private SQLName name;
     private SQLName to;
 

@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest101 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT e.area_name 区域,\n" +
@@ -150,5 +149,5 @@ public class OracleSelectTest101 extends OracleTest {
         assertEquals(1, visitor.getOrderByColumns().size());
     }
 
-   
+
 }

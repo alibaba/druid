@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import java.util.List;
 
 public class MySqlShowTest_36_db extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW DB STATUS";
 
@@ -116,7 +115,6 @@ public class MySqlShowTest_36_db extends MysqlTest {
         assertEquals("SHOW FULL DATABASE STATUS WHERE 1 = 1", stmt.toString());
         assertEquals("show full database status where 1 = 1", stmt.toLowerCaseString());
     }
-
 
     public void test_4_orderBy() throws Exception {
         String sql = "SHOW FULL DB STATUS WHERE 1=1 ORDER BY col LIMIT 1,2";

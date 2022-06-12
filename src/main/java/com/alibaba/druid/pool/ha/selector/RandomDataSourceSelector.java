@@ -15,21 +15,15 @@
  */
 package com.alibaba.druid.pool.ha.selector;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.sql.DataSource;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.HighAvailableDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+
+import javax.sql.DataSource;
+
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A selector which uses java.util.Random to choose DataSource.
@@ -43,7 +37,7 @@ public class RandomDataSourceSelector implements DataSourceSelector {
     public static final String PROP_VALIDATION_SLEEP = PROP_PREFIX + "validationSleepSeconds";
     public static final String PROP_BLACKLIST_THRESHOLD = PROP_PREFIX + "blacklistThreshold";
 
-    private final static Log LOG = LogFactory.getLog(RandomDataSourceSelector.class);
+    private static final Log LOG = LogFactory.getLog(RandomDataSourceSelector.class);
 
     private Random random = new Random();
     private List<DataSource> blacklist = new CopyOnWriteArrayList<DataSource>();
@@ -55,7 +49,7 @@ public class RandomDataSourceSelector implements DataSourceSelector {
 
     private int checkingIntervalSeconds = RandomDataSourceValidateThread.DEFAULT_CHECKING_INTERVAL_SECONDS;
     private int recoveryIntervalSeconds = RandomDataSourceRecoverThread.DEFAULT_RECOVER_INTERVAL_SECONDS;
-    private int validationSleepSeconds = 0;
+    private int validationSleepSeconds;
     private int blacklistThreshold = RandomDataSourceValidateThread.DEFAULT_BLACKLIST_THRESHOLD;
 
     public RandomDataSourceSelector(HighAvailableDataSource highAvailableDataSource) {
@@ -238,7 +232,7 @@ public class RandomDataSourceSelector implements DataSourceSelector {
     }
 
     private DataSource getRandomDataSource(Collection<DataSource> dataSourceSet) {
-        DataSource[] dataSources = dataSourceSet.toArray(new DataSource[] {});
+        DataSource[] dataSources = dataSourceSet.toArray(new DataSource[]{});
         if (dataSources != null && dataSources.length > 0) {
             return dataSources[random.nextInt(dataSourceSet.size())];
         }

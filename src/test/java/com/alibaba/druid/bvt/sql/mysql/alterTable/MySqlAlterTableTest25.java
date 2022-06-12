@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest25 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "alter table xxxx add over bigint unsigned comment 'xxxx';";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

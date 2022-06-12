@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlDeleteTest_6 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "delete a.* from teacher_1 a join teacher_2 b on a.teacher_id = b.teacher_id where a.day < b.day";
 

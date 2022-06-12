@@ -24,7 +24,6 @@ import com.alibaba.druid.pool.xa.DruidXADataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class H2XATest extends PoolTestCase {
-
     private DruidXADataSource dataSource;
 
     protected void setUp() throws Exception {

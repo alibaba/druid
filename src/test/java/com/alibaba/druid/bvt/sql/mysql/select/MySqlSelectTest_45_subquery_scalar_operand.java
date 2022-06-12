@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_45_subquery_scalar_operand extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT (SELECT s1 FROM t2) FROM t1;";
 
@@ -42,12 +41,12 @@ public class MySqlSelectTest_45_subquery_scalar_operand extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        Assert.assertEquals(1, visitor.getTables().size());
 //        Assert.assertEquals(1, visitor.getColumns().size());
 //        Assert.assertEquals(0, visitor.getConditions().size());
 //        Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT (\n" +
@@ -55,7 +54,7 @@ public class MySqlSelectTest_45_subquery_scalar_operand extends MysqlTest {
                             "\t\tFROM t2\n" +
                             "\t)\n" +
                             "FROM t1;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -64,7 +63,7 @@ public class MySqlSelectTest_45_subquery_scalar_operand extends MysqlTest {
                             "\t\tfrom t2\n" +
                             "\t)\n" +
                             "from t1;", //
-                                output);
+                    output);
         }
 
         {

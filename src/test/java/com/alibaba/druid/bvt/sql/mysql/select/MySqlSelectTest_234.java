@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 
 
 public class MySqlSelectTest_234 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT ema_user_id\n"
                 + "   FROM(\n"
@@ -51,7 +50,6 @@ public class MySqlSelectTest_234 extends MysqlTest {
                 ")\n" +
                 "ORDER BY o", stmt.toString());
     }
-
 
 
 }

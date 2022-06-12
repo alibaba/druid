@@ -37,7 +37,6 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class BasicTypeTest extends TestCase {
-
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=basicType:jdbc:derby:memory:basicTypeTestDB;create=true";
 
     protected void setUp() throws Exception {
@@ -55,9 +54,9 @@ public class BasicTypeTest extends TestCase {
         Statement stmt = conn.createStatement();
         stmt.execute("CREATE TABLE T_BASIC_TYPE (F1 FLOAT, F2 DOUBLE, F3 REAL, F4 DATE, F5 TIME, F6 SMALLINT, F7 SMALLINT, F8 INTEGER, F9 BIGINT, F10 DECIMAL(9,2), F11 TIMESTAMP, F12 BLOB, F13 VARCHAR(256), F14 VARCHAR(256), F15 VARCHAR(256), F16 VARCHAR(256), F17 SMALLINT)");
         stmt.execute("CREATE PROCEDURE BASIC_CALL_0(INOUT F1 FLOAT, INOUT F2 DOUBLE, INOUT F3 REAL, INOUT F4 DATE, INOUT F5 TIME, INOUT F6 SMALLINT, INOUT F7 SMALLINT, INOUT F8 INTEGER, INOUT F9 BIGINT, INOUT F10 DECIMAL(9,2), INOUT F11 TIMESTAMP, INOUT F12 VARCHAR(128) FOR BIT DATA, INOUT F13 VARCHAR(256), INOUT F14 VARCHAR(256), INOUT F15 VARCHAR(256), INOUT F16 VARCHAR(256), INOUT F17 SMALLINT) "
-                     + "LANGUAGE JAVA PARAMETER STYLE JAVA EXTERNAL NAME '"
-                     + BasicTypeTest.class.getName()
-                     + ".basic_process_0' " + "DYNAMIC RESULT SETS 1");
+                + "LANGUAGE JAVA PARAMETER STYLE JAVA EXTERNAL NAME '"
+                + BasicTypeTest.class.getName()
+                + ".basic_process_0' " + "DYNAMIC RESULT SETS 1");
         stmt.close();
         conn.close();
     }
@@ -73,14 +72,13 @@ public class BasicTypeTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dropTable();
-        
+
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     @SuppressWarnings("deprecation")
     public void test_basicType() throws Exception {
-
         Connection conn = null;
         PreparedStatement pstmt = null;
         CallableStatement cstmt = null;
@@ -131,7 +129,7 @@ public class BasicTypeTest extends TestCase {
             stmt.close();
 
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
-                                        ResultSet.CLOSE_CURSORS_AT_COMMIT);
+                    ResultSet.CLOSE_CURSORS_AT_COMMIT);
             stmt.setQueryTimeout(stmt.getQueryTimeout());
             stmt.setEscapeProcessing(true);
             stmt.clearBatch();
@@ -258,25 +256,25 @@ public class BasicTypeTest extends TestCase {
             JdbcUtils.close(pstmt);
 
             pstmt = conn.prepareStatement("SELECT F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16 FROM T_BASIC_TYPE",
-                                          new int[] { 1, 2 });
+                    new int[]{1, 2});
             JdbcUtils.close(pstmt);
 
             pstmt = conn.prepareStatement("SELECT F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16 FROM T_BASIC_TYPE",
-                                          new String[] { "F1", "F2" });
+                    new String[]{"F1", "F2"});
             JdbcUtils.close(pstmt);
 
             pstmt = conn.prepareStatement("SELECT F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16 FROM T_BASIC_TYPE",
-                                          Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
             JdbcUtils.close(pstmt);
 
             pstmt = conn.prepareStatement("SELECT F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16 FROM T_BASIC_TYPE",
-                                          ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             pstmt.executeQuery().close();
             JdbcUtils.close(pstmt);
 
             pstmt = conn.prepareStatement("SELECT F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16 FROM T_BASIC_TYPE",
-                                          ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
-                                          ResultSet.CLOSE_CURSORS_AT_COMMIT);
+                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
+                    ResultSet.CLOSE_CURSORS_AT_COMMIT);
             JdbcUtils.close(pstmt);
 
             cstmt = conn.prepareCall("CALL BASIC_CALL_0(?, ?, ?, ?, ?,	?, ?, ?, ?, ?,	?, ?, ?,?, ?, 	?, ?)");
@@ -477,87 +475,70 @@ public class BasicTypeTest extends TestCase {
             try {
                 cstmt.getDouble(2);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getFloat(3);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getDate(4);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getDate(4, Calendar.getInstance());
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getTime(5);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getTime(5, Calendar.getInstance());
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getByte(6);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getShort(7);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getInt(8);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getLong(9);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getBigDecimal(10);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getBigDecimal(10, 2);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getTimestamp(11);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getTimestamp(11, Calendar.getInstance());
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getBytes(12);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getBlob(12).free();
             } catch (SQLException ex) {
-
             }
             try {
                 cstmt.getString(13);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getCharacterStream(14);
@@ -566,17 +547,14 @@ public class BasicTypeTest extends TestCase {
             try {
                 cstmt.getObject(15);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getObject(15, new HashMap<String, Class<?>>());
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getBoolean(17);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             // /
@@ -588,102 +566,82 @@ public class BasicTypeTest extends TestCase {
             try {
                 cstmt.getDouble("F2");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getFloat("F3");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getDate("F4");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getDate("F4", Calendar.getInstance());
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getTime("F5");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getTime("F5", Calendar.getInstance());
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getByte("F6");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getShort("F7");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getInt("F8");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getLong("F9");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getBigDecimal("F10");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getTimestamp("F11");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getTimestamp("F11", Calendar.getInstance());
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getBytes("F12");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getBlob("F12").free();
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getString("F13");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getCharacterStream("F14");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getObject("F15");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getObject("F15", new HashMap<String, Class<?>>());
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getBoolean("F17");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             cstmt.wasNull();
 

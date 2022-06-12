@@ -1,6 +1,5 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.druid.DbType;
@@ -22,11 +21,10 @@ import java.util.regex.Pattern;
  * Created by yunning on 16/6/3.
  */
 public class ParseUtil {
-
-    private final static String DML_REGEX = "^(\\s)*(SELECT|INSERT|UPDATE|DELETE)";
-    private final static Pattern DML_PATTERN = Pattern.compile(DML_REGEX, Pattern.CASE_INSENSITIVE); //忽略大小写
-    private final static String IP_REGEX = "^(?:(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$";
-    private final static Pattern IP_PATTERN = Pattern.compile(IP_REGEX, Pattern.CASE_INSENSITIVE);
+    private static final String DML_REGEX = "^(\\s)*(SELECT|INSERT|UPDATE|DELETE)";
+    private static final Pattern DML_PATTERN = Pattern.compile(DML_REGEX, Pattern.CASE_INSENSITIVE); //忽略大小写
+    private static final String IP_REGEX = "^(?:(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$";
+    private static final Pattern IP_PATTERN = Pattern.compile(IP_REGEX, Pattern.CASE_INSENSITIVE);
     private static Logger logger = Logger.getLogger(ParseUtil.class);
 
     public static boolean isDmlSQL(String querySql) {
@@ -76,14 +74,12 @@ public class ParseUtil {
         String sqlTempalte = parseSQL(sql);
         JSONArray array = new JSONArray();
         array.add("VFS_DENTRY_001");
-        System.out.println(restore(sqlTempalte,array.toJSONString(),new JSONArray().toJSONString()));
+        System.out.println(restore(sqlTempalte, array.toJSONString(), new JSONArray().toJSONString()));
     }
 
-    public static boolean isIp(String host){
+    public static boolean isIp(String host) {
         return IP_PATTERN.matcher(host).find();
     }
-
-
 
     private static String filterChar(String name) {
         if (StringUtils.isNotBlank(name)) {
@@ -164,7 +160,7 @@ public class ParseUtil {
         visitor.setExportTables(true);
         stmt.accept(visitor);
         String srcStr = JSON.toJSONString(visitor.getTables());
-        return  JSON.parseArray(srcStr);
+        return JSON.parseArray(srcStr);
     }
 
     public static SQLStatement getStatement(String sql) {
@@ -183,10 +179,8 @@ public class ParseUtil {
         return getSqlHash(statement);
     }
 
-
     public static String getSqlHash(SQLStatement statement) {
         try {
-
             StringBuilder out = new StringBuilder();
             List<Object> parameters = new ArrayList<Object>();
             SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(out, JdbcConstants.MYSQL);

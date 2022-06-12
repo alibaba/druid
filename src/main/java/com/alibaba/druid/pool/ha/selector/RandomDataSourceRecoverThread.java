@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.pool.ha.selector;
 
-import java.sql.Connection;
-
-import javax.sql.DataSource;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
+
+import javax.sql.DataSource;
+
+import java.sql.Connection;
 
 /**
  * A Thread trying to test if DataSource in blacklist has been recovered.
@@ -31,11 +31,11 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class RandomDataSourceRecoverThread implements Runnable {
     public static final int DEFAULT_RECOVER_INTERVAL_SECONDS = 120;
-    private final static Log LOG = LogFactory.getLog(RandomDataSourceRecoverThread.class);
+    private static final Log LOG = LogFactory.getLog(RandomDataSourceRecoverThread.class);
 
     private RandomDataSourceSelector selector;
     private int recoverIntervalSeconds = DEFAULT_RECOVER_INTERVAL_SECONDS;
-    private int validationSleepSeconds = 0;
+    private int validationSleepSeconds;
 
     public RandomDataSourceRecoverThread(RandomDataSourceSelector selector) {
         this.selector = selector;
@@ -71,7 +71,7 @@ public class RandomDataSourceRecoverThread implements Runnable {
             dataSource.validateConnection(connection);
             LOG.info(dataSource.getName() + " is available now.");
             selector.removeBlacklist(dataSource);
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOG.warn("DataSource[" + dataSource.getName() + "] is still unavailable. Exception: "
                     + e.getMessage());
         } finally {

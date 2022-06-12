@@ -15,27 +15,22 @@
  */
 package com.alibaba.druid.pool.ha.selector;
 
-import java.sql.Connection;
-import java.sql.Driver;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import javax.sql.DataSource;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
+
+import javax.sql.DataSource;
+
+import java.sql.Connection;
+import java.sql.Driver;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A Thread trying to test all DataSource provided by HADataSource.
@@ -47,11 +42,11 @@ public class RandomDataSourceValidateThread implements Runnable {
     public static final int DEFAULT_CHECKING_INTERVAL_SECONDS = 10;
     public static final int DEFAULT_BLACKLIST_THRESHOLD = 3;
 
-    private final static Log LOG = LogFactory.getLog(RandomDataSourceValidateThread.class);
+    private static final Log LOG = LogFactory.getLog(RandomDataSourceValidateThread.class);
     private static Map<String, Long> successTimes = new ConcurrentHashMap<String, Long>();
 
     private int checkingIntervalSeconds = DEFAULT_CHECKING_INTERVAL_SECONDS; // This value should NOT be too small.
-    private int validationSleepSeconds = 0;
+    private int validationSleepSeconds;
     private int blacklistThreshold = DEFAULT_BLACKLIST_THRESHOLD;
     private RandomDataSourceSelector selector;
     private ExecutorService checkExecutor = Executors.newFixedThreadPool(5);

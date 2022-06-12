@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseCreateTableTest_subPartition3 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE ts (id INT, purchased DATE) " // 
                 + "PARTITION BY RANGE(YEAR(purchased)) " //
@@ -55,7 +54,7 @@ public class OceanbaseCreateTableTest_subPartition3 extends MysqlTest {
                         "\t\tSUBPARTITION s3\n" +
                         "\t)\n" +
                         ")",
-                            result);
+                result);
         print(stmtList);
 
         Assert.assertEquals(1, stmtList.size());

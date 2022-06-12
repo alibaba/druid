@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import java.util.List;
 
 public class MySqlShowTest_30_hints extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "/* +TDDL:scan()*/ show tables;";
 

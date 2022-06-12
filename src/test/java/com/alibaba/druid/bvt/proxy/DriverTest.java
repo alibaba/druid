@@ -34,7 +34,7 @@ public class DriverTest extends TestCase {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
-    
+
     public void test_driver() throws Exception {
         String url_0 = "jdbc:wrap-jdbc:filters=default:name=driverTest:jdbc:derby:memory:driverTestDB;create=true";
         String url_1 = "jdbc:wrap-jdbc:filters=counter:name=driverTest:jdbc:derby:memory:driverTestDB;create=true";

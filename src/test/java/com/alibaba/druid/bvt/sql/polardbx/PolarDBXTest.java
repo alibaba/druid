@@ -31,7 +31,7 @@ public class PolarDBXTest extends TestCase {
                 + ") ENGINE = InnoDB single";
         repository.console(sql2);
 //        repository.setDefaultSchema("test2");
-        SchemaObject table =repository.findTable("test2");
+        SchemaObject table = repository.findTable("test2");
         Assert.assertTrue(table != null);
 
     }

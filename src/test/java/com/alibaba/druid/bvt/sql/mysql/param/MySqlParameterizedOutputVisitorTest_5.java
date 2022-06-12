@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlParameterizedOutputVisitorTest_5 extends MySQLParameterizedTest {
-
     public void test_0() throws Exception {
         String sql = "ALTER TABLE `action_plans` ADD `kee` varchar(100)";
         assertEquals("ALTER TABLE `action_plans`\n" +

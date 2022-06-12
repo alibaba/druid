@@ -31,7 +31,6 @@ import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class CallableStatmentTest extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -45,7 +44,6 @@ public class CallableStatmentTest extends PoolTestCase {
         dataSource.setFilters("log4j");
 
         dataSource.setDriver(new MockDriver() {
-
             public MockCallableStatement createMockCallableStatement(MockConnection conn, String sql) {
                 return new MyMockCallableStatement(conn, sql);
             }
@@ -69,17 +67,17 @@ public class CallableStatmentTest extends PoolTestCase {
             rawStmt = stmt.unwrap(MockCallableStatement.class);
 
             ResultSet rs = (ResultSet) stmt.getObject(0);
-            
+
             rawRs = rs.unwrap(MockResultSet.class);
-            
+
             rs.next();
-            
+
             rs.close();
             stmt.close();
-            
+
             Assert.assertFalse(rawStmt.isClosed());
             Assert.assertTrue(rawRs.isClosed());
-            
+
             rawRs = rs.unwrap(MockResultSet.class);
             Assert.assertNotNull(rawRs);
 
@@ -108,8 +106,7 @@ public class CallableStatmentTest extends PoolTestCase {
     }
 
     public static class MyMockCallableStatement extends MockCallableStatement {
-
-        public MyMockCallableStatement(MockConnection conn, String sql){
+        public MyMockCallableStatement(MockConnection conn, String sql) {
             super(conn, sql);
         }
 

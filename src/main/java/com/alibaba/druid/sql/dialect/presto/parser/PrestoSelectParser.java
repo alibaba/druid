@@ -30,12 +30,11 @@ import com.alibaba.druid.util.FnvHash;
 
 /**
  * presto的 选择解析器
- *
+ * <p>
  * author zhangcanlong
  * date 2022/01/11
  */
 public class PrestoSelectParser extends SQLSelectParser {
-
     public PrestoSelectParser(SQLExprParser exprParser) {
         super(exprParser);
     }
@@ -152,10 +151,8 @@ public class PrestoSelectParser extends SQLSelectParser {
         return this.queryRest(queryBlock, acceptUnion);
     }
 
-
     @Override
     public void parseFetchClause(SQLSelectQueryBlock queryBlock) {
-
         // 如果是presto，则先解析 offset 再解析limit
         if (this.lexer.identifierEquals(FnvHash.Constants.OFFSET) || this.lexer.token() == Token.OFFSET) {
             this.lexer.nextToken();
@@ -177,7 +174,6 @@ public class PrestoSelectParser extends SQLSelectParser {
             queryBlock.setLimit(limit);
             return;
         }
-
 
         if (this.lexer.token() == Token.FETCH) {
             this.lexer.nextToken();

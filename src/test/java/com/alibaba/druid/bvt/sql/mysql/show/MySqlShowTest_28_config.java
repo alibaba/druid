@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlShowTest_28_config extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "show config a.b.c";
 

@@ -26,18 +26,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLAlterDatabaseStatement extends SQLStatementImpl implements SQLAlterStatement {
-    private SQLName           name;
-    private boolean           upgradeDataDirectoryName;
+    private SQLName name;
+    private boolean upgradeDataDirectoryName;
     private SQLAlterCharacter character;
 
     private SQLAlterDatabaseItem item;
 
     private List<SQLAssignItem> properties = new ArrayList<SQLAssignItem>();
-    
+
     public SQLAlterDatabaseStatement() {
-        
     }
-    
+
     public SQLAlterDatabaseStatement(DbType dbType) {
         this.setDbType(dbType);
     }

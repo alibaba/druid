@@ -16,7 +16,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
 public class MySqlParameterizedOutputVisitorTest2 extends MySQLParameterizedTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM T WHERE ID = ?";
         for (int i = 0; i < 100; ++i) {

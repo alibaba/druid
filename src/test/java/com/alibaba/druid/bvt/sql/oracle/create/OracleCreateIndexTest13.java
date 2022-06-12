@@ -25,11 +25,10 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest13 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE UNIQUE INDEX nested_tab_ix\n" +
-                "      ON textdocs_nestedtab(NESTED_TABLE_ID, document_typ);";
+                "CREATE UNIQUE INDEX nested_tab_ix\n" +
+                        "      ON textdocs_nestedtab(NESTED_TABLE_ID, document_typ);";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

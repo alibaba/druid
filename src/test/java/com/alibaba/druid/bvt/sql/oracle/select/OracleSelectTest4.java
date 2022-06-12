@@ -25,13 +25,12 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest4 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT LPAD(' ',2*(LEVEL-1)) || last_name org_chart, " + //
-                     "employee_id, manager_id, job_id " + //
-                     "    FROM employees" + //
-                     "    START WITH job_id = 'AD_PRES' " + //
-                     "    CONNECT BY PRIOR employee_id = manager_id AND LEVEL <= 2;";
+                "employee_id, manager_id, job_id " + //
+                "    FROM employees" + //
+                "    START WITH job_id = 'AD_PRES' " + //
+                "    CONNECT BY PRIOR employee_id = manager_id AND LEVEL <= 2;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

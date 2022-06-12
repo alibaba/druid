@@ -20,12 +20,10 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableRenameColumn extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLName column;
     private SQLName to;
 
-    public SQLAlterTableRenameColumn(){
-
+    public SQLAlterTableRenameColumn() {
     }
 
     @Override

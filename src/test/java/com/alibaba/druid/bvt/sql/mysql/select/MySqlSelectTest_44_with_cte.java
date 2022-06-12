@@ -24,7 +24,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_44_with_cte extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "WITH RECURSIVE cte AS\n" +
                 "(\n" +
@@ -47,12 +46,12 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("WITH RECURSIVE cte AS (\n" +
@@ -65,7 +64,7 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
                             "\t)\n" +
                             "SELECT *\n" +
                             "FROM cte;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -79,7 +78,7 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
                             "\t)\n" +
                             "select *\n" +
                             "from cte;", //
-                                output);
+                    output);
         }
 
         {

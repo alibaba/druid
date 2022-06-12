@@ -24,15 +24,14 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "BEGIN\n" +
-				"    SET :id = sys.dbms_transaction.local_transaction_id;\n" +
-				"END;"; //
+                "    SET :id = sys.dbms_transaction.local_transaction_id;\n" +
+                "END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(1, statementList.size());
-		SQLStatement stmt = statementList.get(0);
+        assertEquals(1, statementList.size());
+        SQLStatement stmt = statementList.get(0);
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -56,19 +55,19 @@ public class Oracle_pl_2 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("BEGIN\n" +
-							"\tSET :id := sys.dbms_transaction.local_transaction_id;\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("begin\n" +
-							"\tset :id := sys.dbms_transaction.local_transaction_id;\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toOracleString(stmt);
+            assertEquals("BEGIN\n" +
+                            "\tSET :id := sys.dbms_transaction.local_transaction_id;\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("begin\n" +
+                            "\tset :id := sys.dbms_transaction.local_transaction_id;\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

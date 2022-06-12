@@ -33,7 +33,7 @@ public class SlowSqlMillisTest2 extends TestCase {
         dataSource.setTestWhileIdle(false);
         System.setProperty("druid.stat.slowSqlMillis", "500");
         dataSource.setFilters("stat");
-        
+
         {
             StatFilter filter = (StatFilter) dataSource.getProxyFilters().get(0);
             Assert.assertEquals(3000, filter.getSlowSqlMillis());

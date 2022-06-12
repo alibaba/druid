@@ -29,8 +29,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class ConnectionTest2 extends PoolTestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -76,7 +75,7 @@ public class ConnectionTest2 extends PoolTestCase {
         Connection conn = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY,
-                                                       ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                ResultSet.HOLD_CURSORS_OVER_COMMIT);
         stmt.close();
 
         conn.close();
@@ -131,7 +130,7 @@ public class ConnectionTest2 extends PoolTestCase {
         Connection conn = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareCall("SELECT 1", ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY,
-                                                  ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                ResultSet.HOLD_CURSORS_OVER_COMMIT);
         stmt.close();
 
         conn.close();
@@ -159,7 +158,7 @@ public class ConnectionTest2 extends PoolTestCase {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement(ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY,
-                                              ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                ResultSet.HOLD_CURSORS_OVER_COMMIT);
         stmt.close();
 
         conn.close();

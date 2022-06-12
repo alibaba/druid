@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 
 public class MySqlSelectTest_227 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select id, distinct name from a";
 

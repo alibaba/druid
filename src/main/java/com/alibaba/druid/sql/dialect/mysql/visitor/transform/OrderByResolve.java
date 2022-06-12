@@ -33,7 +33,7 @@ import java.util.List;
  * Created by wenshao on 27/07/2017.
  */
 public class OrderByResolve extends OracleASTVisitorAdapter {
-    final static long DBMS_RANDOM_VALUE = FnvHash.hashCode64("DBMS_RANDOM.value");
+    static final long DBMS_RANDOM_VALUE = FnvHash.hashCode64("DBMS_RANDOM.value");
 
     public boolean visit(SQLSelect x) {
         SQLSelectQueryBlock queryBlock = x.getQueryBlock();
@@ -50,7 +50,6 @@ public class OrderByResolve extends OracleASTVisitorAdapter {
         if (orderBy == null) {
             return super.visit(x);
         }
-
 
         if (!queryBlock.selectItemHasAllColumn(false)) {
             List<SQLSelectOrderByItem> notContainsOrderBy = new ArrayList<SQLSelectOrderByItem>();
@@ -81,8 +80,6 @@ public class OrderByResolve extends OracleASTVisitorAdapter {
                 x.setQuery(queryBlock1);
             }
         }
-
-
 
         return super.visit(x);
     }

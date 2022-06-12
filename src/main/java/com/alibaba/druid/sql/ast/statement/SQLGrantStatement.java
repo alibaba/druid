@@ -17,36 +17,30 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLGrantStatement extends SQLPrivilegeStatement {
-
     // mysql
-    private SQLExpr         maxQueriesPerHour;
-    private SQLExpr         maxUpdatesPerHour;
-    private SQLExpr         maxConnectionsPerHour;
-    private SQLExpr         maxUserConnections;
+    private SQLExpr maxQueriesPerHour;
+    private SQLExpr maxUpdatesPerHour;
+    private SQLExpr maxConnectionsPerHour;
+    private SQLExpr maxUserConnections;
 
-    private boolean         adminOption;
+    private boolean adminOption;
 
-    private SQLExpr         identifiedBy;
-    private String          identifiedByPassword;
+    private SQLExpr identifiedBy;
+    private String identifiedByPassword;
 
-    private boolean         withGrantOption;
+    private boolean withGrantOption;
 
-
-
-    public SQLGrantStatement(){
-
+    public SQLGrantStatement() {
     }
 
-    public SQLGrantStatement(DbType dbType){
+    public SQLGrantStatement(DbType dbType) {
         super(dbType);
     }
 

@@ -11,7 +11,6 @@ import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class WallStatTest_function_stats extends TestCase {
-
     private String sql = "select len(fname), len(fdesc) from t";
 
     protected void setUp() throws Exception {
@@ -44,5 +43,5 @@ public class WallStatTest_function_stats extends TestCase {
         }
     }
 
-    
+
 }

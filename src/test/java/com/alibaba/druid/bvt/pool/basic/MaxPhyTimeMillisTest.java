@@ -11,7 +11,6 @@ import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
 
 public class MaxPhyTimeMillisTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

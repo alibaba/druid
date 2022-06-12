@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSchemaStatVisitorTest_Alter extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "alter table sql_perf add index `idx_instance_8` (`host`,`port`,`hashcode`,`item`,`time`,`value`);";
 

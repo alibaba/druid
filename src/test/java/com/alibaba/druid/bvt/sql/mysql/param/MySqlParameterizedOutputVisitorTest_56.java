@@ -44,7 +44,6 @@ public class MySqlParameterizedOutputVisitorTest_56 extends TestCase {
 
         System.out.println(psql);
 
-
         assertEquals("SELECT `ktv_resource`.`RESOURCE_ID`, `ktv_resource`.`RESOURCE_PROVIDER`, `ktv_resource`.`KTV_ID`, `ktv_resource`.`RESOURCE_TYPE`, `ktv_resource`.`SUB_RESOURCE_TYPE`\n" +
                 "\t, `ktv_resource`.`STATUS`, `ktv_resource`.`START_TIME`, `ktv_resource`.`END_TIME`, `ktv_resource`.`FEATURE`, `ktv_resource`.`GMT_CREATED`\n" +
                 "\t, `ktv_resource`.`GMT_MODIFIED`, `ktv_resource`.`source`, `ktv_resource`.`seller_id`, `ktv_resource`.`original_Resource_Id`, `ktv_resource`.`business_unit`\n" +
@@ -67,7 +66,6 @@ public class MySqlParameterizedOutputVisitorTest_56 extends TestCase {
     }
 
     public void test_for_parameter_char() throws Exception {
-
         String sql = "insert into t values(?,?,?)";
 
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);

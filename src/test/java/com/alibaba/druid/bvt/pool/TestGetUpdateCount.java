@@ -30,13 +30,11 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TestGetUpdateCount extends TestCase {
-
     private DruidDataSource dataSource;
-    private MockDriver      driver;
+    private MockDriver driver;
 
     protected void setUp() throws Exception {
         driver = new MockDriver() {
-
             @Override
             public MockPreparedStatement createMockPreparedStatement(MockConnection conn, String sql) {
                 return new MyPreparedStatement(conn, sql);
@@ -140,10 +138,9 @@ public class TestGetUpdateCount extends TestCase {
     }
 
     public static class MyPreparedStatement extends MockPreparedStatement {
-
         Integer updateCount = null;
 
-        public MyPreparedStatement(MockConnection conn, String sql){
+        public MyPreparedStatement(MockConnection conn, String sql) {
             super(conn, sql);
         }
 

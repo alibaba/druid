@@ -9,7 +9,7 @@ import java.util.List;
 
 public class PGSelectTest87 extends TestCase {
     public void test_0() throws Exception {
-        String sql =  "select * from mc_job a inner join (mc_role b inner join mc_source c on b.id = c.id) as tem2 on tem2.user_id = a.id;";
+        String sql = "select * from mc_job a inner join (mc_role b inner join mc_source c on b.id = c.id) as tem2 on tem2.user_id = a.id;";
 
         final List<SQLStatement> statements = SQLUtils.parseStatements(sql, JdbcConstants.POSTGRESQL);
         assertEquals(1, statements.size());

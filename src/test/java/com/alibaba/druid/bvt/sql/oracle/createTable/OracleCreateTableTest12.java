@@ -25,25 +25,24 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest12 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "create table CARD_MONEYOPERATION (" + //
-                "ID varchar2(50 char) not null, " + //
-                "DDBH varchar2(50 char) not null, " + //
-                "IDNO varchar2(18 char), " + //
-                "JKKH varchar2(50 char) not null, " + //
-                "JYDW varchar2(50 char), " + //
-                "JYJE number(19,2) not null, " + //
-                "JYNO varchar2(50 char), " + //
-                "JYZT number(19,0) not null, " + //
-                "NAME varchar2(10 char), " + //
-                "OPDATE timestamp, " + //
-                "REMARK varchar2(50 char), " + //
-                "TYPE varchar2(20 char) not null, " + //
-                "OPID varchar2(50 char), " + //
-                "primary key (ID)" + //
-                ") ";
+                "create table CARD_MONEYOPERATION (" + //
+                        "ID varchar2(50 char) not null, " + //
+                        "DDBH varchar2(50 char) not null, " + //
+                        "IDNO varchar2(18 char), " + //
+                        "JKKH varchar2(50 char) not null, " + //
+                        "JYDW varchar2(50 char), " + //
+                        "JYJE number(19,2) not null, " + //
+                        "JYNO varchar2(50 char), " + //
+                        "JYZT number(19,0) not null, " + //
+                        "NAME varchar2(10 char), " + //
+                        "OPDATE timestamp, " + //
+                        "REMARK varchar2(50 char), " + //
+                        "TYPE varchar2(20 char) not null, " + //
+                        "OPID varchar2(50 char), " + //
+                        "primary key (ID)" + //
+                        ") ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

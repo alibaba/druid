@@ -21,7 +21,6 @@ import java.util.Date;
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface JdbcSqlStatMBean {
-
     String getSql();
 
     Date getExecuteLastStartTime();

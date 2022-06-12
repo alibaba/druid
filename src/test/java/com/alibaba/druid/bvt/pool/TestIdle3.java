@@ -28,7 +28,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle3 extends TestCase {
-
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
@@ -55,11 +54,11 @@ public class TestIdle3 extends TestCase {
         dataSource.setFilters("stat");
 
         ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
-                                                                 new ObjectName(
-                                                                                "com.alibaba:type=DataSource,name=mysql"));
+                new ObjectName(
+                        "com.alibaba:type=DataSource,name=mysql"));
         ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
-                                                                 new ObjectName(
-                                                                                "com.alibaba:type=DataSource,name=oracle"));
+                new ObjectName(
+                        "com.alibaba:type=DataSource,name=oracle"));
 
         // 第一次创建连接
         {

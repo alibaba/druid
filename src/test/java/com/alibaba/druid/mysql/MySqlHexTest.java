@@ -26,11 +26,11 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class MySqlHexTest extends TestCase {
     final int COUNT = 800;
-    
-    private String          jdbcUrl;
-    private String          user;
-    private String          password;
-    private String          driverClass;
+
+    private String jdbcUrl;
+    private String user;
+    private String password;
+    private String driverClass;
 
     private DruidDataSource dataSource;
 
@@ -51,7 +51,6 @@ public class MySqlHexTest extends TestCase {
 
 
     public void test_0() throws Exception {
-
         Connection conn = dataSource.getConnection();
 
         String sql = "SELECT INSERT('Quadratic', 1, 4, 'What')";

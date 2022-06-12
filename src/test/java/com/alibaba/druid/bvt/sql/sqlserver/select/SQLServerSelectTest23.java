@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SQLServerSelectTest23 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = //
                 "SELECT * FROM T FETCH FIRST 10 ROWS ONLY"; //

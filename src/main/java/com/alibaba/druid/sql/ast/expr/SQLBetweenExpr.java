@@ -15,11 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.io.Serializable;
@@ -27,15 +23,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SQLBetweenExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
-
     private static final long serialVersionUID = 1L;
-    public SQLExpr            testExpr;
-    private boolean           not;
-    public SQLExpr            beginExpr;
-    public SQLExpr            endExpr;
+    public SQLExpr testExpr;
+    private boolean not;
+    public SQLExpr beginExpr;
+    public SQLExpr endExpr;
 
-    public SQLBetweenExpr(){
-
+    public SQLBetweenExpr() {
     }
 
     public SQLBetweenExpr clone() {
@@ -53,13 +47,13 @@ public class SQLBetweenExpr extends SQLExprImpl implements SQLReplaceable, Seria
         return x;
     }
 
-    public SQLBetweenExpr(SQLExpr testExpr, SQLExpr beginExpr, SQLExpr endExpr){
+    public SQLBetweenExpr(SQLExpr testExpr, SQLExpr beginExpr, SQLExpr endExpr) {
         setTestExpr(testExpr);
         setBeginExpr(beginExpr);
         setEndExpr(endExpr);
     }
 
-    public SQLBetweenExpr(SQLExpr testExpr, boolean not, SQLExpr beginExpr, SQLExpr endExpr){
+    public SQLBetweenExpr(SQLExpr testExpr, boolean not, SQLExpr beginExpr, SQLExpr endExpr) {
         this(testExpr, beginExpr, endExpr);
         this.not = not;
     }

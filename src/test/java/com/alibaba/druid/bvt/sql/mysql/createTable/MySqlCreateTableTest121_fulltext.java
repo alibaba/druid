@@ -13,7 +13,6 @@ import java.sql.Types;
 import java.util.List;
 
 public class MySqlCreateTableTest121_fulltext extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS ddd ( pk int NOT NULL PRIMARY KEY AUTO_INCREMENT" +
                 ", tint tinyint(10) UNSIGNED ZEROFILL, sint smallint DEFAULT 1000, mint mediumint UNIQUE, bint bigint(20) COMMENT 'bigint'" +
@@ -27,7 +26,7 @@ public class MySqlCreateTableTest121_fulltext extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(34, stmt.getTableElementList().size());

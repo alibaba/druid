@@ -30,7 +30,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SQLServerCreateIndexTest_4 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE UNIQUE NONCLUSTERED INDEX ACT_IDX_EVENT_DEF_UNIQ " +
                 "ON FLW_EVENT_DEFINITION(KEY_, VERSION_, TENANT_ID_)";
@@ -42,7 +41,7 @@ public class SQLServerCreateIndexTest_4 extends TestCase {
         assertEquals(1, statementList.size());
 
         assertEquals("CREATE UNIQUE NONCLUSTERED INDEX ACT_IDX_EVENT_DEF_UNIQ ON FLW_EVENT_DEFINITION (KEY_, VERSION_, TENANT_ID_)", //
-                            SQLUtils.toSQLString(stmt, DbType.sqlserver));
+                SQLUtils.toSQLString(stmt, DbType.sqlserver));
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);

@@ -10,7 +10,7 @@ import java.util.List;
 public class PGSelectTest83
         extends TestCase {
     public void test_0() throws Exception {
-        String sql =  "select PERCENTILE_CONT(0.5) WITHIN GROUP ( ORDER BY m asc ) from\n" +
+        String sql = "select PERCENTILE_CONT(0.5) WITHIN GROUP ( ORDER BY m asc ) from\n" +
                 "(\n" +
                 "select distinct extract(month from paidon) as m from core_order where paidon between '2019-1-01' and '2019-5-01' order by m asc\n" +
                 ")a";

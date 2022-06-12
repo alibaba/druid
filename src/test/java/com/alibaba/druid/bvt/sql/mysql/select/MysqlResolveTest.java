@@ -22,10 +22,8 @@ import static org.junit.Assert.assertSame;
  * @author lijun.cailj 2018/3/8
  */
 public class MysqlResolveTest {
-
     @Test
     public void test_1() {
-
         SchemaRepository repository = new SchemaRepository(DbType.mysql);
 
         repository.console("create table t_emp(emp_id bigint, name varchar(20));");

@@ -11,7 +11,6 @@ import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
 
 public class MaxEvictableIdleTimeMillisTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -40,7 +39,7 @@ public class MaxEvictableIdleTimeMillisTest extends TestCase {
         Assert.assertNotNull(error);
         Assert.assertEquals(100, dataSource.getMaxEvictableIdleTimeMillis());
     }
-    
+
     public void test_error2() throws Exception {
         Exception error = null;
         try {

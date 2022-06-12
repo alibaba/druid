@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_47_group_concat extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT student_name,\n" +
                 "    GROUP_CONCAT(DISTINCT test_score\n" +
@@ -46,25 +45,25 @@ public class MySqlSelectTest_47_group_concat extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        Assert.assertEquals(1, visitor.getTables().size());
 //        Assert.assertEquals(1, visitor.getColumns().size());
 //        Assert.assertEquals(0, visitor.getConditions().size());
 //        Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT student_name, GROUP_CONCAT(DISTINCT test_score ORDER BY test_score DESC SEPARATOR ' ')\n" +
                             "FROM student\n" +
                             "GROUP BY student_name;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("select student_name, group_concat(DISTINCT test_score order by test_score desc separator ' ')\n" +
                             "from student\n" +
                             "group by student_name;", //
-                                output);
+                    output);
         }
 
         {

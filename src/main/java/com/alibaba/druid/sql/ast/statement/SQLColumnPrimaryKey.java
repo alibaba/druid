@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLColumnPrimaryKey extends SQLConstraintImpl implements SQLColumnConstraint {
     public SQLColumnPrimaryKey() {
-
     }
 
     @Override

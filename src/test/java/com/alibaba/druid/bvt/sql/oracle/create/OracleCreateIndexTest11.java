@@ -25,38 +25,37 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest11 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE INDEX sales_ix ON composite_sales(time_id, prod_id)\n" +
-                "   STORAGE (INITIAL 1M MAXEXTENTS UNLIMITED)\n" +
-                "   LOCAL\n" +
-                "   (PARTITION q1_1998,\n" +
-                "    PARTITION q2_1998,\n" +
-                "    PARTITION q3_1998,\n" +
-                "    PARTITION q4_1998,\n" +
-                "    PARTITION q1_1999,\n" +
-                "    PARTITION q2_1999,\n" +
-                "    PARTITION q3_1999,\n" +
-                "    PARTITION q4_1999,\n" +
-                "    PARTITION q1_2000,\n" +
-                "    PARTITION q2_2000\n" +
-                "      (SUBPARTITION pq2001, SUBPARTITION pq2002, \n" +
-                "       SUBPARTITION pq2003, SUBPARTITION pq2004,\n" +
-                "       SUBPARTITION pq2005, SUBPARTITION pq2006, \n" +
-                "       SUBPARTITION pq2007, SUBPARTITION pq2008),\n" +
-                "    PARTITION q3_2000\n" +
-                "      (SUBPARTITION c1 TABLESPACE tbs_02, \n" +
-                "       SUBPARTITION c2 TABLESPACE tbs_02, \n" +
-                "       SUBPARTITION c3 TABLESPACE tbs_02,\n" +
-                "       SUBPARTITION c4 TABLESPACE tbs_02,\n" +
-                "       SUBPARTITION c5 TABLESPACE tbs_02),\n" +
-                "    PARTITION q4_2000\n" +
-                "      (SUBPARTITION pq4001 TABLESPACE tbs_03, \n" +
-                "       SUBPARTITION pq4002 TABLESPACE tbs_03,\n" +
-                "       SUBPARTITION pq4003 TABLESPACE tbs_03,\n" +
-                "       SUBPARTITION pq4004 TABLESPACE tbs_03)\n" +
-                ");";
+                "CREATE INDEX sales_ix ON composite_sales(time_id, prod_id)\n" +
+                        "   STORAGE (INITIAL 1M MAXEXTENTS UNLIMITED)\n" +
+                        "   LOCAL\n" +
+                        "   (PARTITION q1_1998,\n" +
+                        "    PARTITION q2_1998,\n" +
+                        "    PARTITION q3_1998,\n" +
+                        "    PARTITION q4_1998,\n" +
+                        "    PARTITION q1_1999,\n" +
+                        "    PARTITION q2_1999,\n" +
+                        "    PARTITION q3_1999,\n" +
+                        "    PARTITION q4_1999,\n" +
+                        "    PARTITION q1_2000,\n" +
+                        "    PARTITION q2_2000\n" +
+                        "      (SUBPARTITION pq2001, SUBPARTITION pq2002, \n" +
+                        "       SUBPARTITION pq2003, SUBPARTITION pq2004,\n" +
+                        "       SUBPARTITION pq2005, SUBPARTITION pq2006, \n" +
+                        "       SUBPARTITION pq2007, SUBPARTITION pq2008),\n" +
+                        "    PARTITION q3_2000\n" +
+                        "      (SUBPARTITION c1 TABLESPACE tbs_02, \n" +
+                        "       SUBPARTITION c2 TABLESPACE tbs_02, \n" +
+                        "       SUBPARTITION c3 TABLESPACE tbs_02,\n" +
+                        "       SUBPARTITION c4 TABLESPACE tbs_02,\n" +
+                        "       SUBPARTITION c5 TABLESPACE tbs_02),\n" +
+                        "    PARTITION q4_2000\n" +
+                        "      (SUBPARTITION pq4001 TABLESPACE tbs_03, \n" +
+                        "       SUBPARTITION pq4002 TABLESPACE tbs_03,\n" +
+                        "       SUBPARTITION pq4003 TABLESPACE tbs_03,\n" +
+                        "       SUBPARTITION pq4004 TABLESPACE tbs_03)\n" +
+                        ");";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

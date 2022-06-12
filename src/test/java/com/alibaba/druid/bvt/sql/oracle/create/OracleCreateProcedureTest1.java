@@ -25,28 +25,27 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateProcedureTest1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE OR REPLACE PROCEDURE p (" +
-        		"  dept_no NUMBER" +
-        		") AS " +
-        		"BEGIN" +
-        		"  DELETE FROM dept_temp" +
-        		"  WHERE department_id = dept_no;" +
-        		" " +
-        		"  IF SQL%FOUND THEN" +
-        		"    DBMS_OUTPUT.PUT_LINE (" +
-        		"      'Delete succeeded for department number ' || dept_no" +
-        		"    );" +
-        		"  ELSE" +
-        		"    DBMS_OUTPUT.PUT_LINE ('No department number ' || dept_no);" +
-        		"  END IF;" +
-        		"END;" +
-        		"/" +
-        		"BEGIN" +
-        		"  p(270);" +
-        		"  p(400);" +
-        		"END;"; //
+                "  dept_no NUMBER" +
+                ") AS " +
+                "BEGIN" +
+                "  DELETE FROM dept_temp" +
+                "  WHERE department_id = dept_no;" +
+                " " +
+                "  IF SQL%FOUND THEN" +
+                "    DBMS_OUTPUT.PUT_LINE (" +
+                "      'Delete succeeded for department number ' || dept_no" +
+                "    );" +
+                "  ELSE" +
+                "    DBMS_OUTPUT.PUT_LINE ('No department number ' || dept_no);" +
+                "  END IF;" +
+                "END;" +
+                "/" +
+                "BEGIN" +
+                "  p(270);" +
+                "  p(400);" +
+                "END;"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

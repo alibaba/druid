@@ -39,7 +39,6 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PrecallTest extends TestCase {
-
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=preCallTest:jdbc:derby:memory:preCallDB;create=true";
 
     protected void setUp() throws Exception {
@@ -70,13 +69,12 @@ public class PrecallTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dropTable();
-        
+
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_precall() throws Exception {
-
         Connection conn = null;
         CallableStatement cstmt = null;
         ResultSet rs = null;
@@ -85,11 +83,11 @@ public class PrecallTest extends TestCase {
             conn = DriverManager.getConnection(create_url);
 
             cstmt = conn.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_DATABASE_PROPERTY(?, ?)", ResultSet.FETCH_FORWARD,
-                                     ResultSet.CONCUR_READ_ONLY);
+                    ResultSet.CONCUR_READ_ONLY);
             cstmt.close();
 
             cstmt = conn.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_DATABASE_PROPERTY(?, ?)", ResultSet.FETCH_FORWARD,
-                                     ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
+                    ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
             cstmt.close();
 
             cstmt = conn.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_DATABASE_PROPERTY(?, ?)");
@@ -97,288 +95,236 @@ public class PrecallTest extends TestCase {
             try {
                 cstmt.setObject(1, null);
             } catch (SQLDataException ex) {
-
             }
             try {
                 cstmt.setObject(1, null, Types.VARCHAR);
             } catch (SQLDataException ex) {
-
             }
 
             try {
                 cstmt.setURL(1, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.setURL("F1", null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setSQLXML(1, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.setSQLXML("F1", null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setRowId(1, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.setRowId("F1", null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setNString(1, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.setNString("F1", null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setBlob(1, (Blob) null);
             } catch (SQLDataException ex) {
-
             }
             try {
                 cstmt.setBlob("F1", (Blob) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setBlob(1, (InputStream) null);
             } catch (SQLDataException ex) {
-
             }
             try {
                 cstmt.setBlob("F1", (InputStream) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setBlob(1, (InputStream) null, 0);
             } catch (SQLDataException ex) {
-
             }
             try {
                 cstmt.setBlob("F1", (InputStream) null, 0);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setClob(1, (Clob) null);
             } catch (SQLDataException ex) {
-
             }
             try {
                 cstmt.setClob("F1", (Clob) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setClob(1, (Reader) null);
             } catch (SQLDataException ex) {
-
             }
             try {
                 cstmt.setClob("F1", (Reader) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setClob(1, (Reader) null, 0);
             } catch (SQLDataException ex) {
-
             }
             try {
                 cstmt.setClob("F1", (Reader) null, 0);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setNClob(1, (NClob) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.setNClob("F1", (NClob) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setNClob(1, (Reader) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.setNClob("F1", (Reader) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setNClob(1, (Reader) null, 0);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.setNClob("F1", (Reader) null, 0);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setNCharacterStream(1, (Reader) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.setNCharacterStream("F1", (Reader) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setNCharacterStream(1, (Reader) null, 0);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.setNCharacterStream("F1", (Reader) null, 0);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setNull("F1", Types.VARCHAR);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.setNull("F1", Types.VARCHAR, "VARCHAR");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.getRef(1);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getRef("F1");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.getClob(1);
             } catch (SQLException ex) {
-
             }
             try {
                 cstmt.getClob("F1");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.getArray(1);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getArray("F1");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.getURL(1);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getURL("F1");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.getSQLXML(1);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getSQLXML("F1");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.getRowId(1);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getRowId("F1");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.getNClob(1);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getNClob("F1");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.getNString(1);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getNString("F1");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 cstmt.getNCharacterStream(1);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 cstmt.getNCharacterStream("F1");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             cstmt.setString(1, "derby.locks.deadlockTimeout");

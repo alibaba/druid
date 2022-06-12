@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 
 public class MySqlSelectTest_255 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM t1 WHERE t1.a <= ALL (VALUES 10, 20)";
 

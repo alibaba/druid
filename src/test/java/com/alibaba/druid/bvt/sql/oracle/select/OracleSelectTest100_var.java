@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest100_var extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select * from zj_sb_zzs_fb3_mx where fphm=:\"SYS_B_0\" and sssq_q=date:\"SYS_B_1\"\n";
@@ -70,5 +69,5 @@ public class OracleSelectTest100_var extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
     }
 
-   
+
 }

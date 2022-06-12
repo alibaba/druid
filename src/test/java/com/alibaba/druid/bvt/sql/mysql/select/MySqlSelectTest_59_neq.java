@@ -24,9 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_59_neq extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "SELECT * from t where t !  = 1";
+        String sql = "SELECT * from t where t !  = 1";
 
         System.out.println(sql);
 
@@ -43,25 +42,25 @@ public class MySqlSelectTest_59_neq extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(1, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT *\n" +
                             "FROM t\n" +
                             "WHERE t != 1", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select *\n" +
                             "from t\n" +
                             "where t != 1", //
-                                output);
+                    output);
         }
 
         {

@@ -24,10 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLServerOutput extends SQLServerObjectImpl {
+    protected SQLExprTableSource into;
 
-    protected SQLExprTableSource        into;
-
-    protected final List<SQLExpr>       columns    = new ArrayList<SQLExpr>();
+    protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
 
     protected final List<SQLSelectItem> selectList = new ArrayList<SQLSelectItem>();
 

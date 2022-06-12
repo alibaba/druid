@@ -24,7 +24,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGInsertTest12_issue_2192 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "insert into test1 as xx (tid,tid1,tvalue)\n" +
                 "values (1,1,1),(2,2,2)\n" +

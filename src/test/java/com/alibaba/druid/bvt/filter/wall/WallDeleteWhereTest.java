@@ -25,8 +25,7 @@ import com.alibaba.druid.wall.WallUtils;
  * @author wenshao
  */
 public class WallDeleteWhereTest extends TestCase {
-
-    private String sql  = "DELETE FROM T WHERE 1 = 1";
+    private String sql = "DELETE FROM T WHERE 1 = 1";
     private String sql2 = "DELETE FROM T WHERE id = 0 and 1 = 1";
 
     public void testMySql() throws Exception {

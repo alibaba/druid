@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * Created by wenshao on 16/9/14.
  */
 public abstract class PhoenixStatementImpl extends SQLStatementImpl implements PhoenixObject {
-
     public PhoenixStatementImpl() {
         super(DbType.phoenix);
     }

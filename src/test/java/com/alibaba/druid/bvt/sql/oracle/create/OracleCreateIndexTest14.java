@@ -25,11 +25,10 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest14 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE INDEX salary_i \n" +
-                "   ON books (TREAT(author AS employee_t).salary);";
+                "CREATE INDEX salary_i \n" +
+                        "   ON books (TREAT(author AS employee_t).salary);";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

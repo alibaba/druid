@@ -23,20 +23,19 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest69 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "  CREATE TABLE HASH_TABLE\n" +
-                "(\n" +
-                "COL NUMBER(8),\n" +
-                "INF VARCHAR2(100)\n" +
-                ")\n" +
-                "PARTITION BY HASH (COL)\n" +
-                "(\n" +
-                "PARTITION PART01 TABLESPACE HASH_TS01,\n" +
-                "PARTITION PART02 TABLESPACE HASH_TS02,\n" +
-                "PARTITION PART03 TABLESPACE HASH_TS03\n" +
-                ") ";
+                "  CREATE TABLE HASH_TABLE\n" +
+                        "(\n" +
+                        "COL NUMBER(8),\n" +
+                        "INF VARCHAR2(100)\n" +
+                        ")\n" +
+                        "PARTITION BY HASH (COL)\n" +
+                        "(\n" +
+                        "PARTITION PART01 TABLESPACE HASH_TS01,\n" +
+                        "PARTITION PART02 TABLESPACE HASH_TS02,\n" +
+                        "PARTITION PART03 TABLESPACE HASH_TS03\n" +
+                        ") ";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -56,7 +55,7 @@ public class OracleCreateTableTest69 extends OracleTest {
                         "\tPARTITION PART03\n" +
                         "\t\tTABLESPACE HASH_TS03\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

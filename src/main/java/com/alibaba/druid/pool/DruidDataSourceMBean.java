@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.pool;
 
+import javax.management.ObjectName;
+
 import java.sql.SQLException;
 import java.util.Date;
-
-import javax.management.ObjectName;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -73,19 +73,19 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     ObjectName getObjectName();
 
     void clearStatementCache() throws SQLException;
-    
+
     long getDiscardCount();
-    
+
     void setStatLoggerClassName(String className);
-    
+
     long getTimeBetweenLogStatsMillis();
-    
+
     void setTimeBetweenLogStatsMillis(long timeBetweenLogStatsMillis);
-    
+
     void setConnectionProperties(String connectionProperties);
-    
+
     int fill() throws SQLException;
-    
+
     int fill(int toCount) throws SQLException;
 
     boolean isUseGlobalDataSourceStat();

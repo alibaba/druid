@@ -15,7 +15,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class SchemaStatTest22_yiran extends TestCase {
-
     public void test_schemaStat() throws Exception {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         repository.console("CREATE TABLE DEPT (depno INT4, dname ENC_TEXT)");

@@ -15,25 +15,24 @@
  */
 package com.alibaba.druid.support.json;
 
+import com.alibaba.druid.sql.parser.CharTypes;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.sql.parser.CharTypes;
-
 public class JSONParser {
-
     private String text;
-    private int    index = 0;
-    private char   ch;
+    private int index;
+    private char ch;
 
-    private Token  token;
+    private Token token;
     private String stringValue;
-    private long   longValue;
+    private long longValue;
     private double doubleValue;
 
-    public JSONParser(String text){
+    public JSONParser(String text) {
         this.text = text;
         ch = text.charAt(0);
         nextToken();
@@ -94,7 +93,7 @@ public class JSONParser {
         accept(Token.LBRACKET);
         ArrayList<Object> list = new ArrayList<Object>();
 
-        for (;;) {
+        for (; ; ) {
             if (token == Token.RBRACKET) {
                 break;
             }
@@ -116,7 +115,7 @@ public class JSONParser {
         accept(Token.LBRACE);
         Map<String, Object> map = new LinkedHashMap<String, Object>();
 
-        for (;;) {
+        for (; ; ) {
             if (token == Token.RBRACE) {
                 break;
             }
@@ -161,7 +160,7 @@ public class JSONParser {
             return;
         }
 
-        for (;;) {
+        for (; ; ) {
             if (CharTypes.isWhitespace(ch)) {
                 nextChar();
                 continue;
@@ -242,7 +241,7 @@ public class JSONParser {
 
         int dotCount = 0;
         StringBuilder digitBuf = new StringBuilder();
-        for (;;) {
+        for (; ; ) {
             digitBuf.append(ch);
             nextChar();
 
@@ -278,7 +277,7 @@ public class JSONParser {
     private void scanString() {
         nextChar();
         StringBuilder strBuf = new StringBuilder();
-        for (;;) {
+        for (; ; ) {
             if (index >= text.length()) {
                 throw new IllegalArgumentException("illegal string : " + strBuf);
             }
@@ -310,7 +309,7 @@ public class JSONParser {
                     char c3 = ch;
                     nextChar();
                     char c4 = ch;
-                    int val = Integer.parseInt(new String(new char[] { c1, c2, c3, c4 }), 16);
+                    int val = Integer.parseInt(new String(new char[]{c1, c2, c3, c4}), 16);
                     strBuf.append((char) val);
                 } else {
                     throw new IllegalArgumentException("illegal string : " + strBuf);
@@ -353,17 +352,15 @@ public class JSONParser {
         LBRACKET("["), //
         RBRACKET("]"), //
         COMMA(","), //
-        COLON(":"),
-
-        ;
+        COLON(":");
 
         public final String name;
 
-        Token(){
+        Token() {
             this(null);
         }
 
-        Token(String name){
+        Token(String name) {
             this.name = name;
         }
     }

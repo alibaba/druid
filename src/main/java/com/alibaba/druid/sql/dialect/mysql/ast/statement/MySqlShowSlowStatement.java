@@ -17,17 +17,15 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowSlowStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
-    private boolean    physical = false;
+    private boolean physical;
     private SQLOrderBy orderBy;
-    private SQLExpr    where;
-    private SQLLimit   limit;
-    private boolean    full = false;
+    private SQLExpr where;
+    private SQLLimit limit;
+    private boolean full;
 
     public SQLLimit getLimit() {
         return limit;

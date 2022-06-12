@@ -25,8 +25,7 @@ import java.util.List;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Substring implements Function {
-
-    public final static Substring instance = new Substring();
+    public static final Substring instance = new Substring();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         List<SQLExpr> params = x.getArguments();
@@ -94,7 +93,7 @@ public class Substring implements Function {
     public Object eval(SQLMethodInvokeExpr x) {
         List<SQLExpr> parameters = x.getArguments();
         for (SQLExpr parameter : parameters) {
-            if (!(parameter instanceof SQLValuableExpr)){
+            if (!(parameter instanceof SQLValuableExpr)) {
                 return null;
             }
         }

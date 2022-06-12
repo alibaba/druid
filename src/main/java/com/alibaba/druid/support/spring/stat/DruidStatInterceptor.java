@@ -15,31 +15,28 @@
  */
 package com.alibaba.druid.support.spring.stat;
 
-import java.lang.reflect.Method;
-
+import com.alibaba.druid.filter.stat.StatFilterContext;
+import com.alibaba.druid.filter.stat.StatFilterContextListenerAdapter;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.TargetSource;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import com.alibaba.druid.filter.stat.StatFilterContext;
-import com.alibaba.druid.filter.stat.StatFilterContextListenerAdapter;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
+import java.lang.reflect.Method;
 
 public class DruidStatInterceptor implements MethodInterceptor, InitializingBean, DisposableBean {
+    public static final String PROP_NAME_PROFILE = "druid.profile";
 
-    public static final String          PROP_NAME_PROFILE   = "druid.profile";
+    private static final Log LOG = LogFactory.getLog(DruidStatInterceptor.class);
 
-    private final static Log            LOG                 = LogFactory.getLog(DruidStatInterceptor.class);
-
-    private static SpringStat           springStat          = new SpringStat();
+    private static SpringStat springStat = new SpringStat();
 
     private SpringMethodContextListener statContextListener = new SpringMethodContextListener();
 
-    public DruidStatInterceptor(){
-
+    public DruidStatInterceptor() {
     }
 
     @Override
@@ -154,7 +151,6 @@ public class DruidStatInterceptor implements MethodInterceptor, InitializingBean
     }
 
     class SpringMethodContextListener extends StatFilterContextListenerAdapter {
-
         @Override
         public void addUpdateCount(int updateCount) {
             SpringMethodStat springMethodStat = SpringMethodStat.current();

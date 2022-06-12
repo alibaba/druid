@@ -24,16 +24,15 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_external_0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE OR REPLACE PROCEDURE raise_salary (\n" +
-				"  empid NUMBER,\n" +
-				"  pct   NUMBER\n" +
-				") AS\n" +
-				"  LANGUAGE JAVA NAME 'Adjuster.raiseSalary (int, float)';  -- call specification"; //
+                "  empid NUMBER,\n" +
+                "  pct   NUMBER\n" +
+                ") AS\n" +
+                "  LANGUAGE JAVA NAME 'Adjuster.raiseSalary (int, float)';  -- call specification"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		SQLStatement stmt = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -59,23 +58,23 @@ public class Oracle_pl_external_0 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("CREATE OR REPLACE PROCEDURE raise_salary (\n" +
-							"\tempid NUMBER, \n" +
-							"\tpct NUMBER\n" +
-							")\n" +
-							"LANGUAGE JAVA NAME 'Adjuster.raiseSalary (int, float)';", //
-					output);
-		}
-		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("create or replace procedure raise_salary (\n" +
-							"\tempid NUMBER, \n" +
-							"\tpct NUMBER\n" +
-							")\n" +
-							"language java name 'Adjuster.raiseSalary (int, float)';", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toOracleString(stmt);
+            assertEquals("CREATE OR REPLACE PROCEDURE raise_salary (\n" +
+                            "\tempid NUMBER, \n" +
+                            "\tpct NUMBER\n" +
+                            ")\n" +
+                            "LANGUAGE JAVA NAME 'Adjuster.raiseSalary (int, float)';", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("create or replace procedure raise_salary (\n" +
+                            "\tempid NUMBER, \n" +
+                            "\tpct NUMBER\n" +
+                            ")\n" +
+                            "language java name 'Adjuster.raiseSalary (int, float)';", //
+                    output);
+        }
+    }
 }

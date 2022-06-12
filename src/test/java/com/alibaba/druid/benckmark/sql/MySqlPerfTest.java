@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.test.TestUtils;
 import com.alibaba.druid.util.Utils;
 
 public class MySqlPerfTest extends TestCase {
-
     private String sql;
 
     protected void setUp() throws Exception {

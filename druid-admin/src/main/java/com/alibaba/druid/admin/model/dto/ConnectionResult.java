@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class ConnectionResult {
-
     @JSONField(name = "ResultCode")
     private int ResultCode;
     @JSONField(name = "Content")
@@ -23,7 +22,6 @@ public class ConnectionResult {
     @NoArgsConstructor
     @Data
     public static class ContentBean {
-
         @JSONField(name = "id")
         private int id;
         @JSONField(name = "connectionId")

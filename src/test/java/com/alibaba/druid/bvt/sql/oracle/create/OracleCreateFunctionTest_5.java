@@ -25,33 +25,32 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateFunctionTest_5 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE OR REPLACE FUNCTION fibonacci wrapped \n" +
-                "a000000\n" +
-                "b2\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "abcd\n" +
-                "8\n" +
-                "14a fb\n" +
-                "e1Yq3QQJoEoNKIeJlbgLoLdSgogwgxDcf8vWfHSKbuowFOXFKoj9MqYGqWyRxeeCUVqNVIO1\n" +
-                "ICqJa3yPr6e7z8GZpMH3J0Cx0uQ0B1JuysymdNDlzfTvb7QWsrLU4jGs3h8Mm49/L9nyO4Xh\n" +
-                "Ae06nawFpOJIAYpBf9wBVC+ZrjU/nuEtokBqCce6HWIoF6rYgz0V0W/47x5KpOnQ2i7X3kFe\n" +
-                "FR8K7jT7X58k8xK9uYlZv5LhV71a7A==";
+                "CREATE OR REPLACE FUNCTION fibonacci wrapped \n" +
+                        "a000000\n" +
+                        "b2\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "abcd\n" +
+                        "8\n" +
+                        "14a fb\n" +
+                        "e1Yq3QQJoEoNKIeJlbgLoLdSgogwgxDcf8vWfHSKbuowFOXFKoj9MqYGqWyRxeeCUVqNVIO1\n" +
+                        "ICqJa3yPr6e7z8GZpMH3J0Cx0uQ0B1JuysymdNDlzfTvb7QWsrLU4jGs3h8Mm49/L9nyO4Xh\n" +
+                        "Ae06nawFpOJIAYpBf9wBVC+ZrjU/nuEtokBqCce6HWIoF6rYgz0V0W/47x5KpOnQ2i7X3kFe\n" +
+                        "FR8K7jT7X58k8xK9uYlZv5LhV71a7A==";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -83,7 +82,7 @@ public class OracleCreateFunctionTest_5 extends OracleTest {
                         "ICqJa3yPr6e7z8GZpMH3J0Cx0uQ0B1JuysymdNDlzfTvb7QWsrLU4jGs3h8Mm49/L9nyO4Xh\n" +
                         "Ae06nawFpOJIAYpBf9wBVC+ZrjU/nuEtokBqCce6HWIoF6rYgz0V0W/47x5KpOnQ2i7X3kFe\n" +
                         "FR8K7jT7X58k8xK9uYlZv5LhV71a7A==",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

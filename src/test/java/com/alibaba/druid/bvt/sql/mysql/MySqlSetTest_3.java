@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSetTest_3 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SET sql_mode=?,NAMES ?,CHARACTER SET utf8,CHARACTER_SET_RESULTS=utf8,COLLATION_CONNECTION=?";
 

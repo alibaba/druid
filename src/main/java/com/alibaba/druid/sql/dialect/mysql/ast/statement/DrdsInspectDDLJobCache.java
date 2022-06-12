@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
  * Date 2019-07-22 10:06
  */
 public class DrdsInspectDDLJobCache extends MySqlStatementImpl implements SQLStatement {
-
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);

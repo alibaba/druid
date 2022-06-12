@@ -34,9 +34,9 @@ public class Oracle_PSCacheTest extends DbTestCase {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             } finally {
-                 JdbcUtils.close(rs);
-                 JdbcUtils.close(pstmt);
-                 JdbcUtils.close(conn);
+                JdbcUtils.close(rs);
+                JdbcUtils.close(pstmt);
+                JdbcUtils.close(conn);
             }
 
             Thread.sleep(3000);

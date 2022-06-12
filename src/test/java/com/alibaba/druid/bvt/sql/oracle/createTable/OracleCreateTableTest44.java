@@ -26,36 +26,35 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest44 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"PK1\" NUMBER, \n" +
-                "  \"COL1\" CHAR(1), \n" +
-                "  \"COL2\" NCHAR(20), \n" +
-                "  \"COL3\" VARCHAR2(30), \n" +
-                "  \"COL4\" NVARCHAR2(30), \n" +
-                "  \"COL5\" NUMBER(*,0), \n" +
-                "  \"COL6\" FLOAT(10), \n" +
-                "  \"COL7\" DATE, \n" +
-                "  \"COL8\" TIMESTAMP (6), \n" +
-                "  \"COL9\" BLOB, \n" +
-                "  \"COL10\" LONG, \n" +
-                "   PRIMARY KEY (\"PK1\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"USERS\"  ENABLE\n" +
-                "   ) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"USERS\" \n" +
-                " LOB (\"COL9\") STORE AS BASICFILE (\n" +
-                "  TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
-                "  NOCACHE LOGGING \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT))";
+                "CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"PK1\" NUMBER, \n" +
+                        "  \"COL1\" CHAR(1), \n" +
+                        "  \"COL2\" NCHAR(20), \n" +
+                        "  \"COL3\" VARCHAR2(30), \n" +
+                        "  \"COL4\" NVARCHAR2(30), \n" +
+                        "  \"COL5\" NUMBER(*,0), \n" +
+                        "  \"COL6\" FLOAT(10), \n" +
+                        "  \"COL7\" DATE, \n" +
+                        "  \"COL8\" TIMESTAMP (6), \n" +
+                        "  \"COL9\" BLOB, \n" +
+                        "  \"COL10\" LONG, \n" +
+                        "   PRIMARY KEY (\"PK1\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"USERS\"  ENABLE\n" +
+                        "   ) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"USERS\" \n" +
+                        " LOB (\"COL9\") STORE AS BASICFILE (\n" +
+                        "  TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
+                        "  NOCACHE LOGGING \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT))";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -136,7 +135,7 @@ public class OracleCreateTableTest44 extends OracleTest {
                         "\tNOCACHE\n" +
                         "\tRETENTION\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

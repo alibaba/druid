@@ -8,11 +8,10 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * 这个场景测试minIdle > maxActive
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_oracle_error extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -22,7 +21,6 @@ public class DruidDataSourceTest_oracle_error extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setDbType("oracle");
         dataSource.setDriver(new MockDriver() {
-
             @Override
             public int getMajorVersion() {
                 return 9;

@@ -11,7 +11,6 @@ import org.apache.calcite.sql.parser.SqlParserPos;
  * @author lijun.cailj 2017/11/29
  */
 public class TDDLSqlSelect extends SqlSelect {
-
     private SqlNodeList hints;
     private SqlNodeList headHints;
 

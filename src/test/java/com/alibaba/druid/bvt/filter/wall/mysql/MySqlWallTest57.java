@@ -24,18 +24,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest57 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid(//
-        "SELECT @@version"));
+                "SELECT @@version"));
 
         Assert.assertEquals(0, provider.getTableStats().size());
     }
@@ -44,7 +43,7 @@ public class MySqlWallTest57 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid(//
-        "SELECT @@version FROM DUAL"));
+                "SELECT @@version FROM DUAL"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }
@@ -53,7 +52,7 @@ public class MySqlWallTest57 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid(//
-        "SELECT @@version FROM X"));
+                "SELECT @@version FROM X"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }
@@ -62,7 +61,7 @@ public class MySqlWallTest57 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertFalse(provider.checkValid(//
-        "SELECT * FROM X where id=1 and 1!=1 union select @@version"));
+                "SELECT * FROM X where id=1 and 1!=1 union select @@version"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

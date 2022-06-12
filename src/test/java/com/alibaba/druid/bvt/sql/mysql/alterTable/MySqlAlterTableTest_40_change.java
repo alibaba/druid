@@ -30,7 +30,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest_40_change extends TestCase {
-
     public void test_alter_constraint() throws Exception {
         String sql = "alter table sdfwef change column a c int";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -50,7 +49,7 @@ public class MySqlAlterTableTest_40_change extends TestCase {
 
         Assert.assertEquals("alter table sdfwef\n" +
                 "\tchange column a c int", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
 

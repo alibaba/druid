@@ -52,7 +52,7 @@ public class LogFilterTest extends TestCase {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
-    
+
     public void test_logFilter_0() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setRawUrl("jdbc:mock:");
@@ -64,7 +64,6 @@ public class LogFilterTest extends TestCase {
         setLogDisableAll(log4jFilter, true);
 
         CommonsLogFilter commonLogFilter = new CommonsLogFilter() {
-
             @Override
             public boolean isDataSourceLogEnabled() {
                 return true;
@@ -113,7 +112,6 @@ public class LogFilterTest extends TestCase {
         setLogDisableAll(log4jFilter, true);
 
         CommonsLogFilter commonLogFilter = new CommonsLogFilter() {
-
             @Override
             public boolean isDataSourceLogEnabled() {
                 return false;
@@ -171,8 +169,7 @@ public class LogFilterTest extends TestCase {
         }
 
         final MockResultSetMetaData rsMeta = new MockResultSetMetaData() {
-
-            private int[] types = new int[] { Types.BLOB, Types.CLOB, Types.NCLOB, Types.BINARY, Types.OTHER };
+            private int[] types = new int[]{Types.BLOB, Types.CLOB, Types.NCLOB, Types.BINARY, Types.OTHER};
 
             @Override
             public int getColumnCount() throws SQLException {
@@ -191,7 +188,6 @@ public class LogFilterTest extends TestCase {
         {
             StatementProxy stmt = (StatementProxy) conn.createStatement();
             MockResultSet rs = new MockResultSet(null) {
-
                 @Override
                 public ResultSetMetaData getMetaData() throws SQLException {
                     return rsMeta;
@@ -216,7 +212,6 @@ public class LogFilterTest extends TestCase {
         }
         {
             final MockResultSet rs = new MockResultSet(null) {
-
                 @Override
                 public ResultSetMetaData getMetaData() throws SQLException {
                     throw new SQLException();
@@ -224,7 +219,6 @@ public class LogFilterTest extends TestCase {
             };
 
             StatementProxy stmt = new StatementProxyImpl(conn, new MockStatement(conn) {
-
                 public ResultSet getResultSet() throws SQLException {
                     return rs;
                 }
@@ -236,7 +230,6 @@ public class LogFilterTest extends TestCase {
         {
             StatementProxy stmt = (StatementProxy) conn.createStatement();
             MockResultSet rs = new MockResultSet(null) {
-
                 @Override
                 public ResultSetMetaData getMetaData() throws SQLException {
                     return rsMeta;

@@ -21,7 +21,7 @@ import org.junit.Assert;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
@@ -29,6 +29,6 @@ import org.junit.Assert;
 public class PGWallTest1 extends TestCase {
     public void test_wall() throws Exception {
         Assert.assertTrue(WallUtils.isValidatePostgres(//
-        "select pg_encoding_to_char(encoding) from pg_database where datname = current_database()"));
+                "select pg_encoding_to_char(encoding) from pg_database where datname = current_database()"));
     }
 }

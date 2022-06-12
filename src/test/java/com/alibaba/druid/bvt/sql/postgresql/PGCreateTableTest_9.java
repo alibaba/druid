@@ -25,19 +25,18 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGCreateTableTest_9 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "create table test(id bigint, TYPE varchar(20))";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         assertEquals("CREATE TABLE test (\n" +
                 "\tid bigint,\n" +
                 "\tTYPE varchar(20)\n" +
                 ")", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("create table test (\n" +
                 "\tid bigint,\n" +
                 "\tTYPE varchar(20)\n" +
@@ -55,7 +54,7 @@ public class PGCreateTableTest_9 extends PGTest {
 
         assertTrue(visitor.getTables().get(new TableStat.Name("test")).getCreateCount() == 1);
 
-        assertEquals(2, visitor.getColumns().size() );
+        assertEquals(2, visitor.getColumns().size());
     }
 
 }

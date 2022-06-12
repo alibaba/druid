@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlShowTest_21_outlines extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW OUTLINES where 1=1 order by 1 limit 1";
 

@@ -24,15 +24,14 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerUpdateTest2 extends TestCase {
-
     public void test_update() throws Exception {
         String sql = "UPDATE Cities " + //
-                     "SET Location = CONVERT(Point, '12.3:46.2') " + //
-                     "WHERE Name = 'Anchorage';";
+                "SET Location = CONVERT(Point, '12.3:46.2') " + //
+                "WHERE Name = 'Anchorage';";
 
         String expect = "UPDATE Cities" + //
-                        "\nSET Location = CONVERT(Point, '12.3:46.2')" + //
-                        "\nWHERE Name = 'Anchorage';";
+                "\nSET Location = CONVERT(Point, '12.3:46.2')" + //
+                "\nWHERE Name = 'Anchorage';";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

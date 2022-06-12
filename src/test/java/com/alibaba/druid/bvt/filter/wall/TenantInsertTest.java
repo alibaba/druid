@@ -33,8 +33,7 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @author kiki
  */
 public class TenantInsertTest extends TestCase {
-
-    private WallConfig config          = new WallConfig();
+    private WallConfig config = new WallConfig();
     private WallConfig config_callback = new WallConfig();
 
     protected void setUp() throws Exception {
@@ -99,9 +98,9 @@ public class TenantInsertTest extends TestCase {
     public void testMySql5() throws Exception {
         String insert_sql = "INSERT INTO orders (ID, NAME) SELECT ID, NAME FROM temp WHERE age = 18";
         String expect_sql = "INSERT INTO orders (ID, NAME, tenant)" + //
-                            "\nSELECT ID, NAME, 123" + //
-                            "\nFROM temp" + //
-                            "\nWHERE age = 18";
+                "\nSELECT ID, NAME, 123" + //
+                "\nFROM temp" + //
+                "\nWHERE age = 18";
 
         {
             MySqlWallProvider provider = new MySqlWallProvider(config_callback);

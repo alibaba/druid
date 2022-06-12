@@ -24,13 +24,12 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest4 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select  offerId,          offerIds    "
-                     + //
-                     "from  cnres.function_select_get_p4p_offer_by_sps('\\'1160160508\\',\\'1085432755\\',\\'971765217\\'')   "
-                     + //
-                     "     as a(    offerId character varying(256),    offerIds character varying(4000)   )";
+                + //
+                "from  cnres.function_select_get_p4p_offer_by_sps('\\'1160160508\\',\\'1085432755\\',\\'971765217\\'')   "
+                + //
+                "     as a(    offerId character varying(256),    offerIds character varying(4000)   )";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

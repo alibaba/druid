@@ -22,28 +22,26 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlDeleteStatement extends SQLDeleteStatement {
-
-    private boolean              lowPriority        = false;
-    private boolean              quick              = false;
-    private boolean              ignore             = false;
-    private SQLOrderBy           orderBy;
-    private SQLLimit             limit;
+    private boolean lowPriority;
+    private boolean quick;
+    private boolean ignore;
+    private SQLOrderBy orderBy;
+    private SQLLimit limit;
     // for petadata
-    private boolean              forceAllPartitions = false;
-    private SQLName              forcePartition;
+    private boolean forceAllPartitions;
+    private SQLName forcePartition;
 
     private List<SQLCommentHint> hints;
 
-    private boolean fulltextDictionary = false;
+    private boolean fulltextDictionary;
 
-    public MySqlDeleteStatement(){
+    public MySqlDeleteStatement() {
         super(DbType.mysql);
     }
 
@@ -75,12 +73,12 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         }
         return hints;
     }
-    
+
     public int getHintsSize() {
         if (hints == null) {
             return 0;
         }
-        
+
         return hints.size();
     }
 

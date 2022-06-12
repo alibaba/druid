@@ -30,7 +30,6 @@ import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TestOraclePrefetch extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -48,7 +47,6 @@ public class TestOraclePrefetch extends TestCase {
     }
 
     public void test_oracle() throws Exception {
-
         String sql = "SELECT 1";
 
         OracleConnection oracleConn;
@@ -66,7 +64,7 @@ public class TestOraclePrefetch extends TestCase {
 
             oracleStmt = stmt.unwrap(OraclePreparedStatement.class);
             Assert.assertEquals(50, oracleStmt.getRowPrefetch());
-            
+
             Assert.assertTrue(stmt.isWrapperFor(PreparedStatementHolder.class));
             stmtHolder = stmt.unwrap(PreparedStatementHolder.class);
             Assert.assertNotNull(stmtHolder);
@@ -90,7 +88,7 @@ public class TestOraclePrefetch extends TestCase {
             }
 
             PreparedStatement stmt = conn.prepareStatement(sql);
-            
+
             {
                 PreparedStatementHolder stmtHolder2 = stmt.unwrap(PreparedStatementHolder.class);
                 Assert.assertSame(stmtHolder2, stmtHolder);
@@ -109,7 +107,7 @@ public class TestOraclePrefetch extends TestCase {
 
             conn.close();
         }
-        
+
         Assert.assertEquals(1, dataSource.getCachedPreparedStatementCount());
 
     }

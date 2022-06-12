@@ -25,14 +25,13 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest48 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "select sequence_name from all_sequences  " //
-                + "union select synonym_name" //
-                + "   from all_synonyms us, all_sequences asq" //
-                + "  where asq.sequence_name = us.table_name" //
-                + "    and asq.sequence_owner = us.table_owner"; //
+                "select sequence_name from all_sequences  " //
+                        + "union select synonym_name" //
+                        + "   from all_synonyms us, all_sequences asq" //
+                        + "  where asq.sequence_name = us.table_name" //
+                        + "    and asq.sequence_owner = us.table_owner"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -57,12 +56,12 @@ public class OracleSelectTest48 extends OracleTest {
         String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT sequence_name" //
-                            + "\nFROM all_sequences" //
-                            + "\nUNION" //
-                            + "\nSELECT synonym_name" //
-                            + "\nFROM all_synonyms us, all_sequences asq" //
-                            + "\nWHERE asq.sequence_name = us.table_name" //
-                            + "\n\tAND asq.sequence_owner = us.table_owner", text);
+                + "\nFROM all_sequences" //
+                + "\nUNION" //
+                + "\nSELECT synonym_name" //
+                + "\nFROM all_synonyms us, all_sequences asq" //
+                + "\nWHERE asq.sequence_name = us.table_name" //
+                + "\n\tAND asq.sequence_owner = us.table_owner", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

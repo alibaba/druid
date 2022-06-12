@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter table WRH$_SERVICE_WAIT_CLASS drop partition WRH$_SERVIC_1870432296_13478";
+                "alter table WRH$_SERVICE_WAIT_CLASS drop partition WRH$_SERVIC_1870432296_13478";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -49,7 +48,7 @@ public class OracleAlterTableTest extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("WRH$_SERVICE_WAIT_CLASS")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("WRH$_SERVICE_WAIT_CLASS")));
 
         Assert.assertEquals(0, visitor.getColumns().size());
 

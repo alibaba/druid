@@ -27,13 +27,12 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateViewTest7 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        " CREATE VIEW emp_view AS \n" +
-                "   SELECT last_name, salary*12 annual_salary\n" +
-                "   FROM employees \n" +
-                "   WHERE department_id = 20;";
+                " CREATE VIEW emp_view AS \n" +
+                        "   SELECT last_name, salary*12 annual_salary\n" +
+                        "   FROM employees \n" +
+                        "   WHERE department_id = 20;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -47,7 +46,7 @@ public class OracleCreateViewTest7 extends OracleTest {
                         "SELECT last_name, salary * 12 AS annual_salary\n" +
                         "FROM employees\n" +
                         "WHERE department_id = 20;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

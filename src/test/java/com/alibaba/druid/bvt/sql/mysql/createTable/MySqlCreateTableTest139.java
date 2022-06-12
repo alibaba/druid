@@ -8,13 +8,12 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest139 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = " CREATE TABLE IF NOT EXISTS simiao_alter_partition2 (id int, id2 int, name varchar(30), time timestamp NOT NULL, PRIMARY KEY (id, time), KEY idx_id_time USING BTREE (id, time)) PARTITION BY RANGE (UNIX_TIMESTAMP(time))( PARTITION p0 VALUES LESS THAN (UNIX_TIMESTAMP('2013-01-01 00:00:00')), PARTITION p1 VALUES LESS THAN (UNIX_TIMESTAMP('2013-02-01 00:00:00')), PARTITION p2 VALUES LESS THAN (UNIX_TIMESTAMP('2013-03-01 00:00:00')), PARTITION p3 VALUES LESS THAN (UNIX_TIMESTAMP('2013-04-01 00:00:00')), PARTITION p4 VALUES LESS THAN (UNIX_TIMESTAMP('2013-05-01 00:00:00')), PARTITION p5 VALUES LESS THAN (UNIX_TIMESTAMP('2013-06-01 00:00:00')), PARTITION p6 VALUES LESS THAN (UNIX_TIMESTAMP('2013-07-01 00:00:00')), PARTITION p7 VALUES LESS THAN (UNIX_TIMESTAMP('2013-08-01 00:00:00')), PARTITION p8 VALUES LESS THAN (UNIX_TIMESTAMP('2013-09-01 00:00:00')), PARTITION p10 VALUES LESS THAN (UNIX_TIMESTAMP('2013-10-01 00:00:00')), PARTITION p11 VALUES LESS THAN (UNIX_TIMESTAMP('2013-11-01 00:00:00')), PARTITION p12 VALUES LESS THAN (UNIX_TIMESTAMP('2013-12-01 00:00:00')), PARTITION p13 VALUES LESS THAN (MAXVALUE) ) dbpartition by hash(id) dbpartitions 4;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -70,9 +69,6 @@ public class MySqlCreateTableTest139 extends MysqlTest {
                 "dbpartition by hash(id) dbpartitions 4;", stmt.toLowerCaseString());
 
     }
-
-
-
 
 
 }

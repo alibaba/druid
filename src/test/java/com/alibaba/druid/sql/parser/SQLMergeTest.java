@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 
 public class SQLMergeTest extends TestCase {
-
     protected String sql;
 
     protected void setUp() throws Exception {
@@ -66,7 +65,6 @@ public class SQLMergeTest extends TestCase {
     private String merge() {
         StringBuilder out = new StringBuilder();
         OracleOutputVisitor visitor = new OracleOutputVisitor(out) {
-
             public boolean visit(SQLInListExpr x) {
                 x.getExpr().accept(this);
 
@@ -94,7 +92,6 @@ public class SQLMergeTest extends TestCase {
 
         StringBuilder out = new StringBuilder();
         MySqlOutputVisitor visitor = new MySqlOutputVisitor(out) {
-
             public boolean visit(SQLInListExpr x) {
                 x.getExpr().accept(this);
 

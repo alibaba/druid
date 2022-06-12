@@ -25,11 +25,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest5 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE GLOBAL TEMPORARY TABLE \"SYS\".\"SYS_TEMP_0FD9D670A_93E068F3\" (\"C0\" VARCHAR2(30),\"C1\" VARCHAR2(27) ) "
-                + "IN_MEMORY_METADATA CURSOR_SPECIFIC_SEGMENT STORAGE (OBJNO 4254951178 )";
+                "CREATE GLOBAL TEMPORARY TABLE \"SYS\".\"SYS_TEMP_0FD9D670A_93E068F3\" (\"C0\" VARCHAR2(30),\"C1\" VARCHAR2(27) ) "
+                        + "IN_MEMORY_METADATA CURSOR_SPECIFIC_SEGMENT STORAGE (OBJNO 4254951178 )";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -53,8 +52,8 @@ public class OracleCreateTableTest5 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.containsColumn("SYS.SYS_TEMP_0FD9D670A_93E068F3", "C0"));
-         Assert.assertTrue(visitor.containsColumn("SYS.SYS_TEMP_0FD9D670A_93E068F3", "C1"));
+        Assert.assertTrue(visitor.containsColumn("SYS.SYS_TEMP_0FD9D670A_93E068F3", "C0"));
+        Assert.assertTrue(visitor.containsColumn("SYS.SYS_TEMP_0FD9D670A_93E068F3", "C1"));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }

@@ -23,13 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlterTableItem {
-
     private List<SQLName> columns = new ArrayList<SQLName>();
 
-    private boolean       cascade = false;
+    private boolean cascade;
 
-    public SQLAlterTableDropColumnItem(){
-
+    public SQLAlterTableDropColumnItem() {
     }
 
     @Override
@@ -43,7 +41,7 @@ public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlt
     public List<SQLName> getColumns() {
         return columns;
     }
-    
+
     public void addColumn(SQLName column) {
         if (column != null) {
             column.setParent(this);

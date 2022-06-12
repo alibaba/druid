@@ -24,18 +24,17 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest5 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = " SELECT rs.* FROM ( " //
-                     + "WITH RECURSIVE r AS( "//
-                     + "SELECT * " //
-                     + "FROM t_e_shopcatalog " //
-                     + "WHERE parentcatalogid= (SELECT catalogid FROM t_e_shopcatalog where catalogname='学习分类' and parentcatalogid='0') " //
-                     + "UNION ALL " //
-                     + "SELECT t_e_shopcatalog.* " //
-                     + "FROM t_e_shopcatalog, r " //
-                     + "WHERE t_e_shopcatalog.parentcatalogid = r.catalogid )"
-                     + "SELECT * FROM r )rs WHERE 1=1";
+                + "WITH RECURSIVE r AS( "//
+                + "SELECT * " //
+                + "FROM t_e_shopcatalog " //
+                + "WHERE parentcatalogid= (SELECT catalogid FROM t_e_shopcatalog where catalogname='学习分类' and parentcatalogid='0') " //
+                + "UNION ALL " //
+                + "SELECT t_e_shopcatalog.* " //
+                + "FROM t_e_shopcatalog, r " //
+                + "WHERE t_e_shopcatalog.parentcatalogid = r.catalogid )"
+                + "SELECT * FROM r )rs WHERE 1=1";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

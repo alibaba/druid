@@ -22,7 +22,6 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallUtils;
 
 public class OracleWallPermitTableTest extends TestCase {
-
     public void test_permitTable() throws Exception {
         Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from TAB"));
         Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from tab"));

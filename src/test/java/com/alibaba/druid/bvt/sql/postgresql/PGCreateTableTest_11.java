@@ -25,7 +25,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGCreateTableTest_11 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE KTV.KTV_FUNCTION_ROLE_20151211 (\n" +
                 "\tURL VARCHAR(150),\n" +
@@ -37,14 +36,14 @@ public class PGCreateTableTest_11 extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         assertEquals("CREATE TABLE KTV.KTV_FUNCTION_ROLE_20151211 (\n" +
                 "\tURL VARCHAR(150),\n" +
                 "\tFUNCTION VARCHAR(1002),\n" +
                 "\tROLE VARCHAR(100),\n" +
                 "\t\"COUNT\" VARCHAR(102)\n" +
                 ")", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("create table KTV.KTV_FUNCTION_ROLE_20151211 (\n" +
                 "\tURL VARCHAR(150),\n" +
                 "\tFUNCTION VARCHAR(1002),\n" +
@@ -64,7 +63,7 @@ public class PGCreateTableTest_11 extends PGTest {
 
         assertTrue(visitor.getTables().get(new TableStat.Name("KTV.KTV_FUNCTION_ROLE_20151211")).getCreateCount() == 1);
 
-        assertEquals(4, visitor.getColumns().size() );
+        assertEquals(4, visitor.getColumns().size());
     }
 
 }

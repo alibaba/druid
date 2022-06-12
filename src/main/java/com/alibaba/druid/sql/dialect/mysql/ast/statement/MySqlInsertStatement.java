@@ -20,23 +20,22 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlInsertStatement extends SQLInsertStatement {
-    private boolean             lowPriority        = false;
-    private boolean             delayed            = false;
-    private boolean             highPriority       = false;
-    private boolean             ignore             = false;
-    private boolean             rollbackOnFail     = false;
-    private boolean             fulltextDictionary     = false; // for adb
-    private boolean             overwrite     = false; // for adb
-    private boolean             ifNotExists   = false; //for adb
+    private boolean lowPriority;
+    private boolean delayed;
+    private boolean highPriority;
+    private boolean ignore;
+    private boolean rollbackOnFail;
+    private boolean fulltextDictionary; // for adb
+    private boolean overwrite; // for adb
+    private boolean ifNotExists; //for adb
 
-    protected List<SQLCommentHint>      hints;
+    protected List<SQLCommentHint> hints;
 
     private final List<SQLExpr> duplicateKeyUpdate = new ArrayList<SQLExpr>();
 

@@ -27,9 +27,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_75_select extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "select CONVERT( LEFT( CONVERT( '自動下書き' USING binary ), 100 ) USING utf8 ) AS x_0;";
+        String sql = "select CONVERT( LEFT( CONVERT( '自動下書き' USING binary ), 100 ) USING utf8 ) AS x_0;";
 
         System.out.println(sql);
 
@@ -44,12 +43,12 @@ public class MySqlSelectTest_75_select extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT CONVERT(LEFT(CONVERT('自動下書き' USING binary), 100) USING utf8) AS x_0;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select CONVERT(LEFT(CONVERT('自動下書き' using binary), 100) using utf8) as x_0;", //
-                                output);
+                    output);
         }
 
         {

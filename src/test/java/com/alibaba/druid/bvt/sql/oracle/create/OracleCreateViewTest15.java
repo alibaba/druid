@@ -26,20 +26,18 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateViewTest15 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE OR REPLACE FORCE VIEW \"ZJGT_DKXY\".\"V_ZJ_DKXMXXEXP\" (\"PRJ_NO\", \"EXPLST\") AS \n" +
-                "  select b.prj_no,explst\n" +
-                "  from (with temp_exp as (select t.prj_no, t.explx,t.expname\n" +
-                "                            from v_zjk_xmlist t\n" +
-                "                           where t.expname is not null\n" +
-                "                             and t.explx not like '%组员%')\n" +
-                "         select prj_no,\n" +
-                "                dbms_lob.substr(wmsys.wm_concat(explx||': '||expname) over(partition by prj_no)，4000,1) as explst\n" +
-                "           from temp_exp) b\n" +
-                "          group by b.prj_no,explst"
-               ;
+                "CREATE OR REPLACE FORCE VIEW \"ZJGT_DKXY\".\"V_ZJ_DKXMXXEXP\" (\"PRJ_NO\", \"EXPLST\") AS \n" +
+                        "  select b.prj_no,explst\n" +
+                        "  from (with temp_exp as (select t.prj_no, t.explx,t.expname\n" +
+                        "                            from v_zjk_xmlist t\n" +
+                        "                           where t.expname is not null\n" +
+                        "                             and t.explx not like '%组员%')\n" +
+                        "         select prj_no,\n" +
+                        "                dbms_lob.substr(wmsys.wm_concat(explx||': '||expname) over(partition by prj_no)，4000,1) as explst\n" +
+                        "           from temp_exp) b\n" +
+                        "          group by b.prj_no,explst";
 
         System.out.println(sql);
 
@@ -68,7 +66,7 @@ public class OracleCreateViewTest15 extends OracleTest {
                         "\tFROM temp_exp\n" +
                         ") b\n" +
                         "GROUP BY b.prj_no, explst",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

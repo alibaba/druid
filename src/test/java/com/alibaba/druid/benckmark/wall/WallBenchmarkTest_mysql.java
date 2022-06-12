@@ -21,15 +21,14 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class WallBenchmarkTest_mysql extends TestCase {
+    WallProvider provider = new MySqlWallProvider();
 
-    WallProvider            provider = new MySqlWallProvider();
-
-    public final static int COUNT    = 1000 * 1000;
+    public static final int COUNT = 1000 * 1000;
 
     public void test_0() throws Exception {
         String sql = "SELECT t1.department_id, t2.*\n" + //
-                     "FROM hr_info t1, x2 t2\n" + //
-                     "WHERE t2.department_id = t1.department_id";
+                "FROM hr_info t1, x2 t2\n" + //
+                "WHERE t2.department_id = t1.department_id";
         for (int i = 0; i < 10; ++i) {
             provider.clearCache();
             long startMillis = System.currentTimeMillis();
@@ -41,7 +40,7 @@ public class WallBenchmarkTest_mysql extends TestCase {
 
     public void perf(String sql) {
         for (int i = 0; i < COUNT; ++i) {
-        	String text = sql + " AND FID = " + i;
+            String text = sql + " AND FID = " + i;
             provider.check(text);
         }
     }

@@ -16,7 +16,6 @@ import java.util.Properties;
  * 如需运行此用例, 请先修改连接信息.
  */
 public class DruidDataSourceTestValidConnectionChecker {
-
     public static void main(String[] args) throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
 

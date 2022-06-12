@@ -15,41 +15,32 @@
  */
 package com.alibaba.druid.stat;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
+
+import javax.management.JMException;
+import javax.management.openmbean.*;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.management.JMException;
-import javax.management.openmbean.ArrayType;
-import javax.management.openmbean.CompositeDataSupport;
-import javax.management.openmbean.CompositeType;
-import javax.management.openmbean.OpenType;
-import javax.management.openmbean.SimpleType;
-import javax.management.openmbean.TabularData;
-import javax.management.openmbean.TabularDataSupport;
-import javax.management.openmbean.TabularType;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
-
 public final class JdbcStatManager implements JdbcStatManagerMBean {
+    private final AtomicLong sqlIdSeed = new AtomicLong(1000);
 
-    private final AtomicLong                  sqlIdSeed      = new AtomicLong(1000);
+    private static final JdbcStatManager instance = new JdbcStatManager();
 
-    private final static JdbcStatManager      instance       = new JdbcStatManager();
+    private final JdbcConnectionStat connectionStat = new JdbcConnectionStat();
+    private final JdbcResultSetStat resultSetStat = new JdbcResultSetStat();
+    private final JdbcStatementStat statementStat = new JdbcStatementStat();
 
-    private final JdbcConnectionStat          connectionStat = new JdbcConnectionStat();
-    private final JdbcResultSetStat           resultSetStat  = new JdbcResultSetStat();
-    private final JdbcStatementStat           statementStat  = new JdbcStatementStat();
+    private final AtomicLong resetCount = new AtomicLong();
 
-    private final AtomicLong                  resetCount     = new AtomicLong();
+    public final ThreadLocal<JdbcStatContext> contextLocal = new ThreadLocal<JdbcStatContext>();
 
-    public final ThreadLocal<JdbcStatContext> contextLocal   = new ThreadLocal<JdbcStatContext>();
-
-    private JdbcStatManager(){
-
+    private JdbcStatManager() {
     }
 
     public JdbcStatContext getStatContext() {
@@ -84,15 +75,14 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
         return connectionStat;
     }
 
-    private static CompositeType COMPOSITE_TYPE = null;
+    private static CompositeType COMPOSITE_TYPE;
 
     public static CompositeType getDataSourceCompositeType() throws JMException {
-
         if (COMPOSITE_TYPE != null) {
             return COMPOSITE_TYPE;
         }
 
-        OpenType<?>[] indexTypes = new OpenType<?>[] {
+        OpenType<?>[] indexTypes = new OpenType<?>[]{
                 // 0 - 4
                 SimpleType.LONG, //
                 SimpleType.STRING, //
@@ -172,8 +162,8 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
 
                 // 55 -
                 new ArrayType<Long>(SimpleType.LONG, true)
-        //
-        //
+                //
+                //
         };
 
         String[] indexNames = {
@@ -189,59 +179,60 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
                 "RawDriverClassName",
                 "RawDriverMajorVersion",
                 "RawDriverMinorVersion",
-                "Properties" //
-                ,
+                "Properties",
 
                 // 10 - 14
                 "ConnectionActiveCount",
                 "ConnectionActiveCountMax",
                 "ConnectionCloseCount",
                 "ConnectionCommitCount",
-                "ConnectionRollbackCount" //
-                ,
+                "ConnectionRollbackCount",
+
                 // 15 - 19
                 "ConnectionConnectLastTime",
                 "ConnectionConnectErrorCount",
                 "ConnectionConnectErrorLastTime",
                 "ConnectionConnectErrorLastMessage",
-                "ConnectionConnectErrorLastStackTrace" //
-                ,
+                "ConnectionConnectErrorLastStackTrace",
+
                 // 20 - 24
                 "StatementCreateCount",
                 "StatementPrepareCount",
                 "StatementPreCallCount",
                 "StatementExecuteCount",
-                "StatementRunningCount" //
-                ,
+                "StatementRunningCount",
 
                 // 25 - 29
                 "StatementConcurrentMax",
                 "StatementCloseCount",
                 "StatementErrorCount",
                 "StatementLastErrorTime",
-                "StatementLastErrorMessage" //
-                ,
+                "StatementLastErrorMessage",
+
                 // 30 - 34
                 "StatementLastErrorStackTrace", "StatementExecuteMillisTotal", "ConnectionConnectingCount",
                 "StatementExecuteLastTime",
-                "ResultSetCloseCount" //
-                ,
+                "ResultSetCloseCount",
+
                 // 35 -39
-                "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount",
-                "ResultSetLastOpenTime" //
-                ,
+                "ResultSetOpenCount",
+                "ResultSetOpenningCount",
+                "ResultSetOpenningMax",
+                "ResultSetFetchRowCount",
+                "ResultSetLastOpenTime",
+
                 // 40 - 44
-                "ResultSetErrorCount", //
-                "ResultSetOpenningMillisTotal", //
-                "ResultSetLastErrorTime", //
-                "ResultSetLastErrorMessage", //
-                "ResultSetLastErrorStackTrace", //
+                "ResultSetErrorCount",
+                "ResultSetOpenningMillisTotal",
+                "ResultSetLastErrorTime",
+                "ResultSetLastErrorMessage",
+                "ResultSetLastErrorStackTrace",
 
                 // 45 - 49
-                "ConnectionConnectCount", //
-                "ConnectionErrorLastMessage", //
-                "ConnectionErrorLastStackTrace", //
-                "ConnectionConnectMillisTotal", //
+                "ConnectionConnectCount",
+                "ConnectionErrorLastMessage",
+                "ConnectionErrorLastStackTrace",
+                "ConnectionConnectMillisTotal",
                 "ConnectionConnectingCountMax",
 
                 // 50 - 54
@@ -253,7 +244,7 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
 
                 // 55 -
                 "StatementHistogram",
-        //
+                //
         };
 
         COMPOSITE_TYPE = new CompositeType("DataSourceStatistic", "DataSource Statistic", indexNames,

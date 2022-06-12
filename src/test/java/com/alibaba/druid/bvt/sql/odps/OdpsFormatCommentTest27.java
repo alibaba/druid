@@ -11,5 +11,5 @@ public class OdpsFormatCommentTest27 extends TestCase {
         String sql = "select split(val, ',')[1] from dual";
         Assert.assertEquals("SELECT SPLIT(val, ',')[1]"
                 + "\nFROM dual", SQLUtils.formatOdps(sql));
-    }   
+    }
 }

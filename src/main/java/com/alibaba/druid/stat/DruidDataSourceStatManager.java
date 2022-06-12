@@ -15,52 +15,41 @@
  */
 package com.alibaba.druid.stat;
 
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.management.JMException;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-import javax.management.openmbean.CompositeDataSupport;
-import javax.management.openmbean.CompositeType;
-import javax.management.openmbean.OpenType;
-import javax.management.openmbean.SimpleType;
-import javax.management.openmbean.TabularData;
-import javax.management.openmbean.TabularDataSupport;
-import javax.management.openmbean.TabularType;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.DruidDataSourceUtils;
 import com.alibaba.druid.util.JMXUtils;
 
+import javax.management.JMException;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import javax.management.openmbean.*;
+
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 @SuppressWarnings("rawtypes")
 public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBean {
+    private static final Lock staticLock = new ReentrantLock();
 
-    private final static Lock                       staticLock                     = new ReentrantLock();
+    public static final String SYS_PROP_INSTANCES = "druid.dataSources";
+    public static final String SYS_PROP_REGISTER_SYS_PROPERTY = "druid.registerToSysProperty";
 
-    public final static String                      SYS_PROP_INSTANCES             = "druid.dataSources";
-    public final static String                      SYS_PROP_REGISTER_SYS_PROPERTY = "druid.registerToSysProperty";
+    private static final Log LOG = LogFactory.getLog(DruidDataSourceStatManager.class);
 
-    private final static Log                        LOG                            = LogFactory.getLog(DruidDataSourceStatManager.class);
+    private static final DruidDataSourceStatManager instance = new DruidDataSourceStatManager();
 
-    private final static DruidDataSourceStatManager instance                       = new DruidDataSourceStatManager();
-
-    private final AtomicLong                        resetCount                     = new AtomicLong();
+    private final AtomicLong resetCount = new AtomicLong();
 
     // global instances
-    private static volatile Map                     dataSources;
+    private static volatile Map dataSources;
 
-    private final static String                     MBEAN_NAME                     = "com.alibaba.druid:type=DruidDataSourceStat";
+    private static final String MBEAN_NAME = "com.alibaba.druid:type=DruidDataSourceStat";
 
     public static DruidDataSourceStatManager getInstance() {
         return instance;
@@ -137,7 +126,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         return instances;
     }
 
-    public synchronized static ObjectName addDataSource(Object dataSource, String name) {
+    public static synchronized ObjectName addDataSource(Object dataSource, String name) {
         final Map<Object, ObjectName> instances = getInstances();
 
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
@@ -182,7 +171,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         return objectName;
     }
 
-    public synchronized static void removeDataSource(Object dataSource) {
+    public static synchronized void removeDataSource(Object dataSource) {
         Map<Object, ObjectName> instances = getInstances();
 
         ObjectName objectName = (ObjectName) instances.remove(dataSource);
@@ -278,15 +267,14 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         return new CompositeDataSupport(rowType, map);
     }
 
-    private static CompositeType COMPOSITE_TYPE = null;
+    private static CompositeType COMPOSITE_TYPE;
 
     public static CompositeType getDruidDataSourceCompositeType() throws JMException {
-
         if (COMPOSITE_TYPE != null) {
             return COMPOSITE_TYPE;
         }
 
-        OpenType<?>[] indexTypes = new OpenType<?>[] {
+        OpenType<?>[] indexTypes = new OpenType<?>[]{
                 // 0 - 4
                 SimpleType.STRING, //
                 SimpleType.STRING, //
@@ -352,7 +340,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
                 // 45
                 SimpleType.LONG, //
-        //
+                //
         };
 
         String[] indexNames = {
@@ -410,25 +398,25 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "PreparedStatementCacheMissCount", //
                 "PreparedStatementCacheHitCount", //
                 "PreparedStatementCacheCurrentCount", //
-                "Version" //
+                "Version",
 
-                // 40 -
-                , "LastErrorTime", //
-                "LastCreateErrorTime", //
-                "CreateErrorCount", //
-                "DiscardCount", //
-                "ExecuteQueryCount", //
+                // 40 - 44
+                "LastErrorTime",
+                "LastCreateErrorTime",
+                "CreateErrorCount",
+                "DiscardCount",
+                "ExecuteQueryCount",
 
-                "ExecuteUpdateCount", //
-        //
+                // 45 -
+                "ExecuteUpdateCount",
         };
 
         String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("DataSourceStatistic",
-            "DataSource Statistic",
-            indexNames,
-            indexDescriptions,
-            indexTypes);
+                "DataSource Statistic",
+                indexNames,
+                indexDescriptions,
+                indexTypes);
 
         return COMPOSITE_TYPE;
     }

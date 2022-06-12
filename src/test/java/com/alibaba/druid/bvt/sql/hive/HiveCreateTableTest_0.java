@@ -38,7 +38,7 @@ public class HiveCreateTableTest_0 extends TestCase {
         stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-      System.out.println("fields : " + visitor.getColumns());
+        System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
 

@@ -39,13 +39,12 @@ import java.util.List;
 import java.util.Set;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor, OracleASTVisitor {
-
-    public PGOutputVisitor(Appendable appender){
+    public PGOutputVisitor(Appendable appender) {
         super(appender);
         this.dbType = DbType.postgresql;
     }
 
-    public PGOutputVisitor(Appendable appender, boolean parameterized){
+    public PGOutputVisitor(Appendable appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.postgresql;
     }
@@ -90,7 +89,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         return false;
     }
-
 
     public boolean visit(PGSelectQueryBlock x) {
         if ((!isParameterized()) && isPrettyFormat() && x.hasBeforeComment()) {
@@ -220,7 +218,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             if (x.getCascade().booleanValue()) {
                 print0(ucase ? " CASCADE" : " cascade");
             } else {
-                print0(ucase ? " RESTRICT"  : " restrict");
+                print0(ucase ? " RESTRICT" : " restrict");
             }
         }
         return false;
@@ -459,14 +457,14 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print(')');
         return false;
     }
-    
+
     @Override
     public boolean visit(PGBoxExpr x) {
         print0(ucase ? "BOX " : "box ");
         x.getValue().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(PGPointExpr x) {
         print0(ucase ? "POINT " : "point ");
@@ -487,7 +485,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         x.getValue().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(PGCidrExpr x) {
         print0("cidr ");
@@ -724,7 +722,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
     /** **************************************************************************/
     // for oracle to postsql
-    /** **************************************************************************/
+
+    /**
+     *
+     **************************************************************************/
 
     public boolean visit(OracleSysdateExpr x) {
         print0(ucase ? "CURRENT_TIMESTAMP" : "CURRENT_TIMESTAMP");
@@ -1696,7 +1697,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
                             && ((OracleFunctionDataType) dataType).getBlock() != null) {
                         // skip
                         println();
-                    } else  if (dataType instanceof OracleProcedureDataType
+                    } else if (dataType instanceof OracleProcedureDataType
                             && ((OracleProcedureDataType) dataType).getBlock() != null) {
                         // skip
                         println();
@@ -2089,7 +2090,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             }
 
             println();
-            print0(ucase ? x.getJoinType().name : x.getJoinType().name_lcase);
+            print0(ucase ? x.getJoinType().name : x.getJoinType().nameLCase);
             print(' ');
 
             if (right instanceof SQLJoinTableSource) {
@@ -2434,7 +2435,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         if (x.getUsing() != null) {
             print0(ucase ? " USING " : " using ");
-            ;
             print0(x.getUsing());
         }
         print0(" (");
@@ -2452,10 +2452,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.getIndexDefinition().hasOptions()) {
             SQLIndexOptions indexOptions = x.getIndexDefinition().getOptions();
             if (indexOptions.getKeyBlockSize() != null ||
-                indexOptions.getParserName() != null ||
-                indexOptions.getAlgorithm() != null ||
-                indexOptions.getLock() != null ||
-                indexOptions.getOtherOptions().size() > 0) {
+                    indexOptions.getParserName() != null ||
+                    indexOptions.getAlgorithm() != null ||
+                    indexOptions.getLock() != null ||
+                    indexOptions.getOtherOptions().size() > 0) {
                 hasOptions = true;
             }
         }

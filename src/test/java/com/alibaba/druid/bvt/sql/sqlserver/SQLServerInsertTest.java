@@ -23,13 +23,12 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerInsertTest extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "INSERT INTO Cities (Location)" + //
-                     "VALUES ( CONVERT(Point, '12.3:46.2') );";
+                "VALUES ( CONVERT(Point, '12.3:46.2') );";
 
         String expect = "INSERT INTO Cities (Location)" + //
-                        "\nVALUES (CONVERT(Point, '12.3:46.2'));";
+                "\nVALUES (CONVERT(Point, '12.3:46.2'));";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

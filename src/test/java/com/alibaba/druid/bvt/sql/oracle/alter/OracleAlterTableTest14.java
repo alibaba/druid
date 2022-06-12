@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest14 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE measure_data MODIFY measure_id NUMBER(38)";
+                "ALTER TABLE measure_data MODIFY measure_id NUMBER(38)";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

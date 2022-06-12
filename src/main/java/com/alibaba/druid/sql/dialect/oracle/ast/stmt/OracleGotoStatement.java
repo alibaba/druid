@@ -19,13 +19,12 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleGotoStatement extends OracleStatementImpl {
-
     private SQLName label;
 
-    public OracleGotoStatement(){
+    public OracleGotoStatement() {
     }
 
-    public OracleGotoStatement(SQLName label){
+    public OracleGotoStatement(SQLName label) {
         this.label = label;
     }
 

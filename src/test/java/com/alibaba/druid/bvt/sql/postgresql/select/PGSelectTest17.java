@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest17 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "WITH RECURSIVE search_graph(id, link, data, depth, path, cycle) AS ("
                 + "        SELECT g.id, g.link, g.data, 1,"

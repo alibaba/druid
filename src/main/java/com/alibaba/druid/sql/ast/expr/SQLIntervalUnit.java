@@ -47,20 +47,19 @@ public enum SQLIntervalUnit {
     TIMEZONE_HOUR,
     TIMEZONE_MINUTE,
     DOY,
-    YEAR_TO_MONTH("YEAR TO MONTH")
-    ;
+    YEAR_TO_MONTH("YEAR TO MONTH");
 
     public final String name;
-    public final String name_lcase;
+    public final String nameLCase;
 
     SQLIntervalUnit(String name) {
         this.name = name;
-        this.name_lcase = name.toLowerCase();
+        this.nameLCase = name.toLowerCase();
     }
 
     SQLIntervalUnit() {
         this.name = name();
-        this.name_lcase = name.toLowerCase();
+        this.nameLCase = name.toLowerCase();
     }
 
     public static boolean add(Calendar calendar, int intervalInt, SQLIntervalUnit unit) {

@@ -28,11 +28,10 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleAlterTableTest20 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE sales " //
-                + "    ADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DISABLE; ";
+                "ALTER TABLE sales " //
+                        + "    ADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DISABLE; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -51,8 +50,8 @@ public class OracleAlterTableTest20 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("ALTER TABLE sales" //
-                            + "\n\tADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DISABLE;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\n\tADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DISABLE;", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         Assert.assertEquals(1, visitor.getTables().size());
 

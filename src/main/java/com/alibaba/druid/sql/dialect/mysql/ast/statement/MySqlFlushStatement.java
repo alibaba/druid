@@ -28,12 +28,12 @@ import java.util.List;
  * Created by wenshao on 16/08/2017.
  */
 public class MySqlFlushStatement extends MySqlStatementImpl {
-    private boolean noWriteToBinlog = false;
-    private boolean local = false;
+    private boolean noWriteToBinlog;
+    private boolean local;
 
     private final List<SQLExprTableSource> tables = new ArrayList<SQLExprTableSource>();
 
-    private boolean withReadLock = false;
+    private boolean withReadLock;
     private boolean forExport;
 
     private boolean binaryLogs;
@@ -54,7 +54,6 @@ public class MySqlFlushStatement extends MySqlStatementImpl {
     private boolean userResources;
     private boolean tableOption;
     private SQLIntegerExpr version; // for ads
-
 
     public boolean isNoWriteToBinlog() {
         return noWriteToBinlog;

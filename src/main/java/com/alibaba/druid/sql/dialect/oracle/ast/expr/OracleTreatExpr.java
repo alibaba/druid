@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OracleTreatExpr extends OracleSQLObjectImpl implements SQLExpr {
-
     private SQLExpr expr;
     private SQLExpr type;
     private boolean ref;

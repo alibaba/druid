@@ -29,7 +29,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_15 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT (PREVVAL FOR TEST_SEQ) FROM SYSIBM.SYSDUMMY1";
 
@@ -59,11 +58,11 @@ public class DB2SelectTest_15 extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         Assert.assertEquals("SELECT TEST_SEQ.PREVVAL"
-                + "\nFROM SYSIBM.SYSDUMMY1", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                        + "\nFROM SYSIBM.SYSDUMMY1", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("select TEST_SEQ.prevval"
-                + "\nfrom SYSIBM.SYSDUMMY1", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                        + "\nfrom SYSIBM.SYSDUMMY1", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

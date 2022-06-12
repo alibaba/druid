@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest29 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "alter TABLE project_measures\n" +
                 "        DROP COLUMN diff_value_1,\n" +

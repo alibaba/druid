@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlSelectTest_111_sequence extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT *\n" +
                 "FROM users TABLESAMPLE BERNOULLI (50);\n";
@@ -42,7 +41,7 @@ public class MySqlSelectTest_111_sequence extends TestCase {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(1, visitor.getTables().size());
         assertEquals(1, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
@@ -51,7 +50,6 @@ public class MySqlSelectTest_111_sequence extends TestCase {
         assertEquals("SELECT *\n" +
                 "FROM users TABLESAMPLE BERNOULLI (50);", stmt.toString());
     }
-    
-    
-    
+
+
 }

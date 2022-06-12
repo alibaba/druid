@@ -9,7 +9,6 @@ public class OdpsQueryAliasStatement extends OdpsStatementImpl {
     private SQLSelectStatement statement;
 
     public OdpsQueryAliasStatement() {
-
     }
 
     public OdpsQueryAliasStatement(String variant, SQLSelectStatement statement) {

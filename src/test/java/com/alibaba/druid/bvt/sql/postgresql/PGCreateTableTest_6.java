@@ -26,19 +26,18 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGCreateTableTest_6 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "create table xxx as select * from xxx";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         assertEquals("CREATE TABLE xxx\n" +
                 "AS\n" +
                 "SELECT *\n" +
                 "FROM xxx", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("create table xxx\n" +
                 "as\n" +
                 "select *\n" +

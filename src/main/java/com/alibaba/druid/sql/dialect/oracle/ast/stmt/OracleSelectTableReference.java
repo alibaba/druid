@@ -21,19 +21,16 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectTableReference extends SQLExprTableSource implements OracleSelectTableSource {
-
-    private boolean                    only = false;
-    protected OracleSelectPivotBase    pivot;
+    private boolean only;
+    protected OracleSelectPivotBase pivot;
 
     protected PartitionExtensionClause partition;
-    protected SampleClause             sampleClause;
+    protected SampleClause sampleClause;
 
-    public OracleSelectTableReference(){
-
+    public OracleSelectTableReference() {
     }
 
     public OracleSelectTableReference(SQLExpr expr) {
@@ -102,16 +99,30 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         OracleSelectTableReference that = (OracleSelectTableReference) o;
 
-        if (only != that.only) return false;
-        if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) return false;
-        if (partition != null ? !partition.equals(that.partition) : that.partition != null) return false;
-        if (sampleClause != null ? !sampleClause.equals(that.sampleClause) : that.sampleClause != null) return false;
+        if (only != that.only) {
+            return false;
+        }
+        if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) {
+            return false;
+        }
+        if (partition != null ? !partition.equals(that.partition) : that.partition != null) {
+            return false;
+        }
+        if (sampleClause != null ? !sampleClause.equals(that.sampleClause) : that.sampleClause != null) {
+            return false;
+        }
         return flashback != null ? flashback.equals(that.flashback) : that.flashback == null;
     }
 
@@ -126,10 +137,9 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
         return result;
     }
 
-    public String toString () {
+    public String toString() {
         return SQLUtils.toOracleString(this);
     }
-
 
     public OracleSelectTableReference clone() {
         OracleSelectTableReference x = new OracleSelectTableReference();

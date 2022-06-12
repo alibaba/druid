@@ -15,28 +15,8 @@
  */
 package com.alibaba.druid.support.http;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-
 import com.alibaba.druid.filter.stat.StatFilterContext;
-import com.alibaba.druid.support.http.stat.WebAppStat;
-import com.alibaba.druid.support.http.stat.WebAppStatManager;
-import com.alibaba.druid.support.http.stat.WebRequestStat;
-import com.alibaba.druid.support.http.stat.WebSessionStat;
-import com.alibaba.druid.support.http.stat.WebURIStat;
+import com.alibaba.druid.support.http.stat.*;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.profile.ProfileEntryKey;
@@ -46,34 +26,44 @@ import com.alibaba.druid.util.DruidWebUtils;
 import com.alibaba.druid.util.PatternMatcher;
 import com.alibaba.druid.util.ServletPathMatcher;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * 用于配置Web和Druid数据源之间的管理关联监控统计
- * 
+ *
  * @author wenshao [szujobs@htomail.com]
  * @author Zhangming Qi [qizhanming@gmail.com]
  */
 public class WebStatFilter extends AbstractWebStatImpl implements Filter {
+    private static final Log LOG = LogFactory.getLog(WebStatFilter.class);
 
-    private final static Log   LOG                               = LogFactory.getLog(WebStatFilter.class);
-
-    public final static String PARAM_NAME_PROFILE_ENABLE         = "profileEnable";
-    public final static String PARAM_NAME_SESSION_STAT_ENABLE    = "sessionStatEnable";
-    public final static String PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
-    public static final String PARAM_NAME_EXCLUSIONS             = "exclusions";
+    public static final String PARAM_NAME_PROFILE_ENABLE = "profileEnable";
+    public static final String PARAM_NAME_SESSION_STAT_ENABLE = "sessionStatEnable";
+    public static final String PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
+    public static final String PARAM_NAME_EXCLUSIONS = "exclusions";
     public static final String PARAM_NAME_PRINCIPAL_SESSION_NAME = "principalSessionName";
-    public static final String PARAM_NAME_PRINCIPAL_COOKIE_NAME  = "principalCookieName";
-    public static final String PARAM_NAME_REAL_IP_HEADER         = "realIpHeader";
+    public static final String PARAM_NAME_PRINCIPAL_COOKIE_NAME = "principalCookieName";
+    public static final String PARAM_NAME_REAL_IP_HEADER = "realIpHeader";
 
     /**
      * PatternMatcher used in determining which paths to react to for a given request.
      */
-    protected PatternMatcher   pathMatcher                       = new ServletPathMatcher();
+    protected PatternMatcher pathMatcher = new ServletPathMatcher();
 
-    private Set<String>        excludesPattern;
+    private Set<String> excludesPattern;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-                                                                                             ServletException {
+            ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         StatHttpServletResponseWrapper responseWrapper = new StatHttpServletResponseWrapper(httpResponse);
@@ -315,11 +305,11 @@ public class WebStatFilter extends AbstractWebStatImpl implements Filter {
         return statFilterContextListener;
     }
 
-    public final static class StatHttpServletResponseWrapper extends HttpServletResponseWrapper implements HttpServletResponse {
+    public static final class StatHttpServletResponseWrapper extends HttpServletResponseWrapper implements HttpServletResponse {
         //初始值应该设置为：HttpServletResponse.SC_OK，而不是 0。
         private int status = HttpServletResponse.SC_OK;
 
-        public StatHttpServletResponseWrapper(HttpServletResponse response){
+        public StatHttpServletResponseWrapper(HttpServletResponse response) {
             super(response);
         }
 

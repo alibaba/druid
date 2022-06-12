@@ -21,11 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocalResultSet extends ResultSetBase {
+    private int rowIndex = -1;
+    private List<Object[]> rows = new ArrayList<Object[]>();
 
-    private int            rowIndex = -1;
-    private List<Object[]> rows     = new ArrayList<Object[]>();
-
-    public LocalResultSet(Statement statement){
+    public LocalResultSet(Statement statement) {
         super(statement);
     }
 
@@ -45,7 +44,7 @@ public class LocalResultSet extends ResultSetBase {
         }
         return false;
     }
-    
+
     public Object getObjectInternal(int columnIndex) {
         Object[] row = rows.get(rowIndex);
         return row[columnIndex - 1];

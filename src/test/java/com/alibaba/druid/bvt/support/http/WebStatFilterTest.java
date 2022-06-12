@@ -32,7 +32,6 @@ import com.alibaba.druid.support.http.stat.WebAppStat;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 
 public class WebStatFilterTest extends TestCase {
-
     public void test_sessionStatDisable() throws Exception {
         MockServletContext servletContext = new MockServletContext();
 
@@ -44,7 +43,7 @@ public class WebStatFilterTest extends TestCase {
         Assert.assertNull(filter.getWebAppStat());
 
         filter.init(filterConfig);
-        
+
         WebAppStat appStat = filter.getWebAppStat();
 
         Assert.assertFalse(filter.isSessionStatEnable());
@@ -62,10 +61,10 @@ public class WebStatFilterTest extends TestCase {
         Assert.assertEquals(0, appStat.getSessionStatDataList().size());
 
         filter.destroy();
-        
+
         Assert.assertFalse(WebAppStatManager.getInstance().getWebAppStatSet().contains(appStat));
         Assert.assertFalse(StatFilterContext.getInstance().getListeners().contains(filter.getStatFilterContextListener()));
-        
+
         Map<String, Object> statData = appStat.getStatData();
         Assert.assertEquals(1L, statData.get("RequestCount"));
     }

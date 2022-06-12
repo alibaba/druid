@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_2 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT college, region, seed FROM tournament ORDER BY 2, 3;";
 
@@ -44,7 +43,7 @@ public class MySqlSelectTest_2 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
@@ -64,8 +63,8 @@ public class MySqlSelectTest_2 extends MysqlTest {
         SQLStatement statemen = statementList.get(0);
 
         assertEquals("SELECT *\n"
-                     + "FROM tournament\n"
-                     + "ORDER BY 2, 3\n"
-                     + "LIMIT 10;", statemen.toString());
+                + "FROM tournament\n"
+                + "ORDER BY 2, 3\n"
+                + "LIMIT 10;", statemen.toString());
     }
 }

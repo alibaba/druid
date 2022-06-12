@@ -26,27 +26,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleCreateTypeStatement extends OracleStatementImpl implements SQLCreateStatement {
-    private boolean            orReplace;
-    private SQLName            name;
-    private SQLName            authId;
-    private boolean            force;
-    private SQLName            oid;
-    private boolean            body;
-    private boolean            object;
-    private boolean            paren;
-    private Boolean            isFinal;
-    private Boolean            instantiable;
+    private boolean orReplace;
+    private SQLName name;
+    private SQLName authId;
+    private boolean force;
+    private SQLName oid;
+    private boolean body;
+    private boolean object;
+    private boolean paren;
+    private Boolean isFinal;
+    private Boolean instantiable;
 
-    private SQLName            under;
+    private SQLName under;
 
     private List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
-    private SQLDataType        tableOf;
+    private SQLDataType tableOf;
 
-    private SQLExpr            varraySizeLimit;
-    private SQLDataType        varrayDataType;
+    private SQLExpr varraySizeLimit;
+    private SQLDataType varrayDataType;
 
-    private String             wrappedSource;
+    private String wrappedSource;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

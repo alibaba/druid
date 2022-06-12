@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLCommentStatementTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "COMMENT on table t1 IS 'xxx'";
 

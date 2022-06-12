@@ -29,22 +29,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlStatement {
-    private SQLLimit                limit;
+    private SQLLimit limit;
 
-    private boolean                 lowPriority        = false;
-    private boolean                 ignore             = false;
-    private boolean                 commitOnSuccess    = false;
-    private boolean                 rollBackOnFail     = false;
-    private boolean                 queryOnPk          = false;
-    private SQLExpr                 targetAffectRow;
+    private boolean lowPriority;
+    private boolean ignore;
+    private boolean commitOnSuccess;
+    private boolean rollBackOnFail;
+    private boolean queryOnPk;
+    private SQLExpr targetAffectRow;
 
     // for petadata
-    private boolean                 forceAllPartitions = false;
-    private SQLName                 forcePartition;
+    private boolean forceAllPartitions;
+    private SQLName forcePartition;
 
-    protected List<SQLCommentHint>  hints;
+    protected List<SQLCommentHint> hints;
 
-    public MySqlUpdateStatement(){
+    public MySqlUpdateStatement() {
         super(DbType.mysql);
     }
 
@@ -98,7 +98,6 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
             if (limit != null) {
                 limit.accept(visitor);
             }
-
 
             if (hints != null) {
                 for (int i = 0; i < hints.size(); i++) {
@@ -165,19 +164,39 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         MySqlUpdateStatement that = (MySqlUpdateStatement) o;
 
-        if (lowPriority != that.lowPriority) return false;
-        if (ignore != that.ignore) return false;
-        if (commitOnSuccess != that.commitOnSuccess) return false;
-        if (rollBackOnFail != that.rollBackOnFail) return false;
-        if (queryOnPk != that.queryOnPk) return false;
-        if (this.hints != null ? hints.equals(that.hints) : that.hints != null) return false;
-        if (limit != null ? !limit.equals(that.limit) : that.limit != null) return false;
+        if (lowPriority != that.lowPriority) {
+            return false;
+        }
+        if (ignore != that.ignore) {
+            return false;
+        }
+        if (commitOnSuccess != that.commitOnSuccess) {
+            return false;
+        }
+        if (rollBackOnFail != that.rollBackOnFail) {
+            return false;
+        }
+        if (queryOnPk != that.queryOnPk) {
+            return false;
+        }
+        if (this.hints != null ? hints.equals(that.hints) : that.hints != null) {
+            return false;
+        }
+        if (limit != null ? !limit.equals(that.limit) : that.limit != null) {
+            return false;
+        }
         return targetAffectRow != null ? targetAffectRow.equals(that.targetAffectRow) : that.targetAffectRow == null;
     }
 

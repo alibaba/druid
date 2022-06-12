@@ -35,14 +35,13 @@ public class MySqlParameterizedOutputVisitorTest extends MySQLParameterizedTest 
         validate("SELECT * FROM T WHERE ID = ? OR ID = ?", "SELECT *\nFROM T\nWHERE ID = ?");
         validate("SELECT * FROM T WHERE A.ID = ? OR A.ID = ?", "SELECT *\nFROM T\nWHERE A.ID = ?");
         validate("SELECT * FROM T WHERE 1 = 0 OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ?",
-                 "SELECT *\nFROM T\nWHERE 1 = 0\n\tOR a.id = ?");
+                "SELECT *\nFROM T\nWHERE 1 = 0\n\tOR a.id = ?");
         validateOracle("SELECT * FROM T WHERE 1 = 0 OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ?",
-                       "SELECT *\nFROM T\nWHERE 1 = 0\n\tOR a.id = ?");
+                "SELECT *\nFROM T\nWHERE 1 = 0\n\tOR a.id = ?");
         validateOracle("SELECT * FROM T WHERE A.ID = ? OR A.ID = ?", "SELECT *\nFROM T\nWHERE A.ID = ?");
         validate("INSERT INTO T (F1, F2) VALUES(?, ?), (?, ?), (?, ?)", "INSERT INTO T (F1, F2)\nVALUES (?, ?)");
         validate("update net_device d, sys_user u set d.resp_user_id=u.id where d.resp_user_login_name=u.username and d.id in (42354)", //
-                 "UPDATE net_device d, sys_user u\nSET d.resp_user_id = u.id\nWHERE d.resp_user_login_name = u.username\n\tAND d.id IN (?)");
-
+                "UPDATE net_device d, sys_user u\nSET d.resp_user_id = u.id\nWHERE d.resp_user_login_name = u.username\n\tAND d.id IN (?)");
 
         paramaterizeAST("SELECT * FROM T WHERE ID = ? OR ID = ?", "SELECT *\n" +
                 "FROM T\n" +
@@ -55,13 +54,13 @@ public class MySqlParameterizedOutputVisitorTest extends MySQLParameterizedTest 
                 "\tOR A.ID = ?");
 
         paramaterizeAST("SELECT * FROM T WHERE 1 = 0 OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ?",
-                 "SELECT *\n" +
-                         "FROM T\n" +
-                         "WHERE ? = ?\n" +
-                         "\tOR a.id = ?\n" +
-                         "\tOR a.id = ?\n" +
-                         "\tOR a.id = ?\n" +
-                         "\tOR a.id = ?");
+                "SELECT *\n" +
+                        "FROM T\n" +
+                        "WHERE ? = ?\n" +
+                        "\tOR a.id = ?\n" +
+                        "\tOR a.id = ?\n" +
+                        "\tOR a.id = ?\n" +
+                        "\tOR a.id = ?");
 
         paramaterizeAST("INSERT INTO T (F1, F2) VALUES(?, ?), (?, ?), (?, ?)", "INSERT INTO T (F1, F2)\n" +
                 "VALUES (?, ?),\n" +
@@ -69,6 +68,6 @@ public class MySqlParameterizedOutputVisitorTest extends MySQLParameterizedTest 
                 "\t(?, ?)");
 
         paramaterizeAST("update net_device d, sys_user u set d.resp_user_id=u.id where d.resp_user_login_name=u.username and d.id in (42354)", //
-                 "UPDATE net_device d, sys_user u\nSET d.resp_user_id = u.id\nWHERE d.resp_user_login_name = u.username\n\tAND d.id IN (?)");
+                "UPDATE net_device d, sys_user u\nSET d.resp_user_id = u.id\nWHERE d.resp_user_login_name = u.username\n\tAND d.id IN (?)");
     }
 }

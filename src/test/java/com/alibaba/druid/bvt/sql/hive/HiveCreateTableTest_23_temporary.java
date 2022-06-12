@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_23_temporary extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "create temporary table aliyun_cdm.test_893_table (col1 BIGINT,col2 STRING,col3 BOOLEAN,col4 DOUBLE,col5 DATETIME)\n"; //

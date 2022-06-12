@@ -32,18 +32,17 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 public class Oracle_Case0 extends TestCase {
+    private String jdbcUrl;
+    private String user;
+    private String password;
+    private String driverClass;
+    private int initialSize = 1;
+    private int minPoolSize = 1;
+    private int maxPoolSize = 2;
+    private int maxActive = 2;
+    private String validationQuery = "SELECT 1 FROM DUAL";
 
-    private String   jdbcUrl;
-    private String   user;
-    private String   password;
-    private String   driverClass;
-    private int      initialSize     = 1;
-    private int      minPoolSize     = 1;
-    private int      maxPoolSize     = 2;
-    private int      maxActive       = 2;
-    private String   validationQuery = "SELECT 1 FROM DUAL";
-
-    public final int LOOP_COUNT      = 5;
+    public final int LOOP_COUNT = 5;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
@@ -138,6 +137,6 @@ public class Oracle_Case0 extends TestCase {
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
         System.out.println(name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC "
-                           + fullGC);
+                + fullGC);
     }
 }

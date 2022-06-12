@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2CreateTableTest_02 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "   CREATE TABLE DSN8A10.DEPT\n" +
                 "     (DEPTNO   CHAR(3)     NOT NULL,\n" +
@@ -72,8 +71,8 @@ public class DB2CreateTableTest_02 extends DB2Test {
                         "\tPRIMARY KEY (DEPTNO)\n" +
                         ")\n" +
                         "IN DSN8D10A.DSN8S10D;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("create table DSN8A10.DEPT (\n" +
                         "\tDEPTNO CHAR(3) not null,\n" +
                         "\tDEPTNAME VARCHAR(36) not null,\n" +
@@ -83,6 +82,6 @@ public class DB2CreateTableTest_02 extends DB2Test {
                         "\tprimary key (DEPTNO)\n" +
                         ")\n" +
                         "IN DSN8D10A.DSN8S10D;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

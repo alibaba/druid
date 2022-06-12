@@ -26,43 +26,42 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest61 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"ID\" NUMBER(11,0) NOT NULL ENABLE, \n" +
-                "  \"GMT_CREATED\" DATE, \n" +
-                "  \"GMT_MODIFIED\" DATE, \n" +
-                "  \"CREATOR\" VARCHAR2(32), \n" +
-                "  \"MODIFIER\" VARCHAR2(32), \n" +
-                "  \"TEMPLATE_NAME\" VARCHAR2(64), \n" +
-                "  \"MAIL_CATEGORY_ID\" NUMBER(11,0) NOT NULL ENABLE, \n" +
-                "  \"DEFAULT_SUBJECT\" VARCHAR2(128), \n" +
-                "  \"CONTENT_TYPE\" VARCHAR2(32) NOT NULL ENABLE, \n" +
-                "  \"CONTENT\" CLOB, \n" +
-                "  \"SHARE_FLAG\" VARCHAR2(32), \n" +
-                "  \"STATUS\" VARCHAR2(32), \n" +
-                "  \"DOUBT_IDS\" VARCHAR2(4000), \n" +
-                "  \"PARA_1\" VARCHAR2(128), \n" +
-                "  \"PARA_2\" VARCHAR2(128), \n" +
-                "  \"PARA_3\" VARCHAR2(128), \n" +
-                "   CONSTRAINT \"PK_ADMIN_MAIL_TEMPLATE\" PRIMARY KEY (\"ID\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 1048576 NEXT 131072 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"NIRVANA1M_IND\"  ENABLE, \n" +
-                "   CONSTRAINT \"FK_ADMIN_MA_REFERENCE_ADMIN_MA\" FOREIGN KEY (\"MAIL_CATEGORY_ID\")\n" +
-                "    REFERENCES \"NIRVANA\".\"ADMIN_MAIL_CATEGORY\" (\"ID\") ENABLE NOVALIDATE\n" +
-                "   ) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
-                "  STORAGE(INITIAL 1048576 NEXT 131072 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"NIRVANA1M\" \n" +
-                " LOB (\"CONTENT\") STORE AS BASICFILE (\n" +
-                "  TABLESPACE \"NIRVANA1M\" ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
-                "  NOCACHE LOGGING \n" +
-                "  STORAGE(INITIAL 1048576 NEXT 131072 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)) \n   ";
+                "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"ID\" NUMBER(11,0) NOT NULL ENABLE, \n" +
+                        "  \"GMT_CREATED\" DATE, \n" +
+                        "  \"GMT_MODIFIED\" DATE, \n" +
+                        "  \"CREATOR\" VARCHAR2(32), \n" +
+                        "  \"MODIFIER\" VARCHAR2(32), \n" +
+                        "  \"TEMPLATE_NAME\" VARCHAR2(64), \n" +
+                        "  \"MAIL_CATEGORY_ID\" NUMBER(11,0) NOT NULL ENABLE, \n" +
+                        "  \"DEFAULT_SUBJECT\" VARCHAR2(128), \n" +
+                        "  \"CONTENT_TYPE\" VARCHAR2(32) NOT NULL ENABLE, \n" +
+                        "  \"CONTENT\" CLOB, \n" +
+                        "  \"SHARE_FLAG\" VARCHAR2(32), \n" +
+                        "  \"STATUS\" VARCHAR2(32), \n" +
+                        "  \"DOUBT_IDS\" VARCHAR2(4000), \n" +
+                        "  \"PARA_1\" VARCHAR2(128), \n" +
+                        "  \"PARA_2\" VARCHAR2(128), \n" +
+                        "  \"PARA_3\" VARCHAR2(128), \n" +
+                        "   CONSTRAINT \"PK_ADMIN_MAIL_TEMPLATE\" PRIMARY KEY (\"ID\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 1048576 NEXT 131072 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"NIRVANA1M_IND\"  ENABLE, \n" +
+                        "   CONSTRAINT \"FK_ADMIN_MA_REFERENCE_ADMIN_MA\" FOREIGN KEY (\"MAIL_CATEGORY_ID\")\n" +
+                        "    REFERENCES \"NIRVANA\".\"ADMIN_MAIL_CATEGORY\" (\"ID\") ENABLE NOVALIDATE\n" +
+                        "   ) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                        "  STORAGE(INITIAL 1048576 NEXT 131072 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"NIRVANA1M\" \n" +
+                        " LOB (\"CONTENT\") STORE AS BASICFILE (\n" +
+                        "  TABLESPACE \"NIRVANA1M\" ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
+                        "  NOCACHE LOGGING \n" +
+                        "  STORAGE(INITIAL 1048576 NEXT 131072 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)) \n   ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -149,7 +148,7 @@ public class OracleCreateTableTest61 extends OracleTest {
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

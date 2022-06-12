@@ -23,11 +23,8 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 import javax.sql.DataSource;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
+
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,16 +38,16 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author DigitalSonic
  */
 public class PoolUpdater implements Observer {
-    public final static int DEFAULT_INTERVAL = 60;
-    private final static Log LOG = LogFactory.getLog(PoolUpdater.class);
+    public static final int DEFAULT_INTERVAL = 60;
+    private static final Log LOG = LogFactory.getLog(PoolUpdater.class);
     private Set<String> nodesToDel = new CopyOnWriteArraySet<String>();
     private HighAvailableDataSource highAvailableDataSource;
 
     private Lock lock = new ReentrantLock();
     private ScheduledExecutorService executor;
     private int intervalSeconds = DEFAULT_INTERVAL;
-    private volatile boolean inited = false;
-    private boolean allowEmptyPool = false;
+    private volatile boolean inited;
+    private boolean allowEmptyPool;
 
     public PoolUpdater(HighAvailableDataSource highAvailableDataSource) {
         setHighAvailableDataSource(highAvailableDataSource);

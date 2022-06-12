@@ -24,24 +24,23 @@ import java.util.Collections;
 import java.util.List;
 
 public class MySqlOutFileExpr extends MySqlObjectImpl implements SQLExpr {
+    private SQLExpr file;
+    private String charset;
 
-    private SQLExpr        file;
-    private String         charset;
-
-    private SQLExpr        columnsTerminatedBy;
-    private boolean        columnsEnclosedOptionally = false;
+    private SQLExpr columnsTerminatedBy;
+    private boolean columnsEnclosedOptionally;
     private SQLLiteralExpr columnsEnclosedBy;
     private SQLLiteralExpr columnsEscaped;
 
     private SQLLiteralExpr linesStartingBy;
     private SQLLiteralExpr linesTerminatedBy;
 
-    private SQLExpr        ignoreLinesNumber;
+    private SQLExpr ignoreLinesNumber;
 
-    public MySqlOutFileExpr(){
+    public MySqlOutFileExpr() {
     }
 
-    public MySqlOutFileExpr(SQLExpr file){
+    public MySqlOutFileExpr(SQLExpr file) {
         this.file = file;
     }
 

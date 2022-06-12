@@ -23,7 +23,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_225_reg extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT regexp_extract_all('1a 2b 14m', '\\\\d+')";
 

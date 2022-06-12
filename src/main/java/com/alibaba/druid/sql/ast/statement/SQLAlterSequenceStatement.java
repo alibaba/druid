@@ -35,7 +35,6 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
     private boolean changeToTime;
 
     public SQLAlterSequenceStatement() {
-
     }
 
     @Override

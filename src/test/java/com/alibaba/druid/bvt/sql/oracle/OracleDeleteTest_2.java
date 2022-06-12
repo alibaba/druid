@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleDeleteTest_2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DELETE FROM (SELECT * FROM ABC WHERE ID=6000)";
 

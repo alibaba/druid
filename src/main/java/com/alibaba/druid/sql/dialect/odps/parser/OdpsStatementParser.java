@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.odps.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
-import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -37,21 +36,20 @@ import static com.alibaba.druid.sql.parser.Token.IDENTIFIER;
 import static com.alibaba.druid.sql.parser.Token.OVERWRITE;
 
 public class OdpsStatementParser extends SQLStatementParser {
-
-    public OdpsStatementParser(String sql){
+    public OdpsStatementParser(String sql) {
         super(new OdpsExprParser(sql));
     }
 
-    public OdpsStatementParser(String sql, SQLParserFeature ... features){
+    public OdpsStatementParser(String sql, SQLParserFeature... features) {
         super(new OdpsExprParser(sql, features));
     }
 
-    public OdpsStatementParser(SQLExprParser exprParser){
+    public OdpsStatementParser(SQLExprParser exprParser) {
         super(exprParser);
     }
 
     public SQLSelectStatement parseSelect() {
-        SQLSelect select =  new OdpsSelectParser(this.exprParser)
+        SQLSelect select = new OdpsSelectParser(this.exprParser)
                 .select();
 
 //        if (select.getWithSubQuery() == null && select.getQuery() instanceof SQLSelectQueryBlock) {
@@ -164,7 +162,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                     || lexer.identifierEquals(FnvHash.Constants.ARCHIVE)) {
                 OdpsAddFileStatement stmt = new OdpsAddFileStatement();
 
-                long hash = lexer.hash_lower();
+                long hash = lexer.hashLCase();
                 if (hash == FnvHash.Constants.JAR) {
                     stmt.setType(OdpsAddFileStatement.FileType.JAR);
                 } else if (hash == FnvHash.Constants.PY) {
@@ -177,7 +175,6 @@ public class OdpsStatementParser extends SQLStatementParser {
                 String path = lexer.stringVal();
 
                 lexer.nextToken();
-
 
                 stmt.setFile(path);
 
@@ -219,7 +216,7 @@ public class OdpsStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.USER) {
                 lexer.nextToken();
                 OdpsRemoveUserStatement stmt = new OdpsRemoveUserStatement();
-                stmt.setUser((SQLIdentifierExpr)this.exprParser.name());
+                stmt.setUser((SQLIdentifierExpr) this.exprParser.name());
                 statementList.add(stmt);
                 return true;
             }
@@ -421,7 +418,7 @@ public class OdpsStatementParser extends SQLStatementParser {
             }
             accept(Token.TO);
             stmt.setTo(
-                   this.exprParser.expr()
+                    this.exprParser.expr()
             );
             statementList.add(stmt);
             return true;
@@ -453,7 +450,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.LPAREN) {
                     lpMark = lexer.mark();
                     lexer.nextToken();
-                };
+                }
 
                 switch (lexer.token()) {
                     case LITERAL_INT:
@@ -469,8 +466,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                     case NEW:
                     case SUB:
                     case TRUE:
-                    case FALSE:
-                    {
+                    case FALSE: {
                         if (lpMark != null) {
                             lexer.reset(lpMark);
                         }
@@ -503,7 +499,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                                 statementList.add(stmt);
                                 return true;
                             }
-                            throw  error;
+                            throw error;
                         }
                         switch (lexer.token()) {
                             case GT:
@@ -512,11 +508,11 @@ public class OdpsStatementParser extends SQLStatementParser {
                             case LT:
                             case LTEQ:
                                 statementList.add(
-                                    new SQLExprStatement(
-                                            new SQLAssignItem(new SQLIdentifierExpr(variant),
-                                                    this.exprParser.exprRest(new SQLQueryExpr(select))
-                                            )
-                                    )
+                                        new SQLExprStatement(
+                                                new SQLAssignItem(new SQLIdentifierExpr(variant),
+                                                        this.exprParser.exprRest(new SQLQueryExpr(select))
+                                                )
+                                        )
                                 );
                                 return true;
                             default:
@@ -535,7 +531,7 @@ public class OdpsStatementParser extends SQLStatementParser {
 
             if (lexer.token() != Token.EQ && lexer.token() != Token.SEMI && lexer.token() != Token.EOF) {
                 stmt.setDataType(
-                    this.exprParser.parseDataType()
+                        this.exprParser.parseDataType()
                 );
             }
 
@@ -575,7 +571,7 @@ public class OdpsStatementParser extends SQLStatementParser {
         accept(Token.IF);
         SQLIfStatement ifStmt = new SQLIfStatement();
         ifStmt.setCondition(
-            this.exprParser.expr()
+                this.exprParser.expr()
         );
 
         if (lexer.identifierEquals("BEGIN")) {
@@ -651,7 +647,7 @@ public class OdpsStatementParser extends SQLStatementParser {
             stmt.setRowFormat(format);
         }
 
-        for (;;) {
+        for (; ; ) {
             if (lexer.identifierEquals(FnvHash.Constants.STORED)) {
                 lexer.nextToken();
                 if (lexer.token() == Token.BY) {
@@ -871,7 +867,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                 stmt.setFrom(tableSource);
             }
 
-            if(lexer.token() == Token.SELECT) {
+            if (lexer.token() == Token.SELECT) {
                 SQLSelectParser selectParser = createSQLSelectParser();
                 SQLSelect query = selectParser.select();
 
@@ -881,7 +877,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                 return stmt;
             }
 
-            for (;;) {
+            for (; ; ) {
                 HiveInsert insert = parseHiveInsert();
                 stmt.addItem(insert);
 
@@ -967,7 +963,6 @@ public class OdpsStatementParser extends SQLStatementParser {
 
             return stmt;
         }
-
 
         if (lexer.identifierEquals(FnvHash.Constants.PACKAGES)) {
             lexer.nextToken();
@@ -1351,7 +1346,7 @@ public class OdpsStatementParser extends SQLStatementParser {
     }
 
     protected void parsePrivileages(List<SQLPrivilegeItem> privileges, SQLObject parent) {
-        for (;;) {
+        for (; ; ) {
             String privilege = null;
             if (lexer.token() == Token.ALL) {
                 lexer.nextToken();
@@ -1462,7 +1457,7 @@ public class OdpsStatementParser extends SQLStatementParser {
         if (lexer.token() == OVERWRITE) {
             stmt.setOverwrite(true);
             lexer.nextToken();
-        } else if (lexer.token() == Token.INTO){
+        } else if (lexer.token() == Token.INTO) {
             lexer.nextToken();
         }
 
@@ -1516,7 +1511,7 @@ public class OdpsStatementParser extends SQLStatementParser {
 
             accept(Token.LPAREN);
 
-            for (;;) {
+            for (; ; ) {
                 String name = lexer.stringVal();
                 lexer.nextToken();
                 accept(Token.EQ);

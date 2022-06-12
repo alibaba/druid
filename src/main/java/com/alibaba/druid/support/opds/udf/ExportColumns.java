@@ -25,7 +25,6 @@ import com.aliyun.odps.udf.UDF;
 import java.util.List;
 
 public class ExportColumns extends UDF {
-
     public String evaluate(String sql) {
         return evaluate(sql, null);
     }

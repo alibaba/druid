@@ -26,11 +26,10 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGInsertTest2 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO films (code, title, did, date_prod, kind) VALUES"
-                     + "    ('B6717', 'Tampopo', 110, '1985-02-10', 'Comedy'), "
-                     + "('HG120', 'The Dinner Game', 140, DEFAULT, 'Comedy');";
+                + "    ('B6717', 'Tampopo', 110, '1985-02-10', 'Comedy'), "
+                + "('HG120', 'The Dinner Game', 140, DEFAULT, 'Comedy');";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

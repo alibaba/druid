@@ -23,13 +23,12 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerInsertTest3 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "INSERT INTO Production.UnitMeasure " + //
-                     "VALUES (N'F2', N'Square Feet', GETDATE());;";
+                "VALUES (N'F2', N'Square Feet', GETDATE());;";
 
         String expect = "INSERT INTO Production.UnitMeasure" + //
-                        "\nVALUES (N'F2', N'Square Feet', GETDATE());";
+                "\nVALUES (N'F2', N'Square Feet', GETDATE());";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

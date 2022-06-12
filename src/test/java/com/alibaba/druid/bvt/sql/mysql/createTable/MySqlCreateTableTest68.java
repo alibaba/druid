@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest68 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE TABLE t1 ("
@@ -61,7 +60,7 @@ public class MySqlCreateTableTest68 extends MysqlTest {
                     + "\n\tPARTITION p5 VALUES LESS THAN MAXVALUE"
                     + "\n)", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table t1 ("

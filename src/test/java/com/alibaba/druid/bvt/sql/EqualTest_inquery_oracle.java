@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 
 public class EqualTest_inquery_oracle extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "fstate in (select state from t_status)";
         String sql_c = "fstate_c in (select state from t_status)";
@@ -31,7 +30,7 @@ public class EqualTest_inquery_oracle extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new SQLInSubQueryExpr(), new SQLInSubQueryExpr());
         Assert.assertEquals(new SQLInSubQueryExpr().hashCode(), new SQLInSubQueryExpr().hashCode());
     }

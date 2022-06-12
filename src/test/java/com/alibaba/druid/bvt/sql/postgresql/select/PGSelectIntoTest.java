@@ -27,9 +27,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectIntoTest extends PGTest {
-	public void test_0() throws Exception {
-		String sql = "SELECT * INTO films_recent FROM films WHERE date_prod >= '2002-01-01';";
-		
+    public void test_0() throws Exception {
+        String sql = "SELECT * INTO films_recent FROM films WHERE date_prod >= '2002-01-01';";
+
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -39,27 +39,27 @@ public class PGSelectIntoTest extends PGTest {
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
-        
+
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("films_recent")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("films")));
-        
+
         Assert.assertTrue(visitor.getColumns().contains(new Column("films", "*")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("films", "date_prod")));
-        
+
         String result = SQLUtils.toPGString(stmt);
-        Assert.assertEquals(result,"SELECT *" //
+        Assert.assertEquals(result, "SELECT *" //
                 + "\nINTO films_recent" //
                 + "\nFROM films" //
                 + "\nWHERE date_prod >= '2002-01-01';");
-        
+
         String result_lcase = SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-        Assert.assertEquals(result_lcase,"select *" //
+        Assert.assertEquals(result_lcase, "select *" //
                 + "\ninto films_recent" //
                 + "\nfrom films" //
                 + "\nwhere date_prod >= '2002-01-01';");
-	}
+    }
 }

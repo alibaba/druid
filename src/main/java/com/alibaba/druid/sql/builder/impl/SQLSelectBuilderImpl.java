@@ -29,15 +29,14 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import java.util.List;
 
 public class SQLSelectBuilderImpl implements SQLSelectBuilder {
-
     private SQLSelectStatement stmt;
-    private DbType             dbType;
+    private DbType dbType;
 
-    public SQLSelectBuilderImpl(DbType dbType){
+    public SQLSelectBuilderImpl(DbType dbType) {
         this(new SQLSelectStatement(), dbType);
     }
-    
-    public SQLSelectBuilderImpl(String sql, DbType dbType){
+
+    public SQLSelectBuilderImpl(String sql, DbType dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.isEmpty()) {
@@ -53,7 +52,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
         this.dbType = dbType;
     }
 
-    public SQLSelectBuilderImpl(SQLSelectStatement stmt, DbType dbType){
+    public SQLSelectBuilderImpl(SQLSelectStatement stmt, DbType dbType) {
         this.stmt = stmt;
         this.dbType = dbType;
     }
@@ -190,7 +189,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
 
         SQLExpr exprObj = SQLUtils.toSQLExpr(expr, dbType);
         SQLExpr newCondition = SQLUtils.buildCondition(SQLBinaryOperator.BooleanOr, exprObj, false,
-                                                       queryBlock.getWhere());
+                queryBlock.getWhere());
         queryBlock.setWhere(newCondition);
 
         return this;

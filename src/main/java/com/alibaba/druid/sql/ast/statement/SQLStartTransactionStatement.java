@@ -25,23 +25,19 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
-
 public class SQLStartTransactionStatement extends SQLStatementImpl {
+    private boolean consistentSnapshot;
 
-    private boolean              consistentSnapshot = false;
-
-    private boolean              begin              = false;
-    private boolean              work               = false;
-    private SQLExpr              name;
+    private boolean begin;
+    private boolean work;
+    private SQLExpr name;
 
     private List<SQLCommentHint> hints;
 
-    private IsolationLevel IsolationLevel;
+    private IsolationLevel isolationLevel;
     private boolean readOnly;
 
     public SQLStartTransactionStatement() {
-
     }
 
     public SQLStartTransactionStatement(DbType dbType) {
@@ -73,11 +69,11 @@ public class SQLStartTransactionStatement extends SQLStatementImpl {
     }
 
     public SQLStartTransactionStatement.IsolationLevel getIsolationLevel() {
-        return IsolationLevel;
+        return isolationLevel;
     }
 
     public void setIsolationLevel(SQLStartTransactionStatement.IsolationLevel isolationLevel) {
-        IsolationLevel = isolationLevel;
+        this.isolationLevel = isolationLevel;
     }
 
     public void accept0(SQLASTVisitor visitor) {
@@ -121,7 +117,7 @@ public class SQLStartTransactionStatement extends SQLStatementImpl {
         this.readOnly = readOnly;
     }
 
-    public static enum IsolationLevel{
+    public static enum IsolationLevel {
         SERIALIZABLE("SERIALIZABLE"),
         REPEATABLE_READ("REPEATABLE READ"),
         READ_COMMITTED("READ COMMITTED"),
@@ -129,13 +125,11 @@ public class SQLStartTransactionStatement extends SQLStatementImpl {
 
         private final String text;
 
-        IsolationLevel(String text)
-        {
+        IsolationLevel(String text) {
             this.text = text;
         }
 
-        public String getText()
-        {
+        public String getText() {
             return text;
         }
     }

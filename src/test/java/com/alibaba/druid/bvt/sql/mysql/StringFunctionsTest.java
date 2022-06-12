@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class StringFunctionsTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT ASCII('2');";
 

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 
 public class MySqlSelectTest_268 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from (select * from mm union select * from mm) a,(select * from mm union select * from mm) b;";
 

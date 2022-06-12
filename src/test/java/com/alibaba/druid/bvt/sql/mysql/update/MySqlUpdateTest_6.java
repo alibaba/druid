@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlUpdateTest_6 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT id, user_id, item_id, sku_id, flag, sellable_quantity, fff03, status, feature, feature_lock, version, gmt_create, gmt_modified, root_id, parent_id, dist_type, dist_id, occupy_quantity, user_type\n" +
                 "FROM UPDATE COMMIT_ON_SUCCESS ROLLBACK_ON_FAIL TARGET_AFFECT_ROW ? `table_3966`\n" +

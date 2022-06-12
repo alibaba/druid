@@ -13,13 +13,12 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 
 /**
  * 这个场景测试initialSize > maxActive
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class LastActiveTest_0 extends TestCase {
-
     private DruidDataSource dataSource;
-    private Field           field;
+    private Field field;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -39,7 +38,6 @@ public class LastActiveTest_0 extends TestCase {
     }
 
     public void test_0() throws Exception {
-
         long t0, t1;
         {
             DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
@@ -58,7 +56,7 @@ public class LastActiveTest_0 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement("select 1");
             Thread.sleep(2);
             stmt.execute();
-            
+
             stmt.close();
             conn.close();
         }

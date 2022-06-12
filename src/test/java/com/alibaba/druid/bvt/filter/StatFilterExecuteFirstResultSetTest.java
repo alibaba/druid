@@ -31,7 +31,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterExecuteFirstResultSetTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -42,7 +41,6 @@ public class StatFilterExecuteFirstResultSetTest extends TestCase {
         dataSource.setTestOnBorrow(false);
 
         MockDriver driver = new MockDriver() {
-
             public MockPreparedStatement createMockPreparedStatement(MockConnection conn, String sql) {
                 return new MyMockPreparedStatement(conn, sql);
             }
@@ -58,7 +56,6 @@ public class StatFilterExecuteFirstResultSetTest extends TestCase {
     }
 
     public void test_stat() throws Exception {
-
         Assert.assertTrue(dataSource.isInited());
         final String sql = "select 1";
 
@@ -85,8 +82,7 @@ public class StatFilterExecuteFirstResultSetTest extends TestCase {
     }
 
     static class MyMockPreparedStatement extends MockPreparedStatement {
-
-        public MyMockPreparedStatement(MockConnection conn, String sql){
+        public MyMockPreparedStatement(MockConnection conn, String sql) {
             super(conn, sql);
         }
 

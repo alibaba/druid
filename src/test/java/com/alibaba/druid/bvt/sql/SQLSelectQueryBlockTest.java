@@ -21,7 +21,6 @@ public class SQLSelectQueryBlockTest extends TestCase {
     }
 
     public void test_findTableSource() throws Exception {
-
         repository.console("create table t_emp(emp_id bigint, name varchar(20));");
         repository.console("create table t_org(org_id bigint, name varchar(20));");
 
@@ -58,7 +57,7 @@ public class SQLSelectQueryBlockTest extends TestCase {
         SQLColumnDefinition column = selectItemExpr.getResolvedColumn();
         assertNotNull(column);
         assertEquals("name", column.getName().toString());
-        assertEquals("t_org", (((SQLCreateTableStatement)column.getParent()).getName().toString()));
+        assertEquals("t_org", (((SQLCreateTableStatement) column.getParent()).getName().toString()));
 
         assertSame(queryBlock.findTableSource("B"), selectItemExpr.getResolvedTableSource());
     }

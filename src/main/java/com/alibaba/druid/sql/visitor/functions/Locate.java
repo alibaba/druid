@@ -24,8 +24,7 @@ import java.util.List;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Locate implements Function {
-
-    public final static Locate instance = new Locate();
+    public static final Locate instance = new Locate();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         List<SQLExpr> params = x.getArguments();
@@ -58,10 +57,10 @@ public class Locate implements Function {
             int result = strValue1.indexOf(strValue0) + 1;
             return result;
         }
-        
+
         Object param2Value = param2.getAttributes().get(EVAL_VALUE);
         int start = ((Number) param2Value).intValue();
-        
+
         int result = strValue1.indexOf(strValue0, start + 1) + 1;
         return result;
     }

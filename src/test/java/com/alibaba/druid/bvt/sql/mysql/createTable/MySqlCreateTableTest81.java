@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlCreateTableTest81 extends MysqlTest {
-
     public void test_one() throws Exception {
         String sql = "CREATE TABLE `admin` (\n" +
                 "  `id` char(20) NOT NULL,\n" +
@@ -53,7 +52,7 @@ public class MySqlCreateTableTest81 extends MysqlTest {
                     "\tPRIMARY KEY USING BTREE (`id`)\n" +
                     ") ENGINE = InnoDB CHARSET = utf8 COMMENT '管理员'", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("create table `admin` (\n" +

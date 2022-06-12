@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -24,14 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableDropPartition extends SQLObjectImpl implements SQLAlterTableItem {
-    private boolean ifExists = false;
+    private boolean ifExists;
     private boolean purge;
     private final List<SQLExpr> partitions = new ArrayList<SQLExpr>(4);
 
     public List<SQLExpr> getPartitions() {
         return partitions;
     }
-    
+
     public void addPartition(SQLExpr partition) {
         if (partition != null) {
             partition.setParent(this);

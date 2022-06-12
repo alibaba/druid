@@ -11,7 +11,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_138_ads_minus extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT DISTINCT o_orderkey\n" +
                 "FROM simple_query2.orders__0\n" +
@@ -30,7 +29,7 @@ public class MySqlSelectTest_138_ads_minus extends MysqlTest {
                 "WHERE o_orderdate > '1994-09-31'\n";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

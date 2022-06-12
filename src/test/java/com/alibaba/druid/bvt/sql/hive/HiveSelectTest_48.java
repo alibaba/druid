@@ -12,8 +12,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class HiveSelectTest_48 extends TestCase {
-
-
     public void test_select() throws Exception {
         String sql = "SELECT account_id FROM taobao_office.cloud_yunpan WHERE dt='2021-04-12' AND target='update'";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);

@@ -25,15 +25,14 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Bug_for_happyday517_3 extends TestCase {
-
     private DruidDataSource dataSource;
-    private MockDriver      driver;
+    private MockDriver driver;
 
     private int originalDataSourceCount = 0;
-    
+
     protected void setUp() throws Exception {
         originalDataSourceCount = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
-        
+
         driver = new MockDriver();
         dataSource = new DruidDataSource();
         dataSource.setDriver(driver);

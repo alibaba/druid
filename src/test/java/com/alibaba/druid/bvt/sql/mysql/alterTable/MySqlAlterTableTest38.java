@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlAlterTableTest38 extends TestCase {
-
     public void test_alter_modify_clustered_by() throws Exception {
         String sql = "ALTER TABLE `result` ADD INDEX `index_code` (`code`) USING BTREE;";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);

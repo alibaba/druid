@@ -26,8 +26,7 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestRemoveAbandoned2 extends TestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -63,12 +62,11 @@ public class TestRemoveAbandoned2 extends TestCase {
             conn.close();
         }
         Assert.assertEquals(0, dataSource.getActiveCount());
-        
+
 
         Thread abandonThread = new Thread("abandoned") {
-
             public void run() {
-                for (;;) {
+                for (; ; ) {
                     dataSource.removeAbandoned();
                     if (Thread.interrupted()) {
                         break;
@@ -85,7 +83,7 @@ public class TestRemoveAbandoned2 extends TestCase {
         }
         Assert.assertEquals(0, dataSource.getActiveCount());
         abandonThread.interrupt();
-        
+
         System.out.println("removeAbandondedCount : " + dataSource.getRemoveAbandonedCount());
     }
 }

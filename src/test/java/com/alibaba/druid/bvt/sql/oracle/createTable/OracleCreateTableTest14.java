@@ -27,23 +27,22 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest14 extends OracleTest {
-
     public void test_charTypes() throws Exception {
         String sql = //
-        "create table T (" + //
-                "F1 CHAR(1)," + //
-                "F2 CHAR(1 BYTE)," + //
-                "F3 CHAR(1 CHAR)," + //
-                "F4 VARCHAR2(2)," + //
-                "F5 VARCHAR2(2 BYTE)," + //
-                "F6 VARCHAR2(2 CHAR)," + //
-                "F7 NCHAR(3 BYTE), " + //
-                "F8 NCHAR(3 CHAR), " + //
-                "F9 NCHAR(3), " + //
-                "F10 NVARCHAR2(4), " + //
-                "F11 NVARCHAR2(4 BYTE), " + //
-                "F12 NVARCHAR2(4 CHAR) " + //
-                ") ";
+                "create table T (" + //
+                        "F1 CHAR(1)," + //
+                        "F2 CHAR(1 BYTE)," + //
+                        "F3 CHAR(1 CHAR)," + //
+                        "F4 VARCHAR2(2)," + //
+                        "F5 VARCHAR2(2 BYTE)," + //
+                        "F6 VARCHAR2(2 CHAR)," + //
+                        "F7 NCHAR(3 BYTE), " + //
+                        "F8 NCHAR(3 CHAR), " + //
+                        "F9 NCHAR(3), " + //
+                        "F10 NVARCHAR2(4), " + //
+                        "F11 NVARCHAR2(4 BYTE), " + //
+                        "F12 NVARCHAR2(4 CHAR) " + //
+                        ") ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -51,8 +50,8 @@ public class OracleCreateTableTest14 extends OracleTest {
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
-        
-        Assert.assertEquals( "CREATE TABLE T (" + //
+
+        Assert.assertEquals("CREATE TABLE T (" + //
                 "\n\tF1 CHAR(1)," + //
                 "\n\tF2 CHAR(1 BYTE)," + //
                 "\n\tF3 CHAR(1 CHAR)," + //

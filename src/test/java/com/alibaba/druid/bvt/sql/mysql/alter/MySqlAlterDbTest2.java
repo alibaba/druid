@@ -21,11 +21,10 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import junit.framework.TestCase;
 
 public class MySqlAlterDbTest2 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "ALTER DATABASE logical_db SET read_only=1";
         SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.mysql);
-        
+
         assertEquals("ALTER DATABASE logical_db SET read_only = 1", stmt.toString());
         assertEquals("alter database logical_db set read_only = 1", stmt.toLowerCaseString());
     }

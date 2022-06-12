@@ -23,7 +23,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_220_jdbc_fn extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT TRIM(BOTH ' ' FROM {fn CONCAT({fn CONCAT(' ', `calcs`.`str2`)}, ' ')}) AS `TEMP(Test)(1903992131)(0)`\n" +
                 "\n" +

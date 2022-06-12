@@ -25,9 +25,9 @@ public abstract class OdpsObjectImpl extends SQLObjectImpl implements OdpsObject
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OdpsASTVisitor) visitor);
     }
-    
+
     public abstract void accept0(OdpsASTVisitor visitor);
-    
+
     public String toString() {
         return SQLUtils.toOdpsString(this);
     }

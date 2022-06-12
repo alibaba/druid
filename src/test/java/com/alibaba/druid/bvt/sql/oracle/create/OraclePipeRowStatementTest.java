@@ -25,10 +25,9 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OraclePipeRowStatementTest extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "PIPE ROW(substr(p_string, v_start));";
+                "PIPE ROW(substr(p_string, v_start));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -38,7 +37,7 @@ public class OraclePipeRowStatementTest extends OracleTest {
         assertEquals(1, statementList.size());
 
         assertEquals("PIPE ROW(substr(p_string, v_start));",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

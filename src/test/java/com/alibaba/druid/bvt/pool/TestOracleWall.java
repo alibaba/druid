@@ -27,7 +27,6 @@ import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TestOracleWall extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -48,7 +47,6 @@ public class TestOracleWall extends TestCase {
     }
 
     public void test_oracle() throws Exception {
-
         String sql = "SELECT 1";
 
         {

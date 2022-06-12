@@ -26,42 +26,41 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleBlockTest11 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DROP TABLE emp;" +
-        		"CREATE TABLE emp AS SELECT * FROM employees;" +
-        		" " +
-        		"DECLARE" +
-        		"  CURSOR c1 IS" +
-        		"    SELECT * FROM emp" +
-        		"    FOR UPDATE OF salary" +
-        		"    ORDER BY employee_id;" +
-        		"   emp_rec  emp%ROWTYPE;" +
-        		"BEGIN" +
-        		"  OPEN c1;" +
-        		"  LOOP" +
-        		"    FETCH c1 INTO emp_rec;  -- fails on second iteration\n" +
-        		"    EXIT WHEN c1%NOTFOUND;" +
-        		"    DBMS_OUTPUT.PUT_LINE (" +
-        		"      'emp_rec.employee_id = ' ||" +
-        		"      TO_CHAR(emp_rec.employee_id)" +
-        		"    );" +
-        		"    " +
-        		"    UPDATE emp" +
-        		"    SET salary = salary * 1.05" +
-        		"    WHERE employee_id = 105;" +
-        		" " +
-        		"    COMMIT;  -- releases locks\n" +
-        		"  END LOOP;" +
-        		"END;"; //
+                "CREATE TABLE emp AS SELECT * FROM employees;" +
+                " " +
+                "DECLARE" +
+                "  CURSOR c1 IS" +
+                "    SELECT * FROM emp" +
+                "    FOR UPDATE OF salary" +
+                "    ORDER BY employee_id;" +
+                "   emp_rec  emp%ROWTYPE;" +
+                "BEGIN" +
+                "  OPEN c1;" +
+                "  LOOP" +
+                "    FETCH c1 INTO emp_rec;  -- fails on second iteration\n" +
+                "    EXIT WHEN c1%NOTFOUND;" +
+                "    DBMS_OUTPUT.PUT_LINE (" +
+                "      'emp_rec.employee_id = ' ||" +
+                "      TO_CHAR(emp_rec.employee_id)" +
+                "    );" +
+                "    " +
+                "    UPDATE emp" +
+                "    SET salary = salary * 1.05" +
+                "    WHERE employee_id = 105;" +
+                " " +
+                "    COMMIT;  -- releases locks\n" +
+                "  END LOOP;" +
+                "END;"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 
-		for (SQLStatement stmt : statementList) {
-			System.out.println(stmt);
-			System.out.println();
-		}
+        for (SQLStatement stmt : statementList) {
+            System.out.println(stmt);
+            System.out.println();
+        }
 
         Assert.assertEquals(3, statementList.size());
 
@@ -86,7 +85,7 @@ public class OracleBlockTest11 extends OracleTest {
 
         Assert.assertTrue(visitor.containsColumn("employees", "*"));
         Assert.assertTrue(visitor.containsColumn("emp", "employee_id"));
-		Assert.assertTrue(visitor.containsColumn("emp", "*"));
-		Assert.assertTrue(visitor.containsColumn("emp", "salary"));
+        Assert.assertTrue(visitor.containsColumn("emp", "*"));
+        Assert.assertTrue(visitor.containsColumn("emp", "salary"));
     }
 }

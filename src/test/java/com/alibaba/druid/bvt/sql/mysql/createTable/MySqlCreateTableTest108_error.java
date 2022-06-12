@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.ParserException;
 
 public class MySqlCreateTableTest108_error extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create table t (\n" +
                 "f0 int,\n" +

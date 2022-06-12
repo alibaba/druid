@@ -23,5 +23,4 @@ public class OdpsFormatCommentTest10 extends TestCase {
                 + "\nFROM xxx;", SQLUtils.formatOdps(sql));
     }
 
-   
 }

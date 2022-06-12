@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleInsertTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO films VALUES ('UA502', 'Bananas', 105, '1971-07-13', 'Comedy', '82 minutes');";
 
@@ -48,9 +47,9 @@ public class OracleInsertTest extends OracleTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("films")));
 
         Assert.assertEquals(0, visitor.getColumns().size());
-        
+
 //        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("films", "producer_id")));
     }
 
-    
+
 }

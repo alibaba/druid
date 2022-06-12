@@ -25,16 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropMaterializedViewStatement extends SQLStatementImpl implements SQLDropStatement {
-
     private SQLExpr name;
     private boolean ifExists;
 
     public SQLDropMaterializedViewStatement() {
-
     }
 
     public SQLDropMaterializedViewStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

@@ -14,15 +14,14 @@ import org.nutz.trans.Trans;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class NutzTransactionTest extends TestCase {
-
     private DataSource dataSource;
 
     protected void setUp() throws Exception {
-         DruidDataSource dataSource = new DruidDataSource();
-         dataSource.setUrl("jdbc:jtds:sqlserver://192.168.1.105/petstore");
-         dataSource.setUsername("sa");
-         dataSource.setPassword("hello");
-         dataSource.setFilters("log4j");
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setUrl("jdbc:jtds:sqlserver://192.168.1.105/petstore");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("hello");
+        dataSource.setFilters("log4j");
 
 //        BasicDataSource dataSource = new BasicDataSource();
 //        dataSource.setDriverClassName("net.sourceforge.jtds.jdbc.Driver");
@@ -44,7 +43,6 @@ public class NutzTransactionTest extends TestCase {
     void doTran1(final Dao dao) {
         try {
             Trans.exec(new Atom() {
-
                 @Override
                 public void run() {
                     dao.insert("[test]", Chain.make("name", "1"));
@@ -59,7 +57,6 @@ public class NutzTransactionTest extends TestCase {
     void doTran2(final Dao dao) {
         try {
             Trans.exec(new Atom() {
-
                 @Override
                 public void run() {
                     dao.insert("[test]", Chain.make("name", "1"));

@@ -34,14 +34,12 @@ import com.alibaba.druid.pool.DruidPooledResultSet;
 import com.alibaba.druid.pool.DruidPooledStatement;
 
 public class ResultSetTest extends TestCase {
-
     private DruidPooledStatement stmt;
-    private MockResultSet     raw;
+    private MockResultSet raw;
     private DruidPooledResultSet resultSet;
 
     protected void setUp() throws Exception {
         stmt = new DruidPooledStatement(null, null) {
-
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {
                     return (SQLException) error;
@@ -52,13 +50,12 @@ public class ResultSetTest extends TestCase {
         };
 
         raw = new MockResultSet(null);
-        raw.getRows().add(new Object[] { null });
+        raw.getRows().add(new Object[]{null});
         resultSet = new DruidPooledResultSet(stmt, raw);
     }
 
     @SuppressWarnings("deprecation")
     public void test_get() throws Exception {
-
         Assert.assertTrue(stmt == resultSet.getPoolableStatement());
         Assert.assertTrue(raw == resultSet.getRawResultSet());
 

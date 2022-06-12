@@ -26,24 +26,23 @@ import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
 
-
 public class DB2StatementParser extends SQLStatementParser {
     public DB2StatementParser(String sql) {
-        super (new DB2ExprParser(sql));
+        super(new DB2ExprParser(sql));
     }
 
     public DB2StatementParser(String sql, SQLParserFeature... features) {
-        super (new DB2ExprParser(sql, features));
+        super(new DB2ExprParser(sql, features));
     }
 
-    public DB2StatementParser(Lexer lexer){
+    public DB2StatementParser(Lexer lexer) {
         super(new DB2ExprParser(lexer));
     }
-    
+
     public DB2SelectParser createSQLSelectParser() {
         return new DB2SelectParser(this.exprParser, selectListCache);
     }
-    
+
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         if (lexer.token() == Token.VALUES) {
             lexer.nextToken();
@@ -52,7 +51,7 @@ public class DB2StatementParser extends SQLStatementParser {
             statementList.add(stmt);
             return true;
         }
-        
+
         return false;
     }
 

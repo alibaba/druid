@@ -20,5 +20,5 @@ public class OdpsFormatCommentTest30 extends TestCase {
                 + "\n\tasdasd STRING,"
                 + "\n\tasasd STRING"
                 + "\n);", SQLUtils.formatOdps(sql));
-    }   
+    }
 }

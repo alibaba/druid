@@ -24,18 +24,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest51 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid(//
-        "REPLACE /* SearchMySQL::update Wikiadmin */ INTO `wiki_searchindex` (si_page,si_title,si_text) VALUES ('15',' u8e5858d u8e8b4a3 u8e5a3b0 u8e6988e')"));
+                "REPLACE /* SearchMySQL::update Wikiadmin */ INTO `wiki_searchindex` (si_page,si_title,si_text) VALUES ('15',' u8e5858d u8e8b4a3 u8e5a3b0 u8e6988e')"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

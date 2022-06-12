@@ -49,7 +49,7 @@ public class PGSelectTest71_window extends TestCase {
                 "\tAND a.nav > 0\n" +
                 "\tAND a.swanav > 0\n" +
                 "WINDOW w AS (ORDER BY a.stat_date DESC)", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select a.*\n" +
                 "\t, (a.swanav - lead(a.swanav, 1, null::numeric) over w) / lead(a.swanav, 1, null::numeric) over w as roe_lag\n" +
                 "from ffund.ffund_eval_prod_nv a\n" +

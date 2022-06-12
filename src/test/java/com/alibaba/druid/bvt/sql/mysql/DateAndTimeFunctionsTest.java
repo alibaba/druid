@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class DateAndTimeFunctionsTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT something FROM tbl_name WHERE DATE_SUB(CURDATE(),INTERVAL 30 DAY) <= date_col";
 
@@ -38,7 +37,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
         String text = output(stmtList);
 
         Assert.assertEquals("SELECT something\nFROM tbl_name\nWHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date_col",
-                            text);
+                text);
     }
 
     public void test_1() throws Exception {
@@ -623,8 +622,8 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         Assert.assertEquals("SELECT YEARWEEK('1987-01-01');", text);
     }
-    
-    
+
+
     public void test_54() throws Exception {
         String sql = "SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL +t.c1 DAY) from t";
 
@@ -635,7 +634,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         Assert.assertEquals("SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL +t.c1 DAY)\nFROM t", text);
     }
-    
+
     public void test_55() throws Exception {
         String sql = "SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL -t.c1 DAY) from t";
 

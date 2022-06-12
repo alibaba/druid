@@ -27,36 +27,35 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateViewTest3 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "    CREATE OR REPLACE FORCE VIEW \"RMAN\".\"V_001\" (\"DB_KEY\", \"DBINC_KEY\", \"FILE#\", \"BLOCK#\", \"BLOCKS\", \"CORRUPTION_CHANGE#\", \"CORRUPTION_TYPE\") AS \n" +
-                "  select distinct\n" +
-                "  db_key, dbinc_key, file#, block#, blocks, corruption_change#,\n" +
-                "  corruption_type from\n" +
-                "  (select db_key, dbinc_key, file#, block#, blocks,\n" +
-                "          corruption_change#, copy_stamp stamp, corruption_type\n" +
-                "   from tb_004 union\n" +
-                "   select bs.db_key, dbinc_key, file#, block#, blocks,\n" +
-                "          corruption_change#, bs.stamp, corruption_type\n" +
-                "   from tb_005 bc, tb_006 bs\n" +
-                "   where bc.bs_key = bs.bs_key) outer\n" +
-                "where not exists\n" +
-                "  (select 1\n" +
-                "   from tb_001\n" +
-                "   where outer.db_key = db_key and\n" +
-                "         outer.dbinc_key = dbinc_key and\n" +
-                "         scanned = 'YES' and\n" +
-                "         outer.file# = file# and\n" +
-                "         outer.stamp < stamp\n" +
-                "   union\n" +
-                "   select 1\n" +
-                "   from tb_002 bdf, tb_003 bs\n" +
-                "   where bdf.bs_key = bs.bs_key and\n" +
-                "         outer.db_key = bdf.db_key and\n" +
-                "         outer.dbinc_key = bdf.dbinc_key and\n" +
-                "         outer.file# = file# and\n" +
-                "         outer.stamp < bs.stamp)    ";
+                "    CREATE OR REPLACE FORCE VIEW \"RMAN\".\"V_001\" (\"DB_KEY\", \"DBINC_KEY\", \"FILE#\", \"BLOCK#\", \"BLOCKS\", \"CORRUPTION_CHANGE#\", \"CORRUPTION_TYPE\") AS \n" +
+                        "  select distinct\n" +
+                        "  db_key, dbinc_key, file#, block#, blocks, corruption_change#,\n" +
+                        "  corruption_type from\n" +
+                        "  (select db_key, dbinc_key, file#, block#, blocks,\n" +
+                        "          corruption_change#, copy_stamp stamp, corruption_type\n" +
+                        "   from tb_004 union\n" +
+                        "   select bs.db_key, dbinc_key, file#, block#, blocks,\n" +
+                        "          corruption_change#, bs.stamp, corruption_type\n" +
+                        "   from tb_005 bc, tb_006 bs\n" +
+                        "   where bc.bs_key = bs.bs_key) outer\n" +
+                        "where not exists\n" +
+                        "  (select 1\n" +
+                        "   from tb_001\n" +
+                        "   where outer.db_key = db_key and\n" +
+                        "         outer.dbinc_key = dbinc_key and\n" +
+                        "         scanned = 'YES' and\n" +
+                        "         outer.file# = file# and\n" +
+                        "         outer.stamp < stamp\n" +
+                        "   union\n" +
+                        "   select 1\n" +
+                        "   from tb_002 bdf, tb_003 bs\n" +
+                        "   where bdf.bs_key = bs.bs_key and\n" +
+                        "         outer.db_key = bdf.db_key and\n" +
+                        "         outer.dbinc_key = bdf.dbinc_key and\n" +
+                        "         outer.file# = file# and\n" +
+                        "         outer.stamp < bs.stamp)    ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -104,7 +103,7 @@ public class OracleCreateViewTest3 extends OracleTest {
                         "\t\tAND outer.file# = file#\n" +
                         "\t\tAND outer.stamp < bs.stamp\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

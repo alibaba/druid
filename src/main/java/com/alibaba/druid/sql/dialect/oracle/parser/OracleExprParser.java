@@ -37,59 +37,53 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OracleExprParser extends SQLExprParser {
+    public boolean allowStringAdditive;
 
+    public static final String[] AGGREGATE_FUNCTIONS;
 
-
-
-
-
-    public boolean                allowStringAdditive = false;
-
-    public final static String[] AGGREGATE_FUNCTIONS;
-
-    public final static long[] AGGREGATE_FUNCTIONS_CODES;
+    public static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
         String[] strings = {
-                "AVG", //
-                "CORR", //
-                "COVAR_POP", //
-                "COVAR_SAMP", //
-                "COUNT", //
-                "CUME_DIST", //
-                "DENSE_RANK", //
-                "FIRST", //
-                "FIRST_VALUE", //
-                "LAG", //
-                "LAST", //
-                "LAST_VALUE", //
+                "AVG",
+                "CORR",
+                "COVAR_POP",
+                "COVAR_SAMP",
+                "COUNT",
+                "CUME_DIST",
+                "DENSE_RANK",
+                "FIRST",
+                "FIRST_VALUE",
+                "LAG",
+                "LAST",
+                "LAST_VALUE",
                 "LISTAGG",
-                "LEAD", //
+                "LEAD",
                 "MAX",  //
-                "MIN", //
-                "NTILE", //
+                "MIN",
+                "NTILE",
                 "PERCENT_RANK",  //
                 "PERCENTILE_CONT",  //
                 "PERCENTILE_DISC",  //
-                "RANK", //
-                "RATIO_TO_REPORT", //
-                "REGR_SLOPE", //
+                "RANK",
+                "RATIO_TO_REPORT",
+                "REGR_SLOPE",
                 "REGR_INTERCEPT",  //
                 "REGR_COUNT",  //
-                "REGR_R2", //
+                "REGR_R2",
                 "REGR_AVGX",  //
                 "REGR_AVGY",  //
                 "REGR_SXX",  //
                 "REGR_SYY",  //
-                "REGR_SXY", //
+                "REGR_SXY",
                 "ROW_NUMBER",  //
                 "STDDEV",  //
                 "STDDEV_POP",  //
-                "STDDEV_SAMP", //
-                "SUM", //
-                "VAR_POP", //
-                "VAR_SAMP", //
-                "VARIANCE", //
+                "STDDEV_SAMP",
+                "SUM",
+                "VAR_POP",
+                "VAR_SAMP",
+                "VARIANCE",
                 "WM_CONCAT"
         };
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
@@ -101,25 +95,25 @@ public class OracleExprParser extends SQLExprParser {
         }
     }
 
-    public OracleExprParser(Lexer lexer){
+    public OracleExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
         this.dbType = DbType.oracle;
     }
 
-    public OracleExprParser(String text){
+    public OracleExprParser(String text) {
         this(new OracleLexer(text));
         this.lexer.nextToken();
         this.dbType = DbType.oracle;
     }
 
-    public OracleExprParser(String text, SQLParserFeature... features){
+    public OracleExprParser(String text, SQLParserFeature... features) {
         this(new OracleLexer(text, features));
         this.lexer.nextToken();
         this.dbType = DbType.oracle;
     }
-    
+
     protected boolean isCharType(long hash) {
         return hash == FnvHash.Constants.CHAR
                 || hash == FnvHash.Constants.CHARACTER
@@ -128,12 +122,10 @@ public class OracleExprParser extends SQLExprParser {
                 || hash == FnvHash.Constants.VARCHAR2
                 || hash == FnvHash.Constants.NVARCHAR
                 || hash == FnvHash.Constants.NVARCHAR2
-                || hash == FnvHash.Constants.CHARACTER
-                ;
+                || hash == FnvHash.Constants.CHARACTER;
     }
 
     public SQLDataType parseDataType(boolean restrict) {
-
         if (lexer.token() == Token.CONSTRAINT || lexer.token() == Token.COMMA) {
             return null;
         }
@@ -197,36 +189,36 @@ public class OracleExprParser extends SQLExprParser {
             SQLName typeExpr = name();
             typeName = typeExpr.toString();
         }
-        
+
         if ("TIMESTAMP".equalsIgnoreCase(typeName)) {
             SQLDataTypeImpl timestamp = new SQLDataTypeImpl(typeName);
             timestamp.setDbType(dbType);
-            
+
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
                 timestamp.addArgument(this.expr());
                 accept(Token.RPAREN);
             }
-            
+
             if (lexer.token() == Token.WITH) {
                 lexer.nextToken();
-                
+
                 if (lexer.identifierEquals("LOCAL")) {
                     lexer.nextToken();
                     timestamp.setWithLocalTimeZone(true);
                 }
 
                 timestamp.setWithTimeZone(true);
-                
+
                 acceptIdentifier("TIME");
                 acceptIdentifier("ZONE");
             }
-            
+
             return timestamp;
         }
 
         if ("national".equalsIgnoreCase(typeName)
-                && isCharType(lexer.hash_lower())) {
+                && isCharType(lexer.hashLCase())) {
             typeName += ' ' + lexer.stringVal();
             lexer.nextToken();
 
@@ -254,7 +246,7 @@ public class OracleExprParser extends SQLExprParser {
 
             return charType;
         }
-        
+
         if (isCharType(typeName)) {
             if (lexer.identifierEquals("VARYING")) {
                 typeName += ' ' + lexer.stringVal();
@@ -282,10 +274,10 @@ public class OracleExprParser extends SQLExprParser {
             } else if (restrict) {
                 accept(Token.LPAREN);
             }
-            
+
             return parseCharTypeRest(charType);
         }
-        
+
         if (lexer.token() == Token.PERCENT) {
             lexer.nextToken();
             if (lexer.identifierEquals("TYPE")) {
@@ -446,8 +438,8 @@ public class OracleExprParser extends SQLExprParser {
                         throw new ParserException("TODO " + lexer.info());
                 }
                 return primaryRest(sqlExpr);
-                
-           case CURSOR:
+
+            case CURSOR:
                 lexer.nextToken();
                 accept(Token.LPAREN);
 
@@ -457,44 +449,44 @@ public class OracleExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
 
                 sqlExpr = cursorExpr;
-                return  primaryRest(sqlExpr);
+                return primaryRest(sqlExpr);
 //           case MODEL:
-           case PCTFREE:
-           case INITRANS:
-           case MAXTRANS:
-           case SEGMENT:
-           case CREATION:
-           case IMMEDIATE:
-           case DEFERRED:
-           case STORAGE:
-           case NEXT:
-           case MINEXTENTS:
-           case MAXEXTENTS:
-           case MAXSIZE:
-           case PCTINCREASE:
-           case FLASH_CACHE:
-           case CELL_FLASH_CACHE:
-           case NONE:
-           case LOB:
-           case STORE:
-           case ROW:
-           case CHUNK:
-           case CACHE:
-           case NOCACHE:
-           case LOGGING:
-           case NOCOMPRESS:
-           case KEEP_DUPLICATES:
-           case EXCEPTIONS:
-           case PURGE:
-           case OUTER:
-               sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
-               lexer.nextToken();
-               return  primaryRest(sqlExpr);
+            case PCTFREE:
+            case INITRANS:
+            case MAXTRANS:
+            case SEGMENT:
+            case CREATION:
+            case IMMEDIATE:
+            case DEFERRED:
+            case STORAGE:
+            case NEXT:
+            case MINEXTENTS:
+            case MAXEXTENTS:
+            case MAXSIZE:
+            case PCTINCREASE:
+            case FLASH_CACHE:
+            case CELL_FLASH_CACHE:
+            case NONE:
+            case LOB:
+            case STORE:
+            case ROW:
+            case CHUNK:
+            case CACHE:
+            case NOCACHE:
+            case LOGGING:
+            case NOCOMPRESS:
+            case KEEP_DUPLICATES:
+            case EXCEPTIONS:
+            case PURGE:
+            case OUTER:
+                sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+                lexer.nextToken();
+                return primaryRest(sqlExpr);
             default:
                 return super.primary();
         }
     }
-    
+
     @Override
     protected SQLExpr methodRest(SQLExpr expr, boolean acceptLPAREN) {
         if (acceptLPAREN) {
@@ -506,7 +498,7 @@ public class OracleExprParser extends SQLExprParser {
             accept(Token.RPAREN);
             return new OracleOuterExpr(expr);
         }
-        
+
         if (expr instanceof SQLIdentifierExpr) {
             String methodName = ((SQLIdentifierExpr) expr).getName();
             SQLMethodInvokeExpr methodExpr = new SQLMethodInvokeExpr(methodName);
@@ -535,7 +527,7 @@ public class OracleExprParser extends SQLExprParser {
     public SQLExpr primaryRest(SQLExpr expr) {
         if (expr instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-            String ident = ((SQLIdentifierExpr)expr).getName();
+            String ident = ((SQLIdentifierExpr) expr).getName();
 
             final long hashCode64 = identExpr.hashCode64();
             if (hashCode64 == FnvHash.Constants.TIMESTAMP) {
@@ -559,13 +551,12 @@ public class OracleExprParser extends SQLExprParser {
                     accept(Token.LITERAL_CHARS);
                 }
 
-                
-                return primaryRest(timestamp);     
+                return primaryRest(timestamp);
             }
         }
         if (lexer.token() == Token.IDENTIFIER && expr instanceof SQLNumericLiteralExpr) {
             String ident = lexer.stringVal();
-            
+
             if (ident.length() == 1) {
                 char unit = ident.charAt(0);
                 switch (unit) {
@@ -585,18 +576,18 @@ public class OracleExprParser extends SQLExprParser {
                         lexer.nextToken();
                         break;
                     default:
-                    break;
+                        break;
                 }
             }
         }
-        
+
         if (lexer.token() == Token.DOTDOT) {
             lexer.nextToken();
             SQLExpr upBound = expr();
-            
+
             return new OracleRangeExpr(expr, upBound);
         }
-        
+
         if (lexer.token() == Token.MONKEYS_AT) {
             lexer.nextToken();
 
@@ -608,7 +599,7 @@ public class OracleExprParser extends SQLExprParser {
                 lexer.nextToken();
             } else {
                 String link = lexer.stringVal();
-                if(lexer.token() == Token.LITERAL_ALIAS) {
+                if (lexer.token() == Token.LITERAL_ALIAS) {
                     accept(Token.LITERAL_ALIAS);
                 } else {
                     accept(Token.IDENTIFIER);
@@ -616,9 +607,9 @@ public class OracleExprParser extends SQLExprParser {
                 dblink.setDbLink(link);
                 if (lexer.token() == Token.LPAREN) {
                     SQLExpr dblinkExpr = dblink.getExpr();
-                    if(dblinkExpr.getClass() == SQLPropertyExpr.class) {
+                    if (dblinkExpr.getClass() == SQLPropertyExpr.class) {
                         SQLExpr methodInvokeExpr = new SQLMethodInvokeExpr();
-                        SQLMethodInvokeExpr expr2 = (SQLMethodInvokeExpr)methodRest(methodInvokeExpr, true);
+                        SQLMethodInvokeExpr expr2 = (SQLMethodInvokeExpr) methodRest(methodInvokeExpr, true);
 
                         expr2.setOwner(((SQLPropertyExpr) expr).getOwner());
                         expr2.setMethodName(((SQLPropertyExpr) expr).getName());
@@ -641,23 +632,23 @@ public class OracleExprParser extends SQLExprParser {
 
             expr = primaryRest(expr);
         }
-        
+
         if (lexer.identifierEquals("DAY") || lexer.identifierEquals("YEAR")) {
             Lexer.SavePoint savePoint = lexer.mark();
-            
+
             String name = lexer.stringVal();
             lexer.nextToken();
-            
+
             if (lexer.token() == Token.COMMA) {
                 lexer.reset(savePoint);
                 return expr;
             }
-            
+
             OracleIntervalExpr interval = new OracleIntervalExpr();
             interval.setValue(expr);
             OracleIntervalType type = OracleIntervalType.valueOf(name.toUpperCase());
             interval.setType(type);
-            
+
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
                 if (lexer.token() != Token.LITERAL_INT) {
@@ -691,10 +682,10 @@ public class OracleExprParser extends SQLExprParser {
                 interval.setToType(OracleIntervalType.MONTH);
                 lexer.nextToken();
             }
-            
+
             expr = interval;
         }
-        
+
         if (lexer.identifierEquals("AT")) {
             Lexer.SavePoint mark = lexer.mark();
             lexer.nextToken();
@@ -709,14 +700,14 @@ public class OracleExprParser extends SQLExprParser {
                     return expr;
                 }
                 acceptIdentifier("ZONE");
-                
+
                 SQLExpr timeZone = primary();
                 expr = new OracleDatetimeExpr(expr, timeZone);
             }
         }
-        
+
         SQLExpr restExpr = super.primaryRest(expr);
-        
+
         if (restExpr != expr && restExpr instanceof SQLMethodInvokeExpr) {
             SQLMethodInvokeExpr methodInvoke = (SQLMethodInvokeExpr) restExpr;
             if (methodInvoke.getArguments().size() == 1) {
@@ -732,7 +723,7 @@ public class OracleExprParser extends SQLExprParser {
                 }
             }
         }
-        
+
         return restExpr;
     }
 
@@ -741,7 +732,7 @@ public class OracleExprParser extends SQLExprParser {
             String name = lexer.stringVal();
             lexer.nextToken();
             expr = new SQLPropertyExpr(expr, name);
-            
+
             if (lexer.token() == Token.DOT) {
                 lexer.nextToken();
                 expr = dotRest(expr);
@@ -749,7 +740,7 @@ public class OracleExprParser extends SQLExprParser {
 
             return expr;
         }
-        
+
         if (lexer.identifierEquals(FnvHash.Constants.NEXTVAL)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
@@ -771,7 +762,7 @@ public class OracleExprParser extends SQLExprParser {
 
     protected SQLAggregateExpr parseAggregateExpr(String methodName) {
 //        methodName = methodName.toUpperCase();
-        
+
         SQLAggregateExpr aggregateExpr;
         if (lexer.token() == Token.UNIQUE) {
             aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateOption.UNIQUE);
@@ -808,7 +799,7 @@ public class OracleExprParser extends SQLExprParser {
             acceptIdentifier("NULLS");
             aggregateExpr.setIgnoreNulls(false);
         }
-        
+
         if (lexer.identifierEquals(FnvHash.Constants.WITHIN)) {
             lexer.nextToken();
             accept(Token.GROUP);
@@ -818,10 +809,10 @@ public class OracleExprParser extends SQLExprParser {
             aggregateExpr.setOrderBy(orderBy);
             accept(Token.RPAREN);
         }
-        
+
         if (lexer.identifierEquals("KEEP")) {
             lexer.nextToken();
-            
+
             SQLKeep keep = new SQLKeep();
             accept(Token.LPAREN);
             acceptIdentifier("DENSE_RANK");
@@ -832,12 +823,12 @@ public class OracleExprParser extends SQLExprParser {
                 acceptIdentifier("LAST");
                 keep.setDenseRank(DenseRank.LAST);
             }
-            
+
             SQLOrderBy orderBy = this.parseOrderBy();
             keep.setOrderBy(orderBy);
-            
+
             aggregateExpr.setKeep(keep);
-            
+
             accept(Token.RPAREN);
         }
 
@@ -984,7 +975,7 @@ public class OracleExprParser extends SQLExprParser {
 
     protected SQLExpr parseInterval() {
         accept(Token.INTERVAL);
-        
+
         OracleIntervalExpr interval = new OracleIntervalExpr();
 
         if (lexer.token() == Token.LITERAL_CHARS) {
@@ -1041,7 +1032,7 @@ public class OracleExprParser extends SQLExprParser {
             }
             accept(Token.RPAREN);
         }
-        
+
         if (lexer.token() == Token.TO) {
             lexer.nextToken();
             if (lexer.identifierEquals("SECOND")) {
@@ -1060,14 +1051,14 @@ public class OracleExprParser extends SQLExprParser {
                 lexer.nextToken();
             }
         }
-        
-        return interval;    
+
+        return interval;
     }
-    
+
     public SQLExpr relationalRest(SQLExpr expr) {
         if (lexer.token() == Token.IS) {
             lexer.nextToken();
-            
+
             if (lexer.token() == Token.NOT) {
                 lexer.nextToken();
                 SQLExpr rightExpr = primary();
@@ -1087,7 +1078,7 @@ public class OracleExprParser extends SQLExprParser {
                 isOf.setExpr(expr);
                 accept(Token.LPAREN);
 
-                for (;;) {
+                for (; ; ) {
                     boolean only = lexer.identifierEquals(FnvHash.Constants.ONLY);
                     if (only) {
                         lexer.nextToken();
@@ -1115,16 +1106,15 @@ public class OracleExprParser extends SQLExprParser {
                 SQLExpr rightExpr = primary();
                 expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Is, rightExpr, getDbType());
             }
-            
+
             return expr;
         }
         return super.relationalRest(expr);
     }
-    
-    
+
     public SQLName name() {
         SQLName name = super.name();
-        
+
         if (lexer.token() == Token.MONKEYS_AT) {
             lexer.nextToken();
             if (lexer.token() != Token.IDENTIFIER) {
@@ -1132,7 +1122,6 @@ public class OracleExprParser extends SQLExprParser {
             }
             SQLDbLinkExpr dbLink = new SQLDbLinkExpr();
             dbLink.setExpr(name);
-
 
             String link = lexer.stringVal();
             lexer.nextToken();
@@ -1153,10 +1142,10 @@ public class OracleExprParser extends SQLExprParser {
 //            name = new SQLIdentifierExpr(name.getSimpleName() + " " + lexer.stringVal());
 //            lexer.nextToken();
 //        }
-        
+
         return name;
     }
-    
+
     public OraclePrimaryKey parsePrimaryKey() {
         lexer.nextToken();
         accept(Token.KEY);
@@ -1165,13 +1154,13 @@ public class OracleExprParser extends SQLExprParser {
         accept(Token.LPAREN);
         orderBy(primaryKey.getColumns(), primaryKey);
         accept(Token.RPAREN);
-        
+
         if (lexer.token() == Token.USING) {
             OracleUsingIndexClause using = parseUsingIndex();
             primaryKey.setUsing(using);
         }
 
-        for (;;) {
+        for (; ; ) {
             if (lexer.token() == Token.ENABLE) {
                 lexer.nextToken();
                 primaryKey.setEnable(Boolean.TRUE);
@@ -1194,7 +1183,7 @@ public class OracleExprParser extends SQLExprParser {
                 break;
             }
         }
-        
+
         return primaryKey;
     }
 
@@ -1210,15 +1199,15 @@ public class OracleExprParser extends SQLExprParser {
             using.setIndex(createIndex);
             accept(Token.RPAREN);
         }
-        
-        for (;;) {
+
+        for (; ; ) {
             this.parseSegmentAttributes(using);
 
             if (lexer.token() == Token.COMPUTE) {
                 lexer.nextToken();
                 acceptIdentifier("STATISTICS");
                 using.setComputeStatistics(true);
-               continue;
+                continue;
             } else if (lexer.token() == Token.ENABLE) {
                 lexer.nextToken();
                 using.setEnable(true);
@@ -1236,7 +1225,7 @@ public class OracleExprParser extends SQLExprParser {
                 accept(Token.LPAREN);
 
                 // http://docs.oracle.com/cd/B19306_01/server.102/b14200/statements_5010.htm#i2125897
-                for (;;) {
+                for (; ; ) {
                     SQLPartition partition = this.parsePartition();
                     partition.setParent(using);
                     using.getLocalPartitionIndex().add(partition);
@@ -1262,7 +1251,7 @@ public class OracleExprParser extends SQLExprParser {
 
         return using;
     }
-    
+
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         column = super.parseColumnRest(column);
 
@@ -1280,7 +1269,7 @@ public class OracleExprParser extends SQLExprParser {
             column.setGeneratedAlawsAs(expr);
         }
 
-        for (;;) {
+        for (; ; ) {
             if (lexer.token() == Token.ENABLE) {
                 lexer.nextToken();
                 column.setEnable(Boolean.TRUE);
@@ -1309,19 +1298,19 @@ public class OracleExprParser extends SQLExprParser {
                 break;
             }
         }
-        
+
         return column;
     }
-    
+
     public SQLExpr exprRest(SQLExpr expr) {
         expr = super.exprRest(expr);
-        
+
         if (lexer.token() == Token.COLONEQ) {
             lexer.nextToken();
             SQLExpr right = expr();
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Assignment, right, getDbType());
         }
-        
+
         return expr;
     }
 
@@ -1335,7 +1324,6 @@ public class OracleExprParser extends SQLExprParser {
 
         accept(Token.STORE);
         accept(Token.AS);
-
 
         if (lexer.identifierEquals("SECUREFILE")) {
             lexer.nextToken();
@@ -1352,7 +1340,7 @@ public class OracleExprParser extends SQLExprParser {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
-            for (;;) {
+            for (; ; ) {
                 this.parseSegmentAttributes(clause);
 
                 if (lexer.token() == Token.ENABLE) {
@@ -1425,19 +1413,18 @@ public class OracleExprParser extends SQLExprParser {
 
         return clause;
     }
-    
+
     public OracleLobStorageClause parseLobStorage() {
         lexer.nextToken();
-        
+
         OracleLobStorageClause clause = new OracleLobStorageClause();
-        
+
         accept(Token.LPAREN);
         this.names(clause.getItems());
         accept(Token.RPAREN);
-        
+
         accept(Token.STORE);
         accept(Token.AS);
-        
 
         if (lexer.identifierEquals("SECUREFILE")) {
             lexer.nextToken();
@@ -1457,7 +1444,7 @@ public class OracleExprParser extends SQLExprParser {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
-            for (;;) {
+            for (; ; ) {
                 this.parseSegmentAttributes(clause);
 
                 if (lexer.token() == Token.ENABLE) {
@@ -1530,13 +1517,13 @@ public class OracleExprParser extends SQLExprParser {
 
         return clause;
     }
-    
+
     public OracleStorageClause parseStorage() {
         lexer.nextToken();
         accept(Token.LPAREN);
 
         OracleStorageClause storage = new OracleStorageClause();
-        for (;;) {
+        for (; ; ) {
             if (lexer.identifierEquals("INITIAL")) {
                 lexer.nextToken();
                 storage.setInitial(this.expr());
@@ -1615,7 +1602,7 @@ public class OracleExprParser extends SQLExprParser {
         accept(Token.RPAREN);
         return storage;
     }
-    
+
     public SQLUnique parseUnique() {
         accept(Token.UNIQUE);
 
@@ -1623,7 +1610,7 @@ public class OracleExprParser extends SQLExprParser {
         accept(Token.LPAREN);
         orderBy(unique.getColumns(), unique);
         accept(Token.RPAREN);
-        
+
         if (lexer.token() == Token.USING) {
             OracleUsingIndexClause using = parseUsingIndex();
             unique.setUsing(using);
@@ -1631,11 +1618,11 @@ public class OracleExprParser extends SQLExprParser {
 
         return unique;
     }
-    
+
     public OracleConstraint parseConstaint() {
         OracleConstraint constraint = (OracleConstraint) super.parseConstaint();
-        
-        for (;;) {
+
+        for (; ; ) {
             if (lexer.token() == Token.EXCEPTIONS) {
                 lexer.nextToken();
                 accept(Token.INTO);
@@ -1643,13 +1630,13 @@ public class OracleExprParser extends SQLExprParser {
                 constraint.setExceptionsInto(exceptionsInto);
                 continue;
             }
-            
+
             if (lexer.token() == Token.DISABLE) {
                 lexer.nextToken();
                 constraint.setEnable(false);
                 continue;
             }
-            
+
             if (lexer.token() == Token.ENABLE) {
                 lexer.nextToken();
                 constraint.setEnable(true);
@@ -1669,7 +1656,7 @@ public class OracleExprParser extends SQLExprParser {
 
             if (lexer.token() == Token.INITIALLY) {
                 lexer.nextToken();
-                
+
                 if (lexer.token() == Token.IMMEDIATE) {
                     lexer.nextToken();
                     constraint.setInitially(Initially.IMMEDIATE);
@@ -1677,10 +1664,10 @@ public class OracleExprParser extends SQLExprParser {
                     accept(Token.DEFERRED);
                     constraint.setInitially(Initially.DEFERRED);
                 }
-                
+
                 continue;
             }
-            
+
             if (lexer.token() == Token.NOT) {
                 lexer.nextToken();
                 if (lexer.identifierEquals(FnvHash.Constants.DEFERRABLE)) {
@@ -1690,7 +1677,7 @@ public class OracleExprParser extends SQLExprParser {
                 }
                 throw new ParserException("TODO " + lexer.info());
             }
-            
+
             if (lexer.identifierEquals(FnvHash.Constants.DEFERRABLE)) {
                 lexer.nextToken();
                 constraint.setDeferrable(true);
@@ -1701,17 +1688,17 @@ public class OracleExprParser extends SQLExprParser {
                 OracleUsingIndexClause using = parseUsingIndex();
                 constraint.setUsing(using);
             }
-            
+
             break;
         }
 
         return constraint;
     }
-    
+
     protected OracleForeignKey createForeignKey() {
         return new OracleForeignKey();
     }
-    
+
     protected SQLCheck createCheck() {
         return new OracleCheck();
     }
@@ -1733,7 +1720,7 @@ public class OracleExprParser extends SQLExprParser {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
-            for (;;) {
+            for (; ; ) {
                 SQLSubPartition subPartition = parseSubPartition();
                 this.parseSegmentAttributes(subPartition);
 
@@ -1754,7 +1741,7 @@ public class OracleExprParser extends SQLExprParser {
             partition.setSubPartitionsCount(subPartitionsCount);
         }
 
-        for (;;) {
+        for (; ; ) {
             parseSegmentAttributes(partition);
 
             if (lexer.token() == Token.LOB) {
@@ -1781,7 +1768,7 @@ public class OracleExprParser extends SQLExprParser {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
-            for (;;) {
+            for (; ; ) {
                 SQLSubPartition subPartition = parseSubPartition();
                 this.parseSegmentAttributes(subPartition);
 
@@ -1816,7 +1803,7 @@ public class OracleExprParser extends SQLExprParser {
 
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
-                for (;;) {
+                for (; ; ) {
                     SQLPartition partition = this.parsePartition();
                     partitionByHash.addPartition(partition);
                     if (lexer.token() == Token.COMMA) {
@@ -1873,7 +1860,7 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     public void parseSegmentAttributes(OracleSegmentAttributes attributes) {
-        for (;;) {
+        for (; ; ) {
             if (lexer.token() == Token.TABLESPACE) {
                 lexer.nextToken();
                 attributes.setTablespace(this.name());
@@ -1956,7 +1943,7 @@ public class OracleExprParser extends SQLExprParser {
         acceptIdentifier("RANGE");
         accept(Token.LPAREN);
         SQLPartitionByRange clause = new SQLPartitionByRange();
-        for (;;) {
+        for (; ; ) {
             SQLName column = this.name();
             clause.addColumn(column);
 
@@ -1986,7 +1973,7 @@ public class OracleExprParser extends SQLExprParser {
             lexer.nextToken();
             accept(Token.IN);
             accept(Token.LPAREN);
-            for (;;) {
+            for (; ; ) {
                 SQLName tablespace = this.name();
                 clause.getStoreIn().add(tablespace);
 
@@ -2015,7 +2002,7 @@ public class OracleExprParser extends SQLExprParser {
 
         accept(Token.LPAREN);
 
-        for (;;) {
+        for (; ; ) {
             SQLPartition partition = this.parsePartition();
 
             clause.addPartition(partition);
@@ -2059,7 +2046,7 @@ public class OracleExprParser extends SQLExprParser {
                 acceptIdentifier("TEMPLATE");
                 accept(Token.LPAREN);
 
-                for (;;) {
+                for (; ; ) {
                     SQLSubPartition subPartition = this.parseSubPartition();
                     subPartition.setParent(byList);
                     byList.getSubPartitionTemplate().add(subPartition);

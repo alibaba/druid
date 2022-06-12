@@ -26,7 +26,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_229_interval extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select DATE_ADD(utc_date(), INTERVAL -'5' DAY)";
 

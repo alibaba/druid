@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest59 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT * FROM atable ORDER BY acolumn DESC OFFSET 0 ROWS FETCH FIRST 10 ROWS ONLY"; //

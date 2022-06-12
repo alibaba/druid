@@ -23,35 +23,34 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlSchemaStatVisitorTest7_between extends TestCase {
-
-	public void test_0() throws Exception {
-		String sql = "select name from student where id = 4 and flag between 1 and 3";
+    public void test_0() throws Exception {
+        String sql = "select name from student where id = 4 and flag between 1 and 3";
 
 //		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
-		MySqlStatementParser parser = new MySqlStatementParser(sql);
-		List<SQLStatement> statementList = parser.parseStatementList();
-		SQLStatement stmt = statementList.get(0);
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
 
-		assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-		MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-		stmt.accept(visitor);
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
 
-		System.out.println(sql);
-		System.out.println("Tables : " + visitor.getTables());
-		System.out.println("fields : " + visitor.getColumns());
-		System.out.println(visitor.getConditions());
+        System.out.println(sql);
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println(visitor.getConditions());
 
-		assertEquals(1, visitor.getTables().size());
-		assertEquals(true, visitor.containsTable("student"));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("student"));
 
-		assertEquals(3, visitor.getColumns().size());
-		assertEquals(true, visitor.containsColumn("student", "flag"));
-		assertEquals(true, visitor.containsColumn("student", "id"));
-		assertEquals(true, visitor.containsColumn("student", "name"));
-		// assertEquals(true, visitor.getFields().contains(new
-		// Column("users", "name")));
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(true, visitor.containsColumn("student", "flag"));
+        assertEquals(true, visitor.containsColumn("student", "id"));
+        assertEquals(true, visitor.containsColumn("student", "name"));
+        // assertEquals(true, visitor.getFields().contains(new
+        // Column("users", "name")));
 
-	}
+    }
 
 }

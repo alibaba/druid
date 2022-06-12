@@ -28,16 +28,15 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlDeleteTest_3 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "DELETE FROM t1 " //
-                     + "WHERE s11 > ANY"//
-                     + "(SELECT COUNT(*) /* no hint */ FROM t2"//
-                     + "  WHERE NOT EXISTS"//
-                     + "   (SELECT * FROM t3"//
-                     + "    WHERE ROW(5*t2.s1,77)="//
-                     + "     (SELECT 50,11*s1 FROM t4 UNION SELECT 50,77 FROM"//
-                     + "      (SELECT * FROM t5) AS t5)));";
+                + "WHERE s11 > ANY"//
+                + "(SELECT COUNT(*) /* no hint */ FROM t2"//
+                + "  WHERE NOT EXISTS"//
+                + "   (SELECT * FROM t3"//
+                + "    WHERE ROW(5*t2.s1,77)="//
+                + "     (SELECT 50,11*s1 FROM t4 UNION SELECT 50,77 FROM"//
+                + "      (SELECT * FROM t5) AS t5)));";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlChecksumTableTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CHECKSUM TABLE tbl_name";
 

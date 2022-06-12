@@ -13,7 +13,6 @@ import java.util.List;
  * Date 2019-06-04 11:48
  */
 public class SQLIndexOptions extends SQLObjectImpl {
-
     private String indexType; // Using btree/hash
     private SQLExpr keyBlockSize;
     private String parserName;
@@ -25,7 +24,6 @@ public class SQLIndexOptions extends SQLObjectImpl {
     private List<SQLAssignItem> otherOptions = new ArrayList<SQLAssignItem>();
 
     public SQLIndexOptions() {
-
     }
 
     public String getIndexType() {

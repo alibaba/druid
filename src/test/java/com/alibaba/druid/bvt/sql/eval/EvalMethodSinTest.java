@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class EvalMethodSinTest extends TestCase {
-
     public void test_reverse() throws Exception {
         Assert.assertEquals(Math.sin(1), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "sin(1)"));
         Assert.assertEquals(Math.sin(1.001), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "sin(1.001)"));

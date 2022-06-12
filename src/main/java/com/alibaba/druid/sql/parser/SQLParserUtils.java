@@ -68,13 +68,12 @@ import com.alibaba.druid.util.StringUtils;
 import java.util.*;
 
 public class SQLParserUtils {
-
     public static SQLStatementParser createSQLStatementParser(String sql, DbType dbType) {
         SQLParserFeature[] features;
         if (DbType.odps == dbType || DbType.mysql == dbType) {
-            features = new SQLParserFeature[] {SQLParserFeature.KeepComments};
+            features = new SQLParserFeature[]{SQLParserFeature.KeepComments};
         } else {
-            features = new SQLParserFeature[] {};
+            features = new SQLParserFeature[]{};
         }
         return createSQLStatementParser(sql, dbType, features);
     }
@@ -82,9 +81,9 @@ public class SQLParserUtils {
     public static SQLStatementParser createSQLStatementParser(String sql, DbType dbType, boolean keepComments) {
         SQLParserFeature[] features;
         if (keepComments) {
-            features = new SQLParserFeature[] {SQLParserFeature.KeepComments};
+            features = new SQLParserFeature[]{SQLParserFeature.KeepComments};
         } else {
-            features = new SQLParserFeature[] {};
+            features = new SQLParserFeature[]{};
         }
 
         return createSQLStatementParser(sql, dbType, features);
@@ -248,45 +247,45 @@ public class SQLParserUtils {
             default:
                 return new SQLSelectQueryBlock(dbType);
         }
-     }
+    }
 
-     public static SQLType getSQLType(String sql, DbType dbType) {
+    public static SQLType getSQLType(String sql, DbType dbType) {
         Lexer lexer = createLexer(sql, dbType);
         return lexer.scanSQLType();
-     }
+    }
 
-     public static SQLType getSQLTypeV2(String sql, DbType dbType) {
+    public static SQLType getSQLTypeV2(String sql, DbType dbType) {
         Lexer lexer = createLexer(sql, dbType);
         return lexer.scanSQLTypeV2();
-     }
+    }
 
-     public static boolean startsWithHint(String sql, DbType dbType) {
+    public static boolean startsWithHint(String sql, DbType dbType) {
         Lexer lexer = createLexer(sql, dbType);
         lexer.nextToken();
         return lexer.token() == Token.HINT;
-     }
+    }
 
-     public static boolean containsAny(String sql, DbType dbType, Token token) {
-         Lexer lexer = createLexer(sql, dbType);
-         for (;;) {
-             lexer.nextToken();
-             final Token tok = lexer.token;
-             switch (tok) {
-                 case EOF:
-                 case ERROR:
-                     return false;
-                 default:
-                     if (tok == token) {
-                         return true;
-                     }
-                     break;
-             }
-         }
-     }
+    public static boolean containsAny(String sql, DbType dbType, Token token) {
+        Lexer lexer = createLexer(sql, dbType);
+        for (; ; ) {
+            lexer.nextToken();
+            final Token tok = lexer.token;
+            switch (tok) {
+                case EOF:
+                case ERROR:
+                    return false;
+                default:
+                    if (tok == token) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+    }
 
     public static boolean containsAny(String sql, DbType dbType, Token token1, Token token2) {
         Lexer lexer = createLexer(sql, dbType);
-        for (;;) {
+        for (; ; ) {
             lexer.nextToken();
             final Token tok = lexer.token;
             switch (tok) {
@@ -304,7 +303,7 @@ public class SQLParserUtils {
 
     public static boolean containsAny(String sql, DbType dbType, Token token1, Token token2, Token token3) {
         Lexer lexer = createLexer(sql, dbType);
-        for (;;) {
+        for (; ; ) {
             lexer.nextToken();
             final Token tok = lexer.token;
             switch (tok) {
@@ -326,7 +325,7 @@ public class SQLParserUtils {
         }
 
         Lexer lexer = createLexer(sql, dbType);
-        for (;;) {
+        for (; ; ) {
             lexer.nextToken();
             final Token tok = lexer.token;
             switch (tok) {
@@ -348,64 +347,64 @@ public class SQLParserUtils {
         return getSimpleSelectValue(sql, dbType, null);
     }
 
-     public static Object getSimpleSelectValue(String sql, DbType dbType, SimpleValueEvalHandler handler) {
-         Lexer lexer = createLexer(sql, dbType);
-         lexer.nextToken();
+    public static Object getSimpleSelectValue(String sql, DbType dbType, SimpleValueEvalHandler handler) {
+        Lexer lexer = createLexer(sql, dbType);
+        lexer.nextToken();
 
-         if (lexer.token != Token.SELECT && lexer.token != Token.VALUES) {
-             return null;
-         }
+        if (lexer.token != Token.SELECT && lexer.token != Token.VALUES) {
+            return null;
+        }
 
-         lexer.nextTokenValue();
+        lexer.nextTokenValue();
 
-         SQLExpr expr = null;
-         Object value;
-         switch (lexer.token) {
-             case LITERAL_INT:
-                 value = lexer.integerValue();
-                 break;
-             case LITERAL_CHARS:
-             case LITERAL_NCHARS:
-                 value = lexer.stringVal();
-                 break;
-             case LITERAL_FLOAT:
-                 value = lexer.decimalValue();
-                 break;
-             default:
-                 if (handler == null) {
-                     return null;
-                 }
+        SQLExpr expr = null;
+        Object value;
+        switch (lexer.token) {
+            case LITERAL_INT:
+                value = lexer.integerValue();
+                break;
+            case LITERAL_CHARS:
+            case LITERAL_NCHARS:
+                value = lexer.stringVal();
+                break;
+            case LITERAL_FLOAT:
+                value = lexer.decimalValue();
+                break;
+            default:
+                if (handler == null) {
+                    return null;
+                }
 
-                 expr = new SQLExprParser(lexer).expr();
-                 try {
-                     value = handler.eval(expr);
-                 } catch (Exception error) {
-                     // skip
-                     value = null;
-                 }
-                 break;
-         }
+                expr = new SQLExprParser(lexer).expr();
+                try {
+                    value = handler.eval(expr);
+                } catch (Exception error) {
+                    // skip
+                    value = null;
+                }
+                break;
+        }
 
-         lexer.nextToken();
+        lexer.nextToken();
 
-         if (lexer.token == Token.FROM) {
-             lexer.nextToken();
-             if (lexer.token == Token.DUAL) {
-                 lexer.nextToken();
-             } else {
-                 return null;
-             }
-         }
-         if (lexer.token != Token.EOF) {
-             return null;
-         }
+        if (lexer.token == Token.FROM) {
+            lexer.nextToken();
+            if (lexer.token == Token.DUAL) {
+                lexer.nextToken();
+            } else {
+                return null;
+            }
+        }
+        if (lexer.token != Token.EOF) {
+            return null;
+        }
 
-         return value;
-     }
+        return value;
+    }
 
-     public static interface SimpleValueEvalHandler {
+    public static interface SimpleValueEvalHandler {
         Object eval(SQLExpr expr);
-     }
+    }
 
     public static String replaceBackQuote(String sql, DbType dbType) {
         int i = sql.indexOf('`');
@@ -421,7 +420,7 @@ public class SQLParserUtils {
         int off = 0;
 
         for_:
-        for (;;) {
+        for (; ; ) {
             lexer.nextToken();
 
             int p0, p1;
@@ -467,7 +466,6 @@ public class SQLParserUtils {
 
         SQLType sqlType = getSQLType(sql, dbType);
         if (sqlType == SQLType.INSERT) {
-
             parser.config(SQLParserFeature.InsertReader, true);
 
             SQLInsertStatement stmt = (SQLInsertStatement) parser.parseStatement();
@@ -530,7 +528,7 @@ public class SQLParserUtils {
         boolean set = false, paiOrJar = false;
         int start = 0;
         Token token = lexer.token;
-        for (;lexer.token != Token.EOF;) {
+        for (; lexer.token != Token.EOF; ) {
             if (token == Token.SEMI) {
                 int len = lexer.startPos - start;
                 if (len > 0) {
@@ -549,8 +547,8 @@ public class SQLParserUtils {
                 int len = lexer.startPos - start;
                 if (len > 0) {
                     String splitSql = removeComment(
-                            sql.substring(start, lexer.startPos)
-                            , dbType
+                            sql.substring(start, lexer.startPos),
+                            dbType
                     ).trim();
                     if (!splitSql.isEmpty()) {
                         list.add(splitSql);
@@ -696,7 +694,7 @@ public class SQLParserUtils {
 
         int start = 0;
         Token token = lexer.token;
-        for (;lexer.token != Token.EOF;) {
+        for (; lexer.token != Token.EOF; ) {
             if (token == Token.LINE_COMMENT) {
                 int len = lexer.startPos - start;
                 if (len > 0) {
@@ -723,7 +721,6 @@ public class SQLParserUtils {
     }
 
     public static List<String> getTables(String sql, DbType dbType) {
-
         Set<String> tables = new LinkedHashSet<>();
 
         boolean set = false;
@@ -743,9 +740,8 @@ public class SQLParserUtils {
                 break;
         }
 
-
         for_:
-        for (;lexer.token != Token.EOF;) {
+        for (; lexer.token != Token.EOF; ) {
             switch (lexer.token) {
                 case CREATE:
                 case DROP:

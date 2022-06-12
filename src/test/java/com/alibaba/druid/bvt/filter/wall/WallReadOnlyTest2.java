@@ -25,18 +25,17 @@ import com.alibaba.druid.wall.spi.OracleWallProvider;
 
 /**
  * 这个场景，检测可疑的Having条件
- * 
+ *
  * @author wenshao
  */
 public class WallReadOnlyTest2 extends TestCase {
-
     private WallConfig config = new WallConfig();
 
     protected void setUp() throws Exception {
         config.addReadOnlyTable("members");
     }
 
-    private String sql        = "SELECT F1, F2 members";
+    private String sql = "SELECT F1, F2 members";
     private String insert_sql = "INSERT INTO members (FID, FNAME) VALUES (?, ?)";
     private String update_sql = "UPDATE members SET FNAME = ? WHERe FID = ?";
     private String delete_sql = "DELETE members WHERE FID = ?";

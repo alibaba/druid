@@ -28,7 +28,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2SelectTest_27_interval extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT current date + 1 YEAR, current date + 3 YEARS + 2 MONTHS + 15 DAYS, current time + 5 HOURS - 3 MINUTES + 10 SECONDS from sysibm.sysdummy1";
 
@@ -61,12 +60,12 @@ public class DB2SelectTest_27_interval extends DB2Test {
                         "\t, CURRENT DATE + 3 YEARS + 2 MONTHS + 15 DAYS\n" +
                         "\t, CURRENT TIME + 5 HOURS - 3 MINUTES + 10 SECONDS\n" +
                         "FROM sysibm.sysdummy1", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("select CURRENT DATE + 1 as YEAR\n" +
                         "\t, CURRENT DATE + 3 years + 2 months + 15 days\n" +
                         "\t, CURRENT TIME + 5 hours - 3 minutes + 10 seconds\n" +
                         "from sysibm.sysdummy1", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

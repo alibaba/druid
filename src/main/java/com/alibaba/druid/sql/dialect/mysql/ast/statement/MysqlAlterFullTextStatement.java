@@ -7,7 +7,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.FullTextType;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MysqlAlterFullTextStatement extends MySqlStatementImpl implements SQLAlterStatement {
-
     private FullTextType type;
 
     private SQLName name;

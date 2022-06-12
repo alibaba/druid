@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OdpsSelectTest19 extends TestCase {
-
     public void test_select() throws Exception {
         byte[] bytes = new byte[8];
         putLong(bytes, 0, 1095288847322L);
@@ -35,35 +34,35 @@ public class OdpsSelectTest19 extends TestCase {
                 "FROM mytable", SQLUtils.formatOdps(sql));
         Assert.assertEquals("select wm_concat(DISTINCT ',', name)\n" +
                 "from mytable", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
 //        System.out.println("Tables : " + visitor.getTables());
 //      System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
 
     static void putLong(byte[] b, int off, long val) {
-        b[off + 7] = (byte) (val       );
-        b[off + 6] = (byte) (val >>>  8);
+        b[off + 7] = (byte) (val);
+        b[off + 6] = (byte) (val >>> 8);
         b[off + 5] = (byte) (val >>> 16);
         b[off + 4] = (byte) (val >>> 24);
         b[off + 3] = (byte) (val >>> 32);
         b[off + 2] = (byte) (val >>> 40);
         b[off + 1] = (byte) (val >>> 48);
-        b[off    ] = (byte) (val >>> 56);
+        b[off] = (byte) (val >>> 56);
     }
 }

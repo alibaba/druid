@@ -46,7 +46,6 @@ public class MySqlParameterizedOutputVisitorTest_42 extends TestCase {
 
         System.out.println(psql);
 
-
         assertEquals("UPDATE offline_file_user\n" +
                 "SET sended_file_num = sended_file_num - ?, sended_flie_total_size = sended_flie_total_size - ?\n" +
                 "WHERE login_id = ?", psql);

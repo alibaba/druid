@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by wenshao on 16/9/25.
@@ -31,7 +31,6 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
     private List<SQLExpr> by;
 
     public SQLLimit() {
-
     }
 
     public SQLLimit(int rowCount) {
@@ -46,7 +45,6 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
         this.setOffset(offset);
         this.setRowCount(rowCount);
     }
-
 
     public SQLExpr getRowCount() {
         return rowCount;
@@ -179,12 +177,18 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLLimit limit = (SQLLimit) o;
 
-        if (rowCount != null ? !rowCount.equals(limit.rowCount) : limit.rowCount != null) return false;
+        if (rowCount != null ? !rowCount.equals(limit.rowCount) : limit.rowCount != null) {
+            return false;
+        }
         return offset != null ? offset.equals(limit.offset) : limit.offset == null;
     }
 

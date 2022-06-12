@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest52 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select 1 interval from dual"; //
@@ -54,14 +53,14 @@ public class OracleSelectTest52 extends OracleTest {
             String text = SQLUtils.toOracleString(stmt);
 
             Assert.assertEquals("SELECT 1 AS INTERVAL" //
-                                + "\nFROM dual", text);
+                    + "\nFROM dual", text);
         }
-        
+
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            
+
             Assert.assertEquals("select 1 as INTERVAL" //
-                                + "\nfrom dual", text);
+                    + "\nfrom dual", text);
         }
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));

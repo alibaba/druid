@@ -27,10 +27,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleDropViewTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "DROP view list_customers CASCADE CONSTRAINTS";
+                "DROP view list_customers CASCADE CONSTRAINTS";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -38,7 +37,7 @@ public class OracleDropViewTest extends OracleTest {
         print(statementList);
 
         Assert.assertEquals("DROP VIEW list_customers CASCADE CONSTRAINTS",
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

@@ -38,20 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.alibaba.druid.sql.parser.Token.*;
-import static com.alibaba.druid.sql.parser.Token.COLUMN;
-import static com.alibaba.druid.sql.parser.Token.COMMA;
-import static com.alibaba.druid.sql.parser.Token.DATABASE;
-import static com.alibaba.druid.sql.parser.Token.EQ;
-import static com.alibaba.druid.sql.parser.Token.GROUP;
-import static com.alibaba.druid.sql.parser.Token.LPAREN;
-import static com.alibaba.druid.sql.parser.Token.RPAREN;
-import static com.alibaba.druid.sql.parser.Token.TABLE;
-import static com.alibaba.druid.sql.parser.Token.VIEW;
-import static com.alibaba.druid.sql.parser.Token.WHERE;
-import static com.alibaba.druid.sql.parser.Token.WITH;
 
 public class MySqlStatementParser extends SQLStatementParser {
-
     private static final String AUTO_INCREMENT = "AUTO_INCREMENT";
     private static final String AVG_ROW_LENGTH = "AVG_ROW_LENGTH";
     private static final String CHECKSUM2 = "CHECKSUM";
@@ -183,7 +171,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     acceptIdentifier("PARTITIONS");
                     deleteStatement.setForceAllPartitions(true);
-                } else if (lexer.identifierEquals(FnvHash.Constants.PARTITIONS)){
+                } else if (lexer.identifierEquals(FnvHash.Constants.PARTITIONS)) {
                     lexer.nextToken();
                     deleteStatement.setForceAllPartitions(true);
                 } else if (lexer.token() == Token.PARTITION) {
@@ -250,7 +238,6 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLStatement parseCreate() {
-
         List<String> comments = null;
         if (lexer.isKeepComments() && lexer.hasComment()) {
             comments = lexer.readAndResetComments();
@@ -322,8 +309,8 @@ public class MySqlStatementParser extends SQLStatementParser {
                 if (replace) {
                     lexer.reset(mark);
                 }
-                SQLCreateDatabaseStatement stmt = (SQLCreateDatabaseStatement)parseCreateDatabase();
-                if(physical) {
+                SQLCreateDatabaseStatement stmt = (SQLCreateDatabaseStatement) parseCreateDatabase();
+                if (physical) {
                     stmt.setPhysical(true);
                 }
                 return stmt;
@@ -361,8 +348,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 || lexer.identifierEquals(FnvHash.Constants.SPATIAL)
                 || lexer.identifierEquals(FnvHash.Constants.ANN)
                 || lexer.identifierEquals(FnvHash.Constants.GLOBAL)
-                || lexer.identifierEquals(FnvHash.Constants.LOCAL))
-        {
+                || lexer.identifierEquals(FnvHash.Constants.LOCAL)) {
             if (replace) {
                 lexer.reset(mark);
             }
@@ -432,40 +418,38 @@ public class MySqlStatementParser extends SQLStatementParser {
             return parseCreateTable();
         }
 
-        if(lexer.identifierEquals(FnvHash.Constants.TABLEGROUP)) {
+        if (lexer.identifierEquals(FnvHash.Constants.TABLEGROUP)) {
             lexer.reset(mark);
             return parseCreateTableGroup();
         }
 
-        if(lexer.identifierEquals(FnvHash.Constants.OUTLINE)) {
+        if (lexer.identifierEquals(FnvHash.Constants.OUTLINE)) {
             lexer.reset(mark);
             return parseCreateOutline();
         }
 
-        if(lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
+        if (lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
             lexer.reset(mark);
             return parseCreateIndex(true);
         }
 
-        if(lexer.identifierEquals(FnvHash.Constants.RESOURCE)) {
+        if (lexer.identifierEquals(FnvHash.Constants.RESOURCE)) {
             lexer.reset(mark);
             return parseCreateResourceGroup();
         }
 
-        if(lexer.identifierEquals(FnvHash.Constants.MATERIALIZED)) {
+        if (lexer.identifierEquals(FnvHash.Constants.MATERIALIZED)) {
             lexer.reset(mark);
             return parseCreateMaterializedView();
         }
 
-        if(lexer.identifierEquals(FnvHash.Constants.ROLE)) {
+        if (lexer.identifierEquals(FnvHash.Constants.ROLE)) {
             lexer.reset(mark);
             return parseCreateRole();
         }
 
         throw new ParserException("TODO " + lexer.info());
     }
-
-
 
     public SQLStatement parseCreateFullTextStatement() {
         Lexer.SavePoint mark = lexer.mark();
@@ -529,18 +513,16 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         accept(Token.LPAREN);
         for (; ; ) {
-
             String key = "";
             if (lexer.token() == Token.LITERAL_ALIAS || lexer.token() == Token.LITERAL_CHARS) {
                 key = StringUtils.removeNameQuotes(lexer.stringVal());
 
                 if (key.equalsIgnoreCase("charfilter")) {
-
                     lexer.nextToken();
                     accept(Token.EQ);
 
                     accept(Token.LBRACKET);
-                    for(;;) {
+                    for (; ; ) {
                         String c = SQLUtils.normalize(this.exprParser.name().getSimpleName());
                         stmt.getCharfilters().add(c);
                         if (lexer.token() == Token.COMMA) {
@@ -741,7 +723,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setAddDataFile(file);
         }
 
-        for (;;) {
+        for (; ; ) {
             if (lexer.identifierEquals(FnvHash.Constants.INITIAL_SIZE)) {
                 lexer.nextToken();
                 if (lexer.token() == Token.EQ) {
@@ -829,7 +811,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         acceptIdentifier("OPTIONS");
         accept(Token.LPAREN);
-        for (;;) {
+        for (; ; ) {
             if (lexer.identifierEquals(FnvHash.Constants.HOST)) {
                 lexer.nextToken();
                 SQLExpr host = this.exprParser.expr();
@@ -957,7 +939,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     if (password instanceof SQLIdentifierExpr || password instanceof SQLCharExpr) {
                         userSpec.setPassword(password);
                     } else {
-                        throw new ParserException("syntax error. invalid " + password +" expression.");
+                        throw new ParserException("syntax error. invalid " + password + " expression.");
                     }
 
                 } else if (lexer.token() == Token.WITH) {
@@ -967,7 +949,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     // IDENTIFIED WITH auth_plugin BY 'auth_string'
                     // IDENTIFIED WITH auth_plugin AS 'auth_string'
                     if (lexer.token() == Token.BY ||
-                        lexer.token() == Token.AS) {
+                            lexer.token() == Token.AS) {
                         userSpec.setPluginAs(lexer.token() == Token.AS);
                         lexer.nextToken();
 
@@ -1288,7 +1270,6 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
-
         if (lexer.identifierEquals(BINLOG)) {
             SQLStatement stmt = parseBinlog();
             statementList.add(stmt);
@@ -1339,7 +1320,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.identifierEquals(FnvHash.Constants.EXPORT)) {
             lexer.nextToken();
-            if(lexer.token() == Token.TABLE) {
+            if (lexer.token() == Token.TABLE) {
                 SQLStatement stmt = parseExportTable();
                 statementList.add(stmt);
             } else if (lexer.token() == Token.DATABASE) {
@@ -1588,12 +1569,11 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             MySqlLockTableStatement stmt = new MySqlLockTableStatement();
 
-            for(;;) {
+            for (; ; ) {
                 MySqlLockTableStatement.Item item = new MySqlLockTableStatement.Item();
 
                 SQLExprTableSource tableSource = null;
                 SQLName tableName = this.exprParser.name();
-
 
                 if (lexer.token() == Token.AS) {
                     lexer.nextToken();
@@ -1673,7 +1653,6 @@ public class MySqlStatementParser extends SQLStatementParser {
             boolean tddlHints = false;
             boolean accept = false;
 
-
             boolean acceptHint = false;
             switch (lexer.token()) {
                 case SELECT:
@@ -1698,9 +1677,9 @@ public class MySqlStatementParser extends SQLStatementParser {
                     acceptHint = true;
                     break;
                 case IDENTIFIER:
-                    acceptHint = lexer.hash_lower() == FnvHash.Constants.DUMP
-                            || lexer.hash_lower() == FnvHash.Constants.RENAME
-                            || lexer.hash_lower() == FnvHash.Constants.DESCRIBE;
+                    acceptHint = lexer.hashLCase() == FnvHash.Constants.DUMP
+                            || lexer.hashLCase() == FnvHash.Constants.RENAME
+                            || lexer.hashLCase() == FnvHash.Constants.DESCRIBE;
                     break;
                 default:
                     break;
@@ -1713,16 +1692,15 @@ public class MySqlStatementParser extends SQLStatementParser {
                 if (hintText.startsWith("+TDDL")
                         || hintText.startsWith("+ TDDL")
                         || hintText.startsWith("TDDL")
-                        || hintText.startsWith("!TDDL"))
-                {
+                        || hintText.startsWith("!TDDL")) {
                     tddlHints = true;
-                } else if(hintText.startsWith("+")) {
+                } else if (hintText.startsWith("+")) {
                     accept = true;
                 }
             }
 
             if (tddlHints) {
-                SQLStatementImpl stmt = (SQLStatementImpl)this.parseStatement();
+                SQLStatementImpl stmt = (SQLStatementImpl) this.parseStatement();
                 stmt.setHeadHints(hints);
                 statementList.add(stmt);
                 return true;
@@ -1785,7 +1763,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
 
                 MySqlCheckTableStatement stmt = new MySqlCheckTableStatement();
-                for (;;) {
+                for (; ; ) {
                     SQLName table = this.exprParser.name();
                     stmt.addTable(new SQLExprTableSource(table));
 
@@ -1813,7 +1791,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         stmt.setTable(tableName);
         stmt.setType(new SQLIdentifierExpr("UPLOAD"));
 
-        if(lexer.token() == Token.LITERAL_INT) {
+        if (lexer.token() == Token.LITERAL_INT) {
             for (; ; ) {
                 stmt.getSpIdList().add(this.exprParser.integerExpr());
                 String pidStr = lexer.stringVal();
@@ -1913,7 +1891,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         stmt.setType(new SQLIdentifierExpr(type));
 
         accept(Token.FROM);
-        for (; ;) {
+        for (; ; ) {
             stmt.getProperties().add(new SQLCharExpr(lexer.stringVal()));
             accept(Token.LITERAL_CHARS);
             if (lexer.token() == Token.COMMA) {
@@ -2003,7 +1981,6 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     }
 
-
     protected SQLStatement parseExportTable() {
         accept(Token.TABLE);
         SQLExportTableStatement stmt = new SQLExportTableStatement();
@@ -2012,7 +1989,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                         this.exprParser.name()));
         return stmt;
     }
-
 
     protected SQLStatement parseExportDB() {
         accept(Token.DATABASE);
@@ -2064,7 +2040,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         acceptIdentifier("RAFT_MEMBER_CHANGE");
         MySqlRaftMemberChangeStatement stmt = new MySqlRaftMemberChangeStatement();
 
-
         if (lexer.identifierEquals("NOLEADER")) {
             lexer.nextToken();
             stmt.setNoLeader(true);
@@ -2110,7 +2085,6 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setMigrateType(new SQLIntegerExpr(1));
         }
 
-
         accept(Token.FROM);
         stmt.setFromInsId(exprParser.charExpr());
 
@@ -2147,7 +2121,6 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     protected SQLStatement parseImportDB() {
-
         accept(Token.DATABASE);
         SQLImportDatabaseStatement stmt = new SQLImportDatabaseStatement();
 
@@ -2191,7 +2164,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                 throw new ParserException("Invalid 'build' option, should be 'Y' or 'N'. ");
             }
         }
-
 
         return stmt;
     }
@@ -2239,7 +2211,6 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     }
 
-
     public SQLStatement parseFlush() {
         acceptIdentifier("FLUSH");
         MySqlFlushStatement stmt = new MySqlFlushStatement();
@@ -2254,7 +2225,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setLocal(true);
         }
 
-        for (;;) {
+        for (; ; ) {
             if (lexer.token() == Token.BINARY || lexer.identifierEquals("BINARY")) {
                 lexer.nextToken();
                 acceptIdentifier("LOGS");
@@ -2290,7 +2261,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 accept(Token.CACHE);
                 stmt.setQueryCache(true);
-            }  else if (lexer.identifierEquals("RELAY")) {
+            } else if (lexer.identifierEquals("RELAY")) {
                 lexer.nextToken();
                 acceptIdentifier("LOGS");
                 stmt.setRelayLogs(true);
@@ -2306,7 +2277,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             } else if (lexer.identifierEquals(STATUS)) {
                 lexer.nextToken();
                 stmt.setStatus(true);
-            } else  if (lexer.identifierEquals("USER_RESOURCES")) {
+            } else if (lexer.identifierEquals("USER_RESOURCES")) {
                 lexer.nextToken();
                 stmt.setUserResources(true);
             } else if (lexer.token() == Token.COMMA) {
@@ -2328,7 +2299,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 accept(Token.LOCK);
                 stmt.setWithReadLock(true);
             }
-            for(;;) {
+            for (; ; ) {
                 if (lexer.token() == Token.IDENTIFIER) {
                     for (; ; ) {
                         SQLName name = this.exprParser.name();
@@ -2418,9 +2389,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         return parseExplain(explain);
     }
 
-
     private MySqlExplainStatement parseExplain(MySqlExplainStatement explain) {
-
         if (lexer.identifierEquals(FnvHash.Constants.PLAN)) {
             Lexer.SavePoint mark = lexer.mark();
             lexer.nextToken();
@@ -2456,7 +2425,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         break;
                     }
 
-                    for (;;) {
+                    for (; ; ) {
                         if (lexer.identifierEquals("FORMAT")) {
                             lexer.nextToken();
                             String format = lexer.stringVal();
@@ -2488,7 +2457,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         boolean table = false;
         if (lexer.token() == Token.IDENTIFIER) {
-            final long hash = lexer.hash_lower();
+            final long hash = lexer.hashLCase();
             String stringVal = lexer.stringVal();
 
             if (hash == FnvHash.Constants.EXTENDED) {
@@ -2579,7 +2548,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             MySqlShowProcessListStatement stmt = new MySqlShowProcessListStatement();
             stmt.setFull(full);
 
-            if(!full) {
+            if (!full) {
                 if (lexer.identifierEquals(FnvHash.Constants.MPP)) {
                     lexer.nextToken();
                     stmt.setMpp(true);
@@ -3037,7 +3006,6 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             if (lexer.identifierEquals("STATUS")) {
-
                 lexer.nextToken();
 
                 if (lexer.token() == Token.LIKE) {
@@ -3171,7 +3139,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.INDEX || lexer.identifierEquals("INDEXES") || lexer.identifierEquals("KEYS")) {
-
             SQLShowIndexesStatement stmt = new SQLShowIndexesStatement();
 
             stmt.setType(lexer.stringVal());
@@ -3412,8 +3379,8 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
 
                 SQLName name = this.exprParser.name();
-                if(name instanceof SQLPropertyExpr) {
-                    stmt.setDatabase((SQLIdentifierExpr)((SQLPropertyExpr) name).getOwner());
+                if (name instanceof SQLPropertyExpr) {
+                    stmt.setDatabase((SQLIdentifierExpr) ((SQLPropertyExpr) name).getOwner());
                     stmt.setTableGroup(new SQLIdentifierExpr(((SQLPropertyExpr) name).getName()));
                 } else {
                     stmt.setDatabase(name);
@@ -3651,7 +3618,6 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                 return stmt;
             } else {
-
                 MySqlShowRuleStatement stmt = new MySqlShowRuleStatement();
 
                 if (full) {
@@ -4097,8 +4063,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-
-
     public SQLStartTransactionStatement parseStart() {
         acceptIdentifier("START");
         acceptIdentifier("TRANSACTION");
@@ -4311,7 +4275,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.VALUES || lexer.identifierEquals("VALUE")) {
             lexer.nextToken();
 
-            parseValueClause(stmt.getValuesList(), null,0, stmt);
+            parseValueClause(stmt.getValuesList(), null, 0, stmt);
         } else if (lexer.token() == Token.SELECT) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
             stmt.setQuery(queryExpr);
@@ -4408,7 +4372,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.SET);
 
             if (lexer.token() != Token.LITERAL_CHARS) {
-                throw new ParserException("syntax error, illegal charset. "  + lexer.info());
+                throw new ParserException("syntax error, illegal charset. " + lexer.info());
             }
 
             String charset = lexer.stringVal();
@@ -4436,7 +4400,6 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     protected MySqlLoadDataInFileStatement parseLoadDataInFile() {
-
         acceptIdentifier("DATA");
 
         MySqlLoadDataInFileStatement stmt = new MySqlLoadDataInFileStatement();
@@ -4610,6 +4573,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
         return stmt;
     }
+
     public MySqlExecuteForAdsStatement parseExecuteForAds() {
         MySqlExecuteForAdsStatement stmt = new MySqlExecuteForAdsStatement();
         stmt.setAction(exprParser.name());
@@ -4643,7 +4607,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             for (; ; ) {
                 if (lexer.token() == Token.IDENTIFIER) {
-                    long hash = lexer.hash_lower();
+                    long hash = lexer.hashLCase();
 
                     if (hash == FnvHash.Constants.LOW_PRIORITY) {
                         stmt.setLowPriority(true);
@@ -4675,7 +4639,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                         continue;
                     }
                 }
-
 
                 break;
             }
@@ -4728,14 +4691,14 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.WITH) {
-                SQLSelectStatement withStmt = (SQLSelectStatement)parseWith();
+                SQLSelectStatement withStmt = (SQLSelectStatement) parseWith();
                 stmt.setQuery(withStmt.getSelect());
             }
 
             if (lexer.token() == Token.PARTITION) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
-                for (;;) {
+                for (; ; ) {
                     SQLAssignItem ptExpr = new SQLAssignItem();
                     ptExpr.setTarget(this.exprParser.name());
                     if (lexer.token() == Token.EQ) {
@@ -4825,7 +4788,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                             Token token = lexer.token();
                             if (token == Token.IDENTIFIER) {
                                 identName = lexer.stringVal();
-                                hash = lexer.hash_lower();
+                                hash = lexer.hashLCase();
                             } else if (token == Token.LITERAL_CHARS) {
                                 if (lexer.isEnabled(SQLParserFeature.IgnoreNameQuotes)) {
                                     identName = lexer.stringVal();
@@ -4938,7 +4901,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         } else if (lexer.token() == (Token.SELECT)) {
             SQLSelect select = this.exprParser.createSelectParser().select();
-            if(commentHints != null && !commentHints.isEmpty()) {
+            if (commentHints != null && !commentHints.isEmpty()) {
                 select.setHeadHint(commentHints.get(0));
             }
             select.setParent(stmt);
@@ -4961,7 +4924,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.UPDATE);
 
             List<SQLExpr> duplicateKeyUpdate = stmt.getDuplicateKeyUpdate();
-            for (;;) {
+            for (; ; ) {
                 SQLName name = this.exprParser.name();
                 accept(Token.EQ);
                 SQLExpr value;
@@ -5102,7 +5065,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 varRef.setGlobal(true);
             }
 
-            if(session != null){
+            if (session != null) {
                 SQLVariantRefExpr varRef = (SQLVariantRefExpr) stmt.getItems().get(0).getTarget();
                 varRef.setSession(true);
             }
@@ -5114,8 +5077,6 @@ public class MySqlStatementParser extends SQLStatementParser {
             return stmt;
         }
     }
-
-
 
     public SQLStatement parseAlter() {
         List<String> comments = null;
@@ -5245,11 +5206,11 @@ public class MySqlStatementParser extends SQLStatementParser {
             return parseAlterSystem();
         }
 
-        if(lexer.identifierEquals(FnvHash.Constants.RESOURCE)) {
+        if (lexer.identifierEquals(FnvHash.Constants.RESOURCE)) {
             lexer.reset(mark);
             return parseAlterResourceGroup();
         }
-        if(lexer.identifierEquals(FnvHash.Constants.MATERIALIZED)) {
+        if (lexer.identifierEquals(FnvHash.Constants.MATERIALIZED)) {
             lexer.reset(mark);
             return parseAlterMaterialized();
         }
@@ -5427,8 +5388,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
-            for (;;) {
-
+            for (; ; ) {
                 if (lexer.token() == Token.CONSTRAINT) {
                     SQLTableConstraint constraint = (SQLTableConstraint) this.exprParser.parseConstaint();
                     createView.addColumn(constraint);
@@ -5488,7 +5448,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (lexer.identifierEquals("CASCADED")) {
                 createView.setWithCascaded(true);
                 lexer.nextToken();
-            } else if (lexer.identifierEquals("LOCAL")){
+            } else if (lexer.identifierEquals("LOCAL")) {
                 createView.setWithLocal(true);
                 lexer.nextToken();
             } else if (lexer.identifierEquals("READ")) {
@@ -5681,7 +5641,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         stmt.setName(name);
 
         // for mysql
-        for (;;) {
+        for (; ; ) {
             if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
                 SQLExpr comment = this.exprParser.primary();
@@ -5721,7 +5681,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         stmt.setName(name);
 
         // for mysql
-        for (;;) {
+        for (; ; ) {
             if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
                 SQLExpr comment = this.exprParser.primary();
@@ -6094,13 +6054,13 @@ public class MySqlStatementParser extends SQLStatementParser {
                             if (lexer.token() == Token.LPAREN) {
                                 lexer.nextToken();
 
-                                for (;;) {
+                                for (; ; ) {
                                     SQLPartition partition = this.getExprParser().parsePartition();
                                     item.addPartition(partition);
                                     if (lexer.token() == COMMA) {
                                         lexer.nextToken();
 
-                                        if(lexer.token() == PARTITION) {
+                                        if (lexer.token() == PARTITION) {
                                             continue;
                                         }
                                     }
@@ -6787,7 +6747,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             case PARTITION: {
                 Lexer.SavePoint mark = lexer.mark();
                 lexer.nextToken();
-                if(lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
+                if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
                     lexer.nextToken();
                     SQLAlterTablePartitionLifecycle item = new SQLAlterTablePartitionLifecycle();
                     if (lexer.token() == Token.EQ) {
@@ -6814,7 +6774,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         stmt.setName(this.exprParser.name());
 
         while (true) {
-            boolean parsed = ((MySqlExprParser)this.exprParser).parseTableOptions(stmt.getTableOptions(), stmt);
+            boolean parsed = ((MySqlExprParser) this.exprParser).parseTableOptions(stmt.getTableOptions(), stmt);
             if (!parsed) {
                 parsed = parseAlterSpecification(stmt);
             }
@@ -6838,7 +6798,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 MySqlRenameTableStatement renameStmt = new MySqlRenameTableStatement();
                 MySqlRenameTableStatement.Item item = new MySqlRenameTableStatement.Item();
                 item.setName((SQLName) stmt.getTableSource().getExpr());
-                item.setTo(((SQLAlterTableRename)stmt.getItems().get(0)).getToName());
+                item.setTo(((SQLAlterTableRename) stmt.getItems().get(0)).getToName());
                 renameStmt.addItem(item);
                 return renameStmt;
             }
@@ -6906,7 +6866,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                         alterIndex.setAnalyzerName(this.exprParser.name());
                         stmt.addItem(alterIndex);
                     } else {
-
                         if (lexer.token() == Token.COLUMN) {
                             lexer.nextToken();
                         }
@@ -7133,7 +7092,6 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                                 stmt.addItem(item);
                             } else if (lexer.token() == Token.UNIQUE) {
-
                                 SQLUnique unique = this.exprParser.parseUnique();
                                 SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(unique);
                                 stmt.addItem(item);
@@ -7354,7 +7312,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                             stmt.addItem(item);
                         }
 
-
                     } else if (lexer.identifierEquals("IMPORT")) {
                         lexer.nextToken();
 
@@ -7432,7 +7389,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                             acceptIdentifier("VALIDATION");
                             item.setValidation(false);
                         }
-
 
                         stmt.addItem(item);
                     } else if (lexer.identifierEquals("REBUILD")) {
@@ -7773,7 +7729,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     private MySqlExtPartition parseExtPartition() {
         MySqlExtPartition partitionDef = new MySqlExtPartition();
-        for (;;) {
+        for (; ; ) {
             MySqlExtPartition.Item item = new MySqlExtPartition.Item();
 
             if (lexer.identifierEquals(FnvHash.Constants.DBPARTITION)) {
@@ -7838,7 +7794,6 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         SQLAlterTableAddColumn item = new SQLAlterTableAddColumn();
         for (; ; ) {
-
             SQLColumnDefinition columnDef = this.exprParser.parseColumn();
             item.addColumn(columnDef);
             if (lexer.identifierEquals("AFTER")) {
@@ -7917,7 +7872,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             name.setParent(item);
             item.addColumn(name);
 
-            if (dbType !=  DbType.mysql) {
+            if (dbType != DbType.mysql) {
                 while (lexer.token() == Token.COMMA) {
                     Lexer.SavePoint savePoint = lexer.markOut();
                     lexer.nextToken();
@@ -7985,8 +7940,6 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLStatement parseRename() {
-
-
         acceptIdentifier("RENAME");
 
         if (lexer.token() == Token.SEQUENCE) {
@@ -8084,7 +8037,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
         }
 
-        for (;;) {
+        for (; ; ) {
             if (lexer.identifierEquals(FnvHash.Constants.CHARACTER)) {
                 lexer.nextToken();
                 accept(Token.SET);
@@ -8122,7 +8075,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             //ads 特殊支持
             else if (lexer.identifierEquals("SHARDS") || lexer.identifierEquals("SHARD_ID")
-                        || lexer.identifierEquals("REPLICATION") || lexer.identifierEquals("STORAGE_DEPENDENCY")
+                    || lexer.identifierEquals("REPLICATION") || lexer.identifierEquals("STORAGE_DEPENDENCY")
                     || lexer.identifierEquals("REPLICA_TYPE") || lexer.identifierEquals("DATA_REPLICATION")) {
                 String key = lexer.stringVal();
                 lexer.nextToken();
@@ -8144,7 +8097,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.identifierEquals(FnvHash.Constants.OPTIONS)) {
             lexer.nextToken();
             accept(Token.LPAREN);
-            for(;;) {
+            for (; ; ) {
                 if (lexer.token() == Token.RPAREN) {
                     accept(Token.RPAREN);
                     break;
@@ -8161,7 +8114,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             accept(Token.LPAREN);
-            for (;;) {
+            for (; ; ) {
                 SQLAssignItem assignItem = this.exprParser.parseAssignItem();
                 assignItem.setParent(stmt);
                 stmt.getDbProperties().add(assignItem);
@@ -8212,7 +8165,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                 accept(Token.ON);
                 accept(Token.LPAREN);
-                for (;;) {
+                for (; ; ) {
                     SQLAssignItem assignItem = this.exprParser.parseAssignItem();
                     assignItem.setParent(stmt);
                     stmt.getStoredOn().add(assignItem);
@@ -8398,7 +8351,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         return (MySqlExprParser) exprParser;
     }
 
-
     public SQLCreateFunctionStatement parseCreateFunction() {
         SQLCreateFunctionStatement stmt = new SQLCreateFunctionStatement();
         stmt.setDbType(dbType);
@@ -8424,17 +8376,17 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         stmt.setName(this.exprParser.name());
 
-        if (lexer.token() == Token.LPAREN) {// match "("
+        if (lexer.token() == Token.LPAREN) { // match "("
             lexer.nextToken();
             parserParameters(stmt.getParameters(), stmt);
-            accept(Token.RPAREN);// match ")"
+            accept(Token.RPAREN); // match ")"
         }
 
         acceptIdentifier("RETURNS");
         SQLDataType dataType = this.exprParser.parseDataType();
         stmt.setReturnDataType(dataType);
 
-        for (;;) {
+        for (; ; ) {
             if (lexer.identifierEquals("DETERMINISTIC")) {
                 lexer.nextToken();
                 stmt.setDeterministic(true);
@@ -8475,6 +8427,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         return stmt;
     }
+
     /**
      * parse create procedure statement
      */
@@ -8506,13 +8459,13 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         stmt.setName(this.exprParser.name());
 
-        if (lexer.token() == Token.LPAREN) {// match "("
+        if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             parserParameters(stmt.getParameters(), stmt);
-            accept(Token.RPAREN);// match ")"
+            accept(Token.RPAREN);
         }
 
-        for (;;) {
+        for (; ; ) {
             if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
                 stmt.setComment(this.exprParser.charExpr());
@@ -8585,7 +8538,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                 parameter.setDefaultValue(new SQLQueryExpr(select));
 
             } else if (lexer.token() == Token.IN || lexer.token() == Token.OUT || lexer.token() == Token.INOUT) {
-
                 if (lexer.token() == Token.IN) {
                     parameter.setParamType(ParameterType.IN);
                 } else if (lexer.token() == Token.OUT) {
@@ -8599,7 +8551,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                 parameter.setDataType(this.exprParser.parseDataType());
             } else {
-                parameter.setParamType(ParameterType.DEFAULT);// default parameter type is in
+                // default parameter type is in
+                parameter.setParamType(ParameterType.DEFAULT);
                 parameter.setName(this.exprParser.name());
                 parameter.setDataType(this.exprParser.parseDataType());
 
@@ -8635,7 +8588,6 @@ public class MySqlStatementParser extends SQLStatementParser {
      * parse procedure statement block
      */
     private void parseProcedureStatementList(List<SQLStatement> statementList, int max) {
-
         for (; ; ) {
             if (max != -1) {
                 if (statementList.size() >= max) {
@@ -8846,7 +8798,6 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     }
 
-
     public MySqlChecksumTableStatement parseChecksum() {
         MySqlChecksumTableStatement stmt = new MySqlChecksumTableStatement();
         if (lexer.identifierEquals(FnvHash.Constants.CHECKSUM)) {
@@ -8857,7 +8808,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         accept(Token.TABLE);
 
-        for (;;) {
+        for (; ; ) {
             SQLName table = this.exprParser.name();
             stmt.addTable(new SQLExprTableSource(table));
 
@@ -8902,7 +8853,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                 accept(Token.THEN);
                 this.parseStatementList(elseIf.getStatements(), -1, elseIf);
 
-
                 stmt.getElseIfList().add(elseIf);
             } else {
                 SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
@@ -8940,9 +8890,9 @@ public class MySqlStatementParser extends SQLStatementParser {
         accept(Token.WHILE);
 
         accept(Token.SEMI);
-        
+
         stmt.setAfterSemi(true);
-        
+
         return stmt;
 
     }
@@ -8972,9 +8922,9 @@ public class MySqlStatementParser extends SQLStatementParser {
         acceptIdentifier(label);
 
         accept(Token.SEMI);
-        
+
         stmt.setAfterSemi(true);
-        
+
         return stmt;
 
     }
@@ -8991,7 +8941,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.WHEN)// grammar 1
         {
             while (lexer.token() == Token.WHEN) {
-
                 MySqlWhenStatement when = new MySqlWhenStatement();
                 // when expr
                 when.setCondition(exprParser.expr());
@@ -9009,8 +8958,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 this.parseStatementList(elseStmt.getStatements(), -1, elseStmt);
                 stmt.setElseItem(elseStmt);
             }
-        } else// grammar 2
-        {
+        } else {
             // case expr
             stmt.setCondition(exprParser.expr());
 
@@ -9188,7 +9136,6 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     /**
      * parse repeat statement
-     *
      */
     public MySqlRepeatStatement parseRepeat() {
         MySqlRepeatStatement stmt = new MySqlRepeatStatement();
@@ -9224,7 +9171,6 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     /**
      * parse cursor declare statement
-     *
      */
     public MySqlCursorDeclareStatement parseCursorDeclare() {
         MySqlCursorDeclareStatement stmt = new MySqlCursorDeclareStatement();
@@ -9248,10 +9194,8 @@ public class MySqlStatementParser extends SQLStatementParser {
     /**
      * zhujun [455910092@qq.com]
      * parse spstatement
-     *
      */
     public SQLStatement parseSpStatement() {
-
         // update
         if (lexer.token() == (Token.UPDATE)) {
             return parseUpdateStatement();
@@ -9330,23 +9274,27 @@ public class MySqlStatementParser extends SQLStatementParser {
             String tokenName = lexer.stringVal();
             ConditionValue condition = new ConditionValue();
 
-            if (tokenName.equalsIgnoreCase("NOT")) {//for 'NOT FOUND'
+            if (tokenName.equalsIgnoreCase("NOT")) {
+                //for 'NOT FOUND'
                 lexer.nextToken();
                 acceptIdentifier("FOUND");
                 condition.setType(ConditionType.SYSTEM);
                 condition.setValue("NOT FOUND");
 
-            } else if (tokenName.equalsIgnoreCase("SQLSTATE")) { //for SQLSTATE (SQLSTATE '10001')
+            } else if (tokenName.equalsIgnoreCase("SQLSTATE")) {
+                //for SQLSTATE (SQLSTATE '10001')
                 condition.setType(ConditionType.SQLSTATE);
                 lexer.nextToken();
                 //condition.setValue(lexer.stringVal());
                 //lexer.nextToken();
                 condition.setValue(exprParser.name().toString());
-            } else if (lexer.identifierEquals("SQLEXCEPTION")) { //for SQLEXCEPTION
+            } else if (lexer.identifierEquals("SQLEXCEPTION")) {
+                //for SQLEXCEPTION
                 condition.setType(ConditionType.SYSTEM);
                 condition.setValue(lexer.stringVal());
                 lexer.nextToken();
-            } else if (lexer.identifierEquals("SQLWARNING")) { //for SQLWARNING
+            } else if (lexer.identifierEquals("SQLWARNING")) {
+                //for SQLWARNING
                 condition.setType(ConditionType.SYSTEM);
                 condition.setValue(lexer.stringVal());
                 lexer.nextToken();
@@ -9377,7 +9325,6 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.SEMI);
         }
 
-
         return stmt;
     }
 
@@ -9385,16 +9332,8 @@ public class MySqlStatementParser extends SQLStatementParser {
      * zhujun [455910092@qq.com]
      * 2016-04-17
      * 定义条件
-     *
      */
     public MySqlDeclareConditionStatement parseDeclareCondition() {
-        /*
-        DECLARE condition_name CONDITION FOR condition_value
-
-    	condition_value:
-    	    SQLSTATE [VALUE] sqlstate_value
-    	  | mysql_error_code
-    	*/
         MySqlDeclareConditionStatement stmt = new MySqlDeclareConditionStatement();
         accept(Token.DECLARE);
 
@@ -9486,7 +9425,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.identifierEquals(FnvHash.Constants.CREDENTIALS)) {
             lexer.nextToken();
 
-            for (;;) {
+            for (; ; ) {
                 if (lexer.identifierEquals(FnvHash.Constants.ACCESS_KEY_ID)) {
                     lexer.nextToken();
                     SQLExpr accessKeyId = this.exprParser.primary();
@@ -9504,7 +9443,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.WITH) {
             lexer.nextToken();
             accept(Token.LPAREN);
-            for (;;) {
+            for (; ; ) {
                 SQLName name = this.exprParser.name();
                 if (lexer.token() == Token.EQ) {
                     lexer.nextToken();

@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class TestUtils {
-
     public static String outputOracle(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
         OracleOutputVisitor visitor = new OracleOutputVisitor(out);
@@ -73,7 +72,7 @@ public class TestUtils {
 
         return out.toString();
     }
-    
+
     public static long getYoungGC() {
         try {
             // java.lang:type=GarbageCollector,name=G1 Young Generation
@@ -95,7 +94,7 @@ public class TestUtils {
             throw new RuntimeException("error");
         }
     }
-    
+
     public static long getYoungGCTime() {
         try {
             MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();

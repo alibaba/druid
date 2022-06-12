@@ -11,7 +11,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlCreateTableTest119_ann extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE face_feature (\n" +
                 "  id varchar COMMENT 'id',\n" +

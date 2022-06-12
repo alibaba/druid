@@ -52,7 +52,7 @@ public class CallableStatementProxyImplTest extends TestCase {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
-    
+
     public void test_call() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         DataSourceProxy dataSource = new DataSourceProxyImpl(null, config);
@@ -146,8 +146,7 @@ public class CallableStatementProxyImplTest extends TestCase {
     }
 
     private static final class FakeCallableStatement extends CallableStatementProxyImpl {
-
-        private FakeCallableStatement(ConnectionProxy connection, CallableStatement statement, String sql, long id){
+        private FakeCallableStatement(ConnectionProxy connection, CallableStatement statement, String sql, long id) {
             super(connection, statement, sql, id);
         }
 
@@ -166,12 +165,10 @@ public class CallableStatementProxyImplTest extends TestCase {
 
         @Override
         public void registerOutParameter(int parameterIndex, int sqlType, int scale) throws SQLException {
-
         }
 
         @Override
         public void registerOutParameter(String parameterIndex, int sqlType, String typeName) throws SQLException {
-
         }
 
         @Override
@@ -180,12 +177,10 @@ public class CallableStatementProxyImplTest extends TestCase {
 
         @Override
         public void registerOutParameter(String parameterIndex, int sqlType, int scale) throws SQLException {
-
         }
 
         @Override
         public void registerOutParameter(int parameterIndex, int sqlType, String typeName) throws SQLException {
-
         }
 
         @Override

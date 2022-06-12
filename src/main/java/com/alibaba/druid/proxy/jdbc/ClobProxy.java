@@ -21,7 +21,6 @@ import java.sql.Clob;
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface ClobProxy extends Clob {
-
     ConnectionProxy getConnectionWrapper();
 
     Clob getRawClob();

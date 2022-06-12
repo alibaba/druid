@@ -26,50 +26,47 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 public class DruidStatBeanDefinitionParser implements BeanDefinitionParser {
+    public static final String STAT_ANNOTATION_PROCESSOR_BEAN_NAME = "com.alibaba.druid.support.spring.stat.annotation.internalStatAnnotationBeanPostProcessor";
+    public static final String STAT_ANNOTATION_PROCESSOR_BEAN_CLASS = "com.alibaba.druid.support.spring.stat.annotation.StatAnnotationBeanPostProcessor";
+    public static final String STAT_ANNOTATION_ADVICE_BEAN_NAME = "druid-stat-interceptor";
+    public static final String STAT_ANNOTATION_ADVICE_BEAN_CLASS = "com.alibaba.druid.support.spring.stat.DruidStatInterceptor";
 
-	public static final String STAT_ANNOTATION_PROCESSOR_BEAN_NAME = "com.alibaba.druid.support.spring.stat.annotation.internalStatAnnotationBeanPostProcessor";
-	public static final String STAT_ANNOTATION_PROCESSOR_BEAN_CLASS = "com.alibaba.druid.support.spring.stat.annotation.StatAnnotationBeanPostProcessor";
-	public static final String STAT_ANNOTATION_ADVICE_BEAN_NAME = "druid-stat-interceptor";
-	public static final String STAT_ANNOTATION_ADVICE_BEAN_CLASS = "com.alibaba.druid.support.spring.stat.DruidStatInterceptor";
-	
-	@Override
-	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		Object source = parserContext.extractSource(element);
+    @Override
+    public BeanDefinition parse(Element element, ParserContext parserContext) {
+        Object source = parserContext.extractSource(element);
 
-		CompositeComponentDefinition compDefinition = new CompositeComponentDefinition(element.getTagName(), source);
-		parserContext.pushContainingComponent(compDefinition);
+        CompositeComponentDefinition compDefinition = new CompositeComponentDefinition(element.getTagName(), source);
+        parserContext.pushContainingComponent(compDefinition);
 
-		BeanDefinitionRegistry registry = parserContext.getRegistry();
+        BeanDefinitionRegistry registry = parserContext.getRegistry();
 
-		if (registry.containsBeanDefinition(STAT_ANNOTATION_PROCESSOR_BEAN_NAME)) {
-			parserContext.getReaderContext().error(
-					"Only one DruidStatBeanDefinitionParser may exist within the context.", source);
-		} else {
-			BeanDefinitionBuilder builder = BeanDefinitionBuilder
-					.genericBeanDefinition(STAT_ANNOTATION_PROCESSOR_BEAN_CLASS);
-			builder.getRawBeanDefinition().setSource(source);
-			registerComponent(parserContext, builder, STAT_ANNOTATION_PROCESSOR_BEAN_NAME);
-		}
-		
-		if (!registry.containsBeanDefinition(STAT_ANNOTATION_ADVICE_BEAN_NAME)) {
-			BeanDefinitionBuilder builder = BeanDefinitionBuilder
-					.genericBeanDefinition(STAT_ANNOTATION_ADVICE_BEAN_CLASS);
-			builder.getRawBeanDefinition().setSource(source);
-			registerComponent(parserContext, builder, STAT_ANNOTATION_ADVICE_BEAN_NAME);
-		}
-		
-		parserContext.popAndRegisterContainingComponent();
+        if (registry.containsBeanDefinition(STAT_ANNOTATION_PROCESSOR_BEAN_NAME)) {
+            parserContext.getReaderContext().error(
+                    "Only one DruidStatBeanDefinitionParser may exist within the context.", source);
+        } else {
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder
+                    .genericBeanDefinition(STAT_ANNOTATION_PROCESSOR_BEAN_CLASS);
+            builder.getRawBeanDefinition().setSource(source);
+            registerComponent(parserContext, builder, STAT_ANNOTATION_PROCESSOR_BEAN_NAME);
+        }
 
-		return null;
-	}
+        if (!registry.containsBeanDefinition(STAT_ANNOTATION_ADVICE_BEAN_NAME)) {
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder
+                    .genericBeanDefinition(STAT_ANNOTATION_ADVICE_BEAN_CLASS);
+            builder.getRawBeanDefinition().setSource(source);
+            registerComponent(parserContext, builder, STAT_ANNOTATION_ADVICE_BEAN_NAME);
+        }
 
-	private static void registerComponent(ParserContext parserContext, BeanDefinitionBuilder builder,
-			String beanName) {
+        parserContext.popAndRegisterContainingComponent();
 
-		builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-		parserContext.getRegistry().registerBeanDefinition(beanName, builder.getBeanDefinition());
-		BeanDefinitionHolder holder = new BeanDefinitionHolder(builder.getBeanDefinition(), beanName);
-		parserContext.registerComponent(new BeanComponentDefinition(holder));
-	}
+        return null;
+    }
 
+    private static void registerComponent(ParserContext parserContext, BeanDefinitionBuilder builder,
+                                          String beanName) {
+        builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+        parserContext.getRegistry().registerBeanDefinition(beanName, builder.getBeanDefinition());
+        BeanDefinitionHolder holder = new BeanDefinitionHolder(builder.getBeanDefinition(), beanName);
+        parserContext.registerComponent(new BeanComponentDefinition(holder));
+    }
 }

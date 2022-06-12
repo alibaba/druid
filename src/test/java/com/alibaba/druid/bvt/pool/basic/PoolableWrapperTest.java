@@ -22,7 +22,6 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.PoolableWrapper;
 
 public class PoolableWrapperTest extends TestCase {
-
     public void test_isWrapper() throws Exception {
         PoolableWrapper wrapper = new PoolableWrapper(new MockConnection());
 

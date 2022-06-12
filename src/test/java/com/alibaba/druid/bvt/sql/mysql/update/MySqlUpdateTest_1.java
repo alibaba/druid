@@ -26,12 +26,11 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class MySqlUpdateTest_1 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "UPDATE t_price, t_basic_store s " + //
-                     "SET purchasePrice = :purchasePrice, operaterId = :operaterId, " + //
-                     "    operaterRealName = :operaterRealName, operateDateline = :operateDateline " + //
-                     "WHERE goodsId = :goodsId AND s.id = storeId AND s.areaId = :areaId";
+                "SET purchasePrice = :purchasePrice, operaterId = :operaterId, " + //
+                "    operaterRealName = :operaterRealName, operateDateline = :operateDateline " + //
+                "WHERE goodsId = :goodsId AND s.id = storeId AND s.areaId = :areaId";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

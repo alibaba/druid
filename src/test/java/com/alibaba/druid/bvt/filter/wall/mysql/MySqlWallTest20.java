@@ -25,15 +25,14 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest20 extends TestCase {
-
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
-        "SET sql_mode=?,NAMES ?,CHARACTER SET utf8,CHARACTER_SET_RESULTS=utf8,COLLATION_CONNECTION=?")); //
+                "SET sql_mode=?,NAMES ?,CHARACTER SET utf8,CHARACTER_SET_RESULTS=utf8,COLLATION_CONNECTION=?")); //
     }
 }

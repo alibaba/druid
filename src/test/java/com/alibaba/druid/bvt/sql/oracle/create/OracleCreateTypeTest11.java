@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTypeTest11 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = "CREATE TYPE BODY rational\n" +
                 "  IS\n" +
@@ -83,7 +82,7 @@ public class OracleCreateTypeTest11 extends OracleTest {
                         "\t\tRETURN r;\n" +
                         "\tEND;\n" +
                         "END;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

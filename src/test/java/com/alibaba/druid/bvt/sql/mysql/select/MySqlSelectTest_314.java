@@ -25,7 +25,6 @@ import java.util.List;
 
 public class MySqlSelectTest_314
         extends MysqlTest {
-
     public void test1() throws Exception {
         String sql = Utils.readFromResource("bvt/parser/mysql_select_long_text.txt");
 

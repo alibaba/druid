@@ -22,9 +22,9 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLShowOutlinesStatement extends SQLStatementImpl implements SQLShowStatement {
-    private SQLExpr    where;
+    private SQLExpr where;
     private SQLOrderBy orderBy;
-    private SQLLimit   limit;
+    private SQLLimit limit;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

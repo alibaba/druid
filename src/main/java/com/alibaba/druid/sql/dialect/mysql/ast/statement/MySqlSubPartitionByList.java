@@ -26,8 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlSubPartitionByList extends SQLSubPartitionBy implements MySqlObject {
-
-    private List<SQLExpr>      keys = new ArrayList<SQLExpr>();
+    private List<SQLExpr> keys = new ArrayList<SQLExpr>();
 
     private List<SQLColumnDefinition> columns = new ArrayList<SQLColumnDefinition>();
 
@@ -39,7 +38,7 @@ public class MySqlSubPartitionByList extends SQLSubPartitionBy implements MySqlO
             throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
         }
     }
-    
+
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {

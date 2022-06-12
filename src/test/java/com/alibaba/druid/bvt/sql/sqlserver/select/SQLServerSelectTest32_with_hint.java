@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class SQLServerSelectTest32_with_hint extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = //
                 "SELECT * FROM dbo.Customers AS c   \n" +

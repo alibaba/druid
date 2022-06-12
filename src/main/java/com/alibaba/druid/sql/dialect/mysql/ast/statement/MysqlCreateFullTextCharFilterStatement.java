@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTextLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.dialect.mysql.ast.FullTextType;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
@@ -17,9 +16,7 @@ import java.util.List;
  * @author lijun.cailj 2018/8/13
  */
 public class MysqlCreateFullTextCharFilterStatement extends MySqlStatementImpl {
-
-
-    private SQLName            name; // for all, not null
+    private SQLName name; // for all, not null
     private SQLTextLiteralExpr typeName;  // for charfilter/tokenizer/tokenfilter
 
     protected final List<SQLAssignItem> options = new ArrayList<SQLAssignItem>(); // charfilter/tokenizer/tokenfilter

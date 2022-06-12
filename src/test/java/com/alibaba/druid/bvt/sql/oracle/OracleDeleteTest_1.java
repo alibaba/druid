@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleDeleteTest_1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "delete fromm xx";
 
@@ -48,7 +47,7 @@ public class OracleDeleteTest_1 extends OracleTest {
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("fromm")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("fromm")));
         // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
         //
 //         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fromm", "guid")));

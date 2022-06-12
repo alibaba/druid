@@ -41,7 +41,7 @@ public class PGSelectTest66_castInterval extends TestCase {
                 "WHERE task_status = 101\n" +
                 "\tAND del_flag = 0\n" +
                 "\tAND now() - inner_qc_create_time > CAST(? AS interval)", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select m.task_id\n" +
                 "from wf_task_main m\n" +
                 "where task_status = 101\n" +

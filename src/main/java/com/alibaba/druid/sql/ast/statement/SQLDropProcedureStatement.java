@@ -21,16 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDropProcedureStatement extends SQLStatementImpl implements SQLDropStatement {
-
     private SQLName name;
     private boolean ifExists;
-    
+
     public SQLDropProcedureStatement() {
-        
     }
-    
+
     public SQLDropProcedureStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

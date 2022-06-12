@@ -19,7 +19,6 @@ import com.alibaba.druid.support.console.Option;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class DruidStatTest extends TestCase {
-
     private DruidDataSource dataSource;
     private DruidDataSource dataSource2;
 
@@ -72,31 +71,31 @@ public class DruidStatTest extends TestCase {
             return;
         }
 
-        cmdArray = new String[] {"-sql","-id","1", pid};
+        cmdArray = new String[]{"-sql", "-id", "1", pid};
         opt = Option.parseOptions(cmdArray);
         DruidStat.printDruidStat(opt);
 
-        cmdArray = new String[] {"-sql","-detail", "-id","1", pid};
+        cmdArray = new String[]{"-sql", "-detail", "-id", "1", pid};
         opt = Option.parseOptions(cmdArray);
         DruidStat.printDruidStat(opt);
 
-		cmdArray = new String[] {"-ds",pid};
+        cmdArray = new String[]{"-ds", pid};
         opt = Option.parseOptions(cmdArray);
-		List<Integer> ids = DruidStat.getDataSourceIds(opt);
-		opt.setDetailPrint(true);
-		opt.setId( ids.get(0).intValue());
+        List<Integer> ids = DruidStat.getDataSourceIds(opt);
+        opt.setDetailPrint(true);
+        opt.setId(ids.get(0).intValue());
 
-		try {
+        try {
             DruidStat.printDruidStat(opt);
         } catch (IOException ex) {
             // skip
             return;
         }
-		
+
     }
 
 
-	public void test_printDruidStat2() throws Exception {
+    public void test_printDruidStat2() throws Exception {
         String pid = getSelfPid();
         String[] cmdArray = {"-act", pid};
         Option opt = Option.parseOptions(cmdArray);
@@ -112,8 +111,14 @@ public class DruidStatTest extends TestCase {
             // skip
             return;
         } finally {
-            if (stmt != null ) try { stmt.close(); } catch (Exception e) {}
-            if (conn != null ) try { conn.close(); } catch (Exception e) {}
+            if (stmt != null) try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            if (conn != null) try {
+                conn.close();
+            } catch (Exception e) {
+            }
         }
     }
 

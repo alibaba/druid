@@ -26,7 +26,6 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallUtils;
 
 public class DoPrivilegedTest extends TestCase {
-
     public void test_0() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X"));
     }
@@ -40,7 +39,6 @@ public class DoPrivilegedTest extends TestCase {
         config.setDoPrivilegedAllow(true);
 
         WallProvider.doPrivileged(new PrivilegedAction<Object>() {
-
             @Override
             public Object run() {
                 Assert.assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X", config));

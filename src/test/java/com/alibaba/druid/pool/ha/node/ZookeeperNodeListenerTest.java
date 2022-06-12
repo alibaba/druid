@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class ZookeeperNodeListenerTest {
-    private final static Log LOG = LogFactory.getLog(ZookeeperNodeListenerTest.class);
+    private static final Log LOG = LogFactory.getLog(ZookeeperNodeListenerTest.class);
     private static TestingServer server;
     private final String PATH = "/ha-druid-datasource";
 

@@ -22,8 +22,8 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
 public class SQLiteWallVisitor extends WallVisitorBase implements WallVisitor, MySqlASTVisitor {
-    public SQLiteWallVisitor(WallProvider provider){
-        super (provider);
+    public SQLiteWallVisitor(WallProvider provider) {
+        super(provider);
     }
 
     @Override

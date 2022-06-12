@@ -5,7 +5,7 @@ import com.alibaba.druid.sql.visitor.SQLASTParameterizedVisitor;
 
 import java.util.List;
 
-public class OracleASTParameterizedVisitor  extends SQLASTParameterizedVisitor implements OracleASTVisitor {
+public class OracleASTParameterizedVisitor extends SQLASTParameterizedVisitor implements OracleASTVisitor {
     public OracleASTParameterizedVisitor() {
         super(DbType.oracle);
     }

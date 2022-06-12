@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlSelectTest_187 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select coach_id, tournament_name ,tournament_id, season_id, season, count(1) as num,\n" +
                 "sum(case when wdl = 0 then 1 else 0 end) as loss,\n" +
@@ -113,7 +112,7 @@ public class MySqlSelectTest_187 extends MysqlTest {
                         "\tAND coach_id = 5075\n" +
                         "GROUP BY coach_id, tournament_name, tournament_id, season_id, season\n" +
                         "ORDER BY season_id DESC", //
-                            output);
+                output);
     }
 
 }

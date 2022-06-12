@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OceanbaseCreateTableTest_rangePartition2 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE employees ( " //
                 + "id INT NOT NULL, " //

@@ -24,39 +24,39 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MysqlTest extends TestCase {
-	protected String output(List<SQLStatement> stmtList) {
-		StringBuilder out = new StringBuilder();
-		MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
+    protected String output(List<SQLStatement> stmtList) {
+        StringBuilder out = new StringBuilder();
+        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
 
-		for (SQLStatement stmt : stmtList) {
-			stmt.accept(visitor);
-		}
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
 
-		return out.toString();
-	}
+        return out.toString();
+    }
 
-	protected void print(List<SQLStatement> stmtList) {
-		String text = output(stmtList);
-		String outputProperty = System.getProperty("druid.output");
-		if ("false".equals(outputProperty)) {
-			return;
-		}
-		System.out.println(text);
-	}
+    protected void print(List<SQLStatement> stmtList) {
+        String text = output(stmtList);
+        String outputProperty = System.getProperty("druid.output");
+        if ("false".equals(outputProperty)) {
+            return;
+        }
+        System.out.println(text);
+    }
 
 
-	protected void parseTrue(String sql, String except) {
-		SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
-		Assert.assertEquals(except, SQLUtils.toMySqlString(statement));
-	}
+    protected void parseTrue(String sql, String except) {
+        SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
+        Assert.assertEquals(except, SQLUtils.toMySqlString(statement));
+    }
 
-	protected SQLStatement parse(String sql) {
-		return SQLUtils.parseSingleMysqlStatement(sql);
-	}
+    protected SQLStatement parse(String sql) {
+        return SQLUtils.parseSingleMysqlStatement(sql);
+    }
 
-	protected List<SQLStatement> parseList(String sql) {
-		MySqlStatementParser parser = new MySqlStatementParser(sql);
-		return parser.parseStatementList();
-	}
+    protected List<SQLStatement> parseList(String sql) {
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        return parser.parseStatementList();
+    }
 
 }

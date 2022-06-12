@@ -10,7 +10,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
  * Date 2019-06-03 16:22
  */
 public class MySqlAlterTableValidation extends MySqlObjectImpl implements SQLAlterTableItem {
-
     private boolean withValidation;
 
     @Override

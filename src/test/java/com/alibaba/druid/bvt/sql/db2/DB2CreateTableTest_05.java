@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2CreateTableTest_05 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE MK.M_DM_BASE_CHARGE_TMP1\n" +
                 "(PROD_ID BIGINT,\n" +
@@ -79,8 +78,8 @@ public class DB2CreateTableTest_05 extends DB2Test {
                         "IN MK_APP_TEMP\n" +
                         "INDEX IN WH_INDEX1\n" +
                         "PARTITION BY HASH (PROD_ID)", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         assertEquals("create table MK.M_DM_BASE_CHARGE_TMP1 (\n" +
                         "\tPROD_ID BIGINT,\n" +
                         "\tITEM_ID SMALLINT,\n" +
@@ -93,6 +92,6 @@ public class DB2CreateTableTest_05 extends DB2Test {
                         "IN MK_APP_TEMP\n" +
                         "INDEX IN WH_INDEX1\n" +
                         "partition by hash (PROD_ID)", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

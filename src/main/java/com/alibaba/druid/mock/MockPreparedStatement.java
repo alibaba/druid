@@ -15,17 +15,16 @@
  */
 package com.alibaba.druid.mock;
 
+import com.alibaba.druid.util.jdbc.PreparedStatementBase;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.alibaba.druid.util.jdbc.PreparedStatementBase;
-
 public class MockPreparedStatement extends PreparedStatementBase implements MockStatementBase, PreparedStatement {
-
     private final String sql;
 
-    public MockPreparedStatement(MockConnection conn, String sql){
+    public MockPreparedStatement(MockConnection conn, String sql) {
         super(conn);
         this.sql = sql;
     }
@@ -41,7 +40,7 @@ public class MockPreparedStatement extends PreparedStatementBase implements Mock
     @Override
     public ResultSet executeQuery() throws SQLException {
         checkOpen();
-        
+
         MockConnection conn = getConnection();
 
         if (conn != null && conn.getDriver() != null) {
@@ -50,10 +49,10 @@ public class MockPreparedStatement extends PreparedStatementBase implements Mock
 
         if (conn != null) {
             conn.handleSleep();
-            
+
             return conn.getDriver().createMockResultSet(this);
         }
-        
+
         return new MockResultSet(this);
     }
 
@@ -75,14 +74,14 @@ public class MockPreparedStatement extends PreparedStatementBase implements Mock
         if (getConnection() != null) {
             getConnection().handleSleep();
         }
-        
+
         return false;
     }
 
     @Override
     public ResultSet getResultSet() throws SQLException {
         checkOpen();
-        
+
         if (resultSet == null) {
             resultSet = this.getConnection().getDriver().createResultSet(this);
         }

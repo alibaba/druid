@@ -24,43 +24,42 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_exception_0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE OR REPLACE PROCEDURE select_item (\n" +
-				"  t_column VARCHAR2,\n" +
-				"  t_name   VARCHAR2\n" +
-				") AUTHID DEFINER\n" +
-				"IS\n" +
-				"  temp VARCHAR2(30);\n" +
-				"BEGIN\n" +
-				"  temp := t_column;  -- For error message if next SELECT fails\n" +
-				" \n" +
-				"  -- Fails if table t_name does not have column t_column:\n" +
-				" \n" +
-				"  SELECT COLUMN_NAME INTO temp\n" +
-				"  FROM USER_TAB_COLS \n" +
-				"  WHERE TABLE_NAME = UPPER(t_name)\n" +
-				"  AND COLUMN_NAME = UPPER(t_column);\n" +
-				" \n" +
-				"  temp := t_name;  -- For error message if next SELECT fails\n" +
-				" \n" +
-				"  -- Fails if there is no table named t_name:\n" +
-				" \n" +
-				"  SELECT OBJECT_NAME INTO temp\n" +
-				"  FROM USER_OBJECTS\n" +
-				"  WHERE OBJECT_NAME = UPPER(t_name)\n" +
-				"  AND OBJECT_TYPE = 'TABLE';\n" +
-				" \n" +
-				"EXCEPTION\n" +
-				"  WHEN NO_DATA_FOUND THEN\n" +
-				"    DBMS_OUTPUT.PUT_LINE ('No Data found for SELECT on ' || temp);\n" +
-				"  WHEN OTHERS THEN\n" +
-				"    DBMS_OUTPUT.PUT_LINE ('Unexpected error');\n" +
-				"    RAISE;\n" +
-				"END;"; //
+                "  t_column VARCHAR2,\n" +
+                "  t_name   VARCHAR2\n" +
+                ") AUTHID DEFINER\n" +
+                "IS\n" +
+                "  temp VARCHAR2(30);\n" +
+                "BEGIN\n" +
+                "  temp := t_column;  -- For error message if next SELECT fails\n" +
+                " \n" +
+                "  -- Fails if table t_name does not have column t_column:\n" +
+                " \n" +
+                "  SELECT COLUMN_NAME INTO temp\n" +
+                "  FROM USER_TAB_COLS \n" +
+                "  WHERE TABLE_NAME = UPPER(t_name)\n" +
+                "  AND COLUMN_NAME = UPPER(t_column);\n" +
+                " \n" +
+                "  temp := t_name;  -- For error message if next SELECT fails\n" +
+                " \n" +
+                "  -- Fails if there is no table named t_name:\n" +
+                " \n" +
+                "  SELECT OBJECT_NAME INTO temp\n" +
+                "  FROM USER_OBJECTS\n" +
+                "  WHERE OBJECT_NAME = UPPER(t_name)\n" +
+                "  AND OBJECT_TYPE = 'TABLE';\n" +
+                " \n" +
+                "EXCEPTION\n" +
+                "  WHEN NO_DATA_FOUND THEN\n" +
+                "    DBMS_OUTPUT.PUT_LINE ('No Data found for SELECT on ' || temp);\n" +
+                "  WHEN OTHERS THEN\n" +
+                "    DBMS_OUTPUT.PUT_LINE ('Unexpected error');\n" +
+                "    RAISE;\n" +
+                "END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -84,72 +83,72 @@ public class Oracle_pl_exception_0 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
-			System.out.println(output);
-			assertEquals("CREATE OR REPLACE PROCEDURE select_item (\n" +
-							"\tt_column VARCHAR2, \n" +
-							"\tt_name VARCHAR2\n" +
-							") AUTHID DEFINER\n" +
-							"AS\n" +
-							"\ttemp VARCHAR2(30);\n" +
-							"BEGIN\n" +
-							"\ttemp := t_column;\n" +
-							"\t-- For error message if next SELECT fails\n" +
-							"\t-- Fails if table t_name does not have column t_column:\n" +
-							"\tSELECT COLUMN_NAME\n" +
-							"\tINTO temp\n" +
-							"\tFROM USER_TAB_COLS\n" +
-							"\tWHERE TABLE_NAME = UPPER(t_name)\n" +
-							"\t\tAND COLUMN_NAME = UPPER(t_column);\n" +
-							"\ttemp := t_name;\n" +
-							"\t-- For error message if next SELECT fails\n" +
-							"\t-- Fails if there is no table named t_name:\n" +
-							"\tSELECT OBJECT_NAME\n" +
-							"\tINTO temp\n" +
-							"\tFROM USER_OBJECTS\n" +
-							"\tWHERE OBJECT_NAME = UPPER(t_name)\n" +
-							"\t\tAND OBJECT_TYPE = 'TABLE';\n" +
-							"EXCEPTION\n" +
-							"\tWHEN NO_DATA_FOUND THEN DBMS_OUTPUT.PUT_LINE('No Data found for SELECT on ' || temp);\n" +
-							"\tWHEN OTHERS THEN\n" +
-							"\t\tDBMS_OUTPUT.PUT_LINE('Unexpected error');\n" +
-							"\t\tRAISE;\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("create or replace procedure select_item (\n" +
-							"\tt_column VARCHAR2, \n" +
-							"\tt_name VARCHAR2\n" +
-							") authid DEFINER\n" +
-							"as\n" +
-							"\ttemp VARCHAR2(30);\n" +
-							"begin\n" +
-							"\ttemp := t_column;\n" +
-							"\t-- For error message if next SELECT fails\n" +
-							"\t-- Fails if table t_name does not have column t_column:\n" +
-							"\tselect COLUMN_NAME\n" +
-							"\tinto temp\n" +
-							"\tfrom USER_TAB_COLS\n" +
-							"\twhere TABLE_NAME = UPPER(t_name)\n" +
-							"\t\tand COLUMN_NAME = UPPER(t_column);\n" +
-							"\ttemp := t_name;\n" +
-							"\t-- For error message if next SELECT fails\n" +
-							"\t-- Fails if there is no table named t_name:\n" +
-							"\tselect OBJECT_NAME\n" +
-							"\tinto temp\n" +
-							"\tfrom USER_OBJECTS\n" +
-							"\twhere OBJECT_NAME = UPPER(t_name)\n" +
-							"\t\tand OBJECT_TYPE = 'TABLE';\n" +
-							"exception\n" +
-							"\twhen NO_DATA_FOUND then DBMS_OUTPUT.PUT_LINE('No Data found for SELECT on ' || temp);\n" +
-							"\twhen OTHERS then\n" +
-							"\t\tDBMS_OUTPUT.PUT_LINE('Unexpected error');\n" +
-							"\t\traise;\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+            System.out.println(output);
+            assertEquals("CREATE OR REPLACE PROCEDURE select_item (\n" +
+                            "\tt_column VARCHAR2, \n" +
+                            "\tt_name VARCHAR2\n" +
+                            ") AUTHID DEFINER\n" +
+                            "AS\n" +
+                            "\ttemp VARCHAR2(30);\n" +
+                            "BEGIN\n" +
+                            "\ttemp := t_column;\n" +
+                            "\t-- For error message if next SELECT fails\n" +
+                            "\t-- Fails if table t_name does not have column t_column:\n" +
+                            "\tSELECT COLUMN_NAME\n" +
+                            "\tINTO temp\n" +
+                            "\tFROM USER_TAB_COLS\n" +
+                            "\tWHERE TABLE_NAME = UPPER(t_name)\n" +
+                            "\t\tAND COLUMN_NAME = UPPER(t_column);\n" +
+                            "\ttemp := t_name;\n" +
+                            "\t-- For error message if next SELECT fails\n" +
+                            "\t-- Fails if there is no table named t_name:\n" +
+                            "\tSELECT OBJECT_NAME\n" +
+                            "\tINTO temp\n" +
+                            "\tFROM USER_OBJECTS\n" +
+                            "\tWHERE OBJECT_NAME = UPPER(t_name)\n" +
+                            "\t\tAND OBJECT_TYPE = 'TABLE';\n" +
+                            "EXCEPTION\n" +
+                            "\tWHEN NO_DATA_FOUND THEN DBMS_OUTPUT.PUT_LINE('No Data found for SELECT on ' || temp);\n" +
+                            "\tWHEN OTHERS THEN\n" +
+                            "\t\tDBMS_OUTPUT.PUT_LINE('Unexpected error');\n" +
+                            "\t\tRAISE;\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("create or replace procedure select_item (\n" +
+                            "\tt_column VARCHAR2, \n" +
+                            "\tt_name VARCHAR2\n" +
+                            ") authid DEFINER\n" +
+                            "as\n" +
+                            "\ttemp VARCHAR2(30);\n" +
+                            "begin\n" +
+                            "\ttemp := t_column;\n" +
+                            "\t-- For error message if next SELECT fails\n" +
+                            "\t-- Fails if table t_name does not have column t_column:\n" +
+                            "\tselect COLUMN_NAME\n" +
+                            "\tinto temp\n" +
+                            "\tfrom USER_TAB_COLS\n" +
+                            "\twhere TABLE_NAME = UPPER(t_name)\n" +
+                            "\t\tand COLUMN_NAME = UPPER(t_column);\n" +
+                            "\ttemp := t_name;\n" +
+                            "\t-- For error message if next SELECT fails\n" +
+                            "\t-- Fails if there is no table named t_name:\n" +
+                            "\tselect OBJECT_NAME\n" +
+                            "\tinto temp\n" +
+                            "\tfrom USER_OBJECTS\n" +
+                            "\twhere OBJECT_NAME = UPPER(t_name)\n" +
+                            "\t\tand OBJECT_TYPE = 'TABLE';\n" +
+                            "exception\n" +
+                            "\twhen NO_DATA_FOUND then DBMS_OUTPUT.PUT_LINE('No Data found for SELECT on ' || temp);\n" +
+                            "\twhen OTHERS then\n" +
+                            "\t\tDBMS_OUTPUT.PUT_LINE('Unexpected error');\n" +
+                            "\t\traise;\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

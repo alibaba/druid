@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest17 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE rules RENAME COLUMN temp_plugin_config_key to plugin_config_key";
+                "ALTER TABLE rules RENAME COLUMN temp_plugin_config_key to plugin_config_key";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -31,7 +31,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerCreateIndexTest_2 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE UNIQUE CLUSTERED INDEX Idx1 ON t1(c);";
 
@@ -40,9 +39,9 @@ public class SQLServerCreateIndexTest_2 extends TestCase {
         SQLCreateIndexStatement stmt = (SQLCreateIndexStatement) statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         Assert.assertEquals("CREATE UNIQUE CLUSTERED INDEX Idx1 ON t1 (c);", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);

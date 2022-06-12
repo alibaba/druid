@@ -8,9 +8,7 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlCreateTableTest147_fulltext3 extends TestCase {
-
     public void test_0() throws Exception {
-
         String sql = "CREATE TABLE tbl_custom_analyzer2 (\n" +
                 "  `id` int COMMENT '',   \n" +
                 "  `title` varchar COMMENT '', \n" +
@@ -34,7 +32,6 @@ public class MySqlCreateTableTest147_fulltext3 extends TestCase {
     }
 
     public void test_1() throws Exception {
-
         String sql = "CREATE TABLE tbl_custom_analyzer2 (\n" +
                 "  `id` int COMMENT '',   \n" +
                 "  `title` varchar COMMENT '', \n" +
@@ -59,7 +56,6 @@ public class MySqlCreateTableTest147_fulltext3 extends TestCase {
     }
 
     public void test_2() throws Exception {
-
         String sql = "CREATE TABLE tbl_custom_analyzer2 (\n" +
                 "  `id` int COMMENT '',   \n" +
                 "  `title` varchar COMMENT '', \n" +
@@ -84,7 +80,6 @@ public class MySqlCreateTableTest147_fulltext3 extends TestCase {
     }
 
     public void test_3() throws Exception {
-
         String sql = "CREATE TABLE tbl_custom_analyzer2 (\n" +
                 "  `id` int COMMENT '',   \n" +
                 "  `title` varchar COMMENT '', \n" +

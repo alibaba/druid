@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.visitor.functions;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
@@ -27,8 +26,7 @@ import java.util.List;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Greatest implements Function {
-
-    public final static Greatest instance = new Greatest();
+    public static final Greatest instance = new Greatest();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         Object result = null;

@@ -9,7 +9,6 @@ import java.util.Map;
 
 public class MySqlParameterizedOutputVisitorTest_77 extends TestCase {
     public void test_restore() throws Exception {
-
         String sql = "select\n" +
                 "    cbm_name as cbm_name,\n" +
                 "    team_name as team,\n" +
@@ -93,15 +92,15 @@ public class MySqlParameterizedOutputVisitorTest_77 extends TestCase {
                 "    ) t_2\n" +
                 "on t_1.cbm_id = t_2.cbm_id and t_1.team_path = t_2.team_path";
 
-        Map<String,Object> parameters = new HashMap<String,Object>();
-        parameters.put("month_kpi",1);
-        parameters.put("thedate","20181115");
-        parameters.put("sys_is_cbm","true");
-        parameters.put("sys_emp_id",80882);
-        parameters.put("sys_team_path","0.7940.227.7936.");
-        parameters.put("thismonth","201811");
-        parameters.put("nextmonth","201812");
-        parameters.put("fiscalyear","2019");
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("month_kpi", 1);
+        parameters.put("thedate", "20181115");
+        parameters.put("sys_is_cbm", "true");
+        parameters.put("sys_emp_id", 80882);
+        parameters.put("sys_team_path", "0.7940.227.7936.");
+        parameters.put("thismonth", "201811");
+        parameters.put("nextmonth", "201812");
+        parameters.put("fiscalyear", "2019");
 
         String rsql = ParameterizedOutputVisitorUtils.restore(sql, DbType.mysql, parameters);
         assertEquals("SELECT cbm_name AS cbm_name, team_name AS team, month_earn AS month_gaap, month_kpi AS month_kpi\n" +

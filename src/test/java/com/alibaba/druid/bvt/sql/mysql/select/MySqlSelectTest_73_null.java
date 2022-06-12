@@ -27,9 +27,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_73_null extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "select \\N;";
+        String sql = "select \\N;";
 
         System.out.println(sql);
 
@@ -44,12 +43,12 @@ public class MySqlSelectTest_73_null extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT NULL;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select null;", //
-                                output);
+                    output);
         }
 
         {

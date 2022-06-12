@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_25 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "create table aliyun_cdm.test_910_table(\n" +

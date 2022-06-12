@@ -27,9 +27,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_80_hints extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "select 1 /*!, ' hello' */, 2 /*! union select 5, ' world', 10 */;";
+        String sql = "select 1 /*!, ' hello' */, 2 /*! union select 5, ' world', 10 */;";
 
         System.out.println(sql);
 
@@ -45,13 +44,13 @@ public class MySqlSelectTest_80_hints extends MysqlTest {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT 1 /*!, ' hello' */\n" +
                             "\t, 2 /*! union select 5, ' world', 10 */;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select 1 /*!, ' hello' */\n" +
                             "\t, 2 /*! union select 5, ' world', 10 */;", //
-                                output);
+                    output);
         }
 
         {

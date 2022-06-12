@@ -25,12 +25,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateIndexTest4 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        " CREATE UNIQUE INDEX \"SONAR\".\"UNIQ_AUTHOR_LOGINS\" ON \"SONAR\".\"AUTHORS\" (\"LOGIN\") " //
-                + "  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS " //
-                + "  TABLESPACE \"USERS\" ;";
+                " CREATE UNIQUE INDEX \"SONAR\".\"UNIQ_AUTHOR_LOGINS\" ON \"SONAR\".\"AUTHORS\" (\"LOGIN\") " //
+                        + "  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS " //
+                        + "  TABLESPACE \"USERS\" ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -54,7 +53,7 @@ public class OracleCreateIndexTest4 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SONAR.AUTHORS", "LOGIN")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SONAR.AUTHORS", "LOGIN")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }

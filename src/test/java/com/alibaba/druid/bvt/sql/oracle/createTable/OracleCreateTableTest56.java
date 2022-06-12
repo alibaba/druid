@@ -26,29 +26,28 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest56 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "      \n" +
-                "  CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"SNAP_ID\" NUMBER(6,0) NOT NULL ENABLE, \n" +
-                "  \"DBID\" NUMBER NOT NULL ENABLE, \n" +
-                "  \"INSTANCE_NUMBER\" NUMBER NOT NULL ENABLE, \n" +
-                "  \"EVENT\" VARCHAR2(64) NOT NULL ENABLE, \n" +
-                "  \"TOTAL_WAITS\" NUMBER, \n" +
-                "  \"TOTAL_TIMEOUTS\" NUMBER, \n" +
-                "  \"TIME_WAITED_MICRO\" NUMBER, \n" +
-                "   CONSTRAINT \"STATS$BG_EVENT_SUMMARY_PK\" PRIMARY KEY (\"SNAP_ID\", \"DBID\", \"INSTANCE_NUMBER\", \"EVENT\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"PERFSTAT\"  ENABLE, \n" +
-                "   CONSTRAINT \"STATS$BG_EVENT_SUMMARY_FK\" FOREIGN KEY (\"SNAP_ID\", \"DBID\", \"INSTANCE_NUMBER\")\n" +
-                "    REFERENCES \"PERFSTAT\".\"STATS$SNAPSHOT\" (\"SNAP_ID\", \"DBID\", \"INSTANCE_NUMBER\") ON DELETE CASCADE ENABLE\n" +
-                "   ) PCTFREE 5 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
-                "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"PERFSTAT\"     ";
+                "      \n" +
+                        "  CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"SNAP_ID\" NUMBER(6,0) NOT NULL ENABLE, \n" +
+                        "  \"DBID\" NUMBER NOT NULL ENABLE, \n" +
+                        "  \"INSTANCE_NUMBER\" NUMBER NOT NULL ENABLE, \n" +
+                        "  \"EVENT\" VARCHAR2(64) NOT NULL ENABLE, \n" +
+                        "  \"TOTAL_WAITS\" NUMBER, \n" +
+                        "  \"TOTAL_TIMEOUTS\" NUMBER, \n" +
+                        "  \"TIME_WAITED_MICRO\" NUMBER, \n" +
+                        "   CONSTRAINT \"STATS$BG_EVENT_SUMMARY_PK\" PRIMARY KEY (\"SNAP_ID\", \"DBID\", \"INSTANCE_NUMBER\", \"EVENT\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"PERFSTAT\"  ENABLE, \n" +
+                        "   CONSTRAINT \"STATS$BG_EVENT_SUMMARY_FK\" FOREIGN KEY (\"SNAP_ID\", \"DBID\", \"INSTANCE_NUMBER\")\n" +
+                        "    REFERENCES \"PERFSTAT\".\"STATS$SNAPSHOT\" (\"SNAP_ID\", \"DBID\", \"INSTANCE_NUMBER\") ON DELETE CASCADE ENABLE\n" +
+                        "   ) PCTFREE 5 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                        "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"PERFSTAT\"     ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -104,7 +103,7 @@ public class OracleCreateTableTest56 extends OracleTest {
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

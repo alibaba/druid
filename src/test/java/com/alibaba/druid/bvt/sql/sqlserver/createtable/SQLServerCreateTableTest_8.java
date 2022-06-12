@@ -31,7 +31,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerCreateTableTest_8 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "create table ACT_RU_VARIABLE ("
                 + " ID_ nvarchar(64) not null,"

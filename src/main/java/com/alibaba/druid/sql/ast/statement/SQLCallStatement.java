@@ -27,21 +27,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLCallStatement extends SQLStatementImpl {
+    private boolean brace;
 
-    private boolean             brace      = false;
+    private SQLVariantRefExpr outParameter;
 
-    private SQLVariantRefExpr   outParameter;
-
-    private SQLName             procedureName;
+    private SQLName procedureName;
 
     private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
-    
+
     public SQLCallStatement() {
-        
     }
-    
+
     public SQLCallStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public SQLVariantRefExpr getOutParameter() {

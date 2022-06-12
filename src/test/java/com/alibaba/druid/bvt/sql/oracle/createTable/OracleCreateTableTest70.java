@@ -23,15 +23,14 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest70 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "  create table month_part (c1 number,c3 date)\n" +
-                "partition by range(c3)\n" +
-                "interval(numtoyminterval (1,'month'))\n" +
-                "(partition part1 values less than (to_date('2010-01-01','YYYY-MM-DD')),\n" +
-                "partition part2 values less than (to_date('2010-02-01','YYYY-MM-DD'))\n" +
-                ") ";
+                "  create table month_part (c1 number,c3 date)\n" +
+                        "partition by range(c3)\n" +
+                        "interval(numtoyminterval (1,'month'))\n" +
+                        "(partition part1 values less than (to_date('2010-01-01','YYYY-MM-DD')),\n" +
+                        "partition part2 values less than (to_date('2010-02-01','YYYY-MM-DD'))\n" +
+                        ") ";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -47,7 +46,7 @@ public class OracleCreateTableTest70 extends OracleTest {
                         "\tPARTITION part1 VALUES LESS THAN (to_date('2010-01-01', 'YYYY-MM-DD')),\n" +
                         "\tPARTITION part2 VALUES LESS THAN (to_date('2010-02-01', 'YYYY-MM-DD'))\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

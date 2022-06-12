@@ -22,11 +22,10 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleCheck extends SQLCheck implements OracleConstraint, OracleSQLObject {
-
     private OracleUsingIndexClause using;
-    private SQLName                exceptionsInto;
-    private Initially              initially;
-    private Boolean                deferrable;
+    private SQLName exceptionsInto;
+    private Initially initially;
+    private Boolean deferrable;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

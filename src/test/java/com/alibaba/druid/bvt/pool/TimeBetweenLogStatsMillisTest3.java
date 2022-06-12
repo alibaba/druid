@@ -12,7 +12,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TimeBetweenLogStatsMillisTest3 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -38,7 +37,7 @@ public class TimeBetweenLogStatsMillisTest3 extends TestCase {
             rs.close();
             stmt.close();
             conn.close();
-            
+
             Thread.sleep(10);
         }
         Assert.assertEquals(10, dataSource.getTimeBetweenLogStatsMillis());

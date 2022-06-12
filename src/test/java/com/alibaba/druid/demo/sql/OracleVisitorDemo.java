@@ -29,6 +29,7 @@ public class OracleVisitorDemo extends TestCase {
 
     public static class ExportTableAliasVisitor extends OracleASTVisitorAdapter {
         private Map<String, SQLTableSource> aliasMap = new HashMap<String, SQLTableSource>();
+
         public boolean visit(OracleSelectTableReference x) {
             String alias = x.getAlias();
             aliasMap.put(alias, x);

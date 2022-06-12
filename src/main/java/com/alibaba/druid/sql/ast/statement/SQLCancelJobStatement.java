@@ -17,12 +17,11 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCancelJobStatement extends SQLStatementImpl {
     private SQLName jobName;
-    private boolean isImport = false;
+    private boolean isImport;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

@@ -30,8 +30,6 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLShowColumnsStatement;
-import com.alibaba.druid.sql.ast.statement.SQLShowCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
@@ -55,20 +53,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SchemaRepository {
     private static Log LOG = LogFactory.getLog(SchemaRepository.class);
 
-    private   Schema                    defaultSchema;
-    protected DbType                    dbType;
-    protected DbType                    schemaDbType;
-    protected SQLASTVisitor             consoleVisitor;
-    protected Map<String, Schema>       schemas           = new LinkedHashMap<String, Schema>();
+    private Schema defaultSchema;
+    protected DbType dbType;
+    protected DbType schemaDbType;
+    protected SQLASTVisitor consoleVisitor;
+    protected Map<String, Schema> schemas = new LinkedHashMap<String, Schema>();
     protected final Map<Long, Function> internalFunctions = new ConcurrentHashMap<Long, Function>(16, 0.75f, 1);
-    protected SchemaLoader              schemaLoader;
+    protected SchemaLoader schemaLoader;
 
     public SchemaRepository() {
-
     }
 
     public SchemaRepository(DbType dbType) {
-        this (dbType, dbType);
+        this(dbType, dbType);
     }
 
     public SchemaRepository(DbType dbType, DbType schemaDbType) {
@@ -447,8 +444,8 @@ public class SchemaRepository {
     public String resolve(String input) {
         SchemaResolveVisitor visitor
                 = createResolveVisitor(
-                    SchemaResolveVisitor.Option.ResolveAllColumn,
-                    SchemaResolveVisitor.Option.ResolveIdentifierAlias);
+                SchemaResolveVisitor.Option.ResolveAllColumn,
+                SchemaResolveVisitor.Option.ResolveIdentifierAlias);
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(input, dbType);
 
@@ -548,7 +545,7 @@ public class SchemaRepository {
             String catalog = null;
             if (owner instanceof SQLIdentifierExpr) {
                 schema = ((SQLIdentifierExpr) owner).getName();
-            } else if (owner instanceof SQLPropertyExpr){
+            } else if (owner instanceof SQLPropertyExpr) {
                 schema = ((SQLPropertyExpr) owner).getName();
                 catalog = ((SQLPropertyExpr) owner).getOwnernName();
             } else {
@@ -608,7 +605,7 @@ public class SchemaRepository {
             String catalog = null;
             if (owner instanceof SQLIdentifierExpr) {
                 schema = ((SQLIdentifierExpr) owner).getName();
-            } else if (owner instanceof SQLPropertyExpr){
+            } else if (owner instanceof SQLPropertyExpr) {
                 schema = ((SQLPropertyExpr) owner).getName();
                 catalog = ((SQLPropertyExpr) owner).getOwnernName();
             } else {
@@ -681,7 +678,6 @@ public class SchemaRepository {
         }
         return true;
     }
-
 
     public SchemaObject findTable(SQLExprTableSource x) {
         if (x == null) {

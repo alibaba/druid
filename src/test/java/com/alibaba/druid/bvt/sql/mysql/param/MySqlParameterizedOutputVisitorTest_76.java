@@ -11,7 +11,6 @@ import java.util.List;
 
 public class MySqlParameterizedOutputVisitorTest_76 extends TestCase {
     public void test_or() throws Exception {
-
         String sql = "select * from select_base_one_one_db_multi_tb where pk>=7 and pk>4 and pk <=49 and pk<18 order by pk limit 1";
 
         List<Object> outParameters = new ArrayList<Object>(0);

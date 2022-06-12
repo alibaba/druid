@@ -25,7 +25,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGCreateTableTest_10 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE KTV.ALI_KTV_LEADS_AREA_FIX_TBD (\n" +
                 "\tID VARCHAR(200) NOT NULL,\n" +
@@ -36,13 +35,13 @@ public class PGCreateTableTest_10 extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         assertEquals("CREATE TABLE KTV.ALI_KTV_LEADS_AREA_FIX_TBD (\n" +
                 "\tID VARCHAR(200) NOT NULL,\n" +
                 "\tTYPE VARCHAR(200),\n" +
                 "\tCONSTRAINT idx_ALI_KTV_LEADS_AREA_FIX_TBD_PK0 PRIMARY KEY (ID)\n" +
                 ")", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("create table KTV.ALI_KTV_LEADS_AREA_FIX_TBD (\n" +
                 "\tID VARCHAR(200) not null,\n" +
                 "\tTYPE VARCHAR(200),\n" +
@@ -61,7 +60,7 @@ public class PGCreateTableTest_10 extends PGTest {
 
         assertTrue(visitor.getTables().get(new TableStat.Name("KTV.ALI_KTV_LEADS_AREA_FIX_TBD")).getCreateCount() == 1);
 
-        assertEquals(3, visitor.getColumns().size() );
+        assertEquals(3, visitor.getColumns().size());
     }
 
 }

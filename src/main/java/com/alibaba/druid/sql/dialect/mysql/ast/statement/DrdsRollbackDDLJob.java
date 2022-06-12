@@ -12,7 +12,6 @@ import java.util.List;
  * Date 2019-06-18 23:37
  */
 public class DrdsRollbackDDLJob extends MySqlStatementImpl implements SQLStatement {
-
     private List<Long> jobIds = new ArrayList<Long>();
 
     public void accept0(MySqlASTVisitor visitor) {

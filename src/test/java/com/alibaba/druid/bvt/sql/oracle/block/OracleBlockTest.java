@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleBlockTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "BEGIN :RESULT := \"SYS\".\"DBMS_AQ_IMPORT_INTERNAL\".\"AQ_EXPORT_CHECK\"(:arg);  END;";
 

@@ -15,17 +15,16 @@
  */
 package com.alibaba.druid.pool.vendor;
 
+import com.alibaba.druid.pool.ExceptionSorter;
+
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
-import com.alibaba.druid.pool.ExceptionSorter;
-
 public class SybaseExceptionSorter implements ExceptionSorter, Serializable {
-
     private static final long serialVersionUID = 2742592563671255116L;
-    
+
     public SybaseExceptionSorter() {
         this.configFromProperties(System.getProperties());
     }
@@ -44,15 +43,14 @@ public class SybaseExceptionSorter implements ExceptionSorter, Serializable {
         errorText = errorText.toUpperCase();
 
         if ((errorText.contains("JZ0C0")) || // ERR_CONNECTION_DEAD
-            (errorText.contains("JZ0C1")) // ERR_IOE_KILLED_CONNECTION
+                (errorText.contains("JZ0C1")) // ERR_IOE_KILLED_CONNECTION
         ) {
             result = true;
         }
 
         return result;
     }
-    
+
     public void configFromProperties(Properties properties) {
-        
     }
 }

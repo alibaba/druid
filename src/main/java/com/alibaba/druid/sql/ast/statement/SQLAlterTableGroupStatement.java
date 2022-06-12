@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -25,12 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableGroupStatement extends SQLStatementImpl implements SQLAlterStatement {
-    private SQLName           name;
+    private SQLName name;
 
     private List<SQLAssignItem> options = new ArrayList<SQLAssignItem>();
 
     public SQLAlterTableGroupStatement() {
-
     }
 
     public SQLAlterTableGroupStatement(DbType dbType) {

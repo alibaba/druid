@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SHOW_DATABASES_Syntax_Test extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SHOW DATABASES;";
 

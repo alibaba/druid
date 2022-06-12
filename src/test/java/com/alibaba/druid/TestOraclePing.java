@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import oracle.jdbc.OracleConnection;
 
 public class TestOraclePing extends TestCase {
-
     private String jdbcUrl;
     private String user;
     private String password;

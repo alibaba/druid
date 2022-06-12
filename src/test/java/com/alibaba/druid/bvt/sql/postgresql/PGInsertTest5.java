@@ -26,14 +26,13 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGInsertTest5 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "WITH upd AS (" + //
-                     "  UPDATE employees SET sales_count = sales_count + 1 WHERE id =" + //
-                     "    (SELECT sales_person FROM accounts WHERE name = 'Acme Corporation')" + //
-                     "    RETURNING *" + //
-                     ")" + //
-                     "INSERT INTO employees_log SELECT *, current_timestamp FROM upd;";
+                "  UPDATE employees SET sales_count = sales_count + 1 WHERE id =" + //
+                "    (SELECT sales_person FROM accounts WHERE name = 'Acme Corporation')" + //
+                "    RETURNING *" + //
+                ")" + //
+                "INSERT INTO employees_log SELECT *, current_timestamp FROM upd;";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

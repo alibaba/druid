@@ -23,12 +23,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, SQLReplaceable {
-    protected boolean     isTry;
-    protected SQLExpr     expr;
+    protected boolean isTry;
+    protected SQLExpr expr;
     protected SQLDataType dataType;
 
-    public SQLCastExpr(){
-
+    public SQLCastExpr() {
     }
 
     public SQLCastExpr(SQLExpr expr, SQLDataType dataType) {
@@ -86,13 +85,21 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLCastExpr castExpr = (SQLCastExpr) o;
 
-        if (isTry != castExpr.isTry) return false;
-        if (expr != null ? !expr.equals(castExpr.expr) : castExpr.expr != null) return false;
+        if (isTry != castExpr.isTry) {
+            return false;
+        }
+        if (expr != null ? !expr.equals(castExpr.expr) : castExpr.expr != null) {
+            return false;
+        }
         return dataType != null ? dataType.equals(castExpr.dataType) : castExpr.dataType == null;
     }
 

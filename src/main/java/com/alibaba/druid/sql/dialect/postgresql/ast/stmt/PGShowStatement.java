@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGShowStatement extends SQLStatementImpl implements PGSQLStatement, SQLShowStatement {
-
     private SQLExpr expr;
 
     public SQLExpr getExpr() {

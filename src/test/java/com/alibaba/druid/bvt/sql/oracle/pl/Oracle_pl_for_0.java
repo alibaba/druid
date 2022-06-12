@@ -24,24 +24,23 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_for_0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "PROCEDURE display_multiple_years (\n" +
-				"   start_year_in IN PLS_INTEGER\n" +
-				"  ,end_year_in   IN PLS_INTEGER\n" +
-				")\n" +
-				"IS\n" +
-				"BEGIN\n" +
-				"  FOR l_current_year \n" +
-				"  IN start_year_in .. end_year_in\n" +
-				"  LOOP\n" +
-				"     display_total_sales \n" +
-				"             (l_current_year);\n" +
-				"  END LOOP;\n" +
-				"END display_multiple_years;"; //
+                "   start_year_in IN PLS_INTEGER\n" +
+                "  ,end_year_in   IN PLS_INTEGER\n" +
+                ")\n" +
+                "IS\n" +
+                "BEGIN\n" +
+                "  FOR l_current_year \n" +
+                "  IN start_year_in .. end_year_in\n" +
+                "  LOOP\n" +
+                "     display_total_sales \n" +
+                "             (l_current_year);\n" +
+                "  END LOOP;\n" +
+                "END display_multiple_years;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		SQLStatement stmt = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -67,35 +66,35 @@ public class Oracle_pl_for_0 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("PROCEDURE display_multiple_years (\n" +
-							"\tstart_year_in IN PLS_INTEGER, \n" +
-							"\tend_year_in IN PLS_INTEGER\n" +
-							")\n" +
-							"IS\n" +
-							"BEGIN\n" +
-							"\tFOR l_current_year IN start_year_in..end_year_in\n" +
-							"\tLOOP\n" +
-							"\t\tdisplay_total_sales(l_current_year);\n" +
-							"\tEND LOOP;\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("procedure display_multiple_years (\n" +
-							"\tstart_year_in in PLS_INTEGER, \n" +
-							"\tend_year_in in PLS_INTEGER\n" +
-							")\n" +
-							"IS\n" +
-							"begin\n" +
-							"\tfor l_current_year in start_year_in..end_year_in\n" +
-							"\tloop\n" +
-							"\t\tdisplay_total_sales(l_current_year);\n" +
-							"\tend loop;\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toOracleString(stmt);
+            assertEquals("PROCEDURE display_multiple_years (\n" +
+                            "\tstart_year_in IN PLS_INTEGER, \n" +
+                            "\tend_year_in IN PLS_INTEGER\n" +
+                            ")\n" +
+                            "IS\n" +
+                            "BEGIN\n" +
+                            "\tFOR l_current_year IN start_year_in..end_year_in\n" +
+                            "\tLOOP\n" +
+                            "\t\tdisplay_total_sales(l_current_year);\n" +
+                            "\tEND LOOP;\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("procedure display_multiple_years (\n" +
+                            "\tstart_year_in in PLS_INTEGER, \n" +
+                            "\tend_year_in in PLS_INTEGER\n" +
+                            ")\n" +
+                            "IS\n" +
+                            "begin\n" +
+                            "\tfor l_current_year in start_year_in..end_year_in\n" +
+                            "\tloop\n" +
+                            "\t\tdisplay_total_sales(l_current_year);\n" +
+                            "\tend loop;\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

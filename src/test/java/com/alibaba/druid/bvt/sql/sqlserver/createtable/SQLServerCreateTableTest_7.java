@@ -31,7 +31,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerCreateTableTest_7 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "create table leave_jpa ("
                 + " id bigint identity not null, "

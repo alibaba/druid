@@ -24,23 +24,22 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_exception_2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
-				"  stock_price   NUMBER := 9.73;\n" +
-				"  net_earnings  NUMBER := 0;\n" +
-				"  pe_ratio      NUMBER;\n" +
-				"BEGIN\n" +
-				"  pe_ratio := stock_price / net_earnings;  -- raises ZERO_DIVIDE exception\n" +
-				"  DBMS_OUTPUT.PUT_LINE('Price/earnings ratio = ' || pe_ratio);\n" +
-				"EXCEPTION\n" +
-				"  WHEN ZERO_DIVIDE THEN\n" +
-				"    DBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n" +
-				"    pe_ratio := NULL;\n" +
-				"END;"; //
+                "  stock_price   NUMBER := 9.73;\n" +
+                "  net_earnings  NUMBER := 0;\n" +
+                "  pe_ratio      NUMBER;\n" +
+                "BEGIN\n" +
+                "  pe_ratio := stock_price / net_earnings;  -- raises ZERO_DIVIDE exception\n" +
+                "  DBMS_OUTPUT.PUT_LINE('Price/earnings ratio = ' || pe_ratio);\n" +
+                "EXCEPTION\n" +
+                "  WHEN ZERO_DIVIDE THEN\n" +
+                "    DBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n" +
+                "    pe_ratio := NULL;\n" +
+                "END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -64,38 +63,38 @@ public class Oracle_pl_exception_2 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
-			System.out.println(output);
-			assertEquals("DECLARE\n" +
-							"\tstock_price NUMBER := 9.73;\n" +
-							"\tnet_earnings NUMBER := 0;\n" +
-							"\tpe_ratio NUMBER;\n" +
-							"BEGIN\n" +
-							"\tpe_ratio := stock_price / net_earnings;\n" +
-							"\tDBMS_OUTPUT.PUT_LINE('Price/earnings ratio = ' || pe_ratio);\n" +
-							"EXCEPTION\n" +
-							"\tWHEN ZERO_DIVIDE THEN\n" +
-							"\t\tDBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n" +
-							"\t\tpe_ratio := NULL;\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("declare\n" +
-							"\tstock_price NUMBER := 9.73;\n" +
-							"\tnet_earnings NUMBER := 0;\n" +
-							"\tpe_ratio NUMBER;\n" +
-							"begin\n" +
-							"\tpe_ratio := stock_price / net_earnings;\n" +
-							"\tDBMS_OUTPUT.PUT_LINE('Price/earnings ratio = ' || pe_ratio);\n" +
-							"exception\n" +
-							"\twhen ZERO_DIVIDE then\n" +
-							"\t\tDBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n" +
-							"\t\tpe_ratio := null;\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+            System.out.println(output);
+            assertEquals("DECLARE\n" +
+                            "\tstock_price NUMBER := 9.73;\n" +
+                            "\tnet_earnings NUMBER := 0;\n" +
+                            "\tpe_ratio NUMBER;\n" +
+                            "BEGIN\n" +
+                            "\tpe_ratio := stock_price / net_earnings;\n" +
+                            "\tDBMS_OUTPUT.PUT_LINE('Price/earnings ratio = ' || pe_ratio);\n" +
+                            "EXCEPTION\n" +
+                            "\tWHEN ZERO_DIVIDE THEN\n" +
+                            "\t\tDBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n" +
+                            "\t\tpe_ratio := NULL;\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("declare\n" +
+                            "\tstock_price NUMBER := 9.73;\n" +
+                            "\tnet_earnings NUMBER := 0;\n" +
+                            "\tpe_ratio NUMBER;\n" +
+                            "begin\n" +
+                            "\tpe_ratio := stock_price / net_earnings;\n" +
+                            "\tDBMS_OUTPUT.PUT_LINE('Price/earnings ratio = ' || pe_ratio);\n" +
+                            "exception\n" +
+                            "\twhen ZERO_DIVIDE then\n" +
+                            "\t\tDBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n" +
+                            "\t\tpe_ratio := null;\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

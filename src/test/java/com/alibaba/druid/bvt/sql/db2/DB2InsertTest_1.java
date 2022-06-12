@@ -28,7 +28,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2InsertTest_1 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO MK.KPI_AREA_SORT_FACT_LATN_ID_MID\n" +
                 "SELECT LATN_ID,BUREAU_KEY,\n" +
@@ -97,7 +96,7 @@ public class DB2InsertTest_1 extends DB2Test {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("MK.KPI_AREA_SORT_FACT_LATN_ID_MID")));
 
-         Assert.assertTrue(visitor.getColumns().contains(new Column("MK.M_USER_COUNT_FACT_CDMA", "LATN_ID")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("MK.M_USER_COUNT_FACT_CDMA", "LATN_ID")));
 //         Assert.assertTrue(visitor.getColumns().contains(new Column("t", "name")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
@@ -152,6 +151,6 @@ public class DB2InsertTest_1 extends DB2Test {
                         ") T\n" +
                         "GROUP BY LATN_ID, BUREAU_KEY\n" +
                         "WITH UR;", //
-                            output);
+                output);
     }
 }

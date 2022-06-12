@@ -15,24 +15,21 @@
  */
 package com.alibaba.druid.support.jconsole;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.border.TitledBorder;
-
 import com.alibaba.druid.support.jconsole.model.DruidTableCellRenderer;
 import com.alibaba.druid.support.jconsole.model.DruidTableModel;
 import com.alibaba.druid.support.jconsole.util.TableDataProcessor;
 import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
 
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 /**
  * service的请求地址：/datasource.json
- * 
+ * <p>
  * 请求service返回的json格式：
  * <pre>
  * {"ResultCode":1,
@@ -56,17 +53,16 @@ import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
  *          }]
  * }
  * </pre>
- * 
+ *
  * @author yunnysunny [yunnysunny@gmail.com]
- * */
+ */
 public class DruidDataSourcePanel extends DruidPanel {
-
-    private static final long   serialVersionUID  = 1L;
-    private static final String REQUEST_URL       = "/datasource.json";
+    private static final long serialVersionUID = 1L;
+    private static final String REQUEST_URL = "/datasource.json";
     private static final String KEY_WORD_IDENTITY = "Identity";
-    private JPanel              contentPanel;
+    private JPanel contentPanel;
 
-    public DruidDataSourcePanel(){
+    public DruidDataSourcePanel() {
         super();
         this.url = REQUEST_URL;
 

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableDisableLifecycle extends SQLObjectImpl implements SQLAlterTableItem {
-
     private final List<SQLAssignItem> partition = new ArrayList<SQLAssignItem>(4);
 
     public List<SQLAssignItem> getPartition() {

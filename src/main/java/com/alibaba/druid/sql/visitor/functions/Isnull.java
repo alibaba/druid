@@ -22,13 +22,9 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import java.util.List;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.*;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 public class Isnull implements Function {
-
-    public final static Isnull instance = new Isnull();
+    public static final Isnull instance = new Isnull();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         final List<SQLExpr> arguments = x.getArguments();

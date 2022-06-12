@@ -14,11 +14,10 @@ import java.util.List;
  * @date 2018/12/12 2:03 PM
  */
 public class MySqlCreateIndexTest_8_drds extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE GLOBAL INDEX `g_i_seller` ON t_order (`seller_id`) COVERING (order_snapshot) "
-                     + "DBPARTITION BY HASH(seller_id) TBPARTITION BY UNI_HASH(seller_id) TBPARTITIONS 12;";
+                + "DBPARTITION BY HASH(seller_id) TBPARTITION BY UNI_HASH(seller_id) TBPARTITIONS 12;";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -33,8 +32,8 @@ public class MySqlCreateIndexTest_8_drds extends MysqlTest {
     @Test
     public void test_two() throws Exception {
         String sql = "CREATE GLOBAL INDEX `g_i_seller` ON t_order (`seller_id`) COVERING (order_snapshot) "
-                     + "DBPARTITION BY HASH(SELLER_ID) TBPARTITION BY uni_hash(SELLER_ID) TBPARTITIONS 12 "
-                     + "COMMENT 'CREATE GSI TEST';";
+                + "DBPARTITION BY HASH(SELLER_ID) TBPARTITION BY uni_hash(SELLER_ID) TBPARTITIONS 12 "
+                + "COMMENT 'CREATE GSI TEST';";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -49,8 +48,8 @@ public class MySqlCreateIndexTest_8_drds extends MysqlTest {
     @Test
     public void test_three() throws Exception {
         String sql = "CREATE GLOBAL INDEX `g_i_seller` ON t_order (`seller_id`) COVERING (order_snapshot) "
-                     + "DBPARTITION BY HASH(SELLER_ID) TBPARTITION BY UNI_HASH(SELLER_ID) TBPARTITIONS 12 "
-                     + "USING BTREE KEY_BLOCK_SIZE=20 COMMENT 'CREATE GSI TEST' ALGORITHM=DEFAULT LOCK=DEFAULT;";
+                + "DBPARTITION BY HASH(SELLER_ID) TBPARTITION BY UNI_HASH(SELLER_ID) TBPARTITIONS 12 "
+                + "USING BTREE KEY_BLOCK_SIZE=20 COMMENT 'CREATE GSI TEST' ALGORITHM=DEFAULT LOCK=DEFAULT;";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -60,6 +59,6 @@ public class MySqlCreateIndexTest_8_drds extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("CREATE GLOBAL INDEX `g_i_seller` ON t_order (`seller_id`) COVERING (order_snapshot) DBPARTITION BY HASH(SELLER_ID) TBPARTITION BY UNI_HASH(SELLER_ID) TBPARTITIONS 12 USING BTREE KEY_BLOCK_SIZE = 20 COMMENT 'CREATE GSI TEST' ALGORITHM = DEFAULT LOCK = DEFAULT;",
-            output);
+                output);
     }
 }

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_13_skew extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE list_bucket_single (key STRING, value STRING)\n" +

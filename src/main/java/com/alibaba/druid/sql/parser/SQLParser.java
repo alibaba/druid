@@ -24,9 +24,9 @@ import java.util.TimeZone;
 
 public class SQLParser {
     protected final Lexer lexer;
-    protected DbType      dbType;
+    protected DbType dbType;
 
-    public SQLParser(String sql, DbType dbType, SQLParserFeature... features){
+    public SQLParser(String sql, DbType dbType, SQLParserFeature... features) {
         this(new Lexer(sql, null, dbType), dbType);
         for (SQLParserFeature feature : features) {
             config(feature, true);
@@ -35,18 +35,18 @@ public class SQLParser {
         this.lexer.nextToken();
     }
 
-    public SQLParser(String sql){
+    public SQLParser(String sql) {
         this(sql, null);
     }
 
-    public SQLParser(Lexer lexer){
+    public SQLParser(Lexer lexer) {
         this(lexer, null);
         if (dbType == null) {
             dbType = lexer.dbType;
         }
     }
 
-    public SQLParser(Lexer lexer, DbType dbType){
+    public SQLParser(Lexer lexer, DbType dbType) {
         this.lexer = lexer;
         this.dbType = dbType;
     }
@@ -95,7 +95,7 @@ public class SQLParser {
 
         if (token == Token.IDENTIFIER) {
             String ident = lexer.stringVal;
-            long hash = lexer.hash_lower;
+            long hash = lexer.hashLCase;
             if (isEnabled(SQLParserFeature.IgnoreNameQuotes) && ident.length() > 1) {
                 ident = StringUtils.removeNameQuotes(ident);
             }
@@ -205,8 +205,7 @@ public class SQLParser {
                 case OUTER:
                 case IN:
                 case SET:
-                case BY:
-                {
+                case BY: {
                     Lexer.SavePoint mark = lexer.mark();
                     String strVal = lexer.stringVal();
                     lexer.nextToken();
@@ -220,8 +219,7 @@ public class SQLParser {
                         case RPAREN:
                         case ON:
                         case JOIN:
-                        case SEMI:
-                        {
+                        case SEMI: {
                             return strVal;
                         }
                         default:
@@ -264,7 +262,7 @@ public class SQLParser {
                     }
                     break;
                 case TABLE:
-                    if (dbType == DbType.odps){
+                    if (dbType == DbType.odps) {
                         Lexer.SavePoint mark = lexer.mark();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -305,7 +303,7 @@ public class SQLParser {
                 case EXCEPT:
                 case LIMIT:
                 case BETWEEN:
-                    if (dbType == DbType.odps){
+                    if (dbType == DbType.odps) {
                         Lexer.SavePoint mark = lexer.mark();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -522,8 +520,7 @@ public class SQLParser {
                 case ALTER:
                 case IN:
                 case INTO:
-                case ASC:
-                {
+                case ASC: {
                     alias = lexer.stringVal();
 
                     Lexer.SavePoint mark = lexer.mark();
@@ -864,7 +861,7 @@ public class SQLParser {
     public void match(Token token) {
         if (lexer.token != token) {
             throw new ParserException("syntax error, expect " + token + ", actual " + lexer.token + " "
-                                      + lexer.info());
+                    + lexer.info());
         }
     }
 
@@ -879,7 +876,6 @@ public class SQLParser {
     public void config(SQLParserFeature feature, boolean state) {
         this.lexer.config(feature, state);
     }
-
 
     public TimeZone getTimeZone() {
         return lexer.getTimeZone();

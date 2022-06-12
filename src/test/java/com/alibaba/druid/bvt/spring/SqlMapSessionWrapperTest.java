@@ -10,7 +10,6 @@ import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
 import com.ibatis.sqlmap.engine.impl.SqlMapSessionImpl;
 
 public class SqlMapSessionWrapperTest extends TestCase {
-
     private ClassPathXmlApplicationContext context = null;
 
     protected void setUp() throws Exception {

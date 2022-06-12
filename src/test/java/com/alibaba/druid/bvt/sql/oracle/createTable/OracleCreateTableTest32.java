@@ -27,10 +27,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest32 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE games (scores NUMBER CHECK (scores >= 0));";
+                "CREATE TABLE games (scores NUMBER CHECK (scores >= 0));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -40,10 +39,10 @@ public class OracleCreateTableTest32 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("CREATE TABLE games (" //
-                            + "\n\tscores NUMBER" //
-                            + "\n\t\tCHECK (scores >= 0)" //
-                            + "\n);",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\n\tscores NUMBER" //
+                        + "\n\t\tCHECK (scores >= 0)" //
+                        + "\n);",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

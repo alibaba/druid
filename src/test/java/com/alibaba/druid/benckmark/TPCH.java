@@ -15,7 +15,7 @@ public class TPCH {
             String path = "tpch/q" + i + ".sql";
             InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
             String sql = Utils.read(is);
-            QUERIES[i-1] = sql;
+            QUERIES[i - 1] = sql;
             JdbcUtils.close(is);
         }
         {

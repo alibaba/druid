@@ -30,15 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleMultiInsertStatement extends OracleStatementImpl {
-
     public static enum Option {
         ALL, FIRST
     }
 
-    private SQLSelect     subQuery;
-    private Option        option;
-    private List<Entry>   entries = new ArrayList<Entry>();
-    private List<SQLHint> hints   = new ArrayList<SQLHint>(1);
+    private SQLSelect subQuery;
+    private Option option;
+    private List<Entry> entries = new ArrayList<Entry>();
+    private List<SQLHint> hints = new ArrayList<SQLHint>(1);
 
     public List<SQLHint> getHints() {
         return hints;
@@ -85,13 +84,11 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
     }
 
     public static interface Entry extends OracleSQLObject {
-
     }
 
     public static class ConditionalInsertClause extends OracleSQLObjectImpl implements Entry {
-
         private List<ConditionalInsertClauseItem> items = new ArrayList<ConditionalInsertClauseItem>();
-        private InsertIntoClause                  elseItem;
+        private InsertIntoClause elseItem;
 
         public InsertIntoClause getElseItem() {
             return elseItem;
@@ -124,8 +121,7 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
     }
 
     public static class ConditionalInsertClauseItem extends OracleSQLObjectImpl {
-
-        private SQLExpr          when;
+        private SQLExpr when;
         private InsertIntoClause then;
 
         public SQLExpr getWhen() {
@@ -156,12 +152,10 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
     }
 
     public static class InsertIntoClause extends SQLInsertInto implements OracleSQLObject, Entry {
-
-        private OracleReturningClause    returning;
+        private OracleReturningClause returning;
         private SQLErrorLoggingClause errorLogging;
 
-        public InsertIntoClause(){
-
+        public InsertIntoClause() {
         }
 
         public OracleReturningClause getReturning() {

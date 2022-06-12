@@ -14,7 +14,6 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
     private List<Field> fields = new ArrayList<Field>();
 
     public SQLStructDataType() {
-
     }
 
     public SQLStructDataType(DbType dbType) {
@@ -108,6 +107,7 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
     public boolean isInt() {
         return false;
     }
+
     @Override
     public boolean isNumberic() {
         return false;
@@ -124,9 +124,9 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
     }
 
     public static class Field extends SQLObjectImpl {
-        private SQLName     name;
+        private SQLName name;
         private SQLDataType dataType;
-        private String      comment;
+        private String comment;
 
         public Field(SQLName name, SQLDataType dataType) {
             setName(name);

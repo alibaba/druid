@@ -24,7 +24,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGDeleteTest10 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "delete from account a using (values (1), (7)) as tmp(id) WHERE a.id = tmp.id";
 
@@ -47,7 +46,7 @@ public class PGDeleteTest10 extends PGTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("account")));
 
-        assertEquals(1, visitor.getColumns().size() );
+        assertEquals(1, visitor.getColumns().size());
 
         assertTrue(visitor.containsColumn("account", "id"));
     }

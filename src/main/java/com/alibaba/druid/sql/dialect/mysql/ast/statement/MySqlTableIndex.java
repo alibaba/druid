@@ -30,7 +30,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.List;
 
 public class MySqlTableIndex extends SQLConstraintImpl implements SQLTableElement, SQLIndex, MySqlObject {
-
     private SQLIndexDefinition indexDefinition = new SQLIndexDefinition();
 
     public MySqlTableIndex() {
@@ -118,8 +117,8 @@ public class MySqlTableIndex extends SQLConstraintImpl implements SQLTableElemen
                     if (to.getDataType().hasKeyLength() &&
                             1 == to.getDataType().getArguments().size() &&
                             to.getDataType().getArguments().get(0) instanceof SQLIntegerExpr) {
-                        int newKeyLength = ((SQLIntegerExpr)to.getDataType().getArguments().get(0)).getNumber().intValue();
-                        int oldKeyLength = ((SQLIntegerExpr)((SQLMethodInvokeExpr) expr).getArguments().get(0)).getNumber().intValue();
+                        int newKeyLength = ((SQLIntegerExpr) to.getDataType().getArguments().get(0)).getNumber().intValue();
+                        int oldKeyLength = ((SQLIntegerExpr) ((SQLMethodInvokeExpr) expr).getArguments().get(0)).getNumber().intValue();
                         if (newKeyLength > oldKeyLength) {
                             // Change name and keep key length.
                             ((SQLMethodInvokeExpr) expr).setMethodName(to.getName().getSimpleName());

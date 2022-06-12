@@ -13,7 +13,6 @@ public class MySqlChecksumTableStatement extends MySqlStatementImpl {
     private boolean extended;
 
     public MySqlChecksumTableStatement() {
-
     }
 
     public void addTable(SQLExprTableSource table) {

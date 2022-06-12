@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerAlterTableTest_9 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE dbo.doc_exy ALTER COLUMN column_a DECIMAL (5, 2) ;";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -44,7 +43,7 @@ public class SQLServerAlterTableTest_9 extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("ALTER TABLE dbo.doc_exy"//
-                            + "\n\tALTER COLUMN column_a DECIMAL(5, 2);", output);
+                + "\n\tALTER COLUMN column_a DECIMAL(5, 2);", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());

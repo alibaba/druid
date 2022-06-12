@@ -26,11 +26,10 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest8 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE ws_i18n_translate_item ADD CONSTRAINT ws_i18n_translate_item_pk "//
-                + "PRIMARY KEY (id) USING INDEX ws_i18n_translate_item_pk";
+                "ALTER TABLE ws_i18n_translate_item ADD CONSTRAINT ws_i18n_translate_item_pk "//
+                        + "PRIMARY KEY (id) USING INDEX ws_i18n_translate_item_pk";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

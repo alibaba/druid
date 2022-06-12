@@ -24,15 +24,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest57 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE TABLE `t_cpi_driskconfig_bak` (" + "`Sequence` bigint(20) NOT NULL AUTO_INCREMENT,"
-                     + "`comcode` varchar(20) binary NOT NULL," + "`riskcode` varchar(10) binary NOT NULL,"
-                     + "`configcodehead` varchar(30) binary NOT NULL," + "`configcodebody` varchar(100) binary,"
-                     + "`configvalue` varchar(200) binary ," + "`inputdate` datetime NOT NULL,"
-                     + "`validstatus` char(1) NOT NULL," + "`remark` varchar(3000)," + "`flag` varchar(10) ,"
-                     + "PRIMARY KEY (`Sequence`)" + ") ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;";
+                + "`comcode` varchar(20) binary NOT NULL," + "`riskcode` varchar(10) binary NOT NULL,"
+                + "`configcodehead` varchar(30) binary NOT NULL," + "`configcodebody` varchar(100) binary,"
+                + "`configvalue` varchar(200) binary ," + "`inputdate` datetime NOT NULL,"
+                + "`validstatus` char(1) NOT NULL," + "`remark` varchar(3000)," + "`flag` varchar(10) ,"
+                + "PRIMARY KEY (`Sequence`)" + ") ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -54,18 +53,18 @@ public class MySqlCreateTableTest57 extends MysqlTest {
                 + "\n\t`configcodehead` varchar(30) BINARY  NOT NULL," + "\n\t`configcodebody` varchar(100) BINARY ,"
                 + "\n\t`configvalue` varchar(200) BINARY ," + "\n\t`inputdate` datetime NOT NULL,"
                 + "\n\t`validstatus` char(1) NOT NULL," + "\n\t`remark` varchar(3000)," + "\n\t`flag` varchar(10),"
-                + "\n\tPRIMARY KEY (`Sequence`)" + "\n) ENGINE = InnoDB AUTO_INCREMENT = 49 CHARSET = utf8",output);
+                + "\n\tPRIMARY KEY (`Sequence`)" + "\n) ENGINE = InnoDB AUTO_INCREMENT = 49 CHARSET = utf8", output);
 
     }
-    
+
     @Test
     public void test_two() throws Exception {
         String sql = "CREATE TABLE `t_cpi_driskconfig_bak` (" + "`Sequence` bigint(20) NOT NULL AUTO_INCREMENT,"
-                     + "`comcode` binary(20) NOT NULL," + "`riskcode` varchar(10) binary NOT NULL,"
-                     + "`configcodehead` varchar(30) binary NOT NULL," + "`configcodebody` varchar(100) binary,"
-                     + "`configvalue` varchar(200) binary ," + "`inputdate` datetime NOT NULL,"
-                     + "`validstatus` char(1) NOT NULL," + "`remark` varchar(3000)," + "`flag` varchar(10) ,"
-                     + "PRIMARY KEY (`Sequence`)" + ") ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;";
+                + "`comcode` binary(20) NOT NULL," + "`riskcode` varchar(10) binary NOT NULL,"
+                + "`configcodehead` varchar(30) binary NOT NULL," + "`configcodebody` varchar(100) binary,"
+                + "`configvalue` varchar(200) binary ," + "`inputdate` datetime NOT NULL,"
+                + "`validstatus` char(1) NOT NULL," + "`remark` varchar(3000)," + "`flag` varchar(10) ,"
+                + "PRIMARY KEY (`Sequence`)" + ") ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -87,7 +86,7 @@ public class MySqlCreateTableTest57 extends MysqlTest {
                 + "\n\t`configcodehead` varchar(30) BINARY  NOT NULL," + "\n\t`configcodebody` varchar(100) BINARY ,"
                 + "\n\t`configvalue` varchar(200) BINARY ," + "\n\t`inputdate` datetime NOT NULL,"
                 + "\n\t`validstatus` char(1) NOT NULL," + "\n\t`remark` varchar(3000)," + "\n\t`flag` varchar(10),"
-                + "\n\tPRIMARY KEY (`Sequence`)" + "\n) ENGINE = InnoDB AUTO_INCREMENT = 49 CHARSET = utf8",output);
+                + "\n\tPRIMARY KEY (`Sequence`)" + "\n) ENGINE = InnoDB AUTO_INCREMENT = 49 CHARSET = utf8", output);
 
     }
 }

@@ -28,7 +28,6 @@ public class CounterValidConnectionChecker implements ValidConnectionChecker {
 
     @Override
     public void configFromProperties(Properties properties) {
-
     }
 
     public int getCountValue(String url) {

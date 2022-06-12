@@ -12,6 +12,7 @@ import junit.framework.TestCase;
  */
 public class Issue1576 extends TestCase {
     private final DbType dbType = JdbcConstants.ORACLE;
+
     public void test_for_issue() throws Exception {
         String sql = "select * from t whe id = 1";
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);

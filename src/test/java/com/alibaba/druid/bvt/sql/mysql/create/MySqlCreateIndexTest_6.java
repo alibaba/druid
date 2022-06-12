@@ -25,7 +25,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateIndexTest_6 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE GLOBAL INDEX `g_i_seller` ON t_order (`seller_id`) COVERING (order_snapshot) dbpartition by hash(`seller_id`);";

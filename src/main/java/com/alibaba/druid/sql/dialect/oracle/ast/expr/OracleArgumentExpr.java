@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
-import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
@@ -26,15 +25,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class OracleArgumentExpr extends OracleSQLObjectImpl implements SQLExpr, SQLReplaceable {
-
-    private String  argumentName;
+    private String argumentName;
     private SQLExpr value;
 
-    public OracleArgumentExpr(){
-
+    public OracleArgumentExpr() {
     }
 
-    public OracleArgumentExpr(String argumentName, SQLExpr value){
+    public OracleArgumentExpr(String argumentName, SQLExpr value) {
         this.argumentName = argumentName;
         setValue(value);
     }

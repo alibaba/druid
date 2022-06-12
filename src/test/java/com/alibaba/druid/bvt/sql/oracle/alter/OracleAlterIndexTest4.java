@@ -25,10 +25,9 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleAlterIndexTest4 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter index HT_TASK_TRADE_HIS_TID_RT_IND_N rename to HT_TASK_TRADE_HIS_TID_RT_IND";
+                "alter index HT_TASK_TRADE_HIS_TID_RT_IND_N rename to HT_TASK_TRADE_HIS_TID_RT_IND";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

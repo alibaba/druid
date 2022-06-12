@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowFunctionCodeStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
     private SQLExpr name;
 
     public void accept0(MySqlASTVisitor visitor) {

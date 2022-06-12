@@ -26,17 +26,16 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest51 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"A\" NUMBER, \n" +
-                "  \"C\" VARCHAR2(7), \n" +
-                "  \"DC1\" VARCHAR2(120)\n" +
-                "   ) PCTFREE 0 PCTUSED 40 INITRANS 1 MAXTRANS 255 COMPRESS NOLOGGING\n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APP_DATA1K\"    ";
+                "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"A\" NUMBER, \n" +
+                        "  \"C\" VARCHAR2(7), \n" +
+                        "  \"DC1\" VARCHAR2(120)\n" +
+                        "   ) PCTFREE 0 PCTUSED 40 INITRANS 1 MAXTRANS 255 COMPRESS NOLOGGING\n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APP_DATA1K\"    ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -67,7 +66,7 @@ public class OracleCreateTableTest51 extends OracleTest {
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

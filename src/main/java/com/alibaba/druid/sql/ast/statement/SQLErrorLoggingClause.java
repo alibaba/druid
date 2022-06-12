@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLErrorLoggingClause extends SQLObjectImpl {
-
     private SQLName into;
     private SQLExpr simpleExpression;
     private SQLExpr limit;

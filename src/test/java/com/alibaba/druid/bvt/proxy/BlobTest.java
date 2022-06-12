@@ -33,7 +33,6 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class BlobTest extends TestCase {
-
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:memory:blobTestDB;create=true";
 
     protected void setUp() throws Exception {
@@ -64,13 +63,12 @@ public class BlobTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dropTable();
-        
+
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_blob() throws Exception {
-
         Connection conn = null;
         PreparedStatement pstmt = null;
         Statement stmt = null;
@@ -109,7 +107,7 @@ public class BlobTest extends TestCase {
             Assert.assertEquals(1, updateCount);
 
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
-                                        ResultSet.CLOSE_CURSORS_AT_COMMIT);
+                    ResultSet.CLOSE_CURSORS_AT_COMMIT);
 
             conn.nativeSQL("SELECT ID, DATA FROM T_BLOB");
             // //////

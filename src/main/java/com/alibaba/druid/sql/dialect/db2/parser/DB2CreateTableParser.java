@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.db2.parser;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionByHash;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -87,7 +86,7 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
                     constraint.setParent(createTable);
                     createTable.getTableElementList().add((SQLTableElement) constraint);
                 } else if (token == Token.TABLESPACE) {
-                    throw new ParserException("TODO "  + lexer.info());
+                    throw new ParserException("TODO " + lexer.info());
                 } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     createTable.getTableElementList().add(column);
@@ -122,7 +121,7 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
             createTable.setSelect(select);
         }
 
-        for (;;) {
+        for (; ; ) {
             if (lexer.identifierEquals(FnvHash.Constants.DATA)) {
                 lexer.nextToken();
                 acceptIdentifier("CAPTURE");
@@ -133,7 +132,7 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
                     continue;
                 }
 
-                throw new ParserException("TODO "  + lexer.info());
+                throw new ParserException("TODO " + lexer.info());
             } else if (lexer.token() == Token.IN) {
                 lexer.nextToken();
 
@@ -142,7 +141,7 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
                     SQLName database = this.exprParser.name();
                     createTable.setDatabase(database);
                 } else if (lexer.identifierEquals("tablespace")) {
-                    throw new ParserException("TODO "  + lexer.info());
+                    throw new ParserException("TODO " + lexer.info());
                 } else {
                     SQLName tablespace = this.exprParser.name();
                     createTable.setTablespace(tablespace);

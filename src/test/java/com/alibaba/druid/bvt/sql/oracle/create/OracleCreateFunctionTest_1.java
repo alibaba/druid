@@ -25,12 +25,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateFunctionTest_1 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE OR REPLACE FUNCTION STRCAT(input varchar2 )\n" +
-                "RETURN varchar2\n" +
-                "PARALLEL_ENABLE AGGREGATE USING strcat_type;";
+                "CREATE OR REPLACE FUNCTION STRCAT(input varchar2 )\n" +
+                        "RETURN varchar2\n" +
+                        "PARALLEL_ENABLE AGGREGATE USING strcat_type;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -46,7 +45,7 @@ public class OracleCreateFunctionTest_1 extends OracleTest {
                         "PARALLEL_ENABLE\n" +
                         "AGGREGATE\n" +
                         "USING strcat_type;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

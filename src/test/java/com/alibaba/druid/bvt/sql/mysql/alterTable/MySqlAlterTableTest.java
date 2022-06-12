@@ -32,17 +32,17 @@ public class MySqlAlterTableTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHANGE COLUMN `fname` `fname1` VARCHAR(45) NULL DEFAULT NULL;", output);
     }
-    
+
     public void test_alter_1() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` CHARACTER SET = utf8 , COLLATE = utf8_general_ci ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHARACTER SET = utf8 COLLATE = utf8_general_ci;", SQLUtils.toMySqlString(stmt));
         Assert.assertEquals("alter table `test`.`tb1`\n\tcharacter set = utf8 collate = utf8_general_ci;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-    
+
     public void test_alter_2() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD INDEX `f` (`fname` ASC) ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -51,7 +51,7 @@ public class MySqlAlterTableTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD INDEX `f` (`fname` ASC);", output);
     }
-    
+
     public void test_alter_3() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ENGINE = InnoDB ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -60,7 +60,7 @@ public class MySqlAlterTableTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tENGINE = InnoDB;", output);
     }
-    
+
     public void test_alter_4() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` COLLATE = utf8_general_ci , PACK_KEYS = Pack All , ENGINE = InnoDB ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -69,7 +69,7 @@ public class MySqlAlterTableTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCOLLATE = utf8_general_ci PACK_KEYS = PACK ALL ENGINE = InnoDB;", output);
     }
-    
+
     public void test_alter_5() throws Exception {
         String sql = "ALTER TABLE t1 COMMENT '表的注释';";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

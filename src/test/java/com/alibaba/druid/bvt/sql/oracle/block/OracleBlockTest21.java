@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleBlockTest21 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "BEGIN\n" +
                 "  FOR someone IN (\n" +
@@ -77,6 +76,6 @@ public class OracleBlockTest21 extends OracleTest {
         assertEquals(1, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
 
-         assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
     }
 }

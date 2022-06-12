@@ -34,23 +34,20 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class EncodingConvertFilterTest extends TestCase {
-
     private DruidDataSource dataSource;
 
-    private static String   CLIENT_ENCODING = "UTF-8";
-    private static String   SERVER_ENCODING = "ISO-8859-1";
+    private static String CLIENT_ENCODING = "UTF-8";
+    private static String SERVER_ENCODING = "ISO-8859-1";
 
-    private static String   text            = "中华人民共和国";
+    private static String text = "中华人民共和国";
 
     protected void setUp() throws Exception {
-
         dataSource = new DruidDataSource();
 
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setFilters("encoding");
 
         dataSource.setDriver(new MockDriver() {
-            
             public ResultSet createResultSet(MockPreparedStatement stmt) {
                 return new MyResultSet(stmt);
             }
@@ -71,9 +68,8 @@ public class EncodingConvertFilterTest extends TestCase {
     }
 
     public void test_stat() throws Exception {
-
         Assert.assertTrue(dataSource.isInited());
-        
+
         EncodingConvertFilter filter = (EncodingConvertFilter) dataSource.getProxyFilters().get(0);
 
         DruidPooledConnection conn = dataSource.getConnection();
@@ -90,13 +86,13 @@ public class EncodingConvertFilterTest extends TestCase {
         Assert.assertFalse(param1.equals(PARAM_VALUE));
 
         ResultSet rs = stmt.executeQuery();
-        
+
         MyResultSet rawRs = rs.unwrap(MyResultSet.class);
         rawRs.setValue(filter.encode((ConnectionProxy) conn.getConnection(), text));
-        
+
         rs.next();
 
-         Assert.assertEquals(text, rs.getString(1));
+        Assert.assertEquals(text, rs.getString(1));
 
         rs.close();
         stmt.close();
@@ -106,10 +102,9 @@ public class EncodingConvertFilterTest extends TestCase {
     }
 
     public static class MyResultSet extends MockResultSet {
-
         private String value;
 
-        public MyResultSet(Statement statement){
+        public MyResultSet(Statement statement) {
             super(statement);
         }
 

@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 
 public class LargeOrTest extends TestCase {
-
     public void test_largeOr() throws Exception {
         StringBuffer buf = new StringBuffer();
         buf.append("SELECT 1 FROM T WHERE ID = ?");

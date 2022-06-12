@@ -26,25 +26,24 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest59 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "    CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"CATEGORY_ROOT_ID\" NUMBER NOT NULL ENABLE, \n" +
-                "  \"CATEGORY_ROOT_DESC\" VARCHAR2(128) NOT NULL ENABLE, \n" +
-                "  \"CATEGORY_LEVEL2_ID\" NUMBER, \n" +
-                "  \"CATEGORY_LEVEL2_DESC\" VARCHAR2(128), \n" +
-                "  \"CATEGORY_LEVEL3_ID\" NUMBER, \n" +
-                "  \"CATEGORY_LEVEL3_DESC\" VARCHAR2(128), \n" +
-                "  \"CATEGORY_LEAF_ID\" NUMBER, \n" +
-                "  \"CATEGORY_LEAF_DESC\" VARCHAR2(128), \n" +
-                "  \"IS_LEAF\" CHAR(1), \n" +
-                "   CONSTRAINT \"EN_CATE_POST_C_DIMT0_PK\" PRIMARY KEY (\"CATEGORY_LEVEL2_ID\", \"CATEGORY_LEAF_ID\") ENABLE\n" +
-                "   ) ORGANIZATION INDEX COMPRESS 1 PCTFREE 10 INITRANS 2 MAXTRANS 255 LOGGING\n" +
-                "  STORAGE(INITIAL 4194304 NEXT 4194304 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"ZEUS_IND\" \n" +
-                " PCTTHRESHOLD 50   ";
+                "    CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"CATEGORY_ROOT_ID\" NUMBER NOT NULL ENABLE, \n" +
+                        "  \"CATEGORY_ROOT_DESC\" VARCHAR2(128) NOT NULL ENABLE, \n" +
+                        "  \"CATEGORY_LEVEL2_ID\" NUMBER, \n" +
+                        "  \"CATEGORY_LEVEL2_DESC\" VARCHAR2(128), \n" +
+                        "  \"CATEGORY_LEVEL3_ID\" NUMBER, \n" +
+                        "  \"CATEGORY_LEVEL3_DESC\" VARCHAR2(128), \n" +
+                        "  \"CATEGORY_LEAF_ID\" NUMBER, \n" +
+                        "  \"CATEGORY_LEAF_DESC\" VARCHAR2(128), \n" +
+                        "  \"IS_LEAF\" CHAR(1), \n" +
+                        "   CONSTRAINT \"EN_CATE_POST_C_DIMT0_PK\" PRIMARY KEY (\"CATEGORY_LEVEL2_ID\", \"CATEGORY_LEAF_ID\") ENABLE\n" +
+                        "   ) ORGANIZATION INDEX COMPRESS 1 PCTFREE 10 INITRANS 2 MAXTRANS 255 LOGGING\n" +
+                        "  STORAGE(INITIAL 4194304 NEXT 4194304 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"ZEUS_IND\" \n" +
+                        " PCTTHRESHOLD 50   ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -85,7 +84,7 @@ public class OracleCreateTableTest59 extends OracleTest {
                         "\t\tCELL_FLASH_CACHE DEFAULT\n" +
                         "\t)\n" +
                         "\tPCTTHRESHOLD 50",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

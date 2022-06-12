@@ -25,32 +25,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLTruncateStatement extends SQLStatementImpl {
-
-    protected List<SQLExprTableSource> tableSources               = new ArrayList<SQLExprTableSource>(2);
-    private boolean                    purgeSnapshotLog           = false;
-    private boolean                    only;
-    private Boolean                    restartIdentity;
-    private Boolean                    cascade;
+    protected List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>(2);
+    private boolean purgeSnapshotLog;
+    private boolean only;
+    private Boolean restartIdentity;
+    private Boolean cascade;
 
     // db2
-    private boolean                    dropStorage                = false;
-    private boolean                    reuseStorage               = false;
-    private boolean                    immediate                  = false;
-    private boolean                    ignoreDeleteTriggers       = false;
-    private boolean                    restrictWhenDeleteTriggers = false;
-    private boolean                    continueIdentity           = false;
-    protected boolean                  ifExists                   = false;
-    protected List<SQLAssignItem>      partitions                 = new ArrayList<SQLAssignItem>();
+    private boolean dropStorage;
+    private boolean reuseStorage;
+    private boolean immediate;
+    private boolean ignoreDeleteTriggers;
+    private boolean restrictWhenDeleteTriggers;
+    private boolean continueIdentity;
+    protected boolean ifExists;
+    protected List<SQLAssignItem> partitions = new ArrayList<SQLAssignItem>();
 
     // adb
-    protected boolean partitionAll = false;
+    protected boolean partitionAll;
     protected List<SQLIntegerExpr> partitionsForADB = new ArrayList<SQLIntegerExpr>();
 
-    public SQLTruncateStatement(){
-
+    public SQLTruncateStatement() {
     }
 
-    public SQLTruncateStatement(DbType dbType){
+    public SQLTruncateStatement(DbType dbType) {
         super(dbType);
     }
 

@@ -22,7 +22,6 @@ import java.util.concurrent.CountDownLatch;
 import junit.framework.TestCase;
 
 public class TestMockPerf extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -54,9 +53,9 @@ public class TestMockPerf extends TestCase {
                 }
             };
             thread.start();
-     
+
         }
-        
+
         latch.await();
     }
 

@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class OdpsAlterTableDropPartitionTest2 extends TestCase {
-    
     public void test_if() throws Exception {
         String sql = "alter table myp.table2 drop if exists  partition(ds=20161209) \n";
         Assert.assertEquals("ALTER TABLE myp.table2\n" +

@@ -29,7 +29,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SQLServerCreateTableTest_9 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE [dbo].[users2](\n" +
                 "\t[id] [bigint] IDENTITY(1,1) NOT NULL,\n" +

@@ -21,7 +21,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import junit.framework.TestCase;
 
 public class LockTest extends TestCase {
-
     public void test_0() throws Exception {
         Lock lock = new ReentrantLock();
 

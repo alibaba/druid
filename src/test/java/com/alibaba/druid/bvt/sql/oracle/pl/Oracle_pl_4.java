@@ -24,16 +24,15 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_4 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "begin buf_b := HEXTORAW('636865642f4c'); \n" +
-				"  dbms_lob.write(loc_b, 2048, 28493, buf_b);\n" +
-				"END;\n" +
-				"\n	"; //
+                "  dbms_lob.write(loc_b, 2048, 28493, buf_b);\n" +
+                "END;\n" +
+                "\n	"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(1, statementList.size());
-		SQLStatement stmt = statementList.get(0);
+        assertEquals(1, statementList.size());
+        SQLStatement stmt = statementList.get(0);
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -57,21 +56,21 @@ public class Oracle_pl_4 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("BEGIN\n" +
-							"\tbuf_b := HEXTORAW('636865642f4c');\n" +
-							"\tdbms_lob.write(loc_b, 2048, 28493, buf_b);\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("begin\n" +
-							"\tbuf_b := HEXTORAW('636865642f4c');\n" +
-							"\tdbms_lob.write(loc_b, 2048, 28493, buf_b);\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toOracleString(stmt);
+            assertEquals("BEGIN\n" +
+                            "\tbuf_b := HEXTORAW('636865642f4c');\n" +
+                            "\tdbms_lob.write(loc_b, 2048, 28493, buf_b);\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("begin\n" +
+                            "\tbuf_b := HEXTORAW('636865642f4c');\n" +
+                            "\tdbms_lob.write(loc_b, 2048, 28493, buf_b);\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

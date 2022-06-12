@@ -26,122 +26,121 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest66 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (\t\"ID\" VARCHAR2(32) DEFAULT Sys_guid() NOT NULL ENABLE, \n" +
-                "\t\"ISDEL\" NUMBER(1,0) DEFAULT 0, \n" +
-                "\t\"DATAVERSION\" CHAR(14) DEFAULT to_char(sysdate,'yyyymmddhh24miss'), \n" +
-                "\t\"LRR_SFZH\" VARCHAR2(50), \n" +
-                "\t\"LRSJ\" DATE DEFAULT sysdate, \n" +
-                "\t\"JQZT\" VARCHAR2(10), \n" +
-                "\t\"JQDD\" VARCHAR2(200), \n" +
-                "\t\"BJFS\" VARCHAR2(10), \n" +
-                "\t\"BJSJ\" DATE, \n" +
-                "\t\"BJR\" VARCHAR2(150), \n" +
-                "\t\"BJDH\" VARCHAR2(50), \n" +
-                "\t\"BJNR\" VARCHAR2(4000), \n" +
-                "\t\"PDDDSJ\" DATE, \n" +
-                "\t\"PDJSSJ\" DATE, \n" +
-                "\t\"CJMJ\" VARCHAR2(50), \n" +
-                "\t\"CJDW\" VARCHAR2(50), \n" +
-                "\t\"CJSJ\" DATE, \n" +
-                "\t\"DDXCSJ\" DATE, \n" +
-                "\t\"CJCS\" VARCHAR2(2000), \n" +
-                "\t\"CJJG\" VARCHAR2(2000), \n" +
-                "\t\"GZYQ\" VARCHAR2(2000), \n" +
-                "\t\"JQBH\" VARCHAR2(30), \n" +
-                "\t\"XGR_SFZH\" VARCHAR2(50), \n" +
-                "\t\"XGSJ\" DATE DEFAULT sysdate, \n" +
-                "\t\"AJLY\" VARCHAR2(10) DEFAULT '03', \n" +
-                "\t\"JQMC\" VARCHAR2(200), \n" +
-                "\t\"CJJGSM\" VARCHAR2(2000), \n" +
-                "\t\"CJMJ_XM\" VARCHAR2(200), \n" +
-                "\t\"CJDW_MC\" VARCHAR2(200), \n" +
-                "\t\"JQLB\" VARCHAR2(20), \n" +
-                "\t\"XXLX\" VARCHAR2(20), \n" +
-                "\t\"JJDBH\" VARCHAR2(50), \n" +
-                "\t\"XZQH\" VARCHAR2(50), \n" +
-                "\t\"CBQY_BH\" VARCHAR2(50), \n" +
-                "\t\"SJLY\" VARCHAR2(200) DEFAULT '????', \n" +
-                "\t\"GXDWDM\" VARCHAR2(20), \n" +
-                "\t\"BJLXDM\" VARCHAR2(20), \n" +
-                "\t\"BJXLDM\" VARCHAR2(20), \n" +
-                "\t\"CJDW_OLD\" VARCHAR2(50), \n" +
-                "\t\"JQLY\" VARCHAR2(20), \n" +
-                "\t\"IS_AJ_ANALYZE\" VARCHAR2(1) DEFAULT '9', \n" +
-                "\t\"SJJE\" VARCHAR2(20), \n" +
-                "\t\"YSDWFL\" VARCHAR2(5), \n" +
-                "\t\"YSDWMC\" VARCHAR2(50), \n" +
-                "\t\"YSDWCBR\" VARCHAR2(20), \n" +
-                "\t\"CBRLXDH\" VARCHAR2(20), \n" +
-                "\t\"TBDW\" VARCHAR2(50), \n" +
-                "\t\"TBR\" VARCHAR2(20), \n" +
-                "\t\"TBRQ\" DATE, \n" +
-                "\t\"JZ_JQLB\" VARCHAR2(20), \n" +
-                "\t\"SFZR\" VARCHAR2(10), \n" +
-                "\t\"SJDWDM\" VARCHAR2(40), \n" +
-                "\t CONSTRAINT \"PK_CASE_GG_JQXX1\" PRIMARY KEY (\"ID\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 150994944 NEXT 8388608 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"RDP_IDX\"  ENABLE\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                "  STORAGE(\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"RDP_DATA\" \n" +
-                "  PARTITION BY RANGE (\"LRSJ\") \n" +
-                " (PARTITION \"T_RANGE_V1\"  VALUES LESS THAN (TO_DATE(' 2015-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                " COMPRESS FOR OLTP LOGGING \n" +
-                "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"RDP_DATA\" , \n" +
-                " PARTITION \"T_RANGE_V2\"  VALUES LESS THAN (TO_DATE(' 2015-07-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                " COMPRESS FOR OLTP LOGGING \n" +
-                "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"RDP_DATA\" , \n" +
-                " PARTITION \"T_RANGE_V3\"  VALUES LESS THAN (TO_DATE(' 2016-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                " COMPRESS FOR OLTP LOGGING \n" +
-                "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"RDP_DATA\" , \n" +
-                " PARTITION \"T_RANGE_V4\"  VALUES LESS THAN (TO_DATE(' 2016-07-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                " COMPRESS FOR OLTP LOGGING \n" +
-                "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"RDP_DATA\" , \n" +
-                " PARTITION \"T_RANGE_V5\"  VALUES LESS THAN (TO_DATE(' 2017-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                " COMPRESS FOR OLTP LOGGING \n" +
-                "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"RDP_DATA\" , \n" +
-                " PARTITION \"T_RANGE_V6\"  VALUES LESS THAN (TO_DATE(' 2017-07-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                " COMPRESS FOR OLTP LOGGING \n" +
-                "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"RDP_DATA\" , \n" +
-                " PARTITION \"MAXPART\"  VALUES LESS THAN (MAXVALUE) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                " COMPRESS FOR OLTP LOGGING \n" +
-                "  STORAGE(INITIAL 8388608 NEXT 8388608 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"RDP_DATA\" )    ";
+                "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (\t\"ID\" VARCHAR2(32) DEFAULT Sys_guid() NOT NULL ENABLE, \n" +
+                        "\t\"ISDEL\" NUMBER(1,0) DEFAULT 0, \n" +
+                        "\t\"DATAVERSION\" CHAR(14) DEFAULT to_char(sysdate,'yyyymmddhh24miss'), \n" +
+                        "\t\"LRR_SFZH\" VARCHAR2(50), \n" +
+                        "\t\"LRSJ\" DATE DEFAULT sysdate, \n" +
+                        "\t\"JQZT\" VARCHAR2(10), \n" +
+                        "\t\"JQDD\" VARCHAR2(200), \n" +
+                        "\t\"BJFS\" VARCHAR2(10), \n" +
+                        "\t\"BJSJ\" DATE, \n" +
+                        "\t\"BJR\" VARCHAR2(150), \n" +
+                        "\t\"BJDH\" VARCHAR2(50), \n" +
+                        "\t\"BJNR\" VARCHAR2(4000), \n" +
+                        "\t\"PDDDSJ\" DATE, \n" +
+                        "\t\"PDJSSJ\" DATE, \n" +
+                        "\t\"CJMJ\" VARCHAR2(50), \n" +
+                        "\t\"CJDW\" VARCHAR2(50), \n" +
+                        "\t\"CJSJ\" DATE, \n" +
+                        "\t\"DDXCSJ\" DATE, \n" +
+                        "\t\"CJCS\" VARCHAR2(2000), \n" +
+                        "\t\"CJJG\" VARCHAR2(2000), \n" +
+                        "\t\"GZYQ\" VARCHAR2(2000), \n" +
+                        "\t\"JQBH\" VARCHAR2(30), \n" +
+                        "\t\"XGR_SFZH\" VARCHAR2(50), \n" +
+                        "\t\"XGSJ\" DATE DEFAULT sysdate, \n" +
+                        "\t\"AJLY\" VARCHAR2(10) DEFAULT '03', \n" +
+                        "\t\"JQMC\" VARCHAR2(200), \n" +
+                        "\t\"CJJGSM\" VARCHAR2(2000), \n" +
+                        "\t\"CJMJ_XM\" VARCHAR2(200), \n" +
+                        "\t\"CJDW_MC\" VARCHAR2(200), \n" +
+                        "\t\"JQLB\" VARCHAR2(20), \n" +
+                        "\t\"XXLX\" VARCHAR2(20), \n" +
+                        "\t\"JJDBH\" VARCHAR2(50), \n" +
+                        "\t\"XZQH\" VARCHAR2(50), \n" +
+                        "\t\"CBQY_BH\" VARCHAR2(50), \n" +
+                        "\t\"SJLY\" VARCHAR2(200) DEFAULT '????', \n" +
+                        "\t\"GXDWDM\" VARCHAR2(20), \n" +
+                        "\t\"BJLXDM\" VARCHAR2(20), \n" +
+                        "\t\"BJXLDM\" VARCHAR2(20), \n" +
+                        "\t\"CJDW_OLD\" VARCHAR2(50), \n" +
+                        "\t\"JQLY\" VARCHAR2(20), \n" +
+                        "\t\"IS_AJ_ANALYZE\" VARCHAR2(1) DEFAULT '9', \n" +
+                        "\t\"SJJE\" VARCHAR2(20), \n" +
+                        "\t\"YSDWFL\" VARCHAR2(5), \n" +
+                        "\t\"YSDWMC\" VARCHAR2(50), \n" +
+                        "\t\"YSDWCBR\" VARCHAR2(20), \n" +
+                        "\t\"CBRLXDH\" VARCHAR2(20), \n" +
+                        "\t\"TBDW\" VARCHAR2(50), \n" +
+                        "\t\"TBR\" VARCHAR2(20), \n" +
+                        "\t\"TBRQ\" DATE, \n" +
+                        "\t\"JZ_JQLB\" VARCHAR2(20), \n" +
+                        "\t\"SFZR\" VARCHAR2(10), \n" +
+                        "\t\"SJDWDM\" VARCHAR2(40), \n" +
+                        "\t CONSTRAINT \"PK_CASE_GG_JQXX1\" PRIMARY KEY (\"ID\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 150994944 NEXT 8388608 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"RDP_IDX\"  ENABLE\n" +
+                        "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        "  STORAGE(\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"RDP_DATA\" \n" +
+                        "  PARTITION BY RANGE (\"LRSJ\") \n" +
+                        " (PARTITION \"T_RANGE_V1\"  VALUES LESS THAN (TO_DATE(' 2015-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        " COMPRESS FOR OLTP LOGGING \n" +
+                        "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"RDP_DATA\" , \n" +
+                        " PARTITION \"T_RANGE_V2\"  VALUES LESS THAN (TO_DATE(' 2015-07-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        " COMPRESS FOR OLTP LOGGING \n" +
+                        "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"RDP_DATA\" , \n" +
+                        " PARTITION \"T_RANGE_V3\"  VALUES LESS THAN (TO_DATE(' 2016-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        " COMPRESS FOR OLTP LOGGING \n" +
+                        "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"RDP_DATA\" , \n" +
+                        " PARTITION \"T_RANGE_V4\"  VALUES LESS THAN (TO_DATE(' 2016-07-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        " COMPRESS FOR OLTP LOGGING \n" +
+                        "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"RDP_DATA\" , \n" +
+                        " PARTITION \"T_RANGE_V5\"  VALUES LESS THAN (TO_DATE(' 2017-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        " COMPRESS FOR OLTP LOGGING \n" +
+                        "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"RDP_DATA\" , \n" +
+                        " PARTITION \"T_RANGE_V6\"  VALUES LESS THAN (TO_DATE(' 2017-07-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 80 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        " COMPRESS FOR OLTP LOGGING \n" +
+                        "  STORAGE(INITIAL 553648128 NEXT 16384 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"RDP_DATA\" , \n" +
+                        " PARTITION \"MAXPART\"  VALUES LESS THAN (MAXVALUE) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        " COMPRESS FOR OLTP LOGGING \n" +
+                        "  STORAGE(INITIAL 8388608 NEXT 8388608 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"RDP_DATA\" )    ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -376,7 +375,7 @@ public class OracleCreateTableTest66 extends OracleTest {
                         "\t\t\tCELL_FLASH_CACHE DEFAULT\n" +
                         "\t\t)\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

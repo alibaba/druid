@@ -41,7 +41,6 @@ public class MySqlParameterizedOutputVisitorTest_48_aggregate extends TestCase {
 
         System.out.println(psql);
 
-
         assertEquals("SELECT count(1)\n" +
                 "FROM t", psql);
     }

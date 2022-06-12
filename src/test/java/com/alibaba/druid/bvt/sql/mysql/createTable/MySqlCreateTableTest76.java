@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest76 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE TABLE `sys_msg_entry_0320` (\n" +
@@ -54,7 +53,7 @@ public class MySqlCreateTableTest76 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         Column column = visitor.getColumn("sys_msg_entry_0320", "provider_dsp_name");
         Assert.assertNotNull(column);
         Assert.assertEquals("varchar", column.getDataType());
@@ -82,7 +81,7 @@ public class MySqlCreateTableTest76 extends MysqlTest {
                     "\tKEY `k_tid` (`tag_id`)\n" +
                     ") ENGINE = InnoDB AUTO_INCREMENT = 167279613030 CHARSET = gbk COMMENT '消息实体表'", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table `sys_msg_entry_0320` (\n" +

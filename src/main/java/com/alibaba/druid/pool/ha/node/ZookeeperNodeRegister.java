@@ -35,12 +35,12 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author DigitalSonic
  */
 public class ZookeeperNodeRegister {
-    private final static Log LOG = LogFactory.getLog(ZookeeperNodeRegister.class);
+    private static final Log LOG = LogFactory.getLog(ZookeeperNodeRegister.class);
     private String zkConnectString;
     private String path = "/ha-druid-datasources";
     private CuratorFramework client;
     private GroupMember member;
-    private boolean privateZkClient = false; // Should I close the client?
+    private boolean privateZkClient; // Should I close the client?
     private Lock lock = new ReentrantLock();
 
     /**
@@ -84,7 +84,7 @@ public class ZookeeperNodeRegister {
             String payloadString = getPropertiesString(payload);
             member = new GroupMember(client, path, nodeId, payloadString.getBytes());
             member.start();
-            LOG.info("Register Node["+ nodeId + "] in path[" + path + "].");
+            LOG.info("Register Node[" + nodeId + "] in path[" + path + "].");
             return true;
         } finally {
             lock.unlock();
@@ -117,7 +117,7 @@ public class ZookeeperNodeRegister {
                 LOG.info("Path[" + path + "] is NOT existed, create it.");
                 client.create().creatingParentsIfNeeded().forPath(path);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOG.error("Can NOT check the path.", e);
         }
     }

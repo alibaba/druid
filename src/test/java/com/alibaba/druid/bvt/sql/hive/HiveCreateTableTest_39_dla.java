@@ -25,9 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class HiveCreateTableTest_39_dla extends OracleTest {
-
     public void test_0() throws Exception {
-        String sql =  "--\n-- Sample on record\n--     {\"c_custkey\":1,\"c_name\":\"Customer#000000001\",\"c_address\":\"IVhzIApeRb ot,c,E\",\"c_nationkey\":15,\"c_phone\":\"25-989-741-2988\",\"c_acctbal\":711.56,\"c_mktsegment\":\"BUILDING\",\"c_comment\":\"to theeven, regular platelets. regular, ironic epitaphs nag e\"}\n\nCREATE EXTERNAL TABLE IF NOT EXISTS `mengdou_test`.`ddl_customer_json`(`c_acctbal` double, `c_address` string, `c_comment` string, `c_custkey` int, `c_mktsegment` string, `c_name` string, `c_nationkey` int, `c_phone` string, ) STORED AS JSON LOCATION 'oss://oss-cn-shanghai-for-openanalytics/datasets/tpch/0.01x/json_date/customer_json/' TBLPROPERTIES ( \n'skip.header.line.count'='0',\n'recursive.directories'='false');";
+        String sql = "--\n-- Sample on record\n--     {\"c_custkey\":1,\"c_name\":\"Customer#000000001\",\"c_address\":\"IVhzIApeRb ot,c,E\",\"c_nationkey\":15,\"c_phone\":\"25-989-741-2988\",\"c_acctbal\":711.56,\"c_mktsegment\":\"BUILDING\",\"c_comment\":\"to theeven, regular platelets. regular, ironic epitaphs nag e\"}\n\nCREATE EXTERNAL TABLE IF NOT EXISTS `mengdou_test`.`ddl_customer_json`(`c_acctbal` double, `c_address` string, `c_comment` string, `c_custkey` int, `c_mktsegment` string, `c_name` string, `c_nationkey` int, `c_phone` string, ) STORED AS JSON LOCATION 'oss://oss-cn-shanghai-for-openanalytics/datasets/tpch/0.01x/json_date/customer_json/' TBLPROPERTIES ( \n'skip.header.line.count'='0',\n'recursive.directories'='false');";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.hive, SQLParserFeature.KeepComments);
 

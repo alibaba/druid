@@ -24,10 +24,9 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import java.util.List;
 
 public class MySqlCreateSequenceTest2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE GROUP SEQUENCE seq1;";
+                "CREATE GROUP SEQUENCE seq1;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql);
         SQLStatement stmt = statementList.get(0);

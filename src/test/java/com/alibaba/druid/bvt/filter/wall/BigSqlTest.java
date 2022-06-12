@@ -8,7 +8,6 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 public class BigSqlTest extends TestCase {
-
     public void test_true() throws Exception {
         String sql = "SELECT c from sbtest where id=0";
 

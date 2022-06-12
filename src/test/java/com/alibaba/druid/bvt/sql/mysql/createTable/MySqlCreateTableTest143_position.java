@@ -15,9 +15,7 @@ import java.util.List;
  * @Date 2019-05-09 10:45
  */
 public class MySqlCreateTableTest143_position extends MysqlTest {
-
     public void test_0() throws Exception {
-
         String sql = "CREATE TABLE `resume_position_portrait` (\n" +
                 "  `resume_id` varchar(36) NOT NULL,\n" +
                 "  `method` varchar(50) NOT NULL,\n" +
@@ -38,7 +36,7 @@ public class MySqlCreateTableTest143_position extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

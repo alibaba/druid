@@ -34,17 +34,15 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class FilterChainTest_Clob_2 extends TestCase {
-
-    private DruidDataSource        dataSource;
+    private DruidDataSource dataSource;
     private CallableStatementProxy statement;
 
-    private int                    invokeCount = 0;
+    private int invokeCount = 0;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
         MockCallableStatement mockStmt = new MockCallableStatement(null, "") {
-
             @Override
             public Object getObject(int parameterIndex) throws SQLException {
                 invokeCount++;
@@ -101,7 +99,7 @@ public class FilterChainTest_Clob_2 extends TestCase {
     public void test_getObject_2() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
-        Clob clob = (Clob) chain.callableStatement_getObject(statement, 1, Collections.<String, Class<?>> emptyMap());
+        Clob clob = (Clob) chain.callableStatement_getObject(statement, 1, Collections.<String, Class<?>>emptyMap());
 
         Assert.assertTrue(clob instanceof ClobProxy);
         Assert.assertEquals(1, invokeCount);
@@ -110,7 +108,7 @@ public class FilterChainTest_Clob_2 extends TestCase {
     public void test_getObject_3() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
-        Clob clob = (Clob) chain.callableStatement_getObject(statement, "1", Collections.<String, Class<?>> emptyMap());
+        Clob clob = (Clob) chain.callableStatement_getObject(statement, "1", Collections.<String, Class<?>>emptyMap());
 
         Assert.assertTrue(clob instanceof ClobProxy);
         Assert.assertEquals(1, invokeCount);

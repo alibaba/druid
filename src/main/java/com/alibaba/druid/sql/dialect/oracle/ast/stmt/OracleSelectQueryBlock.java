@@ -17,9 +17,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
@@ -31,12 +29,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements OracleSQLObject {
+    private ModelClause modelClause;
 
-
-    private ModelClause                modelClause;
-
-
-    private boolean                    skipLocked  = false;
+    private boolean skipLocked;
 
     public OracleSelectQueryBlock clone() {
         OracleSelectQueryBlock x = new OracleSelectQueryBlock();
@@ -60,7 +55,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements Oracl
         return x;
     }
 
-    public OracleSelectQueryBlock(){
+    public OracleSelectQueryBlock() {
         dbType = DbType.oracle;
     }
 
@@ -108,7 +103,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements Oracl
         }
         visitor.endVisit(this);
     }
-    
+
     public String toString() {
         return SQLUtils.toOracleString(this);
     }

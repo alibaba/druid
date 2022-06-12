@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleCreateTableTest_error_0 extends OracleTest {
-
     public void test_types() throws Exception {
         Throwable error = null;
         try {

@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlAlterTableTest35_multi extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE `datacompute`.`users_quan` \n" +
                 "DROP COLUMN `address`,\n" +

@@ -15,11 +15,6 @@
  */
 package com.alibaba.druid.support.monitor.dao;
 
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.druid.pool.DruidDataSourceStatValue;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.http.stat.WebAppStatValue;
@@ -28,8 +23,12 @@ import com.alibaba.druid.support.monitor.MonitorContext;
 import com.alibaba.druid.support.spring.stat.SpringMethodStatValue;
 import com.alibaba.druid.wall.WallProviderStatValue;
 
-public interface MonitorDao {
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
+public interface MonitorDao {
     void saveSql(MonitorContext ctx, List<DruidDataSourceStatValue> statList);
 
     void saveSqlWall(MonitorContext ctx, List<WallProviderStatValue> statList);

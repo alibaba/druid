@@ -25,11 +25,10 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest19_local_store extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE INDEX prod_idx ON hash_products(product_id) LOCAL\n" +
-                "   STORE IN (tbs_01, tbs_02);";
+                "CREATE INDEX prod_idx ON hash_products(product_id) LOCAL\n" +
+                        "   STORE IN (tbs_01, tbs_02);";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

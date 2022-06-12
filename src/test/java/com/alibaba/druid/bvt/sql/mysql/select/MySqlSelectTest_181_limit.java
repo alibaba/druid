@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class MySqlSelectTest_181_limit extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "(select 1) limit 1;";
 
@@ -60,7 +59,7 @@ public class MySqlSelectTest_181_limit extends MysqlTest {
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("(SELECT 1\n" +
                         "LIMIT 1);", //
-                            output);
+                output);
     }
 
     public void test_1() throws Exception {
@@ -100,6 +99,6 @@ public class MySqlSelectTest_181_limit extends MysqlTest {
                         ") A\n" +
                         "ORDER BY A.int_test, A.string_test)\n" +
                         "LIMIT 1000", //
-                            output);
+                output);
     }
 }

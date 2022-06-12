@@ -24,24 +24,23 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_exception_5 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "BEGIN\n" +
-				"\n" +
-				"  DECLARE\n" +
-				"    past_due     EXCEPTION;\n" +
-				"    due_date     DATE := trunc(SYSDATE) - 1;\n" +
-				"    todays_date  DATE := trunc(SYSDATE);\n" +
-				"  BEGIN\n" +
-				"    IF due_date < todays_date THEN\n" +
-				"      RAISE past_due;\n" +
-				"    END IF;\n" +
-				"  END;\n" +
-				"\n" +
-				"END;"; //
+                "\n" +
+                "  DECLARE\n" +
+                "    past_due     EXCEPTION;\n" +
+                "    due_date     DATE := trunc(SYSDATE) - 1;\n" +
+                "    todays_date  DATE := trunc(SYSDATE);\n" +
+                "  BEGIN\n" +
+                "    IF due_date < todays_date THEN\n" +
+                "      RAISE past_due;\n" +
+                "    END IF;\n" +
+                "  END;\n" +
+                "\n" +
+                "END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -65,36 +64,36 @@ public class Oracle_pl_exception_5 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
-			System.out.println(output);
-			assertEquals("BEGIN\n" +
-							"\tDECLARE\n" +
-							"\t\tpast_due EXCEPTION;\n" +
-							"\t\tdue_date DATE := trunc(SYSDATE) - 1;\n" +
-							"\t\ttodays_date DATE := trunc(SYSDATE);\n" +
-							"\tBEGIN\n" +
-							"\t\tIF due_date < todays_date THEN\n" +
-							"\t\t\tRAISE past_due;\n" +
-							"\t\tEND IF;\n" +
-							"\tEND;\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("begin\n" +
-							"\tdeclare\n" +
-							"\t\tpast_due EXCEPTION;\n" +
-							"\t\tdue_date DATE := trunc(sysdate) - 1;\n" +
-							"\t\ttodays_date DATE := trunc(sysdate);\n" +
-							"\tbegin\n" +
-							"\t\tif due_date < todays_date then\n" +
-							"\t\t\traise past_due;\n" +
-							"\t\tend if;\n" +
-							"\tend;\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+            System.out.println(output);
+            assertEquals("BEGIN\n" +
+                            "\tDECLARE\n" +
+                            "\t\tpast_due EXCEPTION;\n" +
+                            "\t\tdue_date DATE := trunc(SYSDATE) - 1;\n" +
+                            "\t\ttodays_date DATE := trunc(SYSDATE);\n" +
+                            "\tBEGIN\n" +
+                            "\t\tIF due_date < todays_date THEN\n" +
+                            "\t\t\tRAISE past_due;\n" +
+                            "\t\tEND IF;\n" +
+                            "\tEND;\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("begin\n" +
+                            "\tdeclare\n" +
+                            "\t\tpast_due EXCEPTION;\n" +
+                            "\t\tdue_date DATE := trunc(sysdate) - 1;\n" +
+                            "\t\ttodays_date DATE := trunc(sysdate);\n" +
+                            "\tbegin\n" +
+                            "\t\tif due_date < todays_date then\n" +
+                            "\t\t\traise past_due;\n" +
+                            "\t\tend if;\n" +
+                            "\tend;\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

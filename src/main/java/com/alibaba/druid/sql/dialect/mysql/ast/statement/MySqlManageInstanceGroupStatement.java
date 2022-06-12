@@ -17,8 +17,6 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
@@ -26,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlManageInstanceGroupStatement extends MySqlStatementImpl {
-
     private List<SQLExpr> groupNames = new ArrayList<SQLExpr>();
     private SQLIntegerExpr replication;
     private SQLName operation;
@@ -48,7 +45,6 @@ public class MySqlManageInstanceGroupStatement extends MySqlStatementImpl {
         }
         return names;
     }
-
 
     public List<SQLExpr> getGroupNames() {
         return groupNames;

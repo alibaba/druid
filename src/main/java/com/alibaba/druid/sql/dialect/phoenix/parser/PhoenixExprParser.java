@@ -23,13 +23,12 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
  * Created by wenshao on 16/9/13.
  */
 public class PhoenixExprParser extends SQLExprParser {
-    public PhoenixExprParser(String sql, SQLParserFeature... features){
+    public PhoenixExprParser(String sql, SQLParserFeature... features) {
         this(new PhoenixLexer(sql, features));
         this.lexer.nextToken();
     }
 
-    public PhoenixExprParser(Lexer lexer){
+    public PhoenixExprParser(Lexer lexer) {
         super(lexer);
     }
 }
-

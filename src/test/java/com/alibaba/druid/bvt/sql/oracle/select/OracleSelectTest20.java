@@ -24,14 +24,13 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest20 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "BEGIN" + //
-                "   sys.dbms_stats.gather_table_stats(" + //
-                "       ownname => 'ESCROW',tabname => 'HT_TASK_TRADE_HISTORY',estimate_percent=>0.5, cascade => TRUE" + //
-                "       ,method_opt=>'FOR ALL COLUMNS SIZE 1',no_invalidate => false); " + //
-                "END; "; //
+                "BEGIN" + //
+                        "   sys.dbms_stats.gather_table_stats(" + //
+                        "       ownname => 'ESCROW',tabname => 'HT_TASK_TRADE_HISTORY',estimate_percent=>0.5, cascade => TRUE" + //
+                        "       ,method_opt=>'FOR ALL COLUMNS SIZE 1',no_invalidate => false); " + //
+                        "END; "; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

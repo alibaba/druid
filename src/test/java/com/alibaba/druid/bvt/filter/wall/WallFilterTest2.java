@@ -14,9 +14,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallFilter;
 
 public class WallFilterTest2 extends TestCase {
-
     private DruidDataSource dataSource;
-    private WallFilter      wallFilter;
+    private WallFilter wallFilter;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -114,7 +113,6 @@ public class WallFilterTest2 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -127,11 +125,10 @@ public class WallFilterTest2 extends TestCase {
 
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
-                                                           ResultSet.CONCUR_READ_ONLY,
-                                                           ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.CONCUR_READ_ONLY,
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -146,7 +143,6 @@ public class WallFilterTest2 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement(sql, new int[0]);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -161,7 +157,6 @@ public class WallFilterTest2 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement(sql, new String[0]);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -176,7 +171,6 @@ public class WallFilterTest2 extends TestCase {
             PreparedStatement stmt = conn.prepareCall(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -191,7 +185,6 @@ public class WallFilterTest2 extends TestCase {
             PreparedStatement stmt = conn.prepareCall(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -204,10 +197,9 @@ public class WallFilterTest2 extends TestCase {
 
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareCall(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
-                                                      ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -223,7 +215,6 @@ public class WallFilterTest2 extends TestCase {
             stmt.execute(sql, Statement.NO_GENERATED_KEYS);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -236,28 +227,26 @@ public class WallFilterTest2 extends TestCase {
 
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
-                                                  ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT);
             stmt.execute(sql, new int[0]);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
             conn.close();
         }
         Assert.assertEquals(150, wallFilter.getProvider().getTableStat("t").getFetchRowCount());
-        
+
         {
             String sql = "SELECT * FROM T LIMIT 10";
-            
+
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
-                                                  ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT);
             stmt.execute(sql, new String[0]);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
-                
             }
             rs.close();
             stmt.close();
@@ -283,7 +272,7 @@ public class WallFilterTest2 extends TestCase {
         }
         Assert.assertEquals(3, wallFilter.getProvider().getTableStat("t").getDeleteDataCount());
         Assert.assertEquals(0, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
-        
+
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
@@ -293,7 +282,7 @@ public class WallFilterTest2 extends TestCase {
         }
         Assert.assertEquals(4, wallFilter.getProvider().getTableStat("t").getDeleteDataCount());
         Assert.assertEquals(0, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
-        
+
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
@@ -303,7 +292,7 @@ public class WallFilterTest2 extends TestCase {
         }
         Assert.assertEquals(5, wallFilter.getProvider().getTableStat("t").getDeleteDataCount());
         Assert.assertEquals(0, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
-        
+
         {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement("DELETE from t where FID = ?");
@@ -314,7 +303,7 @@ public class WallFilterTest2 extends TestCase {
         }
         Assert.assertEquals(6, wallFilter.getProvider().getTableStat("t").getDeleteDataCount());
         Assert.assertEquals(0, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
-        
+
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
@@ -377,7 +366,7 @@ public class WallFilterTest2 extends TestCase {
             conn.close();
         }
         Assert.assertEquals(1, wallFilter.getProvider().getTableStat("t").getDropCount());
-        
+
         Assert.assertEquals(0, wallFilter.getViolationCount());
         wallFilter.resetViolationCount();
         wallFilter.checkValid("select 1");

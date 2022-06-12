@@ -39,28 +39,26 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
  * TestOnBo 类Case1.java的实现描述：TODO 类实现描述
- * 
+ *
  * @author admin 2011-5-28 下午03:47:40
  */
 public class Case1 extends TestCase {
-
-    private String            jdbcUrl;
-    private String            user;
-    private String            password;
-    private String            driverClass;
-    private int               initialSize      = 10;
-    private int               minPoolSize      = 10;
-    private int               maxPoolSize      = 50;
-    private int               maxActive        = 50;
-    private String            validationQuery  = "SELECT 1";
-    private int               threadCount      = 5;
-    private int               loopCount        = 10;
-    final int                 LOOP_COUNT       = 1000 * 1 * 1 / threadCount;
+    private String jdbcUrl;
+    private String user;
+    private String password;
+    private String driverClass;
+    private int initialSize = 10;
+    private int minPoolSize = 10;
+    private int maxPoolSize = 50;
+    private int maxActive = 50;
+    private String validationQuery = "SELECT 1";
+    private int threadCount = 5;
+    private int loopCount = 10;
+    final int LOOP_COUNT = 1000 * 1 * 1 / threadCount;
 
     private static AtomicLong physicalConnStat = new AtomicLong();
 
     public static class TestDriver extends MockDriver {
-
         public static TestDriver instance = new TestDriver();
 
         public boolean acceptsURL(String url) throws SQLException {
@@ -201,7 +199,6 @@ public class Case1 extends TestCase {
     }
 
     private void p0(final DataSource dataSource, String name, int threadCount) throws Exception {
-
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);
         final CountDownLatch dumpLatch = new CountDownLatch(1);
@@ -209,7 +206,6 @@ public class Case1 extends TestCase {
         Thread[] threads = new Thread[threadCount];
         for (int i = 0; i < threadCount; ++i) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         startLatch.await();
@@ -260,11 +256,11 @@ public class Case1 extends TestCase {
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
         System.out.println("thread " + threadCount + " " + name + " millis : "
-                           + NumberFormat.getInstance().format(millis) + "; YGC " + ygc + " FGC " + fullGC
-                           + " blocked "
-                           + NumberFormat.getInstance().format(blockedCount) //
-                           + " waited " + NumberFormat.getInstance().format(waitedCount) + " physicalConn "
-                           + physicalConnStat.get());
+                + NumberFormat.getInstance().format(millis) + "; YGC " + ygc + " FGC " + fullGC
+                + " blocked "
+                + NumberFormat.getInstance().format(blockedCount) //
+                + " waited " + NumberFormat.getInstance().format(waitedCount) + " physicalConn "
+                + physicalConnStat.get());
 
     }
 }

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLStatement, SQLCreateStatement {
-
     private SQLIdentifierExpr schemaName;
     private SQLIdentifierExpr userName;
     private boolean ifNotExists;

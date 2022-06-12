@@ -22,13 +22,12 @@ import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
 
 public class MySqlAlterDbTest0 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER DATABASE `#mysql50#a-b-c` UPGRADE DATA DIRECTORY NAME;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         assertEquals("ALTER DATABASE `#mysql50#a-b-c` UPGRADE DATA DIRECTORY NAME;", SQLUtils.toMySqlString(stmt));
         assertEquals("alter database `#mysql50#a-b-c` upgrade data directory name;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }

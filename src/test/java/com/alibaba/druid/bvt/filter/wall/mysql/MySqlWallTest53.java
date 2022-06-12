@@ -24,29 +24,28 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest53 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setLimitZeroAllow(true);
 
         Assert.assertTrue(provider.checkValid(//
-        "select * from t limit 0,0"));
+                "select * from t limit 0,0"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }
-    
+
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         Assert.assertFalse(provider.checkValid(//
                 "select * from t limit 0,0"));
-        
+
         Assert.assertEquals(1, provider.getTableStats().size());
     }
 }

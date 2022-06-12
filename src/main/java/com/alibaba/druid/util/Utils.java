@@ -15,16 +15,7 @@
  */
 package com.alibaba.druid.util;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -34,8 +25,7 @@ import java.util.Properties;
 import java.util.Set;
 
 public class Utils {
-
-    public final static int DEFAULT_BUFFER_SIZE = 1024 * 4;
+    public static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
     public static String read(InputStream in) {
         if (in == null) {
@@ -259,7 +249,7 @@ public class Utils {
 
     private static Date startTime;
 
-    public final static Date getStartTime() {
+    public static final Date getStartTime() {
         if (startTime == null) {
             startTime = new Date(ManagementFactory.getRuntimeMXBean().getStartTime());
         }
@@ -277,58 +267,57 @@ public class Utils {
      *
      * @author Viliam Holub
      */
-public static long murmurhash2_64(final byte[] data, int length, int seed) {
-    final long m = 0xc6a4a7935bd1e995L;
-    final int r = 47;
+    public static long murmurhash2_64(final byte[] data, int length, int seed) {
+        final long m = 0xc6a4a7935bd1e995L;
+        final int r = 47;
 
-    long h = (seed & 0xffffffffl) ^ (length * m);
+        long h = (seed & 0xffffffffL) ^ (length * m);
 
-    int length8 = length / 8;
+        int length8 = length / 8;
 
-    for (int i = 0; i < length8; i++) {
-        final int i8 = i * 8;
-        long k = ((long) data[i8 + 0] & 0xff) //
-                + (((long) data[i8 + 1] & 0xff) << 8) //
-                + (((long) data[i8 + 2] & 0xff) << 16)//
-                + (((long) data[i8 + 3] & 0xff) << 24) //
-                + (((long) data[i8 + 4] & 0xff) << 32)//
-                + (((long) data[i8 + 5] & 0xff) << 40)//
-                + (((long) data[i8 + 6] & 0xff) << 48) //
-                + (((long) data[i8 + 7] & 0xff) << 56);
+        for (int i = 0; i < length8; i++) {
+            final int i8 = i * 8;
+            long k = ((long) data[i8 + 0] & 0xff) //
+                    + (((long) data[i8 + 1] & 0xff) << 8) //
+                    + (((long) data[i8 + 2] & 0xff) << 16)//
+                    + (((long) data[i8 + 3] & 0xff) << 24) //
+                    + (((long) data[i8 + 4] & 0xff) << 32)//
+                    + (((long) data[i8 + 5] & 0xff) << 40)//
+                    + (((long) data[i8 + 6] & 0xff) << 48) //
+                    + (((long) data[i8 + 7] & 0xff) << 56);
 
-        k *= m;
-        k ^= k >>> r;
-        k *= m;
+            k *= m;
+            k ^= k >>> r;
+            k *= m;
 
-        h ^= k;
-        h *= m;
-    }
-
-    switch (length % 8) {
-        case 7:
-            h ^= (long) (data[(length & ~7) + 6] & 0xff) << 48;
-        case 6:
-            h ^= (long) (data[(length & ~7) + 5] & 0xff) << 40;
-        case 5:
-            h ^= (long) (data[(length & ~7) + 4] & 0xff) << 32;
-        case 4:
-            h ^= (long) (data[(length & ~7) + 3] & 0xff) << 24;
-        case 3:
-            h ^= (long) (data[(length & ~7) + 2] & 0xff) << 16;
-        case 2:
-            h ^= (long) (data[(length & ~7) + 1] & 0xff) << 8;
-        case 1:
-            h ^= (long) (data[length & ~7] & 0xff);
+            h ^= k;
             h *= m;
+        }
+
+        switch (length % 8) {
+            case 7:
+                h ^= (long) (data[(length & ~7) + 6] & 0xff) << 48;
+            case 6:
+                h ^= (long) (data[(length & ~7) + 5] & 0xff) << 40;
+            case 5:
+                h ^= (long) (data[(length & ~7) + 4] & 0xff) << 32;
+            case 4:
+                h ^= (long) (data[(length & ~7) + 3] & 0xff) << 24;
+            case 3:
+                h ^= (long) (data[(length & ~7) + 2] & 0xff) << 16;
+            case 2:
+                h ^= (long) (data[(length & ~7) + 1] & 0xff) << 8;
+            case 1:
+                h ^= (long) (data[length & ~7] & 0xff);
+                h *= m;
+        }
+
+        h ^= h >>> r;
+        h *= m;
+        h ^= h >>> r;
+
+        return h;
     }
-    ;
-
-    h ^= h >>> r;
-    h *= m;
-    h ^= h >>> r;
-
-    return h;
-}
 
     public static byte[] md5Bytes(String text) {
         MessageDigest msgDigest = null;
@@ -369,11 +358,10 @@ public static long murmurhash2_64(final byte[] data, int length, int seed) {
     public static String hex(int hash) {
         byte[] bytes = new byte[4];
 
-        bytes[3] = (byte) (hash       );
-        bytes[2] = (byte) (hash >>>  8);
+        bytes[3] = (byte) (hash);
+        bytes[2] = (byte) (hash >>> 8);
         bytes[1] = (byte) (hash >>> 16);
         bytes[0] = (byte) (hash >>> 24);
-
 
         char[] chars = new char[8];
         for (int i = 0; i < 4; ++i) {
@@ -393,8 +381,8 @@ public static long murmurhash2_64(final byte[] data, int length, int seed) {
     public static String hex(long hash) {
         byte[] bytes = new byte[8];
 
-        bytes[7] = (byte) (hash       );
-        bytes[6] = (byte) (hash >>>  8);
+        bytes[7] = (byte) (hash);
+        bytes[6] = (byte) (hash >>> 8);
         bytes[5] = (byte) (hash >>> 16);
         bytes[4] = (byte) (hash >>> 24);
         bytes[3] = (byte) (hash >>> 32);
@@ -420,8 +408,8 @@ public static long murmurhash2_64(final byte[] data, int length, int seed) {
     public static String hex_t(long hash) {
         byte[] bytes = new byte[8];
 
-        bytes[7] = (byte) (hash       );
-        bytes[6] = (byte) (hash >>>  8);
+        bytes[7] = (byte) (hash);
+        bytes[6] = (byte) (hash >>> 8);
         bytes[5] = (byte) (hash >>> 16);
         bytes[4] = (byte) (hash >>> 24);
         bytes[3] = (byte) (hash >>> 32);

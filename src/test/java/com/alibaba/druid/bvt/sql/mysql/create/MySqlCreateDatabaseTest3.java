@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateDatabaseTest3 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create database user default charset=utf8 default collate=utf8_general_ci;";

@@ -23,11 +23,10 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * 这个场景测试访问Oracle系统对象
- * 
+ *
  * @author admin
  */
 public class MySqlWallPermitVariantTest extends TestCase {
-
     private String sql = "select * FROM X where id=1 or version=@@version_compile_os";
 
     public void test_allow() throws Exception {

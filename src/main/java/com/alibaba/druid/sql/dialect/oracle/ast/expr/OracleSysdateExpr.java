@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class OracleSysdateExpr extends OracleSQLObjectImpl implements SQLExpr {
-
     private String option;
 
     public String getOption() {

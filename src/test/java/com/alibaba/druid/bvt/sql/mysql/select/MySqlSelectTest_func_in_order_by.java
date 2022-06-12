@@ -16,7 +16,6 @@ import java.util.List;
  * Date 2019-07-17 10:00
  */
 public class MySqlSelectTest_func_in_order_by extends MysqlTest {
-
     public void test_0() {
         String sql = "select * from tb order by convert(ifnull(y,'999'),signed);";
 

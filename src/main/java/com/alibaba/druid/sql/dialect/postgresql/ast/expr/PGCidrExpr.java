@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class PGCidrExpr extends PGExprImpl implements SQLReplaceable {
-
     private SQLExpr value;
 
     public PGCidrExpr clone() {

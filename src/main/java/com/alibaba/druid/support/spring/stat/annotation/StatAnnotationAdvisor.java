@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.support.spring.stat.annotation;
 
+import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
@@ -24,46 +25,43 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
-import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
-
 @SuppressWarnings("serial")
 public class StatAnnotationAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
+    private Advice advice;
+    private Pointcut pointcut;
+    private DruidStatInterceptor druidStatInterceptor;
 
-	private Advice advice;
-	private Pointcut pointcut;
-	private DruidStatInterceptor druidStatInterceptor;
-	
-	public StatAnnotationAdvisor(DruidStatInterceptor druidStatInterceptor) {
-		this.druidStatInterceptor = druidStatInterceptor;
-		this.advice = buildAdvice();
-		this.pointcut = buildPointcut();
-	}
+    public StatAnnotationAdvisor(DruidStatInterceptor druidStatInterceptor) {
+        this.druidStatInterceptor = druidStatInterceptor;
+        this.advice = buildAdvice();
+        this.pointcut = buildPointcut();
+    }
 
-	public Pointcut getPointcut() {
-		return this.pointcut;
-	}
+    public Pointcut getPointcut() {
+        return this.pointcut;
+    }
 
-	public Advice getAdvice() {
-		return this.advice;
-	}
+    public Advice getAdvice() {
+        return this.advice;
+    }
 
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		if (this.advice instanceof BeanFactoryAware) {
-			((BeanFactoryAware) this.advice).setBeanFactory(beanFactory);
-		}
-	}
-	
-	protected Advice buildAdvice() {
-		return druidStatInterceptor;
-	}
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        if (this.advice instanceof BeanFactoryAware) {
+            ((BeanFactoryAware) this.advice).setBeanFactory(beanFactory);
+        }
+    }
 
-	protected Pointcut buildPointcut() {
-		Pointcut cpc = new AnnotationMatchingPointcut(Stat.class, true);
-		Pointcut mpc = AnnotationMatchingPointcut.forMethodAnnotation(Stat.class);
-		
-		ComposablePointcut result = new ComposablePointcut(cpc).union(mpc);
-		
-		return result;
-	}
+    protected Advice buildAdvice() {
+        return druidStatInterceptor;
+    }
+
+    protected Pointcut buildPointcut() {
+        Pointcut cpc = new AnnotationMatchingPointcut(Stat.class, true);
+        Pointcut mpc = AnnotationMatchingPointcut.forMethodAnnotation(Stat.class);
+
+        ComposablePointcut result = new ComposablePointcut(cpc).union(mpc);
+
+        return result;
+    }
 
 }

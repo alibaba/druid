@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 
 public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
-
     public void test1() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
                 "  PRIMARY KEY(id)\n" +

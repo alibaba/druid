@@ -36,7 +36,7 @@ public class PGSelectTest72 extends TestCase {
 
         assertEquals("SELECT a.*, stddev_samp(a.idx_yield_day) OVER (ORDER BY a.action_date ROWS BETWEEN 60 PRECEDING AND CURRENT ROW) AS idx_volatility\n" +
                 "FROM idx_a a", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select a.*, stddev_samp(a.idx_yield_day) over (order by a.action_date rows between 60 preceding and current row) as idx_volatility\n" +
                 "from idx_a a", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

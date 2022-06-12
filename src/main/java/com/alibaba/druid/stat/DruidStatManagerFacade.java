@@ -15,19 +15,6 @@
  */
 package com.alibaba.druid.stat;
 
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
-
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
@@ -38,21 +25,25 @@ import com.alibaba.druid.util.JdbcSqlStatUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.util.Utils;
 
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * 监控相关的对外数据暴露
- * 
+ * <p>
  * 1. 为了支持jndi数据源本类内部调用druid相关对象均需要反射调用,返回值也应该是Object,List&lt;Object&gt;,Map&lt;String,Object&gt;等无关于druid的类型
  * 2. 对外暴露的public方法都应该先调用init()，应该有更好的方式，暂时没想到
- * 
+ *
  * @author sandzhang[sandzhangtoo@gmail.com]
  */
 public final class DruidStatManagerFacade {
+    private static final DruidStatManagerFacade instance = new DruidStatManagerFacade();
+    private boolean resetEnable = true;
+    private final AtomicLong resetCount = new AtomicLong();
 
-    private final static DruidStatManagerFacade instance    = new DruidStatManagerFacade();
-    private boolean                             resetEnable = true;
-    private final AtomicLong                    resetCount  = new AtomicLong();
-
-    private DruidStatManagerFacade(){
+    private DruidStatManagerFacade() {
     }
 
     public static DruidStatManagerFacade getInstance() {
@@ -205,14 +196,14 @@ public final class DruidStatManagerFacade {
     }
 
     /**
-     * @deprecated
      * @return
+     * @deprecated
      */
     public static Map mergWallStat(Map mapA, Map mapB) {
         return mergeWallStat(mapA, mapB);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static Map mergeWallStat(Map mapA, Map mapB) {
         if (mapA == null || mapA.size() == 0) {
             return mapB;
@@ -298,7 +289,7 @@ public final class DruidStatManagerFacade {
         return newMap;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private static List<Map<String, Object>> mergeNamedList(List listA, List listB) {
         Map<String, Map<String, Object>> mapped = new HashMap<String, Map<String, Object>>();
         for (Object item : (List) listA) {
@@ -395,7 +386,7 @@ public final class DruidStatManagerFacade {
 
     private List<String> getDriversData() {
         List<String> drivers = new ArrayList<String>();
-        for (Enumeration<Driver> e = DriverManager.getDrivers(); e.hasMoreElements();) {
+        for (Enumeration<Driver> e = DriverManager.getDrivers(); e.hasMoreElements(); ) {
             Driver driver = e.nextElement();
             drivers.add(driver.getClass().getName());
         }

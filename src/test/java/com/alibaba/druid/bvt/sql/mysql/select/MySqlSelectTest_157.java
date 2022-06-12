@@ -15,7 +15,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_157 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT 1 " +
                 "FROM corona_select_one_db_one_tb AS layer_0_left_tb " +
@@ -24,7 +23,7 @@ public class MySqlSelectTest_157 extends MysqlTest {
                 "WHERE (layer_0_right_tb.timestamp_test BETWEEN 'x-3' AND ROW(3, 4) NOT IN (ROW(1, 2 ),ROW(3, 4)))";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

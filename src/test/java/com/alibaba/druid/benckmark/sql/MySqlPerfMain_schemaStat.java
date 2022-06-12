@@ -28,7 +28,6 @@ import java.lang.management.ManagementFactory;
 import java.util.List;
 
 public class MySqlPerfMain_schemaStat {
-
     public static void main(String[] args) throws Exception {
         System.out.println(System.getProperty("java.vm.name") + " " + System.getProperty("java.runtime.version"));
         List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
@@ -43,7 +42,7 @@ public class MySqlPerfMain_schemaStat {
             }
             sql += (" id = " + i);
         }
-        
+
         for (int i = 0; i < 10; ++i) {
             perfMySql(sql);
         }

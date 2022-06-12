@@ -30,14 +30,14 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class H2StatementParser extends SQLStatementParser {
     public H2StatementParser(String sql) {
-        super (new H2ExprParser(sql));
+        super(new H2ExprParser(sql));
     }
 
     public H2StatementParser(String sql, SQLParserFeature... features) {
-        super (new H2ExprParser(sql, features));
+        super(new H2ExprParser(sql, features));
     }
 
-    public H2StatementParser(Lexer lexer){
+    public H2StatementParser(Lexer lexer) {
         super(new H2ExprParser(lexer));
     }
 
@@ -65,7 +65,7 @@ public class H2StatementParser extends SQLStatementParser {
         if (lexer.token() == Token.VALUES || lexer.identifierEquals("VALUE")) {
             lexer.nextToken();
 
-            parseValueClause(stmt.getValuesList(), null,0, stmt);
+            parseValueClause(stmt.getValuesList(), null, 0, stmt);
         } else if (lexer.token() == Token.SELECT) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
             stmt.setQuery(queryExpr);

@@ -22,13 +22,12 @@ import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
 
 public class MySqlAlterDbTest1 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "alter database test CHARACTER SET='big5' COLLATE='big5_chinese_ci'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         assertEquals("ALTER DATABASE test CHARACTER SET = 'big5' COLLATE big5_chinese_ci", SQLUtils.toMySqlString(stmt));
         assertEquals("alter database test character set = 'big5' collate big5_chinese_ci", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }

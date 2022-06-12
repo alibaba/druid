@@ -19,18 +19,15 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.alibaba.druid.util.MySqlUtils;
 
 import java.util.List;
 
 public class MySqlHintStatement extends MySqlStatementImpl {
-
     private List<SQLCommentHint> hints;
 
     private List<SQLStatement> hintStatements;
 
     public MySqlHintStatement() {
-
     }
 
     public void accept0(MySqlASTVisitor visitor) {
@@ -78,7 +75,7 @@ public class MySqlHintStatement extends MySqlStatementImpl {
                 && c4 >= '0' && c4 <= '9'
                 && c5 >= '0' && c5 <= '9'
                 && c6 == ' ') {
-            return    (c1 - '0') * 10000
+            return (c1 - '0') * 10000
                     + (c2 - '0') * 1000
                     + (c3 - '0') * 100
                     + (c4 - '0') * 10

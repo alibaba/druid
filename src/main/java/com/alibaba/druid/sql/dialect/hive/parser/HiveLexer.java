@@ -16,15 +16,16 @@
 package com.alibaba.druid.sql.dialect.hive.parser;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.Keywords;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.Token;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
-
 public class HiveLexer extends Lexer {
-    public final static Keywords DEFAULT_HIVE_KEYWORDS;
+    public static final Keywords DEFAULT_HIVE_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -54,7 +55,7 @@ public class HiveLexer extends Lexer {
         DEFAULT_HIVE_KEYWORDS = new Keywords(map);
     }
 
-    public HiveLexer(String input){
+    public HiveLexer(String input) {
         super(input);
         this.skipComment = true;
         this.keepComments = true;
@@ -63,7 +64,7 @@ public class HiveLexer extends Lexer {
         super.keywords = DEFAULT_HIVE_KEYWORDS;
     }
 
-    public HiveLexer(String input, SQLParserFeature... features){
+    public HiveLexer(String input, SQLParserFeature... features) {
         super(input);
         dbType = DbType.hive;
         this.skipComment = true;

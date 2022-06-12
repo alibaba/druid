@@ -20,7 +20,6 @@ public class MySqlParameterizedOutputVisitorTest_33 extends TestCase {
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 
-
         String sql = "select * from t where id = 1 or id = 2";
 
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);

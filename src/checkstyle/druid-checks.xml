@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "http://checkstyle.sourceforge.net/dtds/configuration_1_3.dtd">
+<module name="Checker">
+    <module name="FileTabCharacter"/>
+    <module name="NewlineAtEndOfFile"/>
+    <module name="RegexpMultiline">
+        <property name="format" value=" \n" />
+        <property name="message" value="Line has trailing whitespace" />
+    </module>
+    <module name="RegexpMultiline">
+        <property name="format" value="\n\n\n" />
+        <property name="message" value="Multiple consecutive blank lines" />
+    </module>
+    <module name="RegexpMultiline">
+        <property name="format" value="\n\n\Z" />
+        <property name="message" value="Blank line before end of file" />
+    </module>
+    <module name="RegexpMultiline">
+        <property name="format" value="\{\n\n" />
+        <property name="message" value="Blank line after opening brace" />
+    </module>
+    <module name="RegexpMultiline">
+        <property name="format" value="->\s*\{\s+\}" />
+        <property name="message" value="Whitespace inside empty lambda body" />
+    </module>
+    <module name="TreeWalker">
+        <module name="SuppressWarningsHolder" />
+
+        <module name="EmptyBlock">
+            <property name="option" value="text" />
+            <property name="tokens" value="
+                LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF,
+                LITERAL_FOR, LITERAL_TRY, LITERAL_WHILE, INSTANCE_INIT, STATIC_INIT" />
+        </module>
+        <module name="EmptyStatement" />
+        <module name="EmptyForInitializerPad" />
+        <module name="MethodParamPad">
+            <property name="allowLineBreaks" value="true" />
+            <property name="option" value="nospace" />
+        </module>
+        <module name="ParenPad" />
+        <module name="NeedBraces" />
+        <module name="GenericWhitespace" />
+        <module name="WhitespaceAfter" />
+        <module name="NoWhitespaceBefore" />
+        <module name="SingleSpaceSeparator" />
+        <module name="UpperEll" />
+        <module name="DefaultComesLast" />
+        <module name="ArrayTypeStyle" />
+        <module name="ModifierOrder" />
+        <module name="OneStatementPerLine" />
+        <module name="StringLiteralEquality" />
+        <module name="MutableException" />
+        <module name="EqualsHashCode" />
+        <module name="ExplicitInitialization" />
+        <module name="OneTopLevelClass" />
+
+        <module name="PackageName" />
+        <module name="ClassTypeParameterName">
+            <property name="format" value="^[A-Z][0-9]?$" />
+        </module>
+        <module name="MethodTypeParameterName">
+            <property name="format" value="^[A-Z][0-9]?$" />
+        </module>
+        <module name="AnnotationUseStyle">
+            <property name="trailingArrayComma" value="ignore" />
+        </module>
+
+        <module name="RedundantImport" />
+        <module name="UnusedImports" />
+        <module name="ImportOrder">
+            <property name="groups" value="*,javax,java" />
+            <property name="separated" value="true" />
+            <property name="option" value="bottom" />
+            <property name="sortStaticImportsAlphabetically" value="true" />
+        </module>
+
+        <module name="WhitespaceAround">
+            <property name="allowEmptyConstructors" value="true" />
+            <property name="allowEmptyMethods" value="true" />
+            <property name="allowEmptyLambdas" value="true" />
+            <property name="ignoreEnhancedForColon" value="false" />
+            <property name="tokens" value="
+                ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN,
+                BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, DO_WHILE, EQUAL, GE, GT, LAND,
+                LAMBDA, LE, LITERAL_ASSERT, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE,
+                LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SWITCH,
+                LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE,
+                LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL,
+                PLUS, PLUS_ASSIGN, QUESTION, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN,
+                STAR, STAR_ASSIGN, TYPE_EXTENSION_AND" />
+        </module>
+
+        <module name="WhitespaceAfter" />
+
+        <module name="NoWhitespaceAfter">
+            <property name="tokens" value="DOT" />
+            <property name="allowLineBreaks" value="false" />
+        </module>
+    </module>
+</module>

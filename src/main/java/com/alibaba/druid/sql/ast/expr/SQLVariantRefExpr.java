@@ -27,35 +27,33 @@ import java.util.List;
 import java.util.Map;
 
 public class SQLVariantRefExpr extends SQLExprImpl {
+    private String name;
 
-    private String  name;
+    private boolean global;
+    private boolean session;
 
-    private boolean global = false;
-    private boolean session = false;
+    private int index = -1;
 
-    private int     index  = -1;
-
-    public SQLVariantRefExpr(String name){
+    public SQLVariantRefExpr(String name) {
         this.name = name;
     }
 
-    public SQLVariantRefExpr(String name, SQLObject parent){
+    public SQLVariantRefExpr(String name, SQLObject parent) {
         this.name = name;
         this.parent = parent;
     }
 
-    public SQLVariantRefExpr(String name, boolean global){
+    public SQLVariantRefExpr(String name, boolean global) {
         this(name, global, false);
     }
 
-    public SQLVariantRefExpr(String name, boolean global, boolean session){
+    public SQLVariantRefExpr(String name, boolean global, boolean session) {
         this.name = name;
         this.global = global;
         this.session = session;
     }
 
-    public SQLVariantRefExpr(){
-
+    public SQLVariantRefExpr() {
     }
 
     public int getIndex() {
@@ -136,7 +134,7 @@ public class SQLVariantRefExpr extends SQLExprImpl {
     }
 
     public SQLVariantRefExpr clone() {
-        SQLVariantRefExpr var =  new SQLVariantRefExpr(name, global, session);
+        SQLVariantRefExpr var = new SQLVariantRefExpr(name, global, session);
 
         if (attributes != null) {
             var.attributes = new HashMap<String, Object>(attributes.size());

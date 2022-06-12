@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class MySqlCreateTableTest90 extends MysqlTest {
-
     public void test_one() throws Exception {
         String sql = "CREATE TABLE `g_platform_payway` (\n" +
                 "\t`id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id', \n" +
@@ -57,7 +56,7 @@ public class MySqlCreateTableTest90 extends MysqlTest {
                     "\tUNIQUE `uniq_playform_payway` USING BTREE (`platform_code`, `pay_way`) COMMENT '平台code和支付方式应该唯一'\n" +
                     ") ENGINE = InnoDB CHARSET = utf8 COMMENT '配置表'", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("create table `g_platform_payway` (\n" +

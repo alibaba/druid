@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.parser.ParserException;
 import java.util.List;
 
 public class MySqlSelectTest_94_error extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from ttt where exist (select max(id) from ttt);";
 

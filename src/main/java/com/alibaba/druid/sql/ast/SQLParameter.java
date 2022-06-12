@@ -21,17 +21,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDataType {
-    private SQLName                  name;
-    private SQLDataType              dataType;
-    private SQLExpr                  defaultValue;
-    private ParameterType            paramType;
-    private boolean                  noCopy = false;
-    private boolean                  constant = false;
-    private SQLName                  cursorName;
+    private SQLName name;
+    private SQLDataType dataType;
+    private SQLExpr defaultValue;
+    private ParameterType paramType;
+    private boolean noCopy;
+    private boolean constant;
+    private SQLName cursorName;
     private final List<SQLParameter> cursorParameters = new ArrayList<SQLParameter>();
-    private boolean                  order;
-    private boolean                  map;
-    private boolean                  member;
+    private boolean order;
+    private boolean map;
+    private boolean member;
 
     public SQLExpr getDefaultValue() {
         return defaultValue;
@@ -65,7 +65,7 @@ public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDa
         }
         this.dataType = dataType;
     }
-    
+
     public ParameterType getParamType() {
         return paramType;
     }
@@ -83,9 +83,9 @@ public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDa
         }
         visitor.endVisit(this);
     }
-    
+
     public static enum ParameterType {
-        DEFAULT, //
+        DEFAULT,
         IN, // in
         OUT, // out
         INOUT// inout

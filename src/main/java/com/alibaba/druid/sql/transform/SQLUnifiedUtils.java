@@ -15,7 +15,6 @@ import static com.alibaba.druid.sql.parser.SQLParserFeature.EnableSQLBinaryOpExp
  * @author lijun.cailj 2020/5/8
  */
 public class SQLUnifiedUtils {
-
     public static long unifyHash(String sql, DbType type) {
         String unifySQL = unifySQL(sql, DbType.mysql);
         return FnvHash.fnv1a_64_lower(unifySQL);

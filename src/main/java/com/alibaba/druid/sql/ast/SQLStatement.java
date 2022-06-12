@@ -21,16 +21,25 @@ import com.alibaba.druid.sql.visitor.VisitorFeature;
 import java.util.List;
 
 public interface SQLStatement extends SQLObject, SQLDbTypedObject {
-    DbType       getDbType();
-    boolean      isAfterSemi();
-    void         setAfterSemi(boolean afterSemi);
+    DbType getDbType();
+
+    boolean isAfterSemi();
+
+    void setAfterSemi(boolean afterSemi);
+
     SQLStatement clone();
+
     List<SQLObject> getChildren();
+
     List<SQLCommentHint> getHeadHintsDirect();
+
     void setHeadHints(List<SQLCommentHint> headHints);
 
     String toString();
+
     String toString(VisitorFeature... features);
+
     String toLowerCaseString();
+
     String toParameterizedString();
 }

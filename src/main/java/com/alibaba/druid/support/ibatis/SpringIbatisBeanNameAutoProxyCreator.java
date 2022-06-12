@@ -15,23 +15,21 @@
  */
 package com.alibaba.druid.support.ibatis;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
+import java.util.ArrayList;
+import java.util.List;
 
-@SuppressWarnings({ "serial", "deprecation" })
+@SuppressWarnings({"serial", "deprecation"})
 public class SpringIbatisBeanNameAutoProxyCreator extends BeanNameAutoProxyCreator implements SpringIbatisBeanNameAutoProxyCreatorMBean {
+    private static final Log LOG = LogFactory.getLog(SpringIbatisBeanNameAutoProxyCreator.class);
 
-    private final static Log LOG            = LogFactory.getLog(SpringIbatisBeanNameAutoProxyCreator.class);
-
-    private List<String>     proxyBeanNames = new ArrayList<String>();
+    private List<String> proxyBeanNames = new ArrayList<String>();
 
     public List<String> getProxyBeanNames() {
         return proxyBeanNames;

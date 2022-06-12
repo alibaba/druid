@@ -24,7 +24,6 @@ import java.util.List;
 
 public class MySqlSelectTest_mtr
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT 1 FROM ((SELECT 2) LIMIT 1) AS res; ";
 

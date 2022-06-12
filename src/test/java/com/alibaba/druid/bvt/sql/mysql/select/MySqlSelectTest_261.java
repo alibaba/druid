@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 
 public class MySqlSelectTest_261 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM t CROSS JOIN UNNEST(a) WITH ORDINALITY";
 

@@ -6,7 +6,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlWallTest148 extends TestCase {
-
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 

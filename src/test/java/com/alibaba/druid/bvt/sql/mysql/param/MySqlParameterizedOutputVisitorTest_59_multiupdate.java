@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_59_multiupdate extends TestCase {
     final DbType dbType = JdbcConstants.MYSQL;
-    public void test_for_parameterize() throws Exception {
 
+    public void test_for_parameterize() throws Exception {
         String sql = "update t_order set salary = 101 where id = 101;update t_order set salary = 102 where id = 102";
 
         List<Object> params = new ArrayList<Object>();

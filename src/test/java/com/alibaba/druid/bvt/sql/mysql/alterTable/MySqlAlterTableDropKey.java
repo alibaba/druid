@@ -26,16 +26,15 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableDropKey extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "alter table t6 drop key v";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         Assert.assertEquals("ALTER TABLE t6" + //
-                            "\n\tDROP KEY v", SQLUtils.toMySqlString(stmt));
-        
+                "\n\tDROP KEY v", SQLUtils.toMySqlString(stmt));
+
         Assert.assertEquals("alter table t6" + //
                 "\n\tdrop key v", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

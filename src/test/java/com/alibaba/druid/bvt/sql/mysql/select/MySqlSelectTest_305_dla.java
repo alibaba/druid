@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class MySqlSelectTest_305_dla
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select count(0) from (select * from person) limit 1;";
 

@@ -25,11 +25,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_201 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from test_type2 inner join (values (1, 'a'), (2, 'b'), (3, 'c')) as t (id, name) on v_int = t.id;";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -43,7 +42,7 @@ public class MySqlSelectTest_201 extends MysqlTest {
         Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT *\n" +
@@ -53,7 +52,7 @@ public class MySqlSelectTest_201 extends MysqlTest {
                             "\t\t(2, 'b'), \n" +
                             "\t\t(3, 'c')\n" +
                             "\t) AS t (id, name) ON v_int = t.id;", //
-                                output);
+                    output);
         }
     }
 

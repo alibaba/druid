@@ -24,7 +24,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySql_Create_Function_0 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE FUNCTION hello (s CHAR(20))\n" +
                 " RETURNS CHAR(50) DETERMINISTIC\n" +
@@ -37,33 +36,33 @@ public class MySql_Create_Function_0 extends MysqlTest {
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
-        
+
         assertEquals("CREATE FUNCTION hello (\n" +
                         "\ts CHAR(20)\n" +
                         ")\n" +
                         "RETURNS CHAR(50) DETERMINISTIC\n" +
                         "RETURN CONCAT('Hello, ', s, '!');", //
-                            SQLUtils.toMySqlString(stmt));
-        
+                SQLUtils.toMySqlString(stmt));
+
         assertEquals("create function hello (\n" +
                         "\ts CHAR(20)\n" +
                         ")\n" +
                         "returns CHAR(50) deterministic\n" +
                         "return CONCAT('Hello, ', s, '!');", //
-                            SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(0, visitor.getTables().size());
         assertEquals(1, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

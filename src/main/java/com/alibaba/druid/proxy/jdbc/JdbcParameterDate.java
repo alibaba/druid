@@ -22,7 +22,7 @@ import java.util.Date;
 public final class JdbcParameterDate implements JdbcParameter {
     private final Date value;
 
-    public JdbcParameterDate(Date value){
+    public JdbcParameterDate(Date value) {
         this.value = value;
     }
 

@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest22 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "alter table pj_usr_auth add constraint FK_Reference_8 foreign key (usr) references usr (usr) on delete restrict on update restrict;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

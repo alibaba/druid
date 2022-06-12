@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class SHOW_COLUMNS_Syntax_Test extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SHOW COLUMNS FROM City;";
 
@@ -61,7 +60,7 @@ public class SHOW_COLUMNS_Syntax_Test extends TestCase {
 
         Assert.assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
     }
-    
+
     public void test_3() throws Exception {
         String sql = "SHOW COLUMNS FROM mytable IN mydb;";
 

@@ -26,10 +26,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateSequenceTest_2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE SEQUENCE \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\" INCREMENT BY 1 START WITH 1 NOMAXVALUE MINVALUE 1";
+                "CREATE SEQUENCE \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\" INCREMENT BY 1 START WITH 1 NOMAXVALUE MINVALUE 1";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -37,9 +36,9 @@ public class OracleCreateSequenceTest_2 extends OracleTest {
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         Assert.assertEquals("CREATE SEQUENCE \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\" START WITH 1 INCREMENT BY 1 NOMAXVALUE MINVALUE 1",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

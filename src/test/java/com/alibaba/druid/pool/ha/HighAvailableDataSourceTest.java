@@ -35,7 +35,7 @@ public class HighAvailableDataSourceTest {
 
         haDataSource.setDataSourceMap(map);
         for (int i = 0; i < 100; i++) {
-            String name = ((MockConnection)haDataSource.getConnection()).getUrl();
+            String name = ((MockConnection) haDataSource.getConnection()).getUrl();
             if (name.equalsIgnoreCase("foo")) {
                 count[0]++;
             } else if (name.equalsIgnoreCase("bar")) {

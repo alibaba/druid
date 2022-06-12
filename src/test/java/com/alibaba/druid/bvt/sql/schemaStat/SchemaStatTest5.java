@@ -11,7 +11,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SchemaStatTest5 extends TestCase {
-
     public void test_schemaStat() throws Exception {
         String sql = "create table t_org (fid int, name varchar(256))";
 

@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleBlockTest19 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "BEGIN\n" +
                 "  EXECUTE IMMEDIATE 'DROP SEQUENCE properties_seq';\n" +

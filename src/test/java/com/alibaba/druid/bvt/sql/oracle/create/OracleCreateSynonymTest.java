@@ -24,11 +24,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateSynonymTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE SYNONYM offices \n" +
-                "   FOR hr.locations;";
+                "CREATE SYNONYM offices \n" +
+                        "   FOR hr.locations;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

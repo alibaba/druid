@@ -26,14 +26,13 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTriggerTest3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE TRIGGER salary_check\n" +
-                "   BEFORE INSERT OR UPDATE OF salary, job_id ON employees\n" +
-                "   FOR EACH ROW\n" +
-                "   WHEN (new.job_id <> 'AD_VP')\n" +
-                "   CALL check_sal(:new.job_id, :new.salary, :new.last_name)";
+                "CREATE TRIGGER salary_check\n" +
+                        "   BEFORE INSERT OR UPDATE OF salary, job_id ON employees\n" +
+                        "   FOR EACH ROW\n" +
+                        "   WHEN (new.job_id <> 'AD_VP')\n" +
+                        "   CALL check_sal(:new.job_id, :new.salary, :new.last_name)";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -48,7 +47,7 @@ public class OracleCreateTriggerTest3 extends OracleTest {
                         "\tFOR EACH ROW\n" +
                         "\tWHEN new.job_id <> 'AD_VP'\n" +
                         "CALL check_sal(:new.job_id, :new.salary, :new.last_name)",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

@@ -35,7 +35,6 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class ConnectionTest extends TestCase {
-
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:memory:connectionTestDB;create=true";
 
     protected void setUp() throws Exception {
@@ -90,11 +89,10 @@ public class ConnectionTest extends TestCase {
             try {
                 conn.setClientInfo("name", "value");
             } catch (SQLClientInfoException ex) {
-
             }
 
             try {
-                conn.createArrayOf("VARCHAR", new String[] { "A", "B" });
+                conn.createArrayOf("VARCHAR", new String[]{"A", "B"});
             } catch (SQLFeatureNotSupportedException ex) {
             }
 
@@ -109,7 +107,7 @@ public class ConnectionTest extends TestCase {
             }
 
             try {
-                conn.createStruct("VARCHAR", new String[] { "A", "B" });
+                conn.createStruct("VARCHAR", new String[]{"A", "B"});
             } catch (SQLFeatureNotSupportedException ex) {
             }
 

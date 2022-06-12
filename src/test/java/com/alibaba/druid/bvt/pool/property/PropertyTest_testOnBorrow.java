@@ -16,15 +16,15 @@ public class PropertyTest_testOnBorrow extends TestCase {
         dataSource = new DruidDataSource();
         Assert.assertTrue(dataSource.isTestOnBorrow());
     }
-    
+
     public void test_false() {
         System.setProperty("druid.testOnBorrow", "false");
         dataSource = new DruidDataSource();
         Assert.assertFalse(dataSource.isTestOnBorrow());
-        
+
         Assert.assertNull(dataSource.getWallStatMap());
     }
-    
+
     protected void tearDown() throws Exception {
         System.clearProperty("druid.testOnBorrow");
         JdbcUtils.close(dataSource);

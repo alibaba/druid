@@ -21,7 +21,6 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 public class TestUtil {
-
     public static long getYoungGC() {
         try {
             MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();

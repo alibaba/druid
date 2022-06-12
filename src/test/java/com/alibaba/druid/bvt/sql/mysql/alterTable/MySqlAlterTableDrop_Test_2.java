@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableDrop_Test_2 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE test_ddl \n" +
                 "DROP COLUMN display_name, \n" +
@@ -32,12 +31,12 @@ public class MySqlAlterTableDrop_Test_2 extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         Assert.assertEquals("ALTER TABLE test_ddl\n" +
                 "\tDROP COLUMN display_name,\n" +
                 "\tMODIFY COLUMN id bigint(20) UNSIGNED NOT NULL,\n" +
                 "\tCHANGE COLUMN content content VARCHAR(3000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '未填写' COMMENT '默认'", SQLUtils.toMySqlString(stmt));
-        
+
         Assert.assertEquals("alter table test_ddl\n" +
                 "\tdrop column display_name,\n" +
                 "\tmodify column id bigint(20) unsigned not null,\n" +

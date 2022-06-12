@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLShowACLStatement extends SQLStatementImpl implements SQLShowStatement, SQLReplaceable {
-
     protected SQLExprTableSource table;
 
     public SQLExprTableSource getTable() {

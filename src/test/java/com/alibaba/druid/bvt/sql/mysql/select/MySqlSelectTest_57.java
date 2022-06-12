@@ -24,9 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_57 extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "SELECT SUBSTR('12345678' FROM 2 FOR 4)";
+        String sql = "SELECT SUBSTR('12345678' FROM 2 FOR 4)";
 
         System.out.println(sql);
 
@@ -43,21 +42,21 @@ public class MySqlSelectTest_57 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(1, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT SUBSTR('12345678' FROM 2 FOR 4)", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select SUBSTR('12345678' from 2 for 4)", //
-                                output);
+                    output);
         }
 
         {

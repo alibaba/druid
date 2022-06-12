@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest86_comment extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "/*sqlId=9f0szhacj63ag*/SELECT /*+rule*/ SYS_XMLGEN(VALUE(KU$), XMLFORMAT.createFormat2('TABLE_T', '7')), KU$.OBJ_NUM FROM SYS.KU$_HTABLE_VIEW KU$ WHERE NOT (BITAND (KU$.PROPERTY,8192)=8192) AND  NOT BITAND(KU$.SCHEMA_OBJ.FLAGS,128)!=0 AND  KU$.SCHEMA_OBJ.NAME=:NAME1 AND  KU$.SCHEMA_OBJ.OWNER_NAME=:SCHEMA2"; //

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateUserTest_5 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create user 'user5301new'@'%' IDENTIFIED BY '123456'";
 
@@ -39,10 +38,10 @@ public class MySqlCreateUserTest_5 extends MysqlTest {
         stmt.accept(visitor);
 
         Assert.assertEquals("CREATE USER 'user5301new'@'%' IDENTIFIED BY '123456'", //
-                            SQLUtils.toMySqlString(stmt));
-        
+                SQLUtils.toMySqlString(stmt));
+
         Assert.assertEquals("create user 'user5301new'@'%' identified by '123456'", //
-                            SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

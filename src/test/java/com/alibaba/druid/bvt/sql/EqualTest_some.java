@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 
 public class EqualTest_some extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "some(select id from t)";
         String sql_c = "some(select id from t1)";
@@ -30,7 +29,7 @@ public class EqualTest_some extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new SQLSomeExpr(), new SQLSomeExpr());
         Assert.assertEquals(new SQLSomeExpr().hashCode(), new SQLSomeExpr().hashCode());
     }

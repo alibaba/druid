@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGDeleteTest6 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "WITH moved_rows AS ("
                 + "    DELETE FROM products"
@@ -57,9 +56,9 @@ public class PGDeleteTest6 extends PGTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("products_log")));
 
         Assert.assertTrue(visitor.getColumns().size() == 1);
-        
+
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("products", "date")));
     }
 
-    
+
 }

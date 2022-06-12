@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlSelectTest_203_dla extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT $1, $2 FROM\n" +
                 "TABLE temp_1\n" +
@@ -38,7 +37,7 @@ public class MySqlSelectTest_203_dla extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

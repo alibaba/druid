@@ -9,7 +9,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_129_ads extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "/*+ engine= mpp*/     \n" +
                 "with  \n" +
@@ -33,7 +32,7 @@ public class MySqlSelectTest_129_ads extends MysqlTest {
                 "from history_table     left join avg_table using (minute_id) order by history_table.hour_id\n";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

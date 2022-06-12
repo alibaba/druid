@@ -26,48 +26,48 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class MySqlSelectTest_clearLimit extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select a from t limit 1,2";
 
         Object[] result = SQLUtils.clearLimit(sql, DbType.mysql);
 
         assertEquals("SELECT a\n"
-                     + "FROM t", result[0]);
+                + "FROM t", result[0]);
         assertEquals("LIMIT 1, 2", result[1].toString());
     }
 
     public void test_3() throws Exception {
         String sql = "SELECT id from test1"
-                     + " where id BETWEEN 1 and 100"
-                     + " intersect"
-                     + " select sid from grade1"
-                     + " where sid in(SELECT sid from grade1 where sid is null or sid between 10 and 100 ) limit 1,10";
+                + " where id BETWEEN 1 and 100"
+                + " intersect"
+                + " select sid from grade1"
+                + " where sid in(SELECT sid from grade1 where sid is null or sid between 10 and 100 ) limit 1,10";
 
         Object[] result = SQLUtils.clearLimit(sql, DbType.mysql);
 
         assertEquals("SELECT id\n" + "FROM test1\n" + "WHERE id BETWEEN 1 AND 100\n" + "INTERSECT\n" + "SELECT sid\n"
-                     + "FROM grade1\n" + "WHERE sid IN (\n" + "\tSELECT sid\n" + "\tFROM grade1\n"
-                     + "\tWHERE sid IS NULL\n" + "\t\tOR sid BETWEEN 10 AND 100\n" + ")\n" + "LIMIT 1, 10", result[0]);
+                + "FROM grade1\n" + "WHERE sid IN (\n" + "\tSELECT sid\n" + "\tFROM grade1\n"
+                + "\tWHERE sid IS NULL\n" + "\t\tOR sid BETWEEN 10 AND 100\n" + ")\n" + "LIMIT 1, 10", result[0]);
         assertNull(result[1]);
     }
+
     public void test_4() throws Exception {
         String sql = "SELECT id from test1 where id BETWEEN 1 and 100 intersect  select sid from grade1 where sid in(SELECT sid from grade1 where sid  is null or sid between 10 and 100 )";
 
         Object[] result = SQLUtils.clearLimit(sql, DbType.mysql);
 
         assertEquals("SELECT id\n"
-                     + "FROM test1\n"
-                     + "WHERE id BETWEEN 1 AND 100\n"
-                     + "INTERSECT\n"
-                     + "SELECT sid\n"
-                     + "FROM grade1\n"
-                     + "WHERE sid IN (\n"
-                     + "\tSELECT sid\n"
-                     + "\tFROM grade1\n"
-                     + "\tWHERE sid IS NULL\n"
-                     + "\t\tOR sid BETWEEN 10 AND 100\n"
-                     + ")", result[0]);
+                + "FROM test1\n"
+                + "WHERE id BETWEEN 1 AND 100\n"
+                + "INTERSECT\n"
+                + "SELECT sid\n"
+                + "FROM grade1\n"
+                + "WHERE sid IN (\n"
+                + "\tSELECT sid\n"
+                + "\tFROM grade1\n"
+                + "\tWHERE sid IS NULL\n"
+                + "\t\tOR sid BETWEEN 10 AND 100\n"
+                + ")", result[0]);
         assertNull(result[1]);
     }
 
@@ -81,8 +81,8 @@ public class MySqlSelectTest_clearLimit extends MysqlTest {
     public void test_2() {
         String sql =
                 " /*+ dump-oss-accesskey-id=xx,dump-oss-accesskey-secret=xx*/ \n"
-                + "    DUMP DATA OVERWRITE INTO 'oss://oss-cn-hangzhou.aliyuncs.com/barca-platform/c'\n"
-                + "  SELECT item_id,item_title FROM tyx.r_hjc_yun_item_info limit 1";
+                        + "    DUMP DATA OVERWRITE INTO 'oss://oss-cn-hangzhou.aliyuncs.com/barca-platform/c'\n"
+                        + "  SELECT item_id,item_title FROM tyx.r_hjc_yun_item_info limit 1";
         Object[] objects = SQLUtils.clearLimit(sql, DbType.mysql);
 
         assertEquals("LIMIT 1", objects[1].toString());
@@ -106,7 +106,7 @@ public class MySqlSelectTest_clearLimit extends MysqlTest {
         assertEquals("LIMIT 1, 2", limit.toString());
 
         limit = SQLUtils.getLimit("DUMP DATA OVERWRITE INTO 'oss://oss-cn-hangzhou.aliyuncs.com/barca-platform/c' "
-                                  + "   SELECT item_id,item_title FROM tyx.r_hjc_yun_item_info limit 1", DbType.mysql);
+                + "   SELECT item_id,item_title FROM tyx.r_hjc_yun_item_info limit 1", DbType.mysql);
 
         assertEquals("LIMIT 1", limit.toString());
 

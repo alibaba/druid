@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlInsertTest_16_hint extends MysqlTest {
-
     public void test_insert_rollback_on_fail() throws Exception {
         String sql = "insert into mytable /*!(col2, col3, col1) */ values (load_file('sompath'), 'str1', 2);";
 

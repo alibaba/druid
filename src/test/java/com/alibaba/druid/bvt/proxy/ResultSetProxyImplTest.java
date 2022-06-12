@@ -34,16 +34,14 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class ResultSetProxyImplTest extends TestCase {
-
     String sql = "SELECT 1";
-    
+
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_resultset() throws Exception {
-
         MockDriver driver = new MockDriver();
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setUrl("");

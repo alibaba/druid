@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableSetComment extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLExpr comment;
 
     public SQLExpr getComment() {

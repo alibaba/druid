@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResultSetMetaDataBase implements ResultSetMetaData {
-
-    public ResultSetMetaDataBase(){
-
+    public ResultSetMetaDataBase() {
     }
 
     private final List<ColumnMetaData> columns = new ArrayList<ColumnMetaData>();
@@ -31,7 +29,7 @@ public class ResultSetMetaDataBase implements ResultSetMetaData {
     public List<ColumnMetaData> getColumns() {
         return columns;
     }
-    
+
     public int findColumn(String columnName) throws SQLException {
         for (int i = 0; i < columns.size(); ++i) {
             ColumnMetaData column = columns.get(i);
@@ -39,7 +37,7 @@ public class ResultSetMetaDataBase implements ResultSetMetaData {
                 return i + 1;
             }
         }
-        
+
         throw new SQLException("column '" + columnName + "' not found.");
     }
 
@@ -106,7 +104,7 @@ public class ResultSetMetaDataBase implements ResultSetMetaData {
     public String getColumnLabel(int column) throws SQLException {
         return getColumn(column).getColumnLabel();
     }
-    
+
     public ColumnMetaData getColumn(int column) {
         return columns.get(column - 1);
     }
@@ -172,27 +170,26 @@ public class ResultSetMetaDataBase implements ResultSetMetaData {
     }
 
     public static class ColumnMetaData {
-
-        private boolean autoIncrement = false;
+        private boolean autoIncrement;
         private boolean caseSensitive;
         private boolean searchable;
         private boolean currency;
-        private int     nullable      = 0;
+        private int nullable;
         private boolean signed;
-        private int     columnDisplaySize;
-        private String  columnLabel;
-        private String  columnName;
-        private String  schemaName;
-        private int     precision;
-        private int     scale;
-        private String  tableName;
-        private String  catalogName;
-        private int     columnType;
-        private String  columnTypeName;
+        private int columnDisplaySize;
+        private String columnLabel;
+        private String columnName;
+        private String schemaName;
+        private int precision;
+        private int scale;
+        private String tableName;
+        private String catalogName;
+        private int columnType;
+        private String columnTypeName;
         private boolean readOnly;
         private boolean writable;
         private boolean definitelyWritable;
-        private String  columnClassName;
+        private String columnClassName;
 
         public boolean isAutoIncrement() {
             return autoIncrement;

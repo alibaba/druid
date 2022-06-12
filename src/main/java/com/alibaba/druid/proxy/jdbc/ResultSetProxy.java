@@ -15,17 +15,16 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
+import com.alibaba.druid.stat.JdbcSqlStat;
+
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.druid.stat.JdbcSqlStat;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface ResultSetProxy extends ResultSet, WrapperProxy {
-
     ResultSet getResultSetRaw();
 
     StatementProxy getStatementProxy();

@@ -15,19 +15,21 @@
  */
 package com.alibaba.druid.sql.dialect.blink.parser;
 
-import com.alibaba.druid.sql.dialect.odps.parser.OdpsCreateTableParser;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class BlinkStatementParser extends SQLStatementParser {
     public BlinkStatementParser(String sql) {
-        super (new BlinkExprParser(sql));
+        super(new BlinkExprParser(sql));
     }
 
     public BlinkStatementParser(String sql, SQLParserFeature... features) {
-        super (new BlinkExprParser(sql, features));
+        super(new BlinkExprParser(sql, features));
     }
 
-    public BlinkStatementParser(Lexer lexer){
+    public BlinkStatementParser(Lexer lexer) {
         super(new BlinkExprParser(lexer));
     }
 //

@@ -17,12 +17,11 @@ import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleExceptionSorterTest_setSavepointWithName extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-        
+
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());
@@ -56,7 +55,7 @@ public class OracleExceptionSorterTest_setSavepointWithName extends TestCase {
         DruidPooledConnection conn = dataSource.getConnection();
         MockConnection mockConn = conn.unwrap(MockConnection.class);
         assertNotNull(mockConn);
-        
+
         SQLException exception = new SQLException("xx", "xxx", 28);
         mockConn.setError(exception);
 
@@ -67,7 +66,7 @@ public class OracleExceptionSorterTest_setSavepointWithName extends TestCase {
             setError = ex;
         }
         assertNotNull(setError);
-        
+
         conn.close();
 
         {

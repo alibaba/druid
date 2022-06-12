@@ -61,7 +61,7 @@ public class PGSelectTest68 extends TestCase {
                 "\t\t\t)\n" +
                 "\t\t), ',') AS area_string)\n" +
                 ") t", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select case \n" +
                 "\t\twhen POSITION('市区' in (area_string)) > 0 then 1\n" +
                 "\t\twhen POSITION('郊区' in (area_string)) > 0 then 2\n" +

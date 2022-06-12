@@ -21,11 +21,10 @@ import java.sql.DriverManager;
 import junit.framework.TestCase;
 
 public class Test_kyline extends TestCase {
-
-    private String url      = "jdbc:mysql://a.b.c.d:8066/amoeba";
-    private String user     = "root";
+    private String url = "jdbc:mysql://a.b.c.d:8066/amoeba";
+    private String user = "root";
     private String password = "12345";
-    private String driver   = "com.mysql.jdbc.Driver";
+    private String driver = "com.mysql.jdbc.Driver";
 
     public void test_0() throws Exception {
         DruidDataSource ds = new DruidDataSource();

@@ -28,7 +28,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TestConnectTimeout extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -65,7 +64,6 @@ public class TestConnectTimeout extends TestCase {
         final CountDownLatch latch = new CountDownLatch(THREAD_COUNT);
         for (int i = 0; i < THREAD_COUNT; ++i) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         for (int i = 0; i < 100; ++i) {

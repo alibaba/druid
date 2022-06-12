@@ -12,5 +12,4 @@ public class OdpsFormatCommentTest17 extends TestCase {
         Assert.assertEquals("SET xxx = aaa;-- ssss", SQLUtils.formatOdps(sql));
     }
 
-   
 }

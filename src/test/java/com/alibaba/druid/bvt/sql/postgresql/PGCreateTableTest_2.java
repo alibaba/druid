@@ -26,13 +26,12 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGCreateTableTest_2 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE products (" + //
-                     "    product_no integer," + //
-                     "    name text," + //
-                     "    price numeric DEFAULT 9.99" + //
-                     ");";
+                "    product_no integer," + //
+                "    name text," + //
+                "    price numeric DEFAULT 9.99" + //
+                ");";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

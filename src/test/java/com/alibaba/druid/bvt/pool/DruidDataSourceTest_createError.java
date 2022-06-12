@@ -14,11 +14,10 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 
 /**
  * 这个场景测试createError
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_createError extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -28,7 +27,6 @@ public class DruidDataSourceTest_createError extends TestCase {
         dataSource.setDefaultAutoCommit(true);
         dataSource.setInitialSize(1);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
                 throw new SQLException();
             }
@@ -47,7 +45,7 @@ public class DruidDataSourceTest_createError extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        
+
         Assert.assertNotNull(error);
     }
 }

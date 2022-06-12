@@ -28,15 +28,14 @@ import java.util.List;
 public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr, Comparable<SQLCharExpr> {
     public static final SQLDataType DATA_TYPE = new SQLCharacterDataType("char");
 
-    public SQLCharExpr(){
-
+    public SQLCharExpr() {
     }
 
-    public SQLCharExpr(String text){
+    public SQLCharExpr(String text) {
         this.text = text;
     }
 
-    public SQLCharExpr(String text, SQLObject parent){
+    public SQLCharExpr(String text, SQLObject parent) {
         this.text = text;
         this.parent = parent;
     }
@@ -54,7 +53,7 @@ public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr, 
     public Object getValue() {
         return this.text;
     }
-    
+
     public String toString() {
         return SQLUtils.toSQLString(this);
     }

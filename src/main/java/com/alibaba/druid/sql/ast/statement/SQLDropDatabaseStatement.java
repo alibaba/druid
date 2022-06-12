@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropDatabaseStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
-
     private SQLExpr database;
     private boolean ifExists;
     private Boolean restrict;
@@ -36,11 +35,10 @@ public class SQLDropDatabaseStatement extends SQLStatementImpl implements SQLDro
     private boolean physical;
 
     public SQLDropDatabaseStatement() {
-        
     }
-    
+
     public SQLDropDatabaseStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

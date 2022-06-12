@@ -26,19 +26,18 @@ import java.util.List;
 import java.util.Map;
 
 public class SQLServerEvalVisitor extends SQLServerASTVisitorAdapter implements SQLEvalVisitor {
+    private Map<String, Function> functions = new HashMap<String, Function>();
+    private List<Object> parameters = new ArrayList<Object>();
 
-    private Map<String, Function> functions        = new HashMap<String, Function>();
-    private List<Object>          parameters       = new ArrayList<Object>();
+    private int variantIndex = -1;
 
-    private int                   variantIndex     = -1;
+    private boolean markVariantIndex = true;
 
-    private boolean               markVariantIndex = true;
-
-    public SQLServerEvalVisitor(){
+    public SQLServerEvalVisitor() {
         this(new ArrayList<Object>(1));
     }
 
-    public SQLServerEvalVisitor(List<Object> parameters){
+    public SQLServerEvalVisitor(List<Object> parameters) {
         this.parameters = parameters;
     }
 
@@ -81,7 +80,7 @@ public class SQLServerEvalVisitor extends SQLServerASTVisitorAdapter implements 
     public boolean visit(SQLNumberExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
-    
+
     @Override
     public boolean visit(SQLCaseExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
@@ -124,12 +123,12 @@ public class SQLServerEvalVisitor extends SQLServerASTVisitorAdapter implements 
     public void registerFunction(String funcName, Function function) {
         functions.put(funcName, function);
     }
-    
+
     @Override
     public void unregisterFunction(String funcName) {
         functions.remove(funcName);
     }
-    
+
     public boolean visit(SQLIdentifierExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }

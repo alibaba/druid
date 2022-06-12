@@ -10,39 +10,35 @@ import java.util.List;
 /**
  * @version 1.0
  * @ClassName MySqlCreateTableTest152_table_options
- * @description
- *
- * table_option:
- *     AUTO_INCREMENT [=] value
- *   | AVG_ROW_LENGTH [=] value
- *   | [DEFAULT] CHARACTER SET [=] charset_name
- *   | CHECKSUM [=] {0 | 1}
- *   | [DEFAULT] COLLATE [=] collation_name
- *   | COMMENT [=] 'string'
- *   | COMPRESSION [=] {'ZLIB'|'LZ4'|'NONE'}
- *   | CONNECTION [=] 'connect_string'
- *   | {DATA|INDEX} DIRECTORY [=] 'absolute path to directory'
- *   | DELAY_KEY_WRITE [=] {0 | 1}
- *   | ENCRYPTION [=] {'Y' | 'N'}
- *   | ENGINE [=] engine_name
- *   | INSERT_METHOD [=] { NO | FIRST | LAST }
- *   | KEY_BLOCK_SIZE [=] value
- *   | MAX_ROWS [=] value
- *   | MIN_ROWS [=] value
- *   | PACK_KEYS [=] {0 | 1 | DEFAULT}
- *   | PASSWORD [=] 'string'
- *   | ROW_FORMAT [=] {DEFAULT|DYNAMIC|FIXED|COMPRESSED|REDUNDANT|COMPACT}
- *   | STATS_AUTO_RECALC [=] {DEFAULT|0|1}
- *   | STATS_PERSISTENT [=] {DEFAULT|0|1}
- *   | STATS_SAMPLE_PAGES [=] value
- *   | TABLESPACE tablespace_name [STORAGE {DISK|MEMORY}]
- *   | UNION [=] (tbl_name[,tbl_name]...)
- *
+ * @description table_option:
+ * AUTO_INCREMENT [=] value
+ * | AVG_ROW_LENGTH [=] value
+ * | [DEFAULT] CHARACTER SET [=] charset_name
+ * | CHECKSUM [=] {0 | 1}
+ * | [DEFAULT] COLLATE [=] collation_name
+ * | COMMENT [=] 'string'
+ * | COMPRESSION [=] {'ZLIB'|'LZ4'|'NONE'}
+ * | CONNECTION [=] 'connect_string'
+ * | {DATA|INDEX} DIRECTORY [=] 'absolute path to directory'
+ * | DELAY_KEY_WRITE [=] {0 | 1}
+ * | ENCRYPTION [=] {'Y' | 'N'}
+ * | ENGINE [=] engine_name
+ * | INSERT_METHOD [=] { NO | FIRST | LAST }
+ * | KEY_BLOCK_SIZE [=] value
+ * | MAX_ROWS [=] value
+ * | MIN_ROWS [=] value
+ * | PACK_KEYS [=] {0 | 1 | DEFAULT}
+ * | PASSWORD [=] 'string'
+ * | ROW_FORMAT [=] {DEFAULT|DYNAMIC|FIXED|COMPRESSED|REDUNDANT|COMPACT}
+ * | STATS_AUTO_RECALC [=] {DEFAULT|0|1}
+ * | STATS_PERSISTENT [=] {DEFAULT|0|1}
+ * | STATS_SAMPLE_PAGES [=] value
+ * | TABLESPACE tablespace_name [STORAGE {DISK|MEMORY}]
+ * | UNION [=] (tbl_name[,tbl_name]...)
  * @Author zzy
  * @Date 2019-05-15 16:26
  */
 public class MySqlCreateTableTest152_table_options extends TestCase {
-
     public void test_no_comma_no_eq() {
         String sql = "create table tb (a int)" +
                 "auto_increment 1\n" +
@@ -73,7 +69,7 @@ public class MySqlCreateTableTest152_table_options extends TestCase {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -115,7 +111,7 @@ public class MySqlCreateTableTest152_table_options extends TestCase {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

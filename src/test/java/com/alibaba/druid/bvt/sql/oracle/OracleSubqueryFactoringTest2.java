@@ -23,20 +23,19 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class OracleSubqueryFactoringTest2 extends TestCase {
-
     public void test_interval() throws Exception {
         String sql = "WITH org_chart (eid, emp_last, mgr_id, reportLevel, salary, job_id) AS\n"
-                     + "(\n"
-                     + "SELECT employee_id, last_name, manager_id, 0 reportLevel, salary, job_id\n"
-                     + "FROM employees\n"
-                     + "WHERE manager_id is null\n"
-                     + "UNION ALL\n"
-                     + "SELECT e.employee_id, e.last_name, e.manager_id, r.reportLevel+1 reportLevel, e.salary, e.job_id\n"
-                     + "FROM org_chart r, employees e\n" + "WHERE r.eid = e.manager_id\n" + ")\n"
-                     + "SEARCH DEPTH FIRST BY emp_last SET order1\n"
-                     + "CYCLE hire_date SET is_cycle TO 'Y' DEFAULT 'N'"
-                     + "SELECT lpad(' ',2*reportLevel)||emp_last emp_name, eid, mgr_id, salary, job_id\n"
-                     + "FROM org_chart\n" + "ORDER BY order1;\n";
+                + "(\n"
+                + "SELECT employee_id, last_name, manager_id, 0 reportLevel, salary, job_id\n"
+                + "FROM employees\n"
+                + "WHERE manager_id is null\n"
+                + "UNION ALL\n"
+                + "SELECT e.employee_id, e.last_name, e.manager_id, r.reportLevel+1 reportLevel, e.salary, e.job_id\n"
+                + "FROM org_chart r, employees e\n" + "WHERE r.eid = e.manager_id\n" + ")\n"
+                + "SEARCH DEPTH FIRST BY emp_last SET order1\n"
+                + "CYCLE hire_date SET is_cycle TO 'Y' DEFAULT 'N'"
+                + "SELECT lpad(' ',2*reportLevel)||emp_last emp_name, eid, mgr_id, salary, job_id\n"
+                + "FROM org_chart\n" + "ORDER BY order1;\n";
 
         String expected = "WITH org_chart (eid, emp_last, mgr_id, reportLevel, salary, job_id) AS (\n" +
                 "\t\tSELECT employee_id, last_name, manager_id, 0 AS reportLevel, salary\n" +

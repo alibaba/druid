@@ -20,7 +20,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import junit.framework.TestCase;
 
 public class TestAtomicPerformance extends TestCase {
-
     public void test_0() throws Exception {
         AtomicInteger count = new AtomicInteger();
         for (int i = 0; i < 5; ++i) {

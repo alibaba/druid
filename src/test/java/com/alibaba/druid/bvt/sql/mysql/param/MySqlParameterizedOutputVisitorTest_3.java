@@ -23,7 +23,7 @@ public class MySqlParameterizedOutputVisitorTest_3 extends com.alibaba.druid.bvt
     protected void setUp() throws Exception {
         System.setProperty("fastsql.parameterized.shardingSupport", "false");
     }
-    
+
     protected void tearDown() throws Exception {
         System.clearProperty("fastsql.parameterized.shardingSupport");
     }

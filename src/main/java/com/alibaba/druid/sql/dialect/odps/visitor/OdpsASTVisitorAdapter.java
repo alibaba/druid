@@ -18,6 +18,4 @@ package com.alibaba.druid.sql.dialect.odps.visitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitorAdapter;
 
 public class OdpsASTVisitorAdapter extends HiveASTVisitorAdapter implements OdpsASTVisitor {
-
-
 }

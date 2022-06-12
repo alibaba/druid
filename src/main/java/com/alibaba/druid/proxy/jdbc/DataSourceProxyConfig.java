@@ -15,30 +15,29 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.alibaba.druid.filter.Filter;
 
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 
-import com.alibaba.druid.filter.Filter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DataSourceProxyConfig {
+    private String rawUrl;
+    private String url;
+    private String rawDriverClassName;
+    private String name;
+    private boolean jmx;
 
-    private String             rawUrl;
-    private String             url;
-    private String             rawDriverClassName;
-    private String             name;
-    private boolean            jmx;
-
-    private PasswordCallback   passwordCallback;
-    private NameCallback       userCallback;
+    private PasswordCallback passwordCallback;
+    private NameCallback userCallback;
     private final List<Filter> filters = new ArrayList<Filter>();
 
-    public DataSourceProxyConfig(){
+    public DataSourceProxyConfig() {
     }
 
     public boolean isJmxOption() {

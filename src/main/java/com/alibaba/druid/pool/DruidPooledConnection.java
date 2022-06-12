@@ -15,33 +15,6 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.CallableStatement;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.NClob;
-import java.sql.PreparedStatement;
-import java.sql.SQLClientInfoException;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
-import java.sql.SQLXML;
-import java.sql.Savepoint;
-import java.sql.Statement;
-import java.sql.Struct;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.sql.ConnectionEvent;
-import javax.sql.ConnectionEventListener;
-import javax.sql.StatementEventListener;
-
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
@@ -51,31 +24,43 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
+import javax.sql.ConnectionEvent;
+import javax.sql.ConnectionEventListener;
+import javax.sql.StatementEventListener;
+
+import java.sql.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidPooledConnection extends PoolableWrapper implements javax.sql.PooledConnection, Connection {
-    private final static Log                   LOG                  = LogFactory.getLog(DruidPooledConnection.class);
-    public static final  int                   MAX_RECORD_SQL_COUNT = 10;
-    protected            Connection            conn;
-    protected volatile   DruidConnectionHolder holder;
-    protected            TransactionInfo       transactionInfo;
-    private final        boolean               dupCloseLogEnable;
-    protected volatile   boolean               traceEnable          = false;
-    private   volatile   boolean               disable              = false;
-    protected volatile   boolean               closed               = false;
+    private static final Log LOG = LogFactory.getLog(DruidPooledConnection.class);
+    public static final int MAX_RECORD_SQL_COUNT = 10;
+    protected Connection conn;
+    protected volatile DruidConnectionHolder holder;
+    protected TransactionInfo transactionInfo;
+    private final boolean dupCloseLogEnable;
+    protected volatile boolean traceEnable;
+    private volatile boolean disable;
+    protected volatile boolean closed;
     static AtomicIntegerFieldUpdater CLOSING_UPDATER = AtomicIntegerFieldUpdater.newUpdater(DruidPooledConnection.class, "closing");
-    protected final      Thread                ownerThread;
-    private              long                  connectedTimeMillis;
-    private              long                  connectedTimeNano;
-    private volatile     boolean               running              = false;
-    private volatile     boolean               abandoned            = false;
-    protected            StackTraceElement[]   connectStackTrace;
-    protected            Throwable             disableError         = null;
-    final                ReentrantLock         lock;
-    protected volatile   int                   closing              = 0;
+    protected final Thread ownerThread;
+    private long connectedTimeMillis;
+    private long connectedTimeNano;
+    private volatile boolean running;
+    private volatile boolean abandoned;
+    protected StackTraceElement[] connectStackTrace;
+    protected Throwable disableError;
+    final ReentrantLock lock;
+    protected volatile int closing;
 
-    public DruidPooledConnection(DruidConnectionHolder holder){
+    public DruidPooledConnection(DruidConnectionHolder holder) {
         super(holder.getConnection());
 
         this.conn = holder.getConnection();
@@ -397,12 +382,12 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
-                                                                                                      throws SQLException {
+            throws SQLException {
         checkState();
 
         PreparedStatementHolder stmtHolder = null;
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.M2, resultSetType,
-                                                            resultSetConcurrency);
+                resultSetConcurrency);
 
         boolean poolPreparedStatements = holder.isPoolPreparedStatements();
 
@@ -413,7 +398,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql, resultSetType,
-                                                                                    resultSetConcurrency));
+                        resultSetConcurrency));
                 holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex, sql);
@@ -436,7 +421,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
         PreparedStatementHolder stmtHolder = null;
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.M3, resultSetType,
-                                                            resultSetConcurrency, resultSetHoldability);
+                resultSetConcurrency, resultSetHoldability);
 
         boolean poolPreparedStatements = holder.isPoolPreparedStatements();
 
@@ -447,8 +432,8 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql, resultSetType,
-                                                                                    resultSetConcurrency,
-                                                                                    resultSetHoldability));
+                        resultSetConcurrency,
+                        resultSetHoldability));
                 holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex, sql);
@@ -597,7 +582,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
         PreparedStatementHolder stmtHolder = null;
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.Precall_2, resultSetType,
-                                                            resultSetConcurrency, resultSetHoldability);
+                resultSetConcurrency, resultSetHoldability);
 
         boolean poolPreparedStatements = holder.isPoolPreparedStatements();
 
@@ -608,8 +593,8 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareCall(sql, resultSetType,
-                                                                               resultSetConcurrency,
-                                                                               resultSetHoldability));
+                        resultSetConcurrency,
+                        resultSetHoldability));
                 holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex, sql);
@@ -631,7 +616,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
         PreparedStatementHolder stmtHolder = null;
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.Precall_3, resultSetType,
-                                                            resultSetConcurrency);
+                resultSetConcurrency);
 
         boolean poolPreparedStatements = holder.isPoolPreparedStatements();
 
@@ -642,7 +627,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key,
-                                                         conn.prepareCall(sql, resultSetType, resultSetConcurrency));
+                        conn.prepareCall(sql, resultSetType, resultSetConcurrency));
                 holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex, sql);
@@ -680,7 +665,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
-                                                                                                           throws SQLException {
+            throws SQLException {
         checkState();
 
         Statement stmt = null;
@@ -1295,14 +1280,14 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     }
 
     /**
-     * @since  1.0.28
+     * @since 1.0.28
      */
     public Map<String, Object> getVariables() {
         return this.holder.variables;
     }
 
     /**
-     * @since  1.0.28
+     * @since 1.0.28
      */
     public Map<String, Object> getGloablVariables() {
         return this.holder.globleVariables;

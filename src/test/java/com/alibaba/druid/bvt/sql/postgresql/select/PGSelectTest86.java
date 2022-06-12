@@ -10,7 +10,7 @@ import java.util.List;
 public class PGSelectTest86
         extends TestCase {
     public void test_0() throws Exception {
-        String sql =  "select * from xxx_point point inner join xxx_cc cc on point.id = cc.point_id";
+        String sql = "select * from xxx_point point inner join xxx_cc cc on point.id = cc.point_id";
 
         final List<SQLStatement> statements = SQLUtils.parseStatements(sql, JdbcConstants.POSTGRESQL);
         assertEquals(1, statements.size());
@@ -27,7 +27,7 @@ public class PGSelectTest86
     }
 
     public void test_1() throws Exception {
-        String sql =  "select\n" +
+        String sql = "select\n" +
                 "        COUNT(1) res\n" +
                 "        from TB_EXPERIENCE exp\n" +
                 "        where exp.creatdate>DATE_SUB(CURDATE(), interval 1 MONTH)\n" +

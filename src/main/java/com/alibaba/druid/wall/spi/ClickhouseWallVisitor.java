@@ -21,8 +21,8 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
 public class ClickhouseWallVisitor extends WallVisitorBase implements WallVisitor, PGASTVisitor {
-    public ClickhouseWallVisitor(WallProvider provider){
-        super (provider);
+    public ClickhouseWallVisitor(WallProvider provider) {
+        super(provider);
     }
 
     @Override

@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.pool.vendor;
 
+import com.alibaba.druid.pool.ExceptionSorter;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
@@ -22,25 +26,20 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import com.alibaba.druid.pool.ExceptionSorter;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
 /**
  * Implementation of ExceptionSorter for Oracle.
  */
 public class OracleExceptionSorter implements ExceptionSorter, Serializable {
-
-    private final static Log  LOG              = LogFactory.getLog(OracleExceptionSorter.class);
+    private static final Log LOG = LogFactory.getLog(OracleExceptionSorter.class);
 
     private static final long serialVersionUID = -9146226891418913174L;
 
-    private Set<Integer>      fatalErrorCodes  = new HashSet<Integer>();
+    private Set<Integer> fatalErrorCodes = new HashSet<Integer>();
 
-    public OracleExceptionSorter(){
+    public OracleExceptionSorter() {
         configFromProperties(System.getProperties());
     }
-    
+
     public void configFromProperties(Properties properties) {
         if (properties == null) {
             return;
@@ -100,11 +99,11 @@ public class OracleExceptionSorter implements ExceptionSorter, Serializable {
             case 3136: // inbound connection timed out
             case 3138: // Connection terminated due to security policy violation
             case 3142: // Connection was lost for the specified session and serial number. This is either due to session
-                       // being killed or network problems.
+                // being killed or network problems.
             case 3143: // Connection was lost for the specified process ID and thread ID. This is either due to session
-                       // being killed or network problems.
+                // being killed or network problems.
             case 3144: // Connection was lost for the specified process ID. This is either due to session being killed
-                       // or network problems.
+                // or network problems.
             case 3145: // I/O streaming direction error
             case 3149: // Invalid Oracle error code, Cause: An invalid Oracle error code was received by the server.
 
@@ -150,10 +149,10 @@ public class OracleExceptionSorter implements ExceptionSorter, Serializable {
 
         if ((error_code < 20000 || error_code >= 21000)) {
             if ((error_text.contains("SOCKET")) // for control socket error
-                || (error_text.contains("套接字")) // for control socket error
-                || (error_text.contains("CONNECTION HAS ALREADY BEEN CLOSED")) //
-                || (error_text.contains("BROKEN PIPE")) //
-                || (error_text.contains("管道已结束")) //
+                    || (error_text.contains("套接字")) // for control socket error
+                    || (error_text.contains("CONNECTION HAS ALREADY BEEN CLOSED")) //
+                    || (error_text.contains("BROKEN PIPE")) //
+                    || (error_text.contains("管道已结束")) //
             ) {
                 return true;
             }

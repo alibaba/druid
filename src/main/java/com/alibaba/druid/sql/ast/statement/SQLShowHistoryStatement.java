@@ -18,18 +18,16 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SQLShowHistoryStatement extends SQLStatementImpl implements SQLShowStatement {
-
     protected SQLExprTableSource table;
     private boolean tables;
     private List<SQLAssignItem> properties = new ArrayList<>();
     private List<SQLAssignItem> partitions = new ArrayList<>();
 
     public SQLShowHistoryStatement() {
-
     }
 
     public SQLExprTableSource getTable() {

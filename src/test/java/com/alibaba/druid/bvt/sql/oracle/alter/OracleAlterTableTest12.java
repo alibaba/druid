@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest12 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter table st_jklsxxb enable constraint FK_ST_xxx_REFERENCE_ST_xxx";
+                "alter table st_jklsxxb enable constraint FK_ST_xxx_REFERENCE_ST_xxx";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

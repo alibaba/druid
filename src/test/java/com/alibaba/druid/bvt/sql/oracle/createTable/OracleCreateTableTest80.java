@@ -23,7 +23,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest80 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
                 "CREATE TABLE KTV.ALI_KTV_VISIT_TBD20150401 (\n" +
@@ -45,7 +44,7 @@ public class OracleCreateTableTest80 extends OracleTest {
                         "\tTYPE VARCHAR(20),\n" +
                         "\tID VARCHAR(50)\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

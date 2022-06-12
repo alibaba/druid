@@ -25,14 +25,13 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateFullTextTokenizeTest extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create fulltext tokenizer test1 ("
-                     + "'type' = 'typename',"
-                     + "'user_defined_dict' = 'dictionary-name',"
-                     + "'key'='name'"
-                     + ")";
+                + "'type' = 'typename',"
+                + "'user_defined_dict' = 'dictionary-name',"
+                + "'key'='name'"
+                + ")";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -40,10 +39,10 @@ public class MySqlCreateFullTextTokenizeTest extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE FULLTEXT TOKENIZER test1(\n"
-                            + "\"type\" = 'typename',\n"
-                            + "\"user_defined_dict\" = 'dictionary-name',\n"
-                            + "'key' = 'name'\n"
-                            + ")", output);
+                + "\"type\" = 'typename',\n"
+                + "\"user_defined_dict\" = 'dictionary-name',\n"
+                + "'key' = 'name'\n"
+                + ")", output);
     }
 
     @Test

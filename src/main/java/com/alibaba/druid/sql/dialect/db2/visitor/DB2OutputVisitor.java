@@ -31,12 +31,11 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisitor {
-
-    public DB2OutputVisitor(Appendable appender){
+    public DB2OutputVisitor(Appendable appender) {
         super(appender, DbType.db2);
     }
 
-    public DB2OutputVisitor(Appendable appender, boolean parameterized){
+    public DB2OutputVisitor(Appendable appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.db2;
     }
@@ -65,10 +64,8 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
         return false;
     }
 
-
     @Override
     public void endVisit(DB2SelectQueryBlock x) {
-
     }
 
     @Override
@@ -80,7 +77,6 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
 
     @Override
     public void endVisit(DB2ValuesStatement x) {
-
     }
 
     @Override
@@ -145,14 +141,13 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
 
     @Override
     public void endVisit(DB2CreateTableStatement x) {
-
     }
 
     protected void printOperator(SQLBinaryOperator operator) {
         if (operator == SQLBinaryOperator.Concat) {
             print0(ucase ? "CONCAT" : "concat");
         } else {
-            print0(ucase ? operator.name : operator.name_lcase);
+            print0(ucase ? operator.name : operator.nameLCase);
         }
     }
 
@@ -163,7 +158,7 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
         SQLIntervalUnit unit = x.getUnit();
         if (unit != null) {
             print(' ');
-            print0(ucase ? unit.name : unit.name_lcase);
+            print0(ucase ? unit.name : unit.nameLCase);
             print(ucase ? 'S' : 's');
         }
         return false;

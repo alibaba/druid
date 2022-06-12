@@ -27,13 +27,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2MergeTest extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "MERGE INTO product AS T "
                 + "      USING sales AS S"
                 + "    ON S.id = T.id"
-                + "  WHEN MATCHED THEN UPDATE SET inventory = T.inventory - S.sold;"
-                ;
+                + "  WHEN MATCHED THEN UPDATE SET inventory = T.inventory - S.sold;";
 
         DB2StatementParser parser = new DB2StatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -62,13 +60,13 @@ public class DB2MergeTest extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         Assert.assertEquals("MERGE INTO product T"
-                + "\nUSING sales S ON (S.id = T.id) "
-                + "\nWHEN MATCHED THEN UPDATE SET inventory = T.inventory - S.sold;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                        + "\nUSING sales S ON (S.id = T.id) "
+                        + "\nWHEN MATCHED THEN UPDATE SET inventory = T.inventory - S.sold;", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("merge into product T"
-                + "\nusing sales S on (S.id = T.id) "
-                + "\nwhen matched then update set inventory = T.inventory - S.sold;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                        + "\nusing sales S on (S.id = T.id) "
+                        + "\nwhen matched then update set inventory = T.inventory - S.sold;", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

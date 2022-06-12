@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest153_collate extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `t_file` (\n" +
                 "`id` BIGINT(20) NOT NULL AUTO_INCREMENT,\n" +
@@ -39,7 +38,7 @@ public class MySqlCreateTableTest153_collate extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -97,9 +96,6 @@ public class MySqlCreateTableTest153_collate extends MysqlTest {
                 "tbpartition by hash(`src_file_id`) tbpartitions 2", stmt.toLowerCaseString());
 
     }
-
-
-
 
 
 }

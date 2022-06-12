@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import java.util.List;
 
 public class HiveCreateTableTest_45_dla extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE EXTERNAL TABLE IF NOT EXISTS `bfbf8508d0a59644fe2003c7506f3676`.`device_group_relation` ( `device_name` VARCHAR NOT NULL COMMENT 'name,?meta device??', `gmt_create` TIMESTAMP NOT NULL COMMENT '????', `gmt_modified` TIMESTAMP NOT NULL COMMENT '????', `group_id` VARCHAR NOT NULL COMMENT 'group id', `group_relation_status` VARCHAR NOT NULL COMMENT 'inital 0, 1 isDeleted', `group_type` VARCHAR NOT NULL COMMENT 'group type, \"ISOLATION\", \"\"', `id` BIGINT NOT NULL COMMENT '??', `iot_id` VARCHAR NOT NULL COMMENT 'iot_id', `product_key` VARCHAR NOT NULL COMMENT 'product key', `tenant_id` VARCHAR NULL COMMENT 'rbac tenant_id' ) TBLPROPERTIES ( 'TABLE_MAPPING' = `device_group_relation` )\n";
 

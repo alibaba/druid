@@ -15,26 +15,6 @@
  */
 package com.alibaba.druid.support.jconsole;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-
-import javax.management.MBeanServerConnection;
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-
 import com.alibaba.druid.support.jconsole.model.DruidTableCellRenderer;
 import com.alibaba.druid.support.jconsole.model.DruidTableModel;
 import com.alibaba.druid.support.jconsole.util.TableDataProcessor;
@@ -42,213 +22,262 @@ import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
+import javax.management.MBeanServerConnection;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+
 // TODO: Auto-generated Javadoc
+
 /**
  * sql语句的详细信息
- * 
+ * <p>
  * 调用服务地址：/sql-{id}.json
  * 返回信息：
  * <pre>
  * {
-    "ResultCode": 1,
-    "Content": {
-            "ExecuteCount": 15,
-            "ReadStringLength": 0,
-            "LastSlowParameters": null,
-            "BlobOpenCount": 0,
-            "InputStreamOpenCount": 0,
-            "DbType": "mysql",
-            "DataSource": null,
-            "RunningCount": 0,
-            "parsedRelationships": "[]",
-            "ConcurrentMax": 1,
-            "LastErrorClass": null,
-            "MaxTimespan": 125,
-            "InTransactionCount": 0,
-            "ID": 3,
-            "parsedFields": "[]",
-            "EffectedRowCount": 0,
-            "BatchSizeTotal": 0,
-            "URL": null,
-            "ExecuteAndResultSetHoldTime": 0,
-            "LastErrorMessage": null,
-            "FetchRowCountHistogram": [
-                0,
-                0,
-                0,
-                0,
-                0,
-                0
-            ],
-            "FetchRowCountMax": 0,
-            "Histogram": [
-                0,
-                0,
-                13,
-                2,
-                0,
-                0,
-                0,
-                0
-            ],
-            "parsedOrderbycolumns": "[]",
-            "ErrorCount": 0,
-            "SQL": "DROP TABLE t_big",
-            "ClobOpenCount": 0,
-            "LastTime": "2012-09-14 21:35:10",
-            "File": null,
-            "LastErrorStackTrace": null,
-            "LastError": null,
-            "EffectedRowCountHistogram": [
-                15,
-                0,
-                0,
-                0,
-                0,
-                0
-            ],
-            "TotalTime": 742,
-            "formattedSql": "DROP TABLE t_big",
-            "Name": null,
-            "MaxTimespanOccurTime": "2012/09/14 09:35:00:758",
-            "parsedTable": "{t_big=Drop}",
-            "BatchSizeMax": 0,
-            "ReadBytesLength": 0,
-            "EffectedRowCountMax": 0,
-            "FetchRowCount": 0,
-            "parsedConditions": "[]",
-            "ResultSetHoldTime": 0,
-            "ReaderOpenCount": 0,
-            "ExecuteAndResultHoldTimeHistogram": [
-                0,
-                0,
-                13,
-                2,
-                0,
-                0,
-                0,
-                0
-            ],
-            "LastErrorTime": null
-        }
-    }
+ * "ResultCode": 1,
+ * "Content": {
+ * "ExecuteCount": 15,
+ * "ReadStringLength": 0,
+ * "LastSlowParameters": null,
+ * "BlobOpenCount": 0,
+ * "InputStreamOpenCount": 0,
+ * "DbType": "mysql",
+ * "DataSource": null,
+ * "RunningCount": 0,
+ * "parsedRelationships": "[]",
+ * "ConcurrentMax": 1,
+ * "LastErrorClass": null,
+ * "MaxTimespan": 125,
+ * "InTransactionCount": 0,
+ * "ID": 3,
+ * "parsedFields": "[]",
+ * "EffectedRowCount": 0,
+ * "BatchSizeTotal": 0,
+ * "URL": null,
+ * "ExecuteAndResultSetHoldTime": 0,
+ * "LastErrorMessage": null,
+ * "FetchRowCountHistogram": [
+ * 0,
+ * 0,
+ * 0,
+ * 0,
+ * 0,
+ * 0
+ * ],
+ * "FetchRowCountMax": 0,
+ * "Histogram": [
+ * 0,
+ * 0,
+ * 13,
+ * 2,
+ * 0,
+ * 0,
+ * 0,
+ * 0
+ * ],
+ * "parsedOrderbycolumns": "[]",
+ * "ErrorCount": 0,
+ * "SQL": "DROP TABLE t_big",
+ * "ClobOpenCount": 0,
+ * "LastTime": "2012-09-14 21:35:10",
+ * "File": null,
+ * "LastErrorStackTrace": null,
+ * "LastError": null,
+ * "EffectedRowCountHistogram": [
+ * 15,
+ * 0,
+ * 0,
+ * 0,
+ * 0,
+ * 0
+ * ],
+ * "TotalTime": 742,
+ * "formattedSql": "DROP TABLE t_big",
+ * "Name": null,
+ * "MaxTimespanOccurTime": "2012/09/14 09:35:00:758",
+ * "parsedTable": "{t_big=Drop}",
+ * "BatchSizeMax": 0,
+ * "ReadBytesLength": 0,
+ * "EffectedRowCountMax": 0,
+ * "FetchRowCount": 0,
+ * "parsedConditions": "[]",
+ * "ResultSetHoldTime": 0,
+ * "ReaderOpenCount": 0,
+ * "ExecuteAndResultHoldTimeHistogram": [
+ * 0,
+ * 0,
+ * 13,
+ * 2,
+ * 0,
+ * 0,
+ * 0,
+ * 0
+ * ],
+ * "LastErrorTime": null
+ * }
+ * }
  * </pre>
+ *
  * @author yunnysunny [yunnysunny@gmail.com]
- * */
+ */
 public class DruidSqlDetailFrame extends JFrame {
+    /**
+     * The Constant serialVersionUID.
+     */
+    private static final long serialVersionUID = 1L;
 
-    /** The Constant serialVersionUID. */
-    private static final long                        serialVersionUID       = 1L;
+    /**
+     * service的地址的根路径.
+     */
+    private static final String BASE_URL = "/sql";
 
-    /** service的地址的根路径. */
-    private static final String                      BASE_URL               = "/sql";
+    /**
+     * json中格式化sql的键名.
+     */
+    private static final String KEY_FORMAT_SQL = "formattedSql";
 
-    /** json中格式化sql的键名. */
-    private static final String                      KEY_FORMAT_SQL         = "formattedSql";
+    /**
+     * json中sql的键名.
+     */
+    private static final String KEY_SQL = "SQL";
 
-    /** json中sql的键名. */
-    private static final String                      KEY_SQL                = "SQL";
+    /**
+     * sql语句的索引.
+     */
+    private String id;
 
-    /** sql语句的索引. */
-    private String                                   id;
+    /**
+     * MBeanServerConnection对象.
+     */
+    private MBeanServerConnection conn;
 
-    /** MBeanServerConnection对象. */
-    private MBeanServerConnection                    conn;
+    /**
+     * 解析信息内容表格的标题列.
+     */
+    private static final ArrayList<String> PARESE_TITLE_LIST = new ArrayList<String>() {
+        private static final long serialVersionUID = 1L;
 
-    /** 解析信息内容表格的标题列. */
-    private static final ArrayList<String>           PARESE_TITLE_LIST      = new ArrayList<String>() {
+        {
+            add("parsedTable");
+            add("parsedFields");
+            add("parsedConditions");
+            add("parsedRelationships");
+            add("parsedOrderbycolumns");
 
-                                                                                private static final long serialVersionUID = 1L;
+        }
+    };
 
-                                                                                {
-                                                                                    add("parsedTable");
-                                                                                    add("parsedFields");
-                                                                                    add("parsedConditions");
-                                                                                    add("parsedRelationships");
-                                                                                    add("parsedOrderbycolumns");
+    /**
+     * 慢查询信息表格的标题列.
+     */
+    private static final ArrayList<String> LAST_SLOW_TITLE_LIST = new ArrayList<String>() {
+        private static final long serialVersionUID = 1L;
 
-                                                                                }
-                                                                            };
+        {
+            add("MaxTimespan");
+            add("MaxTimespanOccurTime");
+            add("LastSlowParameters");
+        }
+    };
 
-    /** 慢查询信息表格的标题列. */
-    private static final ArrayList<String>           LAST_SLOW_TITLE_LIST   = new ArrayList<String>() {
+    /**
+     * 错误信息表格的标题列.
+     */
+    private static final ArrayList<String> LAST_ERROR_TITLE_LIST = new ArrayList<String>() {
+        private static final long serialVersionUID = 1L;
 
-                                                                                private static final long serialVersionUID = 1L;
+        {
+            add("LastErrorMessage");
+            add("LastErrorClass");
+            add("LastErrorTime");
+            add("LastErrorStackTrace");
+        }
+    };
 
-                                                                                {
-                                                                                    add("MaxTimespan");
-                                                                                    add("MaxTimespanOccurTime");
-                                                                                    add("LastSlowParameters");
-                                                                                }
-                                                                            };
+    /**
+     * 其他信息表格的标题列.
+     */
+    private static final ArrayList<String> OTHER_ERROR_TITLE_LIST = new ArrayList<String>() {
+        private static final long serialVersionUID = 1L;
 
-    /** 错误信息表格的标题列. */
-    private static final ArrayList<String>           LAST_ERROR_TITLE_LIST  = new ArrayList<String>() {
+        {
+            add("BatchSizeMax");
+            add("BatchSizeTotal");
+            add("BlobOpenCount");
+            add("ClobOpenCount");
+            add("ReaderOpenCount");
+            add("InputStreamOpenCount");
+            add("ReadStringLength");
+            add("ReadBytesLength");
+        }
+    };
 
-                                                                                private static final long serialVersionUID = 1L;
-
-                                                                                {
-                                                                                    add("LastErrorMessage");
-                                                                                    add("LastErrorClass");
-                                                                                    add("LastErrorTime");
-                                                                                    add("LastErrorStackTrace");
-                                                                                }
-                                                                            };
-
-    /** 其他信息表格的标题列. */
-    private static final ArrayList<String>           OTHER_ERROR_TITLE_LIST = new ArrayList<String>() {
-
-                                                                                private static final long serialVersionUID = 1L;
-
-                                                                                {
-                                                                                    add("BatchSizeMax");
-                                                                                    add("BatchSizeTotal");
-                                                                                    add("BlobOpenCount");
-                                                                                    add("ClobOpenCount");
-                                                                                    add("ReaderOpenCount");
-                                                                                    add("InputStreamOpenCount");
-                                                                                    add("ReadStringLength");
-                                                                                    add("ReadBytesLength");
-                                                                                }
-                                                                            };
-
-    /** 解析信息数据. */
+    /**
+     * 解析信息数据.
+     */
     private ArrayList<LinkedHashMap<String, Object>> parseData;
 
-    /** 慢查询信息数据. */
+    /**
+     * 慢查询信息数据.
+     */
     private ArrayList<LinkedHashMap<String, Object>> lastSlowData;
 
-    /** 错误信息数据. */
+    /**
+     * 错误信息数据.
+     */
     private ArrayList<LinkedHashMap<String, Object>> lastErrorData;
 
-    /** 其他信息数据. */
+    /**
+     * 其他信息数据.
+     */
     private ArrayList<LinkedHashMap<String, Object>> otherData;
 
-    /** 各个数据表格中最大的数据列长度. */
-    private int                                      maxListLen;
+    /**
+     * 各个数据表格中最大的数据列长度.
+     */
+    private int maxListLen;
 
-    /** 格式化好的sql语句内容. */
-    private String                                   formatSql;
+    /**
+     * 格式化好的sql语句内容.
+     */
+    private String formatSql;
 
-    /** 未格式化的sql语句内容. */
-    private String                                   sql;
+    /**
+     * 未格式化的sql语句内容.
+     */
+    private String sql;
 
-    /** 窗体的宽度. */
-    private static final int                         WIDTH                  = 800;
+    /**
+     * 窗体的宽度.
+     */
+    private static final int WIDTH = 800;
 
-    /** 窗体的高度. */
-    private static final int                         HEIGHT                 = 600;
+    /**
+     * 窗体的高度.
+     */
+    private static final int HEIGHT = 600;
 
-    /** The Constant LOG. */
-    private final static Log                         LOG                    = LogFactory.getLog(DruidSqlDetailFrame.class);
+    /**
+     * The Constant LOG.
+     */
+    private static final Log LOG = LogFactory.getLog(DruidSqlDetailFrame.class);
 
     /**
      * Instantiates a new druid sql detail frame.
-     * 
-     * @param id sql语句索引
+     *
+     * @param id   sql语句索引
      * @param conn MBeanServerConnection对象
      */
-    public DruidSqlDetailFrame(String id, MBeanServerConnection conn){
+    public DruidSqlDetailFrame(String id, MBeanServerConnection conn) {
         this.id = id;
         this.conn = conn;
         getMaxListLen();
@@ -258,7 +287,7 @@ public class DruidSqlDetailFrame extends JFrame {
 
     /**
      * 获取各个数据表格中最大的数据列长度
-     * 
+     *
      * @return the max list len
      */
     private void getMaxListLen() {
@@ -285,7 +314,7 @@ public class DruidSqlDetailFrame extends JFrame {
 
         try {
             ArrayList<LinkedHashMap<String, Object>> data = TableDataProcessor.parseData(TableDataProcessor.getData(url,
-                                                                                                                    conn));
+                    conn));
             if (data != null) {
                 LinkedHashMap<String, Object> contentEle = data.get(0);
                 formatSql = (String) contentEle.remove(KEY_FORMAT_SQL);
@@ -302,7 +331,7 @@ public class DruidSqlDetailFrame extends JFrame {
                 lastSlowData = new ArrayList<LinkedHashMap<String, Object>>(1);
                 lastErrorData = new ArrayList<LinkedHashMap<String, Object>>(1);
                 otherData = new ArrayList<LinkedHashMap<String, Object>>(1);
-                for (Iterator<Entry<String, Object>> it = contentEle.entrySet().iterator(); it.hasNext();) {
+                for (Iterator<Entry<String, Object>> it = contentEle.entrySet().iterator(); it.hasNext(); ) {
                     Entry<String, Object> entry = it.next();
                     String key = entry.getKey();
                     Object value = entry.getValue();
@@ -334,10 +363,10 @@ public class DruidSqlDetailFrame extends JFrame {
 
     /**
      * 将表格添加到contentPanel对象内部。
-     * 
+     *
      * @param contentPanel JPanel对象
      * @param 当前表格的标题
-     * @param data 当前表格的数据
+     * @param data         当前表格的数据
      */
     private void addTable(JPanel contentPanel, String title, ArrayList<LinkedHashMap<String, Object>> data) {
         final JPanel content1 = new JPanel();
@@ -360,7 +389,7 @@ public class DruidSqlDetailFrame extends JFrame {
 
     /**
      * 将各个界面添加到JFrame中
-     * 
+     *
      * @param pane JFrame内部的Container对象
      */
     private void addComponentsToPane(Container pane) {

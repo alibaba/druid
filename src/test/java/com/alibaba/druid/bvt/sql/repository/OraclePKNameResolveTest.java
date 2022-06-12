@@ -20,8 +20,7 @@ public class OraclePKNameResolveTest extends TestCase {
         String sql_2 = "create table b(\n" +
                 " WORKITEMID VARCHAR(40) NOT NULL,\n" +
                 "CONSTRAINT PRIMARY_WORKTASK PRIMARY KEY (WORKITEMID)\n" +
-                ")"
-                ;
+                ")";
 
         repository.resolve(sql_1);
 

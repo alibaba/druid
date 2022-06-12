@@ -15,18 +15,6 @@
  */
 package com.alibaba.druid.filter.stat;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.NClob;
-import java.sql.SQLException;
-import java.sql.Savepoint;
-import java.util.Date;
-import java.util.Properties;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
@@ -34,67 +22,60 @@ import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
-import com.alibaba.druid.proxy.jdbc.ClobProxy;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
-import com.alibaba.druid.proxy.jdbc.JdbcParameter;
-import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
-import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
-import com.alibaba.druid.proxy.jdbc.StatementExecuteType;
-import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import com.alibaba.druid.proxy.jdbc.*;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import com.alibaba.druid.stat.JdbcConnectionStat;
-import com.alibaba.druid.stat.JdbcDataSourceStat;
-import com.alibaba.druid.stat.JdbcResultSetStat;
-import com.alibaba.druid.stat.JdbcSqlStat;
-import com.alibaba.druid.stat.JdbcStatContext;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.stat.JdbcStatementStat;
+import com.alibaba.druid.stat.*;
 import com.alibaba.druid.support.json.JSONWriter;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.profile.Profiler;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.sql.*;
+import java.util.Date;
+import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
+    private static final Log LOG = LogFactory.getLog(StatFilter.class);
 
-    private final static Log          LOG                         = LogFactory.getLog(StatFilter.class);
+    private static final String SYS_PROP_LOG_SLOW_SQL = "druid.stat.logSlowSql";
+    private static final String SYS_PROP_SLOW_SQL_MILLIS = "druid.stat.slowSqlMillis";
+    private static final String SYS_PROP_SLOW_SQL_LOG_LEVEL = "druid.stat.slowSqlLogLevel";
+    private static final String SYS_PROP_MERGE_SQL = "druid.stat.mergeSql";
 
-    private static final String       SYS_PROP_LOG_SLOW_SQL       = "druid.stat.logSlowSql";
-    private static final String       SYS_PROP_SLOW_SQL_MILLIS    = "druid.stat.slowSqlMillis";
-    private static final String       SYS_PROP_SLOW_SQL_LOG_LEVEL = "druid.stat.slowSqlLogLevel";
-    private static final String       SYS_PROP_MERGE_SQL          = "druid.stat.mergeSql";
+    public static final String ATTR_NAME_CONNECTION_STAT = "stat.conn";
+    public static final String ATTR_TRANSACTION = "stat.tx";
 
-    public final static String        ATTR_NAME_CONNECTION_STAT   = "stat.conn";
-    public final static String        ATTR_TRANSACTION            = "stat.tx";
-
-    private final Lock                lock                        = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
 
     // protected JdbcDataSourceStat dataSourceStat;
 
     @Deprecated
-    protected final JdbcStatementStat statementStat               = JdbcStatManager.getInstance().getStatementStat();
+    protected final JdbcStatementStat statementStat = JdbcStatManager.getInstance().getStatementStat();
 
     @Deprecated
-    protected final JdbcResultSetStat resultSetStat               = JdbcStatManager.getInstance().getResultSetStat();
+    protected final JdbcResultSetStat resultSetStat = JdbcStatManager.getInstance().getResultSetStat();
 
-    private boolean                   connectionStackTraceEnable  = false;
+    private boolean connectionStackTraceEnable;
 
     // 3 seconds is slow sql
-    protected long                    slowSqlMillis               = 3 * 1000;
+    protected long slowSqlMillis = 3 * 1000;
 
-    protected boolean                 logSlowSql                  = false;
+    protected boolean logSlowSql;
 
-    protected String                  slowSqlLogLevel             = "ERROR";
+    protected String slowSqlLogLevel = "ERROR";
 
-    private DbType                    dbType;
+    private DbType dbType;
 
-    private boolean                   mergeSql                    = false;
+    private boolean mergeSql;
 
-    public StatFilter(){
+    public StatFilter() {
     }
 
     public DbType getDbType() {
@@ -313,7 +294,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public void connection_rollback(FilterChain chain, ConnectionProxy connection, Savepoint savepoint)
-                                                                                                       throws SQLException {
+            throws SQLException {
         chain.connection_rollback(connection, savepoint);
 
         JdbcDataSourceStat dataSourceStat = connection.getDirectDataSource().getDataSourceStat();
@@ -535,12 +516,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     protected void handleSlowSql(StatementProxy statementProxy) {
-
     }
 
     @Override
     protected void statement_executeErrorAfter(StatementProxy statement, String sql, Throwable error) {
-
         ConnectionProxy connection = statement.getConnectionProxy();
         JdbcConnectionStat.Entry connectionCounter = getConnectionInfo(connection);
 
@@ -624,7 +603,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public void resultSet_close(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
-
         long nanos = System.nanoTime() - resultSet.getConstructNano();
 
         int fetchRowCount = resultSet.getFetchRowCount();
@@ -669,7 +647,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         if (counter == null) {
             String dataSourceName = connection.getDirectDataSource().getName();
             connection.putAttribute(ATTR_NAME_CONNECTION_STAT,
-                                           new JdbcConnectionStat.Entry(dataSourceName, connection.getId()));
+                    new JdbcConnectionStat.Entry(dataSourceName, connection.getId()));
             counter = (JdbcConnectionStat.Entry) connection.getAttribute(ATTR_NAME_CONNECTION_STAT);
         }
 
@@ -758,7 +736,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public Blob callableStatement_getBlob(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                  throws SQLException {
+            throws SQLException {
         Blob blob = chain.callableStatement_getBlob(statement, parameterIndex);
 
         if (blob != null) {
@@ -770,7 +748,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public Blob callableStatement_getBlob(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                    throws SQLException {
+            throws SQLException {
         Blob blob = chain.callableStatement_getBlob(statement, parameterName);
 
         if (blob != null) {
@@ -804,7 +782,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public Clob callableStatement_getClob(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                  throws SQLException {
+            throws SQLException {
         Clob clob = chain.callableStatement_getClob(statement, parameterIndex);
 
         if (clob != null) {
@@ -816,7 +794,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public Clob callableStatement_getClob(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                    throws SQLException {
+            throws SQLException {
         Clob clob = chain.callableStatement_getClob(statement, parameterName);
 
         if (clob != null) {
@@ -842,7 +820,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     @Override
-    public <T> T resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex, Class<T> type) throws SQLException {
+    public <T> T resultSet_getObject(FilterChain chain,
+                                     ResultSetProxy result,
+                                     int columnIndex,
+                                     Class<T> type) throws SQLException {
         T obj = chain.resultSet_getObject(result, columnIndex, type);
 
         if (obj instanceof Clob) {
@@ -873,7 +854,9 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     @Override
-    public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
+    public Object resultSet_getObject(FilterChain chain,
+                                      ResultSetProxy result,
+                                      String columnLabel) throws SQLException {
         Object obj = chain.resultSet_getObject(result, columnLabel);
 
         if (obj instanceof Clob) {
@@ -888,7 +871,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     @Override
-    public <T> T resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel, Class<T> type) throws SQLException {
+    public <T> T resultSet_getObject(FilterChain chain,
+                                     ResultSetProxy result,
+                                     String columnLabel,
+                                     Class<T> type) throws SQLException {
         T obj = chain.resultSet_getObject(result, columnLabel, type);
 
         if (obj instanceof Clob) {
@@ -920,7 +906,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                      throws SQLException {
+            throws SQLException {
         Object obj = chain.callableStatement_getObject(statement, parameterIndex);
 
         if (obj instanceof Clob) {
@@ -948,7 +934,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                        throws SQLException {
+            throws SQLException {
         Object obj = chain.callableStatement_getObject(statement, parameterName);
 
         if (obj instanceof Clob) {
@@ -963,7 +949,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     @Override
     public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement,
                                               String parameterName, java.util.Map<String, Class<?>> map)
-                                                                                                        throws SQLException {
+            throws SQLException {
         Object obj = chain.callableStatement_getObject(statement, parameterName, map);
 
         if (obj instanceof Clob) {
@@ -1021,7 +1007,9 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     @Override
-    public String resultSet_getString(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
+    public String resultSet_getString(FilterChain chain,
+                                      ResultSetProxy result,
+                                      String columnLabel) throws SQLException {
         String value = chain.resultSet_getString(result, columnLabel);
 
         if (value != null) {
@@ -1055,7 +1043,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                           throws SQLException {
+            throws SQLException {
         InputStream input = chain.resultSet_getBinaryStream(result, columnIndex);
 
         if (input != null) {
@@ -1067,7 +1055,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                              throws SQLException {
+            throws SQLException {
         InputStream input = chain.resultSet_getBinaryStream(result, columnLabel);
 
         if (input != null) {
@@ -1079,7 +1067,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public InputStream resultSet_getAsciiStream(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                          throws SQLException {
+            throws SQLException {
         InputStream input = chain.resultSet_getAsciiStream(result, columnIndex);
 
         if (input != null) {
@@ -1091,7 +1079,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public InputStream resultSet_getAsciiStream(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                             throws SQLException {
+            throws SQLException {
         InputStream input = chain.resultSet_getAsciiStream(result, columnLabel);
 
         if (input != null) {
@@ -1103,7 +1091,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                         throws SQLException {
+            throws SQLException {
         Reader reader = chain.resultSet_getCharacterStream(result, columnIndex);
 
         if (reader != null) {
@@ -1115,7 +1103,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                            throws SQLException {
+            throws SQLException {
         Reader reader = chain.resultSet_getCharacterStream(result, columnLabel);
 
         if (reader != null) {

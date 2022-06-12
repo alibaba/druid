@@ -19,12 +19,9 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLShowUsersStatement extends SQLStatementImpl implements SQLShowStatement {
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor.visit(this)) {
-
-        }
+        visitor.visit(this);
         visitor.endVisit(this);
     }
 

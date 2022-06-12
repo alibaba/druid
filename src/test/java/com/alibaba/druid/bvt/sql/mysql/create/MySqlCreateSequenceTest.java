@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateSequenceTest extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE SEQUENCE seq1;";

@@ -31,7 +31,6 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class BatchReadTest extends TestCase {
-
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=batchReadTest:jdbc:derby:memory:batchDB;create=true";
 
     protected void setUp() throws Exception {
@@ -64,7 +63,7 @@ public class BatchReadTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dropTable();
-        
+
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
@@ -86,7 +85,7 @@ public class BatchReadTest extends TestCase {
             stmt.addBatch("INSERT INTO T_USER (ID, NAME, BIRTHDATE) VALUES (2, 'B', NULL)");
             stmt.executeBatch();
 
-            for (;;) {
+            for (; ; ) {
                 boolean moreResults = stmt.getMoreResults();
 
                 if (moreResults) {
@@ -110,7 +109,6 @@ public class BatchReadTest extends TestCase {
     }
 
     public void test_pstmt_batch() throws Exception {
-
         Connection conn = null;
         Statement stmt = null;
         PreparedStatement pstmt = null;
@@ -135,7 +133,7 @@ public class BatchReadTest extends TestCase {
 
             int[] updateCounts = pstmt.executeBatch();
 
-            Assert.assertArrayEquals(new int[] { 1, 1 }, updateCounts);
+            Assert.assertArrayEquals(new int[]{1, 1}, updateCounts);
 
             pstmt.setFetchDirection(stmt.getFetchDirection());
             pstmt.setFetchSize(pstmt.getFetchSize());
@@ -158,7 +156,7 @@ public class BatchReadTest extends TestCase {
             pstmt.getWarnings();
 
             stmt.execute("SELECT * FROM T_USER");
-            for (;;) {
+            for (; ; ) {
                 rs = stmt.getResultSet();
 
                 rs.getWarnings();

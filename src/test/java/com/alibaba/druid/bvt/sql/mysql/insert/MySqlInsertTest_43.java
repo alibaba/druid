@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlInsertTest_43 extends TestCase {
-
     public void test_insert_0() throws Exception {
         String sql = "/*+engine=MPP, mppNativeInsertFromSelect=true*/\n" +
                 "insert into adl_indication_ums_warehouse_ebax_a (sys_pk,sys_ds,sys_biztime,sys_gmt_modified,business_type,parcelled_order_num,warehouse_id)\n" +

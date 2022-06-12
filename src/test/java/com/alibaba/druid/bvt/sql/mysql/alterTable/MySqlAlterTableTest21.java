@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest21 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE tbl_name CONVERT TO CHARACTER SET charset_name";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

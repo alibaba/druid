@@ -23,31 +23,30 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class MySqlWallTest139 extends TestCase {
-
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         String sql = "select count(1) as total "//
-                     + " from (" //
-                     + "    select '' buyer_nick from dual " //
-                     + "    where 1=0  "//
-                     + "    union " //
-                     + "    select distinct buyer_nick "//
-                     + "    from sys_info.orders "//
-                     + "    where 1=1  and receiver_district in ('平谷区')" //
-                     + ") a " //
-                     + "inner join (" //
-                     + "    select buyer_nick from ("//
-                     + "        select distinct buyer_nick "//
-                     + "        from sys_info.orders " //
-                     + "        where 1=1  and created > '2013-07-28' "//
-                     + "    ) recent_days " //
-                     + "inner join (" //
-                     + "    select distinct buyer_nick " //
-                     + "    from sys_info.orders " //
-                     + "    where 1=1  and seller_nick in ('创维官方旗舰店') " //
-                     + "    ) seller_nick using(buyer_nick) "//
-                     + ") b using(buyer_nick)";
+                + " from (" //
+                + "    select '' buyer_nick from dual " //
+                + "    where 1=0  "//
+                + "    union " //
+                + "    select distinct buyer_nick "//
+                + "    from sys_info.orders "//
+                + "    where 1=1  and receiver_district in ('平谷区')" //
+                + ") a " //
+                + "inner join (" //
+                + "    select buyer_nick from ("//
+                + "        select distinct buyer_nick "//
+                + "        from sys_info.orders " //
+                + "        where 1=1  and created > '2013-07-28' "//
+                + "    ) recent_days " //
+                + "inner join (" //
+                + "    select distinct buyer_nick " //
+                + "    from sys_info.orders " //
+                + "    where 1=1  and seller_nick in ('创维官方旗舰店') " //
+                + "    ) seller_nick using(buyer_nick) "//
+                + ") b using(buyer_nick)";
         Assert.assertTrue(provider.checkValid(sql));
     }
 }

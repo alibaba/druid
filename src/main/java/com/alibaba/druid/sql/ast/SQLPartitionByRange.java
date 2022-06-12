@@ -18,10 +18,9 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPartitionByRange extends SQLPartitionBy {
-    protected SQLExpr       interval;
+    protected SQLExpr interval;
 
     public SQLPartitionByRange() {
-
     }
 
     public SQLExpr getInterval() {
@@ -32,7 +31,7 @@ public class SQLPartitionByRange extends SQLPartitionBy {
         if (interval != null) {
             interval.setParent(this);
         }
-        
+
         this.interval = interval;
     }
 

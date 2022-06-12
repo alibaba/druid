@@ -21,11 +21,9 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class MockArray implements Array {
-
     private int baseType;
 
-    public MockArray(){
-
+    public MockArray() {
     }
 
     @Override
@@ -80,7 +78,6 @@ public class MockArray implements Array {
 
     @Override
     public void free() throws SQLException {
-
     }
 
 }

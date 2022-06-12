@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlReplaceTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "replace into t1 (id,name) values('1','aa'),('2','bb')";
 
@@ -48,7 +47,7 @@ public class MySqlReplaceTest extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(1, visitor.getTables().size());
         assertEquals(2, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());

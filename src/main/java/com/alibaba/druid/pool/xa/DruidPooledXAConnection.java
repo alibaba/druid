@@ -15,22 +15,21 @@
  */
 package com.alibaba.druid.pool.xa;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.alibaba.druid.pool.DruidPooledConnection;
 
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 import javax.sql.XAConnection;
 import javax.transaction.xa.XAResource;
 
-import com.alibaba.druid.pool.DruidPooledConnection;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class DruidPooledXAConnection implements XAConnection {
-
     private DruidPooledConnection pooledConnection;
-    private XAConnection          xaConnection;
+    private XAConnection xaConnection;
 
-    public DruidPooledXAConnection(DruidPooledConnection pooledConnection, XAConnection xaConnection){
+    public DruidPooledXAConnection(DruidPooledConnection pooledConnection, XAConnection xaConnection) {
         this.pooledConnection = pooledConnection;
         this.xaConnection = xaConnection;
 

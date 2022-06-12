@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseAlterTableReOrganizePartitionTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "ALTER TABLE members "
                 + "REORGANIZE PARTITION p0 INTO ( PARTITION s0 VALUES LESS THAN (1960), PARTITION s1 VALUES LESS THAN (1970) );"; //
@@ -37,14 +36,14 @@ public class OceanbaseAlterTableReOrganizePartitionTest extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("ALTER TABLE members" //
-                    + "\n\tREORGANIZE p0 INTO (PARTITION s0 VALUES LESS THAN (1960), PARTITION s1 VALUES LESS THAN (1970));",
-                                result);
+                            + "\n\tREORGANIZE p0 INTO (PARTITION s0 VALUES LESS THAN (1960), PARTITION s1 VALUES LESS THAN (1970));",
+                    result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("alter table members" //
-                    + "\n\treorganize p0 into (partition s0 values less than (1960), partition s1 values less than (1970));",
-                                result);
+                            + "\n\treorganize p0 into (partition s0 values less than (1960), partition s1 values less than (1970));",
+                    result);
         }
 
         Assert.assertEquals(1, stmtList.size());

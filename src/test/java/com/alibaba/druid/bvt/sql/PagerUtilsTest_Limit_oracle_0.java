@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
-
     public void test_oracle_oderby_0() throws Exception {
         String sql = "select * from t order by id";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 0, 10);
@@ -25,8 +24,8 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
         String sql = "select * from t";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 0, 10);
         Assert.assertEquals("SELECT *" + //
-                            "\nFROM t" + //
-                            "\nWHERE ROWNUM <= 10", result);
+                "\nFROM t" + //
+                "\nWHERE ROWNUM <= 10", result);
     }
 
     public void test_oracle_1() throws Exception {

@@ -15,9 +15,8 @@
  */
 package com.alibaba.druid.support.ibatis;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.TargetSource;
@@ -26,23 +25,22 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.util.PatternMatchUtils;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 类BeanTypeAutoProxyCreator.java的实现描述：使用配置类型代替Springframework中配置名称的实现
- * 
+ *
  * @author hualiang.lihl 2011-12-31 上午10:48:20
  */
 @SuppressWarnings("deprecation")
 public class SpringIbatisBeanTypeAutoProxyCreator extends AbstractAutoProxyCreator implements SpringIbatisBeanTypeAutoProxyCreatorMBean {
+    private static final Log LOG = LogFactory.getLog(SpringIbatisBeanTypeAutoProxyCreator.class);
 
-    private final static Log   LOG              = LogFactory.getLog(SpringIbatisBeanTypeAutoProxyCreator.class);
+    private static final long serialVersionUID = -9094985530794052264L;
 
-    private static final long  serialVersionUID = -9094985530794052264L;
-
-    private List<String>       beanNames        = new ArrayList<String>();
-    private final List<String> proxyBeanNames   = new ArrayList<String>();
+    private List<String> beanNames = new ArrayList<String>();
+    private final List<String> proxyBeanNames = new ArrayList<String>();
 
     /**
      * Identify as bean to proxy if the bean name is in the configured list of names.
@@ -63,7 +61,7 @@ public class SpringIbatisBeanTypeAutoProxyCreator extends AbstractAutoProxyCreat
         return DO_NOT_PROXY;
     }
 
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings("rawtypes")
     protected Object createProxy(Class beanClass, String beanName, Object[] specificInterceptors,
                                  TargetSource targetSource) {
         try {
@@ -92,8 +90,8 @@ public class SpringIbatisBeanTypeAutoProxyCreator extends AbstractAutoProxyCreat
      * <p>
      * The default implementation checks for "xxx*", "*xxx" and "*xxx*" matches, as well as direct equality. Can be
      * overridden in subclasses.
-     * 
-     * @param beanName the bean name to check
+     *
+     * @param beanName   the bean name to check
      * @param mappedName the name in the configured list of names
      * @return if the names match
      * @see org.springframework.util.PatternMatchUtils#simpleMatch(String, String)

@@ -14,7 +14,6 @@ import org.junit.Assert;
 import java.util.Set;
 
 public class SchemaStatTest13 extends TestCase {
-
     public void test_schemaStat() throws Exception {
         String sql = "select a.id, b.name from (select t1.* from table1 t1 left join table3 t3 on cast(t1.id as bigint) = t3.id) a inner join table2 b on a.id = b.id";
 

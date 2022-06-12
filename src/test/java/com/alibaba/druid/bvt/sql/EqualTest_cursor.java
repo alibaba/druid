@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 
 public class EqualTest_cursor extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "CURSOR(select id from t)";
         String sql_c = "CURSOR(select id from t1)";
@@ -30,7 +29,7 @@ public class EqualTest_cursor extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new OracleCursorExpr(), new OracleCursorExpr());
         Assert.assertEquals(new OracleCursorExpr().hashCode(), new OracleCursorExpr().hashCode());
     }

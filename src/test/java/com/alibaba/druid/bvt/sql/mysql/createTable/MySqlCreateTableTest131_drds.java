@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest131_drds extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE shard_hot_test_table (\n" +
                 " id int(11) NOT NULL AUTO_INCREMENT BY GROUP,\n" +
@@ -19,7 +18,7 @@ public class MySqlCreateTableTest131_drds extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -42,8 +41,6 @@ public class MySqlCreateTableTest131_drds extends MysqlTest {
         assertNotNull(id);
         assertTrue(id.isPrimaryKey());
     }
-
-
 
 
 }

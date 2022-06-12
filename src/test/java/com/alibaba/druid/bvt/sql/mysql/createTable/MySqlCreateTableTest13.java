@@ -25,19 +25,18 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest13 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `xx_video` (" + //
-                     "`id` int(11) NOT NULL AUTO_INCREMENT," + //
-                     "`video_url` varchar(500) DEFAULT NULL," + //
-                     "`video_title` varchar(200) DEFAULT NULL," + //
-                     "`video_des` varchar(500) DEFAULT NULL," + //
-                     "`video_type` varchar(11) NOT NULL," + //
-                     "`delete_flag` int(11) DEFAULT '0'," + //
-                     "`create_date` datetime DEFAULT NULL," + //
-                     "`last_update` datetime DEFAULT NULL," + //
-                     "PRIMARY KEY (`id`)" + //
-                     ") ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=gbk;";
+                "`id` int(11) NOT NULL AUTO_INCREMENT," + //
+                "`video_url` varchar(500) DEFAULT NULL," + //
+                "`video_title` varchar(200) DEFAULT NULL," + //
+                "`video_des` varchar(500) DEFAULT NULL," + //
+                "`video_type` varchar(11) NOT NULL," + //
+                "`delete_flag` int(11) DEFAULT '0'," + //
+                "`create_date` datetime DEFAULT NULL," + //
+                "`last_update` datetime DEFAULT NULL," + //
+                "PRIMARY KEY (`id`)" + //
+                ") ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=gbk;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

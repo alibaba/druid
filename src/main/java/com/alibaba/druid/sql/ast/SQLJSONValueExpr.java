@@ -18,7 +18,6 @@ public class SQLJSONValueExpr extends SQLExprImpl {
 
     @Override
     protected void accept0(SQLASTVisitor v) {
-
     }
 
     @Override

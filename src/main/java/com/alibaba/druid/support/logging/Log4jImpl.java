@@ -19,28 +19,27 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 public class Log4jImpl implements Log {
-
     private static final String callerFQCN = Log4jImpl.class.getName();
 
-    private Logger              log;
+    private Logger log;
 
-    private int                 errorCount;
-    private int                 warnCount;
-    private int                 infoCount;
-    private int                 debugCount;
+    private int errorCount;
+    private int warnCount;
+    private int infoCount;
+    private int debugCount;
 
     /**
-     * @since 0.2.21
      * @param log
+     * @since 0.2.21
      */
-    public Log4jImpl(Logger log){
+    public Log4jImpl(Logger log) {
         this.log = log;
     }
 
-    public Log4jImpl(String loggerName){
+    public Log4jImpl(String loggerName) {
         log = Logger.getLogger(loggerName);
     }
-    
+
     public Logger getLog() {
         return log;
     }
@@ -110,7 +109,7 @@ public class Log4jImpl implements Log {
     public boolean isWarnEnabled() {
         return log.isEnabledFor(Level.WARN);
     }
-    
+
     public boolean isErrorEnabled() {
         return log.isEnabledFor(Level.ERROR);
     }

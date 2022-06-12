@@ -27,17 +27,16 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class TenantSelectTest4 extends TestCase {
+    private String sql = "SELECT a.*,b.name " + //
+            "FROM vote_info a left join vote_item b on a.item_id=b.id " + //
+            "where 1=1 limit 1,10";
+    private String expect_sql = "SELECT a.*, b.name, b.tenant, a.tenant" + //
+            "\nFROM vote_info a" + //
+            "\n\tLEFT JOIN vote_item b ON a.item_id = b.id" + //
+            "\nWHERE 1 = 1" + //
+            "\nLIMIT 1, 10";
 
-    private String     sql             = "SELECT a.*,b.name " + //
-                                         "FROM vote_info a left join vote_item b on a.item_id=b.id " + //
-                                         "where 1=1 limit 1,10";
-    private String     expect_sql      = "SELECT a.*, b.name, b.tenant, a.tenant" + //
-                                         "\nFROM vote_info a" + //
-                                         "\n\tLEFT JOIN vote_item b ON a.item_id = b.id" + //
-                                         "\nWHERE 1 = 1" + //
-                                         "\nLIMIT 1, 10";
-
-    private WallConfig config          = new WallConfig();
+    private WallConfig config = new WallConfig();
     private WallConfig config_callback = new WallConfig();
 
     protected void setUp() throws Exception {

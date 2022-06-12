@@ -14,12 +14,11 @@ import java.util.List;
  * @date 2018/12/12 2:23 PM
  */
 public class MySqlCreateIndexTest_9_drds extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE GLOBAL INDEX `g_i_seller` ON t_order (`create_time`) COVERING (order_snapshot) "
-                     + "dbpartition BY YYYYMM_NOLOOP (create_time) tbpartition BY YYYYMM_NOLOOP (create_time) "
-                     + "STARTWITH 20160108 ENDWITH 20170108;";
+                + "dbpartition BY YYYYMM_NOLOOP (create_time) tbpartition BY YYYYMM_NOLOOP (create_time) "
+                + "STARTWITH 20160108 ENDWITH 20170108;";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -34,8 +33,8 @@ public class MySqlCreateIndexTest_9_drds extends MysqlTest {
     @Test
     public void test_two() throws Exception {
         String sql = "CREATE GLOBAL INDEX `g_i_seller` ON t_order (`create_time`) COVERING (order_snapshot) "
-                     + "dbpartition BY YYYYMM_NOLOOP (create_time) tbpartition BY YYYYMM_NOLOOP (create_time) "
-                     + "STARTWITH 20160108 ENDWITH 20170108 " + "COMMENT 'CREATE GSI TEST';";
+                + "dbpartition BY YYYYMM_NOLOOP (create_time) tbpartition BY YYYYMM_NOLOOP (create_time) "
+                + "STARTWITH 20160108 ENDWITH 20170108 " + "COMMENT 'CREATE GSI TEST';";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -50,9 +49,9 @@ public class MySqlCreateIndexTest_9_drds extends MysqlTest {
     @Test
     public void test_three() throws Exception {
         String sql = "CREATE GLOBAL INDEX `g_i_seller` ON t_order (`create_time`) COVERING (order_snapshot) "
-                     + "dbpartition BY YYYYMM_NOLOOP (create_time) tbpartition BY YYYYMM_NOLOOP (create_time) "
-                     + "STARTWITH 20160108 ENDWITH 20170108 "
-                     + "USING BTREE KEY_BLOCK_SIZE=20 COMMENT 'CREATE GSI TEST' ALGORITHM=DEFAULT LOCK=DEFAULT;";
+                + "dbpartition BY YYYYMM_NOLOOP (create_time) tbpartition BY YYYYMM_NOLOOP (create_time) "
+                + "STARTWITH 20160108 ENDWITH 20170108 "
+                + "USING BTREE KEY_BLOCK_SIZE=20 COMMENT 'CREATE GSI TEST' ALGORITHM=DEFAULT LOCK=DEFAULT;";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -62,6 +61,6 @@ public class MySqlCreateIndexTest_9_drds extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("CREATE GLOBAL INDEX `g_i_seller` ON t_order (`create_time`) COVERING (order_snapshot) DBPARTITION BY YYYYMM_NOLOOP(create_time) TBPARTITION BY YYYYMM_NOLOOP(create_time) BETWEEN 20160108 AND 20170108 USING BTREE KEY_BLOCK_SIZE = 20 COMMENT 'CREATE GSI TEST' ALGORITHM = DEFAULT LOCK = DEFAULT;",
-            output);
+                output);
     }
 }

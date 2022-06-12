@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleTruncateTableTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "truncate table \"ESCROW\".\"HT_TASK_TRADE_HISTORY_NEW\" purge snapshot log";
+                "truncate table \"ESCROW\".\"HT_TASK_TRADE_HISTORY_NEW\" purge snapshot log";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

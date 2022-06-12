@@ -14,10 +14,9 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_62 extends TestCase {
     public void test_for_parameterize() throws Exception {
-
         String sql = "select abc.* from abc join t_1 on abc.name = t_1.id2 where t_1.fname like 'hz.%'";
 
-        List<Object> params =  new ArrayList<Object>();
+        List<Object> params = new ArrayList<Object>();
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, VisitorFeature.OutputParameterizedUnMergeShardingTable);
         assertEquals("SELECT abc.*\n" +
                 "FROM abc\n" +

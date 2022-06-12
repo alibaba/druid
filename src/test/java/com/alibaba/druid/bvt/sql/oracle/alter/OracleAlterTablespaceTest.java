@@ -25,10 +25,9 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleAlterTablespaceTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter tablespace escrow_data add datafile '/opt/oracle/oradata/usoint/f937.dbf' size 4095m autoextend off";
+                "alter tablespace escrow_data add datafile '/opt/oracle/oradata/usoint/f937.dbf' size 4095m autoextend off";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -26,11 +26,9 @@ import junit.framework.TestCase;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TestRollBack extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://a.b.c.d/druid?useUnicode=true&characterEncoding=UTF-8");
         dataSource.setUsername("dragoon_test");

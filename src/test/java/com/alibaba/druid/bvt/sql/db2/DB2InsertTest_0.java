@@ -29,7 +29,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2InsertTest_0 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "insert into t (id,name) values (?,?), (?,?), (?,?)";
 
@@ -54,13 +53,13 @@ public class DB2InsertTest_0 extends DB2Test {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t")));
 
-         Assert.assertTrue(visitor.getColumns().contains(new Column("t", "id")));
-         Assert.assertTrue(visitor.getColumns().contains(new Column("t", "name")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("t", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("t", "name")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
         Assert.assertEquals("INSERT INTO t (id, name)\n" +
                         "VALUES (?, ?), (?, ?), (?, ?)", //
-                            output);
+                output);
     }
 }

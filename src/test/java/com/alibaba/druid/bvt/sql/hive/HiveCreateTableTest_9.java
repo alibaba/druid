@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_9 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE EXTERNAL TABLE page_view(viewTime INT, userid BIGINT,\n" +

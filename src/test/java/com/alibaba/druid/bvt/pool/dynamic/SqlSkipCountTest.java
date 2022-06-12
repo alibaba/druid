@@ -14,10 +14,9 @@ import com.alibaba.druid.pool.DruidDataSourceStatValue;
 import com.alibaba.druid.support.logging.Log;
 
 public class SqlSkipCountTest extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
-    private Log             dataSourceLog;
+    private Log dataSourceLog;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -56,7 +55,7 @@ public class SqlSkipCountTest extends PoolTestCase {
             Assert.assertEquals(1000, statValue.getSqlList().size());
             Assert.assertEquals(1000, statValue.getSqlSkipCount());
         }
-        
+
         dataSource.setConnectionProperties("druid.stat.sql.MaxSize=2000");
         for (int i = 0; i < 2000; ++i) {
             Connection conn = dataSource.getConnection();
@@ -75,7 +74,7 @@ public class SqlSkipCountTest extends PoolTestCase {
             Assert.assertEquals(0, statValue.getSqlList().size());
             Assert.assertEquals(0, statValue.getSqlSkipCount());
         }
-        
+
         dataSource.setConnectionProperties("druid.stat.sql.MaxSize=2000");
         for (int i = 0; i < 2000; ++i) {
             Connection conn = dataSource.getConnection();
@@ -89,7 +88,7 @@ public class SqlSkipCountTest extends PoolTestCase {
             Assert.assertEquals(2000, statValue.getSqlList().size());
             Assert.assertEquals(0, statValue.getSqlSkipCount());
         }
-        
+
         dataSource.setConnectionProperties("druid.stat.sql.MaxSize=100");
         for (int i = 0; i < 2000; ++i) {
             Connection conn = dataSource.getConnection();

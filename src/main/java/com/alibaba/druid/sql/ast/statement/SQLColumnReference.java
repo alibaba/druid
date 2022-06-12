@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLColumnReference extends SQLConstraintImpl implements SQLColumnConstraint {
-
-    private SQLName       table;
+    private SQLName table;
     private List<SQLName> columns = new ArrayList<SQLName>();
 
     private SQLForeignKeyImpl.Match referenceMatch;
@@ -31,7 +30,6 @@ public class SQLColumnReference extends SQLConstraintImpl implements SQLColumnCo
     protected SQLForeignKeyImpl.Option onDelete;
 
     public SQLColumnReference() {
-
     }
 
     @Override

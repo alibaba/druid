@@ -23,11 +23,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SQLLexerTest2 extends TestCase {
-
     public void test_lexer() throws Exception {
         String sql = "SELECT * FROM T WHERE F1 = ? ORDER BY F2";
         Lexer lexer = new Lexer(sql);
-        for (;;) {
+        for (; ; ) {
             lexer.nextToken();
             Token tok = lexer.token();
 
@@ -38,7 +37,7 @@ public class SQLLexerTest2 extends TestCase {
             } else {
                 System.out.println(tok.name() + "\t\t\t" + tok.name);
             }
-            
+
             if (tok == Token.WHERE) {
                 System.out.println("where pos : " + lexer.pos());
             }
@@ -48,11 +47,11 @@ public class SQLLexerTest2 extends TestCase {
             }
         }
     }
-    
+
     public void test_lexer2() throws Exception {
         String sql = "SELECT substr('''a''bc',0,3) FROM dual";
         Lexer lexer = new Lexer(sql);
-        for (;;) {
+        for (; ; ) {
             lexer.nextToken();
             Token tok = lexer.token();
 
@@ -62,8 +61,7 @@ public class SQLLexerTest2 extends TestCase {
                 System.out.println(tok.name() + "\t\t" + lexer.numberString());
             } else if (tok == Token.LITERAL_CHARS) {
                 System.out.println(tok.name() + "\t\t" + lexer.stringVal());
-            } 
-            else {
+            } else {
                 System.out.println(tok.name() + "\t\t\t" + tok.name);
             }
 
@@ -73,14 +71,14 @@ public class SQLLexerTest2 extends TestCase {
         }
     }
 
-    public void test_lexer_error_info(){
-        String line1 ="SELECT *";
-        String line2 ="FORM a";
-        String sql = line1 + "\n"+line2;
-        MySqlStatementParser parser=new MySqlStatementParser(sql);
+    public void test_lexer_error_info() {
+        String line1 = "SELECT *";
+        String line2 = "FORM a";
+        String sql = line1 + "\n" + line2;
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
         Exception exception = null;
         try {
-          parser.parseStatementList();
+            parser.parseStatementList();
         } catch (Exception e) {
             exception = e;
         }
@@ -88,8 +86,7 @@ public class SQLLexerTest2 extends TestCase {
         Assert.assertEquals("not supported.pos 13, line 2, column 2, token IDENTIFIER FORM", exception.getMessage());
 
 
-
     }
 
-    
+
 }

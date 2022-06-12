@@ -15,23 +15,6 @@
  */
 package com.alibaba.druid.support.monitor;
 
-import static com.alibaba.druid.util.Utils.getBoolean;
-import static com.alibaba.druid.util.Utils.getInteger;
-
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceStatValue;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
@@ -50,36 +33,46 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.WallProviderStatValue;
 
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import static com.alibaba.druid.util.Utils.getBoolean;
+import static com.alibaba.druid.util.Utils.getInteger;
+
 public class MonitorClient {
+    private static final Log LOG = LogFactory.getLog(MonitorClient.class);
 
-    private final static Log         LOG                          = LogFactory.getLog(MonitorClient.class);
-
-    private final static long        DEFAULT_TIME_BETWEEN_COLLECT = 60 * 5;
+    private static final long DEFAULT_TIME_BETWEEN_COLLECT = 60 * 5;
 
     private ScheduledExecutorService scheduler;
-    private int                      schedulerThreadSize          = 1;
+    private int schedulerThreadSize = 1;
 
-    private long                     timeBetweenSqlCollect        = DEFAULT_TIME_BETWEEN_COLLECT;
-    private long                     timeBetweenSpringCollect     = DEFAULT_TIME_BETWEEN_COLLECT;
-    private long                     timeBetweenWebUriCollect     = DEFAULT_TIME_BETWEEN_COLLECT;
-    private TimeUnit                 timeUnit                     = TimeUnit.SECONDS;
+    private long timeBetweenSqlCollect = DEFAULT_TIME_BETWEEN_COLLECT;
+    private long timeBetweenSpringCollect = DEFAULT_TIME_BETWEEN_COLLECT;
+    private long timeBetweenWebUriCollect = DEFAULT_TIME_BETWEEN_COLLECT;
+    private TimeUnit timeUnit = TimeUnit.SECONDS;
 
-    private boolean                  collectSqlEnable             = true;
-    private boolean                  collectSqlWallEnable         = true;
-    private boolean                  collectSpringMethodEnable    = true;
-    private boolean                  collectWebAppEnable          = true;
-    private boolean                  collectWebURIEnable          = true;
+    private boolean collectSqlEnable = true;
+    private boolean collectSqlWallEnable = true;
+    private boolean collectSpringMethodEnable = true;
+    private boolean collectWebAppEnable = true;
+    private boolean collectWebURIEnable = true;
 
-    private MonitorDao               dao;
+    private MonitorDao dao;
 
-    private String                   domain;
-    private String                   app;
-    private String                   cluster;
-    private String                   host;
-    private String                   ip;
-    private int                      pid;
+    private String domain;
+    private String app;
+    private String cluster;
+    private String host;
+    private String ip;
+    private int pid;
 
-    public MonitorClient(){
+    public MonitorClient() {
         String name = ManagementFactory.getRuntimeMXBean().getName();
 
         String[] items = name.split("@");
@@ -175,7 +168,6 @@ public class MonitorClient {
     }
 
     public void stop() {
-
     }
 
     public void start() {
@@ -186,7 +178,6 @@ public class MonitorClient {
         }
 
         scheduler.scheduleAtFixedRate(new Runnable() {
-
             @Override
             public void run() {
                 collectSql();
@@ -194,7 +185,6 @@ public class MonitorClient {
         }, timeBetweenSqlCollect, timeBetweenSqlCollect, timeUnit);
 
         scheduler.scheduleAtFixedRate(new Runnable() {
-
             @Override
             public void run() {
                 collectSpringMethod();
@@ -202,7 +192,6 @@ public class MonitorClient {
         }, timeBetweenSpringCollect, timeBetweenSpringCollect, timeUnit);
 
         scheduler.scheduleAtFixedRate(new Runnable() {
-
             @Override
             public void run() {
                 collectWebURI();

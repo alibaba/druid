@@ -24,7 +24,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_95_soundsLike extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM student \n" +
                 "WHERE first_name SOUNDS LIKE 'sudipto' ;";
