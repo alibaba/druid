@@ -37,13 +37,15 @@ public class PGSelectTest86
         assertEquals(1, statements.size());
         final SQLStatement stmt = statements.get(0);
 
-        assertEquals("SELECT *\n" +
-                        "FROM xxx_point point\n" +
-                        "\tINNER JOIN xxx_cc cc ON point.id = cc.point_id"
+        assertEquals("SELECT COUNT(1) AS res\n" +
+                        "FROM TB_EXPERIENCE exp\n" +
+                        "WHERE exp.creatdate > DATE_SUB(CURDATE(), INTERVAL '1' MONTH)\n" +
+                        "\tAND exp.cstatus = 1"
                 , stmt.toString());
 
-        assertEquals("select *\n" +
-                "from xxx_point point\n" +
-                "\tinner join xxx_cc cc on point.id = cc.point_id", stmt.toLowerCaseString());
+        assertEquals("select count(1) as res\n" +
+                "from TB_EXPERIENCE exp\n" +
+                "where exp.creatdate > DATE_SUB(CURDATE(), interval '1' month)\n" +
+                "\tand exp.cstatus = 1", stmt.toLowerCaseString());
     }
 }
