@@ -709,6 +709,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             if (lexer.identifierEquals(FnvHash.Constants.TABLEGROUP)) {
                 lexer.nextToken();
 
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
                 SQLName tableGroup = this.exprParser.name();
                 stmt.setTableGroup(tableGroup);
                 continue;
@@ -1012,6 +1016,9 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         } else if (lexer.identifierEquals("IGNORE")) {
             lexer.nextToken();
             stmt.setIgnore(true);
+        } else if (lexer.identifierEquals("SINGLE")) { // for polardb-x
+            lexer.nextToken();
+            stmt.setSingle(true);
         }
 
         if (lexer.token() == (Token.AS)) {
@@ -1177,7 +1184,8 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             for (;;) {
-                SQLPartition partitionDef = this.getExprParser().parsePartition();
+                SQLPartition partitionDef = this.getExprParser()
+                        .parsePartition();
 
                 partitionClause.addPartition(partitionDef);
 
@@ -1531,6 +1539,15 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
             }
             stmt.addOption("COLLATE", this.exprParser.expr());
+            return true;
+        }
+
+        if (lexer.identifierEquals("LOCALITY")) {
+            lexer.nextToken();
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+            }
+            stmt.addOption("LOCALITY", this.exprParser.expr());
             return true;
         }
 

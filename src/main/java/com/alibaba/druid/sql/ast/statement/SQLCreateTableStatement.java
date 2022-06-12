@@ -71,6 +71,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     protected boolean replace = false;
     protected boolean ignore = false;
+    protected boolean single = false; // polardbx
     protected boolean                          dimension;
     protected SQLExpr                          engine;
 
@@ -1295,6 +1296,14 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     public void setIgnore(boolean ignore) {
         this.replace = false;
         this.ignore = ignore;
+    }
+
+    public boolean isSingle() {
+        return single;
+    }
+
+    public void setSingle(boolean single) {
+        this.single = single;
     }
 
     public SQLExpr getStoredAs() {

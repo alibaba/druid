@@ -46,6 +46,20 @@ public class SQLPartition extends OracleSegmentAttributesImpl implements OracleS
 
     private SQLObject lobStorage;
 
+    private SQLExpr locality;
+
+
+    public SQLExpr getLocality() {
+        return locality;
+    }
+
+    public void setLocality(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.locality = x;
+    }
+
     public SQLName getName() {
         return name;
     }

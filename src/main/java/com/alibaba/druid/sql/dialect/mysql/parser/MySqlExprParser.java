@@ -1782,6 +1782,14 @@ public class MySqlExprParser extends SQLExprParser {
             
             accept(Token.RPAREN);
         }
+
+        if (lexer.identifierEquals("LOCALITY")) {
+            lexer.nextToken();
+            accept(Token.EQ);
+            SQLExpr locality = this.expr();
+            partitionDef.setLocality(locality);
+        }
+
         return partitionDef;
     }
 
