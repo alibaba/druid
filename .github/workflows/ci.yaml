@@ -32,7 +32,7 @@ jobs:
           java-version: ${{ matrix.java }}
           cache: 'maven'
       - name: Build with Maven
-        run: ./mvnw -Pgen-javadoc -Pgen-dokka clean package -B
+        run: ./mvnw -Pgen-javadoc clean package -B
       - name: Generate code coverage
         run: ./mvnw -Pgen-code-cov clean test
       # https://github.com/marketplace/actions/codecov
