@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.2.10_preview_05</version>
+	<version>1.2.11</version>
 	<packaging>jar</packaging>
 	<name>druid</name>
 	<description>A JDBC datasource implementation.</description>
@@ -15,8 +15,8 @@
 		<junit.version>4.13.1</junit.version>
 		<jmh.version>1.19</jmh.version>
 
-		<gpg.skip>true</gpg.skip>
-		<javadoc.skip>true</javadoc.skip>
+		<gpg.skip>false</gpg.skip>
+		<javadoc.skip>false</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
