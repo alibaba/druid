@@ -15,17 +15,11 @@
  */
 package com.alibaba.druid.support.spring;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.springframework.jdbc.support.nativejdbc.NativeJdbcExtractorAdapter;
 
-public class DruidNativeJdbcExtractor extends NativeJdbcExtractorAdapter {
+import java.sql.*;
 
+public class DruidNativeJdbcExtractor extends NativeJdbcExtractorAdapter {
     protected Connection doGetNativeConnection(Connection con) throws SQLException {
         return (Connection) con.unwrap(Connection.class);
     }

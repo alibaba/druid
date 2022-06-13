@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 
 public class MySqlValdConnectionTest extends TestCase {
-
     private String jdbcUrl;
     private String user;
     private String password;

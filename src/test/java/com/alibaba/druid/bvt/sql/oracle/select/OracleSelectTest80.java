@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest80 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select (o.STORE - o.LAST_STORE) STORE from t_order o;"; //
@@ -60,8 +59,8 @@ public class OracleSelectTest80 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
 
-         Assert.assertTrue(visitor.containsColumn("t_order", "STORE"));
-         Assert.assertTrue(visitor.containsColumn("t_order", "LAST_STORE"));
+        Assert.assertTrue(visitor.containsColumn("t_order", "STORE"));
+        Assert.assertTrue(visitor.containsColumn("t_order", "LAST_STORE"));
 //
     }
 }

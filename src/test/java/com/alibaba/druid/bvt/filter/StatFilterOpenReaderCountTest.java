@@ -18,7 +18,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterOpenReaderCountTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -28,16 +27,15 @@ public class StatFilterOpenReaderCountTest extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setTestOnBorrow(false);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public java.io.Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                                         throws SQLException {
+                    throws SQLException {
                 return new StringReader("");
             }
 
             @Override
             public java.io.Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                                            throws SQLException {
+                    throws SQLException {
                 return new StringReader("");
             }
         });

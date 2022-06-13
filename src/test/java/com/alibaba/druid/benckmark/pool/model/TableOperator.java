@@ -8,7 +8,6 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 
 public class TableOperator {
-
     private DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
@@ -17,12 +16,10 @@ public class TableOperator {
 
     private static final int COUNT = 2;
 
-    public TableOperator(){
-
+    public TableOperator() {
     }
 
     public void insert() throws Exception {
-
         StringBuffer ddl = new StringBuffer();
         ddl.append("INSERT INTO t_big (");
         for (int i = 0; i < COUNT; ++i) {
@@ -53,13 +50,11 @@ public class TableOperator {
             stmt.execute();
             stmt.close();
         } finally {
-
             conn.close();
         }
     }
 
     public void dropTable() throws SQLException {
-
         Connection conn = dataSource.getConnection();
         try {
             Statement stmt = conn.createStatement();

@@ -26,14 +26,13 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseHintTest_Topk extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select /*+ topk(90 1000) */ sum(c2), c1 from t1 group by c1 order by sum(c2) limit 10 ";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
-        
+
         String result = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT /*+ topk(90 1000) */ sum(c2), c1\n" +
                 "FROM t1\n" +

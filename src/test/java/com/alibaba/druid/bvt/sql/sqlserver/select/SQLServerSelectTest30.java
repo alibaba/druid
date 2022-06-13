@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class SQLServerSelectTest30 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = //
                 "SELECT First_Name + ' ' + Last_Name FROM Employees ORDER BY First_Name OFFSET 10 ROWS FETCH NEXT 5 ROWS ONLY;"; //

@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 
 public class MySqlSelectTest_264 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select json from t1";
 

@@ -13,11 +13,10 @@ import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 
 /**
  * 这个场景测试minIdle > maxActive
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_oracle3 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -50,7 +49,6 @@ public class DruidDataSourceTest_oracle3 extends TestCase {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT 1 FROM DUAL");
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -63,7 +61,6 @@ public class DruidDataSourceTest_oracle3 extends TestCase {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT 1 FROM DUAL");
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -76,7 +73,6 @@ public class DruidDataSourceTest_oracle3 extends TestCase {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT 1 FROM DUAL");
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();

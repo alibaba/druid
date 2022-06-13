@@ -22,7 +22,6 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallUtils;
 
 public class OracleWallTest1 extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateOracle("SELECT DICT_ID,NAME,VALUE,STATUS FROM T_EBM_DICT WHERE T_EBM_DICT.PID=10 OR T_EBM_DICT.PID=11"));
         Assert.assertTrue(WallUtils.isValidateMySql("SELECT DICT_ID,NAME,VALUE,STATUS FROM T_EBM_DICT WHERE T_EBM_DICT.PID=10 OR T_EBM_DICT.PID=11"));

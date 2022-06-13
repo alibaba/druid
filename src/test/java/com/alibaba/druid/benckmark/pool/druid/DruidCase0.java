@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidCase0 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -42,7 +41,7 @@ public class DruidCase0 extends TestCase {
             long startMillis = System.currentTimeMillis();
             benchmark();
             long millis = System.currentTimeMillis() - startMillis;
-            
+
             System.out.println("millis : " + millis);
         }
     }

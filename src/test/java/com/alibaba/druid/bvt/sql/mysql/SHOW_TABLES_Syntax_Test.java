@@ -27,9 +27,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class SHOW_TABLES_Syntax_Test extends TestCase {
-
     public void test_0() throws Exception {
-
         String sql = "SHOW TABLES FROM     SUNTEST   ";
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();

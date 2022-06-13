@@ -46,85 +46,84 @@ import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceUIManager extends JFrame {
+    private static final long serialVersionUID = 1L;
 
-    private static final long                       serialVersionUID              = 1L;
+    private DruidDataSource dataSource;
 
-    private DruidDataSource                         dataSource;
+    private SpringLayout layout = new SpringLayout();
 
-    private SpringLayout                            layout                        = new SpringLayout();
+    private JButton btnInitDataSource = new JButton("Init Pool");
+    private JButton btnCloseDataSource = new JButton("Close Pool");
+    private JButton btnConnect = new JButton("Get Connection");
+    private JButton btnClose = new JButton("Close Connection");
 
-    private JButton                                 btnInitDataSource             = new JButton("Init Pool");
-    private JButton                                 btnCloseDataSource            = new JButton("Close Pool");
-    private JButton                                 btnConnect                    = new JButton("Get Connection");
-    private JButton                                 btnClose                      = new JButton("Close Connection");
+    private JButton btnCase_0 = new JButton("Case 0");
 
-    private JButton                                 btnCase_0                     = new JButton("Case 0");
+    private JPanel mainPanel = new JPanel();
+    private JScrollPane scrollPane = new JScrollPane(mainPanel);
 
-    private JPanel                                  mainPanel                     = new JPanel();
-    private JScrollPane                             scrollPane                    = new JScrollPane(mainPanel);
+    private JLabel lbUrl = new JLabel("URL : ");
+    private JTextField txtUrl = new JTextField(
+            "jdbc:oracle:thin:@a.b.c.d:1521:ocndb");
 
-    private JLabel                                  lbUrl                         = new JLabel("URL : ");
-    private JTextField                              txtUrl                        = new JTextField(
-                                                                                                   "jdbc:oracle:thin:@a.b.c.d:1521:ocndb");
+    private JLabel lbDriverClass = new JLabel("DriverClassName : ");
+    private JTextField txtDriverClass = new JTextField();
 
-    private JLabel                                  lbDriverClass                 = new JLabel("DriverClassName : ");
-    private JTextField                              txtDriverClass                = new JTextField();
+    private JLabel lbUser = new JLabel("User : ");
+    private JTextField txtUser = new JTextField();
 
-    private JLabel                                  lbUser                        = new JLabel("User : ");
-    private JTextField                              txtUser                       = new JTextField();
+    private JLabel lbPassword = new JLabel("Password : ");
+    private JTextField txtPassword = new JTextField();
 
-    private JLabel                                  lbPassword                    = new JLabel("Password : ");
-    private JTextField                              txtPassword                   = new JTextField();
+    private JLabel lbConnectionProperties = new JLabel(
+            "Connection Properties : ");
+    private JTextField txtConnectionProperties = new JTextField();
 
-    private JLabel                                  lbConnectionProperties        = new JLabel(
-                                                                                               "Connection Properties : ");
-    private JTextField                              txtConnectionProperties       = new JTextField();
+    private JLabel lbInitialSize = new JLabel("InitialSize : ");
+    private JTextField txtInitialSize = new JTextField("1");
 
-    private JLabel                                  lbInitialSize                 = new JLabel("InitialSize : ");
-    private JTextField                              txtInitialSize                = new JTextField("1");
+    private JLabel lbMaxActive = new JLabel("MaxActive : ");
+    private JTextField txtMaxActive = new JTextField("14");
 
-    private JLabel                                  lbMaxActive                   = new JLabel("MaxActive : ");
-    private JTextField                              txtMaxActive                  = new JTextField("14");
+    private JLabel lbMaxIdle = new JLabel("MaxIdle : ");
+    private JTextField txtMaxIdle = new JTextField("14");
 
-    private JLabel                                  lbMaxIdle                     = new JLabel("MaxIdle : ");
-    private JTextField                              txtMaxIdle                    = new JTextField("14");
+    private JLabel lbMinIdle = new JLabel("MinIdle : ");
+    private JTextField txtMinIdle = new JTextField("1");
 
-    private JLabel                                  lbMinIdle                     = new JLabel("MinIdle : ");
-    private JTextField                              txtMinIdle                    = new JTextField("1");
+    private JLabel lbMaxWait = new JLabel("MaxWait : ");
+    private JTextField txtMaxWait = new JTextField("-1");
 
-    private JLabel                                  lbMaxWait                     = new JLabel("MaxWait : ");
-    private JTextField                              txtMaxWait                    = new JTextField("-1");
+    private JLabel lbMinEvictableIdleTimeMillis = new JLabel(
+            "MinEvictableIdleTimeMillis : ");
+    private JTextField txtMinEvictableIdleTimeMillis = new JTextField("1800000");
 
-    private JLabel                                  lbMinEvictableIdleTimeMillis  = new JLabel(
-                                                                                               "MinEvictableIdleTimeMillis : ");
-    private JTextField                              txtMinEvictableIdleTimeMillis = new JTextField("1800000");
+    private DruidDataStatusPanel statusPanel = new DruidDataStatusPanel();
 
-    private DruidDataStatusPanel                    statusPanel                   = new DruidDataStatusPanel();
+    private JLabel lbValidationQuery = new JLabel("ValidationQuery : ");
+    private JTextField txtValidationQuery = new JTextField("");
 
-    private JLabel                                  lbValidationQuery             = new JLabel("ValidationQuery : ");
-    private JTextField                              txtValidationQuery            = new JTextField("");
+    private JLabel lbTestWhileIdle = new JLabel("TestWhileIdle : ");
+    private JTextField txtTestWhileIdle = new JTextField("false");
 
-    private JLabel                                  lbTestWhileIdle               = new JLabel("TestWhileIdle : ");
-    private JTextField                              txtTestWhileIdle              = new JTextField("false");
+    private JLabel lbTestOnBorrow = new JLabel("TestOnBorrow : ");
+    private JTextField txtTestOnBorrow = new JTextField("false");
 
-    private JLabel                                  lbTestOnBorrow                = new JLabel("TestOnBorrow : ");
-    private JTextField                              txtTestOnBorrow               = new JTextField("false");
+    private JTextField txtGetStep = new JTextField("1");
+    private JTextField txtReleaseStep = new JTextField("1");
 
-    private JTextField                              txtGetStep                    = new JTextField("1");
-    private JTextField                              txtReleaseStep                = new JTextField("1");
+    private AtomicInteger connectingCount = new AtomicInteger();
+    private AtomicInteger connectCount = new AtomicInteger();
+    private AtomicInteger closeCount = new AtomicInteger();
+    private AtomicInteger executingCount = new AtomicInteger();
 
-    private AtomicInteger                           connectingCount               = new AtomicInteger();
-    private AtomicInteger                           connectCount                  = new AtomicInteger();
-    private AtomicInteger                           closeCount                    = new AtomicInteger();
-    private AtomicInteger                           executingCount                = new AtomicInteger();
+    private Thread statusThread;
 
-    private Thread                                  statusThread;
+    private final ConcurrentLinkedQueue<Connection> activeConnections = new ConcurrentLinkedQueue<Connection>();
 
-    private final ConcurrentLinkedQueue<Connection> activeConnections             = new ConcurrentLinkedQueue<Connection>();
+    private ExecutorService executor;
 
-    private ExecutorService                         executor;
-
-    public DruidDataSourceUIManager(){
+    public DruidDataSourceUIManager() {
         this.setLayout(new BorderLayout());
 
         Toolkit kit = Toolkit.getDefaultToolkit(); // 定义工具包
@@ -159,7 +158,7 @@ public class DruidDataSourceUIManager extends JFrame {
 
         mainPanel.add(txtDriverClass);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtDriverClass, 0, SpringLayout.VERTICAL_CENTER,
-                             lbDriverClass);
+                lbDriverClass);
         layout.putConstraint(SpringLayout.WEST, txtDriverClass, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtDriverClass, 0, SpringLayout.EAST, txtUrl);
 
@@ -196,7 +195,7 @@ public class DruidDataSourceUIManager extends JFrame {
 
         mainPanel.add(txtConnectionProperties);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtConnectionProperties, 0, SpringLayout.VERTICAL_CENTER,
-                             lbConnectionProperties);
+                lbConnectionProperties);
         layout.putConstraint(SpringLayout.WEST, txtConnectionProperties, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtConnectionProperties, 0, SpringLayout.EAST, txtUrl);
 
@@ -209,7 +208,7 @@ public class DruidDataSourceUIManager extends JFrame {
 
         mainPanel.add(txtInitialSize);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtInitialSize, 0, SpringLayout.VERTICAL_CENTER,
-                             lbInitialSize);
+                lbInitialSize);
         layout.putConstraint(SpringLayout.WEST, txtInitialSize, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtInitialSize, 0, SpringLayout.EAST, txtUrl);
 
@@ -270,7 +269,7 @@ public class DruidDataSourceUIManager extends JFrame {
 
         mainPanel.add(txtMinEvictableIdleTimeMillis);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtMinEvictableIdleTimeMillis, 0,
-                             SpringLayout.VERTICAL_CENTER, lbMinEvictableIdleTimeMillis);
+                SpringLayout.VERTICAL_CENTER, lbMinEvictableIdleTimeMillis);
         layout.putConstraint(SpringLayout.WEST, txtMinEvictableIdleTimeMillis, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtMinEvictableIdleTimeMillis, 0, SpringLayout.EAST, txtUrl);
 
@@ -278,13 +277,13 @@ public class DruidDataSourceUIManager extends JFrame {
 
         mainPanel.add(lbValidationQuery);
         layout.putConstraint(SpringLayout.NORTH, lbValidationQuery, 10, SpringLayout.SOUTH,
-                             lbMinEvictableIdleTimeMillis);
+                lbMinEvictableIdleTimeMillis);
         layout.putConstraint(SpringLayout.WEST, lbValidationQuery, 0, SpringLayout.WEST, lbUrl);
         layout.putConstraint(SpringLayout.EAST, lbValidationQuery, 0, SpringLayout.EAST, lbUrl);
 
         mainPanel.add(txtValidationQuery);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtValidationQuery, 0, SpringLayout.VERTICAL_CENTER,
-                             lbValidationQuery);
+                lbValidationQuery);
         layout.putConstraint(SpringLayout.WEST, txtValidationQuery, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtValidationQuery, 0, SpringLayout.EAST, txtUrl);
         // ////
@@ -296,7 +295,7 @@ public class DruidDataSourceUIManager extends JFrame {
 
         mainPanel.add(txtTestWhileIdle);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtTestWhileIdle, 0, SpringLayout.VERTICAL_CENTER,
-                             lbTestWhileIdle);
+                lbTestWhileIdle);
         layout.putConstraint(SpringLayout.WEST, txtTestWhileIdle, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtTestWhileIdle, 0, SpringLayout.EAST, txtUrl);
 
@@ -307,7 +306,7 @@ public class DruidDataSourceUIManager extends JFrame {
 
         mainPanel.add(txtTestOnBorrow);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtTestOnBorrow, 0, SpringLayout.VERTICAL_CENTER,
-                             lbTestOnBorrow);
+                lbTestOnBorrow);
         layout.putConstraint(SpringLayout.WEST, txtTestOnBorrow, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtTestOnBorrow, 0, SpringLayout.EAST, txtUrl);
 
@@ -317,7 +316,6 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.NORTH, btnInitDataSource, 10, SpringLayout.SOUTH, lbTestOnBorrow);
         layout.putConstraint(SpringLayout.WEST, btnInitDataSource, 0, SpringLayout.WEST, lbUrl);
         btnInitDataSource.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 init_actionPerformed(e);
@@ -326,10 +324,9 @@ public class DruidDataSourceUIManager extends JFrame {
 
         mainPanel.add(btnCloseDataSource);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnCloseDataSource, 0, SpringLayout.VERTICAL_CENTER,
-                             btnInitDataSource);
+                btnInitDataSource);
         layout.putConstraint(SpringLayout.WEST, btnCloseDataSource, 10, SpringLayout.EAST, btnInitDataSource);
         btnCloseDataSource.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 closeDataSource_actionPerformed(e);
@@ -342,10 +339,9 @@ public class DruidDataSourceUIManager extends JFrame {
 
         mainPanel.add(btnConnect);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnConnect, 0, SpringLayout.VERTICAL_CENTER,
-                             btnInitDataSource);
+                btnInitDataSource);
         layout.putConstraint(SpringLayout.WEST, btnConnect, 10, SpringLayout.EAST, btnCloseDataSource);
         btnConnect.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 connect_actionPerformed(e);
@@ -354,7 +350,7 @@ public class DruidDataSourceUIManager extends JFrame {
 
         mainPanel.add(txtGetStep);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtGetStep, 0, SpringLayout.VERTICAL_CENTER,
-                             btnInitDataSource);
+                btnInitDataSource);
         layout.putConstraint(SpringLayout.WEST, txtGetStep, 10, SpringLayout.EAST, btnConnect);
         layout.putConstraint(SpringLayout.EAST, txtGetStep, 40, SpringLayout.WEST, txtGetStep);
 
@@ -364,7 +360,6 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnClose, 0, SpringLayout.VERTICAL_CENTER, btnInitDataSource);
         layout.putConstraint(SpringLayout.WEST, btnClose, 10, SpringLayout.EAST, txtGetStep);
         btnClose.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int step = Integer.parseInt(txtReleaseStep.getText().trim());
@@ -386,7 +381,7 @@ public class DruidDataSourceUIManager extends JFrame {
 
         mainPanel.add(txtReleaseStep);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtReleaseStep, 0, SpringLayout.VERTICAL_CENTER,
-                             btnInitDataSource);
+                btnInitDataSource);
         layout.putConstraint(SpringLayout.WEST, txtReleaseStep, 10, SpringLayout.EAST, btnClose);
         layout.putConstraint(SpringLayout.EAST, txtReleaseStep, 40, SpringLayout.WEST, txtReleaseStep);
 
@@ -394,7 +389,6 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnCase_0, 0, SpringLayout.VERTICAL_CENTER, txtReleaseStep);
         layout.putConstraint(SpringLayout.WEST, btnCase_0, 10, SpringLayout.EAST, txtReleaseStep);
         btnCase_0.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -422,7 +416,6 @@ public class DruidDataSourceUIManager extends JFrame {
         int step = Integer.parseInt(txtGetStep.getText().trim());
         for (int i = 0; i < step; ++i) {
             final Runnable task = new Runnable() {
-
                 public void run() {
                     try {
                         connectingCount.incrementAndGet();
@@ -467,7 +460,7 @@ public class DruidDataSourceUIManager extends JFrame {
 
         try {
             ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName(
-                                                                                      "com.alibaba.druid:type=DruidDataSource"));
+                    "com.alibaba.druid:type=DruidDataSource"));
         } catch (Exception e1) {
             e1.printStackTrace();
         }
@@ -514,8 +507,8 @@ public class DruidDataSourceUIManager extends JFrame {
             dataSource.setNumTestsPerEvictionRun(20);
 
             ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
-                                                                     new ObjectName(
-                                                                                    "com.alibaba.druid:type=DruidDataSource"));
+                    new ObjectName(
+                            "com.alibaba.druid:type=DruidDataSource"));
 
             try {
                 Connection conn = dataSource.getConnection();
@@ -550,9 +543,8 @@ public class DruidDataSourceUIManager extends JFrame {
             btnCase_0.setEnabled(true);
 
             statusThread = new Thread("Watch Status") {
-
                 public void run() {
-                    for (;;) {
+                    for (; ; ) {
                         statusPanel.set("CreateCount", dataSource.getCreateCount());
                         statusPanel.set("CreateErrorCount", dataSource.getCreateErrorCount());
                         statusPanel.set("CreateTimespanMillis", dataSource.getCreateTimespanMillis());
@@ -585,7 +577,6 @@ public class DruidDataSourceUIManager extends JFrame {
 
     public void case_0() throws Exception {
         Runnable task = new Runnable() {
-
             public void run() {
                 final int threadCount = 20;
                 final int LOOP_COUNT = 1000 * 1;
@@ -594,7 +585,6 @@ public class DruidDataSourceUIManager extends JFrame {
                 final CountDownLatch endLatch = new CountDownLatch(threadCount);
                 for (int i = 0; i < threadCount; ++i) {
                     Thread thread = new Thread() {
-
                         public void run() {
                             try {
                                 startLatch.await();
@@ -637,7 +627,7 @@ public class DruidDataSourceUIManager extends JFrame {
                 long fullGC = TestUtil.getFullGC() - startFullGC;
 
                 System.out.println("thread " + threadCount + " druid millis : "
-                                   + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+                        + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
             }
         };
 
@@ -646,7 +636,6 @@ public class DruidDataSourceUIManager extends JFrame {
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
-
             public void run() {
                 DruidDataSourceUIManager manager = new DruidDataSourceUIManager();
 

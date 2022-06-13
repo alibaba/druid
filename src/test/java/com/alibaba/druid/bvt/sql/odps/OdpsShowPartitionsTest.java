@@ -10,7 +10,6 @@ import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OdpsShowPartitionsTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "show partitions secods.xxx";
         OdpsStatementParser parser = new OdpsStatementParser(sql);

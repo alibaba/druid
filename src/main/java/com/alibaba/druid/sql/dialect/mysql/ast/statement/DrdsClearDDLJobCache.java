@@ -12,8 +12,7 @@ import java.util.List;
  * Date 2019-07-22 10:09
  */
 public class DrdsClearDDLJobCache extends MySqlStatementImpl implements SQLStatement {
-
-    private boolean allJobs = false;
+    private boolean allJobs;
     private List<Long> jobIds = new ArrayList<Long>();
 
     public void accept0(MySqlASTVisitor visitor) {

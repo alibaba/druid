@@ -24,11 +24,10 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateSynonymTest_0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE PUBLIC SYNONYM emp_table \n" +
-                "   FOR hr.employees@remote.us.oracle.com;";
+                "CREATE PUBLIC SYNONYM emp_table \n" +
+                        "   FOR hr.employees@remote.us.oracle.com;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

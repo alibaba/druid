@@ -15,12 +15,10 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
-import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,8 +28,7 @@ import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class ToChar implements Function {
-
-    public final static ToChar instance = new ToChar();
+    public static final ToChar instance = new ToChar();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         final List<SQLExpr> arguments = x.getArguments();

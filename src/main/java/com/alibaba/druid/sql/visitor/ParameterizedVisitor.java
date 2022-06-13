@@ -20,7 +20,6 @@ import com.alibaba.druid.DbType;
 import java.util.List;
 
 public interface ParameterizedVisitor extends PrintableVisitor {
-
     int getReplaceCount();
 
     void incrementReplaceCunt();

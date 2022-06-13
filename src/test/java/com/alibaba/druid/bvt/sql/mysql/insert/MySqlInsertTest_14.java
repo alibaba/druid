@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlInsertTest_14 extends MysqlTest {
-
     public void test_insert_rollback_on_fail() throws Exception {
         String sql = "insert into  test.heartbeat (id ,ts)" +
                 " values ( 1, UNIX_TIMESTAMP())" +

@@ -23,17 +23,16 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class SQLServerWallTest extends TestCase {
-
     /**
      * @param name
      */
-    public SQLServerWallTest(String name){
+    public SQLServerWallTest(String name) {
         super(name);
     }
 

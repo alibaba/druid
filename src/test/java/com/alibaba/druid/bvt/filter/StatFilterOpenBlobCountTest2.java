@@ -18,7 +18,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterOpenBlobCountTest2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -28,16 +27,15 @@ public class StatFilterOpenBlobCountTest2 extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setTestOnBorrow(false);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                        throws SQLException {
+                    throws SQLException {
                 return new MockBlob();
             }
 
             @Override
             public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                           throws SQLException {
+                    throws SQLException {
                 return new MockBlob();
             }
 
@@ -123,10 +121,10 @@ public class StatFilterOpenBlobCountTest2 extends TestCase {
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        rs.getObject(1, Collections.<String, Class<?>> emptyMap());
-        rs.getObject(2, Collections.<String, Class<?>> emptyMap());
-        rs.getObject(3, Collections.<String, Class<?>> emptyMap());
-        rs.getObject(4, Collections.<String, Class<?>> emptyMap());
+        rs.getObject(1, Collections.<String, Class<?>>emptyMap());
+        rs.getObject(2, Collections.<String, Class<?>>emptyMap());
+        rs.getObject(3, Collections.<String, Class<?>>emptyMap());
+        rs.getObject(4, Collections.<String, Class<?>>emptyMap());
         rs.close();
         stmt.close();
 
@@ -150,11 +148,11 @@ public class StatFilterOpenBlobCountTest2 extends TestCase {
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        rs.getObject("1", Collections.<String, Class<?>> emptyMap());
-        rs.getObject("2", Collections.<String, Class<?>> emptyMap());
-        rs.getObject("3", Collections.<String, Class<?>> emptyMap());
-        rs.getObject("4", Collections.<String, Class<?>> emptyMap());
-        rs.getObject("5", Collections.<String, Class<?>> emptyMap());
+        rs.getObject("1", Collections.<String, Class<?>>emptyMap());
+        rs.getObject("2", Collections.<String, Class<?>>emptyMap());
+        rs.getObject("3", Collections.<String, Class<?>>emptyMap());
+        rs.getObject("4", Collections.<String, Class<?>>emptyMap());
+        rs.getObject("5", Collections.<String, Class<?>>emptyMap());
         rs.close();
         stmt.close();
 

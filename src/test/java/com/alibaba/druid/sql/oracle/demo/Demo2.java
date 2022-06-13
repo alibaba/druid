@@ -34,7 +34,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class Demo2 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "select * from user where uid = 2 and uname = ?";
         List<Object> parameters = new ArrayList<Object>();
@@ -91,9 +90,8 @@ public class Demo2 extends TestCase {
     }
 
     private static class MyVisitor extends MySqlASTVisitorAdapter {
-
-        private int                      varIndex        = 0;
-        private List<SQLExpr>  variantList     = new ArrayList<SQLExpr>();
+        private int varIndex = 0;
+        private List<SQLExpr> variantList = new ArrayList<SQLExpr>();
         private List<SQLExprTableSource> tableSourceList = new ArrayList<SQLExprTableSource>();
 
         public boolean visit(SQLVariantRefExpr x) {
@@ -116,7 +114,7 @@ public class Demo2 extends TestCase {
 
             return true;
         }
-        
+
         public boolean visit(SQLExprTableSource x) {
             tableSourceList.add(x);
             return true;

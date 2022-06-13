@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlSelectTest_112_orderBy extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "select coach_id, tournament_name ,tournament_id, season_id, season, count(1) as num,\n" +
                 "sum(case when wdl = 0 then 1 else 0 end) as loss,\n" +
@@ -58,7 +57,7 @@ public class MySqlSelectTest_112_orderBy extends TestCase {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(2, visitor.getTables().size());
         assertEquals(14, visitor.getColumns().size());
         assertEquals(10, visitor.getConditions().size());
@@ -107,7 +106,6 @@ public class MySqlSelectTest_112_orderBy extends TestCase {
                 "GROUP BY coach_id, tournament_name, tournament_id, season_id, season\n" +
                 "ORDER BY season_id DESC", stmt.toString());
     }
-    
-    
-    
+
+
 }

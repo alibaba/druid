@@ -27,7 +27,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlDescribteTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = " DESCRIBE City";
 

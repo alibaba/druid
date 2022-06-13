@@ -26,25 +26,24 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest42 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"GROUP_NAME\" VARCHAR2(8) NOT NULL ENABLE, \n" +
-                "  \"GROUP_KEY\" NUMBER(19,0) NOT NULL ENABLE, \n" +
-                "  \"LOG_CMPLT_CSN\" VARCHAR2(128) NOT NULL ENABLE, \n" +
-                "  \"LOG_CMPLT_XIDS_SEQ\" NUMBER(5,0) NOT NULL ENABLE, \n" +
-                "  \"LOG_CMPLT_XIDS\" VARCHAR2(2000) NOT NULL ENABLE, \n" +
-                "   PRIMARY KEY (\"GROUP_NAME\", \"GROUP_KEY\", \"LOG_CMPLT_CSN\", \"LOG_CMPLT_XIDS_SEQ\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS NOCOMPRESS LOGGING\n" +
-                "  TABLESPACE \"USERS\"  ENABLE, \n" +
-                "   SUPPLEMENTAL LOG GROUP \"GGS_15754\" (\"GROUP_NAME\", \"GROUP_KEY\", \"LOG_CMPLT_CSN\", \"LOG_CMPLT_XIDS_SEQ\") ALWAYS, \n" +
-                "   SUPPLEMENTAL LOG DATA (PRIMARY KEY) COLUMNS, \n" +
-                "   SUPPLEMENTAL LOG DATA (UNIQUE INDEX) COLUMNS, \n" +
-                "   SUPPLEMENTAL LOG DATA (FOREIGN KEY) COLUMNS\n" +
-                "   ) SEGMENT CREATION DEFERRED \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
-                "  TABLESPACE \"USERS\" \n";
+                "CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"GROUP_NAME\" VARCHAR2(8) NOT NULL ENABLE, \n" +
+                        "  \"GROUP_KEY\" NUMBER(19,0) NOT NULL ENABLE, \n" +
+                        "  \"LOG_CMPLT_CSN\" VARCHAR2(128) NOT NULL ENABLE, \n" +
+                        "  \"LOG_CMPLT_XIDS_SEQ\" NUMBER(5,0) NOT NULL ENABLE, \n" +
+                        "  \"LOG_CMPLT_XIDS\" VARCHAR2(2000) NOT NULL ENABLE, \n" +
+                        "   PRIMARY KEY (\"GROUP_NAME\", \"GROUP_KEY\", \"LOG_CMPLT_CSN\", \"LOG_CMPLT_XIDS_SEQ\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS NOCOMPRESS LOGGING\n" +
+                        "  TABLESPACE \"USERS\"  ENABLE, \n" +
+                        "   SUPPLEMENTAL LOG GROUP \"GGS_15754\" (\"GROUP_NAME\", \"GROUP_KEY\", \"LOG_CMPLT_CSN\", \"LOG_CMPLT_XIDS_SEQ\") ALWAYS, \n" +
+                        "   SUPPLEMENTAL LOG DATA (PRIMARY KEY) COLUMNS, \n" +
+                        "   SUPPLEMENTAL LOG DATA (UNIQUE INDEX) COLUMNS, \n" +
+                        "   SUPPLEMENTAL LOG DATA (FOREIGN KEY) COLUMNS\n" +
+                        "   ) SEGMENT CREATION DEFERRED \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                        "  TABLESPACE \"USERS\" \n";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -81,7 +80,7 @@ public class OracleCreateTableTest42 extends OracleTest {
                         "NOCOMPRESS\n" +
                         "LOGGING\n" +
                         "TABLESPACE \"USERS\"",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

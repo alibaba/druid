@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 
 public class MySqlSelectTest_253 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT a FROM t1 GROUP BY ()";
 

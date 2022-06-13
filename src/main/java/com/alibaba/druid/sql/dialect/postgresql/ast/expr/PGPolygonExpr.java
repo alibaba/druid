@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import java.util.Collections;
 import java.util.List;
 
-
 public class PGPolygonExpr extends PGExprImpl implements SQLReplaceable {
-
     private SQLExpr value;
 
     public PGPolygonExpr clone() {
@@ -95,6 +93,4 @@ public class PGPolygonExpr extends PGExprImpl implements SQLReplaceable {
         }
         return true;
     }
-
 }
-

@@ -27,10 +27,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleDropIndexTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "DROP INDEX async_m_s_snapshot_id";
+                "DROP INDEX async_m_s_snapshot_id";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -38,7 +37,7 @@ public class OracleDropIndexTest extends OracleTest {
         print(statementList);
 
         Assert.assertEquals("DROP INDEX async_m_s_snapshot_id",
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);

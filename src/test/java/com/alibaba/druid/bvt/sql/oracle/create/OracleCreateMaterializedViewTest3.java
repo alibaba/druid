@@ -25,38 +25,37 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateMaterializedViewTest3 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "DROP MATERIALIZED VIEW ATOM_MVIEW.NONAUTO_CLAIM_FOLDER_T;\n" +
-                "--create materualized_view\n" +
-                "CREATE MATERIALIZED VIEW ATOM_MVIEW.NONAUTO_CLAIM_FOLDER_T\n" +
-                "PARTITION BY RANGE (BRANCH_COMPANY_CODE)\n" +
-                "(  \n" +
-                "  PARTITION P1010100 VALUES LESS THAN ('1020100')\n" +
-                "    LOGGING\n" +
-                "    NOCOMPRESS ,  \n" +
-                "  PARTITION P1020100 VALUES LESS THAN ('1030100')\n" +
-                "    LOGGING\n" +
-                "    NOCOMPRESS ,  \n" +
-                "  PARTITION P7040100 VALUES LESS THAN ('7050100')\n" +
-                "    LOGGING\n" +
-                "    NOCOMPRESS ,  \n" +
-                "  PARTITION P7050100 VALUES LESS THAN ('7060100')\n" +
-                "    LOGGING\n" +
-                "    NOCOMPRESS ,  \n" +
-                "  PARTITION P7060100 VALUES LESS THAN (MAXVALUE)\n" +
-                "    LOGGING\n" +
-                "    NOCOMPRESS\n" +
-                ")\n" +
-                "NOCACHE\n" +
-                "LOGGING\n" +
-                "NOCOMPRESS\n" +
-                "NOPARALLEL\n" +
-                "BUILD DEFERRED\n" +
-                "REFRESH FAST ON DEMAND\n" +
-                "WITH ROWID\n" +
-                "AS SELECT * FROM atom.NONAUTO_CLAIM_FOLDER_T@IDS_44;";
+                "DROP MATERIALIZED VIEW ATOM_MVIEW.NONAUTO_CLAIM_FOLDER_T;\n" +
+                        "--create materualized_view\n" +
+                        "CREATE MATERIALIZED VIEW ATOM_MVIEW.NONAUTO_CLAIM_FOLDER_T\n" +
+                        "PARTITION BY RANGE (BRANCH_COMPANY_CODE)\n" +
+                        "(  \n" +
+                        "  PARTITION P1010100 VALUES LESS THAN ('1020100')\n" +
+                        "    LOGGING\n" +
+                        "    NOCOMPRESS ,  \n" +
+                        "  PARTITION P1020100 VALUES LESS THAN ('1030100')\n" +
+                        "    LOGGING\n" +
+                        "    NOCOMPRESS ,  \n" +
+                        "  PARTITION P7040100 VALUES LESS THAN ('7050100')\n" +
+                        "    LOGGING\n" +
+                        "    NOCOMPRESS ,  \n" +
+                        "  PARTITION P7050100 VALUES LESS THAN ('7060100')\n" +
+                        "    LOGGING\n" +
+                        "    NOCOMPRESS ,  \n" +
+                        "  PARTITION P7060100 VALUES LESS THAN (MAXVALUE)\n" +
+                        "    LOGGING\n" +
+                        "    NOCOMPRESS\n" +
+                        ")\n" +
+                        "NOCACHE\n" +
+                        "LOGGING\n" +
+                        "NOCOMPRESS\n" +
+                        "NOPARALLEL\n" +
+                        "BUILD DEFERRED\n" +
+                        "REFRESH FAST ON DEMAND\n" +
+                        "WITH ROWID\n" +
+                        "AS SELECT * FROM atom.NONAUTO_CLAIM_FOLDER_T@IDS_44;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -91,7 +90,7 @@ public class OracleCreateMaterializedViewTest3 extends OracleTest {
                         "AS\n" +
                         "SELECT *\n" +
                         "FROM atom.NONAUTO_CLAIM_FOLDER_T@IDS_44;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

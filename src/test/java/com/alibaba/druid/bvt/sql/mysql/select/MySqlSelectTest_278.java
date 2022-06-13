@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 
 public class MySqlSelectTest_278 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select GROUP_CONCAT(\"\\\"\" + code + \"\\\"\")  from district_t\n" +
                 "where code LIKE '98%'";
@@ -34,7 +33,6 @@ public class MySqlSelectTest_278 extends MysqlTest {
                 "FROM district_t\n" +
                 "WHERE code LIKE '98%'", stmt.toString());
     }
-
 
 
 }

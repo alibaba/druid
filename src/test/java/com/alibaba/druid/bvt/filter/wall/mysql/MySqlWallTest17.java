@@ -23,15 +23,14 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest17 extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "DELETE FROM as_home_notification WHERE uid>? AND new=? AND dateline<?-?")); //
+                "DELETE FROM as_home_notification WHERE uid>? AND new=? AND dateline<?-?")); //
     }
 }

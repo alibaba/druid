@@ -25,12 +25,11 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.util.FnvHash;
 
 public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
-
-    public OracleToMySqlOutputVisitor(Appendable appender, boolean printPostSemi){
+    public OracleToMySqlOutputVisitor(Appendable appender, boolean printPostSemi) {
         super(appender, printPostSemi);
     }
 
-    public OracleToMySqlOutputVisitor(Appendable appender){
+    public OracleToMySqlOutputVisitor(Appendable appender) {
         super(appender);
     }
 
@@ -39,7 +38,7 @@ public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
         {
             if (x.getParent() instanceof SQLSelect) {
                 SQLSelect select = (SQLSelect) x.getParent();
-                if (select.getParent() instanceof SQLSelectStatement || select.getParent() instanceof  SQLSubqueryTableSource) {
+                if (select.getParent() instanceof SQLSelectStatement || select.getParent() instanceof SQLSubqueryTableSource) {
                     parentIsSelectStatment = true;
                 }
             }
@@ -50,7 +49,7 @@ public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
         }
 
         if (x.getWhere() instanceof SQLBinaryOpExpr //
-            && x.getFrom() instanceof SQLSubqueryTableSource //
+                && x.getFrom() instanceof SQLSubqueryTableSource //
         ) {
             int rownum;
             String ident;
@@ -77,7 +76,7 @@ public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
                 for (SQLSelectItem selectItem : queryBlock.getSelectList()) {
                     if (isRowNumber(selectItem.getExpr())) {
                         if (where.getLeft() instanceof SQLIdentifierExpr
-                            && ((SQLIdentifierExpr) where.getLeft()).getName().equals(selectItem.getAlias())) {
+                                && ((SQLIdentifierExpr) where.getLeft()).getName().equals(selectItem.getAlias())) {
                             isSubQueryRowNumMapping = true;
                         }
                     }
@@ -110,8 +109,7 @@ public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
                 SQLBinaryOperator subOp = subWhere.getOperator();
 
                 if (isRowNumber(subWhere.getLeft()) //
-                    && subWhere.getRight() instanceof SQLIntegerExpr) {
-
+                        && subWhere.getRight() instanceof SQLIntegerExpr) {
                     int subRownum = ((SQLIntegerExpr) subWhere.getRight()).getNumber().intValue();
 
                     Integer offset = null;

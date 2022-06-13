@@ -25,16 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropEventStatement extends SQLStatementImpl implements SQLDropStatement {
-
     private SQLExpr name;
     private boolean ifExists;
 
     public SQLDropEventStatement() {
-
     }
 
     public SQLDropEventStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

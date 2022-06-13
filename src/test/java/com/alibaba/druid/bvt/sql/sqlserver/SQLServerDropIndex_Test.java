@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerDropIndex_Test extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "DROP INDEX async_measure_snapshots.async_m_s_snapshot_id";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);

@@ -12,12 +12,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_155 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT SQL_NO_CACHE ((layer_0_right_tb.integer_test) is TRUE)FROM corona_select_multi_db_multi_tb AS layer_0_left_tb LEFT JOIN corona_select_one_db_one_tb AS layer_0_right_tb ON layer_0_right_tb.decimal_test=layer_0_left_tb.varchar_test WHERE '18015376320243458'=18015376320243458 NOT BETWEEN layer_0_right_tb.tinyint_1bit_test AND 'x-3'";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

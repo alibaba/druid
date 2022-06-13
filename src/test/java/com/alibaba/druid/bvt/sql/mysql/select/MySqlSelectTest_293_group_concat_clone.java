@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 
 public class MySqlSelectTest_293_group_concat_clone extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT student_name,\n" +
                 "         GROUP_CONCAT(DISTINCT test_score\n" +
@@ -42,7 +41,6 @@ public class MySqlSelectTest_293_group_concat_clone extends MysqlTest {
                 "GROUP BY student_name;", stmt.clone().toString());
 
     }
-
 
 
 }

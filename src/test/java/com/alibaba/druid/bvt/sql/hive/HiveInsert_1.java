@@ -32,7 +32,6 @@ public class HiveInsert_1 extends TestCase {
                 "select pvs.viewTime, pvs.userid, pvs.page_url, pvs.referrer_url, null\n" +
                 "\t, null, pvs.ip, pvs.cnt", SQLUtils.formatHive(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-
 //        System.out.println("Tables : " + visitor.getTables());
 //      System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());

@@ -20,14 +20,12 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr implements OracleExpr {
-
     private Double value;
 
-    public OracleBinaryDoubleExpr(){
-
+    public OracleBinaryDoubleExpr() {
     }
 
-    public OracleBinaryDoubleExpr(Double value){
+    public OracleBinaryDoubleExpr(Double value) {
         super();
         this.value = value;
     }

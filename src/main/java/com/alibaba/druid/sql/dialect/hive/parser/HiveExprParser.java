@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLCurrentUserExpr;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
@@ -28,12 +27,12 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.Arrays;
 
 public class HiveExprParser extends SQLExprParser {
-    private final static String[] AGGREGATE_FUNCTIONS;
-    private final static long[] AGGREGATE_FUNCTIONS_CODES;
+    private static final String[] AGGREGATE_FUNCTIONS;
+    private static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
-                "ROWNUMBER" };
+        String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
+                "ROWNUMBER"};
 
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
@@ -44,17 +43,17 @@ public class HiveExprParser extends SQLExprParser {
         }
     }
 
-    public HiveExprParser(String sql){
+    public HiveExprParser(String sql) {
         this(new HiveLexer(sql));
         this.lexer.nextToken();
     }
 
-    public HiveExprParser(String sql, SQLParserFeature... features){
+    public HiveExprParser(String sql, SQLParserFeature... features) {
         this(new HiveLexer(sql, features));
         this.lexer.nextToken();
     }
 
-    public HiveExprParser(Lexer lexer){
+    public HiveExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
@@ -104,7 +103,7 @@ public class HiveExprParser extends SQLExprParser {
         final Token tok = lexer.token();
         switch (tok) {
             case IDENTIFIER:
-                final long hash_lower = lexer.hash_lower();
+                final long hash_lower = lexer.hashLCase();
                 if (hash_lower == FnvHash.Constants.OUTLINE) {
                     lexer.nextToken();
                     SQLExpr file = primary();
@@ -146,8 +145,6 @@ public class HiveExprParser extends SQLExprParser {
 
         return super.primary();
     }
-
-
 
     protected SQLExpr parseAliasExpr(String alias) {
         String chars = alias.substring(1, alias.length() - 1);
@@ -201,7 +198,6 @@ public class HiveExprParser extends SQLExprParser {
             lexer.nextToken();
             this.parseAssignItem(column.getColProperties(), column);
         }
-
 
         return super.parseColumnRest(column);
     }

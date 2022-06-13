@@ -27,14 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PGFunctionTableSource extends SQLExprTableSource implements PGSQLObject {
-
     private final List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
-    public PGFunctionTableSource(){
-
+    public PGFunctionTableSource() {
     }
 
-    public PGFunctionTableSource(SQLExpr expr){
+    public PGFunctionTableSource(SQLExpr expr) {
         this.expr = expr;
     }
 
@@ -57,7 +55,6 @@ public class PGFunctionTableSource extends SQLExprTableSource implements PGSQLOb
 
     @Override
     public PGFunctionTableSource clone() {
-
         PGFunctionTableSource x = new PGFunctionTableSource();
 
         x.setAlias(this.alias);

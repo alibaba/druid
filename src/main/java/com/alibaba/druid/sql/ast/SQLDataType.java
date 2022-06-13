@@ -20,7 +20,6 @@ import com.alibaba.druid.DbType;
 import java.util.List;
 
 public interface SQLDataType extends SQLObject {
-
     String getName();
 
     long nameHashCode64();
@@ -30,14 +29,17 @@ public interface SQLDataType extends SQLObject {
     List<SQLExpr> getArguments();
 
     Boolean getWithTimeZone();
-    void  setWithTimeZone(Boolean value);
+
+    void setWithTimeZone(Boolean value);
 
     boolean isWithLocalTimeZone();
+
     void setWithLocalTimeZone(boolean value);
 
     SQLDataType clone();
 
     void setDbType(DbType dbType);
+
     DbType getDbType();
 
     int jdbcType();
@@ -69,7 +71,10 @@ public interface SQLDataType extends SQLObject {
     }
 
     boolean isInt();
+
     boolean isNumberic();
+
     public boolean isString();
+
     public boolean hasKeyLength();
 }

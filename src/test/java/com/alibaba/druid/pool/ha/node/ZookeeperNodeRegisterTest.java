@@ -20,7 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ZookeeperNodeRegisterTest {
-    private final static Log LOG = LogFactory.getLog(ZookeeperNodeRegisterTest.class);
+    private static final Log LOG = LogFactory.getLog(ZookeeperNodeRegisterTest.class);
     private static TestingServer server;
     private final String PATH = "/ha-druid-datasource";
     private ZookeeperNodeRegister register;

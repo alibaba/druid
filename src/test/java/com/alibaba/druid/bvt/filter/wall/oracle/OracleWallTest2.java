@@ -22,7 +22,6 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallUtils;
 
 public class OracleWallTest2 extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateOracle("CREATE SEQUENCE projects_seq START WITH 10000"));
     }

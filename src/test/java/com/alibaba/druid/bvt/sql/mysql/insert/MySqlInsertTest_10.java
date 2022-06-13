@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlInsertTest_10 extends MysqlTest {
-
     public void test_parseCompleteValues_false() throws Exception {
         String sql = "insert into t(a,b) values ('a1','b1'),('a2','b2'),('a3','b3'),('a4','b4');";
 
@@ -48,9 +47,9 @@ public class MySqlInsertTest_10 extends MysqlTest {
         stmt.accept(visitor);
 
         String formatSql = "INSERT INTO t (a, b)"//
-                           + "\nVALUES ('a1', 'b1'),"//
-                           + "\n\t('a2', 'b2'),"//
-                           + "\n\t('a3', 'b3')";
+                + "\nVALUES ('a1', 'b1'),"//
+                + "\n\t('a2', 'b2'),"//
+                + "\n\t('a3', 'b3')";
         Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 
@@ -73,10 +72,10 @@ public class MySqlInsertTest_10 extends MysqlTest {
         stmt.accept(visitor);
 
         String formatSql = "INSERT INTO t (a, b)"//
-                           + "\nVALUES ('a1', 'b1'),"//
-                           + "\n\t('a2', 'b2'),"//
-                           + "\n\t('a3', 'b3'),"//
-                           + "\n\t('a4', 'b4');";
+                + "\nVALUES ('a1', 'b1'),"//
+                + "\n\t('a2', 'b2'),"//
+                + "\n\t('a3', 'b3'),"//
+                + "\n\t('a4', 'b4');";
         Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 }

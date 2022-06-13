@@ -15,24 +15,22 @@
  */
 package com.alibaba.druid.support.hibernate;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Map;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.service.spi.Configurable;
 import org.hibernate.service.spi.Stoppable;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceFactory;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Map;
 
 public class DruidConnectionProvider implements ConnectionProvider, Configurable, Stoppable {
-
     private static final long serialVersionUID = 1026193803901107651L;
 
-    private DruidDataSource   dataSource;
+    private DruidDataSource dataSource;
 
-    public DruidConnectionProvider(){
+    public DruidConnectionProvider() {
         dataSource = new DruidDataSource();
     }
 

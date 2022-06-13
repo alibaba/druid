@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLServerSelectQueryBlock extends SQLSelectQueryBlock {
-
     private SQLServerTop top;
 
     public SQLServerSelectQueryBlock() {

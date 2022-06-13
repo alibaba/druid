@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_34 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "-- abc\n" +
                 "CREATE DATABASE `ddl_json_string` WITH DBPROPERTIES (LOCATION = 'oss://oss-cn-hangzhou-for-openanalytics/datasets/tpch/1x/json_string/', catalog = 'oss');"; //

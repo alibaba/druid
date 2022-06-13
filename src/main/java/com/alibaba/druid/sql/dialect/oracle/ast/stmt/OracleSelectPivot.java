@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
@@ -24,14 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleSelectPivot extends OracleSelectPivotBase {
-
     private boolean xml;
     private final List<Item> items = new ArrayList<Item>();
     private final List<SQLExpr> pivotFor = new ArrayList<SQLExpr>();
     private final List<Item> pivotIn = new ArrayList<Item>();
 
     public OracleSelectPivot() {
-
     }
 
     public void accept0(OracleASTVisitor visitor) {
@@ -72,12 +69,10 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
     }
 
     public static class Item extends OracleSQLObjectImpl {
-
         private String alias;
         private SQLExpr expr;
 
         public Item() {
-
         }
 
         public String getAlias() {
@@ -106,6 +101,7 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
 
             visitor.endVisit(this);
         }
+
         @Override
         public Item clone() {
             Item x = new Item();
@@ -123,7 +119,6 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
 
     @Override
     public OracleSelectPivot clone() {
-
         OracleSelectPivot x = new OracleSelectPivot();
 
         x.setXml(this.xml);

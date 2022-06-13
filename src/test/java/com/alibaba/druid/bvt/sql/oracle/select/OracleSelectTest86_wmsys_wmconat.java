@@ -29,7 +29,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest86_wmsys_wmconat extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select WMSYS.WM_CONCAT(name) from emp"; //

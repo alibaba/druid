@@ -22,10 +22,9 @@ import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OdpsListStmt extends SQLStatementImpl {
-
     private SQLExpr object;
 
-    public OdpsListStmt(){
+    public OdpsListStmt() {
         super(DbType.odps);
     }
 

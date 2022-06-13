@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class OracleFlashbackQueryTest4 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "SELECT * FROM employees\n" +
                 "AS OF TIMESTAMP\n" +

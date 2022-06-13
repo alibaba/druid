@@ -6,8 +6,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface AdsVisitor extends SQLASTVisitor {
     boolean visit(MySqlPrimaryKey x);
+
     void endVisit(MySqlPrimaryKey x);
 
     boolean visit(MySqlCreateTableStatement x);
+
     void endVisit(MySqlCreateTableStatement x);
 }

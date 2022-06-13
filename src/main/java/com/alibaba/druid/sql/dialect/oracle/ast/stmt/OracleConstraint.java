@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 
 public interface OracleConstraint extends OracleSQLObject, SQLConstraint, SQLTableElement {
-
     SQLName getExceptionsInto();
 
     void setExceptionsInto(SQLName exceptionsInto);
@@ -35,6 +34,7 @@ public interface OracleConstraint extends OracleSQLObject, SQLConstraint, SQLTab
     void setEnable(Boolean enable);
 
     Boolean getValidate();
+
     void setValidate(Boolean validate);
 
     Initially getInitially();

@@ -33,10 +33,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.support.json.JSONUtils;
 
 public class TestMigrate extends OracleTest {
-
-    private String          jdbcUrl;
-    private String          user;
-    private String          password;
+    private String jdbcUrl;
+    private String user;
+    private String password;
     private DruidDataSource dataSource;
 
     public void setUp() throws Exception {
@@ -134,10 +133,10 @@ public class TestMigrate extends OracleTest {
         clearResult();
 
         String sql = "SELECT SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
-                     "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " + //
-                     "  FROM db_day_sqltext " + //
-                     "  WHERE snap_date = trunc(sysdate) " + //
-                     "  ORDER BY db_pk, sql_id, piece";
+                "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " + //
+                "  FROM db_day_sqltext " + //
+                "  WHERE snap_date = trunc(sysdate) " + //
+                "  ORDER BY db_pk, sql_id, piece";
 
         Statement stmt = conn.createStatement();
         OracleStatement oracleStmt = stmt.unwrap(OracleStatement.class);
@@ -233,9 +232,9 @@ public class TestMigrate extends OracleTest {
         }
 
         String sql = "INSERT INTO db_day_sql_fulltext " + //
-                     "(SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
-                     ", COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT)" + //
-                     " VALUES (?, ?, ?, ?, ?,   ?, ?, ?, ?)";
+                "(SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
+                ", COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT)" + //
+                " VALUES (?, ?, ?, ?, ?,   ?, ?, ?, ?)";
         Connection conn = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement(sql);
@@ -262,16 +261,15 @@ public class TestMigrate extends OracleTest {
     }
 
     public static class Record {
-
-        private Date         snapshotDate;
-        private String       dbName;
-        private String       sqlId;
+        private Date snapshotDate;
+        private String dbName;
+        private String sqlId;
         private StringBuffer sqlText = new StringBuffer();
-        private Integer      piece;
-        private Integer      commandType;
-        private Date         lastSnapshotDate;
-        private Long         dbPk;
-        private String       result;
+        private Integer piece;
+        private Integer commandType;
+        private Date lastSnapshotDate;
+        private Long dbPk;
+        private String result;
 
         public String getResult() {
             return result;

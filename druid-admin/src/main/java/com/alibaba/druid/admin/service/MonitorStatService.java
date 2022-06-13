@@ -40,12 +40,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class MonitorStatService implements DruidStatServiceMBean {
+    public static final int RESULT_CODE_SUCCESS = 1;
+    public static final int RESULT_CODE_ERROR = -1;
 
-    public final static int RESULT_CODE_SUCCESS = 1;
-    public final static int RESULT_CODE_ERROR = -1;
-
-    private final static int DEFAULT_PAGE = 1;
-    private final static int DEFAULT_PER_PAGE_COUNT = Integer.MAX_VALUE;
+    private static final int DEFAULT_PAGE = 1;
+    private static final int DEFAULT_PER_PAGE_COUNT = Integer.MAX_VALUE;
     private static final String ORDER_TYPE_DESC = "desc";
     private static final String ORDER_TYPE_ASC = "asc";
     private static final String DEFAULT_ORDER_TYPE = ORDER_TYPE_ASC;

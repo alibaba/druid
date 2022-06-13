@@ -22,11 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlOptimizeStatement extends MySqlStatementImpl {
+    private boolean noWriteToBinlog;
+    private boolean local;
 
-    private boolean                          noWriteToBinlog = false;
-    private boolean                          local           = false;
-
-    protected final List<SQLExprTableSource> tableSources    = new ArrayList<SQLExprTableSource>();
+    protected final List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>();
 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {

@@ -13,7 +13,6 @@ import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 public class WallStatTest_drop_table extends TestCase {
-
     private String sql = "drop table t";
 
     protected void setUp() throws Exception {

@@ -22,7 +22,6 @@ import com.alibaba.druid.support.http.stat.WebAppStat;
 
 
 public class UserAgentWin8IETest extends TestCase {
-    
     public void test_mac_firefox() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");

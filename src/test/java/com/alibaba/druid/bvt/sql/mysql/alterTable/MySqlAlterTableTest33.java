@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
 
 public class MySqlAlterTableTest33 extends TestCase {
-
     public void test_exchange_0() throws Exception {
         String sql = "ALTER TABLE src.`part_tab` EXCHANGE PARTITION p9 WITH TABLE test_create_table without validation";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import java.util.List;
 
 public class OracleCreateTypeTest0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TYPE customer_typ_demo AS OBJECT\n" +

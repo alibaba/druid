@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableTouch extends SQLObjectImpl implements SQLAlterTableItem {
-
     private final List<SQLAssignItem> partition = new ArrayList<SQLAssignItem>(4);
 
     public List<SQLAssignItem> getPartition() {
@@ -31,9 +30,7 @@ public class SQLAlterTableTouch extends SQLObjectImpl implements SQLAlterTableIt
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor.visit(this)) {
-
-        }
+        visitor.visit(this);
         visitor.endVisit(this);
     }
 

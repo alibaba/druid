@@ -15,49 +15,34 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.CallableStatement;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.NClob;
-import java.sql.PreparedStatement;
-import java.sql.SQLClientInfoException;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.SQLXML;
-import java.sql.Savepoint;
-import java.sql.Statement;
-import java.sql.Struct;
+import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.stat.StatFilter;
+
+import java.sql.*;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import com.alibaba.druid.filter.FilterChainImpl;
-import com.alibaba.druid.filter.stat.StatFilter;
-
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionProxy {
-
-    private final Connection      connection;
+    private final Connection connection;
 
     private final DataSourceProxy dataSource;
 
-    private final Properties      properties;
+    private final Properties properties;
 
-    private final long            connectedTime;
+    private final long connectedTime;
 
-    private TransactionInfo       transactionInfo;
+    private TransactionInfo transactionInfo;
 
-    private int                   closeCount;
+    private int closeCount;
 
-    private FilterChainImpl       filterChain = null;
+    private FilterChainImpl filterChain;
 
-    public ConnectionProxyImpl(DataSourceProxy dataSource, Connection connection, Properties properties, long id){
+    public ConnectionProxyImpl(DataSourceProxy dataSource, Connection connection, Properties properties, long id) {
         super(connection, id);
         this.dataSource = dataSource;
         this.connection = connection;
@@ -192,7 +177,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     ) throws SQLException {
         FilterChainImpl chain = createChain();
         Statement stmt = chain.connection_createStatement(this, resultSetType, resultSetConcurrency,
-                                                          resultSetHoldability);
+                resultSetHoldability);
         recycleFilterChain(chain);
         return stmt;
     }
@@ -330,7 +315,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
                                          int resultSetHoldability) throws SQLException {
         FilterChainImpl chain = createChain();
         CallableStatement stmt = chain.connection_prepareCall(this, sql, resultSetType, resultSetConcurrency,
-                                                    resultSetHoldability);
+                resultSetHoldability);
         recycleFilterChain(chain);
         return stmt;
     }
@@ -369,7 +354,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
-                                                                                                      throws SQLException {
+            throws SQLException {
         FilterChainImpl chain = createChain();
         PreparedStatement stmt = chain.connection_prepareStatement(this, sql, resultSetType, resultSetConcurrency);
         recycleFilterChain(chain);
@@ -381,7 +366,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
                                               int resultSetHoldability) throws SQLException {
         FilterChainImpl chain = createChain();
         PreparedStatement stmt = chain.connection_prepareStatement(this, sql, resultSetType, resultSetConcurrency,
-                                                         resultSetHoldability);
+                resultSetHoldability);
         recycleFilterChain(chain);
         return stmt;
     }

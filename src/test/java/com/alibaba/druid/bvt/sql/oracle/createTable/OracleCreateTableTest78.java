@@ -23,52 +23,51 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest78 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE OR REPLACE FORCE VIEW \"TCP_EPM\".\"EPM_VW_CONTRACT\" (\"NID\", \"SCONTRACTNO\", \"SCONTRACTNAME\", \"NOFFICEID\", \"SOFFICENAME\", \"NSALEDEPTID\", \"SSALEDEPTNAME\", \"NPRODDEPTID\", \"SPRODDEPTNAME\", \"NCUSTOMERID\", \"SCUSTOMERNAME\", \"SSERVICEPROVIDERID\", \"SSERVICEPROVIDERNAME\", \"NMAINPRODUCTID\", \"SMAINPRODUCTNAME\", \"SCONTRACTTYPE\", \"SCONTRACTTYPETEXT\", \"SCONTRACTKIND\", \"SCONTRACTKINDTEXT\", \"SISFIRSTCHECKED\", \"SISLASTCHECKED\", \"SISOUTSOURCE\", \"SISRECONSIGN\", \"DGUARANTEE\", \"DCREATEDTIME\", \"NERPCONTRACTID\", \"NSTATE\", \"DFIRSTCHECKTIME\", \"DLASTCHECKTIME\", \"DPLANFIRSTCHECKTIME\", \"DPLANLASTCHECKTIME\") AS \n" +
-                "  select\n" +
-                "  EPM_TBL_CONTRACT.OID as nID,\n" +
-                "  EPM_TBL_CONTRACT.CONTRACTNO as sContractNo,\n" +
-                "  EPM_TBL_CONTRACT.CONTRACTNAME as sCONTRACTNAME,\n" +
-                "  EPM_TBL_CONTRACT.ENGDUTYDEP as nOfficeID,\n" +
-                "  TCP_FND_DEPT.DEPT_NAME as sOfficeName,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.nSaleDeptID as nSaleDeptID,\n" +
-                "  TCP_FND_DEPT1.DEPT_NAME as sSaleDeptName,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.nProdDeptID as nProdDeptID,\n" +
-                "  TCP_FND_DEPT2.DEPT_NAME as sProdDeptName,\n" +
-                "  EPM_TBL_CONTRACT.CUSTOMID as nCustomerID,\n" +
-                "  TCP_CUST_CUSTOMER.Name as sCustomerName,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.sServiceProviderID as sServiceProviderID,\n" +
-                "  TCP_CUST_ENUM.DESC_ as sServiceProviderName,\n" +
-                "  EPM_TBL_CONTRACT.MASTERPRODUCT as nMainProductID,\n" +
-                "  TCP_FND_PRODUCT.CN_NAME as sMainProductName,\n" +
-                "  EPM_TBL_CONTRACT.CONTRACTTYPE as sContractType,\n" +
-                "  TCP_FND_LOOKUP_CODE.MEANING as sContractTypeText,\n" +
-                "  EPM_TBL_CONTRACT.Contrctkind as sContractKind,\n" +
-                "  TCP_FND_LOOKUP_CODE1.MEANING as sContractKindText,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.sIsFirstChecked as sIsFirstChecked,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.sIsLastChecked as sIsLastChecked,\n" +
-                "  case when (select count(*) from EPM_TBL_ENGINE_PROJECT,EPM_TBL_SUBCONTRACT_DISPATCH where EPM_TBL_ENGINE_PROJECT.CONTRACTID=EPM_TBL_CONTRACT.Oid and EPM_TBL_ENGINE_PROJECT.OID=EPM_TBL_SUBCONTRACT_DISPATCH.ENGINEID) > 0 then '/' else '&' end as sIsOutSource,\n" +
-                "  case when (select count(*) from TCP_EPM.EPM_TBL_RECONSIGN_RECONSIGN where TCP_EPM.EPM_TBL_RECONSIGN_RECONSIGN.CONTRACTID=EPM_TBL_CONTRACT.Oid) > 0 then '/' else '&' end as sIsReconsign,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.dGuarantee as dGuarantee,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.dCreatedTime as dCreatedTime,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.nERPContractID as nERPContractID,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.nState as nState,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.DFIRSTCHECKTIME as DFIRSTCHECKTIME,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.DLASTCHECKTIME as DLASTCHECKTIME,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.DPLANFIRSTCHECKTIME as DPLANFIRSTCHECKTIME,\n" +
-                "  TCP_EPM.EPM_TB_CONTRACT_EX.DPLANLASTCHECKTIME as DPLANLASTCHECKTIME\n" +
-                "    from\n" +
-                "    ((((((((( TCP_EPM.Epm_Tbl_Contract left join TCP_FND.TCP_FND_DEPT on TCP_FND_DEPT.Dept_Id=Epm_Tbl_Contract.Engdutydep )\n" +
-                "    left join TCP_EPM.EPM_TB_CONTRACT_EX on EPM_TB_CONTRACT_EX.NCONTRACTID=Epm_Tbl_Contract.Oid)\n" +
-                "    left join TCP_FND.TCP_FND_DEPT TCP_FND_DEPT1 on TCP_FND_DEPT1.Dept_Id=EPM_TB_CONTRACT_EX.nSaleDeptID)\n" +
-                "    left join TCP_FND.TCP_FND_DEPT TCP_FND_DEPT2 on TCP_FND_DEPT2.Dept_Id=EPM_TB_CONTRACT_EX.nProdDeptID)\n" +
-                "    left join TCP_CUST.TCP_CUST_CUSTOMER on TCP_CUST_CUSTOMER.ID=EPM_TBL_CONTRACT.Customid)\n" +
-                "    left join TCP_CUST.TCP_CUST_ENUM on TCP_CUST_ENUM.Codeid=EPM_TB_CONTRACT_EX.sServiceProviderID)\n" +
-                "    left join TCP_FND.TCP_FND_PRODUCT on TCP_FND_PRODUCT.INVENTORY_ITEM_ID=EPM_TBL_CONTRACT.MASTERPRODUCT)\n" +
-                "    left join TCP_FND.TCP_FND_LOOKUP_CODE on TCP_FND_LOOKUP_CODE.LOOKUP_TYPE='CONTRACT_TYPE' and TCP_FND_LOOKUP_CODE.LOOKUP_CODE=EPM_TBL_CONTRACT.CONTRACTTYPE)\n" +
-                "    left join TCP_FND.TCP_FND_LOOKUP_CODE TCP_FND_LOOKUP_CODE1 on TCP_FND_LOOKUP_CODE1.LOOKUP_TYPE='CONTRACT_CATE' and TCP_FND_LOOKUP_CODE1.LOOKUP_CODE=EPM_TBL_CONTRACT.Contrctkind)";
+                "CREATE OR REPLACE FORCE VIEW \"TCP_EPM\".\"EPM_VW_CONTRACT\" (\"NID\", \"SCONTRACTNO\", \"SCONTRACTNAME\", \"NOFFICEID\", \"SOFFICENAME\", \"NSALEDEPTID\", \"SSALEDEPTNAME\", \"NPRODDEPTID\", \"SPRODDEPTNAME\", \"NCUSTOMERID\", \"SCUSTOMERNAME\", \"SSERVICEPROVIDERID\", \"SSERVICEPROVIDERNAME\", \"NMAINPRODUCTID\", \"SMAINPRODUCTNAME\", \"SCONTRACTTYPE\", \"SCONTRACTTYPETEXT\", \"SCONTRACTKIND\", \"SCONTRACTKINDTEXT\", \"SISFIRSTCHECKED\", \"SISLASTCHECKED\", \"SISOUTSOURCE\", \"SISRECONSIGN\", \"DGUARANTEE\", \"DCREATEDTIME\", \"NERPCONTRACTID\", \"NSTATE\", \"DFIRSTCHECKTIME\", \"DLASTCHECKTIME\", \"DPLANFIRSTCHECKTIME\", \"DPLANLASTCHECKTIME\") AS \n" +
+                        "  select\n" +
+                        "  EPM_TBL_CONTRACT.OID as nID,\n" +
+                        "  EPM_TBL_CONTRACT.CONTRACTNO as sContractNo,\n" +
+                        "  EPM_TBL_CONTRACT.CONTRACTNAME as sCONTRACTNAME,\n" +
+                        "  EPM_TBL_CONTRACT.ENGDUTYDEP as nOfficeID,\n" +
+                        "  TCP_FND_DEPT.DEPT_NAME as sOfficeName,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.nSaleDeptID as nSaleDeptID,\n" +
+                        "  TCP_FND_DEPT1.DEPT_NAME as sSaleDeptName,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.nProdDeptID as nProdDeptID,\n" +
+                        "  TCP_FND_DEPT2.DEPT_NAME as sProdDeptName,\n" +
+                        "  EPM_TBL_CONTRACT.CUSTOMID as nCustomerID,\n" +
+                        "  TCP_CUST_CUSTOMER.Name as sCustomerName,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.sServiceProviderID as sServiceProviderID,\n" +
+                        "  TCP_CUST_ENUM.DESC_ as sServiceProviderName,\n" +
+                        "  EPM_TBL_CONTRACT.MASTERPRODUCT as nMainProductID,\n" +
+                        "  TCP_FND_PRODUCT.CN_NAME as sMainProductName,\n" +
+                        "  EPM_TBL_CONTRACT.CONTRACTTYPE as sContractType,\n" +
+                        "  TCP_FND_LOOKUP_CODE.MEANING as sContractTypeText,\n" +
+                        "  EPM_TBL_CONTRACT.Contrctkind as sContractKind,\n" +
+                        "  TCP_FND_LOOKUP_CODE1.MEANING as sContractKindText,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.sIsFirstChecked as sIsFirstChecked,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.sIsLastChecked as sIsLastChecked,\n" +
+                        "  case when (select count(*) from EPM_TBL_ENGINE_PROJECT,EPM_TBL_SUBCONTRACT_DISPATCH where EPM_TBL_ENGINE_PROJECT.CONTRACTID=EPM_TBL_CONTRACT.Oid and EPM_TBL_ENGINE_PROJECT.OID=EPM_TBL_SUBCONTRACT_DISPATCH.ENGINEID) > 0 then '/' else '&' end as sIsOutSource,\n" +
+                        "  case when (select count(*) from TCP_EPM.EPM_TBL_RECONSIGN_RECONSIGN where TCP_EPM.EPM_TBL_RECONSIGN_RECONSIGN.CONTRACTID=EPM_TBL_CONTRACT.Oid) > 0 then '/' else '&' end as sIsReconsign,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.dGuarantee as dGuarantee,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.dCreatedTime as dCreatedTime,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.nERPContractID as nERPContractID,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.nState as nState,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.DFIRSTCHECKTIME as DFIRSTCHECKTIME,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.DLASTCHECKTIME as DLASTCHECKTIME,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.DPLANFIRSTCHECKTIME as DPLANFIRSTCHECKTIME,\n" +
+                        "  TCP_EPM.EPM_TB_CONTRACT_EX.DPLANLASTCHECKTIME as DPLANLASTCHECKTIME\n" +
+                        "    from\n" +
+                        "    ((((((((( TCP_EPM.Epm_Tbl_Contract left join TCP_FND.TCP_FND_DEPT on TCP_FND_DEPT.Dept_Id=Epm_Tbl_Contract.Engdutydep )\n" +
+                        "    left join TCP_EPM.EPM_TB_CONTRACT_EX on EPM_TB_CONTRACT_EX.NCONTRACTID=Epm_Tbl_Contract.Oid)\n" +
+                        "    left join TCP_FND.TCP_FND_DEPT TCP_FND_DEPT1 on TCP_FND_DEPT1.Dept_Id=EPM_TB_CONTRACT_EX.nSaleDeptID)\n" +
+                        "    left join TCP_FND.TCP_FND_DEPT TCP_FND_DEPT2 on TCP_FND_DEPT2.Dept_Id=EPM_TB_CONTRACT_EX.nProdDeptID)\n" +
+                        "    left join TCP_CUST.TCP_CUST_CUSTOMER on TCP_CUST_CUSTOMER.ID=EPM_TBL_CONTRACT.Customid)\n" +
+                        "    left join TCP_CUST.TCP_CUST_ENUM on TCP_CUST_ENUM.Codeid=EPM_TB_CONTRACT_EX.sServiceProviderID)\n" +
+                        "    left join TCP_FND.TCP_FND_PRODUCT on TCP_FND_PRODUCT.INVENTORY_ITEM_ID=EPM_TBL_CONTRACT.MASTERPRODUCT)\n" +
+                        "    left join TCP_FND.TCP_FND_LOOKUP_CODE on TCP_FND_LOOKUP_CODE.LOOKUP_TYPE='CONTRACT_TYPE' and TCP_FND_LOOKUP_CODE.LOOKUP_CODE=EPM_TBL_CONTRACT.CONTRACTTYPE)\n" +
+                        "    left join TCP_FND.TCP_FND_LOOKUP_CODE TCP_FND_LOOKUP_CODE1 on TCP_FND_LOOKUP_CODE1.LOOKUP_TYPE='CONTRACT_CATE' and TCP_FND_LOOKUP_CODE1.LOOKUP_CODE=EPM_TBL_CONTRACT.Contrctkind)";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -147,7 +146,7 @@ public class OracleCreateTableTest78 extends OracleTest {
                         "\tAND TCP_FND_LOOKUP_CODE.LOOKUP_CODE = EPM_TBL_CONTRACT.CONTRACTTYPE \n" +
                         "\tLEFT JOIN TCP_FND.TCP_FND_LOOKUP_CODE TCP_FND_LOOKUP_CODE1 ON TCP_FND_LOOKUP_CODE1.LOOKUP_TYPE = 'CONTRACT_CATE'\n" +
                         "\tAND TCP_FND_LOOKUP_CODE1.LOOKUP_CODE = EPM_TBL_CONTRACT.Contrctkind ",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

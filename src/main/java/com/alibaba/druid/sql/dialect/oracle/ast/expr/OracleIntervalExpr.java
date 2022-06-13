@@ -28,16 +28,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, OracleExpr, SQLReplaceable {
-
-    private SQLExpr            value;
+    private SQLExpr value;
     private OracleIntervalType type;
-    private SQLExpr            precision;
-    private Integer            factionalSecondsPrecision;
+    private SQLExpr precision;
+    private Integer factionalSecondsPrecision;
     private OracleIntervalType toType;
-    private SQLExpr            toFactionalSecondsPrecision;
+    private SQLExpr toFactionalSecondsPrecision;
 
-    public OracleIntervalExpr(){
-
+    public OracleIntervalExpr() {
     }
 
     @Override

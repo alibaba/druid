@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleMergeTest3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "merge /*+ dynamic_sampling(mm 4) dynamic_sampling_est_cdn(mm) dynamic_sampling(m 4) dynamic_sampling_est_cdn(m) */ into sys.mon_mods_all$ mm using (select m.obj# obj#, m.inserts inserts, m.updates updates, m.deletes deletes, m.flags flags, m.timestamp timestamp, m.drop_segments drop_segments from sys.mon_mods$ m, tab$ t where m.obj# = t.obj# ) v on (mm.obj# = v.obj#) when matched then update set mm.inserts = mm.inserts + v.inserts, mm.updates = mm.updates + v.updates, mm.deletes = mm.deletes + v.deletes, mm.flags = mm.flags + v.flags - bitand(mm.flags,v.flags) /* bitor(mm.flags,v.flags) */, mm.timestamp = v.timestamp, mm.drop_segments = mm.drop_segments + v.drop_segments when NOT matched then insert (obj#, inserts, updates, deletes, timestamp, flags, drop_segments) values (v.obj#, v.inserts, v.updates, v.deletes, sysdate, v.flags, v.drop_segments);";
 

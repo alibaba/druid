@@ -26,7 +26,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_100_alias extends MysqlTest {
-
     public void test_2() throws Exception {
         String sql = "\n" +
                 "select id as \"id\", name as \"\\\"abc\\\"\" from test_hash_tb";

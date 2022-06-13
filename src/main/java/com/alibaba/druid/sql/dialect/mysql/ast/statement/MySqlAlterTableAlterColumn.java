@@ -22,10 +22,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlAlterTableAlterColumn extends MySqlObjectImpl implements SQLAlterTableItem {
-
     private SQLName column;
 
-    private boolean dropDefault = false;
+    private boolean dropDefault;
     private SQLExpr defaultExpr;
 
     @Override

@@ -11,7 +11,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlCreateTableTest108_drds extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create table ARCHIVE_ERR_RECORD\n" +
                 "(\n" +

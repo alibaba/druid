@@ -24,14 +24,13 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import java.util.List;
 
 public class MySqlCreateSequenceTest1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE SEQUENCE customers_seq" + //
-                " START WITH     1000" + //
-                " INCREMENT BY   1" + //
-                " NOCACHE" + //
-                " NOCYCLE;";
+                "CREATE SEQUENCE customers_seq" + //
+                        " START WITH     1000" + //
+                        " INCREMENT BY   1" + //
+                        " NOCACHE" + //
+                        " NOCYCLE;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql);
         SQLStatement stmt = statementList.get(0);

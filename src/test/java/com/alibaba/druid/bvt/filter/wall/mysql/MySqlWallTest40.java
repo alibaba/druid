@@ -24,19 +24,18 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest40 extends TestCase {
-
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setUseAllow(false);
 
         Assert.assertFalse(provider.checkValid(//
-        "use huaianapp")); //
+                "use huaianapp")); //
 
         Assert.assertEquals(0, provider.getTableStats().size());
     }
@@ -45,7 +44,7 @@ public class MySqlWallTest40 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid(//
-        "use huaianapp")); //
+                "use huaianapp")); //
 
         Assert.assertEquals(0, provider.getTableStats().size());
     }

@@ -11,7 +11,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SchemaStatTest4 extends TestCase {
-
     public void test_schemaStat() throws Exception {
         String sql = "select name, age from t_user where id = 1";
 

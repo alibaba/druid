@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterSequence_0 extends TestCase {
-
     public void test_alter_seq_0() throws Exception {
         String sql = "ALTER SEQUENCE SEQ_XXX INCREMENT BY 2";
         SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL).get(0);

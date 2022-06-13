@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class MySqlDescTest_0 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = " Desc City";
 
@@ -44,14 +43,14 @@ public class MySqlDescTest_0 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

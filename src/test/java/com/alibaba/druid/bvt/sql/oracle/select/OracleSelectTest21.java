@@ -26,25 +26,24 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest21 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "SELECT EVENT, WAITS, TIME, DECODE(WAITS, NULL, TO_NUMBER(NULL), 0, TO_NUMBER(NULL), TIME/WAITS*1000) AVGWT" + //
-                "   , PCTWTT, WAIT_CLASS " + "FROM (SELECT EVENT, WAITS, TIME, PCTWTT, WAIT_CLASS " + //
-                "       FROM (" + //
-                "           SELECT E.EVENT_NAME EVENT, E.TOTAL_WAITS - NVL(B.TOTAL_WAITS,0) WAITS" + //
-                "              , (E.TIME_WAITED_MICRO - NVL(B.TIME_WAITED_MICRO,0)) / 1000000 TIME" + //
-                "              , 100 * (E.TIME_WAITED_MICRO - NVL(B.TIME_WAITED_MICRO,0)) / :B1 PCTWTT" + //
-                "           , E.WAIT_CLASS WAIT_CLASS " + //
-                "           FROM DBA_HIST_SYSTEM_EVENT B, DBA_HIST_SYSTEM_EVENT E " + //
-                "           WHERE B.SNAP_ID(+) = :B5 AND E.SNAP_ID = :B4 AND B.DBID(+) = :B3 AND E.DBID = :B3 " + //
-                "           AND B.INSTANCE_NUMBER(+) = :B2 AND E.INSTANCE_NUMBER = :B2 AND B.EVENT_ID(+) = E.EVENT_ID " + //
-                "           AND E.TOTAL_WAITS > NVL(B.TOTAL_WAITS,0) AND E.WAIT_CLASS != 'Idle' " + //
-                "          UNION ALL " + //
-                "           SELECT 'CPU time' EVENT, TO_NUMBER(NULL) WAITS" + //
-                "                   , :B6 /1000000 TIME, 100 * :B6 / :B1 PCTWTT, NULL WAIT_CLASS FROM DUAL WHERE :B6 > 0" + //
-                ") ORDER BY TIME DESC, WAITS DESC) " + //
-                "WHERE ROWNUM <= :B7 "; //
+                "SELECT EVENT, WAITS, TIME, DECODE(WAITS, NULL, TO_NUMBER(NULL), 0, TO_NUMBER(NULL), TIME/WAITS*1000) AVGWT" + //
+                        "   , PCTWTT, WAIT_CLASS " + "FROM (SELECT EVENT, WAITS, TIME, PCTWTT, WAIT_CLASS " + //
+                        "       FROM (" + //
+                        "           SELECT E.EVENT_NAME EVENT, E.TOTAL_WAITS - NVL(B.TOTAL_WAITS,0) WAITS" + //
+                        "              , (E.TIME_WAITED_MICRO - NVL(B.TIME_WAITED_MICRO,0)) / 1000000 TIME" + //
+                        "              , 100 * (E.TIME_WAITED_MICRO - NVL(B.TIME_WAITED_MICRO,0)) / :B1 PCTWTT" + //
+                        "           , E.WAIT_CLASS WAIT_CLASS " + //
+                        "           FROM DBA_HIST_SYSTEM_EVENT B, DBA_HIST_SYSTEM_EVENT E " + //
+                        "           WHERE B.SNAP_ID(+) = :B5 AND E.SNAP_ID = :B4 AND B.DBID(+) = :B3 AND E.DBID = :B3 " + //
+                        "           AND B.INSTANCE_NUMBER(+) = :B2 AND E.INSTANCE_NUMBER = :B2 AND B.EVENT_ID(+) = E.EVENT_ID " + //
+                        "           AND E.TOTAL_WAITS > NVL(B.TOTAL_WAITS,0) AND E.WAIT_CLASS != 'Idle' " + //
+                        "          UNION ALL " + //
+                        "           SELECT 'CPU time' EVENT, TO_NUMBER(NULL) WAITS" + //
+                        "                   , :B6 /1000000 TIME, 100 * :B6 / :B1 PCTWTT, NULL WAIT_CLASS FROM DUAL WHERE :B6 > 0" + //
+                        ") ORDER BY TIME DESC, WAITS DESC) " + //
+                        "WHERE ROWNUM <= :B7 "; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -74,7 +73,7 @@ public class OracleSelectTest21 extends OracleTest {
         Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "DBID")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "WAIT_CLASS")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "EVENT_ID")));
-        
+
         Assert.assertEquals(8, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));

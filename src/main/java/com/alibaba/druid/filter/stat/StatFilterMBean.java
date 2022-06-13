@@ -20,16 +20,16 @@ package com.alibaba.druid.filter.stat;
  */
 public interface StatFilterMBean {
     boolean isMergeSql();
-    
+
     void setMergeSql(boolean mergeSql);
-    
+
     boolean isLogSlowSql();
-    
+
     void setLogSlowSql(boolean logSlowSql);
-    
+
     String mergeSql(String sql, String dbType);
-    
+
     long getSlowSqlMillis();
-    
+
     void setSlowSqlMillis(long slowSqlMillis);
 }

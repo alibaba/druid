@@ -41,9 +41,10 @@ public class TestSqlServer extends TestCase {
 
         driverClass = "net.sourceforge.jtds.jdbc.Driver";
     }
-    public void test_0 () throws Exception {
+
+    public void test_0() throws Exception {
         Class.forName(driverClass);
-        
+
         Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
         conn.close();
     }

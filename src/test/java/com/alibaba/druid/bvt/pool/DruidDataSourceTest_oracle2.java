@@ -8,11 +8,10 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * 这个场景测试minIdle > maxActive
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_oracle2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -23,7 +22,6 @@ public class DruidDataSourceTest_oracle2 extends TestCase {
         dataSource.setDbType("oracle");
         dataSource.setPoolPreparedStatements(true);
         dataSource.setDriver(new MockDriver() {
-
             @Override
             public int getMajorVersion() {
                 return 10;
@@ -40,18 +38,18 @@ public class DruidDataSourceTest_oracle2 extends TestCase {
         dataSource.init();
         Assert.assertTrue(dataSource.isOracle());
         Assert.assertEquals("true", dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
-        
+
         dataSource.setUseOracleImplicitCache(false);
         Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
 
         dataSource.setUseOracleImplicitCache(true);
         dataSource.setUseOracleImplicitCache(true);
         Assert.assertEquals("true", dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
-        
+
         dataSource.setUseOracleImplicitCache(false);
         Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
         dataSource.setDriver(null);
-        
+
         dataSource.setUseOracleImplicitCache(true);
         Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
     }

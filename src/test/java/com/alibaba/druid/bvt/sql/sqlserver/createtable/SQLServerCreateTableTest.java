@@ -28,12 +28,11 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class SQLServerCreateTableTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE VIEW [Current Product List] AS\n" + //
-                     "SELECT ProductID,ProductName\n" + //
-                     "FROM Products\n" + //
-                     "WHERE Discontinued=No";
+                "SELECT ProductID,ProductName\n" + //
+                "FROM Products\n" + //
+                "WHERE Discontinued=No";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -23,9 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PartitionExtensionClause extends OracleSQLObjectImpl {
-
-    private boolean             subPartition;
-    private SQLName             partition;
+    private boolean subPartition;
+    private SQLName partition;
     private final List<SQLName> target = new ArrayList<SQLName>();
 
     public boolean isSubPartition() {

@@ -24,22 +24,20 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerUpdateTest extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "update reg_student_charge_item " + //
-                     "set FAmountReceived = b.amount   " + //
-                     "from reg_student_charge_item a" + //
-                     "    ,(" + //
-                     "          select a.FId,      " + //
-                     "                   case when sum(b.FChargeAmount) is null then 0 " + //
-                     "                        else sum(b.FChargeAmount)" + //
-                     "                   end as amount " + //
-                     "           from reg_student_charge_item a " + //
-                     "           left join reg_student_charge_daybook b on a.FId = b.FChargeItemId" + //
-                     "           where a.FId=?    group by a.FId" + //
-                     "     ) b " + //
-                     "where a.FId = b.FId and a.FId = ?";
-
+                "set FAmountReceived = b.amount   " + //
+                "from reg_student_charge_item a" + //
+                "    ,(" + //
+                "          select a.FId,      " + //
+                "                   case when sum(b.FChargeAmount) is null then 0 " + //
+                "                        else sum(b.FChargeAmount)" + //
+                "                   end as amount " + //
+                "           from reg_student_charge_item a " + //
+                "           left join reg_student_charge_daybook b on a.FId = b.FChargeItemId" + //
+                "           where a.FId=?    group by a.FId" + //
+                "     ) b " + //
+                "where a.FId = b.FId and a.FId = ?";
 
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);

@@ -4,7 +4,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
 
 public class OdpsLoadTest extends TestCase {
-    
     public void test_load_0() throws Exception {
         String sql = "LOAD OVERWRITE TABLE tsv_load_tbl \n" +
                 "FROM\n" +
@@ -18,7 +17,6 @@ public class OdpsLoadTest extends TestCase {
                 "\t'odps.text.option.delimiter' = '\t'\n" +
                 ");", SQLUtils.formatOdps(sql));
     }
-    
 
     public void test_load_1() throws Exception {
         String sql = "LOAD OVERWRITE TABLE oss_load_static_part PARTITION(ds='20190101')\n" +
@@ -29,8 +27,6 @@ public class OdpsLoadTest extends TestCase {
                 "LOCATION 'oss://<yourAccessKeyId>:<yourAccessKeySecret>@oss-cn-hangzhou-zmf.aliyuncs.com/my_bucket_id/my_location/'\n" +
                 "STORED AS PARQUET;", SQLUtils.formatOdps(sql));
     }
-
-
 
     public void test_load_2() throws Exception {
         String sql = "LOAD OVERWRITE TABLE oss_load_dyn_part PARTITION(ds)\n" +

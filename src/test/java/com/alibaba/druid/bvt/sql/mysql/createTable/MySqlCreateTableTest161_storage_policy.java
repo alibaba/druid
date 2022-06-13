@@ -7,7 +7,6 @@ import com.alibaba.druid.sql.parser.ParserException;
 
 
 public class MySqlCreateTableTest161_storage_policy extends MysqlTest {
-
     public void test_0() throws Exception {
         //for ADB
         String sql = "create table event_log(log_id bigint, log_time datetime)\n" +
@@ -70,7 +69,6 @@ public class MySqlCreateTableTest161_storage_policy extends MysqlTest {
             SQLUtils.parseSingleMysqlStatement(sql);
             fail();
         } catch (ParserException e) {
-
         }
 
     }

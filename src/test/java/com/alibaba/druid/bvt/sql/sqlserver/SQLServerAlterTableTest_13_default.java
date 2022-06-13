@@ -27,7 +27,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class SQLServerAlterTableTest_13_default extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE N_MerchantBase ADD  CONSTRAINT DF_N_MerchantBase_UnUsedCouponMoney  DEFAULT ((0)) FOR [UnUsedCouponMoney]";
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, DbType.sqlserver);
@@ -52,7 +51,6 @@ public class SQLServerAlterTableTest_13_default extends TestCase {
 
     @Test
     public void test_alter_table_constraint_default() {
-
         String sql = "ALTER TABLE N_MerchantBase ADD  CONSTRAINT DF_N_MerchantBase_UnUsedCouponMoney  DEFAULT 0 FOR UnUsedCouponMoney;";
 
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, com.alibaba.druid.DbType.sqlserver);
@@ -63,7 +61,6 @@ public class SQLServerAlterTableTest_13_default extends TestCase {
 
     @Test
     public void test_alter_table_add_default() {
-
         String sql = "alter table GoingHomeMain  add default(0) for MilesTotal with values;";
 
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, com.alibaba.druid.DbType.sqlserver);

@@ -27,10 +27,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest67 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        " CREATE TABLE new_duplications_index (\"ID\" PRIMARY KEY, project_snapshot_id, snapshot_id, hash, index_in_file, start_line, end_line) NOLOGGING AS SELECT CAST(duplications_index_seq.nextval AS NUMBER(38)) \"ID\", project_snapshot_id, snapshot_id, hash, index_in_file, start_line, end_line FROM duplications_index  ";
+                " CREATE TABLE new_duplications_index (\"ID\" PRIMARY KEY, project_snapshot_id, snapshot_id, hash, index_in_file, start_line, end_line) NOLOGGING AS SELECT CAST(duplications_index_seq.nextval AS NUMBER(38)) \"ID\", project_snapshot_id, snapshot_id, hash, index_in_file, start_line, end_line FROM duplications_index  ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -53,7 +52,7 @@ public class OracleCreateTableTest67 extends OracleTest {
                         "SELECT CAST(duplications_index_seq.NEXTVAL AS NUMBER(38)) AS \"ID\", project_snapshot_id, snapshot_id, hash, index_in_file\n" +
                         "\t, start_line, end_line\n" +
                         "FROM duplications_index",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

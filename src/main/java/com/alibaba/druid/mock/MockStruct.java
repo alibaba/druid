@@ -20,7 +20,6 @@ import java.sql.Struct;
 import java.util.Map;
 
 public class MockStruct implements Struct {
-
     @Override
     public String getSQLTypeName() throws SQLException {
         return null;

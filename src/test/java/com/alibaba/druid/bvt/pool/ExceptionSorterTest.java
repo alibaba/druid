@@ -13,7 +13,6 @@ import com.alibaba.druid.pool.vendor.MockExceptionSorter;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class ExceptionSorterTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -33,7 +32,7 @@ public class ExceptionSorterTest extends TestCase {
 
     public void test_exceptionSorter() throws Exception {
         Assert.assertTrue(dataSource.getExceptionSorterClassName(),
-                          dataSource.getExceptionSorter() instanceof MockExceptionSorter);
+                dataSource.getExceptionSorter() instanceof MockExceptionSorter);
 
         Connection conn = dataSource.getConnection();
         MockConnection mockConn = conn.unwrap(MockConnection.class);

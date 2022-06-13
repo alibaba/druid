@@ -25,9 +25,7 @@ import java.util.List;
 
 public class HiveSelectTest_distribute
         extends TestCase {
-
-    public void test_0() throws Exception
-    {
+    public void test_0() throws Exception {
         String sql = "select * from LD_aly.fct_pay_ord_cn_di t1 distribute by buyer_id sort by seller_id";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);

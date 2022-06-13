@@ -10,11 +10,10 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * 这个场景测试minIdle > maxActive
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_enable extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -50,12 +49,12 @@ public class DruidDataSourceTest_enable extends TestCase {
         }
         Assert.assertNotNull(error);
     }
-    
+
     public void test_disable_() throws Exception {
         dataSource.setEnable(false);
-        
+
         Assert.assertFalse(dataSource.isEnable());
-        
+
         Exception error = null;
         try {
             Connection conn = dataSource.getConnection();

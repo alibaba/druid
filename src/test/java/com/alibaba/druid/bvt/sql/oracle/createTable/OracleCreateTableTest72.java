@@ -23,23 +23,22 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest72 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        " CREATE GLOBAL TEMPORARY TABLE \"RETL\".\"REFFERAL_MEMBER\" \n" +
-                "   (\t\"ID\" NUMBER NOT NULL ENABLE, \n" +
-                "\t\"GMT_CREATE\" DATE NOT NULL ENABLE, \n" +
-                "\t\"GMT_MODIFIED\" DATE NOT NULL ENABLE, \n" +
-                "\t\"FROM_NAME\" VARCHAR2(128) NOT NULL ENABLE, \n" +
-                "\t\"FROM_EMAIL\" VARCHAR2(128) NOT NULL ENABLE, \n" +
-                "\t\"TO_NAME\" VARCHAR2(128), \n" +
-                "\t\"TO_EMAIL\" VARCHAR2(128) NOT NULL ENABLE, \n" +
-                "\t\"MESSAGE\" VARCHAR2(512), \n" +
-                "\t\"GMT_JOIN_MEMBER\" DATE, \n" +
-                "\t\"SOURCE_CODE\" VARCHAR2(32) NOT NULL ENABLE, \n" +
-                "\t\"IS_FROM_MEMBER\" CHAR(1) NOT NULL ENABLE, \n" +
-                "\t\"IS_JOIN\" CHAR(1) NOT NULL ENABLE\n" +
-                "   ) ON COMMIT DELETE ROWS    ";
+                " CREATE GLOBAL TEMPORARY TABLE \"RETL\".\"REFFERAL_MEMBER\" \n" +
+                        "   (\t\"ID\" NUMBER NOT NULL ENABLE, \n" +
+                        "\t\"GMT_CREATE\" DATE NOT NULL ENABLE, \n" +
+                        "\t\"GMT_MODIFIED\" DATE NOT NULL ENABLE, \n" +
+                        "\t\"FROM_NAME\" VARCHAR2(128) NOT NULL ENABLE, \n" +
+                        "\t\"FROM_EMAIL\" VARCHAR2(128) NOT NULL ENABLE, \n" +
+                        "\t\"TO_NAME\" VARCHAR2(128), \n" +
+                        "\t\"TO_EMAIL\" VARCHAR2(128) NOT NULL ENABLE, \n" +
+                        "\t\"MESSAGE\" VARCHAR2(512), \n" +
+                        "\t\"GMT_JOIN_MEMBER\" DATE, \n" +
+                        "\t\"SOURCE_CODE\" VARCHAR2(32) NOT NULL ENABLE, \n" +
+                        "\t\"IS_FROM_MEMBER\" CHAR(1) NOT NULL ENABLE, \n" +
+                        "\t\"IS_JOIN\" CHAR(1) NOT NULL ENABLE\n" +
+                        "   ) ON COMMIT DELETE ROWS    ";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -62,7 +61,7 @@ public class OracleCreateTableTest72 extends OracleTest {
                         "\t\"IS_JOIN\" CHAR(1) NOT NULL ENABLE\n" +
                         ")\n" +
                         "ON COMMIT DELETE ROWS",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

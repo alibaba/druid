@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleBlockTest20 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
                 "   sql_stmt    VARCHAR2(200);\n" +
@@ -102,6 +101,6 @@ public class OracleBlockTest20 extends OracleTest {
         assertEquals(2, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
 
-         assertTrue(visitor.getColumns().contains(new TableStat.Column("bonus", "id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("bonus", "id")));
     }
 }

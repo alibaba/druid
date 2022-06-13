@@ -26,9 +26,8 @@ import com.alibaba.druid.wall.WallUtils;
  * @author wenshao
  */
 public class WallHavingTest6 extends TestCase {
-
     private String sql = "SELECT region, SUM(population), SUM(area) FROM bbc GROUP BY region HAVING SUM(area)>1000000 or 1 = 1 --";
-    
+
     private String sql1 = "SELECT region, SUM(population), SUM(area) FROM bbc GROUP BY region HAVING SUM(area)>1000000 or 1 = 1 #and c=1";
 
     public void test_check_true() throws Exception {
@@ -50,7 +49,6 @@ public class WallHavingTest6 extends TestCase {
         Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
         Assert.assertTrue(WallUtils.isValidateMySql(sql1, config));
     }
-    
-    
-    
+
+
 }

@@ -25,44 +25,43 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateFunctionTest_4 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "FUNCTION SPLITSTR(STR IN CLOB,\n" +
-                "                                    I   IN NUMBER := 0,\n" +
-                "                                    SEP IN VARCHAR2 := ',') RETURN VARCHAR2\n" +
-                "  DETERMINISTIC\n" +
-                "/**************************************\n" +
-                "  * NAME:        SPLITSTR\n" +
-                "  * AUTHOR:      SEAN ZHANG.\n" +
-                "  * DATE:        2012-09-03.\n" +
-                "  * FUNCTION:    ??????????????????????\n" +
-                "  * PARAMETERS:  STR: ????????\n" +
-                "                 I: ?????????I?0??STR????????I ??????????????\n" +
-                "                 SEP: ????????????????????????????????STR????SEP?????\n" +
-                "  * EXAMPLE:     SELECT SPLITSTR('ABC,DEF', 1) AS STR FROM DUAL;  ?? ABC\n" +
-                "                 SELECT SPLITSTR('ABC,DEF', 3) AS STR FROM DUAL;  ?? ?\n" +
-                "  **************************************/\n" +
-                " IS\n" +
-                "  T_COUNT NUMBER;\n" +
-                "  T_STR   VARCHAR2(4000);\n" +
-                "BEGIN\n" +
-                "  IF I = 0 THEN\n" +
-                "    T_STR := STR;\n" +
-                "  ELSIF INSTR(STR, SEP) = 0 THEN\n" +
-                "    T_STR := SEP;\n" +
-                "  ELSE\n" +
-                "    SELECT COUNT(*) INTO T_COUNT FROM TABLE(SPLIT(STR, SEP));\n" +
-                "    IF I <= T_COUNT THEN\n" +
-                "      SELECT STR\n" +
-                "        INTO T_STR\n" +
-                "        FROM (SELECT ROWNUM AS ITEM, COLUMN_VALUE AS STR\n" +
-                "                FROM TABLE(SPLIT(STR, SEP)))\n" +
-                "       WHERE ITEM = I;\n" +
-                "    END IF;\n" +
-                "  END IF;\n" +
-                "  RETURN T_STR;\n" +
-                "END;";
+                "FUNCTION SPLITSTR(STR IN CLOB,\n" +
+                        "                                    I   IN NUMBER := 0,\n" +
+                        "                                    SEP IN VARCHAR2 := ',') RETURN VARCHAR2\n" +
+                        "  DETERMINISTIC\n" +
+                        "/**************************************\n" +
+                        "  * NAME:        SPLITSTR\n" +
+                        "  * AUTHOR:      SEAN ZHANG.\n" +
+                        "  * DATE:        2012-09-03.\n" +
+                        "  * FUNCTION:    ??????????????????????\n" +
+                        "  * PARAMETERS:  STR: ????????\n" +
+                        "                 I: ?????????I?0??STR????????I ??????????????\n" +
+                        "                 SEP: ????????????????????????????????STR????SEP?????\n" +
+                        "  * EXAMPLE:     SELECT SPLITSTR('ABC,DEF', 1) AS STR FROM DUAL;  ?? ABC\n" +
+                        "                 SELECT SPLITSTR('ABC,DEF', 3) AS STR FROM DUAL;  ?? ?\n" +
+                        "  **************************************/\n" +
+                        " IS\n" +
+                        "  T_COUNT NUMBER;\n" +
+                        "  T_STR   VARCHAR2(4000);\n" +
+                        "BEGIN\n" +
+                        "  IF I = 0 THEN\n" +
+                        "    T_STR := STR;\n" +
+                        "  ELSIF INSTR(STR, SEP) = 0 THEN\n" +
+                        "    T_STR := SEP;\n" +
+                        "  ELSE\n" +
+                        "    SELECT COUNT(*) INTO T_COUNT FROM TABLE(SPLIT(STR, SEP));\n" +
+                        "    IF I <= T_COUNT THEN\n" +
+                        "      SELECT STR\n" +
+                        "        INTO T_STR\n" +
+                        "        FROM (SELECT ROWNUM AS ITEM, COLUMN_VALUE AS STR\n" +
+                        "                FROM TABLE(SPLIT(STR, SEP)))\n" +
+                        "       WHERE ITEM = I;\n" +
+                        "    END IF;\n" +
+                        "  END IF;\n" +
+                        "  RETURN T_STR;\n" +
+                        "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -101,7 +100,7 @@ public class OracleCreateFunctionTest_4 extends OracleTest {
                         "\tEND IF;\n" +
                         "\tRETURN T_STR;\n" +
                         "END;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

@@ -10,16 +10,12 @@ import java.util.List;
 /**
  * @version 1.0
  * @ClassName MySqlCreateTableTest148_national_char
- * @description
- *
- * [NATIONAL] CHAR[(M)] [CHARACTER SET charset_name] [COLLATE collation_name]
+ * @description [NATIONAL] CHAR[(M)] [CHARACTER SET charset_name] [COLLATE collation_name]
  * [NATIONAL] VARCHAR(M) [CHARACTER SET charset_name] [COLLATE collation_name]
- *
  * @Author zzy
  * @Date 2019-05-14 17:25
  */
 public class MySqlCreateTableTest148_national_char extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "create temporary table if not exists `tb_kxipe` (\n" +
                 "\t col_vttevt national char(128),\n" +
@@ -28,7 +24,7 @@ public class MySqlCreateTableTest148_national_char extends TestCase {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

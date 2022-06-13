@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest_connect_by_root extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "select id, category_name, parent_id, root_id, (select category_name from mtn_contact_category where id = root_id) root_category_name from (select id, category_name, connect_by_root id root_id, parent_id, level lev from mtn_contact_category  connect by prior id = parent_id)  where lev = 3  ";
 

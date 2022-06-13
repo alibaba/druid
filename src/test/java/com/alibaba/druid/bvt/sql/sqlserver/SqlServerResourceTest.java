@@ -33,7 +33,6 @@ import java.io.Reader;
 import java.util.List;
 
 public class SqlServerResourceTest extends TestCase {
-
     public void test_0() throws Exception {
         exec_test("bvt/parser/sqlserver-0.txt");
     }
@@ -53,12 +52,12 @@ public class SqlServerResourceTest extends TestCase {
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
         String expect = null;
-        
+
         if (items.length > 1) {
             expect = items[1].trim();
             expect = expect.replaceAll("\\r\\n", "\n");
         }
-        
+
         SQLStatementParser parser = new SQLServerStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -83,7 +82,6 @@ public class SqlServerResourceTest extends TestCase {
     }
 
     void mergValidate(String sql, String expect) {
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);

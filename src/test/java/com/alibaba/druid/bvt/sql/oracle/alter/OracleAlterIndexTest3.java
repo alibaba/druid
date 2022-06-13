@@ -25,10 +25,9 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleAlterIndexTest3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter index    PRODUCT_ADDITION_NCID_IND parallel 1";
+                "alter index    PRODUCT_ADDITION_NCID_IND parallel 1";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

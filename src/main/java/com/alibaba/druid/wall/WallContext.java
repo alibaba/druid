@@ -22,27 +22,26 @@ import java.util.List;
 import java.util.Map;
 
 public class WallContext {
+    private static final ThreadLocal<WallContext> contextLocal = new ThreadLocal<WallContext>();
 
-    private final static ThreadLocal<WallContext> contextLocal                 = new ThreadLocal<WallContext>();
+    private WallSqlStat sqlStat;
+    private Map<String, WallSqlTableStat> tableStats;
+    private Map<String, WallSqlFunctionStat> functionStats;
+    private final DbType dbType;
+    private int commentCount;
+    private int warnings;
+    private int unionWarnings;
+    private int updateNoneConditionWarnings;
+    private int deleteNoneConditionWarnings;
+    private int likeNumberWarnings;
 
-    private WallSqlStat                           sqlStat;
-    private Map<String, WallSqlTableStat>         tableStats;
-    private Map<String, WallSqlFunctionStat>      functionStats;
-    private final DbType                          dbType;
-    private int                                   commentCount;
-    private int                                   warnings                     = 0;
-    private int                                   unionWarnings                = 0;
-    private int                                   updateNoneConditionWarnings  = 0;
-    private int                                   deleteNoneConditionWarnings  = 0;
-    private int                                   likeNumberWarnings           = 0;
+    private List<WallUpdateCheckItem> wallUpdateCheckItems;
 
-    private List<WallUpdateCheckItem>             wallUpdateCheckItems;
-
-    public WallContext(String dbType){
+    public WallContext(String dbType) {
         this(DbType.of(dbType));
     }
 
-    public WallContext(DbType dbType){
+    public WallContext(DbType dbType) {
         this.dbType = dbType;
     }
 

@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreatePackageTest2 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
                 "CREATE OR REPLACE package         PKG_ECC_CAL_TASK_ACCOMPLISH\n" +
@@ -57,7 +56,7 @@ public class OracleCreatePackageTest2 extends OracleTest {
                         "\t)\n" +
                         "\t;\n" +
                         "END PKG_ECC_CAL_TASK_ACCOMPLISH;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

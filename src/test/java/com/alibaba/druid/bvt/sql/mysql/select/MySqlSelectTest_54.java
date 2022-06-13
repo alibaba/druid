@@ -24,9 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_54 extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "SELECT t.*,a.param_id FROM lhwtag AS t RIGHT JOIN lhwtag_relation AS a USING(`tag_id`) WHERE a.`type_id`=1 AND a.`param_id` IN ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') ORDER BY t.`content_count`";
+        String sql = "SELECT t.*,a.param_id FROM lhwtag AS t RIGHT JOIN lhwtag_relation AS a USING(`tag_id`) WHERE a.`type_id`=1 AND a.`param_id` IN ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') ORDER BY t.`content_count`";
 
         System.out.println(sql);
 
@@ -43,12 +42,12 @@ public class MySqlSelectTest_54 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(1, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT t.*, a.param_id\n" +
@@ -68,7 +67,7 @@ public class MySqlSelectTest_54 extends MysqlTest {
                             "\t\t'9'\n" +
                             "\t)\n" +
                             "ORDER BY t.`content_count`", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -89,7 +88,7 @@ public class MySqlSelectTest_54 extends MysqlTest {
                             "\t\t'9'\n" +
                             "\t)\n" +
                             "order by t.`content_count`", //
-                                output);
+                    output);
         }
 
         {

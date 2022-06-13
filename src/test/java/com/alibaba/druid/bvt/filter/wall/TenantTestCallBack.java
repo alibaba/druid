@@ -18,7 +18,6 @@ package com.alibaba.druid.bvt.filter.wall;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack;
 
 public class TenantTestCallBack implements TenantCallBack {
-
     @Override
     public Object getTenantValue(StatementType statementType, String tableName) {
         return 123;

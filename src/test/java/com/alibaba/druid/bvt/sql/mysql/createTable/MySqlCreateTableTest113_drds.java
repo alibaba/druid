@@ -9,7 +9,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlCreateTableTest113_drds extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create table if not exists test_table(\n" +
                 "  id INT,name VARCHAR(30) DEFAULT NULL,\n" +

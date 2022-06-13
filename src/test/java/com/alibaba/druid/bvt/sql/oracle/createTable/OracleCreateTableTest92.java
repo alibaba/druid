@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import java.util.List;
 
 public class OracleCreateTableTest92 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE \"ACCOUNT\".\"BROADBAND_USERS_RESULT\" \n" +

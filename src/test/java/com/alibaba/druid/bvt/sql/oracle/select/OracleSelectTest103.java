@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest103 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT *\n" +
@@ -153,5 +152,5 @@ public class OracleSelectTest103 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
     }
 
-   
+
 }

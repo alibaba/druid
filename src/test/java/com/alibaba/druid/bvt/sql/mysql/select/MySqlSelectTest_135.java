@@ -10,12 +10,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_135 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select (~(oct(mediumint_test  ))     ),(    ((  'b')AND (date_test  ))  in(smallint_test, bigint_test,tinyint_1bit_test,( WEIGHT_STRING( 0x007fff LEVEL 1 DESC  ))) )from select_base_two_multi_db_multi_tb";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

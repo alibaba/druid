@@ -22,10 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class MySqlIndexHintImpl extends MySqlObjectImpl implements MySqlIndexHint {
-
     private Option option;
 
-    private List<SQLName>         indexList = new ArrayList<SQLName>();
+    private List<SQLName> indexList = new ArrayList<SQLName>();
 
     @Override
     public abstract void accept0(MySqlASTVisitor visitor);

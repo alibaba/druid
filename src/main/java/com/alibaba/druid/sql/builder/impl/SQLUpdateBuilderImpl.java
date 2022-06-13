@@ -34,15 +34,14 @@ import java.util.List;
 import java.util.Map;
 
 public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBuilder {
-
     private SQLUpdateStatement stmt;
-    private DbType             dbType;
+    private DbType dbType;
 
-    public SQLUpdateBuilderImpl(DbType dbType){
+    public SQLUpdateBuilderImpl(DbType dbType) {
         this.dbType = dbType;
     }
-    
-    public SQLUpdateBuilderImpl(String sql, DbType dbType){
+
+    public SQLUpdateBuilderImpl(String sql, DbType dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.isEmpty()) {
@@ -58,7 +57,7 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
         this.dbType = dbType;
     }
 
-    public SQLUpdateBuilderImpl(SQLUpdateStatement stmt, DbType dbType){
+    public SQLUpdateBuilderImpl(SQLUpdateStatement stmt, DbType dbType) {
         this.stmt = stmt;
         this.dbType = dbType;
     }
@@ -124,29 +123,29 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
             SQLUpdateSetItem updateSetItem = SQLUtils.toUpdateSetItem(item, dbType);
             update.addItem(updateSetItem);
         }
-        
+
         return this;
     }
-    
+
     public SQLUpdateBuilderImpl setValue(Map<String, Object> values) {
         for (Map.Entry<String, Object> entry : values.entrySet()) {
             setValue(entry.getKey(), entry.getValue());
         }
-        
+
         return this;
     }
-    
+
     public SQLUpdateBuilderImpl setValue(String column, Object value) {
         SQLUpdateStatement update = getSQLUpdateStatement();
-        
+
         SQLExpr columnExpr = SQLUtils.toSQLExpr(column, dbType);
         SQLExpr valueExpr = toSQLExpr(value, dbType);
-        
+
         SQLUpdateSetItem item = new SQLUpdateSetItem();
         item.setColumn(columnExpr);
         item.setValue(valueExpr);
         update.addItem(item);
-        
+
         return this;
     }
 
@@ -173,7 +172,7 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
                 return new SQLUpdateStatement();
         }
     }
-    
+
     public String toString() {
         return SQLUtils.toSQLString(stmt, dbType);
     }

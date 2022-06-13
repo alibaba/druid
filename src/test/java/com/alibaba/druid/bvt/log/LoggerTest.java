@@ -17,15 +17,13 @@ import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class LoggerTest extends TestCase {
-
     private static java.security.ProtectionDomain DOMAIN;
 
-    private ClassLoader                           contextClassLoader;
-    private DruidDataSource                       dataSource;
+    private ClassLoader contextClassLoader;
+    private DruidDataSource dataSource;
 
     static {
         DOMAIN = (java.security.ProtectionDomain) java.security.AccessController.doPrivileged(new PrivilegedAction<Object>() {
-
             public Object run() {
                 return TestLoader.class.getProtectionDomain();
             }
@@ -33,12 +31,11 @@ public class LoggerTest extends TestCase {
     }
 
     public static class TestLoader extends ClassLoader {
-
         private ClassLoader loader;
 
         private Set<String> definedSet = new HashSet<String>();
 
-        public TestLoader(){
+        public TestLoader() {
             super(null);
             loader = DruidDriver.class.getClassLoader();
         }

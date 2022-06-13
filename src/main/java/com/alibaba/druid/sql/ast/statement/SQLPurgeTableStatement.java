@@ -16,24 +16,20 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPurgeTableStatement extends SQLStatementImpl implements SQLDropStatement {
-
     private SQLExprTableSource table;
     private boolean all;
     private int count;
 
     public SQLPurgeTableStatement() {
-
     }
 
     public SQLPurgeTableStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

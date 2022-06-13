@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_27 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE EXTERNAL TABLE `customer_case.tradelist_csv`(\n" +

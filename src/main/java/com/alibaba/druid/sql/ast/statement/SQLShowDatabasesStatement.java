@@ -19,11 +19,9 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLShowDatabasesStatement extends SQLStatementImpl implements SQLShowStatement,SQLReplaceable {
-
+public class SQLShowDatabasesStatement extends SQLStatementImpl implements SQLShowStatement, SQLReplaceable {
     private boolean physical;
     private boolean full;
 
@@ -34,7 +32,6 @@ public class SQLShowDatabasesStatement extends SQLStatementImpl implements SQLSh
     private boolean extra;
 
     public SQLShowDatabasesStatement() {
-
     }
 
     public boolean isPhysical() {

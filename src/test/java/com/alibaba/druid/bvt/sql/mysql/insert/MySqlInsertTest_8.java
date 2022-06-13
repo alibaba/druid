@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlInsertTest_8 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "insert into dd.table1(d,e) select * from bb.table3";
 
@@ -44,20 +43,20 @@ public class MySqlInsertTest_8 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("INSERT INTO dd.table1 (d, e)" //
-                            + "\nSELECT *" //
-                            + "\nFROM bb.table3", //
-                            SQLUtils.toMySqlString(insertStmt));
-        
+                        + "\nSELECT *" //
+                        + "\nFROM bb.table3", //
+                SQLUtils.toMySqlString(insertStmt));
+
         Assert.assertEquals("insert into dd.table1 (d, e)" //
-                            + "\nselect *" //
-                            + "\nfrom bb.table3", //
-                            SQLUtils.toMySqlString(insertStmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                        + "\nselect *" //
+                        + "\nfrom bb.table3", //
+                SQLUtils.toMySqlString(insertStmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

@@ -12,7 +12,6 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class EvalTest_lt extends TestCase {
-
     public void test_long() throws Exception {
         Assert.assertEquals(true, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "? < ?", (long) 1, (byte) 2));
     }
@@ -51,8 +50,8 @@ public class EvalTest_lt extends TestCase {
 
     public void test_Date() throws Exception {
         Assert.assertEquals(true,
-                            SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "?<?",
-                                                         new Date(System.currentTimeMillis() - 10),
-                                                         new Date(System.currentTimeMillis())));
+                SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "?<?",
+                        new Date(System.currentTimeMillis() - 10),
+                        new Date(System.currentTimeMillis())));
     }
 }

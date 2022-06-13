@@ -26,15 +26,14 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest11 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `tmall_campaign` (" + //
-                     "`id` int(11) NOT NULL AUTO_INCREMENT," + //
-                     "`campaign_name` varchar(200) NOT NULL COMMENT '活动名称'," + //
-                     "`create_date` datetime DEFAULT NULL COMMENT '活动创建时间'," + //
-                     "`delete_flag` int(11) DEFAULT '0' COMMENT '活动删除标识'," + //
-                     "PRIMARY KEY (`id`)" + //
-                     ") ENGINE=InnoDB DEFAULT CHARSET=gbk;";
+                "`id` int(11) NOT NULL AUTO_INCREMENT," + //
+                "`campaign_name` varchar(200) NOT NULL COMMENT '活动名称'," + //
+                "`create_date` datetime DEFAULT NULL COMMENT '活动创建时间'," + //
+                "`delete_flag` int(11) DEFAULT '0' COMMENT '活动删除标识'," + //
+                "PRIMARY KEY (`id`)" + //
+                ") ENGINE=InnoDB DEFAULT CHARSET=gbk;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

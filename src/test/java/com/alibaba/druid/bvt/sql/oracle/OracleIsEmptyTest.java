@@ -24,12 +24,11 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class OracleIsEmptyTest extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "SELECT product_id, TO_CHAR(ad_finaltext) FROM print_media WHERE ad_textdocs_ntab IS NOT EMPTY;";
 
         String expect = "SELECT product_id, TO_CHAR(ad_finaltext)\n" + "FROM print_media\n"
-                        + "WHERE ad_textdocs_ntab IS NOT EMPTY;";
+                + "WHERE ad_textdocs_ntab IS NOT EMPTY;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

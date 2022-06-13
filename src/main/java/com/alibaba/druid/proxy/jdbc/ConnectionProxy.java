@@ -23,7 +23,6 @@ import java.util.Properties;
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface ConnectionProxy extends Connection, WrapperProxy {
-
     Connection getRawObject();
 
     Properties getProperties();
@@ -33,6 +32,6 @@ public interface ConnectionProxy extends Connection, WrapperProxy {
     Date getConnectedTime();
 
     TransactionInfo getTransactionInfo();
-    
+
     int getCloseCount();
 }

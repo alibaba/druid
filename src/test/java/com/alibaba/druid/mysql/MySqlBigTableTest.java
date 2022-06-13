@@ -26,11 +26,11 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 public class MySqlBigTableTest extends TestCase {
     final int COUNT = 800;
-    
-    private String          jdbcUrl;
-    private String          user;
-    private String          password;
-    private String          driverClass;
+
+    private String jdbcUrl;
+    private String user;
+    private String password;
+    private String driverClass;
 
     private DruidDataSource dataSource;
 
@@ -63,7 +63,6 @@ public class MySqlBigTableTest extends TestCase {
     }
 
     public void test_0() throws Exception {
-        
         StringBuffer ddl = new StringBuffer();
         ddl.append("INSERT INTO t_big (");
         for (int i = 0; i < COUNT; ++i) {
@@ -97,7 +96,6 @@ public class MySqlBigTableTest extends TestCase {
     }
 
     private void dropTable() throws SQLException {
-
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();

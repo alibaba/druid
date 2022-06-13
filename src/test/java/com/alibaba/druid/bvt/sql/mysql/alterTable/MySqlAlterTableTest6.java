@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest6 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "alter table tableName DROP FOREIGN KEY fk_symbol";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -41,7 +40,7 @@ public class MySqlAlterTableTest6 extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE tableName" + //
-                            "\n\tDROP FOREIGN KEY fk_symbol", output);
+                "\n\tDROP FOREIGN KEY fk_symbol", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

@@ -8,13 +8,12 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest132_drds_primaryKey extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create table gxw_test_87 (id int, name varchar(20),  primary key(id, name)) dbpartition by hash(id);";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -27,10 +26,7 @@ public class MySqlCreateTableTest132_drds_primaryKey extends MysqlTest {
                 "DBPARTITION BY hash(id);", stmt.toString());
 
 
-
     }
-
-
 
 
 }

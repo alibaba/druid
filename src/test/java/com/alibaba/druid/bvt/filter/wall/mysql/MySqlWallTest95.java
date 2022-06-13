@@ -24,19 +24,18 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest95 extends TestCase {
-
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setCommentAllow(false);
 
         Assert.assertFalse(provider.checkValid(//
-        "select * from test /*!40101fff*/"));
+                "select * from test /*!40101fff*/"));
     }
 
 }

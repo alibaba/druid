@@ -10,8 +10,7 @@ public class OdpsFormatCommentTest7 extends TestCase {
     public void test_column_comment() throws Exception {
         String sql = "--这里是注释" //
                 + "\nselect * from table1;" //
-                + "\nselect * from table2;;"
-                ;//
+                + "\nselect * from table2;;";//
         Assert.assertEquals("-- 这里是注释"
                 + "\nSELECT *"
                 + "\nFROM table1;"
@@ -20,5 +19,4 @@ public class OdpsFormatCommentTest7 extends TestCase {
                 + "\nFROM table2;", SQLUtils.formatOdps(sql));
     }
 
-   
 }

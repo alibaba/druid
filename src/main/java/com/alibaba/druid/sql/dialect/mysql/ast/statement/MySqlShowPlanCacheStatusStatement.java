@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowPlanCacheStatusStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);

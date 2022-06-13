@@ -26,8 +26,7 @@ import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class DruidDataSourceC3P0AdapterTest extends PoolTestCase {
-
-    private MockDriver                 driver;
+    private MockDriver driver;
     private DruidDataSourceC3P0Adapter dataSource;
 
     protected void setUp() throws Exception {

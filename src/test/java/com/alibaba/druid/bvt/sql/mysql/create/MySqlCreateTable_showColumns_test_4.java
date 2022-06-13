@@ -22,9 +22,7 @@ import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlCreateTable_showColumns_test_4 extends MysqlTest {
-
     public void test_0() throws Exception {
-
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         String sql = "create table tmp_eric (pk int key, ia int unique);";
 

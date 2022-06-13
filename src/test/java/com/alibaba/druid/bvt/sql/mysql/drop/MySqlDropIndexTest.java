@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class MySqlDropIndexTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "drop index index_name on table_name ";
 

@@ -25,10 +25,9 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest15 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "create index idx_t12 on t1(id) tablespace users online;";
+                "create index idx_t12 on t1(id) tablespace users online;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

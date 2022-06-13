@@ -27,12 +27,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest9 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE VIEW v AS\n" + //
-                     "SELECT ProductID,ProductName\n" + //
-                     "FROM Products\n" + //
-                     "WHERE Discontinued=No";
+                "SELECT ProductID,ProductName\n" + //
+                "FROM Products\n" + //
+                "WHERE Discontinued=No";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

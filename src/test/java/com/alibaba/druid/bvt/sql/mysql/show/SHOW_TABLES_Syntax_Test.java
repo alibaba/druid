@@ -26,9 +26,7 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SHOW_TABLES_Syntax_Test extends TestCase {
-
     public void test_0() throws Exception {
-
         String sql = "SHOW TABLES FROM     SUNTEST   ";
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -65,7 +63,6 @@ public class SHOW_TABLES_Syntax_Test extends TestCase {
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
         Assert.assertEquals("SHOW FULL TABLES FROM SUNTEST", text);
 
-
         sql = "SHOW FULL TABLES IN SUNTEST  LIKE '%DDD%' ";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
@@ -83,7 +80,6 @@ public class SHOW_TABLES_Syntax_Test extends TestCase {
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
         Assert.assertEquals("SHOW FULL TABLES FROM SUNTEST WHERE NAME = 'DDD'", text);
-
 
         sql = "SHOW FULL TABLES FROM SUNTEST  WHERE NAME =  'DDD' ";
         parser = new MySqlStatementParser(sql);

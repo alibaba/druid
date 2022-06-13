@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class EncryptionAndCompressionFunctionsTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO t VALUES (1,AES_ENCRYPT('text','password'))";
 

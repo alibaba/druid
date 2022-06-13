@@ -35,14 +35,13 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SchemaReadTest extends TestCase {
-
     private static String url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:classpath:petstore-db";
 
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
-    
+
     public void test_schema() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -185,7 +184,6 @@ public class SchemaReadTest extends TestCase {
         out.println();
 
         while (rs.next()) {
-
             for (int columnIndex = 1; columnIndex <= columnCount; ++columnIndex) {
                 if (columnIndex != 1) {
                     out.print('\t');

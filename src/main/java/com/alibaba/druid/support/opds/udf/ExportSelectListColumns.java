@@ -25,7 +25,6 @@ import com.aliyun.odps.udf.UDF;
 import java.util.List;
 
 public class ExportSelectListColumns extends UDF {
-
     public String evaluate(String sql) {
         return evaluate(sql, null);
     }
@@ -45,7 +44,7 @@ public class ExportSelectListColumns extends UDF {
                 if (!column.isSelect()) {
                     continue;
                 }
-                
+
                 if (buf.length() != 0) {
                     buf.append(',');
                 }

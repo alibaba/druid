@@ -17,7 +17,6 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 
 public class DruidPooledPreparedStatementTest1 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -28,26 +27,25 @@ public class DruidPooledPreparedStatementTest1 extends TestCase {
         dataSource.setInitialSize(1);
 
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public boolean preparedStatement_execute(FilterChain chain, PreparedStatementProxy statement)
-                                                                                                         throws SQLException {
+                    throws SQLException {
                 throw new SQLException();
             }
 
             @Override
             public int preparedStatement_executeUpdate(FilterChain chain, PreparedStatementProxy statement)
-                                                                                                           throws SQLException {
+                    throws SQLException {
                 throw new SQLException();
             }
 
             public ResultSetProxy preparedStatement_executeQuery(FilterChain chain, PreparedStatementProxy statement)
-                                                                                                                     throws SQLException {
+                    throws SQLException {
                 throw new SQLException();
             }
 
             public void preparedStatement_clearParameters(FilterChain chain, PreparedStatementProxy statement)
-                                                                                                              throws SQLException {
+                    throws SQLException {
                 throw new SQLException();
             }
 
@@ -55,10 +53,10 @@ public class DruidPooledPreparedStatementTest1 extends TestCase {
             public int[] statement_executeBatch(FilterChain chain, StatementProxy statement) throws SQLException {
                 throw new SQLException();
             }
-            
+
             @Override
             public ParameterMetaData preparedStatement_getParameterMetaData(FilterChain chain, PreparedStatementProxy statement)
-                                                                                                                                throws SQLException {
+                    throws SQLException {
                 throw new SQLException();
             }
         });
@@ -177,13 +175,13 @@ public class DruidPooledPreparedStatementTest1 extends TestCase {
 
         Assert.assertEquals(1, dataSource.getPoolingCount());
     }
-    
+
     public void test_getParameterMetaData_error() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select 1");
-        
+
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.getParameterMetaData();
@@ -191,12 +189,12 @@ public class DruidPooledPreparedStatementTest1 extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
     }
 }

@@ -25,16 +25,15 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class MySqlAlterTableAddIndex_0 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1`  ADD INDEX `ix` (`f2` ASC) ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tADD INDEX `ix` (`f2` ASC);", SQLUtils.toMySqlString(stmt));
-        
+                "\n\tADD INDEX `ix` (`f2` ASC);", SQLUtils.toMySqlString(stmt));
+
         assertEquals("alter table `test`.`tb1`" + //
                 "\n\tadd index `ix` (`f2` asc);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
@@ -54,7 +53,7 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
         parser.match(Token.EOF);
 
         assertEquals("ALTER TABLE `test`.`tb1`\n"
-                     + "\t ALTER INDEX `ix` FULLTEXT  ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
+                + "\t ALTER INDEX `ix` FULLTEXT  ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
 
     }
 
@@ -65,7 +64,7 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
         parser.match(Token.EOF);
 
         assertEquals("ALTER TABLE `test`.`tb1`\n"
-                     + "\t ALTER INDEX `ix` FULLTEXT INDEX ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
+                + "\t ALTER INDEX `ix` FULLTEXT INDEX ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
 
     }
 
@@ -76,7 +75,7 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
         parser.match(Token.EOF);
 
         assertEquals("ALTER TABLE `test`.`tb1`\n"
-                     + "\t ALTER INDEX `ix` FULLTEXT QUERY ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
+                + "\t ALTER INDEX `ix` FULLTEXT QUERY ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
 
     }
 

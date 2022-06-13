@@ -23,7 +23,6 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * @author wenshao
- *
  */
 public class WallSelectWhereTest3 extends TestCase {
     private String sql = "select * from t WHERE FID = 256 AND CHR(67)||CHR(65)||CHR(84) = 'CAT'";
@@ -31,7 +30,7 @@ public class WallSelectWhereTest3 extends TestCase {
     public void testMySql() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(sql));
     }
-    
+
     public void testORACLE() throws Exception {
         Assert.assertFalse(WallUtils.isValidateOracle(sql));
     }

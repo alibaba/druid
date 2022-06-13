@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlSchemaStatVisitorTest_Subquery extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT id2, name2 FROM (select id, name from users u where id = 22 limit 10) a";
 

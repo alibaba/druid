@@ -37,9 +37,8 @@ public class TestOnBorrowFileAndNameTest extends TestCase {
     }
 
     public void test_stat() throws Exception {
-
         String sql = "SELECT NOW()";
-        
+
         JdbcSqlStat.setContextSqlName("select_now");
         JdbcSqlStat.setContextSqlFile("test_file");
 
@@ -60,17 +59,17 @@ public class TestOnBorrowFileAndNameTest extends TestCase {
 
         JdbcStatManager.getInstance().getDataSourceList();
         Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-        
+
         Assert.assertEquals(2, dataSource.getDataSourceStat().getSqlList().size());
-        
+
         Iterator<JdbcSqlStat> iterator = dataSource.getDataSourceStat().getSqlStatMap().values().iterator();
         JdbcSqlStat sql_0 = iterator.next();
         JdbcSqlStat sql_1 = iterator.next();
-        
+
         Assert.assertEquals("SELECT 1", sql_0.getSql());
         Assert.assertNull(sql_0.getFile());
         Assert.assertNull(sql_0.getName());
-        
+
         Assert.assertEquals("SELECT NOW()", sql_1.getSql());
         Assert.assertEquals("test_file", sql_1.getFile());
         Assert.assertEquals("select_now", sql_1.getName());

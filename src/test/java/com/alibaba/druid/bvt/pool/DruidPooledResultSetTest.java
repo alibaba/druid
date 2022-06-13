@@ -28,7 +28,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledResultSet;
 
 public class DruidPooledResultSetTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -79,15 +78,15 @@ public class DruidPooledResultSetTest extends TestCase {
 
         conn.close();
     }
-    
+
     public void test_notSupport_1() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();
-        
+
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, "xxx");
         DruidPooledResultSet rs = (DruidPooledResultSet) stmt.executeQuery();
-        
+
         Exception error = null;
         try {
             rs.getObject("1", String.class);
@@ -95,39 +94,39 @@ public class DruidPooledResultSetTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         rs.close();
-        
+
         conn.close();
     }
-    
+
     public void test_rowCount() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();
-        
+
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, "xxx");
         DruidPooledResultSet rs = (DruidPooledResultSet) stmt.executeQuery();
-        
+
         Assert.assertEquals(true, rs.next());
         Assert.assertEquals(false, rs.next());
-        
+
         Assert.assertEquals(1, rs.getFetchRowCount());
-        
+
         Assert.assertEquals(true, rs.previous());
         Assert.assertEquals(false, rs.previous());
-        
+
         Assert.assertEquals(1, rs.getFetchRowCount());
-        
+
         Assert.assertEquals(true, rs.next());
         Assert.assertEquals(false, rs.next());
-        
+
         Assert.assertEquals(1, rs.getFetchRowCount());
-        
+
         Assert.assertFalse(rs.rowUpdated());
-        
+
         rs.close();
-        
+
         conn.close();
     }
 }

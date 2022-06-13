@@ -29,12 +29,11 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import junit.framework.TestCase;
 
 public class OdpsSelectTest6 extends TestCase {
-
     public void test_distribute_by() throws Exception {
         File file = new File("/Users/wenshao/Downloads/datasafe_base_dev.udf_test.txt");
         String sql = FileUtils.readFileToString(file, "UTF-8");
-        
-        
+
+
         SQLStatementParser parser = new OdpsStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -43,11 +42,11 @@ public class OdpsSelectTest6 extends TestCase {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
 //        Assert.assertEquals("SELECT *"
 //                + "\nFROM t"
 //                + "\nWHERE ds = '20160303'"
 //                + "\n\tAND hour IN ('18')", SQLUtils.formatOdps(sql));
     }
-    
+
 }

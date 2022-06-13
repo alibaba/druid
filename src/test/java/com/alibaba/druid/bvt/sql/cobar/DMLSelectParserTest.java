@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class DMLSelectParserTest extends TestCase {
-
     public void test_union_0() throws Exception {
         String sql = "(select id from t1) union all (select id from t2) union all (select id from t3) ordeR By d desC limit 1 offset ?";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -84,9 +83,9 @@ public class DMLSelectParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT t1.id, t2.*\n" + //
-                            "FROM t1, test.t2\n" + //
-                            "WHERE test.t1.id = 1\n" + //
-                            "\tAND t1.id = test.t2.id", output);
+                "FROM t1, test.t2\n" + //
+                "WHERE test.t1.id = 1\n" + //
+                "\tAND t1.id = test.t2.id", output);
     }
 
     public void test_select_1() throws Exception {
@@ -96,11 +95,11 @@ public class DMLSelectParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT *" + //
-                            "\nFROM offer a" + //
-                            "\n\tSTRAIGHT_JOIN wp_image b USE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" + //
-                            "\n\tINNER JOIN product_visit c" + //
-                            "\nWHERE a.member_id = c.member_id\n" + //
-                            "\tAND c.member_id = 'abc'", output);
+                "\nFROM offer a" + //
+                "\n\tSTRAIGHT_JOIN wp_image b USE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" + //
+                "\n\tINNER JOIN product_visit c" + //
+                "\nWHERE a.member_id = c.member_id\n" + //
+                "\tAND c.member_id = 'abc'", output);
     }
 
     public void test_select_2() throws Exception {
@@ -110,8 +109,8 @@ public class DMLSelectParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT ALL tb1.id, tb2.id\n" + //
-                            "FROM tb1, tb2\n" + //
-                            "WHERE tb1.id2 = tb2.id2", output);
+                "FROM tb1, tb2\n" + //
+                "WHERE tb1.id2 = tb2.id2", output);
     }
 
     public void test_select_3() throws Exception {
@@ -121,7 +120,7 @@ public class DMLSelectParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT DISTINCT HIGH_PRIORITY tb1.id, tb2.id\nFROM tb1, tb2\nWHERE tb1.id2 = tb2.id2",
-                            output);
+                output);
     }
 
     public void test_select_4() throws Exception {
@@ -131,7 +130,7 @@ public class DMLSelectParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT DISTINCTROW HIGH_PRIORITY SQL_SMALL_RESULT tb1.id, tb2.id\nFROM tb1, tb2\nWHERE tb1.id2 = tb2.id2",
-                            output);
+                output);
     }
 
     public void test_select_5() throws Exception {
@@ -150,18 +149,18 @@ public class DMLSelectParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT DISTINCT HIGH_PRIORITY tb1.id, tb2.id\nFROM tb1, tb2\nWHERE tb1.id2 = tb2.id2",
-                            output);
+                output);
     }
 
     public void test_select_7() throws Exception {
         String sql = "SELect distinctrow high_priority sql_small_result tb1.id,tb2.id "
-                     + "from tb1,tb2 where tb1.id2=tb2.id2";
+                + "from tb1,tb2 where tb1.id2=tb2.id2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT DISTINCTROW HIGH_PRIORITY SQL_SMALL_RESULT tb1.id, tb2.id\nFROM tb1, tb2\nWHERE tb1.id2 = tb2.id2",
-                            output);
+                output);
     }
 
     public void test_select_8() throws Exception {
@@ -180,7 +179,7 @@ public class DMLSelectParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT SQL_CACHE id1, max(id2)\nFROM tb1\nGROUP BY id1\nHAVING id1 > 10\nORDER BY id3 DESC",
-                            output);
+                output);
     }
 
     public void test_select_10() throws Exception {
@@ -230,13 +229,13 @@ public class DMLSelectParserTest extends TestCase {
 
     public void test_select_15() throws Exception {
         String sql = "SELect distinct high_priority straight_join sql_big_result sql_cache tb1.id,tb2.id "
-                     + "from tb1,tb2 where tb1.id2=tb2.id2";
+                + "from tb1,tb2 where tb1.id2=tb2.id2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT DISTINCT HIGH_PRIORITY STRAIGHT_JOIN SQL_BIG_RESULT"
-                            + " SQL_CACHE tb1.id, tb2.id\nFROM tb1, tb2\nWHERE tb1.id2 = tb2.id2", output);
+                + " SQL_CACHE tb1.id, tb2.id\nFROM tb1, tb2\nWHERE tb1.id2 = tb2.id2", output);
     }
 
     public void test_select_16() throws Exception {
@@ -255,7 +254,7 @@ public class DMLSelectParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT DISTINCT id1, id2\nFROM tb1, tb2\nWHERE tb1.id1 = tb2.id2\nLOCK IN SHARE MODE",
-                            output);
+                output);
     }
 
     public void test_select_18() throws Exception {
@@ -265,7 +264,7 @@ public class DMLSelectParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT t1.id, t2.*\nFROM t1, test.t2\nWHERE test.t1.id = '中''‘文'\n\tAND t1.id = test.t2.id",
-                            output);
+                output);
     }
 
     public void test_select_19() throws Exception {
@@ -275,11 +274,11 @@ public class DMLSelectParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT *" + //
-                            "\nFROM offer a" + //
-                            "\n\tSTRAIGHT_JOIN wp_image b FORCE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" + //
-                            "\n\tINNER JOIN product_visit c" + //
-                            "\nWHERE a.member_id = c.member_id" + //
-                            "\n\tAND c.member_id = 'abc'", output);
+                "\nFROM offer a" + //
+                "\n\tSTRAIGHT_JOIN wp_image b FORCE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" + //
+                "\n\tINNER JOIN product_visit c" + //
+                "\nWHERE a.member_id = c.member_id" + //
+                "\n\tAND c.member_id = 'abc'", output);
     }
 
     public void test_select_20() throws Exception {
@@ -289,10 +288,10 @@ public class DMLSelectParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT *\n" + //
-                            "FROM offer a" + //
-                            "\n\tSTRAIGHT_JOIN wp_image b IGNORE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" + //
-                            "\n\tINNER JOIN product_visit c" + //
-                            "\nWHERE a.member_id = c.member_id" + //
-                            "\n\tAND c.member_id = 'abc'", output);
+                "FROM offer a" + //
+                "\n\tSTRAIGHT_JOIN wp_image b IGNORE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" + //
+                "\n\tINNER JOIN product_visit c" + //
+                "\nWHERE a.member_id = c.member_id" + //
+                "\n\tAND c.member_id = 'abc'", output);
     }
 }

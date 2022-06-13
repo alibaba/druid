@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OdpsGrantTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "grant update, Select on table adl_register_baseline_sdt to user DXP_71074213@aliyun.com";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -34,7 +33,7 @@ public class OdpsGrantTest extends TestCase {
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
         Assert.assertEquals("GRANT UPDATE, SELECT ON TABLE adl_register_baseline_sdt TO USER DXP_71074213@aliyun.com",
-                            output);
+                output);
     }
 
     public void test_1() throws Exception {
@@ -65,7 +64,7 @@ public class OdpsGrantTest extends TestCase {
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
         Assert.assertEquals("GRANT LABEL 2 ON TABLE adl_register_baseline_sdt(c1, c2) TO USER aliyun$DXP_xxxxx@aliyun.com WITH EXP 5",
-                            output);
+                output);
     }
 
     public void test_4() throws Exception {
@@ -76,6 +75,6 @@ public class OdpsGrantTest extends TestCase {
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
         Assert.assertEquals("GRANT CreateInstance, CreateResource, CreateFunction, CreateTable, LIST ON PROJECT test_project TO ROLE worker",
-                            output);
+                output);
     }
 }

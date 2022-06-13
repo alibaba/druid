@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 
 public class MySqlSelectTest_265 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select timediff(\"12:00:00\", a) from test_booleancheck\n";
 

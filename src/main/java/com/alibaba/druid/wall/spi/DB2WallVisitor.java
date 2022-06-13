@@ -21,8 +21,8 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
 public class DB2WallVisitor extends WallVisitorBase implements WallVisitor, DB2ASTVisitor {
-    public DB2WallVisitor(WallProvider provider){
-        super (provider);
+    public DB2WallVisitor(WallProvider provider) {
+        super(provider);
     }
 
     @Override
@@ -37,7 +37,6 @@ public class DB2WallVisitor extends WallVisitorBase implements WallVisitor, DB2A
         }
         return !this.provider.checkDenyTable(name);
     }
-
 
     @Override
     public DbType getDbType() {

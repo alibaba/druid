@@ -26,31 +26,30 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest48 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "  \n" +
-                "  CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"ID\" NUMBER, \n" +
-                "  \"GMT_CREATE\" DATE, \n" +
-                "  \"GMT_MODIFIED\" DATE, \n" +
-                "  \"TEMPLATE\" VARCHAR2(64), \n" +
-                "  \"COMPANY_ID\" NUMBER, \n" +
-                "  \"COLUMN_NAME\" VARCHAR2(64), \n" +
-                "  \"COLUMN_PROFILE\" VARCHAR2(4000), \n" +
-                "  \"COLUMN_IMAGE\" VARCHAR2(128), \n" +
-                "  \"ORDERING\" NUMBER, \n" +
-                "  \"STATUS\" VARCHAR2(16), \n" +
-                "  \"CREATE_TYPE\" VARCHAR2(256), \n" +
-                "   CONSTRAINT \"COLUMNS_PK\" PRIMARY KEY (\"ID\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"BOPSINDXTS\"  ENABLE\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS NOLOGGING\n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"BOPSDATATS\" ";
+                "  \n" +
+                        "  CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"ID\" NUMBER, \n" +
+                        "  \"GMT_CREATE\" DATE, \n" +
+                        "  \"GMT_MODIFIED\" DATE, \n" +
+                        "  \"TEMPLATE\" VARCHAR2(64), \n" +
+                        "  \"COMPANY_ID\" NUMBER, \n" +
+                        "  \"COLUMN_NAME\" VARCHAR2(64), \n" +
+                        "  \"COLUMN_PROFILE\" VARCHAR2(4000), \n" +
+                        "  \"COLUMN_IMAGE\" VARCHAR2(128), \n" +
+                        "  \"ORDERING\" NUMBER, \n" +
+                        "  \"STATUS\" VARCHAR2(16), \n" +
+                        "  \"CREATE_TYPE\" VARCHAR2(256), \n" +
+                        "   CONSTRAINT \"COLUMNS_PK\" PRIMARY KEY (\"ID\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"BOPSINDXTS\"  ENABLE\n" +
+                        "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS NOLOGGING\n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"BOPSDATATS\" ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -107,7 +106,7 @@ public class OracleCreateTableTest48 extends OracleTest {
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

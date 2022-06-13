@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest10 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE ws_affiliate_tran_product add ( discount_amount NUMBER, commission_amount NUMBER )";
+                "ALTER TABLE ws_affiliate_tran_product add ( discount_amount NUMBER, commission_amount NUMBER )";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -53,8 +52,8 @@ public class OracleAlterTableTest10 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_affiliate_tran_product", "discount_amount")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_affiliate_tran_product", "commission_amount")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_affiliate_tran_product", "discount_amount")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_affiliate_tran_product", "commission_amount")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

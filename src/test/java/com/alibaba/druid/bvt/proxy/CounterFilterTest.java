@@ -37,21 +37,20 @@ import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class CounterFilterTest extends TestCase {
-
     String sql = "SELECT 1";
 
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
-    
+
     public void test_countFilter() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setUrl("");
 
         DataSourceProxyImpl dataSource = new DataSourceProxyImpl(null, config);
         JdbcDataSourceStat dataSourceStat = dataSource.getDataSourceStat();
-        
+
         StatFilter filter = new StatFilter();
         filter.init(dataSource);
 
@@ -62,7 +61,6 @@ public class CounterFilterTest extends TestCase {
         Assert.assertNull(dataSourceStat.getConnectionStat().getConnectLastTime());
 
         FilterChain chain = new FilterChainImpl(dataSource) {
-
             public ConnectionProxy connection_connect(Properties info) throws SQLException {
                 throw new SQLException();
             }
@@ -101,7 +99,7 @@ public class CounterFilterTest extends TestCase {
 
         conn.close();
         conn.close();
-        
+
         dataSource.getCompositeData();
         dataSource.getProperties();
         dataSource.getDataSourceMBeanDomain();

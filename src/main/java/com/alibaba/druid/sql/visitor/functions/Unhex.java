@@ -26,8 +26,7 @@ import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Unhex implements Function {
-
-    public final static Unhex instance = new Unhex();
+    public static final Unhex instance = new Unhex();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getArguments().size() != 1) {
@@ -64,7 +63,7 @@ public class Unhex implements Function {
             if (bytes == null) {
                 return SQLEvalVisitor.EVAL_VALUE_NULL;
             }
-            
+
             String result;
             try {
                 result = new String(bytes, "UTF-8");

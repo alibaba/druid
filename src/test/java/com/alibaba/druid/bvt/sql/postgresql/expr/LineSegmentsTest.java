@@ -12,7 +12,7 @@ public class LineSegmentsTest extends PGTest {
         String sql = "lseg '((-1,0),(1,0))'";
         PGExprParser parser = new PGExprParser(sql);
         PGLineSegmentsExpr expr = (PGLineSegmentsExpr) parser.expr();
-        
+
         Assert.assertEquals("lseg '((-1,0),(1,0))'", expr.toString());
     }
 }

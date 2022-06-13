@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 
 public class Reset_Test extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "binlog  'str'";
 
@@ -36,7 +35,6 @@ public class Reset_Test extends TestCase {
 
         Assert.assertEquals("BINLOG 'str';", text);
     }
-    
 
 
     private String output(List<SQLStatement> stmtList) {

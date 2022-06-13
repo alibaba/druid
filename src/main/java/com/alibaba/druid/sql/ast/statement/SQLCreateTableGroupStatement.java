@@ -17,7 +17,10 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
@@ -28,18 +31,17 @@ import java.util.List;
 
 public class SQLCreateTableGroupStatement extends SQLStatementImpl implements SQLCreateStatement {
     protected SQLName name;
-    protected boolean ifNotExists = false;
+    protected boolean ifNotExists;
     protected SQLExpr partitionNum;
 
-
-    public SQLCreateTableGroupStatement(){
+    public SQLCreateTableGroupStatement() {
     }
 
-    public SQLCreateTableGroupStatement(DbType dbType){
-        super (dbType);
+    public SQLCreateTableGroupStatement(DbType dbType) {
+        super(dbType);
     }
 
-    public String getSchemaName(){
+    public String getSchemaName() {
         if (name instanceof SQLPropertyExpr) {
             return SQLUtils.toMySqlString(((SQLPropertyExpr) name).getOwner());
         }
@@ -102,7 +104,7 @@ public class SQLCreateTableGroupStatement extends SQLStatementImpl implements SQ
     public boolean isIfNotExists() {
         return ifNotExists;
     }
-    
+
     public void setIfNotExists(boolean ifNotExists) {
         this.ifNotExists = ifNotExists;
     }

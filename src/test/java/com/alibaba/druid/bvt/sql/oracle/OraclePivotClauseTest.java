@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class OraclePivotClauseTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT *\n" + "FROM pivot_table\n"
                 + "UNPIVOT (yearly_total FOR order_mode IN (store AS 'direct', internet AS 'online'))\n"

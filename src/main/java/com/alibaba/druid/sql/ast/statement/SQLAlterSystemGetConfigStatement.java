@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLAlterSystemGetConfigStatement extends SQLStatementImpl implements SQLAlterStatement {
     private SQLName name;
 
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {

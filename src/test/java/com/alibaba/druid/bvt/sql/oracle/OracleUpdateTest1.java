@@ -26,13 +26,12 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleUpdateTest1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "UPDATE table1 t_alias1 " + //
-                     "    SET column = " + //
-                     "        (SELECT expr " + //
-                     "            FROM table2 t_alias2 " + //
-                     "            WHERE t_alias1.column = t_alias2.column); ";
+                "    SET column = " + //
+                "        (SELECT expr " + //
+                "            FROM table2 t_alias2 " + //
+                "            WHERE t_alias1.column = t_alias2.column); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -55,9 +54,9 @@ public class OracleUpdateTest1 extends OracleTest {
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(3, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("table1", "column")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("table2", "expr")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("table2", "column")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("table1", "column")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("table2", "expr")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("table2", "column")));
     }
 
 }

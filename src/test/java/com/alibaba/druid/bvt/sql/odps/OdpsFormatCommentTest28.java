@@ -12,5 +12,5 @@ public class OdpsFormatCommentTest28 extends TestCase {
         Assert.assertEquals("SELECT pageid, adid\n" +
                 "FROM pageAds\n" +
                 "\tLATERAL VIEW EXPLODE(adid_list) adTable AS adid;", SQLUtils.formatOdps(sql));
-    }   
+    }
 }

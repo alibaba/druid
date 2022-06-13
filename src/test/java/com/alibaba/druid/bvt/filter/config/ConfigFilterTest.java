@@ -15,7 +15,6 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author Jonas Yang
  */
 public class ConfigFilterTest extends ConfigFileGenerator {
-
     String encryptedString = "OJfUm6WCHi7EuXqE6aEc+Po2xFrAGBeSNy8O2jWhV2FTG8/5kbRRr2rjNKhptlevm/03Y0048P7h88gdUOXAYg==";
 
     @Test
@@ -78,7 +77,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         try {
             dataSource.init();
             Assert.assertEquals("The password is " + dataSource.getPassword() + ", is not xiaoyu", "xiaoyu",
-                                dataSource.getPassword());
+                    dataSource.getPassword());
         } finally {
             JdbcUtils.close(dataSource);
         }

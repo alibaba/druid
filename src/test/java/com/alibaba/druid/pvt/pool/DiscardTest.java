@@ -17,16 +17,14 @@ import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class DiscardTest extends TestCase {
+    private DruidDataSource dataSource;
 
-    private DruidDataSource  dataSource;
-
-    private MockDriver       driver;
+    private MockDriver driver;
 
     private volatile boolean failed = false;
 
     protected void setUp() throws Exception {
         driver = new MockDriver() {
-
             public ResultSet executeQuery(MockStatementBase stmt, String sql) throws SQLException {
                 if (failed) {
                     throw new SQLException("", "", 1040);
@@ -78,7 +76,6 @@ public class DiscardTest extends TestCase {
 
             for (int i = 0; i < THREAD_COUNT; ++i) {
                 threads[i] = new Thread() {
-
                     public void run() {
                         try {
                             exec();
@@ -103,7 +100,7 @@ public class DiscardTest extends TestCase {
 
             Assert.assertNotNull(error);
         }
-        
+
         this.failed = false;
 
         endLatch.await();

@@ -25,9 +25,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * @author kiki
  */
 public class MysqlForeignKey extends SQLForeignKeyImpl {
-    private SQLName  indexName;
-    private boolean  hasConstraint;
-    private Match    referenceMatch;
+    private SQLName indexName;
+    private boolean hasConstraint;
+    private Match referenceMatch;
     protected Option onUpdate;
     protected Option onDelete;
 

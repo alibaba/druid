@@ -21,9 +21,7 @@ import java.util.Map;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 public class SequenceDao extends SqlMapClientDaoSupport implements ISequenceDao {
-
     public boolean compareAndSet(String name, int value, int expect) {
-
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("name", name);
         parameters.put("value", value);

@@ -18,18 +18,14 @@ package com.alibaba.druid.wall;
 import java.util.Properties;
 
 public abstract class WallProviderStatLoggerAdapter implements WallProviderStatLogger {
-
-    public WallProviderStatLoggerAdapter(){
-
+    public WallProviderStatLoggerAdapter() {
     }
 
     @Override
     public void log(WallProviderStatValue statValue) {
-
     }
 
     @Override
     public void configFromProperties(Properties properties) {
-
     }
 }

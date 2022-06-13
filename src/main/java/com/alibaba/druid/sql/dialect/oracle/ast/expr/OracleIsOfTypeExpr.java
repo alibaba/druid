@@ -31,12 +31,18 @@ public class OracleIsOfTypeExpr extends SQLExprImpl implements OracleExpr, SQLRe
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         OracleIsOfTypeExpr that = (OracleIsOfTypeExpr) o;
 
-        if (expr != null ? !expr.equals(that.expr) : that.expr != null) return false;
+        if (expr != null ? !expr.equals(that.expr) : that.expr != null) {
+            return false;
+        }
         return types != null ? types.equals(that.types) : that.types == null;
     }
 

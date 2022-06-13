@@ -28,7 +28,6 @@ import java.util.List;
 
 public class OdpsRestoreStatement
         extends OdpsStatementImpl implements SQLAlterStatement {
-
     private final List<SQLAssignItem> properties = new ArrayList<SQLAssignItem>();
     private final List<SQLAssignItem> partitions = new ArrayList<SQLAssignItem>();
     private SQLExprTableSource table;
@@ -39,7 +38,6 @@ public class OdpsRestoreStatement
     public OdpsRestoreStatement() {
         super.dbType = DbType.odps;
     }
-
 
     @Override
     protected void accept0(OdpsASTVisitor visitor) {

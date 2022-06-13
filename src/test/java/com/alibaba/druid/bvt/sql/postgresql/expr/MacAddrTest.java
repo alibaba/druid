@@ -1,7 +1,6 @@
 package com.alibaba.druid.bvt.sql.postgresql.expr;
 
 
-
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;

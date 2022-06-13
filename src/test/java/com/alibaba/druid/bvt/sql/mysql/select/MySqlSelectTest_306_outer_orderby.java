@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 
 public class MySqlSelectTest_306_outer_orderby
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * \n" +
                 "FROM (\n" +

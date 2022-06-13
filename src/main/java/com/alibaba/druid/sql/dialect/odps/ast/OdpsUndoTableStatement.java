@@ -28,7 +28,6 @@ import java.util.List;
 
 public class OdpsUndoTableStatement
         extends OdpsStatementImpl implements SQLAlterStatement {
-
     private SQLExprTableSource table;
     private List<SQLAssignItem> partitions = new ArrayList<>();
     private SQLExpr to;
@@ -36,7 +35,6 @@ public class OdpsUndoTableStatement
     public OdpsUndoTableStatement() {
         super.dbType = DbType.odps;
     }
-
 
     @Override
     protected void accept0(OdpsASTVisitor visitor) {

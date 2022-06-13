@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class JMXExporterTest extends TestCase {
-
     public void test_export() throws Exception {
         String file = "com/alibaba/druid/jmx/spring_stat_export.xml";
 

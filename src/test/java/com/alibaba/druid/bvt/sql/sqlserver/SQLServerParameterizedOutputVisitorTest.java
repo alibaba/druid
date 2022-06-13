@@ -26,17 +26,16 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 
 public class SQLServerParameterizedOutputVisitorTest extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = "select GEN_VAL " + //
-                     "from ID_GENERATOR with (updlock, rowlock) " + //
-                     "where GEN_NAME = 'T_USERS' AND FID = 3 AND FSTATE IN (1, 2, 3)"; //
+                "from ID_GENERATOR with (updlock, rowlock) " + //
+                "where GEN_NAME = 'T_USERS' AND FID = 3 AND FSTATE IN (1, 2, 3)"; //
 
         String expect = "SELECT GEN_VAL" + //
-                        "\nFROM ID_GENERATOR WITH (updlock, rowlock)" + //
-                        "\nWHERE GEN_NAME = ?" +
-                        "\n\tAND FID = ?" +
-                        "\n\tAND FSTATE IN (?)";
+                "\nFROM ID_GENERATOR WITH (updlock, rowlock)" + //
+                "\nWHERE GEN_NAME = ?" +
+                "\n\tAND FID = ?" +
+                "\n\tAND FSTATE IN (?)";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -45,7 +44,7 @@ public class SQLServerParameterizedOutputVisitorTest extends TestCase {
 
         Assert.assertEquals(expect, text);
     }
-    
+
     public static String outputSqlServer(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
         SQLServerOutputVisitor visitor = new SQLServerOutputVisitor(out, true);

@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class SHOW_WARNINGS_Syntax_Test extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SHOW WARNINGS;";
 

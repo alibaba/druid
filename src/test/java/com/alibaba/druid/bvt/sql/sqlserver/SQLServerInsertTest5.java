@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 
 public class SQLServerInsertTest5 extends TestCase {
-
     public void test_parseCompleteValues_false() throws Exception {
         String sql = "insert into t(a,b) values ('a1','b1'),('a2','b2'),('a3','b3'),('a4','b4');";
 
@@ -49,9 +48,9 @@ public class SQLServerInsertTest5 extends TestCase {
         stmt.accept(visitor);
 
         String formatSql = "INSERT INTO t (a, b)"//
-                           + "\nVALUES ('a1', 'b1'),"//
-                           + "\n('a2', 'b2'),"//
-                           + "\n('a3', 'b3')";
+                + "\nVALUES ('a1', 'b1'),"//
+                + "\n('a2', 'b2'),"//
+                + "\n('a3', 'b3')";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 
@@ -74,10 +73,10 @@ public class SQLServerInsertTest5 extends TestCase {
         stmt.accept(visitor);
 
         String formatSql = "INSERT INTO t (a, b)"//
-                           + "\nVALUES ('a1', 'b1'),"//
-                           + "\n('a2', 'b2'),"//
-                           + "\n('a3', 'b3'),"//
-                           + "\n('a4', 'b4');";
+                + "\nVALUES ('a1', 'b1'),"//
+                + "\n('a2', 'b2'),"//
+                + "\n('a3', 'b3'),"//
+                + "\n('a4', 'b4');";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 }

@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerSelectTest2 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "SELECT TOP 1 name FROM (SELECT TOP 9 name FROM master..syslogins ORDER BY name ASC) sq ORDER BY name DESC ";
 

@@ -19,7 +19,6 @@ import com.alibaba.druid.wall.WallSqlStatValue;
 import com.alibaba.druid.wall.WallTableStatValue;
 
 public class MonitorDaoJdbcImplTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     @Override
@@ -53,13 +52,13 @@ public class MonitorDaoJdbcImplTest extends TestCase {
 
         MonitorClient client = new MonitorClient();
         client.setDao(dao);
-        
+
         client.checkInst();
 
         client.collectSql();
 
         {
-            List<JdbcSqlStatValue> sqlList = client.loadSqlList(Collections.<String, Object> emptyMap());
+            List<JdbcSqlStatValue> sqlList = client.loadSqlList(Collections.<String, Object>emptyMap());
             for (JdbcSqlStatValue sqlStatValue : sqlList) {
                 System.out.println(sqlStatValue.getData());
             }
@@ -69,7 +68,7 @@ public class MonitorDaoJdbcImplTest extends TestCase {
         client.collectSql();
 
         {
-            List<JdbcSqlStatValue> sqlList = client.loadSqlList(Collections.<String, Object> emptyMap());
+            List<JdbcSqlStatValue> sqlList = client.loadSqlList(Collections.<String, Object>emptyMap());
             for (JdbcSqlStatValue sqlStatValue : sqlList) {
                 System.out.println(sqlStatValue.getData());
             }
@@ -81,7 +80,7 @@ public class MonitorDaoJdbcImplTest extends TestCase {
         StringBuilder buf = new StringBuilder();
 
         buf.append("CREATE TABLE ") //
-        .append(dao.getTableName(beanInfo));
+                .append(dao.getTableName(beanInfo));
 
         buf.append("( id bigint(20) NOT NULL AUTO_INCREMENT");
         buf.append(", domain varchar(45)  NOT NULL");

@@ -25,14 +25,13 @@ import static com.alibaba.druid.sql.parser.CharTypes.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OdpsLexer extends Lexer {
-
-    public final static Keywords DEFAULT_ODPS_KEYWORDS;
+    public static final Keywords DEFAULT_ODPS_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
-        
+
         map.put("SHOW", Token.SHOW);
         map.put("PARTITION", Token.PARTITION);
         map.put("PARTITIONED", Token.PARTITIONED);
@@ -51,7 +50,7 @@ public class OdpsLexer extends Lexer {
         DEFAULT_ODPS_KEYWORDS = new Keywords(map);
     }
 
-    public OdpsLexer(String input, SQLParserFeature... features){
+    public OdpsLexer(String input, SQLParserFeature... features) {
         super(input);
 
         init();
@@ -65,8 +64,8 @@ public class OdpsLexer extends Lexer {
             config(feature, true);
         }
     }
-    
-    public OdpsLexer(String input, boolean skipComment, boolean keepComments){
+
+    public OdpsLexer(String input, boolean skipComment, boolean keepComments) {
         super(input, skipComment);
 
         init();
@@ -77,7 +76,7 @@ public class OdpsLexer extends Lexer {
         super.keywords = DEFAULT_ODPS_KEYWORDS;
     }
 
-    public OdpsLexer(String input, CommentHandler commentHandler){
+    public OdpsLexer(String input, CommentHandler commentHandler) {
         super(input, commentHandler);
 
         init();
@@ -85,7 +84,7 @@ public class OdpsLexer extends Lexer {
         dbType = DbType.odps;
         super.keywords = DEFAULT_ODPS_KEYWORDS;
     }
-    
+
     private void init() {
         if (ch == '】' || ch == ' ' || ch == '，' || ch == '：' || ch == '、' || ch == '\u200C' || ch == '；') {
             ch = charAt(++pos);
@@ -95,28 +94,27 @@ public class OdpsLexer extends Lexer {
             pos += 2;
             ch = charAt(pos);
 
-            while(isWhitespace(ch)) {
+            while (isWhitespace(ch)) {
                 ch = charAt(++pos);
             }
         }
     }
-    
+
     public void scanComment() {
-       scanHiveComment();
+        scanHiveComment();
     }
 
     public void scanIdentifier() {
-        hash_lower = 0;
+        hashLCase = 0;
         hash = 0;
 
         final char first = ch;
-        
-        if (first == '`') {
 
+        if (first == '`') {
             mark = pos;
             bufPos = 1;
             char ch;
-            for (;;) {
+            for (; ; ) {
                 ch = charAt(++pos);
 
                 if (ch == '`') {
@@ -139,7 +137,7 @@ public class OdpsLexer extends Lexer {
 
             stringVal = subString(mark, bufPos);
             token = Token.IDENTIFIER;
-            
+
             return;
         }
 
@@ -154,7 +152,7 @@ public class OdpsLexer extends Lexer {
         mark = pos;
         bufPos = 1;
         char ch;
-        for (;;) {
+        for (; ; ) {
             ch = charAt(++pos);
 
             if (ch != 'ó'
@@ -190,10 +188,10 @@ public class OdpsLexer extends Lexer {
         }
 
         this.ch = charAt(pos);
-        
+
         if (ch == '@') { // for user identifier
             bufPos++;
-            for (;;) {
+            for (; ; ) {
                 ch = charAt(++pos);
 
                 if (ch != '-' && ch != '.' && !isIdentifierChar(ch)) {
@@ -242,7 +240,7 @@ public class OdpsLexer extends Lexer {
             int p2 = text.indexOf("#end code", pos + 1);
             if (p1 == -1) {
                 p1 = p2;
-            } else if (p1 > p2 && p2 != -1){
+            } else if (p1 > p2 && p2 != -1) {
                 p1 = p2;
             }
 
@@ -255,7 +253,7 @@ public class OdpsLexer extends Lexer {
                 return;
             }
         }
-        
+
         super.scanVariable();
     }
 

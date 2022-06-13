@@ -25,38 +25,49 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class OceanBaseValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker {
-  private String            oracleModeValidateQuery  = "SELECT 'x' FROM DUAL";
-  private String            mysqlModeValidateQuery   = "SELECT 'x'";
-  private DbType            dbType;
-  public OceanBaseValidConnectionChecker() { configFromProperties(System.getProperties()); dbType = null; }
-  public OceanBaseValidConnectionChecker(DbType dbType) {this.dbType = dbType;configFromProperties(System.getProperties()); }
-  public boolean isValidConnection(final Connection c, String validateQuery, int validationQueryTimeout) throws Exception {
-    if (c.isClosed()) {
-      return false;
+    private String oracleModeValidateQuery = "SELECT 'x' FROM DUAL";
+    private String mysqlModeValidateQuery = "SELECT 'x'";
+    private DbType dbType;
+
+    public OceanBaseValidConnectionChecker() {
+        configFromProperties(System.getProperties());
+        dbType = null;
     }
-    if (validateQuery == null || validateQuery.isEmpty()) {
-      if(dbType != null) {
-        if(dbType == DbType.oceanbase) {
-          validateQuery = mysqlModeValidateQuery;
-        } else {
-          validateQuery = oracleModeValidateQuery;
+
+    public OceanBaseValidConnectionChecker(DbType dbType) {
+        this.dbType = dbType;
+        configFromProperties(System.getProperties());
+    }
+
+    public boolean isValidConnection(final Connection c,
+                                     String validateQuery,
+                                     int validationQueryTimeout) throws Exception {
+        if (c.isClosed()) {
+            return false;
         }
-      }
-    }
+        if (validateQuery == null || validateQuery.isEmpty()) {
+            if (dbType != null) {
+                if (dbType == DbType.oceanbase) {
+                    validateQuery = mysqlModeValidateQuery;
+                } else {
+                    validateQuery = oracleModeValidateQuery;
+                }
+            }
+        }
 
-    Statement stmt = null;
+        Statement stmt = null;
 
-    try {
-      stmt = c.createStatement();
-      if (validationQueryTimeout > 0) {
-        stmt.setQueryTimeout(validationQueryTimeout);
-      }
-      stmt.execute(validateQuery);
-      return true;
-    } catch (SQLException e) {
-      throw e;
-    } finally {
-      JdbcUtils.close(stmt);
+        try {
+            stmt = c.createStatement();
+            if (validationQueryTimeout > 0) {
+                stmt.setQueryTimeout(validationQueryTimeout);
+            }
+            stmt.execute(validateQuery);
+            return true;
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            JdbcUtils.close(stmt);
+        }
     }
-  }
 }

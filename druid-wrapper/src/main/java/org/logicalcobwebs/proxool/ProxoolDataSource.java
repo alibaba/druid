@@ -21,13 +21,11 @@ import javax.sql.DataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class ProxoolDataSource implements DataSource, ObjectFactory {
-
     private DruidDataSource druid              = new DruidDataSource();
 
     private Properties      delegateProperties = new Properties();
 
     public ProxoolDataSource(){
-
     }
 
     public ProxoolDataSource(String alias){
@@ -110,7 +108,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
 
     @Deprecated
     public void setMaximumConnectionLifetime(int maximumConnectionLifetime) {
-
     }
 
     @Deprecated
@@ -120,7 +117,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
 
     @Deprecated
     public void setPrototypeCount(int prototypeCount) {
-
     }
 
     public int getMinimumConnectionCount() {
@@ -152,7 +148,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     public void setSimultaneousBuildThrottle(int simultaneousBuildThrottle) {
-
     }
 
     public long getRecentlyStartedThreshold() {
@@ -160,7 +155,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     public void setRecentlyStartedThreshold(int recentlyStartedThreshold) {
-
     }
 
     public long getOverloadWithoutRefusalLifetime() {
@@ -168,7 +162,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     public void setOverloadWithoutRefusalLifetime(int overloadWithoutRefusalLifetime) {
-
     }
 
     public long getMaximumActiveTime() {
@@ -185,7 +178,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
 
     @Deprecated
     public void setVerbose(boolean verbose) {
-
     }
 
     public boolean isTrace() {
@@ -216,7 +208,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
 
     @Deprecated
     public void setFatalSqlExceptionsAsString(String fatalSqlExceptionsAsString) {
-
     }
 
     public String getFatalSqlExceptionWrapperClass() {
@@ -224,7 +215,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     public void setFatalSqlExceptionWrapperClass(String fatalSqlExceptionWrapperClass) {
-
     }
 
     public String getHouseKeepingTestSql() {
@@ -256,7 +246,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     public void setJmx(boolean jmx) {
-
     }
 
     @Deprecated
@@ -266,7 +255,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
 
     @Deprecated
     public void setJmxAgentId(String jmxAgentId) {
-
     }
 
     public boolean isTestBeforeUse() {

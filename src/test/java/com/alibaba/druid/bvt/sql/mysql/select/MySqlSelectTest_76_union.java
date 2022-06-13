@@ -27,9 +27,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_76_union extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "((select 1 as a1, 10 as a2)) union all (((select 2, 20))) union distinct (select 3, 30);";
+        String sql = "((select 1 as a1, 10 as a2)) union all (((select 2, 20))) union distinct (select 3, 30);";
 
         System.out.println(sql);
 
@@ -48,7 +47,7 @@ public class MySqlSelectTest_76_union extends MysqlTest {
                             "(SELECT 2, 20)\n" +
                             "UNION DISTINCT\n" +
                             "(SELECT 3, 30);", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -57,7 +56,7 @@ public class MySqlSelectTest_76_union extends MysqlTest {
                             "(select 2, 20)\n" +
                             "union distinct\n" +
                             "(select 3, 30);", //
-                                output);
+                    output);
         }
 
         {

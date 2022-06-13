@@ -23,15 +23,14 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest16 extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "SELECT * FROM lhwbbs_threads_cate_index FORCE INDEX(PRIMARY) WHERE cid=? AND disabled=? ORDER BY tid DESC LIMIT ?,?")); //
+                "SELECT * FROM lhwbbs_threads_cate_index FORCE INDEX(PRIMARY) WHERE cid=? AND disabled=? ORDER BY tid DESC LIMIT ?,?")); //
     }
 }

@@ -23,20 +23,18 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
-import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.*;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.*;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsOfTypeExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot.Item;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.CheckOption;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.ReadOnly;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
@@ -48,16 +46,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleSchemaStatVisitor extends SchemaStatVisitor implements OracleASTVisitor {
-
-    public OracleSchemaStatVisitor(){
+    public OracleSchemaStatVisitor() {
         this(new ArrayList<Object>());
     }
 
     public OracleSchemaStatVisitor(SchemaRepository repository) {
-        super (repository);
+        super(repository);
     }
 
-    public OracleSchemaStatVisitor(List<Object> parameters){
+    public OracleSchemaStatVisitor(List<Object> parameters) {
         super(DbType.oracle, parameters);
     }
 
@@ -242,7 +239,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(InsertIntoClause x) {
-
         if (x.getTableName() instanceof SQLName) {
             TableStat stat = getTableStat(x.getTableName());
             stat.incrementInsertCount();
@@ -466,6 +462,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public boolean visit(OracleRaiseStatement x) {
         return false;
     }
+
     @Override
     public boolean visit(OracleCreateDatabaseDbLinkStatement x) {
         return false;

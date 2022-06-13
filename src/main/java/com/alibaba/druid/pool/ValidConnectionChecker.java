@@ -19,9 +19,8 @@ import java.sql.Connection;
 import java.util.Properties;
 
 public interface ValidConnectionChecker {
-
     boolean isValidConnection(Connection c, String query, int validationQueryTimeout) throws Exception;
-    
+
     /**
      * @param properties
      * @since 0.2.21

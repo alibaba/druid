@@ -17,7 +17,7 @@ public class PropertyTest_validationQuery extends PoolTestCase {
         dataSource = new DruidDataSource();
         Assert.assertEquals("select 1", dataSource.getValidationQuery());
     }
-    
+
     protected void tearDown() throws Exception {
         System.clearProperty("druid.validationQuery");
         JdbcUtils.close(dataSource);

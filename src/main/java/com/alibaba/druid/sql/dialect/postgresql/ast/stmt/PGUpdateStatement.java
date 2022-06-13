@@ -21,11 +21,10 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatement {
+    private boolean only;
 
-    private boolean        only      = false;
-
-    public PGUpdateStatement(){
-        super (DbType.postgresql);
+    public PGUpdateStatement() {
+        super(DbType.postgresql);
     }
 
     public boolean isOnly() {

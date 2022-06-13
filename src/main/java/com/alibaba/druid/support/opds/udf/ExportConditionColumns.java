@@ -25,7 +25,6 @@ import com.aliyun.odps.udf.UDF;
 import java.util.List;
 
 public class ExportConditionColumns extends UDF {
-
     public String evaluate(String sql) {
         return evaluate(sql, null);
     }
@@ -46,7 +45,7 @@ public class ExportConditionColumns extends UDF {
                 if ((!column.isWhere()) && !column.isJoin()) {
                     continue;
                 }
-                
+
                 if (buf.length() != 0) {
                     buf.append(',');
                 }

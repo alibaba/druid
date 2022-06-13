@@ -26,7 +26,6 @@ import java.util.List;
  * @author zz [455910092@qq.com]
  */
 public class MySqlDeclareStatement extends MySqlStatementImpl {
-
     private List<SQLDeclareItem> varList = new ArrayList<SQLDeclareItem>();
 
     public List<SQLDeclareItem> getVarList() {

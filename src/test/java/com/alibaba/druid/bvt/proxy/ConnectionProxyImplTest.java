@@ -31,12 +31,11 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class ConnectionProxyImplTest extends TestCase {
-
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
-    
+
     public void test_connection() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         DataSourceProxy dataSource = new DataSourceProxyImpl(null, config);
@@ -46,9 +45,7 @@ public class ConnectionProxyImplTest extends TestCase {
         filter.init(dataSource);
 
         ConnectionProxyImpl rawConnection = new ConnectionProxyImpl(null, null, new Properties(), 0) {
-
             public void setClientInfo(String name, String value) throws SQLClientInfoException {
-
             }
         };
 

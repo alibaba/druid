@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPartitionByValue extends SQLPartitionBy {
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {

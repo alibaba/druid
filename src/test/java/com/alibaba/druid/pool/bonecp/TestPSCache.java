@@ -35,7 +35,6 @@ import com.mchange.v2.c3p0.impl.NewProxyConnection;
 import com.mchange.v2.c3p0.impl.NewProxyPreparedStatement;
 
 public class TestPSCache extends TestCase {
-
     public void test_boneCP() throws Exception {
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setJdbcUrl("jdbc:mock:test");
@@ -98,7 +97,7 @@ public class TestPSCache extends TestCase {
 
         conn.close();
     }
-    
+
     public static MockPreparedStatement unwrap(PreparedStatement stmt) throws Exception {
         if (stmt instanceof NewProxyPreparedStatement) {
             Field field = NewProxyPreparedStatement.class.getDeclaredField("inner");

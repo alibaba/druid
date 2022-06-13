@@ -25,13 +25,11 @@ public class ExeptionSorterTest extends TestCase {
         method.setAccessible(true);
         method.invoke(dataSource);
 
-        assertEquals(dataSource.getExceptionSorter().getClass(),  MySqlExceptionSorter.class);
+        assertEquals(dataSource.getExceptionSorter().getClass(), MySqlExceptionSorter.class);
     }
 
 
-
     public static class MyDriver extends Driver {
-
         /**
          * Construct a new driver and register it with DriverManager
          *

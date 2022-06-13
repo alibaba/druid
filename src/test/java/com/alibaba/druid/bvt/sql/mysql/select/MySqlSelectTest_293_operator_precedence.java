@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 
 public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT ALL + + ( + col1 ) \n" +
                 "FROM random_aggregates_23_tab2 AS cor0 \n" +

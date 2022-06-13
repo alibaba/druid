@@ -24,7 +24,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_52_comment extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT comment.id,user.id AS user_id,user.username,user.avatar,comment.created_at,\n" +
                 "                getDistance('31.860968', '117.252579', user.latitude, user.longitude) AS distance,\n" +
@@ -57,12 +56,12 @@ public class MySqlSelectTest_52_comment extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(1, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT comment.id, user.id AS user_id, user.username, user.avatar, comment.created_at\n" +
@@ -82,7 +81,7 @@ public class MySqlSelectTest_52_comment extends MysqlTest {
                             "\tAND getDistance('31.860968', '117.252579', user.latitude, user.longitude) <= 10000\n" +
                             "ORDER BY created_at DESC\n" +
                             "LIMIT 10, 10", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -103,7 +102,7 @@ public class MySqlSelectTest_52_comment extends MysqlTest {
                             "\tand getDistance('31.860968', '117.252579', user.latitude, user.longitude) <= 10000\n" +
                             "order by created_at desc\n" +
                             "limit 10, 10", //
-                                output);
+                    output);
         }
 
         {

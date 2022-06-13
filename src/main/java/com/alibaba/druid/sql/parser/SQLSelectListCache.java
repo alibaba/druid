@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SQLSelectListCache {
-    private final static Log                LOG             = LogFactory.getLog(SQLSelectListCache.class);
-    private final DbType                    dbType;
-    private final List<Entry>               entries         = new CopyOnWriteArrayList<Entry>();
+    private static final Log LOG = LogFactory.getLog(SQLSelectListCache.class);
+    private final DbType dbType;
+    private final List<Entry> entries = new CopyOnWriteArrayList<Entry>();
 
     public SQLSelectListCache(DbType dbType) {
         this.dbType = dbType;
@@ -39,7 +39,7 @@ public class SQLSelectListCache {
         }
 
         SQLSelectParser selectParser = SQLParserUtils.createSQLStatementParser(select, dbType)
-                                                     .createSQLSelectParser();
+                .createSQLSelectParser();
         SQLSelectQueryBlock queryBlock = SQLParserUtils.createSelectQueryBlock(dbType);
         selectParser.accept(Token.SELECT);
 
@@ -51,10 +51,12 @@ public class SQLSelectListCache {
         String printSql = queryBlock.toString();
         long printSqlHash = FnvHash.fnv1a_64_lower(printSql);
         entries.add(
-                new Entry(select.substring(6)
-                        , queryBlock
-                        , printSql
-                        , printSqlHash)
+                new Entry(
+                        select.substring(6),
+                        queryBlock,
+                        printSql,
+                        printSqlHash
+                )
         );
 
         if (entries.size() > 5) {
@@ -87,6 +89,7 @@ public class SQLSelectListCache {
                 queryBlock.setCachedSelectList(entry.printSql, entry.printSqlHash);
 
                 int len = pos + block.length();
+                //todo fix reset
                 lexer.reset(len, text.charAt(len), Token.FROM);
                 return true;
             }
@@ -95,10 +98,10 @@ public class SQLSelectListCache {
     }
 
     private static class Entry {
-        public final String              sql;
+        public final String sql;
         public final SQLSelectQueryBlock queryBlock;
-        public final String              printSql;
-        public final long                printSqlHash;
+        public final String printSql;
+        public final long printSqlHash;
 
         public Entry(String sql, SQLSelectQueryBlock queryBlock, String printSql, long printSqlHash) {
             this.sql = sql;

@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import junit.framework.TestCase;
 
 public class SQLServerUpdateTest6 extends TestCase {
-
     public void test_update() throws Exception {
         String sql = "update clients set name =N'小明',age =1";
 
@@ -28,7 +27,7 @@ public class SQLServerUpdateTest6 extends TestCase {
                 + "\nSET VacationHours = VacationHours * 1.25, ModifiedDate = GETDATE()"
                 + "\nOUTPUT inserted.BusinessEntityID, deleted.VacationHours, inserted.VacationHours, inserted.ModifiedDate"
                 + "\n\tINTO @MyTableVar;";
-        
+
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

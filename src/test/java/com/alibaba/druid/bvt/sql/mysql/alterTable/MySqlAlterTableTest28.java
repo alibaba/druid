@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest28 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE project_measures MODIFY COLUMN value DECIMAL (38,20) NULL, MODIFY COLUMN variation_value_1 DECIMAL (38,20) NULL, MODIFY COLUMN variation_value_2 DECIMAL (38,20) NULL, MODIFY COLUMN variation_value_3 DECIMAL (38,20) NULL, MODIFY COLUMN variation_value_4 DECIMAL (38,20) NULL, MODIFY COLUMN variation_value_5 DECIMAL (38,20) NULL";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

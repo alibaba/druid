@@ -26,16 +26,14 @@ import java.util.List;
 
 public class SQLDropResourceGroupStatement
         extends SQLStatementImpl implements SQLDropStatement {
-
     private SQLExpr name;
     private boolean ifExists;
 
     public SQLDropResourceGroupStatement() {
-
     }
 
     public SQLDropResourceGroupStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

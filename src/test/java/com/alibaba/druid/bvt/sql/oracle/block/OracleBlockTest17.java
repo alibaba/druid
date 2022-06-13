@@ -24,7 +24,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleBlockTest17 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
                 "  x NUMBER := 0;\n" +

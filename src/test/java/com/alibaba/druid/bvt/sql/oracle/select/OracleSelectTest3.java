@@ -25,14 +25,13 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT department_id, last_name, salary " + //
-                     "   FROM employees x " + //
-                     "   WHERE salary > (SELECT AVG(salary) " + //
-                     "      FROM employees " + //
-                     "      WHERE x.department_id = department_id) " + //
-                     "   ORDER BY department_id; ";
+                "   FROM employees x " + //
+                "   WHERE salary > (SELECT AVG(salary) " + //
+                "      FROM employees " + //
+                "      WHERE x.department_id = department_id) " + //
+                "   ORDER BY department_id; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

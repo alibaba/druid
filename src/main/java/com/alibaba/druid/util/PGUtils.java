@@ -15,23 +15,18 @@
  */
 package com.alibaba.druid.util;
 
+import org.postgresql.core.BaseConnection;
+import org.postgresql.xa.PGXAConnection;
+
+import javax.sql.XAConnection;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.sql.XAConnection;
-
-import org.postgresql.core.BaseConnection;
-import org.postgresql.xa.PGXAConnection;
+import java.util.*;
 
 public class PGUtils {
-
     public static XAConnection createXAConnection(Connection physicalConn) throws SQLException {
         return new PGXAConnection((BaseConnection) physicalConn);
     }
@@ -57,6 +52,7 @@ public class PGUtils {
     }
 
     private static Set<String> keywords;
+
     public static boolean isKeyword(String name) {
         if (name == null) {
             return false;
@@ -75,7 +71,8 @@ public class PGUtils {
         return words.contains(name_lower);
     }
 
-    private final static long[] pseudoColumnHashCodes;
+    private static final long[] pseudoColumnHashCodes;
+
     static {
         long[] array = {
                 FnvHash.Constants.CURRENT_TIMESTAMP

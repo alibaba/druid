@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGAlterTableTest extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "ALTER TABLE dependencies ALTER COLUMN id TYPE bigint";
 
@@ -44,11 +43,11 @@ public class PGAlterTableTest extends PGTest {
 //        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("dependencies")));
-        
+
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("dependencies")).getAlterCount() == 1);
 
         Assert.assertTrue(visitor.getColumns().size() == 1);
     }
 
-   
+
 }

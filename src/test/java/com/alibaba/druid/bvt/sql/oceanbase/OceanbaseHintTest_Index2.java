@@ -26,14 +26,13 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseHintTest_Index2 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "delete /*+ INDEX(t1 i1) */ from t1 where t1.c1=1;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
-        
+
         String result = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DELETE /*+ INDEX(t1 i1) */ FROM t1"
                 + "\nWHERE t1.c1 = 1;", result);

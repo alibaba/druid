@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlDumpTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "dump data into 'odps://ktv_market_analyzing/bohan_test_001/ds=20171233/seller_bucket=9727' " +
                 "select '6225607' as crowd_snapshot_id, a.seller_id as seller_id, a.buyer_id as buyer_id " +
@@ -45,7 +44,7 @@ public class MySqlDumpTest extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(2, visitor.getTables().size());
         assertEquals(6, visitor.getColumns().size());
         assertEquals(7, visitor.getConditions().size());
@@ -53,7 +52,7 @@ public class MySqlDumpTest extends MysqlTest {
         assertTrue(visitor.containsTable("amp.otp_user_base_info"));
         assertTrue(visitor.containsTable("amp.otpx_buyer_seller_relation_detail_to_garuda"));
 //        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
-        
+
         assertTrue(visitor.containsColumn("amp.otp_user_base_info", "user_id"));
         assertTrue(visitor.containsColumn("amp.otpx_buyer_seller_relation_detail_to_garuda", "buyer_id"));
         assertTrue(visitor.containsColumn("amp.otpx_buyer_seller_relation_detail_to_garuda", "seller_id"));

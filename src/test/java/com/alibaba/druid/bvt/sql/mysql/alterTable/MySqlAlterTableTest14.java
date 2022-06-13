@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest14 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE tbl_name IMPORT TABLESPACE;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -41,7 +40,7 @@ public class MySqlAlterTableTest14 extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE tbl_name" + //
-                            "\n\tIMPORT TABLESPACE;", output);
+                "\n\tIMPORT TABLESPACE;", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

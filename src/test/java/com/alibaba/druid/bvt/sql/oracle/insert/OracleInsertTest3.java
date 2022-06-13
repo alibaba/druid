@@ -26,12 +26,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleInsertTest3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO raises" + //
-                     "   SELECT employee_id, salary*1.1 FROM employees" + //
-                     "   WHERE commission_pct > .2" + //
-                     "   LOG ERRORS INTO errlog ('my_bad') REJECT LIMIT 10;";
+                "   SELECT employee_id, salary*1.1 FROM employees" + //
+                "   WHERE commission_pct > .2" + //
+                "   LOG ERRORS INTO errlog ('my_bad') REJECT LIMIT 10;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

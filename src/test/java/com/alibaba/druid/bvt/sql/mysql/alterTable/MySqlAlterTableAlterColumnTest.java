@@ -22,16 +22,15 @@ import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
 
 public class MySqlAlterTableAlterColumnTest extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `cube_template` ADD `stat_report_json` VARCHAR(256) CHARSET utf8 COLLATE utf8_general_ci DEFAULT ''  NOT NULL  COMMENT '模板的统计报表json数组';";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         assertEquals("ALTER TABLE `cube_template`\n" +
                 "\tADD COLUMN `stat_report_json` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '模板的统计报表json数组';", SQLUtils.toMySqlString(stmt));
-        
+
         assertEquals("alter table `cube_template`\n" +
                 "\tadd column `stat_report_json` VARCHAR(256) character set utf8 collate utf8_general_ci not null default '' comment '模板的统计报表json数组';", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }

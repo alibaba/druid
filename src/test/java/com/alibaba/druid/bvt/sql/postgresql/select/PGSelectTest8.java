@@ -24,13 +24,12 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest8 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select id, name, beanId, \"algLable.id\", \"algLable.name\"" + //
-                     ", \"algLable.schemaName\", \"algLable.tableName\", \"algLable.fieldName\"" + //
-                     " from cnres.function_select_algmodule_rule() " + //
-                     " as a( id text,name text,beanId text, \"algLable.id\" text,\"algLable.name\" text" + //
-                     ", \"algLable.schemaName\" text,\"algLable.tableName\" text, \"algLable.fieldName\" text)";
+                ", \"algLable.schemaName\", \"algLable.tableName\", \"algLable.fieldName\"" + //
+                " from cnres.function_select_algmodule_rule() " + //
+                " as a( id text,name text,beanId text, \"algLable.id\" text,\"algLable.name\" text" + //
+                ", \"algLable.schemaName\" text,\"algLable.tableName\" text, \"algLable.fieldName\" text)";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

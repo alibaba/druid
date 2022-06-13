@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class OracleTest2 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "SELECT NAME FROM V$ARCHIVED_LOG;";
 

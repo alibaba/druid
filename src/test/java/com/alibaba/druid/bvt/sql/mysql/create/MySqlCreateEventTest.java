@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateEventTest extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create definer = current_user event if not exists someevent on schedule at current_timestamp + interval 30 minute\n" +

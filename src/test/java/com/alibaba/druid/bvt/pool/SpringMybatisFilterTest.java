@@ -32,7 +32,6 @@ import com.alibaba.druid.spring.User;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class SpringMybatisFilterTest extends TestCase {
-
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
@@ -45,7 +44,7 @@ public class SpringMybatisFilterTest extends TestCase {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-                                                                                    "com/alibaba/druid/pool/mybatis/spring-config-mybatis.xml");
+                "com/alibaba/druid/pool/mybatis/spring-config-mybatis.xml");
 
         DataSource dataSource = (DataSource) context.getBean("dataSource");
 
@@ -81,11 +80,11 @@ public class SpringMybatisFilterTest extends TestCase {
 
             userMapper.addUser(user);
         }
-        
+
         {
             userMapper.errorSelect(1);
         }
-        
+
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
@@ -107,10 +106,9 @@ public class SpringMybatisFilterTest extends TestCase {
     }
 
     public static interface UserMapper {
-
         @Insert(value = "insert into t_User (id, name) values (#{user.id}, #{user.name})")
         void addUser(@Param("user") User user);
-        
+
         @Select(value = "delete from t_User where id = #{id}")
         void errorSelect(@Param("id") long id);
     }

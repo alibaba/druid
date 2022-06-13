@@ -27,7 +27,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class ManagedDataSourceTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     public void setUp() throws Exception {

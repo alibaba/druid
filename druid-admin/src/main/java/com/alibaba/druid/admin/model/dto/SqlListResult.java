@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class SqlListResult {
-
     @JSONField(name = "ResultCode")
     private int ResultCode;
     @JSONField(name = "Content")
@@ -22,7 +21,6 @@ public class SqlListResult {
     @NoArgsConstructor
     @Data
     public static class ContentBean {
-
         private String serviceId;
         private String address;
 

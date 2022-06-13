@@ -11,13 +11,12 @@ import java.util.List;
 
 public class MySqlParameterizedOutputVisitorTest_74 extends TestCase {
     public void test_in() throws Exception {
-
         String sql = "select 0 from corona_select_multi_db_one_tb where( 9 =( (3,4) not in ((1,2 ),( 3,5)) ) ) =bigint_test";
 
         List<Object> outParameters = new ArrayList<Object>(0);
 
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, outParameters, VisitorFeature.OutputParameterizedQuesUnMergeInList,
-                                                                   VisitorFeature.OutputParameterizedUnMergeShardingTable);
+                VisitorFeature.OutputParameterizedUnMergeShardingTable);
         assertEquals("SELECT ?\n" +
                 "FROM corona_select_multi_db_one_tb\n" +
                 "WHERE ? = ((?, ?) NOT IN ((?, ?), (?, ?))) = bigint_test", psql);
@@ -26,7 +25,6 @@ public class MySqlParameterizedOutputVisitorTest_74 extends TestCase {
     }
 
     public void test_between() throws Exception {
-
         String sql = "select 0 from corona_select_multi_db_one_tb where( 9 =( 3 not between 1 and 5 ) ) =bigint_test";
 
         List<Object> outParameters = new ArrayList<Object>(0);

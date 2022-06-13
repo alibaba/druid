@@ -27,7 +27,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class DB2SelectTest_32 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT CURRENT DATE FROM SYSIBM.SYSDUMMY1";
 

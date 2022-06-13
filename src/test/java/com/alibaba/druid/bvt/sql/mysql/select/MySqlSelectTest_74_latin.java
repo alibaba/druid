@@ -27,9 +27,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_74_latin extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "select * from t1 inner join (t1 as tt1, t2 as tt2) on t1.col1 = tt1.col1;";
+        String sql = "select * from t1 inner join (t1 as tt1, t2 as tt2) on t1.col1 = tt1.col1;";
 
         System.out.println(sql);
 
@@ -46,14 +45,14 @@ public class MySqlSelectTest_74_latin extends MysqlTest {
             assertEquals("SELECT *\n" +
                             "FROM t1\n" +
                             "\tINNER JOIN (t1 tt1, t2 tt2) ON t1.col1 = tt1.col1;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select *\n" +
                             "from t1\n" +
                             "\tinner join (t1 tt1, t2 tt2) on t1.col1 = tt1.col1;", //
-                                output);
+                    output);
         }
 
         {

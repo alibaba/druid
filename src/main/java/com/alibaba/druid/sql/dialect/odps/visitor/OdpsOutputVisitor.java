@@ -47,11 +47,11 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         builtInFunctions.add("EXPLODE");
         builtInFunctions.add("LEAST");
         builtInFunctions.add("GREATEST");
-        
+
         groupItemSingleLine = true;
     }
 
-    public OdpsOutputVisitor(Appendable appender){
+    public OdpsOutputVisitor(Appendable appender) {
         super(appender, DbType.odps);
     }
 
@@ -91,12 +91,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         int size = tableElementList.size();
         if (size > 0) {
             print0(" (");
-            
+
             if (this.isPrettyFormat() && x.hasBodyBeforeComment()) {
                 print(' ');
                 printlnComment(x.getBodyBeforeCommentsDirect());
             }
-            
+
             this.indentCount++;
             println();
             for (int i = 0; i < size; ++i) {
@@ -669,7 +669,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         } else if (joinType.equals(JoinType.FULL_OUTER_JOIN)) {
             print0(ucase ? "FULL OUTER JOIN" : "full outer join");
         } else {
-            print0(ucase ? joinType.name : joinType.name_lcase);
+            print0(ucase ? joinType.name : joinType.nameLCase);
         }
     }
 
@@ -763,7 +763,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
         if (x.isLabel()) {
             print0(ucase ? "LABEL " : "label ");
-            x.getLabel().accept(this);;
+            x.getLabel().accept(this);
         } else {
             printAndAccept(x.getPrivileges(), ", ");
         }
@@ -775,7 +775,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
                 print(' ');
             }
             x.getResource().accept(this);
-            
+
             if (x.getColumns().size() > 0) {
                 print('(');
                 printAndAccept(x.getColumns(), ", ");
@@ -799,7 +799,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
         return false;
     }
-    
+
     public boolean visit(SQLCharExpr x, boolean parameterized) {
         String text = x.getText();
         if (text == null) {

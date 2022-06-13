@@ -14,11 +14,10 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 
 /**
  * 这个场景测试minIdle > maxActive
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_lastError extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -27,9 +26,8 @@ public class DruidDataSourceTest_lastError extends TestCase {
         dataSource.setTestOnBorrow(false);
 
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             public void connection_setAutoCommit(FilterChain chain, ConnectionProxy connection, boolean autoCommit)
-                                                                                                                   throws SQLException {
+                    throws SQLException {
                 throw new SQLException();
             }
         });
@@ -43,7 +41,7 @@ public class DruidDataSourceTest_lastError extends TestCase {
         Assert.assertNull(dataSource.getLastError());
         Assert.assertNull(dataSource.getLastErrorTime());
         Assert.assertEquals(0, dataSource.getLastErrorTimeMillis());
-        
+
         Connection conn = dataSource.getConnection();
 
         Exception error = null;
@@ -52,9 +50,9 @@ public class DruidDataSourceTest_lastError extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        
+
         Assert.assertNotNull(error);
-        
+
         Assert.assertNotNull(dataSource.getLastError());
         Assert.assertNotNull(dataSource.getLastErrorTime());
         Assert.assertEquals(true, dataSource.getLastErrorTimeMillis() > 0);

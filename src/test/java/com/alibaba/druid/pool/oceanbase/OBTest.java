@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class OBTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

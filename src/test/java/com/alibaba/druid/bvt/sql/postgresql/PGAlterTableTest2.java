@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGAlterTableTest2 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "ALTER TABLE \"reviews\" DROP \"review_type\"";
 
@@ -44,11 +43,11 @@ public class PGAlterTableTest2 extends PGTest {
 //        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("reviews")));
-        
+
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("reviews")).getAlterCount() == 1);
 
         Assert.assertTrue(visitor.getColumns().size() == 1);
     }
 
-   
+
 }

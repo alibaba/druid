@@ -24,12 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleDataTypeIntervalDay extends SQLDataTypeImpl implements OracleSQLObject {
-
-    private boolean               toSecond          = false;
+    private boolean toSecond;
 
     protected final List<SQLExpr> fractionalSeconds = new ArrayList<SQLExpr>();
 
-    public OracleDataTypeIntervalDay(){
+    public OracleDataTypeIntervalDay() {
         this.setName("INTERVAL DAY");
     }
 

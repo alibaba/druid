@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 @ConfigurationProperties(prefix = "monitor")
 public class MonitorProperties {
-
     /**
      * 需要监控的服务
      */

@@ -23,7 +23,6 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestAbondon extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -48,12 +47,12 @@ public class TestAbondon extends TestCase {
         DruidPooledConnection conn = dataSource.getConnection();
         Assert.assertEquals(false, conn.isClosed());
         Thread.sleep(10);
-        
+
         for (int i = 0; i < 100; ++i) {
             if (conn.isAbandonded()) {
                 break;
             }
-            Thread.sleep(10);    
+            Thread.sleep(10);
         }
         Assert.assertEquals(true, conn.isAbandonded());
     }

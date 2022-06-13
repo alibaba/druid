@@ -35,17 +35,15 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class FilterChainTest_ResultSet_2 extends TestCase {
-
-    private DruidDataSource        dataSource;
+    private DruidDataSource dataSource;
     private CallableStatementProxy statement;
 
-    private int                    invokeCount = 0;
+    private int invokeCount = 0;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         ConnectionProxyImpl conn = new ConnectionProxyImpl(dataSource, null, new Properties(), 0);
         MockCallableStatement mockStmt = new MockCallableStatement(null, "") {
-
             @Override
             public Object getObject(int parameterIndex) throws SQLException {
                 invokeCount++;
@@ -84,7 +82,7 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
     public void test_getObject_2() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
-        ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, 1, Collections.<String, Class<?>> emptyMap());
+        ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, 1, Collections.<String, Class<?>>emptyMap());
 
         Assert.assertTrue(clob instanceof ResultSetProxy);
         Assert.assertEquals(1, invokeCount);
@@ -93,7 +91,7 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
     public void test_getObject_3() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
-        ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, "1", Collections.<String, Class<?>> emptyMap());
+        ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, "1", Collections.<String, Class<?>>emptyMap());
 
         Assert.assertTrue(clob instanceof ResultSetProxy);
         Assert.assertEquals(1, invokeCount);

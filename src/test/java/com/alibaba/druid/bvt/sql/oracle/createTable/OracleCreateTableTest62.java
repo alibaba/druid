@@ -26,38 +26,37 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest62 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"TOTAL_PRICE_ACTUAL\" NUMBER, \n" +
-                "  \"GMT_VOUCHER_RECEIVE\" DATE, \n" +
-                "  \"CS4_OWNER_ID\" VARCHAR2(32), \n" +
-                "  \"DISABLE_DATE\" DATE, \n" +
-                "  \"MEMBER_ID\" VARCHAR2(32) NOT NULL ENABLE, \n" +
-                "  \"ITEM_ID\" NUMBER NOT NULL ENABLE, \n" +
-                "  \"CONTACT_COUNT\" NUMBER(11,0), \n" +
-                "  \"ORIGIN_DISABLE_DATE\" DATE, \n" +
-                "  \"GMT_PAYMENT_REMIT\" DATE, \n" +
-                "  \"PRODUCT_ID\" NUMBER, \n" +
-                "  \"PERIOD\" NUMBER, \n" +
-                "  \"PERIOD_UNIT\" VARCHAR2(32), \n" +
-                "  \"MEMBER_TYPE\" VARCHAR2(20), \n" +
-                "  \"GMT_AV_SEND\" DATE, \n" +
-                "  \"GMT_ENABLE\" DATE, \n" +
-                "  \"COMPANY\" VARCHAR2(128), \n" +
-                "  \"PAYMENT_STATUS\" VARCHAR2(32), \n" +
-                "  \"TMP_ALIID\" VARCHAR2(64)\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255  LOGGING \n" +
-                "  STORAGE(\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"NIRVANA1M\" \n" +
-                "  PARTITION BY RANGE (\"GMT_VOUCHER_RECEIVE\") \n" +
-                " (PARTITION \"PONLY\"  VALUES LESS THAN (MAXVALUE) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING \n" +
-                "  STORAGE(INITIAL 1048576 NEXT 131072 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"NIRVANA1M\" )    ";
+                "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"TOTAL_PRICE_ACTUAL\" NUMBER, \n" +
+                        "  \"GMT_VOUCHER_RECEIVE\" DATE, \n" +
+                        "  \"CS4_OWNER_ID\" VARCHAR2(32), \n" +
+                        "  \"DISABLE_DATE\" DATE, \n" +
+                        "  \"MEMBER_ID\" VARCHAR2(32) NOT NULL ENABLE, \n" +
+                        "  \"ITEM_ID\" NUMBER NOT NULL ENABLE, \n" +
+                        "  \"CONTACT_COUNT\" NUMBER(11,0), \n" +
+                        "  \"ORIGIN_DISABLE_DATE\" DATE, \n" +
+                        "  \"GMT_PAYMENT_REMIT\" DATE, \n" +
+                        "  \"PRODUCT_ID\" NUMBER, \n" +
+                        "  \"PERIOD\" NUMBER, \n" +
+                        "  \"PERIOD_UNIT\" VARCHAR2(32), \n" +
+                        "  \"MEMBER_TYPE\" VARCHAR2(20), \n" +
+                        "  \"GMT_AV_SEND\" DATE, \n" +
+                        "  \"GMT_ENABLE\" DATE, \n" +
+                        "  \"COMPANY\" VARCHAR2(128), \n" +
+                        "  \"PAYMENT_STATUS\" VARCHAR2(32), \n" +
+                        "  \"TMP_ALIID\" VARCHAR2(64)\n" +
+                        "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255  LOGGING \n" +
+                        "  STORAGE(\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"NIRVANA1M\" \n" +
+                        "  PARTITION BY RANGE (\"GMT_VOUCHER_RECEIVE\") \n" +
+                        " (PARTITION \"PONLY\"  VALUES LESS THAN (MAXVALUE) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING \n" +
+                        "  STORAGE(INITIAL 1048576 NEXT 131072 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"NIRVANA1M\" )    ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -119,7 +118,7 @@ public class OracleCreateTableTest62 extends OracleTest {
                         "\t\t\tCELL_FLASH_CACHE DEFAULT\n" +
                         "\t\t)\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

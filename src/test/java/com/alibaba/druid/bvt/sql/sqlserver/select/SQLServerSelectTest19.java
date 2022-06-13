@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerSelectTest19 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = "SELECT p.BusinessEntityID, FirstName, LastName, PhoneNumber AS Phone"
                 + "\nFROM Person.Person AS p"

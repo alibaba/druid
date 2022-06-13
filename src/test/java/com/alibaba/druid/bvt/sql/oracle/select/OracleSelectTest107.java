@@ -123,5 +123,5 @@ public class OracleSelectTest107 extends OracleTest {
 //
     }
 
-   
+
 }

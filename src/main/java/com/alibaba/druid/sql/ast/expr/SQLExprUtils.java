@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.util.FnvHash;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,7 +31,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 public class SQLExprUtils {
-
     public static boolean equals(SQLExpr a, SQLExpr b) {
         if (a == b) {
             return true;
@@ -133,8 +131,7 @@ public class SQLExprUtils {
         } else if (quote == '"') {
             if (dbType == DbType.oracle || dbType == DbType.presto || dbType == DbType.trino) {
                 expr = new SQLIdentifierExpr(str);
-            }
-            else {
+            } else {
                 expr = new SQLCharExpr(str);
             }
         } else if (quote == '\'') {

@@ -28,7 +28,6 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 
 public class DruidDataSourceFactoryTest extends TestCase {
-
     @SuppressWarnings("serial")
     public void test_factory() throws Exception {
         DruidDataSourceFactory factory = new DruidDataSourceFactory();
@@ -38,7 +37,6 @@ public class DruidDataSourceFactoryTest extends TestCase {
 
         Reference ref = new Reference("javax.sql.DataSource");
         ref.add(new RefAddr("user") {
-
             @Override
             public Object getContent() {
                 return null;
@@ -46,7 +44,6 @@ public class DruidDataSourceFactoryTest extends TestCase {
 
         });
         ref.add(new RefAddr("defaultReadOnly") {
-
             @Override
             public Object getContent() {
                 return Boolean.TRUE;

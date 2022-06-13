@@ -33,7 +33,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DemoApplication.class)
 public class DruidDataSourceTestCase {
-
     @Resource
     private DruidDataSource dataSource;
 

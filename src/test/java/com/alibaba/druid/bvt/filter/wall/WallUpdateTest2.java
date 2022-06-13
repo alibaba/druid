@@ -23,7 +23,6 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 public class WallUpdateTest2 extends TestCase {
-
     private String sql = "UPDATE T_USER SET FNAME = ?";
 
     public void testMySql_true() throws Exception {
@@ -35,13 +34,13 @@ public class WallUpdateTest2 extends TestCase {
         WallConfig config = new WallConfig();
         Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
     }
-    
+
     public void testMySql_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setUpdateAllow(false);
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
     }
-    
+
     public void testORACLE_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setUpdateAllow(false);

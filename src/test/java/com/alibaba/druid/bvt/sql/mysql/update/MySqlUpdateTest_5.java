@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlUpdateTest_5 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select num from update ttt set num=num+1 where id = 1";
 
@@ -59,18 +58,18 @@ public class MySqlUpdateTest_5 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT num"
-                    + "\nFROM UPDATE ttt"
-                    + "\nSET num = num + 1"
-                    + "\nWHERE id = 1", //
-                                output);
+                            + "\nFROM UPDATE ttt"
+                            + "\nSET num = num + 1"
+                            + "\nWHERE id = 1", //
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("select num"
-                    + "\nfrom update ttt"
-                    + "\nset num = num + 1"
-                    + "\nwhere id = 1", //
-                                output);
+                            + "\nfrom update ttt"
+                            + "\nset num = num + 1"
+                            + "\nwhere id = 1", //
+                    output);
         }
     }
 }

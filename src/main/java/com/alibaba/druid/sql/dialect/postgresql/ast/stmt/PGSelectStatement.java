@@ -22,12 +22,11 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGSelectStatement extends SQLSelectStatement implements PGSQLStatement {
-
-    public PGSelectStatement(){
+    public PGSelectStatement() {
         super(DbType.postgresql);
     }
 
-    public PGSelectStatement(SQLSelect select){
+    public PGSelectStatement(SQLSelect select) {
         super(select, DbType.postgresql);
     }
 

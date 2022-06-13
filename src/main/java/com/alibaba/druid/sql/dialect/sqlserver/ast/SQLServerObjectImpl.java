@@ -20,9 +20,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLServerObjectImpl extends SQLObjectImpl implements SQLServerObject {
-
-    public SQLServerObjectImpl(){
-
+    public SQLServerObjectImpl() {
     }
 
     @Override

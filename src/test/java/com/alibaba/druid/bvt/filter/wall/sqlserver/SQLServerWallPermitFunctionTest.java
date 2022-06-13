@@ -23,17 +23,16 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallPermitFunctionTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class SQLServerWallPermitFunctionTest extends TestCase {
-
     /**
      * @param name
      */
-    public SQLServerWallPermitFunctionTest(String name){
+    public SQLServerWallPermitFunctionTest(String name) {
         super(name);
     }
 
@@ -85,7 +84,7 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
 
     /**
      * 测试权限结构
-     * 
+     *
      * @throws Exception
      */
     public void test_is_srvrolemember() throws Exception {

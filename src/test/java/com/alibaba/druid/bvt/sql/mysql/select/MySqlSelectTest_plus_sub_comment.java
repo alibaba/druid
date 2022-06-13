@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.parser.ParserException;
 import java.util.List;
 
 public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select  1 -+2";
 
@@ -37,6 +36,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         assertEquals("SELECT 1 - +2", stmt.toString());
     }
+
     public void test_1() throws Exception {
         String sql = "select  1 ---2 ";
 
@@ -48,6 +48,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         assertEquals("SELECT 1 - --2", stmt.toString());
     }
+
     public void test_1_1() throws Exception {
         String sql = "select  1 --- 2 ";
 
@@ -60,6 +61,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
             assertTrue(e instanceof ParserException);
         }
     }
+
     public void test_3() throws Exception {
         String sql = "select  1 --+1";
 
@@ -106,13 +108,14 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
             assertTrue(e instanceof ParserException);
         }
     }
+
     public void test_7() throws Exception {
         String sql = "select  1 --+- 1";
 
-            MySqlStatementParser parser = new MySqlStatementParser(sql);
-            List<SQLStatement> statementList = parser.parseStatementList();
-            SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
-            assertEquals("SELECT 1 - -(+-1)", stmt.toString());
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
+        assertEquals("SELECT 1 - -(+-1)", stmt.toString());
     }
 
     public void test_8() throws Exception {
@@ -153,7 +156,6 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
     }
 
     public void test_13() throws Exception {
-
         String sql = "select max(id) --- min(id) from test_tablesl";
 
         try {
@@ -212,7 +214,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
 
     public void test_19() throws Exception {
         String sql = "-- comments\n"
-                     + "SELECT * FROM mp_Sites WHERE SiteID = -1 OR -1 = -1 -- ORDER BY SiteID LIMIT 1";
+                + "SELECT * FROM mp_Sites WHERE SiteID = -1 OR -1 = -1 -- ORDER BY SiteID LIMIT 1";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

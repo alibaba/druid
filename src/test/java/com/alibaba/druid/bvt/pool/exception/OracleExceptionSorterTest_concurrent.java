@@ -18,7 +18,6 @@ import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleExceptionSorterTest_concurrent extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -46,7 +45,6 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
         final CountDownLatch latch_0 = new CountDownLatch(1);
 
         Thread errorThread = new Thread() {
-
             public void run() {
                 try {
                     Connection conn = dataSource.getConnection();
@@ -76,7 +74,6 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
         final CountDownLatch workCompleteLatch = new CountDownLatch(2);
         for (int i = 0; i < 2; ++i) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         for (int i = 0; i < 1000; ++i) {

@@ -23,7 +23,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class DB2AlterTableTest_2 extends TestCase {
-
     public void test_alter_constraint() throws Exception {
         String sql = "alter table audit.SQLHIS alter column  EXPLAINMSG set data type VARCHAR(255)";
         SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.DB2).get(0);

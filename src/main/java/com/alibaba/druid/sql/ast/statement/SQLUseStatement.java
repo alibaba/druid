@@ -23,15 +23,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLUseStatement extends SQLStatementImpl implements SQLReplaceable {
-
     private SQLName database;
-    
+
     public SQLUseStatement() {
-        
     }
-    
+
     public SQLUseStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public SQLName getDatabase() {

@@ -24,33 +24,32 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest41 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "WITH RESULTVIEW AS" + //
-                " (" + //
-                "  SELECT" + //
-                "   AA.USERID," + //
-                "    DECODE(AA.USERTYPE," + //
-                "           '1'," + //
-                "           (SELECT ORG_TABLE.ORGNAME" + //
-                "              FROM ORG_TABLE" + //
-                "             WHERE ORG_TABLE.ORGID = AA.BELONGORG)," + //
-                "           '2'," + //
-                "           (SELECT CUST_TABLE.CUSTOMERNAME" + //
-                "              FROM CUST_TABLE" + //
-                "             WHERE CUST_TABLE.CUSTOMERID = AA.BELONGORG)) ORGNAME" + //
-                "    FROM AA" + //
-                "    LEFT JOIN AAPWD" + //
-                "      ON AA.USERID = AAPWD.USERID" + //
-                "   WHERE AA.BELONGORG IN" + //
-                "         (1,2,3)" + //
-                "   ORDER BY AA.USERID DESC" + //
-                "  )" + //
-                "SELECT *" + //
-                "  FROM (SELECT RESULTVIEW.*, ROWNUM AS RESULTNUMS FROM RESULTVIEW)" + //
-                " WHERE RESULTNUMS > 1" + //
-                "   AND RESULTNUMS <= 10"; //
+                "WITH RESULTVIEW AS" + //
+                        " (" + //
+                        "  SELECT" + //
+                        "   AA.USERID," + //
+                        "    DECODE(AA.USERTYPE," + //
+                        "           '1'," + //
+                        "           (SELECT ORG_TABLE.ORGNAME" + //
+                        "              FROM ORG_TABLE" + //
+                        "             WHERE ORG_TABLE.ORGID = AA.BELONGORG)," + //
+                        "           '2'," + //
+                        "           (SELECT CUST_TABLE.CUSTOMERNAME" + //
+                        "              FROM CUST_TABLE" + //
+                        "             WHERE CUST_TABLE.CUSTOMERID = AA.BELONGORG)) ORGNAME" + //
+                        "    FROM AA" + //
+                        "    LEFT JOIN AAPWD" + //
+                        "      ON AA.USERID = AAPWD.USERID" + //
+                        "   WHERE AA.BELONGORG IN" + //
+                        "         (1,2,3)" + //
+                        "   ORDER BY AA.USERID DESC" + //
+                        "  )" + //
+                        "SELECT *" + //
+                        "  FROM (SELECT RESULTVIEW.*, ROWNUM AS RESULTNUMS FROM RESULTVIEW)" + //
+                        " WHERE RESULTNUMS > 1" + //
+                        "   AND RESULTNUMS <= 10"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -72,7 +71,7 @@ public class OracleSelectTest41 extends OracleTest {
 
         Assert.assertEquals(8, visitor.getColumns().size());
 
-         assertTrue(visitor.containsColumn("AA", "USERID"));
+        assertTrue(visitor.containsColumn("AA", "USERID"));
 
         // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }

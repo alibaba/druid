@@ -15,26 +15,24 @@
  */
 package com.alibaba.druid.pool.xa;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.alibaba.druid.util.JdbcUtils;
+import net.sourceforge.jtds.jdbc.XASupport;
 
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 import javax.sql.XAConnection;
 import javax.transaction.xa.XAResource;
 
-import com.alibaba.druid.util.JdbcUtils;
-
-import net.sourceforge.jtds.jdbc.XASupport;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class JtdsXAConnection implements XAConnection {
-
-    private Connection       connection;
+    private Connection connection;
 
     private final XAResource resource;
-    private final int        xaConnectionId;
+    private final int xaConnectionId;
 
-    public JtdsXAConnection(Connection connection) throws SQLException{
+    public JtdsXAConnection(Connection connection) throws SQLException {
         this.resource = new JtdsXAResource(this, connection);
         this.connection = connection;
         this.xaConnectionId = XASupport.xa_open(connection);
@@ -56,28 +54,24 @@ public class JtdsXAConnection implements XAConnection {
         } catch (SQLException e) {
             // Ignore close errors
         }
-        
+
         JdbcUtils.close(connection);
     }
 
     @Override
     public void addConnectionEventListener(ConnectionEventListener listener) {
-
     }
 
     @Override
     public void removeConnectionEventListener(ConnectionEventListener listener) {
-
     }
 
     @Override
     public void addStatementEventListener(StatementEventListener listener) {
-
     }
 
     @Override
     public void removeStatementEventListener(StatementEventListener listener) {
-
     }
 
     @Override

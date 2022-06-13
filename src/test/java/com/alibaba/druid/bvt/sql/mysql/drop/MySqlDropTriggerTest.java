@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlDropTriggerTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "DROP TRIGGER hr.salary_check; ";
 
@@ -42,11 +41,10 @@ public class MySqlDropTriggerTest extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
-
 
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
     }

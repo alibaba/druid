@@ -24,7 +24,9 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.repository.SchemaRepository;
@@ -33,13 +35,12 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Mode;
 
 public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlASTVisitor {
-
     public MySqlSchemaStatVisitor() {
-        super (DbType.mysql);
+        super(DbType.mysql);
     }
 
     public MySqlSchemaStatVisitor(SchemaRepository repository) {
-        super (repository);
+        super(repository);
     }
 
     public boolean visit(SQLSelectStatement x) {
@@ -165,32 +166,38 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         return false;
     }
 
-    @Override public boolean visit(MySqlUpdatePlanCacheStatement x) {
+    @Override
+    public boolean visit(MySqlUpdatePlanCacheStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MySqlShowPlanCacheStatusStatement x) {
+    @Override
+    public boolean visit(MySqlShowPlanCacheStatusStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MySqlClearPlanCacheStatement x) {
+    @Override
+    public boolean visit(MySqlClearPlanCacheStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MySqlDisabledPlanCacheStatement x) {
+    @Override
+    public boolean visit(MySqlDisabledPlanCacheStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MySqlAlterDatabaseSetOption x) {
+    @Override
+    public boolean visit(MySqlAlterDatabaseSetOption x) {
         return false;
     }
 
-    @Override public boolean visit(MySqlAlterDatabaseKillJob x) {
+    @Override
+    public boolean visit(MySqlAlterDatabaseKillJob x) {
         return false;
     }
 
-
-    @Override public boolean visit(MySqlExplainPlanCacheStatement x) {
+    @Override
+    public boolean visit(MySqlExplainPlanCacheStatement x) {
         return false;
     }
 
@@ -229,7 +236,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         for (SQLExpr item : x.getReturning()) {
             item.accept(this);
         }
-        
+
         return false;
     }
 
@@ -238,7 +245,8 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         return false;
     }
 
-    @Override public boolean visit(MySqlShowHMSMetaStatement x) {
+    @Override
+    public boolean visit(MySqlShowHMSMetaStatement x) {
         return false;
     }
 
@@ -695,15 +703,15 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         return false;
     }
 
-	@Override
-	public boolean visit(MySqlDeclareHandlerStatement x) {
-		return false;
-	}
+    @Override
+    public boolean visit(MySqlDeclareHandlerStatement x) {
+        return false;
+    }
 
-	@Override
-	public boolean visit(MySqlDeclareConditionStatement x) {
-		return false;
-	}
+    @Override
+    public boolean visit(MySqlDeclareConditionStatement x) {
+        return false;
+    }
 
     @Override
     public boolean visit(MySqlFlushStatement x) {
@@ -784,6 +792,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public boolean visit(MySqlShowConfigStatement x) {
         return false;
     }
+
     @Override
     public boolean visit(MySqlShowPlanCacheStatement x) {
         return false;
@@ -807,43 +816,53 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         return false;
     }
 
-    @Override public boolean visit(MysqlCreateFullTextCharFilterStatement x) {
+    @Override
+    public boolean visit(MysqlCreateFullTextCharFilterStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MysqlShowFullTextStatement x) {
+    @Override
+    public boolean visit(MysqlShowFullTextStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MysqlShowCreateFullTextStatement x) {
+    @Override
+    public boolean visit(MysqlShowCreateFullTextStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MysqlAlterFullTextStatement x) {
+    @Override
+    public boolean visit(MysqlAlterFullTextStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MysqlDropFullTextStatement x) {
+    @Override
+    public boolean visit(MysqlDropFullTextStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MysqlCreateFullTextTokenizerStatement x) {
+    @Override
+    public boolean visit(MysqlCreateFullTextTokenizerStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MysqlCreateFullTextTokenFilterStatement x) {
+    @Override
+    public boolean visit(MysqlCreateFullTextTokenFilterStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MysqlCreateFullTextAnalyzerStatement x) {
+    @Override
+    public boolean visit(MysqlCreateFullTextAnalyzerStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MysqlCreateFullTextDictionaryStatement x) {
+    @Override
+    public boolean visit(MysqlCreateFullTextDictionaryStatement x) {
         return false;
     }
 
-    @Override public boolean visit(MySqlAlterTableAlterFullTextIndex x) {
+    @Override
+    public boolean visit(MySqlAlterTableAlterFullTextIndex x) {
         return false;
     }
 
@@ -892,11 +911,13 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         return false;
     }
 
-    @Override public boolean visit(MySqlExtPartition x) {
+    @Override
+    public boolean visit(MySqlExtPartition x) {
         return true;
     }
 
-    @Override public boolean visit(MySqlExtPartition.Item x) {
+    @Override
+    public boolean visit(MySqlExtPartition.Item x) {
         return false;
     }
 }

@@ -25,11 +25,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class OracleCursorExpr extends SQLExprImpl implements OracleExpr {
-
     private SQLSelect query;
 
-    public OracleCursorExpr(){
-
+    public OracleCursorExpr() {
     }
 
     public OracleCursorExpr clone() {
@@ -40,7 +38,7 @@ public class OracleCursorExpr extends SQLExprImpl implements OracleExpr {
         return x;
     }
 
-    public OracleCursorExpr(SQLSelect query){
+    public OracleCursorExpr(SQLSelect query) {
         setQuery(query);
     }
 

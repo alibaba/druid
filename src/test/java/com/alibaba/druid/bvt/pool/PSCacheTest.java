@@ -26,7 +26,6 @@ import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PSCacheTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLLateralViewTableSource extends SQLTableSourceImpl {
-
     private SQLTableSource tableSource;
     private boolean outer;
 
@@ -36,7 +35,6 @@ public class SQLLateralViewTableSource extends SQLTableSourceImpl {
     private SQLExpr on; // odps
 
     public SQLLateralViewTableSource() {
-
     }
 
     @Override
@@ -113,7 +111,6 @@ public class SQLLateralViewTableSource extends SQLTableSourceImpl {
 
     @Override
     public SQLLateralViewTableSource clone() {
-
         SQLLateralViewTableSource x = new SQLLateralViewTableSource();
 
         x.setAlias(this.alias);

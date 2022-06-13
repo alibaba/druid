@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class Demo0 extends TestCase {
-
     public void test_demo_0() throws Exception {
         String sql = "SELECT SYSDATE FROM DUAL";
 

@@ -8,7 +8,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 
 public class DruidDataSourceTest_tryGet extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -30,7 +29,7 @@ public class DruidDataSourceTest_tryGet extends TestCase {
 
         DruidPooledConnection conn2 = this.dataSource.tryGetConnection();
         Assert.assertNull(conn2);
-        
+
         conn1.close();
     }
 

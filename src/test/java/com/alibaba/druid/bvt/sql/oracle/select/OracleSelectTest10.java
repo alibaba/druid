@@ -26,24 +26,23 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest10 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM pivot_table" + //
-                     "  UNPIVOT INCLUDE NULLS " + //
-                     "    (yearly_total FOR order_mode IN (store AS 'direct', internet AS 'online'))" + //
-                     "  ORDER BY year, order_mode;"; //
+                "  UNPIVOT INCLUDE NULLS " + //
+                "    (yearly_total FOR order_mode IN (store AS 'direct', internet AS 'online'))" + //
+                "  ORDER BY year, order_mode;"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         String result = SQLUtils.toOracleString(stmt);
         String result_lcase = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
         Assert.assertEquals("SELECT *\n" +
                 "FROM pivot_table\n" +
                 "UNPIVOT INCLUDE NULLS (yearly_total FOR order_mode IN (store AS \"direct\", internet AS \"online\"))\n" +
                 "ORDER BY year, order_mode;", result);
-        
+
         Assert.assertEquals("select *\n" +
                 "from pivot_table\n" +
                 "unpivot include nulls (yearly_total for order_mode in (store as \"direct\", internet as \"online\"))\n" +

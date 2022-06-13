@@ -27,61 +27,60 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlCreateProcedureTest extends MysqlTest {
-
     public void test_0() throws Exception {
-    	String sql="create or replace procedure sp_name(level int,age int)"+
-				" begin"+
-				" declare x,y,z int;"+
-				" select id into x,y,z from test;"+
-				" insert into test values(id,age);"+
-				" while x do"+
-				" insert into test values(id,age);"+
-				" end while;"+
-				" if x then"+
-				" insert into test values(id,age);"+
-				" insert into test values(id,age);"+
-				" else if y then"+
-				" insert into test values(id,age);"+
-				" while x do"+
-				" insert into test values(id,age);"+
-				" end while;"+
-				" else"+
-				" insert into test values(id,age);"+
-				" end if;"+
-				" case x"+
-				" when x>10 then"+
-				" insert into test values(id,age);"+
-				" insert into test values(id,age);"+
-				" when x>20 then"+
-				" insert into test values(id,age);"+
-				" insert into test values(id,age);"+
-				" else"+
-				" insert into test values(id,age);"+
-				" end case;"+
-				" end";
-	
-    	MySqlStatementParser parser=new MySqlStatementParser(sql);
-    	List<SQLStatement> statementList = parser.parseStatementList();
-    	SQLStatement stmt = statementList.get(0);
+        String sql = "create or replace procedure sp_name(level int,age int)" +
+                " begin" +
+                " declare x,y,z int;" +
+                " select id into x,y,z from test;" +
+                " insert into test values(id,age);" +
+                " while x do" +
+                " insert into test values(id,age);" +
+                " end while;" +
+                " if x then" +
+                " insert into test values(id,age);" +
+                " insert into test values(id,age);" +
+                " else if y then" +
+                " insert into test values(id,age);" +
+                " while x do" +
+                " insert into test values(id,age);" +
+                " end while;" +
+                " else" +
+                " insert into test values(id,age);" +
+                " end if;" +
+                " case x" +
+                " when x>10 then" +
+                " insert into test values(id,age);" +
+                " insert into test values(id,age);" +
+                " when x>20 then" +
+                " insert into test values(id,age);" +
+                " insert into test values(id,age);" +
+                " else" +
+                " insert into test values(id,age);" +
+                " end case;" +
+                " end";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
 //    	print(statementList);
         Assert.assertEquals(1, statementList.size());
 
-		System.out.println(stmt);
+        System.out.println(stmt);
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-		stmt.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
-        
+
         Assert.assertTrue(visitor.containsColumn("test", "id"));
     }
 }

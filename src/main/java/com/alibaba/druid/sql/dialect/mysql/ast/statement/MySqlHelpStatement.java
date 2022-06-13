@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlHelpStatement extends MySqlStatementImpl {
-
     private SQLExpr content;
 
     public SQLExpr getContent() {

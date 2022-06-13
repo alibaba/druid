@@ -13,9 +13,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallFilter;
 
 public class WallFilterTest extends TestCase {
-
     private DruidDataSource dataSource;
-    private WallFilter      wallFilter;
+    private WallFilter wallFilter;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -57,7 +56,6 @@ public class WallFilterTest extends TestCase {
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -100,7 +98,7 @@ public class WallFilterTest extends TestCase {
             conn.close();
         }
         Assert.assertEquals(4, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
-        
+
         {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement("update t SET fname = 'xx' where FID = ? OR FID = ?");
@@ -114,13 +112,13 @@ public class WallFilterTest extends TestCase {
         {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement("update t SET fname = 'xx' where FID = ?");
-            
+
             stmt.setInt(1, 3);
             stmt.addBatch();
-            
+
             stmt.setInt(1, 4);
             stmt.addBatch();
-            
+
             stmt.executeBatch();
             stmt.close();
             conn.close();

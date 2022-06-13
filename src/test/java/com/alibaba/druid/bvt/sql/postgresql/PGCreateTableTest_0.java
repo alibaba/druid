@@ -26,12 +26,11 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGCreateTableTest_0 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE my_first_table (" + //
-        		"    first_column text," + //
-        		"    second_column integer" + //
-        		");";
+                "    first_column text," + //
+                "    second_column integer" + //
+                ");";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -47,11 +46,11 @@ public class PGCreateTableTest_0 extends PGTest {
 //        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("my_first_table")));
-        
+
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("my_first_table")).getCreateCount() == 1);
 
         Assert.assertTrue(visitor.getColumns().size() == 2);
     }
 
-   
+
 }

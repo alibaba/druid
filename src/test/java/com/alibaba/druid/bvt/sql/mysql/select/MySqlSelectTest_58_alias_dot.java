@@ -24,9 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_58_alias_dot extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "SELECT m.*, m.icon AS micon, md.uid as md.uid, md.lastmsg,md.postnum,md.rvrc,md.money,md.credit,md.currency,md.lastvisit,md.thisvisit,md.onlinetime,md.lastpost,md.todaypost, md.monthpost,md.onlineip,md.uploadtime,md.uploadnum,md.starttime,md.pwdctime,md.monoltime,md.digests,md.f_num,md.creditpop, md.jobnum,md.lastgrab,md.follows,md.fans,md.newfans,md.newreferto,md.newcomment,md.postcheck,md.punch, mi.customdata " +
+        String sql = "SELECT m.*, m.icon AS micon, md.uid as md.uid, md.lastmsg,md.postnum,md.rvrc,md.money,md.credit,md.currency,md.lastvisit,md.thisvisit,md.onlinetime,md.lastpost,md.todaypost, md.monthpost,md.onlineip,md.uploadtime,md.uploadnum,md.starttime,md.pwdctime,md.monoltime,md.digests,md.f_num,md.creditpop, md.jobnum,md.lastgrab,md.follows,md.fans,md.newfans,md.newreferto,md.newcomment,md.postcheck,md.punch, mi.customdata " +
                 "FROM pw_members m    LEFT JOIN pw_memberdata md ON m.uid=md.uid    LEFT JOIN pw_memberinfo mi ON mi.uid=m.uid WHERE m.uid IN (?)";
 
         System.out.println(sql);
@@ -44,12 +43,12 @@ public class MySqlSelectTest_58_alias_dot extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(1, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT m.*, m.icon AS micon, md.uid AS `md.uid`, md.lastmsg, md.postnum\n" +
@@ -63,7 +62,7 @@ public class MySqlSelectTest_58_alias_dot extends MysqlTest {
                             "\tLEFT JOIN pw_memberdata md ON m.uid = md.uid\n" +
                             "\tLEFT JOIN pw_memberinfo mi ON mi.uid = m.uid\n" +
                             "WHERE m.uid IN (?)", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -78,7 +77,7 @@ public class MySqlSelectTest_58_alias_dot extends MysqlTest {
                             "\tleft join pw_memberdata md on m.uid = md.uid\n" +
                             "\tleft join pw_memberinfo mi on mi.uid = m.uid\n" +
                             "where m.uid in (?)", //
-                                output);
+                    output);
         }
 
         {

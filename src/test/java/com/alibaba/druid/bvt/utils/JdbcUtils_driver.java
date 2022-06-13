@@ -11,7 +11,6 @@ import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
 
 public class JdbcUtils_driver extends TestCase {
-    
     public void test_null() throws Exception {
         Assert.assertNull(JdbcUtils.getDriverClassName(null));
     }
@@ -26,7 +25,7 @@ public class JdbcUtils_driver extends TestCase {
 
         Assert.assertEquals(0, driver.getMajorVersion());
         Assert.assertEquals(1, driver.getMinorVersion());
-        
+
         Assert.assertEquals(JdbcConstants.ODPS, JdbcUtils.getDbTypeRaw(url, className));
     }
 

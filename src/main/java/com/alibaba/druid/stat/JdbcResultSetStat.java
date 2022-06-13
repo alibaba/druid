@@ -20,23 +20,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class JdbcResultSetStat implements JdbcResultSetStatMBean {
+    private final AtomicInteger openingCount = new AtomicInteger();
+    private final AtomicInteger openingMax = new AtomicInteger();
 
-    private final AtomicInteger openingCount   = new AtomicInteger();
-    private final AtomicInteger openingMax     = new AtomicInteger();
+    private final AtomicLong openCount = new AtomicLong();
+    private final AtomicLong errorCount = new AtomicLong();
 
-    private final AtomicLong    openCount      = new AtomicLong();
-    private final AtomicLong    errorCount     = new AtomicLong();
+    private final AtomicLong aliveNanoTotal = new AtomicLong();
+    private final AtomicLong aliveNanoMax = new AtomicLong();
+    private final AtomicLong aliveNanoMin = new AtomicLong();
+    private Throwable lastError;
+    private long lastErrorTime;
 
-    private final AtomicLong    aliveNanoTotal = new AtomicLong();
-    private final AtomicLong    aliveNanoMax   = new AtomicLong();
-    private final AtomicLong    aliveNanoMin   = new AtomicLong();
-    private Throwable           lastError;
-    private long                lastErrorTime;
+    private long lastOpenTime;
 
-    private long                lastOpenTime   = 0;
-
-    private final AtomicLong    fetchRowCount  = new AtomicLong(0);  // 总共读取的行数
-    private final AtomicLong    closeCount     = new AtomicLong(0);  // ResultSet打开的计数
+    private final AtomicLong fetchRowCount = new AtomicLong(0);  // 总共读取的行数
+    private final AtomicLong closeCount = new AtomicLong(0);  // ResultSet打开的计数
 
     public void reset() {
         openingMax.set(0);
@@ -55,7 +54,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     public void beforeOpen() {
         int invoking = openingCount.incrementAndGet();
 
-        for (;;) {
+        for (; ; ) {
             int max = openingMax.get();
             if (invoking > max) {
                 if (openingMax.compareAndSet(max, invoking)) {
@@ -115,7 +114,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
 
         aliveNanoTotal.addAndGet(aliveNano);
 
-        for (;;) {
+        for (; ; ) {
             long max = aliveNanoMax.get();
             if (aliveNano > max) {
                 if (aliveNanoMax.compareAndSet(max, aliveNano)) {
@@ -126,7 +125,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
             }
         }
 
-        for (;;) {
+        for (; ; ) {
             long min = aliveNanoMin.get();
             if (aliveNano < min) {
                 if (aliveNanoMin.compareAndSet(min, aliveNano)) {

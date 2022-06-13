@@ -15,16 +15,15 @@
  */
 package com.alibaba.druid.pool;
 
-import java.util.Properties;
-
 import com.alibaba.druid.support.logging.Log;
+
+import java.util.Properties;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  * @since 0.2.19
  */
 public interface DruidDataSourceStatLogger {
-
     void log(DruidDataSourceStatValue statValue);
 
     /**
@@ -32,8 +31,8 @@ public interface DruidDataSourceStatLogger {
      * @since 0.2.21
      */
     void configFromProperties(Properties properties);
-    
+
     void setLogger(Log logger);
-    
+
     void setLoggerName(String loggerName);
 }

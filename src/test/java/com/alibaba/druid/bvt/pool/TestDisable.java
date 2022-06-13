@@ -27,8 +27,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestDisable extends TestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -64,7 +63,6 @@ public class TestDisable extends TestCase {
 
         for (int i = 0; i < threadCount; ++i) {
             threads[i] = new Thread("thread-" + i) {
-
                 public void run() {
                     try {
                         startLatch.await();
@@ -87,7 +85,6 @@ public class TestDisable extends TestCase {
         Thread.sleep(1000);
 
         new Thread("close thread") {
-
             public void run() {
                 dataSource.setEnable(false);
             }

@@ -31,7 +31,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisito
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLServerSelectTest_cross_apply extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT DeptID, DeptName, DeptMgrID, EmpID, EmpLastName, EmpSalary FROM Departments d CROSS APPLY dbo.GetReports(d.DeptMgrID)";
 
@@ -66,9 +65,9 @@ public class SQLServerSelectTest_cross_apply extends TestCase {
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
 
         String expected = "SELECT DeptID, DeptName, DeptMgrID, EmpID, EmpLastName"//
-                          + "\n\t, EmpSalary"//
-                          + "\nFROM Departments d" //
-                          + "\n\tCROSS APPLY dbo.GetReports(d.DeptMgrID)";
+                + "\n\t, EmpSalary"//
+                + "\nFROM Departments d" //
+                + "\n\tCROSS APPLY dbo.GetReports(d.DeptMgrID)";
 
         Assert.assertEquals(expected, fomatSQL);
     }

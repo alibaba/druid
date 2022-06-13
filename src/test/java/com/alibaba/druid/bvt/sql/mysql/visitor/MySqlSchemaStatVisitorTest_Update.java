@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlSchemaStatVisitorTest_Update extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "update users set loginCount = loginCount + 1 where id = ?";
 

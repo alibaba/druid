@@ -19,23 +19,21 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public abstract class SQLInsertInto extends SQLStatementImpl implements SQLReplaceable {
-    protected List<String>              insertBeforeComments;
+    protected List<String> insertBeforeComments;
 
-    protected SQLExprTableSource        tableSource;
-    protected final List<SQLExpr>       columns = new ArrayList<SQLExpr>();
-    protected transient String          columnsString;
-    protected transient long            columnsStringHash;
-    protected SQLSelect                 query;
-    protected final List<ValuesClause>  valuesList = new ArrayList<ValuesClause>();
-    protected boolean                   overwrite  = false;
-    protected List<SQLAssignItem>       partitions;
+    protected SQLExprTableSource tableSource;
+    protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
+    protected transient String columnsString;
+    protected transient long columnsStringHash;
+    protected SQLSelect query;
+    protected final List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
+    protected boolean overwrite;
+    protected List<SQLAssignItem> partitions;
 
-    public SQLInsertInto(){
-
+    public SQLInsertInto() {
     }
 
     public void cloneTo(SQLInsertInto x) {
@@ -155,7 +153,7 @@ public abstract class SQLInsertInto extends SQLStatementImpl implements SQLRepla
     public List<SQLExpr> getColumns() {
         return columns;
     }
-    
+
     public void addColumn(SQLExpr column) {
         if (column != null) {
             column.setParent(this);
@@ -177,7 +175,7 @@ public abstract class SQLInsertInto extends SQLStatementImpl implements SQLRepla
             valuesList.set(0, values);
         }
     }
-    
+
     public List<ValuesClause> getValuesList() {
         return valuesList;
     }

@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import junit.framework.TestCase;
 
 public class SQLServerTopTest extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "SELECT TOP 10 * FROM T";
 

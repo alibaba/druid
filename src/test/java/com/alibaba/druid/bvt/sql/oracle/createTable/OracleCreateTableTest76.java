@@ -23,30 +23,29 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest76 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        " CREATE TABLE \"TCC_CPR\".\"KTV_CONFIG_SCALE_DETAILS_TEMP\" \n" +
-                "   (\t\"ID\" NUMBER(10,0) NOT NULL ENABLE, \n" +
-                "\t\"CONTRACT_HEAD_ID\" NUMBER(10,0) NOT NULL ENABLE, \n" +
-                "\t\"PRODUCT_BIG_ID\" NUMBER(10,0), \n" +
-                "\t\"PRODUCT_ID\" NUMBER(10,0), \n" +
-                "\t\"SCALE\" NUMBER(10,2), \n" +
-                "\t\"ENABLED_FLAG\" CHAR(1), \n" +
-                "\t\"CREATED_BY\" NUMBER(10,0), \n" +
-                "\t\"CREATION_DATE\" TIMESTAMP (6), \n" +
-                "\t\"LAST_UPDATED_BY\" NUMBER(10,0), \n" +
-                "\t\"LAST_UPDATE_DATE\" TIMESTAMP (6), \n" +
-                "\t\"CON_TYPE\" VARCHAR2(2), \n" +
-                "\t CONSTRAINT \"P_ID\" PRIMARY KEY (\"ID\") DEFERRABLE INITIALLY DEFERRED\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"TCC_CPR_TSP\"  ENABLE\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"TCC_CPR_TSP\"  ";
+                " CREATE TABLE \"TCC_CPR\".\"KTV_CONFIG_SCALE_DETAILS_TEMP\" \n" +
+                        "   (\t\"ID\" NUMBER(10,0) NOT NULL ENABLE, \n" +
+                        "\t\"CONTRACT_HEAD_ID\" NUMBER(10,0) NOT NULL ENABLE, \n" +
+                        "\t\"PRODUCT_BIG_ID\" NUMBER(10,0), \n" +
+                        "\t\"PRODUCT_ID\" NUMBER(10,0), \n" +
+                        "\t\"SCALE\" NUMBER(10,2), \n" +
+                        "\t\"ENABLED_FLAG\" CHAR(1), \n" +
+                        "\t\"CREATED_BY\" NUMBER(10,0), \n" +
+                        "\t\"CREATION_DATE\" TIMESTAMP (6), \n" +
+                        "\t\"LAST_UPDATED_BY\" NUMBER(10,0), \n" +
+                        "\t\"LAST_UPDATE_DATE\" TIMESTAMP (6), \n" +
+                        "\t\"CON_TYPE\" VARCHAR2(2), \n" +
+                        "\t CONSTRAINT \"P_ID\" PRIMARY KEY (\"ID\") DEFERRABLE INITIALLY DEFERRED\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"TCC_CPR_TSP\"  ENABLE\n" +
+                        "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"TCC_CPR_TSP\"  ";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -102,7 +101,7 @@ public class OracleCreateTableTest76 extends OracleTest {
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

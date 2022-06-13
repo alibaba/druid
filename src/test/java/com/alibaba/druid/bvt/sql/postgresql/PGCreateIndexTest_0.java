@@ -25,7 +25,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGCreateIndexTest_0 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE UNIQUE INDEX \"test_idx\" ON \"public\".\"city\" USING btree (\"name\");";
 
@@ -49,7 +48,7 @@ public class PGCreateIndexTest_0 extends PGTest {
 
         assertTrue(visitor.getTables().get(new TableStat.Name("public.city")).getCreateIndexCount() == 1);
 
-        assertEquals(1, visitor.getColumns().size() );
+        assertEquals(1, visitor.getColumns().size());
     }
 
     public void test_1() throws Exception {

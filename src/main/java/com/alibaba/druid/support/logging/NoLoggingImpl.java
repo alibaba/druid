@@ -16,19 +16,18 @@
 package com.alibaba.druid.support.logging;
 
 public class NoLoggingImpl implements Log {
-
-    private int    infoCount;
-    private int    errorCount;
-    private int    warnCount;
-    private int    debugCount;
+    private int infoCount;
+    private int errorCount;
+    private int warnCount;
+    private int debugCount;
     private String loggerName;
-    
-    private boolean debugEnable = false;
+
+    private boolean debugEnable;
     private boolean infoEnable = true;
     private boolean warnEnable = true;
     private boolean errorEnable = true;
 
-    public NoLoggingImpl(String loggerName){
+    public NoLoggingImpl(String loggerName) {
         this.loggerName = loggerName;
     }
 
@@ -44,7 +43,7 @@ public class NoLoggingImpl implements Log {
         if (!errorEnable) {
             return;
         }
-        
+
         error(s);
 
         if (e != null) {
@@ -119,7 +118,7 @@ public class NoLoggingImpl implements Log {
     public boolean isErrorEnabled() {
         return errorEnable;
     }
-    
+
     public void setErrorEnabled(boolean value) {
         this.errorEnable = value;
     }

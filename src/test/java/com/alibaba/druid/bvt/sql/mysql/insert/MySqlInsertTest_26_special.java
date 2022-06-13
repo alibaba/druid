@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlInsertTest_26_special extends MysqlTest {
-
     public void test_insert_timestamp() throws Exception {
         String sql = "INSERT INTO SUNTEST(ID,NAME) VALUES(1,'\\_ASDFASDF')";
 

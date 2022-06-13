@@ -19,13 +19,12 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleLabelStatement extends OracleStatementImpl {
-
     private SQLName label;
 
-    public OracleLabelStatement(){
+    public OracleLabelStatement() {
     }
 
-    public OracleLabelStatement(SQLName label){
+    public OracleLabelStatement(SQLName label) {
         this.label = label;
     }
 

@@ -22,21 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDeclareItem extends SQLObjectImpl implements SQLObjectWithDataType, SQLReplaceable {
+    protected Type type;
 
-    protected Type                  type;
+    protected SQLName name;
 
-    protected SQLName               name;
+    protected SQLDataType dataType;
 
-    protected SQLDataType           dataType;
-
-    protected SQLExpr               value;
+    protected SQLExpr value;
 
     protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
 
-    protected transient SQLObject             resolvedObject;
+    protected transient SQLObject resolvedObject;
 
     public SQLDeclareItem() {
-
     }
 
     public SQLDeclareItem(SQLName name, SQLDataType dataType) {

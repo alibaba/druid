@@ -29,7 +29,6 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import junit.framework.TestCase;
 
 public class InsertSyntaxTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO tbl_name () VALUES();";
 
@@ -72,8 +71,8 @@ public class InsertSyntaxTest extends TestCase {
         String text = output(stmtList);
 
         Assert.assertEquals("INSERT INTO tbl_name (a, b, c)\nVALUES (1, 2, 3)," + //
-                            "\n\t(4, 5, 6)," + //
-                            "\n\t(7, 8, 9);", text);
+                "\n\t(4, 5, 6)," + //
+                "\n\t(7, 8, 9);", text);
     }
 
     public void test_4() throws Exception {
@@ -85,8 +84,8 @@ public class InsertSyntaxTest extends TestCase {
         String text = output(stmtList);
 
         Assert.assertEquals("INSERT INTO tbl_name (a, b, c)" + //
-                            "\nVALUES (1, 2, 3, 4, 5" + //
-                            "\n\t, 6, 7, 8, 9);", text);
+                "\nVALUES (1, 2, 3, 4, 5" + //
+                "\n\t, 6, 7, 8, 9);", text);
     }
 
     public void test_5() throws Exception {
@@ -98,10 +97,10 @@ public class InsertSyntaxTest extends TestCase {
         SQLStatement stmt = stmtList.get(0);
 
         Assert.assertEquals("INSERT LOW_PRIORITY DELAYED HIGH_PRIORITY IGNORE INTO tbl_name (a, b, c)\nVALUES (1, 2, 3);",
-                            SQLUtils.toMySqlString(stmt));
-        
+                SQLUtils.toMySqlString(stmt));
+
         Assert.assertEquals("insert low_priority delayed high_priority ignore into tbl_name (a, b, c)\nvalues (1, 2, 3);",
-                            SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_6() throws Exception {
@@ -113,8 +112,8 @@ public class InsertSyntaxTest extends TestCase {
         SQLStatement stmt = stmtList.get(0);
 
         Assert.assertEquals("INSERT INTO tbl_name (a, b, c)" + //
-                            "\nVALUES (1, 2, 3)" + //
-                            "\nON DUPLICATE KEY UPDATE c = c + 1;", SQLUtils.toMySqlString(stmt));
+                "\nVALUES (1, 2, 3)" + //
+                "\nON DUPLICATE KEY UPDATE c = c + 1;", SQLUtils.toMySqlString(stmt));
         Assert.assertEquals("insert into tbl_name (a, b, c)" + //
                 "\nvalues (1, 2, 3)" + //
                 "\non duplicate key update c = c + 1;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

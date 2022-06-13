@@ -57,14 +57,13 @@ import com.alibaba.druid.mock.MockConnectionClosedException;
 import com.alibaba.druid.mock.MockDriver;
 
 public class OracleMockConnection extends MockConnection implements oracle.jdbc.OracleConnection {
-
     private int defaultRowPrefetch = 10;
 
-    public OracleMockConnection(){
+    public OracleMockConnection() {
         super();
     }
 
-    public OracleMockConnection(MockDriver driver, String url, Properties connectProperties){
+    public OracleMockConnection(MockDriver driver, String url, Properties connectProperties) {
         super(driver, url, connectProperties);
 
         String val = (String) connectProperties.get("defaultRowPrefetch");
@@ -105,17 +104,14 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
 
     @Override
     public void addLogicalTransactionIdEventListener(LogicalTransactionIdEventListener logicalTransactionIdEventListener) throws SQLException {
-
     }
 
     @Override
     public void addLogicalTransactionIdEventListener(LogicalTransactionIdEventListener logicalTransactionIdEventListener, Executor executor) throws SQLException {
-
     }
 
     @Override
     public void removeLogicalTransactionIdEventListener(LogicalTransactionIdEventListener logicalTransactionIdEventListener) throws SQLException {
-
     }
 
     @Override
@@ -150,7 +146,6 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
 
     @Override
     public void detachServerConnection(String s) throws SQLException {
-
     }
 
     @Override
@@ -165,12 +160,10 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
 
     @Override
     public void beginRequest() throws SQLException {
-
     }
 
     @Override
     public void endRequest() throws SQLException {
-
     }
 
     @Override
@@ -180,7 +173,6 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
 
     @Override
     public void setShardingKey(OracleShardingKey oracleShardingKey, OracleShardingKey oracleShardingKey1) throws SQLException {
-
     }
 
     @Override
@@ -190,7 +182,6 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
 
     @Override
     public void setShardingKey(OracleShardingKey oracleShardingKey) throws SQLException {
-
     }
 
     @Override
@@ -698,7 +689,7 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
     }
 
     public void registerConnectionCacheCallback(OracleConnectionCacheCallback arg0, Object arg1, int arg2)
-                                                                                                          throws SQLException {
+            throws SQLException {
         // TODO Auto-generated method stub
 
     }
@@ -863,7 +854,7 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
     @Override
     public void commit(EnumSet<CommitOption> arg0) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -881,7 +872,7 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
     @Override
     public void enqueue(String arg0, AQEnqueueOptions arg1, AQMessage arg2) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -892,7 +883,7 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
 
     @Override
     public AQNotificationRegistration[] registerAQNotification(String[] arg0, Properties[] arg1, Properties arg2)
-                                                                                                                 throws SQLException {
+            throws SQLException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -906,29 +897,28 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
     @Override
     public void shutdown(DatabaseShutdownMode arg0) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void startup(DatabaseStartupMode arg0) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void startup(DatabaseStartupMode databaseStartupMode, String s) throws SQLException {
-
     }
 
     @Override
     public void unregisterAQNotification(AQNotificationRegistration arg0) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void unregisterDatabaseChangeNotification(DatabaseChangeRegistration arg0) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 }

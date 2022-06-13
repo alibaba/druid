@@ -25,11 +25,10 @@ import com.alibaba.druid.benckmark.proxy.BenchmarkCase;
 import com.alibaba.druid.benckmark.proxy.SQLExecutor;
 
 public class SelectSysUser extends BenchmarkCase {
-
-    private String     sql;
+    private String sql;
     private Connection conn;
 
-    public SelectSysUser(){
+    public SelectSysUser() {
         super("Dragoon-SelectSysUser");
 
         sql = "SELECT * FROM sys_user s";

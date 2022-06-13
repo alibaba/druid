@@ -24,9 +24,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class PGExtractExpr extends PGExprImpl implements SQLReplaceable {
-
     private PGDateField field;
-    private SQLExpr     source;
+    private SQLExpr source;
 
     public PGExtractExpr clone() {
         PGExtractExpr x = new PGExtractExpr();

@@ -29,13 +29,12 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class OdpsSchemaStatVisitor extends HiveSchemaStatVisitor implements OdpsASTVisitor {
-
     public OdpsSchemaStatVisitor() {
         super(DbType.odps);
     }
 
     public OdpsSchemaStatVisitor(SchemaRepository repository) {
-        super (repository);
+        super(repository);
     }
 
     @Override

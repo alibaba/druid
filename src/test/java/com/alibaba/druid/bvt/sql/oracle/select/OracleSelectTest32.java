@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest32 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "select * from ESCROW_LOGISTICS t   -- where received_status <>'not_received ' and received_status <>'received' "; //
+                "select * from ESCROW_LOGISTICS t   -- where received_status <>'not_received ' and received_status <>'received' "; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,8 +51,8 @@ public class OracleSelectTest32 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW_LOGISTICS", "*")));
-         
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW_LOGISTICS", "*")));
+
 //         Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

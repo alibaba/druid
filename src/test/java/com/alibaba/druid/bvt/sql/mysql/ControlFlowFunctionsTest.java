@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class ControlFlowFunctionsTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT CASE 1 WHEN 1 THEN 'one' WHEN 2 THEN 'two' ELSE 'more' END;";
 

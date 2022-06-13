@@ -23,7 +23,6 @@ import org.junit.Assert;
 import junit.framework.TestCase;
 
 public class TestLockCount extends TestCase {
-
     public void test_current() throws Exception {
         DataSource dataSource = new DataSource();
 
@@ -57,14 +56,12 @@ public class TestLockCount extends TestCase {
     }
 
     private void concurrent(final DataSource dataSource, int threadCount, final int loopCount)
-                                                                                              throws InterruptedException {
-
+            throws InterruptedException {
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);
         Thread[] threads = new Thread[threadCount];
         for (int i = 0; i < threadCount; ++i) {
             threads[i] = new Thread("thread-" + i) {
-
                 public void run() {
                     try {
                         startLatch.await();
@@ -90,27 +87,26 @@ public class TestLockCount extends TestCase {
     }
 
     private static class DataSource {
-
-        private long       c0;
-        private long       c1;
-        private long       c2;
-        private long       c3;
-        private long       c4;
-        private long       c5;
-        private long       c6;
-        private long       c7;
-        private long       c8;
-        private long       c9;
-        private long       c10;
-        private long       c11;
-        private long       c12;
-        private long       c13;
-        private long       c14;
-        private long       c15;
-        private long       c16;
-        private long       c17;
-        private long       c18;
-        private long       c19;
+        private long c0;
+        private long c1;
+        private long c2;
+        private long c3;
+        private long c4;
+        private long c5;
+        private long c6;
+        private long c7;
+        private long c8;
+        private long c9;
+        private long c10;
+        private long c11;
+        private long c12;
+        private long c13;
+        private long c14;
+        private long c15;
+        private long c16;
+        private long c17;
+        private long c18;
+        private long c19;
         private final Lock lock = new ReentrantLock();
 
         public long getCount() {

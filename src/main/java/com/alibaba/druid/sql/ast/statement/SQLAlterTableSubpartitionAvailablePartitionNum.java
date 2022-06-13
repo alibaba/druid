@@ -15,13 +15,11 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableSubpartitionAvailablePartitionNum extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLIntegerExpr number;
 
     public SQLIntegerExpr getNumber() {

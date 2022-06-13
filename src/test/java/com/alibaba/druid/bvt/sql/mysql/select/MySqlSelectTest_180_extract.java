@@ -9,12 +9,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_180_extract extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT extract(day_of_week FROM '2001-08-22 03:04:05.321');";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -25,7 +24,7 @@ public class MySqlSelectTest_180_extract extends MysqlTest {
         String sql = "SELECT extract(dow FROM '2001-08-22 03:04:05.321');";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -36,7 +35,7 @@ public class MySqlSelectTest_180_extract extends MysqlTest {
         String sql = "SELECT extract(day_of_month FROM '2001-08-22 03:04:05.321');";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -47,7 +46,7 @@ public class MySqlSelectTest_180_extract extends MysqlTest {
         String sql = "SELECT extract(day_of_year FROM '2001-08-22 03:04:05.321');";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -58,7 +57,7 @@ public class MySqlSelectTest_180_extract extends MysqlTest {
         String sql = "SELECT extract(year_of_week FROM '2001-08-22 03:04:05.321');";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -69,7 +68,7 @@ public class MySqlSelectTest_180_extract extends MysqlTest {
         String sql = "SELECT extract(doy FROM '2001-08-22 03:04:05.321');";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -80,7 +79,7 @@ public class MySqlSelectTest_180_extract extends MysqlTest {
         String sql = "SELECT extract(yow FROM '2001-08-22 03:04:05.321');";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

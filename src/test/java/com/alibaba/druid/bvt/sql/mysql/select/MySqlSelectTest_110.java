@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlSelectTest_110 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "/*+engine=MPP*/select id \n" +
                 "  from ads_service_buyer_task\n" +
@@ -50,7 +49,7 @@ public class MySqlSelectTest_110 extends TestCase {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(2, visitor.getTables().size());
         assertEquals(5, visitor.getColumns().size());
         assertEquals(3, visitor.getConditions().size());
@@ -68,7 +67,6 @@ public class MySqlSelectTest_110 extends TestCase {
                 "\t)\n" +
                 "LIMIT 0, 1;", stmt.toString());
     }
-    
-    
-    
+
+
 }

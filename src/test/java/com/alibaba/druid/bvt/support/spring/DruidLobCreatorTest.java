@@ -11,7 +11,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.spring.DruidLobCreator;
 
 public class DruidLobCreatorTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

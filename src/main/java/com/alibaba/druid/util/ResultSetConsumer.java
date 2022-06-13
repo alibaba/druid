@@ -23,5 +23,6 @@ import java.sql.SQLException;
  */
 public interface ResultSetConsumer<T> {
     T apply(ResultSet rs) throws SQLException;
+
     void accept(T object);
 }

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BlinkLexer extends Lexer {
-    public final static Keywords DEFAULT_BLINK_KEYWORDS;
+    public static final Keywords DEFAULT_BLINK_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -31,13 +31,13 @@ public class BlinkLexer extends Lexer {
         DEFAULT_BLINK_KEYWORDS = new Keywords(map);
     }
 
-    public BlinkLexer(String input){
+    public BlinkLexer(String input) {
         super(input);
         super.keywords = DEFAULT_BLINK_KEYWORDS;
         dbType = DbType.blink;
     }
 
-    public BlinkLexer(String input, SQLParserFeature... features){
+    public BlinkLexer(String input, SQLParserFeature... features) {
         super(input);
         super.keywords = DEFAULT_BLINK_KEYWORDS;
         dbType = DbType.blink;

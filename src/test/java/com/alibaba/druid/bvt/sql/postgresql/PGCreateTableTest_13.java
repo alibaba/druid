@@ -25,7 +25,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGCreateTableTest_13 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE index fact_pageview_sum_p_day_id_idx ON fact_pageview_sum USING btree (p_day_id);";
 
@@ -49,7 +48,7 @@ public class PGCreateTableTest_13 extends PGTest {
 
 //        assertTrue(visitor.getTables().get(new TableStat.Name("fact_pageview_sum")).getCreateCount() == 1);
 
-        assertEquals(1, visitor.getColumns().size() );
+        assertEquals(1, visitor.getColumns().size());
     }
 
 }

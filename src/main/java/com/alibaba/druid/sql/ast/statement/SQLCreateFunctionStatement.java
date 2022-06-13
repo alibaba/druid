@@ -28,35 +28,34 @@ import java.util.List;
 public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLCreateStatement, SQLObjectWithDataType {
     protected SQLName definer;
 
-    protected boolean            create     = true;
-    protected boolean            orReplace;
-    protected SQLName            name;
-    protected SQLStatement       block;
+    protected boolean create = true;
+    protected boolean orReplace;
+    protected SQLName name;
+    protected SQLStatement block;
     protected List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
     // for oracle
-    private String             javaCallSpec;
+    private String javaCallSpec;
 
-    private SQLName            authid;
+    private SQLName authid;
 
-    SQLDataType                returnDataType;
+    SQLDataType returnDataType;
 
     // for mysql
 
-    private String             comment;
-    private boolean            deterministic  = false;
-    private boolean            parallelEnable;
-    private boolean            aggregate;
-    private SQLName            using;
-    private boolean            pipelined;
-    private boolean            resultCache;
-    private String             wrappedSource;
-    private String             language;
-    private boolean            temporary;
-    protected boolean          ifNotExists = false;
+    private String comment;
+    private boolean deterministic;
+    private boolean parallelEnable;
+    private boolean aggregate;
+    private SQLName using;
+    private boolean pipelined;
+    private boolean resultCache;
+    private String wrappedSource;
+    private String language;
+    private boolean temporary;
+    protected boolean ifNotExists;
 
     public SQLCreateFunctionStatement() {
-
     }
 
     public SQLCreateFunctionStatement clone() {
@@ -235,7 +234,6 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     public void setDataType(SQLDataType dataType) {
         this.setReturnDataType(dataType);
     }
-
 
     public boolean isParallelEnable() {
         return parallelEnable;

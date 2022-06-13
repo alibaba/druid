@@ -28,56 +28,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement, SQLObjectWithDataType, SQLReplaceable, SQLDbTypedObject {
-    protected DbType                          dbType;
+    protected DbType dbType;
 
-    protected SQLName                         name;
-    protected SQLDataType                     dataType;
-    protected SQLExpr                         defaultExpr;
-    protected final List<SQLColumnConstraint> constraints   = new ArrayList<SQLColumnConstraint>(0);
-    protected SQLExpr                         comment;
+    protected SQLName name;
+    protected SQLDataType dataType;
+    protected SQLExpr defaultExpr;
+    protected final List<SQLColumnConstraint> constraints = new ArrayList<SQLColumnConstraint>(0);
+    protected SQLExpr comment;
 
-    protected Boolean                         enable;
-    protected Boolean                         validate;
-    protected Boolean                         rely;
+    protected Boolean enable;
+    protected Boolean validate;
+    protected Boolean rely;
 
     // for mysql
-    protected boolean                         autoIncrement = false;
-    protected SQLExpr                         onUpdate;
-    protected SQLExpr                         format;
-    protected SQLExpr                         storage;
-    protected SQLExpr                         charsetExpr;
-    protected SQLExpr                         collateExpr;
-    protected SQLExpr                         asExpr;
-    protected boolean                         stored        = false;
-    protected boolean                         virtual       = false;
-    protected boolean                         visible       = false;
-    protected AutoIncrementType               sequenceType;
-    protected boolean                         preSort       = false; // for ads
-    protected int                             preSortOrder  = 0; // for ads
-
-    protected Identity                        identity;
+    protected boolean autoIncrement;
+    protected SQLExpr onUpdate;
+    protected SQLExpr format;
+    protected SQLExpr storage;
+    protected SQLExpr charsetExpr;
+    protected SQLExpr collateExpr;
+    protected SQLExpr asExpr;
+    protected boolean stored;
+    protected boolean virtual;
+    protected boolean visible;
+    protected AutoIncrementType sequenceType;
+    protected boolean preSort; // for ads
+    protected int preSortOrder; // for ads
+    protected Identity identity;
 
     // for ads
-    protected SQLExpr                         generatedAlawsAs;
-    protected SQLExpr                         delimiter; // for ads
-    protected SQLExpr                         delimiterTokenizer; // for ads3.0 multivalue
-    protected SQLExpr                         nlpTokenizer; // for ads3.0 multivalue
-    protected SQLExpr                         valueType; // for ads3.0 multivalue
-    protected boolean                         disableIndex  = false; //for ads
-    protected SQLExpr                         jsonIndexAttrsExpr;    // for ads
-    protected SQLAnnIndex                     annIndex;
-    private SQLExpr                           unitCount;
-    private SQLExpr                           unitIndex;
-    private SQLExpr                           step;
-    private SQLCharExpr                       encode;
-    private SQLCharExpr                       compression;
+    protected SQLExpr generatedAlawsAs;
+    protected SQLExpr delimiter; // for ads
+    protected SQLExpr delimiterTokenizer; // for ads3.0 multivalue
+    protected SQLExpr nlpTokenizer; // for ads3.0 multivalue
+    protected SQLExpr valueType; // for ads3.0 multivalue
+    protected boolean disableIndex; //for ads
+    protected SQLExpr jsonIndexAttrsExpr;    // for ads
+    protected SQLAnnIndex annIndex;
+    private SQLExpr unitCount;
+    private SQLExpr unitIndex;
+    private SQLExpr step;
+    private SQLCharExpr encode;
+    private SQLCharExpr compression;
 
     // for aliyun data lake anlytics
-    private List<SQLAssignItem>               mappedBy;
-    private List<SQLAssignItem>               colProperties;
+    private List<SQLAssignItem> mappedBy;
+    private List<SQLAssignItem> colProperties;
 
-    public SQLColumnDefinition(){
-
+    public SQLColumnDefinition() {
     }
 
     public Identity getIdentity() {
@@ -236,7 +234,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return partitioning.isPartitionByColumn(
                 nameHashCode64());
     }
-    
+
     public void addConstraint(SQLColumnConstraint constraint) {
         if (constraint != null) {
             constraint.setParent(this);
@@ -385,7 +383,6 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public static class Identity extends SQLObjectImpl {
-
         private Integer seed;
         private Integer increment;
 
@@ -395,8 +392,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         private Integer minValue;
         private Integer maxValue;
 
-        public Identity(){
-
+        public Identity() {
         }
 
         public Integer getSeed() {
@@ -453,7 +449,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             visitor.endVisit(this);
         }
 
-        public Identity clone () {
+        public Identity clone() {
             Identity x = new Identity();
             x.seed = seed;
             x.increment = increment;
@@ -481,7 +477,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         SQLColumnDefinition x = new SQLColumnDefinition();
         x.setDbType(dbType);
 
-        if(name != null) {
+        if (name != null) {
             x.setName(name.clone());
         }
 
@@ -600,7 +596,6 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         enable = null;
         validate = null;
         rely = null;
-
 
         if (this.name instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identExpr = (SQLIdentifierExpr) this.name;

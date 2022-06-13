@@ -27,11 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleCreateIndexStatement extends SQLCreateIndexStatement implements OracleDDLStatement, OracleSegmentAttributes, SQLCreateStatement {
+    private boolean online;
 
-    private boolean online            = false;
-
-    private boolean indexOnlyTopLevel = false;
-    private boolean cluster           = false;
+    private boolean indexOnlyTopLevel;
+    private boolean cluster;
 
     private boolean noParallel;
 
@@ -56,12 +55,12 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     protected SQLName tablespace;
     protected SQLObject storage;
 
-    private Boolean enable            = null;
+    private Boolean enable;
 
-    private boolean computeStatistics = false;
-    
+    private boolean computeStatistics;
+
     public OracleCreateIndexStatement() {
-        super (DbType.oracle);
+        super(DbType.oracle);
     }
 
     public SQLExpr getParallel() {
@@ -126,7 +125,6 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
         }
         visitor.endVisit(this);
     }
-
 
     public Boolean getEnable() {
         return enable;

@@ -41,7 +41,6 @@ public class MySqlParameterizedOutputVisitorTest_54_or extends TestCase {
 
         System.out.println(psql);
 
-
         assertEquals("SELECT r.id, r.plugin_rule_key AS \"ruleKey\", r.plugin_name AS \"repositoryKey\", r.description, r.description_format AS \"descriptionFormat\"\n" +
                 "\t, r.status, r.name, r.plugin_config_key AS \"configKey\", r.priority AS \"severity\", r.is_template AS \"isTemplate\"\n" +
                 "\t, r.language AS \"language\", r.template_id AS \"templateId\", r.note_data AS \"noteData\", r.note_user_login AS \"noteUserLogin\", r.note_created_at AS \"noteCreatedAt\"\n" +

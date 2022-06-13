@@ -40,7 +40,6 @@ import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.json.JSONUtils;
 
 public class SpringIbatisFilterTest extends TestCase {
-
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
@@ -53,7 +52,7 @@ public class SpringIbatisFilterTest extends TestCase {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-                                                                                    "com/alibaba/druid/pool/ibatis/spring-config-ibatis.xml");
+                "com/alibaba/druid/pool/ibatis/spring-config-ibatis.xml");
 
         DataSource dataSource = (DataSource) context.getBean("dataSource");
 
@@ -106,18 +105,17 @@ public class SpringIbatisFilterTest extends TestCase {
         }
 
         Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-        
+
         Map<String, Object> wallStats = DruidStatService.getInstance().getWallStatMap(Collections.<String, String>emptyMap());
-        
+
         System.out.println("wall-stats : " + JSONUtils.toJSONString(wallStats));
-        
+
         context.close();
 
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public static class TestFilter extends FilterAdapter {
-
         private AtomicLong connectCount = new AtomicLong();
 
         @Override

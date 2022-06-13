@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 
 public class MySqlSelectTest_238 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select a.cat_id1,a.cat_name1,a.cat_id2,a.cat_name2,a.cat_id3,a.cat_name3,a.leaf_cat_id,a.leaf_cat_name,\n" +
                 "       concat(case when cat_name1 is not null then concat(cat_name1,'>>') else '' end,\n" +
@@ -75,7 +74,6 @@ public class MySqlSelectTest_238 extends MysqlTest {
                 "\t\tAND s.cat_id IN (127234002)\n" +
                 ") a", stmt.toString());
     }
-
 
 
 }

@@ -27,7 +27,7 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.stat.TableStat;
 
 public class MySqlSelectTest_ads_keywords_1 extends MysqlTest {
-    String[] keywords = new String[] {
+    String[] keywords = new String[]{
             "any",
             "begin",
             "cast",

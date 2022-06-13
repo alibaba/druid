@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class OracleSchemaStatVisitorTest_Subquery2 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT a.id, a.name, b.name groupName FROM (select id, name, groupId from users WHERE ROWNUM < 10) a inner join groups b on a.groupId = b.id";
 

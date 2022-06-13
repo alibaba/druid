@@ -24,18 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropSynonymStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
-
     private SQLName name;
     private boolean ifExists;
     private boolean isPublic;
     private boolean force;
 
     public SQLDropSynonymStatement() {
-
     }
 
     public SQLDropSynonymStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

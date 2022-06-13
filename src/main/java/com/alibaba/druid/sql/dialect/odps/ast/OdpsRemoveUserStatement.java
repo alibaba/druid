@@ -15,15 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.odps.ast;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OdpsRemoveUserStatement extends SQLStatementImpl {
-
     private SQLIdentifierExpr user;
 
     @Override

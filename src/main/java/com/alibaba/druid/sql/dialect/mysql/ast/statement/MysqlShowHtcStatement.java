@@ -6,8 +6,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
  * @author lijun.cailj 2017/11/16
  */
 public class MysqlShowHtcStatement extends MySqlStatementImpl implements MySqlShowStatement {
-    private boolean full = false;
-    private boolean isHis = false;
+    private boolean full;
+    private boolean isHis;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {

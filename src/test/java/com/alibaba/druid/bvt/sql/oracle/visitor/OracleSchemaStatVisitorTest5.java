@@ -27,9 +27,8 @@ import com.alibaba.druid.stat.TableStat.Condition;
 import junit.framework.TestCase;
 
 public class OracleSchemaStatVisitorTest5 extends TestCase {
-
     public void test_0() throws Exception {
-        String sql =  "SELECT B.OBJ_ID AS BDZID,B.BDZMC,count(A.*) "
+        String sql = "SELECT B.OBJ_ID AS BDZID,B.BDZMC,count(A.*) "
                 + "FROM ("
                 + "     SELECT BDZ "
                 + "     FROM ("
@@ -68,7 +67,7 @@ public class OracleSchemaStatVisitorTest5 extends TestCase {
         System.out.println("relationShip : " + visitor.getRelationships());
         System.out.println("where : " + visitor.getConditions());
         System.out.println("groupBy : " + visitor.getGroupByColumns());
-        
+
         for (Condition condition : visitor.getConditions()) {
             String table = condition.getColumn().getTable();
             Assert.assertTrue("table not exists : " + table, visitor.containsTable(table));

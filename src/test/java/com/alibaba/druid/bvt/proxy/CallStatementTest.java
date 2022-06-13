@@ -31,13 +31,11 @@ import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class CallStatementTest extends TestCase {
-
     /**
      * Procedures that should be created before the tests are run and dropped when the tests have finished. First
      * element in each row is the name of the procedure, second element is SQL which creates it.
      */
     private static final String[] PROCEDURES = {
-
             "CREATE PROCEDURE RETRIEVE_DYNAMIC_RESULTS(number INT) "
                     + "LANGUAGE JAVA PARAMETER STYLE JAVA EXTERNAL NAME '" + CallStatementTest.class.getName()
                     + ".retrieveDynamicResults' " + "DYNAMIC RESULT SETS 4",
@@ -57,9 +55,9 @@ public class CallStatementTest extends TestCase {
                     + "PARAMETER STYLE JAVA EXTERNAL NAME '" + CallStatementTest.class.getName()
                     + ".nestedDynamicResultSets' " + "DYNAMIC RESULT SETS 6"
 
-                                             };
+    };
 
-    private static String         create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:memory:callableStatementDB;create=true";
+    private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:memory:callableStatementDB;create=true";
 
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
@@ -142,15 +140,13 @@ public class CallStatementTest extends TestCase {
     }
 
     public static void retrieveExternalResult(String dbName, String user, String password, ResultSet[] external)
-                                                                                                                throws SQLException {
-
+            throws SQLException {
         Connection conn = DriverManager.getConnection(create_url);
 
         external[0] = conn.createStatement().executeQuery("VALUES(1)");
     }
 
     public static void selectRows(int p1, ResultSet[] data) throws SQLException {
-
         System.out.println("selectRows - 1 arg - 1 rs");
 
         Connection conn = DriverManager.getConnection("jdbc:default:connection");
@@ -161,7 +157,6 @@ public class CallStatementTest extends TestCase {
     }
 
     public static void selectRows(int p1, int p2, ResultSet[] data1, ResultSet[] data2) throws SQLException {
-
         System.out.println("selectRows - 2 arg - 2 rs");
 
         Connection conn = DriverManager.getConnection("jdbc:default:connection");
@@ -203,7 +198,6 @@ public class CallStatementTest extends TestCase {
 
     public static void fivejp(ResultSet[] data1, ResultSet[] data2, ResultSet[] data3, ResultSet[] data4,
                               ResultSet[] data5) throws SQLException {
-
         Connection conn = DriverManager.getConnection("jdbc:default:connection");
 
         PreparedStatement ps1 = conn.prepareStatement("select * from MRS.FIVERS where i > ?");
@@ -230,7 +224,6 @@ public class CallStatementTest extends TestCase {
     }
 
     public static void parameter1(int a, String b, String c, java.sql.ResultSet[] rs) throws SQLException {
-
         System.out.print("PT1 a=" + a);
         if (b == null) System.out.println(" b = null");
         else System.out.print(" b=<" + b + ">(" + b.length() + ")");
@@ -253,7 +246,7 @@ public class CallStatementTest extends TestCase {
     }
 
     public static void parameter2(int a, java.math.BigDecimal b, java.math.BigDecimal c, java.sql.ResultSet[] rs)
-                                                                                                                 throws SQLException {
+            throws SQLException {
         Connection conn = DriverManager.getConnection("jdbc:default:connection");
         PreparedStatement ps = conn.prepareStatement("insert into PT1 values (?, ?, ?)");
         ps.setInt(1, a);
@@ -286,7 +279,6 @@ public class CallStatementTest extends TestCase {
     }
 
     public static void outparams1(int[] p1, int p2) {
-
         p1[0] = p2 * 2;
     }
 

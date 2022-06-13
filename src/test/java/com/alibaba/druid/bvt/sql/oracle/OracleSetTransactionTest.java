@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleSetTransactionTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "set transaction name 'IGNORED_TRANS'  ";
 

@@ -27,16 +27,15 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleGrantTest_2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "GRANT" //
-                     + "     CREATE ANY MATERIALIZED VIEW" //
-                     + "   , ALTER ANY MATERIALIZED VIEW" //
-                     + "   , DROP ANY MATERIALIZED VIEW" //
-                     + "   , QUERY REWRITE" //
-                     + "   , GLOBAL QUERY REWRITE" //
-                     + "   TO dw_manager" //
-                     + "   WITH ADMIN OPTION;";
+                + "     CREATE ANY MATERIALIZED VIEW" //
+                + "   , ALTER ANY MATERIALIZED VIEW" //
+                + "   , DROP ANY MATERIALIZED VIEW" //
+                + "   , QUERY REWRITE" //
+                + "   , GLOBAL QUERY REWRITE" //
+                + "   TO dw_manager" //
+                + "   WITH ADMIN OPTION;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -46,13 +45,13 @@ public class OracleGrantTest_2 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("GRANT CREATE ANY MATERIALIZED VIEW,"//
-                            + " ALTER ANY MATERIALIZED VIEW,"//
-                            + " DROP ANY MATERIALIZED VIEW,"//
-                            + " QUERY REWRITE,"//
-                            + " GLOBAL QUERY REWRITE"//
-                            + " TO dw_manager"//
-                            + " WITH ADMIN OPTION;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + " ALTER ANY MATERIALIZED VIEW,"//
+                        + " DROP ANY MATERIALIZED VIEW,"//
+                        + " QUERY REWRITE,"//
+                        + " GLOBAL QUERY REWRITE"//
+                        + " TO dw_manager"//
+                        + " WITH ADMIN OPTION;",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

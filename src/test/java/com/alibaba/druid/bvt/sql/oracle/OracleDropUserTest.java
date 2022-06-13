@@ -27,10 +27,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleDropUserTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "DROP USER sidney; ";
+                "DROP USER sidney; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -39,7 +38,7 @@ public class OracleDropUserTest extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("DROP USER sidney;",
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

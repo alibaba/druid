@@ -16,111 +16,111 @@
 package com.alibaba.druid.sql.parser;
 
 /**
- * 
- * SQL Token 
+ * SQL Token
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public enum Token {
-    SELECT("SELECT"), 
-    DELETE("DELETE"), 
-    INSERT("INSERT"), 
-    UPDATE("UPDATE"), 
-    
-    FROM("FROM"), 
-    HAVING("HAVING"), 
-    WHERE("WHERE"), 
-    ORDER("ORDER"), 
+    SELECT("SELECT"),
+    DELETE("DELETE"),
+    INSERT("INSERT"),
+    UPDATE("UPDATE"),
+
+    FROM("FROM"),
+    HAVING("HAVING"),
+    WHERE("WHERE"),
+    ORDER("ORDER"),
     BY("BY"),
-    GROUP("GROUP"), 
-    INTO("INTO"), 
-    AS("AS"), 
-    
+    GROUP("GROUP"),
+    INTO("INTO"),
+    AS("AS"),
+
     CREATE("CREATE"),
-    ALTER("ALTER"), 
-    DROP("DROP"), 
-    SET("SET"), 
-   
-    NULL("NULL"), 
-    NOT("NOT"), 
+    ALTER("ALTER"),
+    DROP("DROP"),
+    SET("SET"),
+
+    NULL("NULL"),
+    NOT("NOT"),
     DISTINCT("DISTINCT"),
 
-    TABLE("TABLE"), 
-    TABLESPACE("TABLESPACE"), 
-    VIEW("VIEW"), 
-    SEQUENCE("SEQUENCE"), 
-    TRIGGER("TRIGGER"), 
-    USER("USER"), 
-    INDEX("INDEX"), 
+    TABLE("TABLE"),
+    TABLESPACE("TABLESPACE"),
+    VIEW("VIEW"),
+    SEQUENCE("SEQUENCE"),
+    TRIGGER("TRIGGER"),
+    USER("USER"),
+    INDEX("INDEX"),
     SESSION("SESSION"),
     PROCEDURE("PROCEDURE"),
     FUNCTION("FUNCTION"),
-    
-    PRIMARY("PRIMARY"), 
-    KEY("KEY"), 
-    DEFAULT("DEFAULT"), 
-    CONSTRAINT("CONSTRAINT"), 
-    CHECK("CHECK"), 
-    UNIQUE("UNIQUE"), 
-    FOREIGN("FOREIGN"), 
-    REFERENCES("REFERENCES"), 
-    
-    EXPLAIN("EXPLAIN"), 
-    FOR("FOR"), 
+
+    PRIMARY("PRIMARY"),
+    KEY("KEY"),
+    DEFAULT("DEFAULT"),
+    CONSTRAINT("CONSTRAINT"),
+    CHECK("CHECK"),
+    UNIQUE("UNIQUE"),
+    FOREIGN("FOREIGN"),
+    REFERENCES("REFERENCES"),
+
+    EXPLAIN("EXPLAIN"),
+    FOR("FOR"),
     IF("IF"),
 
     LOCAL("LOCAL"),
     GLOBAL("GLOBAL"),
     ALL("ALL"),
     UNION("UNION"),
-    EXCEPT("EXCEPT"), 
-    INTERSECT("INTERSECT"), 
+    EXCEPT("EXCEPT"),
+    INTERSECT("INTERSECT"),
     MINUS("MINUS"),
-    INNER("INNER"), 
-    LEFT("LEFT"), 
-    RIGHT("RIGHT"), 
-    FULL("FULL"), 
-    OUTER("OUTER"), 
+    INNER("INNER"),
+    LEFT("LEFT"),
+    RIGHT("RIGHT"),
+    FULL("FULL"),
+    OUTER("OUTER"),
     JOIN("JOIN"),
     STRAIGHT_JOIN("STRAIGHT_JOIN"),
     ON("ON"),
-    SCHEMA("SCHEMA"), 
+    SCHEMA("SCHEMA"),
     CAST("CAST"),
     COLUMN("COLUMN"),
     USE("USE"),
     DATABASE("DATABASE"),
     TO("TO"),
 
-    AND("AND"), 
-    OR("OR"), 
-    XOR("XOR"), 
-    CASE("CASE"), 
-    WHEN("WHEN"), 
-    THEN("THEN"), 
+    AND("AND"),
+    OR("OR"),
+    XOR("XOR"),
+    CASE("CASE"),
+    WHEN("WHEN"),
+    THEN("THEN"),
     ELSE("ELSE"),
     ELSIF("ELSIF"),
-    END("END"), 
-    EXISTS("EXISTS"), 
+    END("END"),
+    EXISTS("EXISTS"),
     IN("IN"),
 
-    NEW("NEW"), 
-    ASC("ASC"), 
-    DESC("DESC"), 
-    IS("IS"), 
-    LIKE("LIKE"), 
-    ESCAPE("ESCAPE"), 
-    BETWEEN("BETWEEN"), 
-    VALUES("VALUES"), 
+    NEW("NEW"),
+    ASC("ASC"),
+    DESC("DESC"),
+    IS("IS"),
+    LIKE("LIKE"),
+    ESCAPE("ESCAPE"),
+    BETWEEN("BETWEEN"),
+    VALUES("VALUES"),
     INTERVAL("INTERVAL"),
 
-    LOCK("LOCK"), 
-    SOME("SOME"), 
+    LOCK("LOCK"),
+    SOME("SOME"),
     ANY("ANY"),
     TRUNCATE("TRUNCATE"),
 
     RETURN("RETURN"),
 
     // mysql
-    TRUE("TRUE"), 
+    TRUE("TRUE"),
     FALSE("FALSE"),
     LIMIT("LIMIT"),
     KILL("KILL"),
@@ -150,7 +150,7 @@ public enum Token {
     SQLSTATE("SQLSTATE"),
     CONDITION("CONDITION"),
     DIV("DIV"),
-    
+
     //postgresql
     WINDOW("WINDOW"),
     OFFSET("OFFSET"),
@@ -189,7 +189,7 @@ public enum Token {
     WITH("WITH"),
     EXTRACT("EXTRACT"),
     CURSOR("CURSOR"),
-//    MODEL("MODEL"),
+    //    MODEL("MODEL"),
     MERGE("MERGE"),
     MATCHED("MATCHED"),
     ERRORS("ERRORS"),
@@ -210,7 +210,7 @@ public enum Token {
     COMMIT("COMMIT"),
     SAVEPOINT("SAVEPOINT"),
     CROSS("CROSS"),
-    
+
     PCTFREE("PCTFREE"),
     INITRANS("INITRANS"),
     MAXTRANS("MAXTRANS"),
@@ -243,16 +243,16 @@ public enum Token {
     COMPUTE("COMPUTE"),
     ANALYZE("ANALYZE"),
     OPTIMIZE("OPTIMIZE"),
-    
+
     // transact-sql
     TOP("TOP"),
-    
+
     ARRAY("ARRAY"),
     DISTRIBUTE("DISTRIBUTE"),
-    
+
     // hive
 
-    EOF, 
+    EOF,
     ERROR,
     IDENTIFIER,
     HINT,
@@ -270,11 +270,11 @@ public enum Token {
     LITERAL_ALIAS,
     LINE_COMMENT,
     MULTI_LINE_COMMENT,
-    
+
     // Oracle
     BINARY_FLOAT,
     BINARY_DOUBLE,
-    
+
     // odps,hive
     PARTITION,
     PARTITIONED,
@@ -299,19 +299,19 @@ public enum Token {
 
     UPSERT("UPSERT"), // Phoenix
 
-    LPAREN("("), 
-    RPAREN(")"), 
-    LBRACE("{"), 
-    RBRACE("}"), 
-    LBRACKET("["), 
-    RBRACKET("]"), 
-    SEMI(";"), 
-    COMMA(","), 
-    DOT("."), 
-    DOTDOT(".."), 
-    DOTDOTDOT("..,"), 
-    EQ("="), 
-    GT(">"), 
+    LPAREN("("),
+    RPAREN(")"),
+    LBRACE("{"),
+    RBRACE("}"),
+    LBRACKET("["),
+    RBRACKET("]"),
+    SEMI(";"),
+    COMMA(","),
+    DOT("."),
+    DOTDOT(".."),
+    DOTDOTDOT("..,"),
+    EQ("="),
+    GT(">"),
     LT("<"),
     LT_SUB_GT("<->"),
     BANG("!"),
@@ -325,34 +325,34 @@ public enum Token {
     QUESQUES("??"),
     QUESBAR("?|"),
     QUESAMP("?&"),
-    COLON(":"), 
-    COLONCOLON("::"), 
-    COLONEQ(":="), 
+    COLON(":"),
+    COLONCOLON("::"),
+    COLONEQ(":="),
     EQEQ("=="),
     EQGT("=>"),
-    LTEQ("<="), 
-    LTEQGT("<=>"), 
-    LTGT("<>"), 
-    GTEQ(">="), 
-    BANGEQ("!="), 
-    BANGGT("!>"), 
+    LTEQ("<="),
+    LTEQGT("<=>"),
+    LTGT("<>"),
+    GTEQ(">="),
+    BANGEQ("!="),
+    BANGGT("!>"),
     BANGLT("!<"),
-    AMPAMP("&&"), 
-    BARBAR("||"), 
-    BARBARSLASH("||/"), 
-    BARSLASH("|/"), 
-    PLUS("+"), 
-    SUB("-"), 
-    SUBGT("->"), 
-    SUBGTGT("->>"), 
-    STAR("*"), 
-    SLASH("/"), 
-    AMP("&"), 
-    BAR("|"), 
+    AMPAMP("&&"),
+    BARBAR("||"),
+    BARBARSLASH("||/"),
+    BARSLASH("|/"),
+    PLUS("+"),
+    SUB("-"),
+    SUBGT("->"),
+    SUBGTGT("->>"),
+    STAR("*"),
+    SLASH("/"),
+    AMP("&"),
+    BAR("|"),
     CARET("^"),
     CARETEQ("^="),
-    PERCENT("%"), 
-    LTLT("<<"), 
+    PERCENT("%"),
+    LTLT("<<"),
     GTGT(">>"),
     MONKEYS_AT("@"),
     MONKEYS_AT_AT("@@"),
@@ -360,16 +360,15 @@ public enum Token {
     POUNDGT("#>"),
     POUNDGTGT("#>>"),
     MONKEYS_AT_GT("@>"),
-    LT_MONKEYS_AT("<@"),
-    ;
+    LT_MONKEYS_AT("<@");
 
     public final String name;
 
-    Token(){
+    Token() {
         this(null);
     }
 
-    Token(String name){
+    Token(String name) {
         this.name = name;
     }
 }

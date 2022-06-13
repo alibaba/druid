@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerAlterTableTest_0 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "alter table st_jklsxxb enable constraint FK_ST_xxx_REFERENCE_ST_xxx";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -44,7 +43,7 @@ public class SQLServerAlterTableTest_0 extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("ALTER TABLE st_jklsxxb" + //
-                            "\n\tENABLE CONSTRAINT FK_ST_xxx_REFERENCE_ST_xxx", output);
+                "\n\tENABLE CONSTRAINT FK_ST_xxx_REFERENCE_ST_xxx", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

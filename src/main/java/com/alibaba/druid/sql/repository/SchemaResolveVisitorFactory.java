@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.ast.DB2Object;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitorAdapter;
@@ -32,8 +34,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
@@ -271,7 +271,6 @@ class SchemaResolveVisitorFactory {
 
                 index.accept(this);
             }
-
 
             if (range != null) {
                 range.accept(this);
@@ -1091,8 +1090,7 @@ class SchemaResolveVisitorFactory {
         } else {
             for (SchemaResolveVisitor.Context parentCtx = ctx;
                  parentCtx != null;
-                 parentCtx = parentCtx.parent)
-            {
+                 parentCtx = parentCtx.parent) {
                 SQLDeclareItem declareItem = parentCtx.findDeclare(hash);
                 if (declareItem != null) {
                     x.setResolvedDeclareItem(declareItem);
@@ -1163,7 +1161,7 @@ class SchemaResolveVisitorFactory {
                 x.setResolvedColumn(column);
             }
 
-            if (ctxTable instanceof SQLJoinTableSource ) {
+            if (ctxTable instanceof SQLJoinTableSource) {
                 String alias = tableSource.computeAlias();
                 if (alias == null || tableSource instanceof SQLWithSubqueryClause.Entry) {
                     return;
@@ -1182,8 +1180,7 @@ class SchemaResolveVisitorFactory {
                 && x.getResolvedTableSource() == null) {
             for (SchemaResolveVisitor.Context parentCtx = ctx;
                  parentCtx != null;
-                 parentCtx = parentCtx.parent)
-            {
+                 parentCtx = parentCtx.parent) {
                 SQLDeclareItem declareItem = parentCtx.findDeclare(hash);
                 if (declareItem != null) {
                     x.setResolvedDeclareItem(declareItem);
@@ -1211,7 +1208,7 @@ class SchemaResolveVisitorFactory {
         if (x.getResolvedColumnObject() == null && ctx.object instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) ctx.object;
             boolean having = false;
-            for (SQLObject current = x, parent = x.getParent(); parent != null;current = parent, parent = parent.getParent()) {
+            for (SQLObject current = x, parent = x.getParent(); parent != null; current = parent, parent = parent.getParent()) {
                 if (parent instanceof SQLSelectGroupByClause && parent.getParent() == queryBlock) {
                     SQLSelectGroupByClause groupBy = (SQLSelectGroupByClause) parent;
                     if (current == groupBy.getHaving()) {
@@ -1264,7 +1261,6 @@ class SchemaResolveVisitorFactory {
             for (SchemaResolveVisitor.Context parentCtx = ctx;
                  parentCtx != null;
                  parentCtx = parentCtx.parent) {
-
                 SQLTableSource parentCtxTable = parentCtx.getTableSource();
 
                 if (parentCtxTable != null) {
@@ -1368,7 +1364,6 @@ class SchemaResolveVisitorFactory {
         for (SchemaResolveVisitor.Context parentCtx = ctx;
              parentCtx != null;
              parentCtx = parentCtx.parent) {
-
             SQLWithSubqueryClause with = null;
             if (parentCtx.object instanceof SQLSelect) {
                 SQLSelect select = (SQLSelect) parentCtx.object;
@@ -1412,7 +1407,7 @@ class SchemaResolveVisitorFactory {
                 from.accept(visitor);
             }
         } else if (x.getParent() != null && x.getParent().getParent() instanceof HiveInsert
-                && x.getParent().getParent().getParent() instanceof HiveMultiInsertStatement){
+                && x.getParent().getParent().getParent() instanceof HiveMultiInsertStatement) {
             HiveMultiInsertStatement insert = (HiveMultiInsertStatement) x.getParent().getParent().getParent();
             if (insert.getFrom() instanceof SQLExprTableSource) {
                 from = insert.getFrom();
@@ -1593,7 +1588,10 @@ class SchemaResolveVisitorFactory {
         visitor.popContext();
     }
 
-    static void extractColumns(SchemaResolveVisitor visitor, SQLTableSource from, String ownerName, List<SQLSelectItem> columns) {
+    static void extractColumns(SchemaResolveVisitor visitor,
+                               SQLTableSource from,
+                               String ownerName,
+                               List<SQLSelectItem> columns) {
         if (from instanceof SQLExprTableSource) {
             SQLExpr expr = ((SQLExprTableSource) from).getExpr();
 
@@ -1863,7 +1861,7 @@ class SchemaResolveVisitorFactory {
                 annFeature = func.getArguments().get(1);
                 if (annFeature instanceof SQLIdentifierExpr) {
                     ((SQLIdentifierExpr) annFeature).setResolvedTableSource(x);
-                } else  if (annFeature instanceof SQLPropertyExpr) {
+                } else if (annFeature instanceof SQLPropertyExpr) {
                     ((SQLPropertyExpr) annFeature).setResolvedTableSource(x);
                 }
             }
@@ -1937,8 +1935,8 @@ class SchemaResolveVisitorFactory {
 
         if (expr instanceof SQLQueryExpr) {
             SQLSelect select =
-            ((SQLQueryExpr) expr)
-                    .getSubQuery();
+                    ((SQLQueryExpr) expr)
+                            .getSubQuery();
 
             visitor.visit(select);
 
@@ -1993,7 +1991,7 @@ class SchemaResolveVisitorFactory {
             on.accept(visitor);
         }
 
-        SQLMergeStatement.MergeUpdateClause updateClause  = x.getUpdateClause();
+        SQLMergeStatement.MergeUpdateClause updateClause = x.getUpdateClause();
         if (updateClause != null) {
             for (SQLUpdateSetItem item : updateClause.getItems()) {
                 SQLExpr column = item.getColumn();
@@ -2078,7 +2076,6 @@ class SchemaResolveVisitorFactory {
         {
             SQLDeclareItem declareItem = new SQLDeclareItem(x.getName().clone(), null);
             declareItem.setResolvedObject(x);
-
 
             SchemaResolveVisitor.Context parentCtx = visitor.getContext();
             if (parentCtx != null) {
@@ -2189,7 +2186,6 @@ class SchemaResolveVisitorFactory {
         SQLOrderBy orderBy = x.getOrderBy();
         List<SQLExpr> partitionBy = x.getPartitionBy();
 
-
         if (of == null // skip if of is not null
                 && orderBy != null) {
             orderBy.accept(visitor);
@@ -2216,7 +2212,6 @@ class SchemaResolveVisitorFactory {
         for (SchemaResolveVisitor.Context parentCtx = ctx;
              parentCtx != null;
              parentCtx = parentCtx.parent) {
-
             if (parentCtx.object instanceof SQLBlockStatement) {
                 SQLBlockStatement block = (SQLBlockStatement) parentCtx.object;
                 SQLParameter parameter = block.findParameter(hash);
@@ -2315,7 +2310,6 @@ class SchemaResolveVisitorFactory {
             }
         }
 
-
         if (repository == null) {
             return;
         }
@@ -2388,7 +2382,6 @@ class SchemaResolveVisitorFactory {
                 && ((SQLUnionQuery) left).getOperator() == operator
                 && !right.isParenthesized()
                 && x.getOrderBy() == null) {
-
             SQLUnionQuery leftUnion = (SQLUnionQuery) left;
 
             List<SQLSelectQuery> rights = new ArrayList<SQLSelectQuery>();

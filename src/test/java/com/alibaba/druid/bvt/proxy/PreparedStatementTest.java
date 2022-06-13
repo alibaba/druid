@@ -37,7 +37,6 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PreparedStatementTest extends TestCase {
-
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=preparedStatementTest:jdbc:derby:memory:preparedStatementTestDB;create=true";
 
     protected void setUp() throws Exception {
@@ -68,14 +67,13 @@ public class PreparedStatementTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dropTable();
-        
+
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     @SuppressWarnings("deprecation")
     public void test_pstmt() throws Exception {
-
         Connection conn = null;
         PreparedStatement pstmt = null;
         PreparedStatement pstmt2 = null;
@@ -85,7 +83,7 @@ public class PreparedStatementTest extends TestCase {
             conn = DriverManager.getConnection(create_url);
 
             pstmt = conn.prepareStatement("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (?, ?, ?)",
-                                          Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
 
             pstmt.setShort(1, (short) 1);
             pstmt.setString(2, "A");
@@ -108,72 +106,59 @@ public class PreparedStatementTest extends TestCase {
             try {
                 pstmt.setArray(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 pstmt.setObject(2, null);
             } catch (SQLDataException ex) {
-
             }
             try {
                 pstmt.setNCharacterStream(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 pstmt.setNCharacterStream(2, null, 0L);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 pstmt.setNClob(2, (NClob) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 pstmt.setNClob(2, (Reader) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 pstmt.setNClob(2, null, 0L);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 pstmt.setNString(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 pstmt.setRef(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 pstmt.setRowId(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 pstmt.setSQLXML(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 pstmt.setURL(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 pstmt.setUnicodeStream(2, null, 0);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             pstmt.execute();
 
             pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", ResultSet.TYPE_SCROLL_SENSITIVE,
-                                           ResultSet.CONCUR_UPDATABLE);
+                    ResultSet.CONCUR_UPDATABLE);
             rs = pstmt2.executeQuery();
             rs.getCursorName();
             rs.clearWarnings();
@@ -204,102 +189,89 @@ public class PreparedStatementTest extends TestCase {
             rs.close();
 
             pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", ResultSet.TYPE_SCROLL_SENSITIVE,
-                                           ResultSet.CONCUR_UPDATABLE);
+                    ResultSet.CONCUR_UPDATABLE);
             rs = pstmt2.executeQuery();
             rs.first();
             rs.last();
             rs.close();
 
             pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", ResultSet.TYPE_SCROLL_SENSITIVE,
-                                           ResultSet.CONCUR_UPDATABLE, ResultSet.CLOSE_CURSORS_AT_COMMIT);
+                    ResultSet.CONCUR_UPDATABLE, ResultSet.CLOSE_CURSORS_AT_COMMIT);
             rs = pstmt2.executeQuery();
             rs.first();
             rs.last();
             rs.close();
 
-            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", new int[] { 1 });
+            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", new int[]{1});
             rs = pstmt2.executeQuery();
             JdbcUtils.printResultSet(rs, System.out);
             rs.close();
 
-            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", new String[] { "ID" });
+            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", new String[]{"ID"});
             rs = pstmt2.executeQuery();
             JdbcUtils.printResultSet(rs, System.out);
             rs.close();
 
-            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", new String[] { "ID" });
+            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", new String[]{"ID"});
             rs = pstmt2.executeQuery();
             try {
                 rs.getArray(2);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getArray("NAME");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getNCharacterStream(2);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getNCharacterStream("NAME");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getNClob(2);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getNClob("NAME");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getNString(2);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getNString("NAME");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getRowId(2);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getRowId("NAME");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getSQLXML(2);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getSQLXML("NAME");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             JdbcUtils.printResultSet(rs, System.out);
             rs.close();
 
             pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2",
-                                           ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             rs = pstmt2.executeQuery();
             rs.next();
             try {
                 rs.refreshRow();
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.insertRow();
@@ -317,133 +289,109 @@ public class PreparedStatementTest extends TestCase {
             try {
                 rs.getURL(2);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.getURL("NAME");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 rs.updateArray(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.updateArray("NAME", null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 rs.updateNCharacterStream(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.updateNCharacterStream("NAME", null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 rs.updateNCharacterStream(2, null, 0);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.updateNCharacterStream("NAME", null, 0);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 rs.updateNClob(2, (NClob) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.updateNClob("NAME", (NClob) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 rs.updateNClob(2, (Reader) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.updateNClob("NAME", (Reader) null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 rs.updateNClob(2, (Reader) null, 0);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.updateNClob("NAME", (Reader) null, 0);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 rs.updateNString(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.updateNString("NAME", null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 rs.getRef(2);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 rs.getRef("NAME");
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.updateRef(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.updateRef("NAME", null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 rs.updateRowId(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.updateRowId("NAME", null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
 
             try {
                 rs.updateSQLXML(2, null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             try {
                 rs.updateSQLXML("NAME", null);
             } catch (SQLFeatureNotSupportedException ex) {
-
             }
             JdbcUtils.printResultSet(rs, System.out);
             rs.close();

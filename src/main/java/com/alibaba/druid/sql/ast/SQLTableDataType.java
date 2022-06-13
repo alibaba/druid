@@ -15,7 +15,6 @@ public class SQLTableDataType extends SQLObjectImpl implements SQLDataType {
     private List<SQLColumnDefinition> columns = new ArrayList<SQLColumnDefinition>();
 
     public SQLTableDataType() {
-
     }
 
     public SQLTableDataType(DbType dbType) {
@@ -104,6 +103,7 @@ public class SQLTableDataType extends SQLObjectImpl implements SQLDataType {
     public boolean isInt() {
         return false;
     }
+
     @Override
     public boolean isNumberic() {
         return false;

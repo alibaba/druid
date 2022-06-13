@@ -23,20 +23,19 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest21 extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "select * from t where 1=1 AND status = 1")); //
+                "select * from t where 1=1 AND status = 1")); //
     }
-    
+
     public void test_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "select * from t where status = 1 AND 1=1")); //
+                "select * from t where status = 1 AND 1=1")); //
     }
 }

@@ -15,29 +15,27 @@
  */
 package com.alibaba.druid.pool.xa;
 
-import java.lang.reflect.Method;
-import java.sql.Connection;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import net.sourceforge.jtds.jdbc.XASupport;
 
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
-import net.sourceforge.jtds.jdbc.XASupport;
+import java.lang.reflect.Method;
+import java.sql.Connection;
 
 public class JtdsXAResource implements XAResource {
+    private static final Log LOG = LogFactory.getLog(JtdsXAResource.class);
 
-    private final static Log       LOG = LogFactory.getLog(JtdsXAResource.class);
-
-    private final Connection       connection;
+    private final Connection connection;
     private final JtdsXAConnection xaConnection;
-    private String                 rmHost;
+    private String rmHost;
 
-    private static Method          method;
+    private static Method method;
 
-    public JtdsXAResource(JtdsXAConnection xaConnection, Connection connection){
+    public JtdsXAResource(JtdsXAConnection xaConnection, Connection connection) {
         this.xaConnection = xaConnection;
         this.connection = connection;
 

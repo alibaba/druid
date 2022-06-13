@@ -20,11 +20,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
-
     protected SQLName constraint;
 
-    public OracleSelectRestriction(){
-
+    public OracleSelectRestriction() {
     }
 
     public SQLName getConstraint() {
@@ -39,9 +37,7 @@ public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
     }
 
     public static class CheckOption extends OracleSelectRestriction {
-
-        public CheckOption(){
-
+        public CheckOption() {
         }
 
         @Override
@@ -64,9 +60,7 @@ public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
     }
 
     public static class ReadOnly extends OracleSelectRestriction {
-
-        public ReadOnly(){
-
+        public ReadOnly() {
         }
 
         @Override
@@ -82,6 +76,5 @@ public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
             return x;
         }
     }
-
 
 }

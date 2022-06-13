@@ -18,8 +18,8 @@ package com.alibaba.druid.util;
 import java.util.Arrays;
 
 public final class FnvHash {
-    public final static long BASIC = 0xcbf29ce484222325L;
-    public final static long PRIME = 0x100000001b3L;
+    public static final long BASIC = 0xcbf29ce484222325L;
+    public static final long PRIME = 0x100000001b3L;
 
     public static long fnv1a_64(String input) {
         if (input == null) {
@@ -105,6 +105,7 @@ public final class FnvHash {
 
     /**
      * lower and normalized and fnv_1a_64
+     *
      * @param name
      * @return
      */
@@ -280,6 +281,7 @@ public final class FnvHash {
 
     /**
      * normalized and lower and fnv1a_64_hash
+     *
      * @param owner
      * @param name
      * @return
@@ -305,7 +307,7 @@ public final class FnvHash {
             }
 
             int start = quote ? 1 : 0;
-            int end   = quote ? len - 1 : len;
+            int end = quote ? len - 1 : len;
             for (int j = start; j < end; ++j) {
                 char ch = item.charAt(j);
 
@@ -320,7 +322,6 @@ public final class FnvHash {
             hashCode ^= '.';
             hashCode *= PRIME;
         }
-
 
         if (name != null) {
             String item = name;
@@ -340,7 +341,7 @@ public final class FnvHash {
             }
 
             int start = quote ? 1 : 0;
-            int end   = quote ? len - 1 : len;
+            int end = quote ? len - 1 : len;
             for (int j = start; j < end; ++j) {
                 char ch = item.charAt(j);
 

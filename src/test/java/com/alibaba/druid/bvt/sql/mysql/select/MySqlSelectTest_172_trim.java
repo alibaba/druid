@@ -9,12 +9,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_172_trim extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select 1 as '\\\"f\\\"a';";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -25,7 +24,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         String sql = "select 1 as \"\\\"f\\\"\";";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -38,7 +37,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         String sql = "select 1 as \"\\\"f\\\"\";";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -51,7 +50,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         String sql = "select 1 as '\\'f\\'';";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -66,7 +65,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
 //        System.out.println(sql);
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -79,7 +78,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
 //        System.out.println(sql);
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -93,7 +92,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         String sql = "select 1 as \"\\\"f\\\"\";";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -107,7 +106,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         String sql = "select 1 as '\n'";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -123,7 +122,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         System.out.println(sql);
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -136,7 +135,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         System.out.println(sql);
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -149,7 +148,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         System.out.println(sql);
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

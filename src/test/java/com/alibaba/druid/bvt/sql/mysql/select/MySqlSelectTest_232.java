@@ -23,7 +23,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_232 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from tb where id = '1'-1;";
 

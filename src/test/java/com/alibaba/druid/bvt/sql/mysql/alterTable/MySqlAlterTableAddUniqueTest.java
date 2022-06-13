@@ -26,16 +26,15 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableAddUniqueTest extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE icp.wx_msg ADD CONSTRAINT idx_msgId_msgType_event_eventKey UNIQUE (msgId, msgType, event, eventKey)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         Assert.assertEquals("ALTER TABLE icp.wx_msg"
                 + "\n\tADD UNIQUE (msgId, msgType, event, eventKey)", SQLUtils.toMySqlString(stmt));
-        
+
         Assert.assertEquals("alter table icp.wx_msg"
                 + "\n\tadd unique (msgId, msgType, event, eventKey)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

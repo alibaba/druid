@@ -29,7 +29,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_12 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM TASK_POLICE_QUERY_BATCH WHERE STATUS = '0' ORDER BY PRIORITY FETCH FIRST 100 ROWS ONLY";
 
@@ -55,24 +54,24 @@ public class DB2SelectTest_12 extends DB2Test {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("TASK_POLICE_QUERY_BATCH")));
 
-         Assert.assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "STATUS")));
-         Assert.assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "*")));
-         Assert.assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "PRIORITY")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "STATUS")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "*")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "PRIORITY")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         Assert.assertEquals("SELECT *"
-                + "\nFROM TASK_POLICE_QUERY_BATCH"
-                + "\nWHERE STATUS = '0'"
-                + "\nORDER BY PRIORITY"
-                + "\nFETCH FIRST 100 ROWS ONLY", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                        + "\nFROM TASK_POLICE_QUERY_BATCH"
+                        + "\nWHERE STATUS = '0'"
+                        + "\nORDER BY PRIORITY"
+                        + "\nFETCH FIRST 100 ROWS ONLY", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("select *"
-                + "\nfrom TASK_POLICE_QUERY_BATCH"
-                + "\nwhere STATUS = '0'"
-                + "\norder by PRIORITY"
-                + "\nfetch first 100 rows only", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                        + "\nfrom TASK_POLICE_QUERY_BATCH"
+                        + "\nwhere STATUS = '0'"
+                        + "\norder by PRIORITY"
+                        + "\nfetch first 100 rows only", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

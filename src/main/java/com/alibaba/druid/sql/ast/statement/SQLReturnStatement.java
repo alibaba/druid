@@ -25,16 +25,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.Collections;
 import java.util.List;
 
-public class SQLReturnStatement extends SQLStatementImpl implements SQLReplaceable  {
-
+public class SQLReturnStatement extends SQLStatementImpl implements SQLReplaceable {
     private SQLExpr expr;
 
     public SQLReturnStatement() {
-
     }
 
     public SQLReturnStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public SQLExpr getExpr() {

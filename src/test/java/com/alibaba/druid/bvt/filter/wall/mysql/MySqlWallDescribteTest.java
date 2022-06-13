@@ -24,22 +24,21 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景测试访问Oracle系统对象
- * 
+ *
  * @author admin
  */
 public class MySqlWallDescribteTest extends TestCase {
-
     public void test_allow() throws Exception {
         WallConfig config = new WallConfig();
         config.setDescribeAllow(true);
-        
+
         Assert.assertTrue(WallUtils.isValidateMySql("describe t", config));
     }
-    
+
     public void test_not_allow() throws Exception {
         WallConfig config = new WallConfig();
         config.setDescribeAllow(false);
-        
+
         Assert.assertFalse(WallUtils.isValidateMySql("describe t", config));
     }
 }

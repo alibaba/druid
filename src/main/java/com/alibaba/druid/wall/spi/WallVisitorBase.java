@@ -9,8 +9,8 @@ public abstract class WallVisitorBase implements WallVisitor {
     protected final WallConfig config;
     protected final WallProvider provider;
     protected final List<Violation> violations = new ArrayList<Violation>();
-    protected boolean sqlModified = false;
-    protected boolean sqlEndOfComment = false;
+    protected boolean sqlModified;
+    protected boolean sqlEndOfComment;
     protected List<WallUpdateCheckItem> updateCheckItems;
 
     public WallVisitorBase(WallProvider provider) {

@@ -28,7 +28,6 @@ import com.alibaba.druid.wall.WallUtils;
 import java.util.List;
 
 public class MySqlUpdateTest_15 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "update students set name='test' where id in (select stu_id from score where s <100)";
 
@@ -66,7 +65,7 @@ public class MySqlUpdateTest_15 extends MysqlTest {
                             "\t\tFROM score\n" +
                             "\t\tWHERE s < 100\n" +
                             "\t)", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -77,7 +76,7 @@ public class MySqlUpdateTest_15 extends MysqlTest {
                             "\t\tfrom score\n" +
                             "\t\twhere s < 100\n" +
                             "\t)", //
-                                output);
+                    output);
         }
 
         assertTrue(WallUtils.isValidateMySql(sql));

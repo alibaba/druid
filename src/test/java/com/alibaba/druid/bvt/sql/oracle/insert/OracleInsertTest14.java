@@ -28,12 +28,11 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleInsertTest14 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO raises" //
-                     + "   SELECT employee_id, salary*1.1 FROM employees"//
-                     + "   WHERE commission_pct > .2"//
-                     + "   LOG ERRORS INTO errlog ('my_bad') REJECT LIMIT 10;";
+                + "   SELECT employee_id, salary*1.1 FROM employees"//
+                + "   WHERE commission_pct > .2"//
+                + "   LOG ERRORS INTO errlog ('my_bad') REJECT LIMIT 10;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -43,11 +42,11 @@ public class OracleInsertTest14 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("INSERT INTO raises" //
-                            + "\nSELECT employee_id, salary * 1.1"//
-                            + "\nFROM employees"//
-                            + "\nWHERE commission_pct > .2"//
-                            + "\nLOG ERRORS INTO errlog ('my_bad') REJECT LIMIT 10;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\nSELECT employee_id, salary * 1.1"//
+                        + "\nFROM employees"//
+                        + "\nWHERE commission_pct > .2"//
+                        + "\nLOG ERRORS INTO errlog ('my_bad') REJECT LIMIT 10;",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

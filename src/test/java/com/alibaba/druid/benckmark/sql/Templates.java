@@ -12,11 +12,9 @@ import java.util.Set;
  * Created by kaiwang.ckw on 15/05/2017.
  */
 public class Templates {
-
     public static final String UNKNOWN = "UNKNOWN";
 
     public static String parameterize(SQLStatement ast, Set<String> physicalNames, List<Object> params) {
-
         List<Object> parameters = null;
         Appendable out = new StringBuilder();
         SQLASTOutputVisitor visitor = new MySqlOutputVisitor(out);

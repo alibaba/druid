@@ -22,17 +22,15 @@ import com.alibaba.druid.sql.ast.statement.SQLErrorLoggingClause;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OracleInsertStatement extends SQLInsertStatement implements OracleStatement {
-
     private OracleReturningClause returning;
     private SQLErrorLoggingClause errorLogging;
-    private List<SQLHint>         hints = new ArrayList<SQLHint>();
+    private List<SQLHint> hints = new ArrayList<SQLHint>();
 
     public OracleInsertStatement() {
         dbType = DbType.oracle;

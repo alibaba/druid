@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class CreateUserTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'mypass';";
 
@@ -45,5 +44,5 @@ public class CreateUserTest extends MysqlTest {
         Assert.assertTrue(visitor.getTables().size() == 0);
     }
 
-   
+
 }

@@ -26,7 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DMLInsertParserTest extends TestCase {
-
     public void testInsert_0() throws Exception {
         String sql = "insErt HIGH_PRIORITY intO test.t1 seT t1.id1=?, id2 := '123'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

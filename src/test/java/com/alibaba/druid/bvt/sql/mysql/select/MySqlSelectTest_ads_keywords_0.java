@@ -29,7 +29,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_ads_keywords_0 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select lable, status, begin, option from t where label = 1";
 
@@ -61,6 +60,6 @@ public class MySqlSelectTest_ads_keywords_0 extends MysqlTest {
         Assert.assertEquals("SELECT lable, status, begin, option\n" +
                         "FROM t\n" +
                         "WHERE label = 1", //
-                            output);
+                output);
     }
 }

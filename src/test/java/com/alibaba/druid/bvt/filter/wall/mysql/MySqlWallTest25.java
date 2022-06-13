@@ -24,28 +24,27 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest25 extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "update test.dml_health_check set id=? limit ?")); //
+                "update test.dml_health_check set id=? limit ?")); //
     }
 
     public void test_true_1() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "update test.dml_health_check set id=?")); //
+                "update test.dml_health_check set id=?")); //
     }
 
     public void test_true_2() throws Exception {
         WallConfig config = new WallConfig();
         config.setUpdateWhereNoneCheck(true);
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "update test.dml_health_check set id=? limit ?", config)); //
+                "update test.dml_health_check set id=? limit ?", config)); //
     }
 
     public void test_false() throws Exception {
@@ -53,6 +52,6 @@ public class MySqlWallTest25 extends TestCase {
         config.setUpdateWhereNoneCheck(true);
 
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "update test.dml_health_check set id=?", config)); //
+                "update test.dml_health_check set id=?", config)); //
     }
 }

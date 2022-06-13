@@ -24,18 +24,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest88 extends TestCase {
-
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         Assert.assertTrue(provider.checkValid(//
-        "DROP INDEX `PRIMARY` ON t;"));
+                "DROP INDEX `PRIMARY` ON t;"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
         Assert.assertTrue(provider.getTableStats().containsKey("t"));

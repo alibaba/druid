@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleLockTableTest3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "LOCK TABLE \"FIN_SETTLEMENT_DETAIL\" IN ROW SHARE MODE ";
 

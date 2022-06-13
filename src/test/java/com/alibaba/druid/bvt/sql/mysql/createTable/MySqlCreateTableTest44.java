@@ -26,18 +26,17 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest44 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE lc (" + //
-                     "    a INT NULL, " + //
-                     "    b INT NULL" + //
-                     ")" + //
-                     "PARTITION BY LIST COLUMNS(a,b) (" + //
-                     "    PARTITION p0 VALUES IN( (0,0), (NULL,NULL) )," + //
-                     "    PARTITION p1 VALUES IN( (0,1), (0,2), (0,3), (1,1), (1,2) )," + //
-                     "    PARTITION p2 VALUES IN( (1,0), (2,0), (2,1), (3,0), (3,1) )," + //
-                     "    PARTITION p3 VALUES IN( (1,3), (2,2), (2,3), (3,2), (3,3) )" + //
-                     ");"; //
+                "    a INT NULL, " + //
+                "    b INT NULL" + //
+                ")" + //
+                "PARTITION BY LIST COLUMNS(a,b) (" + //
+                "    PARTITION p0 VALUES IN( (0,0), (NULL,NULL) )," + //
+                "    PARTITION p1 VALUES IN( (0,1), (0,2), (0,3), (1,1), (1,2) )," + //
+                "    PARTITION p2 VALUES IN( (1,0), (2,0), (2,1), (3,0), (3,1) )," + //
+                "    PARTITION p3 VALUES IN( (1,3), (2,2), (2,3), (3,2), (3,3) )" + //
+                ");"; //
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

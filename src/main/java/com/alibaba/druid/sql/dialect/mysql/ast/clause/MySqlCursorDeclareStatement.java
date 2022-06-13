@@ -22,49 +22,47 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 /**
- * 
  * @author zz [455910092@qq.com]
  */
-public class MySqlCursorDeclareStatement extends MySqlStatementImpl{
-	
-	//cursor name
-	private SQLName cursorName;
-	//select statement
-	private SQLSelect select;
-	
-	public SQLName getCursorName() {
-		return cursorName;
-	}
-	
-	public void setCursorName(SQLName cursorName) {
-		if (cursorName != null) {
-			cursorName.setParent(this);
-		}
-		this.cursorName = cursorName;
-	}
+public class MySqlCursorDeclareStatement extends MySqlStatementImpl {
+    //cursor name
+    private SQLName cursorName;
+    //select statement
+    private SQLSelect select;
 
-	public void setCursorName(String cursorName) {
-		this.setCursorName(new SQLIdentifierExpr(cursorName));
-	}
+    public SQLName getCursorName() {
+        return cursorName;
+    }
 
-	public SQLSelect getSelect() {
-		return select;
-	}
+    public void setCursorName(SQLName cursorName) {
+        if (cursorName != null) {
+            cursorName.setParent(this);
+        }
+        this.cursorName = cursorName;
+    }
 
-	public void setSelect(SQLSelect select) {
-		if (select != null) {
-			select.setParent(this);
-		}
-		this.select = select;
-	}
+    public void setCursorName(String cursorName) {
+        this.setCursorName(new SQLIdentifierExpr(cursorName));
+    }
 
-	@Override
-	public void accept0(MySqlASTVisitor visitor) {
-		 if (visitor.visit(this)) {
-	         acceptChild(visitor, select);
-	        }
-	     visitor.endVisit(this);
-		
-	}
+    public SQLSelect getSelect() {
+        return select;
+    }
+
+    public void setSelect(SQLSelect select) {
+        if (select != null) {
+            select.setParent(this);
+        }
+        this.select = select;
+    }
+
+    @Override
+    public void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, select);
+        }
+        visitor.endVisit(this);
+
+    }
 
 }

@@ -15,31 +15,26 @@
  */
 package com.alibaba.druid.pool.xa;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.sql.XAConnection;
-import javax.sql.XADataSource;
-import javax.transaction.xa.XAException;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.H2Utils;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.MySqlUtils;
-import com.alibaba.druid.util.OracleUtils;
-import com.alibaba.druid.util.PGUtils;
+import com.alibaba.druid.util.*;
+
+import javax.sql.XAConnection;
+import javax.sql.XADataSource;
+import javax.transaction.xa.XAException;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class DruidXADataSource extends DruidDataSource implements XADataSource {
-
-    private final static Log  LOG              = LogFactory.getLog(DruidXADataSource.class);
+    private static final Log LOG = LogFactory.getLog(DruidXADataSource.class);
 
     private static final long serialVersionUID = 1L;
 
-    private Object            h2Factory        = null;
+    private Object h2Factory;
 
     @Override
     public XAConnection getXAConnection() throws SQLException {

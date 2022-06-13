@@ -32,7 +32,6 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
 
 public class TestOracleWall3 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -58,7 +57,6 @@ public class TestOracleWall3 extends TestCase {
     }
 
     public void test_oracle() throws Exception {
-
         String sql = "SELECT 1";
 
         {
@@ -69,7 +67,7 @@ public class TestOracleWall3 extends TestCase {
 
             Assert.assertTrue(conn.isWrapperFor(oracle.jdbc.OracleConnection.class));
             Assert.assertNotNull(conn.unwrap(oracle.jdbc.OracleConnection.class));
-            
+
             Assert.assertTrue(conn.isWrapperFor(java.sql.Connection.class));
             Assert.assertNotNull(conn.unwrap(java.sql.Connection.class));
 
@@ -82,7 +80,7 @@ public class TestOracleWall3 extends TestCase {
 
             Assert.assertTrue(stmt.isWrapperFor(DruidPooledPreparedStatement.class));
             Assert.assertNotNull(stmt.unwrap(DruidPooledPreparedStatement.class));
-            
+
             Assert.assertTrue(stmt.isWrapperFor(java.sql.PreparedStatement.class));
             Assert.assertNotNull(stmt.unwrap(java.sql.PreparedStatement.class));
 
@@ -90,10 +88,10 @@ public class TestOracleWall3 extends TestCase {
 
             Assert.assertNotNull(rs.unwrap(oracle.jdbc.OracleResultSet.class));
             Assert.assertTrue(rs.isWrapperFor(oracle.jdbc.OracleResultSet.class));
-            
+
             Assert.assertTrue(rs.isWrapperFor(DruidPooledResultSet.class));
             Assert.assertNotNull(rs.unwrap(DruidPooledResultSet.class));
-            
+
             Assert.assertTrue(rs.isWrapperFor(java.sql.ResultSet.class));
             Assert.assertNotNull(rs.unwrap(java.sql.ResultSet.class));
 

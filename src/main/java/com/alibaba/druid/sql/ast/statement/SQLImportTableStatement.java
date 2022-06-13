@@ -2,23 +2,22 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLImportTableStatement extends SQLStatementImpl {
-    private boolean             extenal;
-    private SQLExprTableSource  table;
+    private boolean extenal;
+    private SQLExprTableSource table;
     private List<SQLAssignItem> partition = new ArrayList<SQLAssignItem>();
-    private SQLExpr             from;
-    private SQLExpr             location;
-    private SQLIntegerExpr version;// for ads
-    private boolean usingBuild = false;
+    private SQLExpr from;
+    private SQLExpr location;
+    // for ads
+    private SQLIntegerExpr version;
+    private boolean usingBuild;
 
     public SQLImportTableStatement() {
         dbType = DbType.hive;

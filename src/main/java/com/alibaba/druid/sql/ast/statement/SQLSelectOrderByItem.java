@@ -22,23 +22,21 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.List;
 
 public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLReplaceable {
-
-    protected SQLExpr                  expr;
-    protected String                   collate;
+    protected SQLExpr expr;
+    protected String collate;
     protected SQLOrderingSpecification type;
-    protected NullsOrderType           nullsOrderType;
+    protected NullsOrderType nullsOrderType;
 
-    protected transient SQLSelectItem  resolvedSelectItem;
+    protected transient SQLSelectItem resolvedSelectItem;
 
-    public SQLSelectOrderByItem(){
-
+    public SQLSelectOrderByItem() {
     }
 
-    public SQLSelectOrderByItem(SQLExpr expr){
+    public SQLSelectOrderByItem(SQLExpr expr) {
         this.setExpr(expr);
     }
 
-    public SQLSelectOrderByItem(SQLExpr expr, SQLOrderingSpecification type){
+    public SQLSelectOrderByItem(SQLExpr expr, SQLOrderingSpecification type) {
         this.setExpr(expr);
         this.type = type;
     }
@@ -69,7 +67,7 @@ public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLRepl
     public void setType(SQLOrderingSpecification type) {
         this.type = type;
     }
-    
+
     public NullsOrderType getNullsOrderType() {
         return this.nullsOrderType;
     }
@@ -100,17 +98,33 @@ public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLRepl
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         SQLSelectOrderByItem other = (SQLSelectOrderByItem) obj;
         if (collate == null) {
-            if (other.collate != null) return false;
-        } else if (!collate.equals(other.collate)) return false;
+            if (other.collate != null) {
+                return false;
+            }
+        } else if (!collate.equals(other.collate)) {
+            return false;
+        }
         if (expr == null) {
-            if (other.expr != null) return false;
-        } else if (!expr.equals(other.expr)) return false;
-        if (type != other.type) return false;
+            if (other.expr != null) {
+                return false;
+            }
+        } else if (!expr.equals(other.expr)) {
+            return false;
+        }
+        if (type != other.type) {
+            return false;
+        }
         return true;
     }
 

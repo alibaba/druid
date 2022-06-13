@@ -19,7 +19,6 @@ package com.alibaba.druid.stat;
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface JdbcResultSetStatMBean {
-
     long getHoldMillisTotal();
 
     long getFetchRowCount();

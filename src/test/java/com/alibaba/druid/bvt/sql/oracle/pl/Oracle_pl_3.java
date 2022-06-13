@@ -24,42 +24,41 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "create or replace type type_body_elements\n" +
-				"as object\n" +
-				"(\n" +
-				"  some_string varchar2(64),\n" +
-				"  member function function_one\n" +
-				"  return varchar2,\n" +
-				"  member function function_two\n" +
-				"  return varchar2\n" +
-				");\n" +
-				"/\n" +
-				"\n" +
-				"create or replace type body type_body_elements\n" +
-				"is\n" +
-				"\n" +
-				"  member function function_one\n" +
-				"  return varchar2\n" +
-				"  is\n" +
-				"  begin\n" +
-				"    return 'the function_one result';\n" +
-				"  end function_one;\n" +
-				"\n" +
-				"  member function function_two\n" +
-				"  return varchar2\n" +
-				"  is\n" +
-				"  begin\n" +
-				"    return 'the function_two result';\n" +
-				"  end function_two;\n" +
-				"\n" +
-				"end;\n" +
-				"/\n"; //
+                "as object\n" +
+                "(\n" +
+                "  some_string varchar2(64),\n" +
+                "  member function function_one\n" +
+                "  return varchar2,\n" +
+                "  member function function_two\n" +
+                "  return varchar2\n" +
+                ");\n" +
+                "/\n" +
+                "\n" +
+                "create or replace type body type_body_elements\n" +
+                "is\n" +
+                "\n" +
+                "  member function function_one\n" +
+                "  return varchar2\n" +
+                "  is\n" +
+                "  begin\n" +
+                "    return 'the function_one result';\n" +
+                "  end function_one;\n" +
+                "\n" +
+                "  member function function_two\n" +
+                "  return varchar2\n" +
+                "  is\n" +
+                "  begin\n" +
+                "    return 'the function_two result';\n" +
+                "  end function_two;\n" +
+                "\n" +
+                "end;\n" +
+                "/\n"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(4, statementList.size());
-		SQLStatement stmt = statementList.get(0);
+        assertEquals(4, statementList.size());
+        SQLStatement stmt = statementList.get(0);
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -83,23 +82,23 @@ public class Oracle_pl_3 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("CREATE OR REPLACE TYPE type_body_elements AS OBJECT (\n" +
-							"\tsome_string varchar2(64), \n" +
-							"\tMEMBER FUNCTION function_one () RETURN varchar2, \n" +
-							"\tMEMBER FUNCTION function_two () RETURN varchar2\n" +
-							");", //
-					output);
-		}
-		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("create or replace type type_body_elements AS OBJECT (\n" +
-							"\tsome_string varchar2(64), \n" +
-							"\tmember function function_one () return varchar2, \n" +
-							"\tmember function function_two () return varchar2\n" +
-							");", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toOracleString(stmt);
+            assertEquals("CREATE OR REPLACE TYPE type_body_elements AS OBJECT (\n" +
+                            "\tsome_string varchar2(64), \n" +
+                            "\tMEMBER FUNCTION function_one () RETURN varchar2, \n" +
+                            "\tMEMBER FUNCTION function_two () RETURN varchar2\n" +
+                            ");", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("create or replace type type_body_elements AS OBJECT (\n" +
+                            "\tsome_string varchar2(64), \n" +
+                            "\tmember function function_one () return varchar2, \n" +
+                            "\tmember function function_two () return varchar2\n" +
+                            ");", //
+                    output);
+        }
+    }
 }

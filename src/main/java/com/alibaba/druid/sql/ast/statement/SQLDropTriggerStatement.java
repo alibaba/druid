@@ -15,6 +15,7 @@ package com.alibaba.druid.sql.ast.statement;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -23,16 +24,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropTriggerStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
-
     private SQLName name;
     private boolean ifExists;
 
     public SQLDropTriggerStatement() {
-        
     }
-    
+
     public SQLDropTriggerStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public SQLName getName() {

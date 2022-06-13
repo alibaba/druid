@@ -18,9 +18,7 @@ package com.alibaba.druid.sql.ast;
 import java.util.List;
 
 public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
-
-    public SQLExprImpl(){
-
+    public SQLExprImpl() {
     }
 
     public abstract boolean equals(Object o);

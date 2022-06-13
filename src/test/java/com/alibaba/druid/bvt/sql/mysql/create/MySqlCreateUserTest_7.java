@@ -17,7 +17,6 @@ import java.util.List;
  * @Date 2019-05-22 09:43
  */
 public class MySqlCreateUserTest_7 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE USER 'seomdbyu'@'%'\n" +
                 "IDENTIFIED BY PASSWORD '*E31E2E4B771597DE2FDECB4E0EC00BE9E87D39D2'";

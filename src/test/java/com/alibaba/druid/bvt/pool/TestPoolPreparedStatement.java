@@ -27,8 +27,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestPoolPreparedStatement extends TestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -59,7 +58,6 @@ public class TestPoolPreparedStatement extends TestCase {
     }
 
     public void test_removeAbandoned() throws Exception {
-
         MockPreparedStatement raw;
         {
             Connection conn = dataSource.getConnection();

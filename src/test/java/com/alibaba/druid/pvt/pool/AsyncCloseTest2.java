@@ -25,17 +25,16 @@ import com.alibaba.druid.support.logging.NoLoggingImpl;
 import junit.framework.TestCase;
 
 public class AsyncCloseTest2 extends TestCase {
-
     protected DruidDataSource dataSource;
-    private ExecutorService   connExecutor;
-    private ExecutorService   closeExecutor;
+    private ExecutorService connExecutor;
+    private ExecutorService closeExecutor;
 
-    final AtomicInteger       errorCount = new AtomicInteger();
+    final AtomicInteger errorCount = new AtomicInteger();
 
-    private Logger            log4jLog;
-    private Level             log4jOldLevel;
+    private Logger log4jLog;
+    private Level log4jOldLevel;
 
-    private NoLoggingImpl     noLoggingImpl;
+    private NoLoggingImpl noLoggingImpl;
 
     protected void setUp() throws Exception {
         Field logField = DruidDataSource.class.getDeclaredField("LOG");
@@ -46,11 +45,11 @@ public class AsyncCloseTest2 extends TestCase {
             this.log4jOldLevel = this.log4jLog.getLevel();
             this.log4jLog.setLevel(Level.FATAL);
         } else if (dataSourceLog instanceof NoLoggingImpl) {
-            noLoggingImpl =  (NoLoggingImpl) dataSourceLog;
+            noLoggingImpl = (NoLoggingImpl) dataSourceLog;
             noLoggingImpl.setErrorEnabled(false);
         }
-        
-        
+
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
         dataSource.setAsyncCloseConnectionEnable(true);
@@ -58,10 +57,9 @@ public class AsyncCloseTest2 extends TestCase {
         dataSource.setMaxActive(16);
 
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql)
-                                                                                                     throws SQLException {
+                    throws SQLException {
                 throw new SQLException();
             }
         });
@@ -73,7 +71,7 @@ public class AsyncCloseTest2 extends TestCase {
         closeExecutor = Executors.newFixedThreadPool(128);
 
     }
-    
+
     protected void tearDown() throws Exception {
         dataSource.close();
         if (log4jLog != null) {
@@ -91,7 +89,6 @@ public class AsyncCloseTest2 extends TestCase {
     }
 
     public static class MyExceptionSorter extends MockExceptionSorter {
-
         @Override
         public boolean isExceptionFatal(SQLException e) {
             return true;
@@ -99,11 +96,10 @@ public class AsyncCloseTest2 extends TestCase {
     }
 
     class CloseTask implements Runnable {
-
-        private Connection     conn;
+        private Connection conn;
         private CountDownLatch latch;
 
-        public CloseTask(Connection conn, CountDownLatch latch){
+        public CloseTask(Connection conn, CountDownLatch latch) {
             this.conn = conn;
             this.latch = latch;
         }
@@ -130,7 +126,6 @@ public class AsyncCloseTest2 extends TestCase {
         final CountDownLatch closeLatch = new CountDownLatch(COUNT * 2);
 
         Runnable connTask = new Runnable() {
-
             @Override
             public void run() {
                 try {

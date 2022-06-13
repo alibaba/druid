@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class TestOracle extends TestCase {
-
     private String jdbcUrl;
     private String user;
     private String password;

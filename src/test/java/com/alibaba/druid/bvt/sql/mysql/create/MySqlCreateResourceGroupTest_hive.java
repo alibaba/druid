@@ -27,7 +27,6 @@ import java.util.List;
 
 public class MySqlCreateResourceGroupTest_hive
         extends MysqlTest {
-
     @Test
     public void test_create() throws Exception {
         String sql = "CREATE RESOURCE GROUP sql_thread TYPE = USER VCPU = 1,3 THREAD_PRIORITY = -20";

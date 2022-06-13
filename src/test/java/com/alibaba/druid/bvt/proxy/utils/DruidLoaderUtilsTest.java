@@ -31,13 +31,11 @@ import com.alibaba.druid.util.Utils;
 
 /**
  * druidLoader util 测试
- * 
+ *
  * @author gang.su
  */
 public class DruidLoaderUtilsTest extends TestCase {
-
     public void testLoadFilter() throws SQLException {
-
         List<Filter> filters = new ArrayList<Filter>();
         // log4j
         String filterItem = "log4j";
@@ -80,14 +78,14 @@ public class DruidLoaderUtilsTest extends TestCase {
         filterConfig = filters.get(0);
         Assert.assertNotNull(filterConfig);
         Assert.assertEquals("com.alibaba.druid.filter.encoding.EncodingConvertFilter",
-                            filterConfig.getClass().getName());
+                filterConfig.getClass().getName());
         // 判定重复
         filterItem = "stat";
         filters.clear();
         FilterManager.loadFilter(filters, filterItem);
         filterItem = "default";
         FilterManager.loadFilter(filters, filterItem);
-        for (Iterator<Filter> iterator = filters.iterator(); iterator.hasNext();) {
+        for (Iterator<Filter> iterator = filters.iterator(); iterator.hasNext(); ) {
             Filter filter = (Filter) iterator.next();
             System.out.println(filter.getClass().getName());
         }
@@ -98,7 +96,7 @@ public class DruidLoaderUtilsTest extends TestCase {
         Assert.assertEquals(null, Utils.loadClass(null));
         Assert.assertEquals(null, Utils.loadClass("xxx"));
         Assert.assertEquals(PublicJdbcFilterAdapter.class,
-                            Utils.loadClass(PublicJdbcFilterAdapter.class.getName()));
+                Utils.loadClass(PublicJdbcFilterAdapter.class.getName()));
         Assert.assertNull(Utils.loadClass(null));
         Assert.assertNull(Utils.loadClass(""));
     }

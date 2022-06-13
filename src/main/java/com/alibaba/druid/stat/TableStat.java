@@ -28,23 +28,22 @@ import java.util.List;
 import java.util.Map;
 
 public class TableStat {
-    int selectCount      = 0;
-    int updateCount      = 0;
-    int deleteCount      = 0;
-    int insertCount      = 0;
-    int dropCount        = 0;
-    int mergeCount       = 0;
-    int createCount      = 0;
-    int alterCount       = 0;
-    int createIndexCount = 0;
-    int dropIndexCount   = 0;
-    int referencedCount  = 0;
-    int addCount         = 0; // odps add table
-    int addPartitionCount= 0; // odps add partition
-    int analyzeCount     = 0; // odps analyze table
+    int selectCount;
+    int updateCount;
+    int deleteCount;
+    int insertCount;
+    int dropCount;
+    int mergeCount;
+    int createCount;
+    int alterCount;
+    int createIndexCount;
+    int dropIndexCount;
+    int referencedCount;
+    int addCount; // odps add table
+    int addPartitionCount; // odps add partition
+    int analyzeCount; // odps analyze table
 
     public TableStat() {
-
     }
 
     public int getReferencedCount() {
@@ -226,14 +225,14 @@ public class TableStat {
 
     public static class Name {
         private final String name;
-        private final long   hashCode64;
+        private final long hashCode64;
 
-        public Name(String name){
+        public Name(String name) {
             this(name, FnvHash.hashCode64(name));
         }
 
-        public Name(String name, long hashCode64){
-            this.name  = name;
+        public Name(String name, long hashCode64) {
+            this.name = name;
             this.hashCode64 = hashCode64;
         }
 
@@ -243,7 +242,7 @@ public class TableStat {
 
         public int hashCode() {
             long value = hashCode64();
-            return (int)(value ^ (value >>> 32));
+            return (int) (value ^ (value >>> 32));
         }
 
         public long hashCode64() {
@@ -341,9 +340,8 @@ public class TableStat {
     }
 
     public static class Condition {
-
-        private final Column       column;
-        private final String       operator;
+        private final Column column;
+        private final String operator;
         private final List<Object> values = new ArrayList<Object>();
 
         public Condition(Column column, String operator) {
@@ -436,31 +434,31 @@ public class TableStat {
     }
 
     public static class Column {
-        private final     String              table;
-        private final     String              name;
-        private final     long                hashCode64;
+        private final String table;
+        private final String name;
+        private final long hashCode64;
 
-        private           boolean             where;
-        private           boolean             select;
-        private           boolean             groupBy;
-        private           boolean             having;
-        private           boolean             join;
-        private           boolean             primaryKey; // for ddl
-        private           boolean             unique; //
-        private           boolean             update;
-        private           Map<String, Object> attributes = new HashMap<String, Object>();
-        private transient String              fullName;
+        private boolean where;
+        private boolean select;
+        private boolean groupBy;
+        private boolean having;
+        private boolean join;
+        private boolean primaryKey; // for ddl
+        private boolean unique; //
+        private boolean update;
+        private Map<String, Object> attributes = new HashMap<String, Object>();
+        private transient String fullName;
 
         /**
          * @since 1.0.20
          */
-        private           String              dataType;
+        private String dataType;
 
-        public Column(String table, String name){
+        public Column(String table, String name) {
             this(table, name, null);
         }
 
-        public Column(String table, String name, DbType dbType){
+        public Column(String table, String name, DbType dbType) {
             this.table = table;
             this.name = name;
 
@@ -469,11 +467,9 @@ public class TableStat {
                 if (dbType == null) {
                     if (table.indexOf('`') != -1) {
                         dbType = DbType.mysql;
-                    }
-                    else if (table.indexOf('[') != -1) {
+                    } else if (table.indexOf('[') != -1) {
                         dbType = DbType.sqlserver;
-                    }
-                    else if (table.indexOf('@') != -1) {
+                    } else if (table.indexOf('@') != -1) {
                         dbType = DbType.oracle;
                     }
                 }
@@ -484,7 +480,7 @@ public class TableStat {
             }
         }
 
-        public Column(String table, String name, long hashCode64){
+        public Column(String table, String name, long hashCode64) {
             this.table = table;
             this.name = name;
             this.hashCode64 = hashCode64;
@@ -602,7 +598,7 @@ public class TableStat {
 
         public int hashCode() {
             long hash = hashCode64();
-            return (int)(hash ^ (hash >>> 32));
+            return (int) (hash ^ (hash >>> 32));
         }
 
         public String toString() {
@@ -635,12 +631,11 @@ public class TableStat {
         DropIndex(256), //
         CreateIndex(512), //
         Replace(1024),
-        DESC(2048)
-        ; //
+        DESC(2048); //
 
         public final int mark;
 
-        private Mode(int mark){
+        private Mode(int mark) {
             this.mark = mark;
         }
     }

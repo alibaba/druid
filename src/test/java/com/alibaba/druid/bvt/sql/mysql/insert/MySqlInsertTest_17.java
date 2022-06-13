@@ -10,29 +10,28 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlInsertTest_17 extends MysqlTest {
-
     public void test_insert_rollback_on_fail() throws Exception {
         String sql = "/*+engine=MPP, mppNativeInsertFromSelect=true*/\n"
-                     + "INSERT INTO dashboard_crowd_analysis(cname,cvalue,orders,users,dt,tagid)\n"
-                     + "SELECT x.cname as cname,\n" + "       x.cvalue as cvalue,\n" + "       x.orders as orders,\n"
-                     + "       x.users as users,\n" + "       20171211 as dt,\n" + "       91 as tagid\n"
-                     + "FROM (WITH h AS\n" + "        (SELECT a.userid,\n" + "                a.col_1,\n"
-                     + "                a.col_2,\n" + "                a.col_3,\n" + "                a.col_4,\n"
-                     + "                a.col_5,\n" + "                a.col_6,\n" + "                c.orders_week\n"
-                     + "         FROM\n" + "           (SELECT userid,\n" + "                   col_1,\n"
-                     + "                   col_2,\n" + "                   col_3,\n" + "                   col_4,\n"
-                     + "                   col_5,\n" + "                   col_6\n"
-                     + "            FROM ofo_personas_dimensions\n" + "            WHERE dt=20171211)a\n"
-                     + "         JOIN\n" + "           (SELECT userid\n" + "            FROM personas_user_tag\n"
-                     + "            WHERE tagid=91)b ON a.userid=b.userid\n" + "         JOIN\n"
-                     + "           (SELECT userid,\n" + "                   orders_week\n"
-                     + "            FROM ofo_personas_metrics\n"
-                     + "            WHERE dt=20171211)c ON a.userid=c.userid)\n" + "      SELECT 'col_1' as cname,\n"
-                     + "             col_1 as cvalue,\n" + "             sum(orders_week) AS orders,\n"
-                     + "             count(userid) AS users\n" + "      FROM h\n" + "      GROUP BY col_1\n"
-                     + "      UNION ALL\n" + "      SELECT 'col_2' as cname,\n" + "             col_2 as cvalue,\n"
-                     + "             sum(orders_week) AS orders,\n" + "             count(userid) AS users\n"
-                     + "      FROM h\n" + "      GROUP BY col_2)x";
+                + "INSERT INTO dashboard_crowd_analysis(cname,cvalue,orders,users,dt,tagid)\n"
+                + "SELECT x.cname as cname,\n" + "       x.cvalue as cvalue,\n" + "       x.orders as orders,\n"
+                + "       x.users as users,\n" + "       20171211 as dt,\n" + "       91 as tagid\n"
+                + "FROM (WITH h AS\n" + "        (SELECT a.userid,\n" + "                a.col_1,\n"
+                + "                a.col_2,\n" + "                a.col_3,\n" + "                a.col_4,\n"
+                + "                a.col_5,\n" + "                a.col_6,\n" + "                c.orders_week\n"
+                + "         FROM\n" + "           (SELECT userid,\n" + "                   col_1,\n"
+                + "                   col_2,\n" + "                   col_3,\n" + "                   col_4,\n"
+                + "                   col_5,\n" + "                   col_6\n"
+                + "            FROM ofo_personas_dimensions\n" + "            WHERE dt=20171211)a\n"
+                + "         JOIN\n" + "           (SELECT userid\n" + "            FROM personas_user_tag\n"
+                + "            WHERE tagid=91)b ON a.userid=b.userid\n" + "         JOIN\n"
+                + "           (SELECT userid,\n" + "                   orders_week\n"
+                + "            FROM ofo_personas_metrics\n"
+                + "            WHERE dt=20171211)c ON a.userid=c.userid)\n" + "      SELECT 'col_1' as cname,\n"
+                + "             col_1 as cvalue,\n" + "             sum(orders_week) AS orders,\n"
+                + "             count(userid) AS users\n" + "      FROM h\n" + "      GROUP BY col_1\n"
+                + "      UNION ALL\n" + "      SELECT 'col_2' as cname,\n" + "             col_2 as cvalue,\n"
+                + "             sum(orders_week) AS orders,\n" + "             count(userid) AS users\n"
+                + "      FROM h\n" + "      GROUP BY col_2)x";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

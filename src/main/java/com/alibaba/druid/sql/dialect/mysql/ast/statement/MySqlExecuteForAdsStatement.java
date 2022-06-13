@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlExecuteForAdsStatement extends MySqlStatementImpl {
-
     private SQLName action;
     private SQLName role;
     private SQLCharExpr targetId;

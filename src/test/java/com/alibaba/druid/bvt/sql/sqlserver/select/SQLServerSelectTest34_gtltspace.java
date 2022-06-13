@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class SQLServerSelectTest34_gtltspace extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = //
                 "select count(1) From wms.pack_box_material a,wms.pack_box b where a.pb_id=b.pb_id\n" +

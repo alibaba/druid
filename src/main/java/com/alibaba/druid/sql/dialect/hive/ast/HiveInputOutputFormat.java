@@ -2,7 +2,6 @@ package com.alibaba.druid.sql.dialect.hive.ast;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class HiveInputOutputFormat extends SQLExprImpl {
@@ -11,12 +10,18 @@ public class HiveInputOutputFormat extends SQLExprImpl {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         HiveInputOutputFormat that = (HiveInputOutputFormat) o;
 
-        if (input != null ? !input.equals(that.input) : that.input != null) return false;
+        if (input != null ? !input.equals(that.input) : that.input != null) {
+            return false;
+        }
         return output != null ? output.equals(that.output) : that.output == null;
     }
 

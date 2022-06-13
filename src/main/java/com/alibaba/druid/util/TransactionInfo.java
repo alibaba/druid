@@ -19,13 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionInfo {
-
-    private final long         id;
+    private final long id;
     private final List<String> sqlList = new ArrayList<String>(4);
-    private final long         startTimeMillis;
-    private long               endTimeMillis;
+    private final long startTimeMillis;
+    private long endTimeMillis;
 
-    public TransactionInfo(long id){
+    public TransactionInfo(long id) {
         this.id = id;
         this.startTimeMillis = System.currentTimeMillis();
     }

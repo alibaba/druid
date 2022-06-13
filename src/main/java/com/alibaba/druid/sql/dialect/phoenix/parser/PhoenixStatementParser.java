@@ -27,20 +27,20 @@ import com.alibaba.druid.sql.parser.Token;
  */
 public class PhoenixStatementParser extends SQLStatementParser {
     public PhoenixStatementParser(String sql) {
-        super (new PhoenixExprParser(sql));
+        super(new PhoenixExprParser(sql));
     }
 
-    public PhoenixStatementParser(Lexer lexer){
+    public PhoenixStatementParser(Lexer lexer) {
         super(new PhoenixExprParser(lexer));
     }
 
     @Override
     protected void parseInsertColumns(SQLInsertInto insert) {
-        if (lexer.token() == Token.RPAREN ) {
+        if (lexer.token() == Token.RPAREN) {
             return;
         }
 
-        for (;;) {
+        for (; ; ) {
             SQLName expr = this.exprParser.name();
             expr.setParent(insert);
             insert.getColumns().add(expr);
@@ -48,11 +48,11 @@ public class PhoenixStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.IDENTIFIER) {
                 String text = lexer.stringVal();
                 if (text.equalsIgnoreCase("TINYINT")
-                    || text.equalsIgnoreCase("BIGINT")
-                    || text.equalsIgnoreCase("INTEGER")
-                    || text.equalsIgnoreCase("DOUBLE")
-                    || text.equalsIgnoreCase("DATE")
-                    || text.equalsIgnoreCase("VARCHAR")) {
+                        || text.equalsIgnoreCase("BIGINT")
+                        || text.equalsIgnoreCase("INTEGER")
+                        || text.equalsIgnoreCase("DOUBLE")
+                        || text.equalsIgnoreCase("DATE")
+                        || text.equalsIgnoreCase("VARCHAR")) {
                     expr.getAttributes().put("dataType", text);
                     lexer.nextToken();
                 } else if (text.equalsIgnoreCase("CHAR")) {

@@ -20,22 +20,20 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 
 public abstract class OdpsStatisticClause extends OdpsObjectImpl {
-
-    public static abstract class ColumnStatisticClause extends OdpsStatisticClause {
-    
+    public abstract static class ColumnStatisticClause extends OdpsStatisticClause {
         protected SQLName column;
-    
+
         public SQLName getColumn() {
             return column;
         }
-    
+
         public void setColumn(SQLName column) {
             if (column != null) {
                 column.setParent(this);
             }
             this.column = column;
         }
-    
+
     }
 
     public static class NullValue extends ColumnStatisticClause {
@@ -68,7 +66,6 @@ public abstract class OdpsStatisticClause extends OdpsObjectImpl {
         }
     }
 
-
     public static class DistinctValue extends ColumnStatisticClause {
         @Override
         public void accept0(OdpsASTVisitor visitor) {
@@ -78,7 +75,6 @@ public abstract class OdpsStatisticClause extends OdpsObjectImpl {
             visitor.endVisit(this);
         }
     }
-
 
     public static class ColumnMax extends ColumnStatisticClause {
         @Override
@@ -91,20 +87,19 @@ public abstract class OdpsStatisticClause extends OdpsObjectImpl {
     }
 
     public static class ExpressionCondition extends OdpsStatisticClause {
-    
         private SQLExpr expr;
-    
+
         public SQLExpr getExpr() {
             return expr;
         }
-    
+
         public void setExpr(SQLExpr expr) {
             if (expr != null) {
                 expr.setParent(this);
             }
             this.expr = expr;
         }
-    
+
         @Override
         public void accept0(OdpsASTVisitor visitor) {
             if (visitor.visit(this)) {
@@ -115,15 +110,11 @@ public abstract class OdpsStatisticClause extends OdpsObjectImpl {
     }
 
     public static class TableCount extends OdpsStatisticClause {
-    
         @Override
         public void accept0(OdpsASTVisitor visitor) {
-            if (visitor.visit(this)) {
-    
-            }
+            visitor.visit(this);
             visitor.endVisit(this);
         }
-    
-    }
 
+    }
 }

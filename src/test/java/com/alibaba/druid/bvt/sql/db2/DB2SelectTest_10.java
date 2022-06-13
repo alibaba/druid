@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_10 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "select * from ( select inner2_.*, rownumber() over(order by order of inner2_) as rownumber_ from ("
                 + "     select tsuserstb0_.USERID as USERID1_1_, tsuserstb0_.CREASTAF as CREASTAF2_1_, tsuserstb0_.CREATIME as CREATIME3_1_"
@@ -78,8 +77,8 @@ public class DB2SelectTest_10 extends DB2Test {
                         ") inner1_\n" +
                         "WHERE rownumber_ > 10\n" +
                         "ORDER BY rownumber_", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("select *\n" +
                         "from (\n" +
                         "\tselect inner2_.*, rownumber() over (order by order of inner2_) as rownumber_\n" +
@@ -93,6 +92,6 @@ public class DB2SelectTest_10 extends DB2Test {
                         ") inner1_\n" +
                         "where rownumber_ > 10\n" +
                         "order by rownumber_", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

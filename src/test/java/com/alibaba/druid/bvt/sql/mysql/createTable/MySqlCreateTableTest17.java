@@ -26,11 +26,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest17 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE t1 (" + //
-                     "  ts TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)" + //
-                     ");";
+                "  ts TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)" + //
+                ");";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

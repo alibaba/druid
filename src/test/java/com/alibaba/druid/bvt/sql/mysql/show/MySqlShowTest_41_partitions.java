@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlShowTest_41_partitions extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW PARTITIONS FROM t WHERE x = 1";
 
@@ -43,7 +42,7 @@ public class MySqlShowTest_41_partitions extends MysqlTest {
         Assert.assertEquals(1, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
 
-         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t")));
         assertEquals("SHOW PARTITIONS t WHERE x = 1", stmt.toString());
     }
 }

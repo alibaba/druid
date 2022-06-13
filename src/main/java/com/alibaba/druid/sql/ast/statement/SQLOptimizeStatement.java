@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLOptimizeStatement extends SQLStatementImpl {
-    protected final List<SQLExprTableSource> tableSources    = new ArrayList<SQLExprTableSource>();
+    protected final List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>();
     protected SQLName cluster;
 
     boolean isFinal;
@@ -65,6 +65,7 @@ public class SQLOptimizeStatement extends SQLStatementImpl {
         }
         this.tableSources.add(tableSource);
     }
+
     public SQLName getCluster() {
         return cluster;
     }

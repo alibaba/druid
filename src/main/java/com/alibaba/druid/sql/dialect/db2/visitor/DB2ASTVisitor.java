@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface DB2ASTVisitor extends SQLASTVisitor {
-
     default boolean visit(DB2SelectQueryBlock x) {
         return visit((SQLSelectQueryBlock) x);
     }
@@ -31,13 +30,12 @@ public interface DB2ASTVisitor extends SQLASTVisitor {
     default void endVisit(DB2SelectQueryBlock x) {
         endVisit((SQLSelectQueryBlock) x);
     }
-    
+
     default boolean visit(DB2ValuesStatement x) {
         return true;
     }
-    
-    default void endVisit(DB2ValuesStatement x) {
 
+    default void endVisit(DB2ValuesStatement x) {
     }
 
     default boolean visit(DB2CreateTableStatement x) {

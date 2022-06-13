@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 
 public class MySqlSelectTest_266 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "EXPLAIN (FORMAT DETAIL)\n" +
                 "SELECT\n" +

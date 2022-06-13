@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SQLServerSelectTest9 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "SELECT AVG(UnitPrice) AS 'Average Price' " + //
                 "FROM Sales.SalesOrderDetail;";

@@ -24,7 +24,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGUpdateTest0 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "update student a set grade = tmp.grade from (values (1, 'A')) as tmp(id, grade) where a.id = tmp.id";
 
@@ -48,11 +47,11 @@ public class PGUpdateTest0 extends PGTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("student")));
 
-        assertEquals(2, visitor.getColumns().size() );
-        
+        assertEquals(2, visitor.getColumns().size());
+
         assertTrue(visitor.containsColumn("student", "id"));
         assertTrue(visitor.containsColumn("student", "grade"));
     }
 
-    
+
 }

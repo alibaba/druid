@@ -20,14 +20,14 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
 import java.sql.SQLException;
-import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
 public class PhoenixExceptionSorter implements ExceptionSorter {
-    private final static Log LOG              = LogFactory.getLog(OracleExceptionSorter.class);
+    private static final Log LOG = LogFactory.getLog(OracleExceptionSorter.class);
 
     /**
      * 解决phoenix 的错误 --Connection is null or closed
+     *
      * @param e the exception
      * @return
      */
@@ -37,13 +37,12 @@ public class PhoenixExceptionSorter implements ExceptionSorter {
             LOG.error("剔除phoenix不可用的连接", e);
             return true;
         }
-        
+
         return false;
     }
 
     @Override
     public void configFromProperties(Properties properties) {
-
     }
 
 }

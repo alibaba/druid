@@ -27,18 +27,19 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class PGValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
+    private static final long serialVersionUID = -2227528634302168877L;
 
-    private static final long serialVersionUID     = -2227528634302168877L;
+    private int defaultQueryTimeout = 1;
 
-    private int               defaultQueryTimeout  = 1;
+    private String defaultValidateQuery = "SELECT 'x'";
 
-    private String            defaultValidateQuery = "SELECT 'x'";
-
-    public PGValidConnectionChecker(){
+    public PGValidConnectionChecker() {
         configFromProperties(System.getProperties());
     }
 
-    public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
+    public boolean isValidConnection(Connection conn,
+                                     String validateQuery,
+                                     int validationQueryTimeout) throws Exception {
         if (validateQuery == null || validateQuery.isEmpty()) {
             validateQuery = this.defaultValidateQuery;
         }

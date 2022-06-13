@@ -11,12 +11,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_170_tddl_hint extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "/*+TDDL({'type':'direct','dbid':'xxx_group'})*/select * from real_table_0;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -33,7 +32,7 @@ public class MySqlSelectTest_170_tddl_hint extends MysqlTest {
         String sql = "/*TDDL:DEFER*/select * from real_table_0;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -50,7 +49,7 @@ public class MySqlSelectTest_170_tddl_hint extends MysqlTest {
         String sql = "/*TDDL:UNDO_LOG_LIMIT=2000*/select * from real_table_0;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

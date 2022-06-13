@@ -15,25 +15,24 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
+import com.alibaba.druid.filter.FilterChain;
+
 import java.sql.SQLException;
 import java.sql.Wrapper;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.druid.filter.FilterChain;
-
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public abstract class WrapperProxyImpl implements WrapperProxy {
+    private final Wrapper raw;
 
-    private final Wrapper       raw;
-
-    private final long          id;
+    private final long id;
 
     private Map<String, Object> attributes; // 不需要线程安全
 
-    public WrapperProxyImpl(Wrapper wrapper, long id){
+    public WrapperProxyImpl(Wrapper wrapper, long id) {
         this.raw = wrapper;
         this.id = id;
     }
@@ -74,20 +73,20 @@ public abstract class WrapperProxyImpl implements WrapperProxy {
 
         return createChain().unwrap(raw, iface);
     }
-    
+
     public int getAttributesSize() {
         if (attributes == null) {
             return 0;
         }
-        
+
         return attributes.size();
     }
-    
+
     public void clearAttributes() {
         if (this.attributes == null) {
             return;
         }
-        
+
         this.attributes.clear();
     }
 
@@ -97,7 +96,7 @@ public abstract class WrapperProxyImpl implements WrapperProxy {
         }
         return this.attributes;
     }
-    
+
     public void putAttribute(String key, Object value) {
         if (attributes == null) {
             attributes = new HashMap<String, Object>(4);
@@ -105,12 +104,12 @@ public abstract class WrapperProxyImpl implements WrapperProxy {
         this.attributes.put(key, value);
     }
 
-    public Object getAttribute(String key){
+    public Object getAttribute(String key) {
         if (attributes == null) {
             return null;
         }
-        
+
         return this.attributes.get(key);
     }
-    
+
 }

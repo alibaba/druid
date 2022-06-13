@@ -30,6 +30,7 @@ public class PGVisitorDemo extends TestCase {
 
     public static class ExportTableAliasVisitor extends PGASTVisitorAdapter {
         private Map<String, SQLTableSource> aliasMap = new HashMap<String, SQLTableSource>();
+
         public boolean visit(SQLExprTableSource x) {
             String alias = x.getAlias();
             aliasMap.put(alias, x);

@@ -25,41 +25,40 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 
  * MySql cursor close statement
+ *
  * @author zz [455910092@qq.com]
  */
-public class SQLCloseStatement extends SQLStatementImpl{
-	
-	//cursor name
-	private SQLName cursorName;
-	
-	public SQLName getCursorName() {
-		return cursorName;
-	}
+public class SQLCloseStatement extends SQLStatementImpl {
+    //cursor name
+    private SQLName cursorName;
 
-	public void setCursorName(String cursorName) {
-		setCursorName(new SQLIdentifierExpr(cursorName));
-	}
-	
-	public void setCursorName(SQLName cursorName) {
-		if (cursorName != null) {
-			cursorName.setParent(this);
-		}
-		this.cursorName = cursorName;
-	}
+    public SQLName getCursorName() {
+        return cursorName;
+    }
 
-	@Override
-	protected void accept0(SQLASTVisitor visitor) {
-		if (visitor.visit(this)) {
-			acceptChild(visitor, cursorName);
-		}
-	    visitor.endVisit(this);
-		
-	}
+    public void setCursorName(String cursorName) {
+        setCursorName(new SQLIdentifierExpr(cursorName));
+    }
 
-	@Override
-	public List<SQLObject> getChildren() {
-		return Collections.<SQLObject>emptyList();
-	}
+    public void setCursorName(SQLName cursorName) {
+        if (cursorName != null) {
+            cursorName.setParent(this);
+        }
+        this.cursorName = cursorName;
+    }
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, cursorName);
+        }
+        visitor.endVisit(this);
+
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        return Collections.<SQLObject>emptyList();
+    }
 }

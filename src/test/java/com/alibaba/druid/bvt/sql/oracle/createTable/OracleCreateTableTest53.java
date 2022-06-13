@@ -26,32 +26,31 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest53 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "     CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"RUNID\" NUMBER, \n" +
-                "  \"UNIT_NUMBER\" NUMBER, \n" +
-                "  \"LINE#\" NUMBER NOT NULL ENABLE, \n" +
-                "  \"TOTAL_OCCUR\" NUMBER, \n" +
-                "  \"TOTAL_TIME\" NUMBER, \n" +
-                "  \"MIN_TIME\" NUMBER, \n" +
-                "  \"MAX_TIME\" NUMBER, \n" +
-                "  \"SPARE1\" NUMBER, \n" +
-                "  \"SPARE2\" NUMBER, \n" +
-                "  \"SPARE3\" NUMBER, \n" +
-                "  \"SPARE4\" NUMBER, \n" +
-                "   PRIMARY KEY (\"RUNID\", \"UNIT_NUMBER\", \"LINE#\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"SYSTEM\"  ENABLE, \n" +
-                "   FOREIGN KEY (\"RUNID\", \"UNIT_NUMBER\")\n" +
-                "    REFERENCES \"B2BDBA\".\"PLSQL_PROFILER_UNITS\" (\"RUNID\", \"UNIT_NUMBER\") ENABLE\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"SYSTEM\"      ";
+                "     CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"RUNID\" NUMBER, \n" +
+                        "  \"UNIT_NUMBER\" NUMBER, \n" +
+                        "  \"LINE#\" NUMBER NOT NULL ENABLE, \n" +
+                        "  \"TOTAL_OCCUR\" NUMBER, \n" +
+                        "  \"TOTAL_TIME\" NUMBER, \n" +
+                        "  \"MIN_TIME\" NUMBER, \n" +
+                        "  \"MAX_TIME\" NUMBER, \n" +
+                        "  \"SPARE1\" NUMBER, \n" +
+                        "  \"SPARE2\" NUMBER, \n" +
+                        "  \"SPARE3\" NUMBER, \n" +
+                        "  \"SPARE4\" NUMBER, \n" +
+                        "   PRIMARY KEY (\"RUNID\", \"UNIT_NUMBER\", \"LINE#\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"SYSTEM\"  ENABLE, \n" +
+                        "   FOREIGN KEY (\"RUNID\", \"UNIT_NUMBER\")\n" +
+                        "    REFERENCES \"B2BDBA\".\"PLSQL_PROFILER_UNITS\" (\"RUNID\", \"UNIT_NUMBER\") ENABLE\n" +
+                        "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"SYSTEM\"      ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -110,7 +109,7 @@ public class OracleCreateTableTest53 extends OracleTest {
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

@@ -7,7 +7,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
 
 public class OdpsAlterTableRenamePartitionTest extends TestCase {
-    
     public void test_if() throws Exception {
         String sql = "alter table sale_detail partition (sale_date='201312', region='hangzhou')"
                 + "\nrename to partition(sale_date='201313', region='hangzhou');";

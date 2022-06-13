@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlShowTest_42_dla extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "show full schemas;";
 

@@ -24,18 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * @author zz [455910092@qq.com]
  */
 public class MySqlRepeatStatement extends MySqlStatementImpl {
-	
-	private String labelName;
+    private String labelName;
 
-	private List<SQLStatement> statements = new ArrayList<SQLStatement>();
-	
-	private SQLExpr            condition;
-	
-	@Override
+    private List<SQLStatement> statements = new ArrayList<SQLStatement>();
+
+    private SQLExpr condition;
+
+    @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, statements);
@@ -52,19 +50,19 @@ public class MySqlRepeatStatement extends MySqlStatementImpl {
         this.statements = statements;
     }
 
-	public String getLabelName() {
-		return labelName;
-	}
+    public String getLabelName() {
+        return labelName;
+    }
 
-	public void setLabelName(String labelName) {
-		this.labelName = labelName;
-	}
-    
-	public SQLExpr getCondition() {
-		return condition;
-	}
+    public void setLabelName(String labelName) {
+        this.labelName = labelName;
+    }
 
-	public void setCondition(SQLExpr condition) {
-		this.condition = condition;
-	}
+    public SQLExpr getCondition() {
+        return condition;
+    }
+
+    public void setCondition(SQLExpr condition) {
+        this.condition = condition;
+    }
 }

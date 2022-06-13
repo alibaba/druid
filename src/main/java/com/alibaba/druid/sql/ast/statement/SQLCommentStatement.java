@@ -25,14 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLCommentStatement extends SQLStatementImpl {
-
     public static enum Type {
         TABLE, COLUMN
     }
 
     private SQLExprTableSource on;
-    private Type               type;
-    private SQLExpr            comment;
+    private Type type;
+    private SQLExpr comment;
 
     public SQLExpr getComment() {
         return comment;

@@ -32,7 +32,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlTableIndex x) {
-
     }
 
     default boolean visit(MySqlKey x) {
@@ -40,7 +39,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlKey x) {
-
     }
 
     default boolean visit(MySqlPrimaryKey x) {
@@ -48,7 +46,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlPrimaryKey x) {
-
     }
 
     default boolean visit(MySqlUnique x) {
@@ -56,7 +53,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlUnique x) {
-
     }
 
     default boolean visit(MysqlForeignKey x) {
@@ -68,7 +64,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlPrepareStatement x) {
-
     }
 
     default boolean visit(MySqlPrepareStatement x) {
@@ -76,7 +71,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlExecuteStatement x) {
-
     }
 
     default boolean visit(MysqlDeallocatePrepareStatement x) {
@@ -84,7 +78,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlDeallocatePrepareStatement x) {
-
     }
 
     default boolean visit(MySqlExecuteStatement x) {
@@ -92,7 +85,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlDeleteStatement x) {
-
     }
 
     default boolean visit(MySqlDeleteStatement x) {
@@ -100,7 +92,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlInsertStatement x) {
-
     }
 
     default boolean visit(MySqlInsertStatement x) {
@@ -108,7 +99,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlLoadDataInFileStatement x) {
-
     }
 
     default boolean visit(MySqlLoadDataInFileStatement x) {
@@ -116,7 +106,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlLoadXmlStatement x) {
-
     }
 
     default boolean visit(MySqlLoadXmlStatement x) {
@@ -124,7 +113,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowWarningsStatement x) {
-
     }
 
     default boolean visit(MySqlShowWarningsStatement x) {
@@ -132,7 +120,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowStatusStatement x) {
-
     }
 
     default boolean visit(MySqlShowStatusStatement x) {
@@ -140,7 +127,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowAuthorsStatement x) {
-
     }
 
     default boolean visit(MySqlShowAuthorsStatement x) {
@@ -148,7 +134,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlShowHtcStatement x) {
-
     }
 
     default boolean visit(MysqlShowHtcStatement x) {
@@ -156,7 +141,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlShowStcStatement x) {
-
     }
 
     default boolean visit(MysqlShowStcStatement x) {
@@ -164,7 +148,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(CobarShowStatus x) {
-
     }
 
     default boolean visit(CobarShowStatus x) {
@@ -172,7 +155,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(DrdsShowDDLJobs x) {
-
     }
 
     default boolean visit(DrdsShowDDLJobs x) {
@@ -180,7 +162,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(DrdsCancelDDLJob x) {
-
     }
 
     default boolean visit(DrdsCancelDDLJob x) {
@@ -188,7 +169,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(DrdsRecoverDDLJob x) {
-
     }
 
     default boolean visit(DrdsRecoverDDLJob x) {
@@ -196,7 +176,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(DrdsRollbackDDLJob x) {
-
     }
 
     default boolean visit(DrdsRollbackDDLJob x) {
@@ -204,7 +183,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(DrdsRemoveDDLJob x) {
-
     }
 
     default boolean visit(DrdsRemoveDDLJob x) {
@@ -212,7 +190,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(DrdsInspectDDLJobCache x) {
-
     }
 
     default boolean visit(DrdsInspectDDLJobCache x) {
@@ -220,7 +197,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(DrdsClearDDLJobCache x) {
-
     }
 
     default boolean visit(DrdsClearDDLJobCache x) {
@@ -228,7 +204,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(DrdsChangeDDLJob x) {
-
     }
 
     default boolean visit(DrdsChangeDDLJob x) {
@@ -236,7 +211,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(DrdsBaselineStatement x) {
-
     }
 
     default boolean visit(DrdsBaselineStatement x) {
@@ -244,7 +218,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(DrdsShowGlobalIndex x) {
-
     }
 
     default boolean visit(DrdsShowGlobalIndex x) {
@@ -252,7 +225,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(DrdsShowMetadataLock x) {
-
     }
 
     default boolean visit(DrdsShowMetadataLock x) {
@@ -260,7 +232,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlBinlogStatement x) {
-
     }
 
     default boolean visit(MySqlBinlogStatement x) {
@@ -268,7 +239,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlResetStatement x) {
-
     }
 
     default boolean visit(MySqlResetStatement x) {
@@ -276,7 +246,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCreateUserStatement x) {
-
     }
 
     default boolean visit(MySqlCreateUserStatement x) {
@@ -284,7 +253,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCreateUserStatement.UserSpecification x) {
-
     }
 
     default boolean visit(MySqlCreateUserStatement.UserSpecification x) {
@@ -292,7 +260,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlPartitionByKey x) {
-
     }
 
     default boolean visit(MySqlPartitionByKey x) {
@@ -300,7 +267,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlUpdatePlanCacheStatement x) {
-
     }
 
     default boolean visit(MySqlUpdatePlanCacheStatement x) {
@@ -308,7 +274,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowPlanCacheStatusStatement x) {
-
     }
 
     default boolean visit(MySqlShowPlanCacheStatusStatement x) {
@@ -316,7 +281,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlClearPlanCacheStatement x) {
-
     }
 
     default boolean visit(MySqlClearPlanCacheStatement x) {
@@ -324,7 +288,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlDisabledPlanCacheStatement x) {
-
     }
 
     default boolean visit(MySqlDisabledPlanCacheStatement x) {
@@ -332,7 +295,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlExplainPlanCacheStatement x) {
-
     }
 
     default boolean visit(MySqlExplainPlanCacheStatement x) {
@@ -352,7 +314,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlOutFileExpr x) {
-
     }
 
     default boolean visit(MySqlExplainStatement x) {
@@ -360,7 +321,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlExplainStatement x) {
-
     }
 
     default boolean visit(MySqlUpdateStatement x) {
@@ -368,7 +328,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlUpdateStatement x) {
-
     }
 
     default boolean visit(MySqlSetTransactionStatement x) {
@@ -376,7 +335,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlSetTransactionStatement x) {
-
     }
 
     default boolean visit(MySqlShowHMSMetaStatement x) {
@@ -384,7 +342,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowHMSMetaStatement x) {
-
     }
 
     default boolean visit(MySqlShowBinaryLogsStatement x) {
@@ -392,7 +349,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowBinaryLogsStatement x) {
-
     }
 
     default boolean visit(MySqlShowMasterLogsStatement x) {
@@ -400,7 +356,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowMasterLogsStatement x) {
-
     }
 
     default boolean visit(MySqlShowCharacterSetStatement x) {
@@ -408,7 +363,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowCharacterSetStatement x) {
-
     }
 
     default boolean visit(MySqlShowCollationStatement x) {
@@ -416,7 +370,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowCollationStatement x) {
-
     }
 
     default boolean visit(MySqlShowBinLogEventsStatement x) {
@@ -424,7 +377,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowBinLogEventsStatement x) {
-
     }
 
     default boolean visit(MySqlShowContributorsStatement x) {
@@ -432,7 +384,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowContributorsStatement x) {
-
     }
 
     default boolean visit(MySqlShowCreateDatabaseStatement x) {
@@ -440,7 +391,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowCreateDatabaseStatement x) {
-
     }
 
     default boolean visit(MySqlShowCreateEventStatement x) {
@@ -448,7 +398,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowCreateEventStatement x) {
-
     }
 
     default boolean visit(MySqlShowCreateFunctionStatement x) {
@@ -456,7 +405,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowCreateFunctionStatement x) {
-
     }
 
     default boolean visit(MySqlShowCreateProcedureStatement x) {
@@ -464,7 +412,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowCreateProcedureStatement x) {
-
     }
 
     default boolean visit(MySqlShowCreateTriggerStatement x) {
@@ -472,7 +419,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowCreateTriggerStatement x) {
-
     }
 
     default boolean visit(MySqlShowEngineStatement x) {
@@ -480,7 +426,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowEngineStatement x) {
-
     }
 
     default boolean visit(MySqlShowEnginesStatement x) {
@@ -488,7 +433,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowEnginesStatement x) {
-
     }
 
     default boolean visit(MySqlShowErrorsStatement x) {
@@ -496,7 +440,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowErrorsStatement x) {
-
     }
 
     default boolean visit(MySqlShowEventsStatement x) {
@@ -504,7 +447,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowEventsStatement x) {
-
     }
 
     default boolean visit(MySqlShowFunctionCodeStatement x) {
@@ -512,7 +454,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowFunctionCodeStatement x) {
-
     }
 
     default boolean visit(MySqlShowFunctionStatusStatement x) {
@@ -520,7 +461,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowFunctionStatusStatement x) {
-
     }
 
     default boolean visit(MySqlShowGrantsStatement x) {
@@ -528,7 +468,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowGrantsStatement x) {
-
     }
 
     default boolean visit(MySqlUserName x) {
@@ -536,7 +475,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlUserName x) {
-
     }
 
     default boolean visit(MySqlAlterDatabaseSetOption x) {
@@ -544,7 +482,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterDatabaseSetOption x) {
-
     }
 
     default boolean visit(MySqlAlterDatabaseKillJob x) {
@@ -552,7 +489,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterDatabaseKillJob x) {
-
     }
 
     default boolean visit(MySqlShowMasterStatusStatement x) {
@@ -560,7 +496,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowMasterStatusStatement x) {
-
     }
 
     default boolean visit(MySqlShowOpenTablesStatement x) {
@@ -568,7 +503,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowOpenTablesStatement x) {
-
     }
 
     default boolean visit(MySqlShowPluginsStatement x) {
@@ -576,7 +510,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowPluginsStatement x) {
-
     }
 
     default boolean visit(MySqlShowPartitionsStatement x) {
@@ -584,7 +517,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowPartitionsStatement x) {
-
     }
 
     default boolean visit(MySqlShowPrivilegesStatement x) {
@@ -592,7 +524,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowPrivilegesStatement x) {
-
     }
 
     default boolean visit(MySqlShowProcedureCodeStatement x) {
@@ -600,7 +531,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowProcedureCodeStatement x) {
-
     }
 
     default boolean visit(MySqlShowProcedureStatusStatement x) {
@@ -608,7 +538,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowProcedureStatusStatement x) {
-
     }
 
     default boolean visit(MySqlShowProcessListStatement x) {
@@ -616,7 +545,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowProcessListStatement x) {
-
     }
 
     default boolean visit(MySqlShowProfileStatement x) {
@@ -624,7 +552,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowProfileStatement x) {
-
     }
 
     default boolean visit(MySqlShowProfilesStatement x) {
@@ -632,7 +559,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowProfilesStatement x) {
-
     }
 
     default boolean visit(MySqlShowRelayLogEventsStatement x) {
@@ -640,7 +566,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowRelayLogEventsStatement x) {
-
     }
 
     default boolean visit(MySqlShowSlaveHostsStatement x) {
@@ -648,7 +573,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowSlaveHostsStatement x) {
-
     }
 
     default boolean visit(MySqlShowSequencesStatement x) {
@@ -656,7 +580,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowSequencesStatement x) {
-
     }
 
     default boolean visit(MySqlShowSlaveStatusStatement x) {
@@ -664,7 +587,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowSlaveStatusStatement x) {
-
     }
 
     default boolean visit(MySqlShowSlowStatement x) {
@@ -672,7 +594,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowSlowStatement x) {
-
     }
 
     default boolean visit(MySqlShowTableStatusStatement x) {
@@ -680,7 +601,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowTableStatusStatement x) {
-
     }
 
     default boolean visit(MySqlShowTriggersStatement x) {
@@ -688,7 +608,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowTriggersStatement x) {
-
     }
 
     default boolean visit(MySqlShowTraceStatement x) {
@@ -696,7 +615,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowTraceStatement x) {
-
     }
 
     default boolean visit(MySqlShowBroadcastsStatement x) {
@@ -704,7 +622,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowBroadcastsStatement x) {
-
     }
 
     default boolean visit(MySqlShowRuleStatement x) {
@@ -712,7 +629,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowRuleStatement x) {
-
     }
 
     default boolean visit(MySqlShowRuleStatusStatement x) {
@@ -720,7 +636,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowRuleStatusStatement x) {
-
     }
 
     default boolean visit(MySqlShowDsStatement x) {
@@ -728,7 +643,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowDsStatement x) {
-
     }
 
     default boolean visit(MySqlShowDdlStatusStatement x) {
@@ -736,7 +650,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowDdlStatusStatement x) {
-
     }
 
     default boolean visit(MySqlShowTopologyStatement x) {
@@ -744,7 +657,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowTopologyStatement x) {
-
     }
 
     default boolean visit(MySqlRenameTableStatement.Item x) {
@@ -752,7 +664,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlRenameTableStatement.Item x) {
-
     }
 
     default boolean visit(MySqlRenameTableStatement x) {
@@ -760,7 +671,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlRenameTableStatement x) {
-
     }
 
     default boolean visit(MysqlShowDbLockStatement x) {
@@ -768,7 +678,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlShowDbLockStatement x) {
-
     }
 
     default boolean visit(MySqlShowDatabaseStatusStatement x) {
@@ -776,7 +685,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowDatabaseStatusStatement x) {
-
     }
 
     default boolean visit(MySqlUseIndexHint x) {
@@ -784,7 +692,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlUseIndexHint x) {
-
     }
 
     default boolean visit(MySqlIgnoreIndexHint x) {
@@ -792,7 +699,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlIgnoreIndexHint x) {
-
     }
 
     default boolean visit(MySqlLockTableStatement x) {
@@ -800,7 +706,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlLockTableStatement x) {
-
     }
 
     default boolean visit(MySqlLockTableStatement.Item x) {
@@ -808,7 +713,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlLockTableStatement.Item x) {
-
     }
 
     default boolean visit(MySqlUnlockTablesStatement x) {
@@ -816,7 +720,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlUnlockTablesStatement x) {
-
     }
 
     default boolean visit(MySqlForceIndexHint x) {
@@ -824,7 +727,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlForceIndexHint x) {
-
     }
 
     default boolean visit(MySqlAlterTableChangeColumn x) {
@@ -832,7 +734,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableChangeColumn x) {
-
     }
 
     default boolean visit(MySqlAlterTableOption x) {
@@ -840,7 +741,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableOption x) {
-
     }
 
     default boolean visit(MySqlCreateTableStatement x) {
@@ -848,7 +748,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCreateTableStatement x) {
-
     }
 
     default boolean visit(MySqlHelpStatement x) {
@@ -856,7 +755,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlHelpStatement x) {
-
     }
 
     default boolean visit(MySqlCharExpr x) {
@@ -864,7 +762,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCharExpr x) {
-
     }
 
     default boolean visit(MySqlAlterTableModifyColumn x) {
@@ -872,7 +769,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableModifyColumn x) {
-
     }
 
     default boolean visit(MySqlAlterTableDiscardTablespace x) {
@@ -880,7 +776,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableDiscardTablespace x) {
-
     }
 
     default boolean visit(MySqlAlterTableImportTablespace x) {
@@ -888,7 +783,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableImportTablespace x) {
-
     }
 
     default boolean visit(MySqlCreateTableStatement.TableSpaceOption x) {
@@ -896,7 +790,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCreateTableStatement.TableSpaceOption x) {
-
     }
 
     default boolean visit(MySqlAnalyzeStatement x) {
@@ -904,7 +797,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAnalyzeStatement x) {
-
     }
 
     default boolean visit(MySqlCreateExternalCatalogStatement x) {
@@ -912,7 +804,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCreateExternalCatalogStatement x) {
-
     }
 
     default boolean visit(MySqlAlterUserStatement x) {
@@ -920,7 +811,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterUserStatement x) {
-
     }
 
     default boolean visit(MySqlOptimizeStatement x) {
@@ -928,7 +818,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlOptimizeStatement x) {
-
     }
 
     default boolean visit(MySqlHintStatement x) {
@@ -936,7 +825,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlHintStatement x) {
-
     }
 
     default boolean visit(MySqlOrderingExpr x) {
@@ -944,7 +832,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlOrderingExpr x) {
-
     }
 
     default boolean visit(MySqlCaseStatement x) {
@@ -952,7 +839,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCaseStatement x) {
-
     }
 
     default boolean visit(MySqlDeclareStatement x) {
@@ -960,7 +846,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlDeclareStatement x) {
-
     }
 
     default boolean visit(MySqlSelectIntoStatement x) {
@@ -968,7 +853,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlSelectIntoStatement x) {
-
     }
 
     default boolean visit(MySqlWhenStatement x) {
@@ -976,7 +860,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlWhenStatement x) {
-
     }
 
     default boolean visit(MySqlLeaveStatement x) {
@@ -984,7 +867,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlLeaveStatement x) {
-
     }
 
     default boolean visit(MySqlIterateStatement x) {
@@ -992,7 +874,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlIterateStatement x) {
-
     }
 
     default boolean visit(MySqlRepeatStatement x) {
@@ -1000,7 +881,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlRepeatStatement x) {
-
     }
 
     default boolean visit(MySqlCursorDeclareStatement x) {
@@ -1008,7 +888,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCursorDeclareStatement x) {
-
     }
 
     default boolean visit(MySqlUpdateTableSource x) {
@@ -1016,7 +895,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlUpdateTableSource x) {
-
     }
 
     default boolean visit(MySqlAlterTableAlterColumn x) {
@@ -1024,7 +902,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableAlterColumn x) {
-
     }
 
     default boolean visit(MySqlAlterTableForce x) {
@@ -1032,7 +909,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableForce x) {
-
     }
 
     default boolean visit(MySqlAlterTableLock x) {
@@ -1040,7 +916,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableLock x) {
-
     }
 
     default boolean visit(MySqlAlterTableOrderBy x) {
@@ -1048,7 +923,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableOrderBy x) {
-
     }
 
     default boolean visit(MySqlAlterTableValidation x) {
@@ -1056,7 +930,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableValidation x) {
-
     }
 
     default boolean visit(MySqlSubPartitionByKey x) {
@@ -1064,7 +937,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlSubPartitionByKey x) {
-
     }
 
     default boolean visit(MySqlSubPartitionByList x) {
@@ -1072,7 +944,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlSubPartitionByList x) {
-
     }
 
     default boolean visit(MySqlDeclareHandlerStatement x) {
@@ -1080,7 +951,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlDeclareHandlerStatement x) {
-
     }
 
     default boolean visit(MySqlDeclareConditionStatement x) {
@@ -1088,7 +958,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlDeclareConditionStatement x) {
-
     }
 
     default boolean visit(MySqlFlushStatement x) {
@@ -1096,7 +965,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlFlushStatement x) {
-
     }
 
     default boolean visit(MySqlEventSchedule x) {
@@ -1104,7 +972,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlEventSchedule x) {
-
     }
 
     default boolean visit(MySqlCreateEventStatement x) {
@@ -1112,7 +979,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCreateEventStatement x) {
-
     }
 
     default boolean visit(MySqlCreateAddLogFileGroupStatement x) {
@@ -1120,7 +986,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCreateAddLogFileGroupStatement x) {
-
     }
 
     default boolean visit(MySqlCreateServerStatement x) {
@@ -1128,7 +993,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCreateServerStatement x) {
-
     }
 
     default boolean visit(MySqlCreateTableSpaceStatement x) {
@@ -1136,7 +1000,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCreateTableSpaceStatement x) {
-
     }
 
     default boolean visit(MySqlAlterEventStatement x) {
@@ -1144,7 +1007,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterEventStatement x) {
-
     }
 
     default boolean visit(MySqlAlterLogFileGroupStatement x) {
@@ -1152,7 +1014,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterLogFileGroupStatement x) {
-
     }
 
     default boolean visit(MySqlAlterServerStatement x) {
@@ -1160,7 +1021,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterServerStatement x) {
-
     }
 
     default boolean visit(MySqlAlterTablespaceStatement x) {
@@ -1168,7 +1028,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTablespaceStatement x) {
-
     }
 
     default boolean visit(MySqlChecksumTableStatement x) {
@@ -1176,7 +1035,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlChecksumTableStatement x) {
-
     }
 
     default boolean visit(MySqlShowDatasourcesStatement x) {
@@ -1184,7 +1042,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowDatasourcesStatement x) {
-
     }
 
     default boolean visit(MySqlShowNodeStatement x) {
@@ -1192,7 +1049,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowNodeStatement x) {
-
     }
 
     default boolean visit(MySqlShowHelpStatement x) {
@@ -1200,7 +1056,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowHelpStatement x) {
-
     }
 
     default boolean visit(MySqlFlashbackStatement x) {
@@ -1208,7 +1063,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlFlashbackStatement x) {
-
     }
 
     default boolean visit(MySqlShowConfigStatement x) {
@@ -1216,7 +1070,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowConfigStatement x) {
-
     }
 
     default boolean visit(MySqlShowPlanCacheStatement x) {
@@ -1224,7 +1077,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowPlanCacheStatement x) {
-
     }
 
     default boolean visit(MySqlShowPhysicalProcesslistStatement x) {
@@ -1232,7 +1084,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowPhysicalProcesslistStatement x) {
-
     }
 
     default boolean visit(MySqlRenameSequenceStatement x) {
@@ -1240,7 +1091,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlRenameSequenceStatement x) {
-
     }
 
     default boolean visit(MySqlCheckTableStatement x) {
@@ -1248,7 +1098,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlCheckTableStatement x) {
-
     }
 
     default boolean visit(MysqlCreateFullTextCharFilterStatement x) {
@@ -1256,7 +1105,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlCreateFullTextCharFilterStatement x) {
-
     }
 
     default boolean visit(MysqlShowFullTextStatement x) {
@@ -1264,7 +1112,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlShowFullTextStatement x) {
-
     }
 
     default boolean visit(MysqlShowCreateFullTextStatement x) {
@@ -1272,7 +1119,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlShowCreateFullTextStatement x) {
-
     }
 
     default boolean visit(MysqlAlterFullTextStatement x) {
@@ -1280,7 +1126,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlAlterFullTextStatement x) {
-
     }
 
     default boolean visit(MysqlDropFullTextStatement x) {
@@ -1288,7 +1133,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlDropFullTextStatement x) {
-
     }
 
     default boolean visit(MysqlCreateFullTextTokenizerStatement x) {
@@ -1296,7 +1140,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlCreateFullTextTokenizerStatement x) {
-
     }
 
     default boolean visit(MysqlCreateFullTextTokenFilterStatement x) {
@@ -1304,7 +1147,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlCreateFullTextTokenFilterStatement x) {
-
     }
 
     default boolean visit(MysqlCreateFullTextAnalyzerStatement x) {
@@ -1312,7 +1154,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlCreateFullTextAnalyzerStatement x) {
-
     }
 
     default boolean visit(MysqlCreateFullTextDictionaryStatement x) {
@@ -1320,7 +1161,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlCreateFullTextDictionaryStatement x) {
-
     }
 
     default boolean visit(MySqlAlterTableAlterFullTextIndex x) {
@@ -1328,7 +1168,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableAlterFullTextIndex x) {
-
     }
 
     default boolean visit(MySqlExecuteForAdsStatement x) {
@@ -1336,7 +1175,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlExecuteForAdsStatement x) {
-
     }
 
     default boolean visit(MySqlManageInstanceGroupStatement x) {
@@ -1344,7 +1182,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlManageInstanceGroupStatement x) {
-
     }
 
     default boolean visit(MySqlRaftMemberChangeStatement x) {
@@ -1352,7 +1189,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlRaftMemberChangeStatement x) {
-
     }
 
     default boolean visit(MySqlRaftLeaderTransferStatement x) {
@@ -1360,7 +1196,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlRaftLeaderTransferStatement x) {
-
     }
 
     default boolean visit(MySqlMigrateStatement x) {
@@ -1368,7 +1203,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlMigrateStatement x) {
-
     }
 
     default boolean visit(MySqlShowClusterNameStatement x) {
@@ -1376,7 +1210,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowClusterNameStatement x) {
-
     }
 
     default boolean visit(MySqlShowJobStatusStatement x) {
@@ -1384,7 +1217,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowJobStatusStatement x) {
-
     }
 
     default boolean visit(MySqlShowMigrateTaskStatusStatement x) {
@@ -1392,7 +1224,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlShowMigrateTaskStatusStatement x) {
-
     }
 
     default boolean visit(MySqlSubPartitionByValue x) {
@@ -1400,7 +1231,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlSubPartitionByValue x) {
-
     }
 
     default boolean visit(MySqlExtPartition x) {
@@ -1408,7 +1238,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlExtPartition x) {
-
     }
 
     default boolean visit(MySqlExtPartition.Item x) {
@@ -1416,7 +1245,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlExtPartition.Item x) {
-
     }
 
     default boolean visit(MySqlJSONTableExpr x) {
@@ -1424,16 +1252,13 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlJSONTableExpr x) {
-
     }
-
 
     default boolean visit(MySqlJSONTableExpr.Column x) {
         return true;
     }
 
     default void endVisit(MySqlJSONTableExpr.Column x) {
-
     }
 
     default boolean visit(MysqlAlterTableAlterCheck x) {
@@ -1441,6 +1266,5 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MysqlAlterTableAlterCheck x) {
-
     }
 } //

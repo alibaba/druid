@@ -25,33 +25,32 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest56 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select "
-                + "\nAA.ID,"
-                + "\nAA.CODE,"
-                + "\nAA.TYPE,"
-                + "\nAA.STATUS,"
-                + "\nAA.EMPLOYEENAME,"
-                + "\nAA.CREATORNAME,"
-                + "\nAA.OPERATIONTYPE,"
-                + "\nAA.CREATEDATE,"
-                + "\nAA.REMARK,"
-                + "\nW.NAME,"
-                + "\nDD.DESC"
-                + "\nfrom "
-                + "\na AA,"
-                + "\nw W,"
-                + "\nd DD"
-                + "\nwhere "
-                + "\nAA.employeeNo IN ("
-                + "\nSELECT employeeno FROM employeeauditor ea WHERE auditorno = 1 GROUP BY employeeno"
-                + "\nUNION ALL"
-                + "\nSELECT 1 FROM dual "
-                + "\n) and"
-                + "\nAA.WNO = W.WNO(+) and"
-                + "\nAA.DEPTNO = DD.DEPTNO(+)"; //
+                        + "\nAA.ID,"
+                        + "\nAA.CODE,"
+                        + "\nAA.TYPE,"
+                        + "\nAA.STATUS,"
+                        + "\nAA.EMPLOYEENAME,"
+                        + "\nAA.CREATORNAME,"
+                        + "\nAA.OPERATIONTYPE,"
+                        + "\nAA.CREATEDATE,"
+                        + "\nAA.REMARK,"
+                        + "\nW.NAME,"
+                        + "\nDD.DESC"
+                        + "\nfrom "
+                        + "\na AA,"
+                        + "\nw W,"
+                        + "\nd DD"
+                        + "\nwhere "
+                        + "\nAA.employeeNo IN ("
+                        + "\nSELECT employeeno FROM employeeauditor ea WHERE auditorno = 1 GROUP BY employeeno"
+                        + "\nUNION ALL"
+                        + "\nSELECT 1 FROM dual "
+                        + "\n) and"
+                        + "\nAA.WNO = W.WNO(+) and"
+                        + "\nAA.DEPTNO = DD.DEPTNO(+)"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

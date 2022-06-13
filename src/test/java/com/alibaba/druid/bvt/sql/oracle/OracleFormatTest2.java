@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleFormatTest2 extends TestCase {
-
     public void test_formatOracle() throws Exception {
         String text = "UPDATE MEMBER SET GMT_MODIFIED = SYSDATE, STATUS = ?, email = CASE WHEN status = ? THEN rtrim(email, ? || id || ?) ELSE email END WHERE ID IN (?) AND STATUS <> ?";
 

@@ -23,12 +23,11 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerSelectTest3 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "SELECT name + ‘-’ + master.sys.fn_varbintohexstr(password_hash) from master.sys.sql_logins";
 
         String expect = "SELECT name + ‘ - ’ + master.sys.fn_varbintohexstr(password_hash)\n" + //
-                        "FROM master.sys.sql_logins";
+                "FROM master.sys.sql_logins";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

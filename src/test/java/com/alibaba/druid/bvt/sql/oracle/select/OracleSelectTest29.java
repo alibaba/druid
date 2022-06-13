@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest29 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "(select id,super_category_id_1 from category where super_category_id_1 is not null and super_category_id_1 != '-1')    union    (select id,super_category_id_2 from category where super_category_id_2 is not null and super_category_id_2 != '-1')     union    (select id,super_category_id_3 from category where super_category_id_3 is not null and super_category_id_3 != '-1')    union    (select id,super_category_id_4 from category where super_category_id_4 is not null and super_category_id_4 != '-1')    union    (select id,super_category_id_5 from category where super_category_id_5 is not null and super_category_id_5 != '-1')";
+                "(select id,super_category_id_1 from category where super_category_id_1 is not null and super_category_id_1 != '-1')    union    (select id,super_category_id_2 from category where super_category_id_2 is not null and super_category_id_2 != '-1')     union    (select id,super_category_id_3 from category where super_category_id_3 is not null and super_category_id_3 != '-1')    union    (select id,super_category_id_4 from category where super_category_id_4 is not null and super_category_id_4 != '-1')    union    (select id,super_category_id_5 from category where super_category_id_5 is not null and super_category_id_5 != '-1')";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

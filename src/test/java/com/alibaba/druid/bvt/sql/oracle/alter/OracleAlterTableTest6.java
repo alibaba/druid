@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest6 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE wl_service_record add ( service_type VARCHAR2(32) )";
+                "ALTER TABLE wl_service_record add ( service_type VARCHAR2(32) )";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -53,7 +52,7 @@ public class OracleAlterTableTest6 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_service_record", "service_type")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_service_record", "service_type")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }

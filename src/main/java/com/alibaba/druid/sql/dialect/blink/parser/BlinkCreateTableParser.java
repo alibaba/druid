@@ -16,8 +16,9 @@
 package com.alibaba.druid.sql.dialect.blink.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
 import com.alibaba.druid.sql.dialect.blink.ast.BlinkCreateTableStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
@@ -26,18 +27,17 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 public class BlinkCreateTableParser extends SQLCreateTableParser {
-
-    public BlinkCreateTableParser(String sql){
+    public BlinkCreateTableParser(String sql) {
         super(new BlinkExprParser(sql));
     }
 
-    public BlinkCreateTableParser(SQLExprParser exprParser){
+    public BlinkCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
     }
 
     public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
         BlinkCreateTableStatement stmt = new BlinkCreateTableStatement();
-        
+
         if (acceptCreate) {
             accept(Token.CREATE);
         }
@@ -46,7 +46,7 @@ public class BlinkCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
             stmt.setExternal(true);
         }
-        
+
         accept(Token.TABLE);
 
         if (lexer.token() == Token.IF || lexer.identifierEquals("IF")) {
@@ -66,7 +66,7 @@ public class BlinkCreateTableParser extends SQLCreateTableParser {
         }
 
         for_:
-        for (;;) {
+        for (; ; ) {
             SQLColumnDefinition column = null;
             switch (lexer.token()) {
                 case IDENTIFIER:
@@ -97,8 +97,6 @@ public class BlinkCreateTableParser extends SQLCreateTableParser {
 //            constraint.setParent(stmt);
 //            stmt.getTableElementList().add(constraint);
 //        }
-
-
 
             if (lexer.isKeepComments() && lexer.hasComment() && column != null) {
                 column.addAfterComment(lexer.readAndResetComments());

@@ -9,13 +9,12 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_124_contains extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select shid from alitrip_htl_realtime.hotel_real_time_inventory where rate_sale_status = 1 and rate_tags contains ('520') " +
                 "group by shid,start_time_daily,end_time_daily";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -31,7 +30,7 @@ public class MySqlSelectTest_124_contains extends MysqlTest {
                 "group by shid,start_time_daily,end_time_daily";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

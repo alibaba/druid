@@ -13,7 +13,6 @@ import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 public class WallStatTest_delete extends TestCase {
-
     private String sql = "delete from T where fid = ?";
 
     protected void setUp() throws Exception {

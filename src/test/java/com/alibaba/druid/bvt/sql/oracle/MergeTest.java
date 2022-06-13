@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class MergeTest extends TestCase {
-
     public void test_mergeCall() throws Exception {
         String sql = "{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}";
 

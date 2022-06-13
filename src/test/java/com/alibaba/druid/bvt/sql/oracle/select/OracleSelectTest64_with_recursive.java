@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest64_with_recursive extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "WITH t1(id, parent_id, lvl) AS (\n" +

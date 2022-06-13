@@ -27,9 +27,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_65_orderby extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "SELECT number,event_cnt,country_code,area_code,carrier,country,province,city,type,subtype,displayname,slogan,logo,source,state,priority,is_change FROM ktv_number_20170921 WHERE day_modify > 20170921 AND priority >= 4499000 ORDER BY priority DESC LIMIT 500000";
+        String sql = "SELECT number,event_cnt,country_code,area_code,carrier,country,province,city,type,subtype,displayname,slogan,logo,source,state,priority,is_change FROM ktv_number_20170921 WHERE day_modify > 20170921 AND priority >= 4499000 ORDER BY priority DESC LIMIT 500000";
 
         System.out.println(sql);
 
@@ -52,7 +51,7 @@ public class MySqlSelectTest_65_orderby extends MysqlTest {
                             "\tAND priority >= 4499000\n" +
                             "ORDER BY priority DESC\n" +
                             "LIMIT 500000", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -65,7 +64,7 @@ public class MySqlSelectTest_65_orderby extends MysqlTest {
                             "\tand priority >= 4499000\n" +
                             "order by priority desc\n" +
                             "limit 500000", //
-                                output);
+                    output);
         }
 
         {

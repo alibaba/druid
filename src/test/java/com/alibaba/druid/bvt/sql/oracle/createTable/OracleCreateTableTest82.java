@@ -23,7 +23,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest82 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
                 "CREATE TABLE EOA_KTV.EOA_TMP_JOBS (\n" +
@@ -55,7 +54,7 @@ public class OracleCreateTableTest82 extends OracleTest {
                         "\tDBID DECIMAL(38),\n" +
                         "\tCOLLECTION_TIME VARCHAR(19)\n" +
                         ");",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

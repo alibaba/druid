@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class StringTest extends TestCase {
-
     public void test_latin() throws Exception {
         String sql = "SELECT _latin1'string' COLLATE latin1_danish_ci;";
 

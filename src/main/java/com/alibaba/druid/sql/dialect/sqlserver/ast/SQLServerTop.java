@@ -20,16 +20,14 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
 public class SQLServerTop extends SQLServerObjectImpl {
-
     private SQLExpr expr;
     private boolean percent;
     private boolean withTies;
 
-    public SQLServerTop(){
-
+    public SQLServerTop() {
     }
 
-    public SQLServerTop(SQLExpr expr){
+    public SQLServerTop(SQLExpr expr) {
         this.setExpr(expr);
     }
 

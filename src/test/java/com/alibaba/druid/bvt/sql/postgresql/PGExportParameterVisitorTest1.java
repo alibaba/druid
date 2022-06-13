@@ -20,9 +20,9 @@ public class PGExportParameterVisitorTest1 extends TestCase {
 
         PGExportParameterVisitor visitor = new PGExportParameterVisitor();
         stmt.accept(visitor);
-        
+
         List<Object> parameters = visitor.getParameters();
-        
+
         Assert.assertEquals(1, parameters.size());
         Assert.assertEquals(1, parameters.get(0));
     }

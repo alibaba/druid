@@ -25,11 +25,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_27 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT /*+ READ_CONSISTENCY(WEAK) */ NOW() AS db_time FROM DUAL";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -44,26 +43,25 @@ public class MySqlSelectTest_27 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT /*+ READ_CONSISTENCY(WEAK) */ NOW() AS db_time"
-                    + "\nFROM DUAL", //
-                                output);
+                            + "\nFROM DUAL", //
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("select /*+ READ_CONSISTENCY(WEAK) */ NOW() as db_time"
-                    + "\nfrom DUAL", //
-                                output);
+                            + "\nfrom DUAL", //
+                    output);
         }
     }
-    
-    
-    
+
+
 }

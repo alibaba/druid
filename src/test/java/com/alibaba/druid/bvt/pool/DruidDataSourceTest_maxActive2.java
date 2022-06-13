@@ -7,11 +7,10 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * 这个场景测试maxActive < 0
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_maxActive2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

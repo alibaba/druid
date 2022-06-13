@@ -24,33 +24,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropViewStatement extends SQLStatementImpl implements SQLDropStatement {
-
     protected List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>();
 
-    protected boolean                  cascade      = false;
-    protected boolean                  restrict     = false;
-    protected boolean                  ifExists     = false;
+    protected boolean cascade;
+    protected boolean restrict;
+    protected boolean ifExists;
 
-    public SQLDropViewStatement(){
-
-    }
-    
-    public SQLDropViewStatement(DbType dbType){
-        super (dbType);
+    public SQLDropViewStatement() {
     }
 
-    public SQLDropViewStatement(SQLName name){
+    public SQLDropViewStatement(DbType dbType) {
+        super(dbType);
+    }
+
+    public SQLDropViewStatement(SQLName name) {
         this(new SQLExprTableSource(name));
     }
 
-    public SQLDropViewStatement(SQLExprTableSource tableSource){
+    public SQLDropViewStatement(SQLExprTableSource tableSource) {
         this.tableSources.add(tableSource);
     }
 
     public List<SQLExprTableSource> getTableSources() {
         return tableSources;
     }
-    
+
     public void addPartition(SQLExprTableSource tableSource) {
         if (tableSource != null) {
             tableSource.setParent(this);

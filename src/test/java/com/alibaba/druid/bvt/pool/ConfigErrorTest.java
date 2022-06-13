@@ -26,7 +26,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 
 public class ConfigErrorTest extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -47,14 +46,14 @@ public class ConfigErrorTest extends PoolTestCase {
         Field field = DruidDataSource.class.getDeclaredField("LOG");
         field.setAccessible(true);
         Log LOG = (Log) field.get(null);
-        
+
         LOG.resetStat();
-        
+
         Assert.assertEquals(0, LOG.getErrorCount());
-        
+
         Connection conn = dataSource.getConnection();
         conn.close();
-        
+
         Assert.assertEquals(1, LOG.getErrorCount());
     }
 }

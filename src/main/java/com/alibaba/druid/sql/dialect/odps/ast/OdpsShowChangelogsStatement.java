@@ -33,7 +33,6 @@ public class OdpsShowChangelogsStatement extends SQLStatementImpl {
     private SQLExpr id;
 
     public OdpsShowChangelogsStatement() {
-
     }
 
     public SQLExprTableSource getTable() {

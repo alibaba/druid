@@ -15,9 +15,9 @@
  */
 package com.alibaba.druid.support.http;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.alibaba.druid.stat.DruidStatService;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
@@ -28,38 +28,43 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.druid.stat.DruidStatService;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 注意：避免直接调用Druid相关对象例如DruidDataSource等，相关调用要到DruidStatManagerFacade里用反射实现
- * 
+ *
  * @author sandzhang[sandzhangtoo@gmail.com]
  */
 public class StatViewServlet extends ResourceServlet {
+    private static final Log LOG = LogFactory.getLog(StatViewServlet.class);
 
-    private final static Log      LOG                     = LogFactory.getLog(StatViewServlet.class);
+    private static final long serialVersionUID = 1L;
 
-    private static final long     serialVersionUID        = 1L;
+    public static final String PARAM_NAME_RESET_ENABLE = "resetEnable";
 
-    public static final String    PARAM_NAME_RESET_ENABLE = "resetEnable";
+    public static final String PARAM_NAME_JMX_URL = "jmxUrl";
+    public static final String PARAM_NAME_JMX_USERNAME = "jmxUsername";
+    public static final String PARAM_NAME_JMX_PASSWORD = "jmxPassword";
 
-    public static final String    PARAM_NAME_JMX_URL      = "jmxUrl";
-    public static final String    PARAM_NAME_JMX_USERNAME = "jmxUsername";
-    public static final String    PARAM_NAME_JMX_PASSWORD = "jmxPassword";
+    private DruidStatService statService = DruidStatService.getInstance();
 
-    private DruidStatService      statService             = DruidStatService.getInstance();
+    /**
+     * web.xml中配置的jmx的连接地址
+     */
+    private String jmxUrl;
+    /**
+     * web.xml中配置的jmx的用户名
+     */
+    private String jmxUsername;
+    /**
+     * web.xml中配置的jmx的密码
+     */
+    private String jmxPassword;
+    private MBeanServerConnection conn;
 
-    /** web.xml中配置的jmx的连接地址 */
-    private String                jmxUrl                  = null;
-    /** web.xml中配置的jmx的用户名 */
-    private String                jmxUsername             = null;
-    /** web.xml中配置的jmx的密码 */
-    private String                jmxPassword             = null;
-    private MBeanServerConnection conn                    = null;
-
-    public StatViewServlet(){
+    public StatViewServlet() {
         super("support/http/resources");
     }
 
@@ -95,7 +100,7 @@ public class StatViewServlet extends ResourceServlet {
 
     /**
      * 读取servlet中的配置参数.
-     * 
+     *
      * @param key 配置参数名
      * @return 配置参数值，如果不存在当前配置参数，或者为配置参数长度为0，将返回null
      */
@@ -118,7 +123,7 @@ public class StatViewServlet extends ResourceServlet {
 
     /**
      * 初始化jmx连接
-     * 
+     *
      * @throws IOException
      */
     private void initJmxConn() throws IOException {
@@ -127,7 +132,7 @@ public class StatViewServlet extends ResourceServlet {
             Map<String, String[]> env = null;
             if (jmxUsername != null) {
                 env = new HashMap<String, String[]>();
-                String[] credentials = new String[] { jmxUsername, jmxPassword };
+                String[] credentials = new String[]{jmxUsername, jmxPassword};
                 env.put(JMXConnector.CREDENTIALS, credentials);
             }
             JMXConnector jmxc = JMXConnectorFactory.connect(url, env);
@@ -137,24 +142,24 @@ public class StatViewServlet extends ResourceServlet {
 
     /**
      * 根据指定的url来获取jmx服务返回的内容.
-     * 
+     *
      * @param connetion jmx连接
-     * @param url url内容
+     * @param url       url内容
      * @return the jmx返回的内容
      * @throws Exception the exception
      */
     private String getJmxResult(MBeanServerConnection connetion, String url) throws Exception {
         ObjectName name = new ObjectName(DruidStatService.MBEAN_NAME);
 
-        String result = (String) conn.invoke(name, "service", new String[] { url },
-                                             new String[] { String.class.getName() });
+        String result = (String) conn.invoke(name, "service", new String[]{url},
+                new String[]{String.class.getName()});
         return result;
     }
 
     /**
      * 程序首先判断是否存在jmx连接地址，如果不存在，则直接调用本地的druid服务； 如果存在，则调用远程jmx服务。在进行jmx通信，首先判断一下jmx连接是否已经建立成功，如果已经
      * 建立成功，则直接进行通信，如果之前没有成功建立，则会尝试重新建立一遍。.
-     * 
+     *
      * @param url 要连接的服务地址
      * @return 调用服务后返回的json字符串
      */
@@ -163,30 +168,34 @@ public class StatViewServlet extends ResourceServlet {
         if (jmxUrl == null) {
             resp = statService.service(url);
         } else {
-            if (conn == null) {// 连接在初始化时创建失败
-                try {// 尝试重新连接
+            if (conn == null) {
+                // 连接在初始化时创建失败
+                try {
+                    // 尝试重新连接
                     initJmxConn();
                 } catch (IOException e) {
                     LOG.error("init jmx connection error", e);
                     resp = DruidStatService.returnJSONResult(DruidStatService.RESULT_CODE_ERROR,
-                                                             "init jmx connection error" + e.getMessage());
+                            "init jmx connection error" + e.getMessage());
                 }
-                if (conn != null) {// 连接成功
+                if (conn != null) {
+                    // 连接成功
                     try {
                         resp = getJmxResult(conn, url);
                     } catch (Exception e) {
                         LOG.error("get jmx data error", e);
                         resp = DruidStatService.returnJSONResult(DruidStatService.RESULT_CODE_ERROR, "get data error:"
-                                                                                                     + e.getMessage());
+                                + e.getMessage());
                     }
                 }
-            } else {// 连接成功
+            } else {
+                // 连接成功
                 try {
                     resp = getJmxResult(conn, url);
                 } catch (Exception e) {
                     LOG.error("get jmx data error", e);
                     resp = DruidStatService.returnJSONResult(DruidStatService.RESULT_CODE_ERROR,
-                                                             "get data error" + e.getMessage());
+                            "get data error" + e.getMessage());
                 }
             }
         }

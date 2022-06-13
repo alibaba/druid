@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -23,11 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLPartitionValue extends OracleSegmentAttributesImpl {
-
-    protected Operator            operator;
+    protected Operator operator;
     protected final List<SQLExpr> items = new ArrayList<SQLExpr>();
 
-    public SQLPartitionValue(Operator operator){
+    public SQLPartitionValue(Operator operator) {
         super();
         this.operator = operator;
     }
@@ -35,7 +33,7 @@ public class SQLPartitionValue extends OracleSegmentAttributesImpl {
     public List<SQLExpr> getItems() {
         return items;
     }
-    
+
     public void addItem(SQLExpr item) {
         if (item != null) {
             item.setParent(this);
@@ -48,9 +46,9 @@ public class SQLPartitionValue extends OracleSegmentAttributesImpl {
     }
 
     public static enum Operator {
-                                 LessThan, //
-                                 In, //
-                                 List
+        LessThan,
+        In,
+        List
     }
 
     @Override

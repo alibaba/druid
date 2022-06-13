@@ -26,19 +26,18 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest37 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "select resource_value,count(resource_value) nums,http_method "
-                + "from ( "
-                + "       select * from audit_url_log "
-                + "       where project_id = ? and to_char(begin_time,'yyyy-MM-dd') > = ? and to_char(begin_time,'yyyy-MM-dd') < = ? ) "
-                + "       group by resource_value,http_method having count(resource_value) > = ?"; //
+                "select resource_value,count(resource_value) nums,http_method "
+                        + "from ( "
+                        + "       select * from audit_url_log "
+                        + "       where project_id = ? and to_char(begin_time,'yyyy-MM-dd') > = ? and to_char(begin_time,'yyyy-MM-dd') < = ? ) "
+                        + "       group by resource_value,http_method having count(resource_value) > = ?"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         Assert.assertEquals("SELECT resource_value, count(resource_value) AS nums, http_method"
                 + "\nFROM ("
                 + "\n\tSELECT *"
@@ -60,7 +59,7 @@ public class OracleSelectTest37 extends OracleTest {
                 + "\n)"
                 + "\ngroup by resource_value, http_method"
                 + "\nhaving count(resource_value) >= ?", SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+
         Assert.assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

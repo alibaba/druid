@@ -30,7 +30,7 @@ public class MySqlAlterTableTest54 extends TestCase {
     public void test_2() throws Exception {
         String sql = "alter table event_log storage_policy = 'MIXED' hot_partition_count = 10;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        SQLAlterTableStatement stmt = (SQLAlterTableStatement)parser.parseStatementList().get(0);
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) parser.parseStatementList().get(0);
         assertEquals(2, stmt.getTableOptions().size());
         String formatSql = SQLUtils.toSQLString(stmt);
         assertEquals("ALTER TABLE event_log\n" +

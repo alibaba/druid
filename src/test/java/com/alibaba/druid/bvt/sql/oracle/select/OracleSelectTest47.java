@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest47 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "select * from abc where model=?"; //
+                "select * from abc where model=?"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -53,8 +52,8 @@ public class OracleSelectTest47 extends OracleTest {
         String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT *" //
-                            + "\nFROM abc" //
-                            + "\nWHERE model = ?", text);
+                + "\nFROM abc" //
+                + "\nWHERE model = ?", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

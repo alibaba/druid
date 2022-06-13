@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlInsertTest_11 extends MysqlTest {
-
     public void test_insert_rollback_on_fail() throws Exception {
         String sql = "insert ROLLBACK_ON_FAIL into t(a,b) values ('a1','b1')";
 
@@ -48,7 +47,7 @@ public class MySqlInsertTest_11 extends MysqlTest {
         stmt.accept(visitor);
 
         String formatSql = "INSERT ROLLBACK_ON_FAIL INTO t (a, b)"//
-                           + "\nVALUES ('a1', 'b1')";
+                + "\nVALUES ('a1', 'b1')";
         Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 

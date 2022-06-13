@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest81_join_brace extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select * \n" +
@@ -50,7 +49,6 @@ public class OracleSelectTest81_join_brace extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
-
 
 
         Assert.assertEquals(1, statementList.size());
@@ -89,8 +87,8 @@ public class OracleSelectTest81_join_brace extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
 
-         Assert.assertTrue(visitor.containsColumn("tcp_cpr.con_config", "contract_config_id"));
-         Assert.assertTrue(visitor.containsColumn("tcp_cpr.con_osg3a_headers", "parent_id"));
+        Assert.assertTrue(visitor.containsColumn("tcp_cpr.con_config", "contract_config_id"));
+        Assert.assertTrue(visitor.containsColumn("tcp_cpr.con_osg3a_headers", "parent_id"));
 //
     }
 }

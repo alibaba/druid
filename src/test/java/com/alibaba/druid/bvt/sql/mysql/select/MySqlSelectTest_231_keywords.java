@@ -23,7 +23,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_231_keywords extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT CONDITION, LOCK, MODE, OUT, REPEAT, SECOND, MICROSECOND, USE  from t";
 

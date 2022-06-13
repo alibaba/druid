@@ -33,11 +33,11 @@ public class OdpsUDTFSQLSelectItem extends SQLSelectItem implements OdpsObject {
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof OdpsASTVisitor) {
             accept0((OdpsASTVisitor) visitor);
-        } else{
+        } else {
             super.accept0(visitor);
         }
     }
-    
+
     public void accept0(OdpsASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.expr);

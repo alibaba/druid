@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerExec_Test extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "EXEC sp_rename 'rules.temp_plugin_config_key', 'plugin_config_key'";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -48,8 +47,8 @@ public class SQLServerExec_Test extends TestCase {
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
     }
-    
-    
+
+
     public void test_2() throws Exception {
         String sql = "EXEC @returnstatus = dbo.ufnGetSalesOrderStatusText @Status = 2";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -73,6 +72,7 @@ public class SQLServerExec_Test extends TestCase {
 
     /**
      * add by zz to test execute sp with out type
+     *
      * @throws Exception
      */
     public void test_3() throws Exception {
@@ -91,7 +91,7 @@ public class SQLServerExec_Test extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("EXEC sp_rename @P0 OUT", output);
-        
+
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
     }

@@ -25,9 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class HiveCreateTableTest_40_dla extends OracleTest {
-
     public void test_0() throws Exception {
-        String sql =  "CREATE EXTERNAL TABLE IF NOT EXISTS `customer_case`.`shangjian_6e958954-f2c7-11e8-94b7-0c54159e4818.json.snappy` (\n" +
+        String sql = "CREATE EXTERNAL TABLE IF NOT EXISTS `customer_case`.`shangjian_6e958954-f2c7-11e8-94b7-0c54159e4818.json.snappy` (\n" +
                 "  `batch_date` string,\n" +
                 "  `data` STRUCT<`goods_name`:STRING, `thumb_url`:STRING, `country`:STRING, `is_app`:INT, `sales_tip`:STRING, `image_url`:STRING, `cnt`:INT, `goods_id`:BIGINT, `hd_thumb_url`:STRING, `is_use_promotion`:INT, `event_type`:INT, `normal_price`:INT, `market_price`:INT, `short_name`:STRING, group:STRUCT<`price`:INT, `customer_num`:INT>>,\n" +
                 "  `goods_id` bigint,\n" +

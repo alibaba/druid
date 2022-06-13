@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest93_model extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select country,prod,year,s\n" +

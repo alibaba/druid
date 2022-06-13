@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.io.Serializable;
@@ -26,14 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
-
     private static final long serialVersionUID = 1L;
-    private final List<Item>  items            = new ArrayList<Item>();
-    private SQLExpr           valueExpr;
-    private SQLExpr           elseExpr;
+    private final List<Item> items = new ArrayList<Item>();
+    private SQLExpr valueExpr;
+    private SQLExpr elseExpr;
 
-    public SQLCaseExpr(){
-
+    public SQLCaseExpr() {
     }
 
     public SQLExpr getValueExpr() {
@@ -121,17 +118,14 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
     }
 
     public static class Item extends SQLObjectImpl implements SQLReplaceable, Serializable {
-
         private static final long serialVersionUID = 1L;
-        private SQLExpr           conditionExpr;
-        private SQLExpr           valueExpr;
+        private SQLExpr conditionExpr;
+        private SQLExpr valueExpr;
 
-        public Item(){
-
+        public Item() {
         }
 
-        public Item(SQLExpr conditionExpr, SQLExpr valueExpr){
-
+        public Item(SQLExpr conditionExpr, SQLExpr valueExpr) {
             setConditionExpr(conditionExpr);
             setValueExpr(valueExpr);
         }
@@ -182,19 +176,32 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            if (getClass() != obj.getClass()) return false;
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
             Item other = (Item) obj;
             if (conditionExpr == null) {
-                if (other.conditionExpr != null) return false;
-            } else if (!conditionExpr.equals(other.conditionExpr)) return false;
+                if (other.conditionExpr != null) {
+                    return false;
+                }
+            } else if (!conditionExpr.equals(other.conditionExpr)) {
+                return false;
+            }
             if (valueExpr == null) {
-                if (other.valueExpr != null) return false;
-            } else if (!valueExpr.equals(other.valueExpr)) return false;
+                if (other.valueExpr != null) {
+                    return false;
+                }
+            } else if (!valueExpr.equals(other.valueExpr)) {
+                return false;
+            }
             return true;
         }
-
 
         public Item clone() {
             Item x = new Item();
@@ -265,7 +272,6 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
         return true;
     }
 
-
     public SQLCaseExpr clone() {
         SQLCaseExpr x = new SQLCaseExpr();
 
@@ -295,7 +301,7 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
             }
         }
 
-        if(elseExpr != null) {
+        if (elseExpr != null) {
             return elseExpr.computeDataType();
         }
 
@@ -303,6 +309,6 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
     }
 
     public String toString() {
-        return SQLUtils.toSQLString(this, (DbType)null);
+        return SQLUtils.toSQLString(this, (DbType) null);
     }
 }

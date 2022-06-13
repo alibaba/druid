@@ -31,10 +31,10 @@ public class InsertColumnsCache {
 
     public ConcurrentMap<Long, Entry> cache = new ConcurrentHashMap<Long, Entry>();
 
-    private final Entry[]   buckets;
-    private final int       indexMask;
+    private final Entry[] buckets;
+    private final int indexMask;
 
-    public InsertColumnsCache(int tableSize){
+    public InsertColumnsCache(int tableSize) {
         this.indexMask = tableSize - 1;
         this.buckets = new Entry[tableSize];
     }
@@ -65,7 +65,7 @@ public class InsertColumnsCache {
         return false;
     }
 
-    public final static class Entry {
+    public static final class Entry {
         public final long hashCode64;
         public final String columnsString;
         public final String columnsFormattedString;
@@ -73,7 +73,11 @@ public class InsertColumnsCache {
         public final List<SQLExpr> columns;
         public final Entry next;
 
-        public Entry(long hashCode64, String columnsString, String columnsFormattedString, List<SQLExpr> columns, Entry next) {
+        public Entry(long hashCode64,
+                     String columnsString,
+                     String columnsFormattedString,
+                     List<SQLExpr> columns,
+                     Entry next) {
             this.hashCode64 = hashCode64;
             this.columnsString = columnsString;
             this.columnsFormattedString = columnsFormattedString;

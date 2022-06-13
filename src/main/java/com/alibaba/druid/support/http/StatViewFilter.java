@@ -24,13 +24,14 @@ import com.alibaba.druid.util.StringUtils;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 import static com.alibaba.druid.support.http.ResourceServlet.*;
 
 public class StatViewFilter implements Filter {
-    public final static String PARAM_NAME_PATH = "path";
-    private final static Log LOG = LogFactory.getLog(StatViewFilter.class);
+    public static final String PARAM_NAME_PATH = "path";
+    private static final Log LOG = LogFactory.getLog(StatViewFilter.class);
     private String servletPath = "/druid";
     private String resourcePath = "support/http/resources";
 
@@ -107,7 +108,9 @@ public class StatViewFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request,
+                         ServletResponse response,
+                         FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpResp = (HttpServletResponse) response;
         String contextPath = ((HttpServletRequest) request).getContextPath();
@@ -130,6 +133,5 @@ public class StatViewFilter implements Filter {
 
     @Override
     public void destroy() {
-
     }
 }

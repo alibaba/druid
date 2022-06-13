@@ -23,23 +23,23 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 
 public class DB2Test extends TestCase {
-	protected String output(List<SQLStatement> stmtList) {
-		StringBuilder out = new StringBuilder();
-		DB2OutputVisitor visitor = new DB2OutputVisitor(out);
+    protected String output(List<SQLStatement> stmtList) {
+        StringBuilder out = new StringBuilder();
+        DB2OutputVisitor visitor = new DB2OutputVisitor(out);
 
-		for (SQLStatement stmt : stmtList) {
-			stmt.accept(visitor);
-		}
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
 
-		return out.toString();
-	}
-	
-	   protected void print(List<SQLStatement> stmtList) {
-	        String text = output(stmtList);
-	        String outputProperty = System.getProperty("druid.output");
-	        if ("false".equals(outputProperty)) {
-	            return;
-	        }
+        return out.toString();
+    }
+
+    protected void print(List<SQLStatement> stmtList) {
+        String text = output(stmtList);
+        String outputProperty = System.getProperty("druid.output");
+        if ("false".equals(outputProperty)) {
+            return;
+        }
 //	        System.out.println(text);
-	    }
+    }
 }

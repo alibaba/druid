@@ -22,8 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Elt implements Function {
-
-    public final static Elt instance = new Elt();
+    public static final Elt instance = new Elt();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getArguments().size() <= 1) {

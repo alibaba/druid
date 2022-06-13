@@ -22,7 +22,7 @@ public class OdpsFormatCommentTest extends TestCase {
                 + "\n\t, f2 -- bbb" //
                 + "\nFROM t1", SQLUtils.formatOdps(sql));
     }
-    
+
     public void test_column_2_multi_comment() throws Exception {
         String sql = "select f1 /*aa*/"
                 + "\n, f2 -- bbb"

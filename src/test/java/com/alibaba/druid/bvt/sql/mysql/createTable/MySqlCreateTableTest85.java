@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class MySqlCreateTableTest85 extends MysqlTest {
-
     public void test_one() throws Exception {
         String sql = "create table `some table $$`(id int auto_increment key, class varchar(10), data binary) engine=MYISAM;";
 
@@ -46,7 +45,7 @@ public class MySqlCreateTableTest85 extends MysqlTest {
                     "\tdata binary\n" +
                     ") ENGINE = MYISAM", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("create table `some table $$` (\n" +

@@ -18,15 +18,15 @@ public class PropertyTest_filters extends PoolTestCase {
         Assert.assertEquals(1, dataSource.getProxyFilters().size());
         Assert.assertEquals("com.alibaba.druid.filter.stat.StatFilter", dataSource.getFilterClassNames().get(0));
     }
-    
+
     public void test_false() {
         System.setProperty("druid.filters", "");
         dataSource = new DruidDataSource();
         Assert.assertEquals(0, dataSource.getProxyFilters().size());
-        
+
         Assert.assertNull(dataSource.getWallStatMap());
     }
-    
+
     protected void tearDown() throws Exception {
         System.clearProperty("druid.filters");
         JdbcUtils.close(dataSource);

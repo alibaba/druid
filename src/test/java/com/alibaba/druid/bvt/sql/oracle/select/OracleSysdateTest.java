@@ -34,6 +34,6 @@ public class OracleSysdateTest extends OracleTest {
         StringBuffer buf = new StringBuffer();
         SQLASTOutputVisitor v = new SQLASTOutputVisitor(buf);
         sysdate.accept(v);
-        assertEquals("SYSDATE",  buf.toString());
+        assertEquals("SYSDATE", buf.toString());
     }
 }

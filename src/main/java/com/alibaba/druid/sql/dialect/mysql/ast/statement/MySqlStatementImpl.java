@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.List;
 
 public abstract class MySqlStatementImpl extends SQLStatementImpl implements MySqlStatement {
-
     public MySqlStatementImpl() {
         super(DbType.mysql);
     }

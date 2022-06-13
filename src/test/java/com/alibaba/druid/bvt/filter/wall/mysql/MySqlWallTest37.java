@@ -25,18 +25,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest37 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid(//
-        "call partnerAttribute(3061975048797781,105385028,5,@ret)")); //
+                "call partnerAttribute(3061975048797781,105385028,5,@ret)")); //
 
         Assert.assertEquals(0, provider.getTableStats().size());
         System.out.println(JSONUtils.toJSONString(provider.getStatsMap()));

@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import java.util.List;
 
 public class PGSelectTest14 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "WITH RECURSIVE included_parts(sub_part, part, quantity) AS ("
                 + "    SELECT sub_part, part, quantity FROM parts WHERE part = 'our_product'"

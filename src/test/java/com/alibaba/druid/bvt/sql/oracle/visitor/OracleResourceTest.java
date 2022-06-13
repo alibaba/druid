@@ -34,10 +34,9 @@ import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleResourceTest extends OracleTest {
-
     public void test_0_9() throws Exception {
         for (int i = 0; i <= 9; ++i) { // 57
-             exec_test("bvt/parser/oracle-" + i + ".txt");
+            exec_test("bvt/parser/oracle-" + i + ".txt");
             System.out.println();
         }
     }
@@ -94,11 +93,11 @@ public class OracleResourceTest extends OracleTest {
     }
 
     public void test_62() throws Exception {
-         exec_test("bvt/parser/oracle-62.txt");
+        exec_test("bvt/parser/oracle-62.txt");
     }
 
     public void test_63() throws Exception {
-         exec_test("bvt/parser/oracle-63.txt");
+        exec_test("bvt/parser/oracle-63.txt");
     }
 
     public void exec_test(String resource) throws Exception {

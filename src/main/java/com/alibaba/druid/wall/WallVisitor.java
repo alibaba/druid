@@ -15,22 +15,20 @@
  */
 package com.alibaba.druid.wall;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
-public interface WallVisitor extends SQLASTVisitor {
+import java.util.List;
 
+public interface WallVisitor extends SQLASTVisitor {
     WallConfig getConfig();
 
     WallProvider getProvider();
@@ -50,7 +48,7 @@ public interface WallVisitor extends SQLASTVisitor {
     void setSqlModified(boolean sqlModified);
 
     DbType getDbType();
-    
+
     boolean isSqlEndOfComment();
 
     void setSqlEndOfComment(boolean sqlEndOfComment);
@@ -152,7 +150,7 @@ public interface WallVisitor extends SQLASTVisitor {
         if (!config.isSelectAllow()) {
             this.getViolations()
                     .add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow",
-                    this.toSQL(x)));
+                            this.toSQL(x)));
             return false;
         }
 

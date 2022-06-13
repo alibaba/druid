@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlResetStatement extends MySqlStatementImpl {
-
     private List<String> options = new ArrayList<String>();
 
     public List<String> getOptions() {

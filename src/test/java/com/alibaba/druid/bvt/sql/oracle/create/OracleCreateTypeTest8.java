@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTypeTest8 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE TYPE dmbanimp AUTHID CURRENT_USER AS OBJECT (\n" +
                 "  key RAW(4),\n" +
@@ -144,7 +143,7 @@ public class OracleCreateTypeTest8 extends OracleTest {
                         "\tMEMBER FUNCTION dmbanFetchStub (self IN OUT dmbanimp, nrows IN NUMBER, outset OUT dmbaos) RETURN NUMBER, \n" +
                         "\tMEMBER FUNCTION dmbanCloseStub (self IN dmbanimp) RETURN NUMBER\n" +
                         ");",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

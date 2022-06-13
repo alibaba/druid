@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2DropSequenceTest_0 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "drop sequence sales1_seq";
 
@@ -57,9 +56,9 @@ public class DB2DropSequenceTest_0 extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         Assert.assertEquals("DROP SEQUENCE sales1_seq", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("drop sequence sales1_seq", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

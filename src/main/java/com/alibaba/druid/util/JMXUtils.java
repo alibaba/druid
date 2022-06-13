@@ -15,25 +15,20 @@
  */
 package com.alibaba.druid.util;
 
-import java.lang.management.ManagementFactory;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import javax.management.openmbean.CompositeData;
-import javax.management.openmbean.CompositeDataSupport;
-import javax.management.openmbean.CompositeType;
-import javax.management.openmbean.OpenType;
-import javax.management.openmbean.SimpleType;
+import javax.management.openmbean.*;
+
+import java.lang.management.ManagementFactory;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public final class JMXUtils {
-
     public static ObjectName register(String name, Object mbean) {
         try {
             ObjectName objectName = new ObjectName(name);
@@ -64,18 +59,18 @@ public final class JMXUtils {
 
     }
 
-    private static final String[]      THROWABLE_COMPOSITE_INDEX_NAMES        = { "message", "class", "stackTrace" };
-    private static final String[]      THROWABLE_COMPOSITE_INDEX_DESCRIPTIONS = { "message", "class", "stackTrace" };
-    private static final OpenType<?>[] THROWABLE_COMPOSITE_INDEX_TYPES        = new OpenType<?>[] { SimpleType.STRING,
-            SimpleType.STRING, SimpleType.STRING                             };
+    private static final String[] THROWABLE_COMPOSITE_INDEX_NAMES = {"message", "class", "stackTrace"};
+    private static final String[] THROWABLE_COMPOSITE_INDEX_DESCRIPTIONS = {"message", "class", "stackTrace"};
+    private static final OpenType<?>[] THROWABLE_COMPOSITE_INDEX_TYPES = new OpenType<?>[]{SimpleType.STRING,
+            SimpleType.STRING, SimpleType.STRING};
 
-    private static CompositeType       THROWABLE_COMPOSITE_TYPE               = null;
+    private static CompositeType THROWABLE_COMPOSITE_TYPE;
 
     public static CompositeType getThrowableCompositeType() throws JMException {
         if (THROWABLE_COMPOSITE_TYPE == null) {
             THROWABLE_COMPOSITE_TYPE = new CompositeType("Throwable", "Throwable", THROWABLE_COMPOSITE_INDEX_NAMES,
-                                                         THROWABLE_COMPOSITE_INDEX_DESCRIPTIONS,
-                                                         THROWABLE_COMPOSITE_INDEX_TYPES);
+                    THROWABLE_COMPOSITE_INDEX_DESCRIPTIONS,
+                    THROWABLE_COMPOSITE_INDEX_TYPES);
         }
 
         return THROWABLE_COMPOSITE_TYPE;

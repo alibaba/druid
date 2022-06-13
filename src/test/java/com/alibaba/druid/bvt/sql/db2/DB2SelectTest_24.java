@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2SelectTest_24 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT BANK_CODE, CONN_LOCATION_TYPE,\n" +
                 "OUTER_KEYLABEL_NAME, INNER_KEYLABEL_NAME,\n" +
@@ -64,12 +63,12 @@ public class DB2SelectTest_24 extends DB2Test {
                         "\t, COMMENT, STATUS, DB_TIMESTAMP\n" +
                         "FROM EGL_SYS_KEYLABEL_CONVERT_DEF\n" +
                         "WHERE STATUS = '1'", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("select BANK_CODE, CONN_LOCATION_TYPE, OUTER_KEYLABEL_NAME, INNER_KEYLABEL_NAME, DESC\n" +
                         "\t, COMMENT, STATUS, DB_TIMESTAMP\n" +
                         "from EGL_SYS_KEYLABEL_CONVERT_DEF\n" +
                         "where STATUS = '1'", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

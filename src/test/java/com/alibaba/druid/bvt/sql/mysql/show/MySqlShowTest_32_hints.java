@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import java.util.List;
 
 public class MySqlShowTest_32_hints extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "/* +TDDL:scan()*/show index from drds_shard;";
 

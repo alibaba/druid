@@ -44,19 +44,18 @@ public class JdbcUtilsTest extends TestCase {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
-    
+
     public void test_print() throws Exception {
         final AtomicInteger nextCount = new AtomicInteger(2);
 
         final MockResultSetMetaData rsMeta = new MockResultSetMetaData() {
+            private int[] types = new int[]{Types.DATE, Types.BIT, Types.BOOLEAN, Types.TINYINT,
 
-            private int[] types = new int[] { Types.DATE, Types.BIT, Types.BOOLEAN, Types.TINYINT,
+                    Types.SMALLINT, Types.INTEGER, Types.CLOB, Types.LONGVARCHAR, Types.OTHER,
 
-                                Types.SMALLINT, Types.INTEGER, Types.CLOB, Types.LONGVARCHAR, Types.OTHER,
+                    Types.VARCHAR, Types.CHAR, Types.NVARCHAR, Types.NCHAR
 
-                                Types.VARCHAR, Types.CHAR, Types.NVARCHAR, Types.NCHAR
-
-                                };
+            };
 
             @Override
             public int getColumnCount() throws SQLException {
@@ -75,7 +74,6 @@ public class JdbcUtilsTest extends TestCase {
         };
 
         MockResultSet rs = new MockResultSet(null) {
-
             @Override
             public boolean next() throws SQLException {
                 return nextCount.getAndDecrement() > 0;
@@ -113,35 +111,30 @@ public class JdbcUtilsTest extends TestCase {
         JdbcUtils.close((ResultSet) null);
 
         JdbcUtils.close(new MockConnection() {
-
             @Override
             public void close() throws SQLException {
                 throw new SQLException();
             }
         });
         JdbcUtils.close(new MockStatement(null) {
-
             @Override
             public void close() throws SQLException {
                 throw new SQLException();
             }
         });
         JdbcUtils.close(new MockResultSet(null) {
-
             @Override
             public void close() throws SQLException {
                 throw new SQLException();
             }
         });
         JdbcUtils.close(new Closeable() {
-
             @Override
             public void close() throws IOException {
                 throw new IOException();
             }
         });
         JdbcUtils.close(new Closeable() {
-
             @Override
             public void close() throws IOException {
             }
@@ -194,7 +187,6 @@ public class JdbcUtilsTest extends TestCase {
             Exception error = null;
             try {
                 Utils.read(new Reader() {
-
                     @Override
                     public int read(char[] cbuf, int off, int len) throws IOException {
                         throw new IOException();
@@ -215,7 +207,6 @@ public class JdbcUtilsTest extends TestCase {
             Exception error = null;
             try {
                 Utils.read(new Reader() {
-
                     @Override
                     public int read(char[] cbuf, int off, int len) throws IOException {
                         throw new IOException();
@@ -235,7 +226,6 @@ public class JdbcUtilsTest extends TestCase {
 
         {
             String text = Utils.read(new Reader() {
-
                 @Override
                 public int read(char[] cbuf, int off, int len) throws IOException {
                     return -1;
@@ -251,7 +241,6 @@ public class JdbcUtilsTest extends TestCase {
         }
         {
             String text = Utils.read(new Reader() {
-
                 @Override
                 public int read(char[] cbuf, int off, int len) throws IOException {
                     for (int i = off; i < len; ++i) {
@@ -270,7 +259,6 @@ public class JdbcUtilsTest extends TestCase {
         }
         {
             Reader reader = new Reader() {
-
                 @Override
                 public int read(char[] cbuf, int off, int len) throws IOException {
                     cbuf[off] = 'A';

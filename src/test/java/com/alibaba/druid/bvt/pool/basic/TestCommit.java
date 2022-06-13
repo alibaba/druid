@@ -27,8 +27,7 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestCommit extends TestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

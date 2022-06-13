@@ -25,7 +25,6 @@ import com.alibaba.druid.wall.spi.OracleWallProvider;
  * @author wenshao
  */
 public class WallDenySchemaTest extends TestCase {
-
     public void testORACLE() throws Exception {
         String sql = "SELECT * FROM T UNION SELECT F1, F2 FROM ALL_ALL_TABLES";
 

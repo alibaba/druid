@@ -19,10 +19,10 @@ public class TransactionTest extends TestCase {
     protected void tearDown() throws Exception {
         dataSource.close();
     }
-    
+
     public void test_txn() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         conn.setAutoCommit(false);
         for (int i = 0; i < 100; ++i) {
             PreparedStatement stmt = conn.prepareStatement("select + " + (i % 10));

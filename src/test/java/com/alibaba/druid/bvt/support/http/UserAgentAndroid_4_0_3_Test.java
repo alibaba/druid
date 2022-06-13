@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.support.http.stat.WebAppStat;
 
 public class UserAgentAndroid_4_0_3_Test extends TestCase {
-
     public void test_mac_firefox() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30");

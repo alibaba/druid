@@ -29,13 +29,11 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OnlineSQLTest2 extends TestCase {
-
-    private String url      = "jdbc:mysql://a.b.c.d/dragoon_v25_monitordb_test";
-    private String user     = "dragoon";
+    private String url = "jdbc:mysql://a.b.c.d/dragoon_v25_monitordb_test";
+    private String user = "dragoon";
     private String password = "dragoon";
 
     public void test_list_sql() throws Exception {
-
         Connection conn = DriverManager.getConnection(url, user, password);
 
         int count = 0;
@@ -53,7 +51,7 @@ public class OnlineSQLTest2 extends TestCase {
             boolean sqlFlag = false;
             String lowerSql = value.toLowerCase();
             if (lowerSql.startsWith("insert") || lowerSql.startsWith("select") || lowerSql.startsWith("upate")
-                || lowerSql.startsWith("delete") || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
+                    || lowerSql.startsWith("delete") || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
                 sqlFlag = true;
             }
 
@@ -79,7 +77,7 @@ public class OnlineSQLTest2 extends TestCase {
         boolean sqlFlag = false;
         String lowerSql = sql.toLowerCase();
         if (lowerSql.startsWith("insert") || lowerSql.startsWith("select") || lowerSql.startsWith("upate")
-            || lowerSql.startsWith("delete") || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
+                || lowerSql.startsWith("delete") || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
             sqlFlag = true;
         }
 

@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class CastFunctionsAndOperatorsTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT 'a' = 'A'";
 
@@ -82,7 +81,7 @@ public class CastFunctionsAndOperatorsTest extends TestCase {
         String text = output(stmtList);
 
         assertEquals("SELECT 'A' LIKE CONVERT(blob_col USING latin1) COLLATE latin1_german1_ci\nFROM tbl_name;",
-                            text);
+                text);
     }
 
     public void test_5() throws Exception {

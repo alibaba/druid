@@ -27,16 +27,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
-
     private String text;
 
     private transient Number val;
 
-    public SQLBinaryExpr(){
-
+    public SQLBinaryExpr() {
     }
 
-    public SQLBinaryExpr(String value){
+    public SQLBinaryExpr(String value) {
         super();
         this.text = value;
     }

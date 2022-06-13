@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest105 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE DIMENSION TABLE tpch_junlan.nation (\n" +
                 "  n_nationkey int NOT NULL COMMENT '',\n" +
@@ -22,18 +21,18 @@ public class MySqlCreateTableTest105 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(5, stmt.getTableElementList().size());
 
         assertEquals("CREATE DIMENSION TABLE tpch_junlan.nation (\n"
-                     + "\tn_nationkey int NOT NULL COMMENT '',\n"
-                     + "\tn_name varchar NOT NULL COMMENT '',\n"
-                     + "\tn_regionkey int NOT NULL COMMENT '',\n"
-                     + "\tn_comment varchar COMMENT '',\n"
-                     + "\tPRIMARY KEY (N_NATIONKEY)\n"
-                     + ")\n"
-                     + "OPTIONS (UPDATETYPE = 'realtime') COMMENT ''", stmt.toString());
+                + "\tn_nationkey int NOT NULL COMMENT '',\n"
+                + "\tn_name varchar NOT NULL COMMENT '',\n"
+                + "\tn_regionkey int NOT NULL COMMENT '',\n"
+                + "\tn_comment varchar COMMENT '',\n"
+                + "\tPRIMARY KEY (N_NATIONKEY)\n"
+                + ")\n"
+                + "OPTIONS (UPDATETYPE = 'realtime') COMMENT ''", stmt.toString());
     }
 }

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest61 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "Select column_expression from sys.ALL_IND_EXPRESSIONS where column_position =: cp"; //

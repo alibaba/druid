@@ -68,7 +68,6 @@ public class OracleXmlColumnProperties extends OracleSQLObjectImpl {
 
         @Override
         public void accept0(OracleASTVisitor visitor) {
-
         }
 
         public boolean isSecureFile() {

@@ -29,7 +29,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlInsertTest_36 extends TestCase {
-
     public void test_insert_0() throws Exception {
         String sql = "insert into -- @@@\n" +
                 " tablex(id, value) -- @@@\n" +

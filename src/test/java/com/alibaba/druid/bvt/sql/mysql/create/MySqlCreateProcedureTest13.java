@@ -25,12 +25,11 @@ import org.apache.ibatis.jdbc.SQL;
 import java.util.List;
 
 public class MySqlCreateProcedureTest13 extends MysqlTest {
-
     public void test_0() throws Exception {
-    	String sql = "create procedure foo(param1 int unsigned) contains sql begin select param1; end";
+        String sql = "create procedure foo(param1 int unsigned) contains sql begin select param1; end";
 
-    	List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-    	SQLStatement stmt = statementList.get(0);
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
+        SQLStatement stmt = statementList.get(0);
 //    	print(statementList);
         assertEquals(1, statementList.size());
 
@@ -51,11 +50,10 @@ public class MySqlCreateProcedureTest13 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
     }
 
-    
 }

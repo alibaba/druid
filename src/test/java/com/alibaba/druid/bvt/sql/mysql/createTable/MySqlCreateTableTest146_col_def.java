@@ -10,38 +10,33 @@ import java.util.List;
 /**
  * @version 1.0
  * @ClassName MySqlCreateTableTest146_col_def
- * @description
- *
- * column_definition:
- *     data_type [NOT NULL | NULL] [DEFAULT default_value]
- *       [AUTO_INCREMENT] [UNIQUE [KEY]] [[PRIMARY] KEY]
- *       [COMMENT 'string']
- *       [COLLATE collation_name]
- *       [COLUMN_FORMAT {FIXED|DYNAMIC|DEFAULT}]
- *       [STORAGE {DISK|MEMORY}]
- *       [reference_definition]
- *   | data_type
- *       [COLLATE collation_name]
- *       [GENERATED ALWAYS] AS (expr)
- *       [VIRTUAL | STORED] [NOT NULL | NULL]
- *       [UNIQUE [KEY]] [[PRIMARY] KEY]
- *       [COMMENT 'string']
- *       [reference_definition]
- *
+ * @description column_definition:
+ * data_type [NOT NULL | NULL] [DEFAULT default_value]
+ * [AUTO_INCREMENT] [UNIQUE [KEY]] [[PRIMARY] KEY]
+ * [COMMENT 'string']
+ * [COLLATE collation_name]
+ * [COLUMN_FORMAT {FIXED|DYNAMIC|DEFAULT}]
+ * [STORAGE {DISK|MEMORY}]
+ * [reference_definition]
+ * | data_type
+ * [COLLATE collation_name]
+ * [GENERATED ALWAYS] AS (expr)
+ * [VIRTUAL | STORED] [NOT NULL | NULL]
+ * [UNIQUE [KEY]] [[PRIMARY] KEY]
+ * [COMMENT 'string']
+ * [reference_definition]
  * @Author zzy
  * @Date 2019-05-14 10:14
  */
 public class MySqlCreateTableTest146_col_def extends TestCase {
-
     public void test_0() throws Exception {
-
         String sql = "create table tb_dxdd (" +
                 "`a` varchar(10) not null default 'val' comment 'hehe' collate utf8_unicode_ci column_format default storage disk references tb_ref (a) match full on delete cascade on update cascade" +
                 ");";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -69,7 +64,7 @@ public class MySqlCreateTableTest146_col_def extends TestCase {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -87,7 +82,7 @@ public class MySqlCreateTableTest146_col_def extends TestCase {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

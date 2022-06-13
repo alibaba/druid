@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class SQLServerInsertTest10 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO DataDB..TBL_TEST_7 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 

@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.mock.MockDriver;
 
 public class FakeDriverTest extends TestCase {
-
     public void test_0() throws Exception {
         String url = "jdbc:fake:x1";
         Properties info = new Properties();

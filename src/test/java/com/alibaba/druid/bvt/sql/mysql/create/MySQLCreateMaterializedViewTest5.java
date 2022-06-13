@@ -24,18 +24,17 @@ import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.stat.TableStat;
 
 public class MySQLCreateMaterializedViewTest5 extends MysqlTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE MATERIALIZED VIEW mymv (\n" +
-                "  PRIMARY KEY(id)\n" +
-                ")\n" +
-                "DISTRIBUTED BY HASH (id)\n" +
-                "REFRESH COMPLETE ON DEMAND\n" +
-                "START WITH '2020-08-20 14:50:00'\n" +
-                "NEXT current_date() + INTERVAL 15 DAY\n" +
-                "ENABLE QUERY REWRITE\n" +
-                "AS SELECT id FROM base;";
+                "CREATE MATERIALIZED VIEW mymv (\n" +
+                        "  PRIMARY KEY(id)\n" +
+                        ")\n" +
+                        "DISTRIBUTED BY HASH (id)\n" +
+                        "REFRESH COMPLETE ON DEMAND\n" +
+                        "START WITH '2020-08-20 14:50:00'\n" +
+                        "NEXT current_date() + INTERVAL 15 DAY\n" +
+                        "ENABLE QUERY REWRITE\n" +
+                        "AS SELECT id FROM base;";
 
         SQLStatement stmt = SQLUtils.parseSingleMysqlStatement(sql);
 

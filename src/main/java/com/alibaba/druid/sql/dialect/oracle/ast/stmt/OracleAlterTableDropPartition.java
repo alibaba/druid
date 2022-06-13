@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterTableDropPartition extends OracleAlterTableItem {
-
     private SQLName name;
 
     @Override

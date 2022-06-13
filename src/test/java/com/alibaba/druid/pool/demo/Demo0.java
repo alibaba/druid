@@ -23,15 +23,14 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JMXUtils;
 
 public class Demo0 extends TestCase {
-
     private String jdbcUrl;
     private String user;
     private String password;
     private String driverClass;
-    private int    initialSize = 10;
-    private int    minPoolSize = 1;
-    private int    maxPoolSize = 2;
-    private int    maxActive   = 2;
+    private int initialSize = 10;
+    private int minPoolSize = 1;
+    private int maxPoolSize = 2;
+    private int maxActive = 2;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";

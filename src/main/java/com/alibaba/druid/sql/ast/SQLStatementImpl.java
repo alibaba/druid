@@ -24,18 +24,17 @@ import com.alibaba.druid.sql.visitor.VisitorFeature;
 import java.util.List;
 
 public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLStatement {
-    protected DbType               dbType;
-    protected boolean              afterSemi;
+    protected DbType dbType;
+    protected boolean afterSemi;
     protected List<SQLCommentHint> headHints;
 
-    public SQLStatementImpl(){
-
+    public SQLStatementImpl() {
     }
-    
-    public SQLStatementImpl(DbType dbType){
+
+    public SQLStatementImpl(DbType dbType) {
         this.dbType = dbType;
     }
-    
+
     public DbType getDbType() {
         return dbType;
     }
@@ -47,7 +46,6 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
     public String toString() {
         return SQLUtils.toSQLString(this, dbType);
     }
-
 
     public String toString(VisitorFeature... features) {
         return SQLUtils.toSQLString(this, dbType, null, features);

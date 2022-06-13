@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest141 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE sbtest1 (\n" +
                 "id INTEGER UNSIGNED NOT NULL ,\n" +
@@ -20,7 +19,7 @@ public class MySqlCreateTableTest141 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -46,9 +45,6 @@ public class MySqlCreateTableTest141 extends MysqlTest {
                 "tbpartition by hash(id) tbpartitions 2", stmt.toLowerCaseString());
 
     }
-
-
-
 
 
 }

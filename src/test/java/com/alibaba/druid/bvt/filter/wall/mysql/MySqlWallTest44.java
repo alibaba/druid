@@ -24,18 +24,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest44 extends TestCase {
-
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertFalse(provider.checkValid(//
-        "SELECT * FROM pw_pushdata WHERE invokepieceid= '49'  AND ifverify=0 AND starttime<= '1365331510'  ORDER BY vieworder DESC,starttime DESC  LIMIT 0"));
+                "SELECT * FROM pw_pushdata WHERE invokepieceid= '49'  AND ifverify=0 AND starttime<= '1365331510'  ORDER BY vieworder DESC,starttime DESC  LIMIT 0"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

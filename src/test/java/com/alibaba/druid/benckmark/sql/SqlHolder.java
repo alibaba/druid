@@ -38,6 +38,7 @@ public class SqlHolder {
     private boolean isParam;
 
     public static SQLSelectListCache selectListCache = new SQLSelectListCache(JdbcConstants.MYSQL);
+
     static {
         selectListCache.add("select id as id,    gmt_create as gmtCreate,    gmt_modified as gmtModified,    name as name,    owner as owner,    type as type,    statement as statement,    datasource as datasource,    meta as meta,    param_file as paramFile,    sharable as sharable,    data_type as dataType,    status as status,    config as config,    project_id as projectId,    plugins as plugins,    field_compare as fieldCompare,    field_ext as fieldExt,    openx as openx   from");
         selectListCache.add("SELECT id, dispute_id, buyer_id, seller_id, total_fee, refund_fee, max_apply_goods_fee, apply_goods_fee, apply_carriage_fee, refund_goods_fee, refund_carriage_fee, refund_point, refund_coupon, refund_return_point, refund_cash, real_deduct_refund_point, real_refund_return_point, refund_return_commission, gmt_create, gmt_modified, attributes, attributes_cc FROM");

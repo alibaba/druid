@@ -12,14 +12,14 @@ import com.alibaba.druid.stat.TableStat;
 
 
 public class PGAlterTableDropDefault extends PGTest {
-    public void test_0 () throws Exception {
+    public void test_0() throws Exception {
         String sql = "ALTER TABLE products ALTER COLUMN price DROP DEFAULT;";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
-        
+
         Assert.assertEquals("ALTER TABLE products"
                 + "\n\tALTER COLUMN price DROP DEFAULT;", stmt.toString());
 
@@ -32,7 +32,7 @@ public class PGAlterTableDropDefault extends PGTest {
         System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("products")));
-        
+
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("products")).getDropCount() == 0);
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("products")).getAlterCount() == 1);
 

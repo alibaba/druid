@@ -26,12 +26,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest22 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE t1 (" + //
-                     "c1 INT STORAGE DISK," + //
-                     "c2 INT STORAGE MEMORY " + //
-                     ") TABLESPACE ts_1 ENGINE NDB;";
+                "c1 INT STORAGE DISK," + //
+                "c2 INT STORAGE MEMORY " + //
+                ") TABLESPACE ts_1 ENGINE NDB;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -56,9 +55,9 @@ public class MySqlCreateTableTest22 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE t1 (" + //
-                            "\n\tc1 INT STORAGE DISK," + //
-                            "\n\tc2 INT STORAGE MEMORY" + //
-                            "\n) TABLESPACE ts_1 ENGINE = NDB;", output);
+                "\n\tc1 INT STORAGE DISK," + //
+                "\n\tc2 INT STORAGE MEMORY" + //
+                "\n) TABLESPACE ts_1 ENGINE = NDB;", output);
 
     }
 }

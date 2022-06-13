@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_crossjoin extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select resource0_.resource_id as resource1_13_, resource0_.asMenu as asMenu13_, resource0_.resource_description as resource3_13_, resource0_.menu_name as menu4_13_, resource0_.resource_name as resource5_13_, resource0_.rg_id as rg7_13_, resource0_.rt_id as rt8_13_, resource0_.resource_serial as resource6_13_ from hnisitc.hnisitc_resource resource0_ cross join hnisitc.hnisitc_resource_type resourcety1_ where resource0_.rt_id=resourcety1_.rt_id and resourcety1_.rt_name='METHOD'";
 
@@ -36,14 +35,14 @@ public class MySqlSelectTest_crossjoin extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
 
         System.out.println(stmt);
-        
+
         SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
-        
+
         SQLSelect select = selectStmt.getSelect();
         Assert.assertNotNull(select.getQuery());
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
         Assert.assertNull(queryBlock.getOrderBy());
-        
+
 //        print(statementList);
 
         Assert.assertEquals(1, statementList.size());

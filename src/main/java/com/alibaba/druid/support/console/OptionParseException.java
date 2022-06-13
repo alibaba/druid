@@ -16,7 +16,6 @@
 package com.alibaba.druid.support.console;
 
 public class OptionParseException extends Exception {
-
     private static final long serialVersionUID = 1L;
 
     public OptionParseException(String msg) {
@@ -24,7 +23,7 @@ public class OptionParseException extends Exception {
     }
 
     public OptionParseException(String msg, Throwable cause) {
-        super(msg,cause);
+        super(msg, cause);
     }
 
     public OptionParseException(Throwable cause) {

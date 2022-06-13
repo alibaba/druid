@@ -26,7 +26,6 @@ import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PSCacheTest1 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -60,7 +59,7 @@ public class PSCacheTest1 extends TestCase {
             DruidPooledPreparedStatement pooledStmt2 = (DruidPooledPreparedStatement) stmt2;
 
             Assert.assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt2.getPreparedStatementHolder()); // not
-                                                                                                                      // same
+            // same
 
             conn.close();
         }
@@ -85,7 +84,7 @@ public class PSCacheTest1 extends TestCase {
             DruidPooledPreparedStatement pooledStmt2 = (DruidPooledPreparedStatement) stmt2;
 
             Assert.assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt2.getPreparedStatementHolder()); // not
-                                                                                                                      // same
+            // same
 
             stmt1.close();
             stmt2.close();
@@ -94,5 +93,5 @@ public class PSCacheTest1 extends TestCase {
         }
     }
 
-  
+
 }

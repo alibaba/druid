@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_18 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT host.id as id" //
                 + ",   host.item_id as itemId" //
@@ -57,7 +56,7 @@ public class MySqlSelectTest_18 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(14, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getConditions().size());

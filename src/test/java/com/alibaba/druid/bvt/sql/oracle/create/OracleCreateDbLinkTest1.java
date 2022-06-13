@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateDbLinkTest1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "create database link db_link connect to \"xxx\" identified by \"xxx\" using '(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))) (CONNECT_DATA = (SERVICE_NAME = orcl)))'"; //

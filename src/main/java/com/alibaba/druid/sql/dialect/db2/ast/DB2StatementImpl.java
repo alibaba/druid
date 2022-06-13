@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class DB2StatementImpl extends SQLStatementImpl implements DB2Object {
-
     public DB2StatementImpl() {
         super(DbType.db2);
     }

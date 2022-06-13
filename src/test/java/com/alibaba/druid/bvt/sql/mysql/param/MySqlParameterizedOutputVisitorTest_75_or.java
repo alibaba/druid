@@ -15,7 +15,6 @@ import java.util.List;
 
 public class MySqlParameterizedOutputVisitorTest_75_or extends TestCase {
     public void test_or() throws Exception {
-
         String sql = "select * from t1 where id = 1 or id = 2 or id = 3";
 
         List<Object> outParameters = new ArrayList<Object>(0);
@@ -31,7 +30,6 @@ public class MySqlParameterizedOutputVisitorTest_75_or extends TestCase {
     }
 
     public void test_or_2() throws Exception {
-
         String sql = "select * from t1 where id = 1 or id = 2 or id = 3";
 
         List<Object> outParameters = new ArrayList<Object>(0);

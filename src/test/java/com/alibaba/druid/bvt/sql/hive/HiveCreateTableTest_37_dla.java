@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_37_dla extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "create table dla_table1 like mapping('mysql_table1');"; //
 

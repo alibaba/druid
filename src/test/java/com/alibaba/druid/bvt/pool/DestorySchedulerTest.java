@@ -12,8 +12,7 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DestorySchedulerTest extends PoolTestCase {
-
-    private DruidDataSource          dataSource;
+    private DruidDataSource dataSource;
     private ScheduledExecutorService destroyScheduler;
 
     protected void setUp() throws Exception {
@@ -40,11 +39,11 @@ public class DestorySchedulerTest extends PoolTestCase {
         for (int i = 0; i < connections.length; ++i) {
             connections[i] = dataSource.getConnection();
         }
-        
+
         for (int i = 0; i < connections.length; ++i) {
             connections[i].close();
         }
-        
+
         Thread.sleep(100);
         Assert.assertEquals(0, dataSource.getPoolingCount());
     }

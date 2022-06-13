@@ -30,7 +30,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterExecuteTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -41,7 +40,6 @@ public class StatFilterExecuteTest extends TestCase {
         dataSource.setTestOnBorrow(false);
 
         MockDriver driver = new MockDriver() {
-
             public MockPreparedStatement createMockPreparedStatement(MockConnection conn, String sql) {
                 return new MyMockPreparedStatement(conn, sql);
             }
@@ -57,16 +55,15 @@ public class StatFilterExecuteTest extends TestCase {
     }
 
     public void test_stat() throws Exception {
-
         Assert.assertTrue(dataSource.isInited());
         final String sql = "update x";
-        
+
         Connection conn = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement(sql);
-        
+
         Assert.assertEquals(0, dataSource.getDataSourceStat().getSqlStat(sql).getExecuteAndResultHoldTimeHistogramSum());
-        
+
         boolean firstResult = stmt.execute();
         Assert.assertFalse(firstResult);
 
@@ -82,8 +79,7 @@ public class StatFilterExecuteTest extends TestCase {
     }
 
     static class MyMockPreparedStatement extends MockPreparedStatement {
-
-        public MyMockPreparedStatement(MockConnection conn, String sql){
+        public MyMockPreparedStatement(MockConnection conn, String sql) {
             super(conn, sql);
         }
 

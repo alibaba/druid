@@ -15,30 +15,29 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.PreparedStatement;
-
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
+
+import java.sql.PreparedStatement;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public final class PreparedStatementHolder {
-
     public final PreparedStatementKey key;
-    public final PreparedStatement    statement;
-    private int                       hitCount                 = 0;
+    public final PreparedStatement statement;
+    private int hitCount;
 
-    private int                       fetchRowPeak             = -1;
+    private int fetchRowPeak = -1;
 
-    private int                       defaultRowPrefetch       = -1;
-    private int                       rowPrefetch              = -1;
+    private int defaultRowPrefetch = -1;
+    private int rowPrefetch = -1;
 
-    private boolean                   enterOracleImplicitCache = false;
+    private boolean enterOracleImplicitCache;
 
-    private int                       inUseCount               = 0;
-    private boolean                   pooling                  = false;
+    private int inUseCount;
+    private boolean pooling;
 
-    public PreparedStatementHolder(PreparedStatementKey key, PreparedStatement stmt){
+    public PreparedStatementHolder(PreparedStatementKey key, PreparedStatement stmt) {
         this.key = key;
         this.statement = stmt;
     }

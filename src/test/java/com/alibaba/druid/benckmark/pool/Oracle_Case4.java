@@ -35,24 +35,23 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class Oracle_Case4 extends TestCase {
+    private String jdbcUrl;
+    private String user;
+    private String password;
+    private String driverClass;
+    private int maxIdle = 40;
+    private int maxActive = 50;
+    private int maxWait = 5000;
+    private String validationQuery = "SELECT 1 FROM DUAL";
+    private int threadCount = 1;
+    private int loopCount = 5;
+    final int LOOP_COUNT = 1000 * 1;
+    private boolean testOnBorrow = false;
+    private boolean preparedStatementCache = true;
+    private int preparedStatementCacheSize = 50;
+    private String properties = "defaultRowPrefetch=50";
 
-    private String  jdbcUrl;
-    private String  user;
-    private String  password;
-    private String  driverClass;
-    private int     maxIdle                    = 40;
-    private int     maxActive                  = 50;
-    private int     maxWait                    = 5000;
-    private String  validationQuery            = "SELECT 1 FROM DUAL";
-    private int     threadCount                = 1;
-    private int     loopCount                  = 5;
-    final int       LOOP_COUNT                 = 1000 * 1;
-    private boolean testOnBorrow               = false;
-    private boolean preparedStatementCache     = true;
-    private int     preparedStatementCacheSize = 50;
-    private String  properties = "defaultRowPrefetch=50";
-
-    private String  SQL;
+    private String SQL;
 
     protected void setUp() throws Exception {
 //         jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
@@ -111,7 +110,7 @@ public class Oracle_Case4 extends TestCase {
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
         dataSource.setConnectionProperties(properties);
-        
+
 //        printAV_INFO(dataSource);
 
         for (int i = 0; i < loopCount; ++i) {
@@ -148,7 +147,7 @@ public class Oracle_Case4 extends TestCase {
     protected void printTables(DruidDataSource dataSource) throws SQLException {
         Connection conn = dataSource.getConnection();
 
-        ResultSet rs = conn.getMetaData().getTables(null, "ALIBABA", null, new String[] { "TABLE" });
+        ResultSet rs = conn.getMetaData().getTables(null, "ALIBABA", null, new String[]{"TABLE"});
         JdbcUtils.printResultSet(rs);
         rs.close();
 
@@ -156,21 +155,19 @@ public class Oracle_Case4 extends TestCase {
     }
 
     private void p0(final DataSource dataSource, String name, int threadCount) throws Exception {
-
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; ++i) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         startLatch.await();
 
                         for (int i = 0; i < LOOP_COUNT; ++i) {
                             Connection conn = dataSource.getConnection();
-                            
+
                             int mod = i % 500;
-                            
+
                             String sql = SQL; // + " AND ROWNUM <= " + (mod + 1);
                             PreparedStatement stmt = conn.prepareStatement(sql);
                             stmt.setInt(1, 61);
@@ -206,6 +203,6 @@ public class Oracle_Case4 extends TestCase {
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
         System.out.println("thread " + threadCount + " " + name + " millis : "
-                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+                + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }

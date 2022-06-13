@@ -15,9 +15,9 @@
  */
 package com.alibaba.druid.pool.ha;
 
-import java.sql.SQLException;
-
 import com.alibaba.druid.pool.DruidDataSource;
+
+import java.sql.SQLException;
 
 /**
  * An utility class to create DruidDataSource dynamically.
@@ -25,7 +25,6 @@ import com.alibaba.druid.pool.DruidDataSource;
  * @author DigitalSonic
  */
 public class DataSourceCreator {
-
     public static DruidDataSource create(String name, String url, String username, String password,
                                          HighAvailableDataSource haDataSource) throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();

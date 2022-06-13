@@ -30,16 +30,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OdpsUnloadStatement extends SQLStatementImpl {
-
     protected final List<SQLAssignItem> serdeProperties = new ArrayList<SQLAssignItem>();
-    protected final List<SQLAssignItem> properties    = new ArrayList<SQLAssignItem>();
+    protected final List<SQLAssignItem> properties = new ArrayList<SQLAssignItem>();
     private final List<SQLAssignItem> partitions = new ArrayList<SQLAssignItem>();
     protected SQLExpr location;
     protected SQLExternalRecordFormat rowFormat;
     protected SQLExpr storedAs;
     private SQLTableSource from;
 
-    public OdpsUnloadStatement(){
+    public OdpsUnloadStatement() {
         super(DbType.odps);
     }
 

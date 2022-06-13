@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest15 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT CURRENT_TIMESTAMP(6) AT TIME ZONE 'PST' FROM \"DUAL\" \"A1\""; //
 

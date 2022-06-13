@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import java.util.List;
 
 public class PGInsertTest14 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "insert into wf_task_geom\n" +
                 "    (task_id,geom_in_gds,polygon,lseg)\n" +

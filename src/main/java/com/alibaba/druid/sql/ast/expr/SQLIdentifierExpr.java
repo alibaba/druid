@@ -27,21 +27,20 @@ import java.util.Collections;
 import java.util.List;
 
 public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Comparable<SQLIdentifierExpr> {
-    protected String    name;
-    private   long      hashCode64;
+    protected String name;
+    private long hashCode64;
 
-    private   SQLObject resolvedColumn;
-    private   SQLObject resolvedOwnerObject;
+    private SQLObject resolvedColumn;
+    private SQLObject resolvedOwnerObject;
 
-    public SQLIdentifierExpr(){
-
+    public SQLIdentifierExpr() {
     }
 
-    public SQLIdentifierExpr(String name){
+    public SQLIdentifierExpr(String name) {
         this.name = name;
     }
 
-    public SQLIdentifierExpr(String name, long hash_lower){
+    public SQLIdentifierExpr(String name, long hash_lower) {
         this.name = name;
         this.hashCode64 = hash_lower;
     }
@@ -102,7 +101,7 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
     @Override
     public int hashCode() {
         long value = hashCode64();
-        return (int)(value ^ (value >>> 32));
+        return (int) (value ^ (value >>> 32));
     }
 
     @Override
@@ -134,7 +133,7 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
     public SQLIdentifierExpr simplify() {
         String normalized = SQLUtils.normalize(name);
         if (normalized != name) {
-           return new SQLIdentifierExpr(normalized, hashCode64);
+            return new SQLIdentifierExpr(normalized, hashCode64);
         }
         return this;
     }

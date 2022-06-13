@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.List;
 
 public class SQLAlterTableAlterIndex extends SQLObjectImpl implements SQLAlterTableItem, SQLIndex {
-
     private SQLIndexDefinition indexDefinition = new SQLIndexDefinition();
 
     public SQLAlterTableAlterIndex() {

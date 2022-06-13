@@ -12,10 +12,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleGroupingSetsTest extends OracleTest {
-
     public void test_grouping_sets() throws Exception {
         String sql = //
-        "select department_id,job_id,avg(salary) from hr.employees group by grouping sets ((department_id,job_id));";
+                "select department_id,job_id,avg(salary) from hr.employees group by grouping sets ((department_id,job_id));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

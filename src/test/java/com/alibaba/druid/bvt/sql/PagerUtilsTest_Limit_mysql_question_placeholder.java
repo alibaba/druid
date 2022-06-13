@@ -13,26 +13,25 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PagerUtilsTest_Limit_mysql_question_placeholder extends TestCase {
-
-    public void  testQuestionLimitPlaceholder1(){
+    public void testQuestionLimitPlaceholder1() {
         String sql = "select * from test_table limit ?";
         testQuestionLimitPlaceholderInternal(sql);
     }
 
-    public void  testQuestionLimitPlaceholder2(){
+    public void testQuestionLimitPlaceholder2() {
         String sql = "select * from test_table limit 0, ?";
         testQuestionLimitPlaceholderInternal(sql);
     }
 
-    private void testQuestionLimitPlaceholderInternal(String sql){
+    private void testQuestionLimitPlaceholderInternal(String sql) {
         List<SQLStatement> statements;
-        try{
+        try {
             statements = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        }catch(ParserException e){
+        } catch (ParserException e) {
             Assert.fail(e.getMessage());
             return;
         }
-        if (statements == null || statements.isEmpty()){
+        if (statements == null || statements.isEmpty()) {
             Assert.fail("no sql found!");
             return;
         }
@@ -40,7 +39,7 @@ public class PagerUtilsTest_Limit_mysql_question_placeholder extends TestCase {
             Assert.fail("sql not support count : " + sql);
             return;
         }
-        SQLSelectStatement statement = (SQLSelectStatement)statements.get(0);
+        SQLSelectStatement statement = (SQLSelectStatement) statements.get(0);
         if (!(statement instanceof SQLSelectStatement)) {
             Assert.fail("sql not support count : " + sql);
             return;

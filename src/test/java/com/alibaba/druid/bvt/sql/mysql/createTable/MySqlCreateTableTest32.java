@@ -26,11 +26,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest32 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE lookup" + //
-                     "  (id INT, INDEX USING BTREE (id))" + //
-                     "  DATA DIRECTORY = 'aaa';"; //
+                "  (id INT, INDEX USING BTREE (id))" + //
+                "  DATA DIRECTORY = 'aaa';"; //
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -55,9 +54,9 @@ public class MySqlCreateTableTest32 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE lookup (" + //
-                            "\n\tid INT," + //
-                            "\n\tINDEX USING BTREE(id)" + //
-                            "\n) DATA DIRECTORY = 'aaa';", output);
+                "\n\tid INT," + //
+                "\n\tINDEX USING BTREE(id)" + //
+                "\n) DATA DIRECTORY = 'aaa';", output);
 
     }
 }

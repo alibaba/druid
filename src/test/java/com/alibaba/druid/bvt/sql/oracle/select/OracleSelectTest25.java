@@ -24,10 +24,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest25 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "SELECT NULL FROM DUAL FOR UPDATE NOWAIT"; //
+                "SELECT NULL FROM DUAL FOR UPDATE NOWAIT"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

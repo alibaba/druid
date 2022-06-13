@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 
 public class MySqlSelectTest_249 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select CAST(t.a AS ROW(v1 varchar, v2 varchar)) from ( select t.a from (     select cast(json_extract('{\"x\":[{\"a\":1,\"b\":2},{\"a\":3,\"b\":4}]}', '$.x') as array<JSON>) as package_array ) CROSS JOIN unnest(package_array) AS t(a) )";
 
@@ -38,7 +37,6 @@ public class MySqlSelectTest_249 extends MysqlTest {
                 "\t\tCROSS JOIN UNNEST(package_array) AS t (a)\n" +
                 ")", stmt.toString());
     }
-
 
 
 }

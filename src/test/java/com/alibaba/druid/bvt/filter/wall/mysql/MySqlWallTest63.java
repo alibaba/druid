@@ -24,13 +24,12 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest63 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
@@ -39,10 +38,10 @@ public class MySqlWallTest63 extends TestCase {
         provider.setWhiteListEnable(false);
 
         Assert.assertTrue(provider.checkValid(//
-        "SELECT FID, FNAME FROM T WHERE C=1 UNION SELECT 1, 'AAA'"));
+                "SELECT FID, FNAME FROM T WHERE C=1 UNION SELECT 1, 'AAA'"));
 
         Assert.assertFalse(provider.checkValid(//
-        "SELECT FID, FNAME FROM T WHERE C=1 UNION SELECT 1, 'AAA' --"));
+                "SELECT FID, FNAME FROM T WHERE C=1 UNION SELECT 1, 'AAA' --"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

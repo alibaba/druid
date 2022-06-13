@@ -6,7 +6,6 @@ import java.text.NumberFormat;
 import junit.framework.TestCase;
 
 public class MemoryTest extends TestCase {
-
     public void test_0() throws Exception {
         A item = new A();
         gc();

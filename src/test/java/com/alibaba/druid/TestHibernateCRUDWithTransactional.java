@@ -8,5 +8,4 @@ import junit.framework.TestCase;
  */
 public class TestHibernateCRUDWithTransactional extends TestCase {
 
-
 }

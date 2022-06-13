@@ -23,8 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Concat implements Function {
-
-    public final static Concat instance = new Concat();
+    public static final Concat instance = new Concat();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         StringBuilder buf = new StringBuilder();

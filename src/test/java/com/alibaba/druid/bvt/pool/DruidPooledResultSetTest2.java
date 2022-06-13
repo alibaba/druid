@@ -26,7 +26,6 @@ import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidPooledResultSetTest2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

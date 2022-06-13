@@ -24,10 +24,9 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleDropSynonymTest_0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "DROP PUBLIC SYNONYM customers;";
+                "DROP PUBLIC SYNONYM customers;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

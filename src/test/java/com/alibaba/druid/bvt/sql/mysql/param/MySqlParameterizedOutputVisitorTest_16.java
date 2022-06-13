@@ -40,8 +40,6 @@ public class MySqlParameterizedOutputVisitorTest_16 extends TestCase {
                 "\t, ?, ?, ?, ?, ?\n" +
                 "\t, ?, ?, ?, ?, ?)", psql);
 
-
-
         StringBuilder out = new StringBuilder();
         ExportParameterVisitor visitor = new MySqlExportParameterVisitor(out);
         for (SQLStatement stmt : stmtList) {

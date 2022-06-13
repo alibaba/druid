@@ -6,7 +6,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlWallTest_hint extends TestCase {
-
     public void test_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setHintAllow(false);

@@ -36,7 +36,7 @@ public class PGSelectTest63 extends TestCase {
         assertEquals("SELECT *\n" +
                 "FROM a\n" +
                 "WHERE a.id IN (VALUES ((4096), (4097))", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select *\n" +
                 "from a\n" +
                 "where a.id in (values ((4096), (4097))", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

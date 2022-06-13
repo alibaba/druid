@@ -16,8 +16,7 @@
 package com.alibaba.druid.support.monitor.entity;
 
 public class MonitorApp {
-
-    private long   id;
+    private long id;
     private String domain;
     private String app;
 

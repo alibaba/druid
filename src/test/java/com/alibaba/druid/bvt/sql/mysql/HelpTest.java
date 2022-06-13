@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class HelpTest extends TestCase {
-
     public void test_help_0() throws Exception {
         String sql = "HELP 'contents'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

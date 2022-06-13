@@ -34,7 +34,6 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 
 public class OdpsResourceTest extends TestCase {
-
     public void test_0() throws Exception {
         exec_test("bvt/parser/odps-0.sql");
     }
@@ -50,11 +49,11 @@ public class OdpsResourceTest extends TestCase {
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
         String expect = null;
-        
+
         if (items.length > 1) {
             expect = items[1].trim();
         }
-        
+
         OdpsStatementParser parser = new OdpsStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -74,7 +73,6 @@ public class OdpsResourceTest extends TestCase {
     }
 
     void mergValidate(String sql, String expect) {
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
@@ -89,6 +87,5 @@ public class OdpsResourceTest extends TestCase {
 
         Assert.assertEquals(expect, out.toString());
     }
-
 
 }

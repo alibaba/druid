@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest54 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT orderseq.currval FROM emp t"; //
@@ -54,14 +53,14 @@ public class OracleSelectTest54 extends OracleTest {
             String text = SQLUtils.toOracleString(stmt);
 
             Assert.assertEquals("SELECT orderseq.CURRVAL" //
-                                + "\nFROM emp t", text);
+                    + "\nFROM emp t", text);
         }
 
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
             Assert.assertEquals("select orderseq.currval" //
-                                + "\nfrom emp t", text);
+                    + "\nfrom emp t", text);
         }
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

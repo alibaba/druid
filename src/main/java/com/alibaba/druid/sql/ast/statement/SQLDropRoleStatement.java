@@ -23,14 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropRoleStatement extends SQLStatementImpl implements SQLCreateStatement, SQLReplaceable {
-    private SQLName              name;
-    protected boolean            ifNotExists = false;
+    private SQLName name;
+    protected boolean ifNotExists;
 
-    public SQLDropRoleStatement(){
+    public SQLDropRoleStatement() {
     }
 
-    public SQLDropRoleStatement(DbType dbType){
-        super (dbType);
+    public SQLDropRoleStatement(DbType dbType) {
+        super(dbType);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class SQLDropRoleStatement extends SQLStatementImpl implements SQLCreateS
     public boolean isIfNotExists() {
         return ifNotExists;
     }
-    
+
     public void setIfNotExists(boolean ifNotExists) {
         this.ifNotExists = ifNotExists;
     }

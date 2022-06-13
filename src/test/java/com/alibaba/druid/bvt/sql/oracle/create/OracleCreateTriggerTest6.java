@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTriggerTest6 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE OR REPLACE TRIGGER XON_EPM.EPM_TG_FIRSTCHECK\n" +
@@ -109,7 +108,7 @@ public class OracleCreateTriggerTest6 extends OracleTest {
                         "\t\tEND IF;\n" +
                         "\tEND IF;\n" +
                         "END;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         Assert.assertEquals("CREATE OR REPLACE TRIGGER XON_EPM.EPM_TG_FIRSTCHECK\n" +
                         "\tAFTER INSERT OR UPDATE\n" +

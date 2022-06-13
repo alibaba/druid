@@ -57,7 +57,7 @@ public class PGSelectTest50 extends TestCase {
                 "\t\tSELECT menu_id\n" +
                 "\t\tFROM menuTemp\n" +
                 "\t);", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("delete from itsm_system_role_menu\n" +
                 "where menu_id in (\n" +
                 "\t\twith recursive menuTemp (menu_id, parent_id) as (\n" +

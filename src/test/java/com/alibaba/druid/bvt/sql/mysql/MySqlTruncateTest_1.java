@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlTruncateTest_1 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "truncate table city_list-- test";
 
@@ -61,7 +60,6 @@ public class MySqlTruncateTest_1 extends MysqlTest {
                     output);
         }
     }
-
 
 
 }

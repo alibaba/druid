@@ -24,15 +24,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OdpsSetLabelStatement extends OdpsStatementImpl {
+    private String label;
 
-    private String         label;
-
-    private SQLExpr        project;
-    private SQLExpr        user;
+    private SQLExpr project;
+    private SQLExpr user;
 
     private SQLTableSource table;
 
-    private List<SQLName>  columns = new ArrayList<SQLName>();
+    private List<SQLName> columns = new ArrayList<SQLName>();
 
     @Override
     protected void accept0(OdpsASTVisitor visitor) {

@@ -24,11 +24,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest9 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT res.restaurant_id, row_number() " + //
-                     "over (order by ST_Distance(res.restaurant_point,GeomFromEWKT(?))*111.12 ) as row_id " + //
-                     "FROM restaurant res where res.city_id = ? and res.is_delete =false and res.restaurant_id <1000000 limit 10";
+                "over (order by ST_Distance(res.restaurant_point,GeomFromEWKT(?))*111.12 ) as row_id " + //
+                "FROM restaurant res where res.city_id = ? and res.is_delete =false and res.restaurant_id <1000000 limit 10";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

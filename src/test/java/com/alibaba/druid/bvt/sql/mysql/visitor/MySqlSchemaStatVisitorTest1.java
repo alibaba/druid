@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlSchemaStatVisitorTest1 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "select a.name, b.name FROM users a, usergroups b on a.groupId = b.id";
 
@@ -84,10 +83,10 @@ public class MySqlSchemaStatVisitorTest1 extends TestCase {
 
         Assert.assertTrue(visitor.getColumn("users", "name").isSelect());
         Assert.assertTrue(visitor.getColumn("usergroups", "name").isSelect());
-        
+
         Assert.assertTrue(visitor.getColumn("users", "groupId").isJoin());
         Assert.assertTrue(visitor.getColumn("usergroups", "id").isJoin());
-        
+
         Assert.assertTrue(visitor.getColumn("users", "groupId").isWhere());
 
     }

@@ -22,7 +22,6 @@ import org.junit.Assert;
 import com.alibaba.druid.stat.JdbcSqlStat;
 
 public class SqlStatisticTest extends TestCase {
-
     public void test_sql_stat() throws Exception {
         JdbcSqlStat stat = new JdbcSqlStat("SELECT * FROM t_user");
         Assert.assertEquals(null, stat.getExecuteLastStartTime());

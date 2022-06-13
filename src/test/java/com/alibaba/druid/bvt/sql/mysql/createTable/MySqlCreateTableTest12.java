@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest12 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE 'test' ('blob_col' BLOB, INDEX(blob_col(10)));";
 
@@ -50,6 +49,6 @@ public class MySqlCreateTableTest12 extends MysqlTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
 
-         Assert.assertTrue(visitor.containsColumn("test", "blob_col"));
+        Assert.assertTrue(visitor.containsColumn("test", "blob_col"));
     }
 }

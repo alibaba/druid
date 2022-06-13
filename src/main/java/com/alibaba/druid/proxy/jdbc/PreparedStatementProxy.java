@@ -22,10 +22,9 @@ import java.util.Map;
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface PreparedStatementProxy extends PreparedStatement, StatementProxy {
-
     String getSql();
 
     PreparedStatement getRawObject();
-    
+
     Map<Integer, JdbcParameter> getParameters();
 }

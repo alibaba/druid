@@ -24,10 +24,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateSequenceTest_1_bugfix extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE SEQUENCE \"YDJC\".\"SEQ_ZW_DZFPKJRZ_RZBS\" START WITH ? INCREMENT BY ? MAXVALUE ? MINVALUE ? CACHE ?;";
+                "CREATE SEQUENCE \"YDJC\".\"SEQ_ZW_DZFPKJRZ_RZBS\" START WITH ? INCREMENT BY ? MAXVALUE ? MINVALUE ? CACHE ?;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

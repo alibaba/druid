@@ -24,7 +24,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGDeleteTest9 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "DELETE FROM ecc_cpr.ccg_gts_Boardlw i\n" +
                 "WHERE i.contract_header_id = ?";
@@ -47,10 +46,10 @@ public class PGDeleteTest9 extends PGTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("ecc_cpr.ccg_gts_Boardlw")));
 
-        assertEquals(1, visitor.getColumns().size() );
-        
+        assertEquals(1, visitor.getColumns().size());
+
         assertTrue(visitor.containsColumn("ecc_cpr.ccg_gts_Boardlw", "contract_header_id"));
     }
 
-    
+
 }

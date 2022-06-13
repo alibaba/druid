@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class OracleIsASetTest extends TestCase {
-
     public void test_is_a_set() throws Exception {
         String sql = "SELECT customer_id, cust_address_ntab FROM customers_demo WHERE cust_address_ntab IS A SET;";
 
@@ -34,7 +33,7 @@ public class OracleIsASetTest extends TestCase {
         String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT customer_id, cust_address_ntab\n" + "FROM customers_demo\n"
-                            + "WHERE cust_address_ntab IS A SET;", text);
+                + "WHERE cust_address_ntab IS A SET;", text);
 
         System.out.println(text);
     }

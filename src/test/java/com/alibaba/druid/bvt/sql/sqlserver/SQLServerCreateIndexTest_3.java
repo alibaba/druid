@@ -31,10 +31,9 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerCreateIndexTest_3 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE NONCLUSTERED INDEX IX_SalesPerson_SalesQuota_SalesYTD" //
-                     + "    ON Sales.SalesPerson (SalesQuota, SalesYTD);";
+                + "    ON Sales.SalesPerson (SalesQuota, SalesYTD);";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -43,8 +42,8 @@ public class SQLServerCreateIndexTest_3 extends TestCase {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("CREATE NONCLUSTERED INDEX IX_SalesPerson_SalesQuota_SalesYTD" //
-                            + " ON Sales.SalesPerson (SalesQuota, SalesYTD);", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + " ON Sales.SalesPerson (SalesQuota, SalesYTD);", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);

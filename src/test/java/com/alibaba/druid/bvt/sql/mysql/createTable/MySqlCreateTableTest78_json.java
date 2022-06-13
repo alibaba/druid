@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlCreateTableTest78_json extends MysqlTest {
-
     public void test_one() throws Exception {
         String sql = "CREATE TABLE t1 (jdoc JSON);";
 
@@ -32,7 +31,7 @@ public class MySqlCreateTableTest78_json extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         Column column = visitor.getColumn("t1", "jdoc");
         assertNotNull(column);
         assertEquals("JSON", column.getDataType());
@@ -43,7 +42,7 @@ public class MySqlCreateTableTest78_json extends MysqlTest {
                     "\tjdoc JSON\n" +
                     ")", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("create table t1 (\n" +

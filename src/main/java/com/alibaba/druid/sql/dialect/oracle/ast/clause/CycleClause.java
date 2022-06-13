@@ -23,11 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CycleClause extends OracleSQLObjectImpl {
-
     private final List<SQLExpr> aliases = new ArrayList<SQLExpr>();
-    private SQLExpr             mark;
-    private SQLExpr             value;
-    private SQLExpr             defaultValue;
+    private SQLExpr mark;
+    private SQLExpr value;
+    private SQLExpr defaultValue;
 
     public SQLExpr getMark() {
         return mark;
@@ -95,7 +94,7 @@ public class CycleClause extends OracleSQLObjectImpl {
         }
 
         if (defaultValue != null) {
-           setDefaultValue(defaultValue.clone());
+            setDefaultValue(defaultValue.clone());
         }
 
         return x;

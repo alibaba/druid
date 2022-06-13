@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import java.util.List;
 
 public class OracleSelectTest114 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "select ID AS A, \n" +
                 "    'a' AS,\n" +
@@ -65,5 +64,5 @@ public class OracleSelectTest114 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
     }
-   
+
 }

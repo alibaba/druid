@@ -23,7 +23,6 @@ import java.util.List;
  * @author zz [455910092@qq.com]
  */
 public class MySqlProcedureExecutor {
-
     public static int executeStatements(List<SQLStatement> list) {
         return 0;
     }

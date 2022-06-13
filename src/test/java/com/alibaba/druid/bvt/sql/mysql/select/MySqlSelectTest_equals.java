@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlSelectTest_equals extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select a from t where not a>1 and not b<1";
 
@@ -36,6 +35,7 @@ public class MySqlSelectTest_equals extends MysqlTest {
         assertNotSame(queryBlock, queryBlock2);
 
     }
+
     public void test_1() throws Exception {
         String sql = "select a from t where not a>1 and not b<1";
 

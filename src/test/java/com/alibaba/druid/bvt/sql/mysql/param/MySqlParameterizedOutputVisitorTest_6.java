@@ -20,7 +20,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 
 public class MySqlParameterizedOutputVisitorTest_6 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
-
     public void test_0() throws Exception {
         String sql = "SET autocommit=1";
         String paramSql = "SET autocommit = ?";

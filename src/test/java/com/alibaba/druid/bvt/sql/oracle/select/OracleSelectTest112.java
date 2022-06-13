@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import java.util.List;
 
 public class OracleSelectTest112 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT userid, idcardmult, organid FROM v_all_dyinfo WHERE (iscontact = :1 OR iscontact IS NULL) AND delflag = :2 AND zjhm = :3 AND dyzt NOT (?)";
 

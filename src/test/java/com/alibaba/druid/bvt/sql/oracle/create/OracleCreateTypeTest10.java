@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTypeTest10 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE type body connstrBycomma is\n" +
                 "      static function ODCIAggregateInitialize(sctx IN OUT connstrBycomma)\t\n" +
@@ -107,7 +106,7 @@ public class OracleCreateTypeTest10 extends OracleTest {
                         "\t\tRETURN ODCIConst.Success;\n" +
                         "\tEND;\n" +
                         "END",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

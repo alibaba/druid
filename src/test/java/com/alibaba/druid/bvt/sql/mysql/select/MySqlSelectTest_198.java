@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import java.util.List;
 
 public class MySqlSelectTest_198 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select `orders_text_date`.`o_clerk` as o_clerk, `orders_text_date`.`o_comment` as o_comment, `orders_text_date`.`o_custkey` as o_custkey, `orders_text_date`.`o_orderdate` as o_orderdate, `orders_text_date`.`o_orderkey` as o_orderkey , `orders_text_date`.`o_orderpriority` as o_orderpriority, `orders_text_date`.`o_orderstatus` as o_orderstatus, `orders_text_date`.`o_shippriority` as o_shippriority, `orders_text_date`.`o_totalprice` as o_totalprice from hive.oa1013022312866336_bj_tpch_10x_oss.orders_text_date limit 1000";
 
@@ -17,7 +16,7 @@ public class MySqlSelectTest_198 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql, SQLParserFeature.IgnoreNameQuotes);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

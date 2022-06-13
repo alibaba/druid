@@ -26,17 +26,16 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleMergeTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "MERGE INTO bonuses D" + //
-                     "   USING (SELECT employee_id, salary, department_id FROM employees" + //
-                     "   WHERE department_id = 80) S" + //
-                     "   ON (D.employee_id = S.employee_id)" + //
-                     "   WHEN MATCHED THEN UPDATE SET D.bonus = D.bonus + S.salary*0.01" + //
-                     "     DELETE WHERE (S.salary > 8000)" + //
-                     "   WHEN NOT MATCHED THEN INSERT (D.employee_id, D.bonus)" + //
-                     "     VALUES (S.employee_id, S.salary*0.01)" + //
-                     "     WHERE (S.salary <= 8000);";
+                "   USING (SELECT employee_id, salary, department_id FROM employees" + //
+                "   WHERE department_id = 80) S" + //
+                "   ON (D.employee_id = S.employee_id)" + //
+                "   WHEN MATCHED THEN UPDATE SET D.bonus = D.bonus + S.salary*0.01" + //
+                "     DELETE WHERE (S.salary > 8000)" + //
+                "   WHEN NOT MATCHED THEN INSERT (D.employee_id, D.bonus)" + //
+                "     VALUES (S.employee_id, S.salary*0.01)" + //
+                "     WHERE (S.salary <= 8000);";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -22,7 +22,7 @@ public class PGExportParameterVisitorTest extends TestCase {
         List<Object> parameters = new ArrayList<Object>();
         PGExportParameterVisitor visitor = new PGExportParameterVisitor(parameters);
         stmt.accept(visitor);
-        
+
         Assert.assertEquals(1, parameters.size());
         Assert.assertEquals(1, parameters.get(0));
     }

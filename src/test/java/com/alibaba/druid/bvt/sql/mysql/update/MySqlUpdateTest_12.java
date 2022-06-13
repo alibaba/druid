@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlUpdateTest_12 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "UPDATE t1\n" +
                 "INNER JOIN t2 ON t1.id = t2.id\n" +
@@ -66,7 +65,7 @@ public class MySqlUpdateTest_12 extends MysqlTest {
                             "\tINNER JOIN t3 cm ON t3.id2 = t1.id2\n" +
                             "SET gps_url = NULL\n" +
                             "WHERE t1.id = ?", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -75,7 +74,7 @@ public class MySqlUpdateTest_12 extends MysqlTest {
                             "\tinner join t3 cm on t3.id2 = t1.id2\n" +
                             "set gps_url = null\n" +
                             "where t1.id = ?", //
-                                output);
+                    output);
         }
 
         assertTrue(WallUtils.isValidateMySql(sql));

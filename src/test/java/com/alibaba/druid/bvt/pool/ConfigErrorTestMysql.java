@@ -25,7 +25,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 
 public class ConfigErrorTestMysql extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

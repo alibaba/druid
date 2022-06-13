@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLDefaultExpr extends SQLExprImpl implements SQLLiteralExpr {
-
     @Override
     public boolean equals(Object o) {
         return o instanceof SQLDefaultExpr;

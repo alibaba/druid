@@ -12,7 +12,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class QueryTimeoutTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -34,7 +33,7 @@ public class QueryTimeoutTest extends TestCase {
     public void test_queryTimeout() throws Exception {
         try {
             final Connection conn = dataSource.getConnection();
-            
+
             String sql = "SELECT sleep(1)";
             final CountDownLatch latch = new CountDownLatch(1);
             Thread thread = new Thread() {
@@ -49,17 +48,17 @@ public class QueryTimeoutTest extends TestCase {
                 }
             };
             thread.start();
-            
+
             latch.await();
             final PreparedStatement stmt = conn.prepareStatement(sql);
 //            stmt.setQueryTimeout(1);
-            
+
             final ResultSet rs = stmt.executeQuery();
             JdbcUtils.printResultSet(rs);
             rs.close();
             stmt.close();
             conn.close();
-            
+
         } catch (Exception e) {
             //
             e.printStackTrace();

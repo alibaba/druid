@@ -24,16 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchClause extends OracleSQLObjectImpl {
-
     public static enum Type {
         DEPTH, BREADTH
     }
 
-    private Type                          type;
+    private Type type;
 
     private final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
 
-    private SQLIdentifierExpr             orderingColumn;
+    private SQLIdentifierExpr orderingColumn;
 
     public Type getType() {
         return type;
@@ -46,7 +45,7 @@ public class SearchClause extends OracleSQLObjectImpl {
     public List<SQLSelectOrderByItem> getItems() {
         return items;
     }
-    
+
     public void addItem(SQLSelectOrderByItem item) {
         if (item != null) {
             item.setParent(this);

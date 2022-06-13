@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest13 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "WITH RECURSIVE t(n) AS ("
                 + "    VALUES (1)"

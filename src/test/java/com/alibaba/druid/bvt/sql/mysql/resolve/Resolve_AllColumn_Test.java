@@ -34,20 +34,18 @@ public class Resolve_AllColumn_Test extends TestCase {
         assertNotNull(expr.getResolvedColumn());
 
         new SQLASTVisitorAdapter() {
-          public boolean visit(SQLSelectQueryBlock queryBlock) {
-              final List<SQLSelectItem> selectList = queryBlock.getSelectList();
-              for (int i = 0; i < selectList.size(); i++) {
-                  final SQLSelectItem selectItem = selectList.get(i);
-                  final SQLExpr expr = selectItem.getExpr();
-                  if (expr instanceof SQLAllColumnExpr) {
+            public boolean visit(SQLSelectQueryBlock queryBlock) {
+                final List<SQLSelectItem> selectList = queryBlock.getSelectList();
+                for (int i = 0; i < selectList.size(); i++) {
+                    final SQLSelectItem selectItem = selectList.get(i);
+                    final SQLExpr expr = selectItem.getExpr();
+                    if (expr instanceof SQLAllColumnExpr) {
+                    } else if (expr instanceof SQLPropertyExpr && ((SQLPropertyExpr) expr).getName().equals("*")) {
+                    }
 
-                  } else if (expr instanceof SQLPropertyExpr && ((SQLPropertyExpr) expr).getName().equals("*")) {
-
-                  }
-
-              }
-              return true;
-          }
+                }
+                return true;
+            }
         };
     }
 

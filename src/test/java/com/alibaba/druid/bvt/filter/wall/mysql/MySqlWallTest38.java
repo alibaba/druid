@@ -25,18 +25,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest38 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid(//
-        "/* mysql-connector-java-5.1.20 ( Revision: tonci.grgin@oracle.com-20111003110438-qfydx066wsbydkbw ) */SELECT @@session.auto_increment_increment")); //
+                "/* mysql-connector-java-5.1.20 ( Revision: tonci.grgin@oracle.com-20111003110438-qfydx066wsbydkbw ) */SELECT @@session.auto_increment_increment")); //
 
         Assert.assertEquals(0, provider.getTableStats().size());
         System.out.println(JSONUtils.toJSONString(provider.getStatsMap()));

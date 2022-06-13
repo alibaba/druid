@@ -24,9 +24,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.List;
 
 public class MySqlAnalyzeStatement extends SQLAnalyzeTableStatement implements MySqlStatement {
-
-    private boolean                          noWriteToBinlog = false;
-    private boolean                          local           = false;
+    private boolean noWriteToBinlog;
+    private boolean local;
 
     public MySqlAnalyzeStatement() {
         super.dbType = DbType.mysql;

@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlInsertTest_13 extends MysqlTest {
-
     public void test_insert_rollback_on_fail() throws Exception {
         String sql = "insert into order (id, name) values (?, ?)";
 

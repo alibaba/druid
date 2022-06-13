@@ -26,28 +26,27 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateViewTest4 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "  CREATE OR REPLACE FORCE VIEW \"SC_001\".\"V_001\" (\"OBJ_OWNER\", \"OBJ_NAME\", \"OBJ_TYPE\", \"OBJ_ROWID\", \"DB_USER\", \"SID\", \"LOCK_TYPE\", \"ROW_WAIT_FILE#\", \"ROW_WAIT_BLOCK#\", \"ROW_WAIT_ROW#\") AS \n" +
-                "  SELECT owner obj_owner,\n" +
-                "       object_name obj_name,\n" +
-                "       object_type  obj_type,\n" +
-                "       dbms_rowid.rowid_create(1, row_wait_obj#, ROW_WAIT_FILE#,\n" +
-                "                               ROW_WAIT_BLOCK#,ROW_WAIT_ROW#) obj_rowid,\n" +
-                "       a.username db_user, a.SID SID, a.TYPE lock_type,\n" +
-                "       a.row_wait_file#, a.row_wait_block#, a.row_wait_row#\n" +
-                "  FROM TB_001,\n" +
-                "       (SELECT /*+ no_merge(a) no_merge(b) */\n" +
-                "               a.username, a.SID, a.row_wait_obj#, a.ROW_WAIT_FILE#,\n" +
-                "               a.ROW_WAIT_BLOCK#, a.ROW_WAIT_ROW#, b.TYPE\n" +
-                "          FROM sys.V_$SESSION a, sys.V_$LOCK b\n" +
-                "         WHERE a.username IS NOT NULL\n" +
-                "           AND a.row_wait_obj# <> -1\n" +
-                "           AND a.SID = b.SID\n" +
-                "           AND b.TYPE IN ('TX','TM')\n" +
-                "           ) a\n" +
-                " WHERE object_id = a.row_wait_obj#   ";
+                "  CREATE OR REPLACE FORCE VIEW \"SC_001\".\"V_001\" (\"OBJ_OWNER\", \"OBJ_NAME\", \"OBJ_TYPE\", \"OBJ_ROWID\", \"DB_USER\", \"SID\", \"LOCK_TYPE\", \"ROW_WAIT_FILE#\", \"ROW_WAIT_BLOCK#\", \"ROW_WAIT_ROW#\") AS \n" +
+                        "  SELECT owner obj_owner,\n" +
+                        "       object_name obj_name,\n" +
+                        "       object_type  obj_type,\n" +
+                        "       dbms_rowid.rowid_create(1, row_wait_obj#, ROW_WAIT_FILE#,\n" +
+                        "                               ROW_WAIT_BLOCK#,ROW_WAIT_ROW#) obj_rowid,\n" +
+                        "       a.username db_user, a.SID SID, a.TYPE lock_type,\n" +
+                        "       a.row_wait_file#, a.row_wait_block#, a.row_wait_row#\n" +
+                        "  FROM TB_001,\n" +
+                        "       (SELECT /*+ no_merge(a) no_merge(b) */\n" +
+                        "               a.username, a.SID, a.row_wait_obj#, a.ROW_WAIT_FILE#,\n" +
+                        "               a.ROW_WAIT_BLOCK#, a.ROW_WAIT_ROW#, b.TYPE\n" +
+                        "          FROM sys.V_$SESSION a, sys.V_$LOCK b\n" +
+                        "         WHERE a.username IS NOT NULL\n" +
+                        "           AND a.row_wait_obj# <> -1\n" +
+                        "           AND a.SID = b.SID\n" +
+                        "           AND b.TYPE IN ('TX','TM')\n" +
+                        "           ) a\n" +
+                        " WHERE object_id = a.row_wait_obj#   ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -83,7 +82,7 @@ public class OracleCreateViewTest4 extends OracleTest {
                         "\t\tAND b.TYPE IN ('TX', 'TM')\n" +
                         ") a\n" +
                         "WHERE object_id = a.row_wait_obj#",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

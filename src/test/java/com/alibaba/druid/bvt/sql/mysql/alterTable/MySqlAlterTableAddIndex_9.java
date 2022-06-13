@@ -26,17 +26,16 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableAddIndex_9 extends TestCase {
-
     public void test_0() throws Exception {
         String sql =
-            "ALTER TABLE t_order ADD FULLTEXT INDEX `g_i_buyer` (`buyer_id`);";
+                "ALTER TABLE t_order ADD FULLTEXT INDEX `g_i_buyer` (`buyer_id`);";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         Assert.assertEquals("ALTER TABLE t_order\n" +
                 "\tADD FULLTEXT INDEX `g_i_buyer` (`buyer_id`);", SQLUtils.toMySqlString(stmt));
-        
+
         Assert.assertEquals("alter table t_order\n" +
                 "\tadd fulltext index `g_i_buyer` (`buyer_id`);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
@@ -50,7 +49,7 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
 
     public void test_1() throws Exception {
         String sql =
-            "ALTER TABLE t_order ADD CLUSTERED INDEX `g_i_buyer` (`buyer_id`);";
+                "ALTER TABLE t_order ADD CLUSTERED INDEX `g_i_buyer` (`buyer_id`);";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
@@ -71,7 +70,7 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
 
     public void test_2() throws Exception {
         String sql =
-            "ALTER TABLE t_order ADD CLUSTERED KEY `g_i_buyer` (`buyer_id`);";
+                "ALTER TABLE t_order ADD CLUSTERED KEY `g_i_buyer` (`buyer_id`);";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
@@ -92,7 +91,7 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
 
     public void test_3() throws Exception {
         String sql =
-            "alter table xxx add key `idx_001`(`col1`,`current_date`,`col2`)";
+                "alter table xxx add key `idx_001`(`col1`,`current_date`,`col2`)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
@@ -113,7 +112,7 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
 
     public void test_4() throws Exception {
         String sql =
-            "alter table xxx add key `idx_001`(`col1`,`current_time`,`col2`)";
+                "alter table xxx add key `idx_001`(`col1`,`current_time`,`col2`)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
@@ -134,7 +133,7 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
 
     public void test_5() throws Exception {
         String sql =
-            "alter table xxx add key `idx_001`(`current_timestamp`,`curdate`,`LOCALTIME`, `LOCALTIMESTAMP`)";
+                "alter table xxx add key `idx_001`(`current_timestamp`,`curdate`,`LOCALTIME`, `LOCALTIMESTAMP`)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);

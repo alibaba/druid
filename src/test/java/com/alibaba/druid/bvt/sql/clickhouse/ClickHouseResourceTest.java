@@ -35,7 +35,6 @@ import java.io.Reader;
 import java.util.List;
 
 public class ClickHouseResourceTest extends OracleTest {
-
     public void test_0() throws Exception {
         exec_test("bvt/parser/clickhouse-0.txt");
     }

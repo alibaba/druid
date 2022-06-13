@@ -19,6 +19,7 @@ public class MySqlConnectFailTest extends TestCase {
         dataSource.setPassword("xxx");
         dataSource.setCreateScheduler(Executors.newScheduledThreadPool(10));
     }
+
     public void test_0() throws Exception {
         Connection conn = dataSource.getConnection();
         conn.close();

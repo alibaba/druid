@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlSelectTest_185 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select\n" +
                 "product.brand_id,\n" +
@@ -88,7 +87,7 @@ public class MySqlSelectTest_185 extends MysqlTest {
                         "\t\tAND 1)\n" +
                         "\tAND (product.master_color = 1)\n" +
                         "ORDER BY product.sort ASC", //
-                            output);
+                output);
     }
 
 }

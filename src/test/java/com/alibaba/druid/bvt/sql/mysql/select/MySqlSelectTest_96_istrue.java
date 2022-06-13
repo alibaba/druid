@@ -23,7 +23,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_96_istrue extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM student \n" +
                 "where  id > 123 is true";

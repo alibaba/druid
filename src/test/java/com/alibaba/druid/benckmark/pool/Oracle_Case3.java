@@ -32,19 +32,18 @@ import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class Oracle_Case3 extends TestCase {
-
-    private String  jdbcUrl;
-    private String  user;
-    private String  password;
-    private String  driverClass;
-    private int     maxIdle         = 40;
-    private int     maxActive       = 50;
-    private int     maxWait         = 5000;
-    private String  validationQuery = "SELECT 1 FROM DUAL";
-    private int     threadCount     = 40;
-    private int     loopCount       = 5;
-    final int       LOOP_COUNT      = 1000 * 10;
-    private boolean testOnBorrow    = true;
+    private String jdbcUrl;
+    private String user;
+    private String password;
+    private String driverClass;
+    private int maxIdle = 40;
+    private int maxActive = 50;
+    private int maxWait = 5000;
+    private String validationQuery = "SELECT 1 FROM DUAL";
+    private int threadCount = 40;
+    private int loopCount = 5;
+    final int LOOP_COUNT = 1000 * 10;
+    private boolean testOnBorrow = true;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
@@ -96,12 +95,10 @@ public class Oracle_Case3 extends TestCase {
     }
 
     private void p0(final DataSource dataSource, String name, int threadCount) throws Exception {
-
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; ++i) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         startLatch.await();
@@ -137,6 +134,6 @@ public class Oracle_Case3 extends TestCase {
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
         System.out.println("thread " + threadCount + " " + name + " millis : "
-                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+                + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }

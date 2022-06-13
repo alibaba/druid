@@ -11,7 +11,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SchemaStatTest7 extends TestCase {
-
     public void test_schemaStat() throws Exception {
         String sql = "select t.a,t.b from t where cast(t.statdate as decimal) >=20160626";
 

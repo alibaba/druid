@@ -25,16 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropOutlineStatement extends SQLStatementImpl implements SQLDropStatement {
-
     private SQLExpr name;
     private boolean ifExists;
 
     public SQLDropOutlineStatement() {
-
     }
 
     public SQLDropOutlineStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

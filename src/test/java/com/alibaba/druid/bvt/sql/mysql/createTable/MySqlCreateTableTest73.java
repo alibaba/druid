@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest73 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE TABLE total ("
@@ -38,7 +37,7 @@ public class MySqlCreateTableTest73 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         Column column = visitor.getColumn("total", "id");
         Assert.assertNotNull(column);
         Assert.assertEquals("INT", column.getDataType());
@@ -51,7 +50,7 @@ public class MySqlCreateTableTest73 extends MysqlTest {
                     + "\n\tINDEX(a)"
                     + "\n) ENGINE = MERGE UNION = (t1, t2) INSERT_METHOD = LAST", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table total ("

@@ -27,16 +27,13 @@ import java.util.List;
 
 public class OdpsCountStatement
         extends OdpsStatementImpl implements SQLAlterStatement {
-
     private SQLExprTableSource table;
 
     private final List<SQLAssignItem> partitions = new ArrayList<SQLAssignItem>();
 
-
     public OdpsCountStatement() {
         super.dbType = DbType.odps;
     }
-
 
     @Override
     protected void accept0(OdpsASTVisitor visitor) {

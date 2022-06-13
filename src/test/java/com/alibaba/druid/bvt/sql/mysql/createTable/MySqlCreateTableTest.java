@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE t (c CHAR(20) CHARACTER SET utf8 COLLATE utf8_bin);";
 
@@ -43,7 +42,7 @@ public class MySqlCreateTableTest extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
@@ -52,8 +51,8 @@ public class MySqlCreateTableTest extends MysqlTest {
 
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
     }
-    
-    
+
+
     public void test_1() throws Exception {
         String sql = "CREATE TABLE `ins_ebay_auth` ("
                 + " `auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id',"
@@ -80,13 +79,13 @@ public class MySqlCreateTableTest extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(7, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
     }
-    
-    
+
+
     public void test_2() throws Exception {
         String sql = "create table t2 as select * from t1";
 

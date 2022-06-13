@@ -22,5 +22,4 @@ public class OdpsFormatCommentTest13 extends TestCase {
                 + "\n\tf2 > 2 -- comment_4", SQLUtils.formatOdps(sql));
     }
 
-   
 }

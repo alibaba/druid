@@ -15,43 +15,11 @@
  */
 package com.alibaba.druid.wall;
 
-import static com.alibaba.druid.util.Utils.getBoolean;
-
-import java.io.InputStream;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.DatabaseMetaData;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.ResultSetMetaData;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLXML;
-import java.sql.Wrapper;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
-import com.alibaba.druid.proxy.jdbc.JdbcParameter;
-import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
-import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxy;
-import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
-import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import com.alibaba.druid.proxy.jdbc.*;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -65,25 +33,32 @@ import com.alibaba.druid.wall.WallConfig.TenantCallBack.StatementType;
 import com.alibaba.druid.wall.spi.*;
 import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.sql.*;
+import java.util.*;
+
+import static com.alibaba.druid.util.Utils.getBoolean;
+
 public class WallFilter extends FilterAdapter implements WallFilterMBean {
+    private static final Log LOG = LogFactory.getLog(WallFilter.class);
 
-    private final static Log   LOG            = LogFactory.getLog(WallFilter.class);
+    private boolean inited;
 
-    private boolean            inited         = false;
-
-    private WallProvider       provider;
+    private WallProvider provider;
 
     private String dbTypeName;
 
-    private WallConfig         config;
+    private WallConfig config;
 
-    private volatile boolean   logViolation   = false;
-    private volatile boolean   throwException = true;
+    private volatile boolean logViolation;
+    private volatile boolean throwException = true;
 
-    public final static String ATTR_SQL_STAT  = "wall.sqlStat";
-    public final static String ATTR_UPDATE_CHECK_ITEMS  = "wall.updateCheckItems";
+    public static final String ATTR_SQL_STAT = "wall.sqlStat";
+    public static final String ATTR_UPDATE_CHECK_ITEMS = "wall.updateCheckItems";
 
-    public WallFilter(){
+    public WallFilter() {
         configFromProperties(System.getProperties());
     }
 
@@ -101,7 +76,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 this.throwException = value;
             }
         }
-        
+
         if (this.config != null) {
             this.config.configFromProperties(properties);
         }
@@ -109,7 +84,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public synchronized void init(DataSourceProxy dataSource) {
-
         if (dataSource == null) {
             LOG.error("dataSource should not be null");
             return;
@@ -195,7 +169,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             default:
                 throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }
-        
+
         provider.setName(dataSource.getName());
 
         this.inited = true;
@@ -258,11 +232,11 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     public void setConfig(WallConfig config) {
         this.config = config;
     }
-    
+
     public void setTenantColumn(String tenantColumn) {
         this.config.setTenantColumn(tenantColumn);
     }
-    
+
     public String getTenantColumn() {
         return this.config.getTenantColumn();
     }
@@ -289,7 +263,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql)
-                                                                                                                        throws SQLException {
+            throws SQLException {
         String dbType = connection.getDirectDataSource().getDbType();
         WallContext context = WallContext.create(dbType);
         try {
@@ -324,7 +298,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     @Override
     public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection,
                                                               String sql, int resultSetType, int resultSetConcurrency)
-                                                                                                                      throws SQLException {
+            throws SQLException {
         String dbType = connection.getDirectDataSource().getDbType();
         WallContext context = WallContext.create(dbType);
         try {
@@ -332,7 +306,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             context.setWallUpdateCheckItems(result.getUpdateCheckItems());
             sql = result.getSql();
             PreparedStatementProxy stmt = chain.connection_prepareStatement(connection, sql, resultSetType,
-                                                                            resultSetConcurrency);
+                    resultSetConcurrency);
             setSqlStatAttribute(stmt);
             return stmt;
         } finally {
@@ -351,7 +325,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             context.setWallUpdateCheckItems(result.getUpdateCheckItems());
             sql = result.getSql();
             PreparedStatementProxy stmt = chain.connection_prepareStatement(connection, sql, resultSetType,
-                                                                            resultSetConcurrency, resultSetHoldability);
+                    resultSetConcurrency, resultSetHoldability);
             setSqlStatAttribute(stmt);
             return stmt;
         } finally {
@@ -395,7 +369,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql)
-                                                                                                                   throws SQLException {
+            throws SQLException {
         String dbType = connection.getDirectDataSource().getDbType();
         WallContext context = WallContext.create(dbType);
         try {
@@ -413,7 +387,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     @Override
     public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql,
                                                          int resultSetType, int resultSetConcurrency)
-                                                                                                     throws SQLException {
+            throws SQLException {
         String dbType = connection.getDirectDataSource().getDbType();
         WallContext context = WallContext.create(dbType);
         try {
@@ -421,7 +395,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             context.setWallUpdateCheckItems(result.getUpdateCheckItems());
             sql = result.getSql();
             CallableStatementProxy stmt = chain.connection_prepareCall(connection, sql, resultSetType,
-                                                                       resultSetConcurrency);
+                    resultSetConcurrency);
             setSqlStatAttribute(stmt);
             return stmt;
         } finally {
@@ -440,7 +414,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             context.setWallUpdateCheckItems(result.getUpdateCheckItems());
             sql = result.getSql();
             CallableStatementProxy stmt = chain.connection_prepareCall(connection, sql, resultSetType,
-                                                                       resultSetConcurrency, resultSetHoldability);
+                    resultSetConcurrency, resultSetHoldability);
             setSqlStatAttribute(stmt);
             return stmt;
         } finally {
@@ -476,7 +450,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int autoGeneratedKeys)
-                                                                                                                    throws SQLException {
+            throws SQLException {
         createWallContext(statement);
         try {
             sql = check(sql);
@@ -497,8 +471,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     @Override
-    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[])
-                                                                                                                  throws SQLException {
+    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int[] columnIndexes)
+            throws SQLException {
         createWallContext(statement);
         try {
             sql = check(sql);
@@ -519,8 +493,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     @Override
-    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, String columnNames[])
-                                                                                                                   throws SQLException {
+    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, String[] columnNames)
+            throws SQLException {
         createWallContext(statement);
         try {
             sql = check(sql);
@@ -565,7 +539,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public ResultSetProxy statement_executeQuery(FilterChain chain, StatementProxy statement, String sql)
-                                                                                                         throws SQLException {
+            throws SQLException {
         createWallContext(statement);
         try {
             sql = check(sql);
@@ -598,7 +572,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int autoGeneratedKeys)
-                                                                                                                      throws SQLException {
+            throws SQLException {
         createWallContext(statement);
         try {
             sql = check(sql);
@@ -614,8 +588,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     @Override
-    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[])
-                                                                                                                    throws SQLException {
+    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int[] columnIndexes)
+            throws SQLException {
         createWallContext(statement);
         try {
             sql = check(sql);
@@ -640,8 +614,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     @Override
-    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, String columnNames[])
-                                                                                                                     throws SQLException {
+    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, String[] columnNames)
+            throws SQLException {
         createWallContext(statement);
         try {
             sql = check(sql);
@@ -680,7 +654,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public ResultSetProxy preparedStatement_executeQuery(FilterChain chain, PreparedStatementProxy statement)
-                                                                                                             throws SQLException {
+            throws SQLException {
         try {
             ResultSetProxy resultSetProxy = chain.preparedStatement_executeQuery(statement);
             preprocessResultSet(resultSetProxy);
@@ -692,7 +666,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     @Override
-    public int preparedStatement_executeUpdate(FilterChain chain, PreparedStatementProxy statement) throws SQLException {
+    public int preparedStatement_executeUpdate(FilterChain chain,
+                                               PreparedStatementProxy statement) throws SQLException {
         try {
             wallUpdateCheck(statement);
 
@@ -924,7 +899,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public int resultSet_findColumn(FilterChain chain, ResultSetProxy resultSet, String columnLabel)
-                                                                                                    throws SQLException {
+            throws SQLException {
         int physicalColumn = chain.resultSet_findColumn(resultSet, columnLabel);
         return resultSet.getLogicColumn(physicalColumn);
     }
@@ -936,25 +911,25 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public InputStream resultSet_getAsciiStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                             throws SQLException {
+            throws SQLException {
         return chain.resultSet_getAsciiStream(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
     @Override
     public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                           throws SQLException {
+            throws SQLException {
         return chain.resultSet_getBigDecimal(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
     @Override
     public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy resultSet, int columnIndex, int scale)
-                                                                                                                      throws SQLException {
+            throws SQLException {
         return chain.resultSet_getBigDecimal(resultSet, resultSet.getPhysicalColumn(columnIndex), scale);
     }
 
     @Override
     public java.io.InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                                      throws SQLException {
+            throws SQLException {
         return chain.resultSet_getBinaryStream(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
@@ -965,7 +940,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public boolean resultSet_getBoolean(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                     throws SQLException {
+            throws SQLException {
         return chain.resultSet_getBoolean(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
@@ -981,7 +956,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public java.io.Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                                    throws SQLException {
+            throws SQLException {
         return chain.resultSet_getCharacterStream(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
@@ -992,18 +967,20 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                        throws SQLException {
+            throws SQLException {
         return chain.resultSet_getDate(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
     @Override
     public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Calendar cal)
-                                                                                                                      throws SQLException {
+            throws SQLException {
         return chain.resultSet_getDate(resultSet, resultSet.getPhysicalColumn(columnIndex), cal);
     }
 
     @Override
-    public double resultSet_getDouble(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public double resultSet_getDouble(FilterChain chain,
+                                      ResultSetProxy resultSet,
+                                      int columnIndex) throws SQLException {
         return chain.resultSet_getDouble(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
@@ -1024,7 +1001,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public java.io.Reader resultSet_getNCharacterStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                                     throws SQLException {
+            throws SQLException {
         return chain.resultSet_getNCharacterStream(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
@@ -1035,17 +1012,22 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public String resultSet_getNString(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                    throws SQLException {
+            throws SQLException {
         return chain.resultSet_getNString(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
     @Override
-    public Object resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public Object resultSet_getObject(FilterChain chain,
+                                      ResultSetProxy resultSet,
+                                      int columnIndex) throws SQLException {
         return chain.resultSet_getObject(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
     @Override
-    public <T> T resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Class<T> type) throws SQLException {
+    public <T> T resultSet_getObject(FilterChain chain,
+                                     ResultSetProxy resultSet,
+                                     int columnIndex,
+                                     Class<T> type) throws SQLException {
         return chain.resultSet_getObject(resultSet, resultSet.getPhysicalColumn(columnIndex), type);
     }
 
@@ -1066,7 +1048,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     @Override
-    public SQLXML resultSet_getSQLXML(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public SQLXML resultSet_getSQLXML(FilterChain chain,
+                                      ResultSetProxy resultSet,
+                                      int columnIndex) throws SQLException {
         return chain.resultSet_getSQLXML(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
@@ -1076,25 +1060,27 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     @Override
-    public String resultSet_getString(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+    public String resultSet_getString(FilterChain chain,
+                                      ResultSetProxy resultSet,
+                                      int columnIndex) throws SQLException {
         return chain.resultSet_getString(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
     @Override
     public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                        throws SQLException {
+            throws SQLException {
         return chain.resultSet_getTime(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
     @Override
     public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Calendar cal)
-                                                                                                                      throws SQLException {
+            throws SQLException {
         return chain.resultSet_getTime(resultSet, resultSet.getPhysicalColumn(columnIndex), cal);
     }
 
     @Override
     public java.sql.Timestamp resultSet_getTimestamp(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                                  throws SQLException {
+            throws SQLException {
         return chain.resultSet_getTimestamp(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
@@ -1106,19 +1092,19 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public java.net.URL resultSet_getURL(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                      throws SQLException {
+            throws SQLException {
         return chain.resultSet_getURL(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
     @Override
     public java.io.InputStream resultSet_getUnicodeStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
-                                                                                                                       throws SQLException {
+            throws SQLException {
         return chain.resultSet_getUnicodeStream(resultSet, resultSet.getPhysicalColumn(columnIndex));
     }
 
     @Override
     public void resultSet_updateArray(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Array x)
-                                                                                                                     throws SQLException {
+            throws SQLException {
         chain.resultSet_updateArray(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
@@ -1142,7 +1128,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public void resultSet_updateBigDecimal(FilterChain chain, ResultSetProxy resultSet, int columnIndex, BigDecimal x)
-                                                                                                                      throws SQLException {
+            throws SQLException {
         chain.resultSet_updateBigDecimal(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
@@ -1178,25 +1164,25 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public void resultSet_updateBlob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Blob x)
-                                                                                                                   throws SQLException {
+            throws SQLException {
         chain.resultSet_updateBlob(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateBoolean(FilterChain chain, ResultSetProxy resultSet, int columnIndex, boolean x)
-                                                                                                                throws SQLException {
+            throws SQLException {
         chain.resultSet_updateBoolean(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateByte(FilterChain chain, ResultSetProxy resultSet, int columnIndex, byte x)
-                                                                                                          throws SQLException {
+            throws SQLException {
         chain.resultSet_updateByte(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateBytes(FilterChain chain, ResultSetProxy resultSet, int columnIndex, byte[] x)
-                                                                                                             throws SQLException {
+            throws SQLException {
         chain.resultSet_updateBytes(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
@@ -1220,13 +1206,13 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public void resultSet_updateClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Clob x)
-                                                                                                                   throws SQLException {
+            throws SQLException {
         chain.resultSet_updateClob(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Reader reader)
-                                                                                                                 throws SQLException {
+            throws SQLException {
         chain.resultSet_updateClob(resultSet, resultSet.getPhysicalColumn(columnIndex), reader);
     }
 
@@ -1238,31 +1224,31 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public void resultSet_updateDate(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Date x)
-                                                                                                                   throws SQLException {
+            throws SQLException {
         chain.resultSet_updateDate(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateDouble(FilterChain chain, ResultSetProxy resultSet, int columnIndex, double x)
-                                                                                                              throws SQLException {
+            throws SQLException {
         chain.resultSet_updateDouble(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateFloat(FilterChain chain, ResultSetProxy resultSet, int columnIndex, float x)
-                                                                                                            throws SQLException {
+            throws SQLException {
         chain.resultSet_updateFloat(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateInt(FilterChain chain, ResultSetProxy resultSet, int columnIndex, int x)
-                                                                                                        throws SQLException {
+            throws SQLException {
         chain.resultSet_updateInt(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateLong(FilterChain chain, ResultSetProxy resultSet, int columnIndex, long x)
-                                                                                                          throws SQLException {
+            throws SQLException {
         chain.resultSet_updateLong(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
@@ -1280,13 +1266,13 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public void resultSet_updateNClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, NClob nClob)
-                                                                                                                throws SQLException {
+            throws SQLException {
         chain.resultSet_updateNClob(resultSet, resultSet.getPhysicalColumn(columnIndex), nClob);
     }
 
     @Override
     public void resultSet_updateNClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Reader reader)
-                                                                                                                  throws SQLException {
+            throws SQLException {
         chain.resultSet_updateNClob(resultSet, resultSet.getPhysicalColumn(columnIndex), reader);
     }
 
@@ -1298,7 +1284,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public void resultSet_updateNString(FilterChain chain, ResultSetProxy resultSet, int columnIndex, String nString)
-                                                                                                                     throws SQLException {
+            throws SQLException {
         chain.resultSet_updateNString(resultSet, resultSet.getPhysicalColumn(columnIndex), nString);
     }
 
@@ -1309,7 +1295,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public void resultSet_updateObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Object x)
-                                                                                                              throws SQLException {
+            throws SQLException {
         chain.resultSet_updateObject(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
@@ -1321,37 +1307,37 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public void resultSet_updateRef(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Ref x)
-                                                                                                                 throws SQLException {
+            throws SQLException {
         chain.resultSet_updateRef(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateRowId(FilterChain chain, ResultSetProxy resultSet, int columnIndex, RowId x)
-                                                                                                            throws SQLException {
+            throws SQLException {
         chain.resultSet_updateRowId(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateShort(FilterChain chain, ResultSetProxy resultSet, int columnIndex, short x)
-                                                                                                            throws SQLException {
+            throws SQLException {
         chain.resultSet_updateShort(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateSQLXML(FilterChain chain, ResultSetProxy resultSet, int columnIndex, SQLXML xmlObject)
-                                                                                                                      throws SQLException {
+            throws SQLException {
         chain.resultSet_updateSQLXML(resultSet, resultSet.getPhysicalColumn(columnIndex), xmlObject);
     }
 
     @Override
     public void resultSet_updateString(FilterChain chain, ResultSetProxy resultSet, int columnIndex, String x)
-                                                                                                              throws SQLException {
+            throws SQLException {
         chain.resultSet_updateString(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
     @Override
     public void resultSet_updateTime(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Time x)
-                                                                                                                   throws SQLException {
+            throws SQLException {
         chain.resultSet_updateTime(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
     }
 
@@ -1378,133 +1364,136 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     @Override
-    public int resultSetMetaData_getColumnCount(FilterChain chain, ResultSetMetaDataProxy metaData) throws SQLException {
+    public int resultSetMetaData_getColumnCount(FilterChain chain,
+                                                ResultSetMetaDataProxy metaData) throws SQLException {
         int count = chain.resultSetMetaData_getColumnCount(metaData);
         return count - metaData.getResultSetProxy().getHiddenColumnCount();
     }
 
     @Override
     public boolean resultSetMetaData_isAutoIncrement(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                    throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_isAutoIncrement(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public boolean resultSetMetaData_isCaseSensitive(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                    throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_isCaseSensitive(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public boolean resultSetMetaData_isSearchable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                 throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_isSearchable(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public boolean resultSetMetaData_isCurrency(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                               throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_isCurrency(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public int resultSetMetaData_isNullable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                           throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_isNullable(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public boolean resultSetMetaData_isSigned(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                             throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_isSigned(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public int resultSetMetaData_getColumnDisplaySize(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                     throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_getColumnDisplaySize(metaData,
-                                                            metaData.getResultSetProxy().getPhysicalColumn(column));
+                metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public String resultSetMetaData_getColumnLabel(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                  throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_getColumnLabel(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public String resultSetMetaData_getColumnName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                 throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_getColumnName(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public String resultSetMetaData_getSchemaName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                 throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_getSchemaName(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public int resultSetMetaData_getPrecision(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                             throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_getPrecision(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public int resultSetMetaData_getScale(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                         throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_getScale(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public String resultSetMetaData_getTableName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_getTableName(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public String resultSetMetaData_getCatalogName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                  throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_getCatalogName(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public int resultSetMetaData_getColumnType(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                              throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_getColumnType(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public String resultSetMetaData_getColumnTypeName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                     throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_getColumnTypeName(metaData,
-                                                         metaData.getResultSetProxy().getPhysicalColumn(column));
+                metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public boolean resultSetMetaData_isReadOnly(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                               throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_isReadOnly(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public boolean resultSetMetaData_isWritable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                               throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_isWritable(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
-    public boolean resultSetMetaData_isDefinitelyWritable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                         throws SQLException {
+    public boolean resultSetMetaData_isDefinitelyWritable(FilterChain chain,
+                                                          ResultSetMetaDataProxy metaData,
+                                                          int column)
+            throws SQLException {
         return chain.resultSetMetaData_isDefinitelyWritable(metaData,
-                                                            metaData.getResultSetProxy().getPhysicalColumn(column));
+                metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     @Override
     public String resultSetMetaData_getColumnClassName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
-                                                                                                                      throws SQLException {
+            throws SQLException {
         return chain.resultSetMetaData_getColumnClassName(metaData,
-                                                          metaData.getResultSetProxy().getPhysicalColumn(column));
+                metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     public long getViolationCount() {
@@ -1582,7 +1571,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
 
             if (!StringUtils.isEmpty(tenantColumn)
-                && null != tenantColumn && tenantColumn.equalsIgnoreCase(metaData.getColumnName(physicalColumn))) {
+                    && null != tenantColumn && tenantColumn.equalsIgnoreCase(metaData.getColumnName(physicalColumn))) {
                 tenantColumns.add(physicalColumn);
             }
         }

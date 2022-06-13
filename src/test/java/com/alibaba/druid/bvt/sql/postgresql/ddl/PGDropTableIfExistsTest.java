@@ -12,7 +12,7 @@ import com.alibaba.druid.stat.TableStat;
 
 
 public class PGDropTableIfExistsTest extends PGTest {
-    public void test_0 () throws Exception {
+    public void test_0() throws Exception {
         String sql = "DROP TABLE IF EXISTS t_report_1_19";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -29,7 +29,7 @@ public class PGDropTableIfExistsTest extends PGTest {
         System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_report_1_19")));
-        
+
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("t_report_1_19")).getDropCount() == 1);
 
         Assert.assertTrue(visitor.getColumns().isEmpty());

@@ -29,7 +29,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterClobTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -64,10 +63,10 @@ public class StatFilterClobTest extends TestCase {
         stmt.close();
 
         conn.close();
-        
+
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
         Assert.assertNotNull(sqlStat);
-        
+
         Assert.assertEquals(1, sqlStat.getClobOpenCount());
         sqlStat.reset();
         Assert.assertEquals(0, sqlStat.getClobOpenCount());

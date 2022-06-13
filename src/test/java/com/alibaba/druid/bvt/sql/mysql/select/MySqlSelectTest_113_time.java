@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlSelectTest_113_time extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "select time '10:09:06', timestamp '2017-11-15 10:09:06', date '2017-11-15'";
 
@@ -41,7 +40,7 @@ public class MySqlSelectTest_113_time extends TestCase {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
@@ -49,7 +48,6 @@ public class MySqlSelectTest_113_time extends TestCase {
 
         assertEquals("SELECT TIME '10:09:06', TIMESTAMP '2017-11-15 10:09:06', DATE '2017-11-15'", stmt.toString());
     }
-    
-    
-    
+
+
 }

@@ -25,18 +25,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest36 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid(//
-        "select *  FROM `13452845947`   WHERE gpstime < (now()-90) order by gpstime desc")); //
+                "select *  FROM `13452845947`   WHERE gpstime < (now()-90) order by gpstime desc")); //
 
         Assert.assertEquals(1, provider.getTableStat("13452845947").getSelectCount());
         System.out.println(JSONUtils.toJSONString(provider.getStatsMap()));

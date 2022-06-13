@@ -26,7 +26,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_215 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select 7777777777777777777777777777777777777 * 10 from t1;";
 

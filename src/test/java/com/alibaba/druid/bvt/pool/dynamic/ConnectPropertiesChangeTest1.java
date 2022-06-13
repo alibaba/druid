@@ -28,10 +28,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 
 public class ConnectPropertiesChangeTest1 extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
-    private Log             dataSourceLog;
+    private Log dataSourceLog;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -70,7 +69,7 @@ public class ConnectPropertiesChangeTest1 extends PoolTestCase {
 
         dataSource.setConnectionProperties("druid.stat.mergeSql=true;druid.stat.sql.MaxSize=456");
         Assert.assertEquals(456, dataSource.getDataSourceStat().getMaxSqlSize());
-        
+
         Assert.assertTrue(filter.isMergeSql());
 
         Assert.assertEquals(2, dataSource.getConnectProperties().size());

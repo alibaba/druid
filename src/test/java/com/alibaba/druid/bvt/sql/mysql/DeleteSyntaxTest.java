@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DeleteSyntaxTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "DELETE FROM somelog WHERE user = 'jcole' ORDER BY timestamp_column LIMIT 1;";
 
@@ -46,9 +45,9 @@ public class DeleteSyntaxTest extends TestCase {
         SQLStatement stmt = stmtList.get(0);
 
         assertEquals("DELETE t1" + //
-                            "\nFROM t1" + //
-                            "\n\tLEFT JOIN t2 ON t1.id = t2.id" + //
-                            "\nWHERE t2.id IS NULL;", SQLUtils.toMySqlString(stmt));
+                "\nFROM t1" + //
+                "\n\tLEFT JOIN t2 ON t1.id = t2.id" + //
+                "\nWHERE t2.id IS NULL;", SQLUtils.toMySqlString(stmt));
     }
 
     public void test_2() throws Exception {
@@ -60,8 +59,8 @@ public class DeleteSyntaxTest extends TestCase {
         SQLStatement stmt = stmtList.get(0);
 
         assertEquals("DELETE a1, a2\nFROM t1 a1" + //
-                            "\n\tINNER JOIN t2 a2" + //
-                            "\nWHERE a1.id = a2.id", SQLUtils.toMySqlString(stmt));
+                "\n\tINNER JOIN t2 a2" + //
+                "\nWHERE a1.id = a2.id", SQLUtils.toMySqlString(stmt));
     }
 
     public void test_3() throws Exception {

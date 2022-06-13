@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest32 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE src.`part_tab` DISCARD PARTITION p10 TABLESPACE";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

@@ -32,27 +32,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
-
     protected SQLExpr expr;
-    protected String  alias;
+    protected String alias;
 
-    protected boolean connectByRoot = false;
+    protected boolean connectByRoot;
     protected transient long aliasHashCode64;
     protected List<String> aliasList;
 
-    public SQLSelectItem(){
-
+    public SQLSelectItem() {
     }
 
-    public SQLSelectItem(SQLExpr expr){
+    public SQLSelectItem(SQLExpr expr) {
         this(expr, null);
     }
 
-    public SQLSelectItem(int value){
+    public SQLSelectItem(int value) {
         this(new SQLIntegerExpr(value), null);
     }
 
-    public SQLSelectItem(SQLExpr expr, String alias){
+    public SQLSelectItem(SQLExpr expr, String alias) {
         this.expr = expr;
         this.alias = alias;
 
@@ -60,8 +58,8 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
             expr.setParent(this);
         }
     }
-    
-    public SQLSelectItem(SQLExpr expr, String alias, boolean connectByRoot){
+
+    public SQLSelectItem(SQLExpr expr, String alias, boolean connectByRoot) {
         this.connectByRoot = connectByRoot;
         this.expr = expr;
         this.alias = alias;
@@ -71,7 +69,7 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         }
     }
 
-    public SQLSelectItem(SQLExpr expr, List<String> aliasList, boolean connectByRoot){
+    public SQLSelectItem(SQLExpr expr, List<String> aliasList, boolean connectByRoot) {
         this.connectByRoot = connectByRoot;
         this.expr = expr;
         this.aliasList = aliasList;
@@ -170,7 +168,9 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }

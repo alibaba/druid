@@ -48,7 +48,6 @@ public class MySqlParameterizedOutputVisitorTest_47_hints extends TestCase {
 
         System.out.println(psql);
 
-
         assertEquals("/*+TDDL({'extra':{'SOCKET_TIMEOUT':'0'}})*/\n" +
                 "DELETE FROM page_scores\n" +
                 "WHERE createdat <= ?;", psql);
@@ -70,11 +69,11 @@ public class MySqlParameterizedOutputVisitorTest_47_hints extends TestCase {
 
         SqlNodeList hints = ((TDDLSqlSelect) sqlNode).getHints();
         Assert.assertEquals(hints.size(), 1);
-        Assert.assertEquals(((SqlNodeList)hints.get(0)).size(), 4);
+        Assert.assertEquals(((SqlNodeList) hints.get(0)).size(), 4);
 
         SqlNodeList headHints = ((TDDLSqlSelect) sqlNode).getHeadHints();
         Assert.assertEquals(headHints.size(), 1);
-        Assert.assertEquals(((SqlNodeList)headHints.get(0)).size(), 1);
+        Assert.assertEquals(((SqlNodeList) headHints.get(0)).size(), 1);
     }
 
     public void test_headHint_3() throws Exception {

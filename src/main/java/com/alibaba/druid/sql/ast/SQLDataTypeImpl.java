@@ -26,25 +26,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDbTypedObject {
-
-    private         String        name;
-    private         long          nameHashCode64;
+    private String name;
+    private long nameHashCode64;
     protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
-    private         Boolean       withTimeZone;
-    private         boolean       withLocalTimeZone = false;
-    private         DbType        dbType;
+    private Boolean withTimeZone;
+    private boolean withLocalTimeZone;
+    private DbType dbType;
 
-    private         boolean       unsigned;
-    private         boolean       zerofill;
+    private boolean unsigned;
+    private boolean zerofill;
 
     // for oracle
-    private         SQLExpr       indexBy;
+    private SQLExpr indexBy;
 
-    public SQLDataTypeImpl(){
-
+    public SQLDataTypeImpl() {
     }
 
-    public SQLDataTypeImpl(String name){
+    public SQLDataTypeImpl(String name) {
         this.name = name;
     }
 
@@ -97,7 +95,7 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
     public List<SQLExpr> getArguments() {
         return this.arguments;
     }
-    
+
     public void addArgument(SQLExpr argument) {
         if (argument != null) {
             argument.setParent(this);
@@ -107,13 +105,19 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLDataTypeImpl dataType = (SQLDataTypeImpl) o;
 
-        if (name != null ? !name.equals(dataType.name) : dataType.name != null) return false;
-        if (!arguments.equals(dataType.arguments)){
+        if (name != null ? !name.equals(dataType.name) : dataType.name != null) {
+            return false;
+        }
+        if (!arguments.equals(dataType.arguments)) {
             return false;
         }
         return withTimeZone != null ? withTimeZone.equals(dataType.withTimeZone) : dataType.withTimeZone == null;
@@ -122,7 +126,7 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
     @Override
     public int hashCode() {
         long value = nameHashCode64();
-        return (int)(value ^ (value >>> 32));
+        return (int) (value ^ (value >>> 32));
     }
 
     @Override
@@ -314,7 +318,6 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
         if (nameNash == FnvHash.Constants.NCLOB) {
             return Types.NCLOB;
         }
-
 
         if (nameNash == FnvHash.Constants.TINYBLOB) {
             return Types.VARBINARY;

@@ -28,12 +28,11 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleInsertTest13 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO bonuses" //
-                     + "   SELECT employee_id, salary*1.1 "//
-                     + "   FROM employees"//
-                     + "   WHERE commission_pct > 0.25; ";
+                + "   SELECT employee_id, salary*1.1 "//
+                + "   FROM employees"//
+                + "   WHERE commission_pct > 0.25; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -43,10 +42,10 @@ public class OracleInsertTest13 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("INSERT INTO bonuses" //
-                            + "\nSELECT employee_id, salary * 1.1"//
-                            + "\nFROM employees"//
-                            + "\nWHERE commission_pct > 0.25;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\nSELECT employee_id, salary * 1.1"//
+                        + "\nFROM employees"//
+                        + "\nWHERE commission_pct > 0.25;",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

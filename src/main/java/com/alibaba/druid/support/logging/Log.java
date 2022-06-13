@@ -16,7 +16,6 @@
 package com.alibaba.druid.support.logging;
 
 public interface Log {
-
     boolean isDebugEnabled();
 
     void error(String msg, Throwable e);
@@ -36,7 +35,7 @@ public interface Log {
     void warn(String msg);
 
     void warn(String msg, Throwable e);
-    
+
     boolean isErrorEnabled();
 
     int getErrorCount();

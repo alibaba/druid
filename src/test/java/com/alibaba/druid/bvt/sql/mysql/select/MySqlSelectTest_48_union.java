@@ -24,7 +24,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_48_union extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select sum(hd.paid_amount) from\n" +
                 "(\n" +
@@ -58,12 +57,12 @@ public class MySqlSelectTest_48_union extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(1, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT sum(hd.paid_amount)\n" +
@@ -105,7 +104,7 @@ public class MySqlSelectTest_48_union extends MysqlTest {
                             "\t\tAND b.state = 1\n" +
                             "\t\tAND a.acct_day = '03'\n" +
                             ") hd", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -148,7 +147,7 @@ public class MySqlSelectTest_48_union extends MysqlTest {
                             "\t\tand b.state = 1\n" +
                             "\t\tand a.acct_day = '03'\n" +
                             ") hd", //
-                                output);
+                    output);
         }
 
         {

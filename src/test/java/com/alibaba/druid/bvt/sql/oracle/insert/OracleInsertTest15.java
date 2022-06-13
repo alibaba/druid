@@ -28,12 +28,11 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleInsertTest15 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO employees@remote" //
-                     + "   VALUES (8002, 'Juan', 'Fernandez', 'juanf@example.com', NULL, "//
-                     + "   TO_DATE('04-OCT-1992', 'DD-MON-YYYY'), 'SH_CLERK', 3000, "//
-                     + "   NULL, 121, 20); ";
+                + "   VALUES (8002, 'Juan', 'Fernandez', 'juanf@example.com', NULL, "//
+                + "   TO_DATE('04-OCT-1992', 'DD-MON-YYYY'), 'SH_CLERK', 3000, "//
+                + "   NULL, 121, 20); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -43,10 +42,10 @@ public class OracleInsertTest15 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("INSERT INTO employees@remote" //
-                            + "\nVALUES (8002, 'Juan', 'Fernandez', 'juanf@example.com', NULL"//
-                            + "\n\t, TO_DATE('04-OCT-1992', 'DD-MON-YYYY'), 'SH_CLERK', 3000, NULL, 121"//
-                            + "\n\t, 20);",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\nVALUES (8002, 'Juan', 'Fernandez', 'juanf@example.com', NULL"//
+                        + "\n\t, TO_DATE('04-OCT-1992', 'DD-MON-YYYY'), 'SH_CLERK', 3000, NULL, 121"//
+                        + "\n\t, 20);",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
