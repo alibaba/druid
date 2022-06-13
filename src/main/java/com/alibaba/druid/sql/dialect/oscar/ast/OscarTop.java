@@ -25,7 +25,7 @@ public class OscarTop extends OscarObjectImpl {
     private boolean percent;
     private boolean withTies;
 
-    public OscarTop(){
+    public OscarTop() {
 
     }
 

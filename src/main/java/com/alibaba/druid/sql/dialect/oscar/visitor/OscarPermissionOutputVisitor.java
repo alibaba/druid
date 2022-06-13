@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.*;
 
+import java.util.List;
+
 public class OscarPermissionOutputVisitor extends OscarOutputVisitor {
 
     public OscarPermissionOutputVisitor(Appendable appender) {

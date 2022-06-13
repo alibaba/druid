@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class OscarObjectImpl extends SQLObjectImpl implements OscarObject {
 
-    public OscarObjectImpl(){
+    public OscarObjectImpl() {
 
     }
 

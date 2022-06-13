@@ -32,7 +32,7 @@ public class OscarFunctionTableSource extends SQLExprTableSource implements Osca
 
     private final List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
-    public OscarFunctionTableSource(){
+    public OscarFunctionTableSource() {
 
     }
 
