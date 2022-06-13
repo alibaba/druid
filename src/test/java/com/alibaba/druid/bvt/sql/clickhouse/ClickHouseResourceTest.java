@@ -91,6 +91,10 @@ public class ClickHouseResourceTest extends OracleTest {
         exec_test("bvt/parser/clickhouse-13.txt");
     }
 
+    public void test_14() throws Exception {
+        exec_test("bvt/parser/clickhouse-14.txt");
+    }
+
     public void exec_test(String resource) throws Exception {
         System.out.println(resource);
         InputStream is = null;

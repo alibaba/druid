@@ -1,0 +1,12 @@
+CREATE TABLE if not exists etda.mytable1
+(
+    `id` UInt64,
+    `action_parameter_uint64_list` Array(UInt64),
+    `action_parameter_string_list` Array(String)
+)
+---------------------------
+CREATE TABLE IF NOT EXISTS etda.mytable1 (
+	`id` UInt64,
+	`action_parameter_uint64_list` Array(UInt64),
+	`action_parameter_string_list` Array(String)
+)
