@@ -26,7 +26,7 @@ import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class OscarLexer extends Lexer {
 
-    public final static Keywords DEFAULT_OSCAR_KEYWORDS;
+    public static final Keywords DEFAULT_OSCAR_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -84,7 +84,7 @@ public class OscarLexer extends Lexer {
         DEFAULT_OSCAR_KEYWORDS = new Keywords(map);
     }
 
-    public OscarLexer(String input, SQLParserFeature... features){
+    public OscarLexer(String input, SQLParserFeature... features) {
         super(input, true);
         this.keepComments = true;
         super.keywords = DEFAULT_OSCAR_KEYWORDS;

@@ -7,11 +7,11 @@ import com.alibaba.druid.sql.parser.*;
 
 public class OscarCreateTableParser extends SQLCreateTableParser {
 
-    public OscarCreateTableParser(Lexer lexer){
+    public OscarCreateTableParser(Lexer lexer) {
         super(new OscarExprParser(lexer));
     }
 
-    public OscarCreateTableParser(String sql){
+    public OscarCreateTableParser(String sql) {
         super(new OscarExprParser(sql));
     }
 

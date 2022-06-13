@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLShowStatement;
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
-import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OscarShowStatement extends SQLStatementImpl implements OscarStatement, SQLShowStatement {

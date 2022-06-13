@@ -31,15 +31,15 @@ import java.util.List;
 
 public class OscarSelectParser extends SQLSelectParser {
 
-    public OscarSelectParser(SQLExprParser exprParser){
+    public OscarSelectParser(SQLExprParser exprParser) {
         super(exprParser);
     }
 
-    public OscarSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+    public OscarSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
         super(exprParser, selectListCache);
     }
 
-    public OscarSelectParser(String sql){
+    public OscarSelectParser(String sql) {
         this(new OscarExprParser(sql));
     }
 
@@ -241,7 +241,7 @@ public class OscarSelectParser extends SQLSelectParser {
             if (lexer.token() == Token.NOWAIT) {
                 lexer.nextToken();
                 forClause.setNoWait(true);
-            } else  if (lexer.identifierEquals(FnvHash.Constants.SKIP)) {
+            } else if (lexer.identifierEquals(FnvHash.Constants.SKIP)) {
                 lexer.nextToken();
                 acceptIdentifier("LOCKED");
                 forClause.setSkipLocked(true);

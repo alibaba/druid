@@ -34,8 +34,8 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
 
     private OscarTop top;
 
-    private FetchClause   fetch;
-    private ForClause     forClause;
+    private FetchClause fetch;
+    private ForClause forClause;
     private IntoOptionTemp intoOptionTemp;
     private IntoOptionLocal intoOptionLocal;
 
@@ -126,7 +126,7 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
             FIRST, NEXT
         }
 
-        private Option  option;
+        private Option option;
         private SQLExpr count;
 
         public Option getOption() {
@@ -179,9 +179,9 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
         }
 
         private List<SQLExpr> of = new ArrayList<SQLExpr>(2);
-        private boolean       noWait;
-        private boolean       skipLocked;
-        private Option        option;
+        private boolean noWait;
+        private boolean skipLocked;
+        private Option option;
 
         public Option getOption() {
             return option;

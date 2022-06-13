@@ -42,7 +42,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleToMySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarOutputVisitor;
-import com.alibaba.druid.sql.dialect.oscar.visitor.OscarPermissionOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;

@@ -32,15 +32,15 @@ import java.util.List;
 public class OscarInsertStatement extends SQLInsertStatement implements OscarStatement {
 
 
-    private List<ValuesClause>     valuesList = new ArrayList<ValuesClause>();
+    private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
     private SQLExpr returning;
-    private boolean			       defaultValues = false;
+    private boolean defaultValues;
 
-    private List<SQLExpr>          onConflictTarget;
+    private List<SQLExpr> onConflictTarget;
     private SQLName onConflictConstraint;
     private SQLExpr onConflictWhere;
     private SQLExpr onConflictUpdateWhere;
-    private boolean                onConflictDoNothing;
+    private boolean onConflictDoNothing;
     private List<SQLUpdateSetItem> onConflictUpdateSetItems;
 
     public OscarInsertStatement() {
@@ -94,15 +94,15 @@ public class OscarInsertStatement extends SQLInsertStatement implements OscarSta
     }
 
     public boolean isDefaultValues() {
-		return defaultValues;
-	}
+        return defaultValues;
+    }
 
-	public void setDefaultValues(boolean defaultValues) {
-		this.defaultValues = defaultValues;
-	}
+    public void setDefaultValues(boolean defaultValues) {
+        this.defaultValues = defaultValues;
+    }
 
-	protected void accept0(SQLASTVisitor visitor) {
-        if(visitor instanceof PGASTVisitor) {
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof PGASTVisitor) {
             accept0((PGASTVisitor) visitor);
         } else {
             super.accept0(visitor);

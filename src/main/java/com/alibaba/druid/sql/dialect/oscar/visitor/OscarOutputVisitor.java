@@ -41,12 +41,12 @@ import java.util.Set;
 
 public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTVisitor, OracleASTVisitor {
 
-    public OscarOutputVisitor(Appendable appender){
+    public OscarOutputVisitor(Appendable appender) {
         super(appender);
         this.dbType = DbType.oscar;
     }
 
-    public OscarOutputVisitor(Appendable appender, boolean parameterized){
+    public OscarOutputVisitor(Appendable appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.oscar;
     }
@@ -262,7 +262,7 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
             if (x.getCascade().booleanValue()) {
                 print0(ucase ? " CASCADE" : " cascade");
             } else {
-                print0(ucase ? " RESTRICT"  : " restrict");
+                print0(ucase ? " RESTRICT" : " restrict");
             }
         }
         return false;
@@ -1640,7 +1640,7 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
                             && ((OracleFunctionDataType) dataType).getBlock() != null) {
                         // skip
                         println();
-                    } else  if (dataType instanceof OracleProcedureDataType
+                    } else if (dataType instanceof OracleProcedureDataType
                             && ((OracleProcedureDataType) dataType).getBlock() != null) {
                         // skip
                         println();
@@ -2033,7 +2033,7 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
             }
 
             println();
-            print0(ucase ? x.getJoinType().name : x.getJoinType().name_lcase);
+            print0(ucase ? x.getJoinType().name : x.getJoinType().nameLCase);
             print(' ');
 
             if (right instanceof SQLJoinTableSource) {
@@ -2378,7 +2378,6 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
 
         if (x.getUsing() != null) {
             print0(ucase ? " USING " : " using ");
-            ;
             print0(x.getUsing());
         }
         print0(" (");

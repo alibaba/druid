@@ -23,10 +23,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OscarDeleteStatement extends SQLDeleteStatement implements OscarStatement {
 
-    private boolean       returning;
+    private boolean returning;
 
     public OscarDeleteStatement() {
-        super (DbType.oscar);
+        super(DbType.oscar);
     }
 
     public boolean isReturning() {

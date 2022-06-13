@@ -27,8 +27,6 @@ import com.alibaba.druid.sql.dialect.oscar.parser.OscarSelectParser;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
-import com.mysql.cj.xdevapi.ExprParser;
-import org.hibernate.hql.internal.classic.SelectParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,15 +40,15 @@ public class OscarStatementParser extends SQLStatementParser {
         super(parser);
     }
     
-    public OscarStatementParser(String sql){
+    public OscarStatementParser(String sql) {
         super(new OscarExprParser(sql));
     }
 
-    public OscarStatementParser(String sql, SQLParserFeature... features){
+    public OscarStatementParser(String sql, SQLParserFeature... features) {
         super(new OscarExprParser(sql, features));
     }
 
-    public OscarStatementParser(Lexer lexer){
+    public OscarStatementParser(Lexer lexer) {
         super(new OscarExprParser(lexer));
     }
 
@@ -118,9 +116,9 @@ public class OscarStatementParser extends SQLStatementParser {
         }
         
         if (lexer.token() == Token.DEFAULT) {
-        	lexer.nextToken();
-        	accept(Token.VALUES);
-        	stmt.setDefaultValues(true);
+            lexer.nextToken();
+            accept(Token.VALUES);
+            stmt.setDefaultValues(true);
         }
 
         if (lexer.token() == (Token.LPAREN)) {
@@ -332,12 +330,12 @@ public class OscarStatementParser extends SQLStatementParser {
         deleteStatement.setTableName(tableName);
         
         if (lexer.token() == Token.AS) {
-			accept(Token.AS);
-		}
-		if (lexer.token() == Token.IDENTIFIER) {
-			deleteStatement.setAlias(lexer.stringVal());
-			lexer.nextToken();
-		}
+            accept(Token.AS);
+        }
+        if (lexer.token() == Token.IDENTIFIER) {
+            deleteStatement.setAlias(lexer.stringVal());
+            lexer.nextToken();
+        }
 
         if (lexer.token() == Token.USING) {
             lexer.nextToken();
@@ -532,7 +530,7 @@ public class OscarStatementParser extends SQLStatementParser {
             lexer.nextToken();
         }
 
-        long hash = lexer.hash_lower();
+        long hash = lexer.hashLCase();
         String parameter = lexer.stringVal();
         SQLExpr paramExpr;
         List<SQLExpr> values = new ArrayList<SQLExpr>();
@@ -547,7 +545,7 @@ public class OscarStatementParser extends SQLStatementParser {
                 values.add(new SQLCharExpr(value));
             }
             lexer.nextToken();
-//            return new OscarSetStatement(range, TIME_ZONE, exprs);
+//            return new PGSetStatement(range, TIME_ZONE, exprs);
         } else if (hash == FnvHash.Constants.ROLE) {
             paramExpr = new SQLIdentifierExpr(parameter);
             lexer.nextToken();
@@ -576,8 +574,6 @@ public class OscarStatementParser extends SQLStatementParser {
         }
 
         // value | 'value' | DEFAULT
-
-
 
         SQLExpr valueExpr;
         if (values.size() == 1) {

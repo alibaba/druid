@@ -23,10 +23,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OscarUpdateStatement extends SQLUpdateStatement implements OscarStatement {
 
-    private boolean        only      = false;
+    private boolean only;
 
-    public OscarUpdateStatement(){
-        super (DbType.oscar);
+    public OscarUpdateStatement() {
+        super(DbType.oscar);
     }
 
     public boolean isOnly() {

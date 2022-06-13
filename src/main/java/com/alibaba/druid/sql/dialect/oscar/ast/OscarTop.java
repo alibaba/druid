@@ -34,7 +34,7 @@ public class OscarTop extends OscarObjectImpl {
 
     }
 
-    public OscarTop(SQLExpr expr){
+    public OscarTop(SQLExpr expr) {
         this.setExpr(expr);
     }
 

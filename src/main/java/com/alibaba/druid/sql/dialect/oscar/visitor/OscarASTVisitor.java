@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oscar.ast.stmt.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface OscarASTVisitor extends SQLASTVisitor {
-
     default void endVisit(OscarSelectQueryBlock x) {
         endVisit((SQLSelectQueryBlock) x);
     }

@@ -19,34 +19,19 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
-import com.alibaba.druid.sql.dialect.oscar.ast.OscarTop;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.*;
-import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarSelectQueryBlock.FetchClause;
-import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarSelectQueryBlock.ForClause;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 public class OscarPermissionOutputVisitor extends OscarOutputVisitor {
 
-    public OscarPermissionOutputVisitor(Appendable appender){
+    public OscarPermissionOutputVisitor(Appendable appender) {
         super(appender);
         this.dbType = DbType.oscar;
     }
 
-    public OscarPermissionOutputVisitor(Appendable appender, boolean parameterized){
+    public OscarPermissionOutputVisitor(Appendable appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.oscar;
     }

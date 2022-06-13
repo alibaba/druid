@@ -31,12 +31,12 @@ import java.util.Arrays;
 
 public class OscarExprParser extends SQLExprParser {
 
-    public final static String[] AGGREGATE_FUNCTIONS;
+    public static final String[] AGGREGATE_FUNCTIONS;
 
-    public final static long[] AGGREGATE_FUNCTIONS_CODES;
+    public static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER","PERCENTILE_CONT", "PERCENTILE_DISC", "RANK", "DENSE_RANK","PERCENT_RANK","CUME_DIST" };
+        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER", "PERCENTILE_CONT", "PERCENTILE_DISC", "RANK", "DENSE_RANK", "PERCENT_RANK", "CUME_DIST" };
 
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
@@ -47,19 +47,19 @@ public class OscarExprParser extends SQLExprParser {
         }
     }
 
-    public OscarExprParser(String sql){
+    public OscarExprParser(String sql) {
         this(new OscarLexer(sql));
         this.lexer.nextToken();
         this.dbType = DbType.oscar;
     }
 
-    public OscarExprParser(String sql, SQLParserFeature... features){
+    public OscarExprParser(String sql, SQLParserFeature... features) {
         this(new OscarLexer(sql));
         this.lexer.nextToken();
         this.dbType = DbType.oscar;
     }
 
-    public OscarExprParser(Lexer lexer){
+    public OscarExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;

@@ -23,11 +23,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OscarSelectStatement extends SQLSelectStatement implements OscarStatement {
 
-    public OscarSelectStatement(){
+    public OscarSelectStatement() {
         super(DbType.oscar);
     }
 
-    public OscarSelectStatement(SQLSelect select){
+    public OscarSelectStatement(SQLSelect select) {
         super(select, DbType.oscar);
     }
 
