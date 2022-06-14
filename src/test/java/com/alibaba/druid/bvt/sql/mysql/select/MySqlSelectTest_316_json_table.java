@@ -84,21 +84,21 @@ public class MySqlSelectTest_316_json_table
         System.out.println(stmt.toString());
 
         assertEquals("SELECT *\n" +
-                "FROM JSON_TABLE('[{\"a\":\"3\"},{\"a\":2},{\"b\":1},{\"a\":0},{\"a\":[1,2]}]' '$[*]'\n" +
+                "FROM JSON_TABLE('[{\"a\":\"3\"},{\"a\":2},{\"b\":1},{\"a\":0},{\"a\":[1,2]}]','$[*]'\n" +
                 "\tCOLUMNS (\n" +
-                "\t\trowid, \n" +
-                "\t\tac VARCHAR(100) PATH '$.a' DEFAULT '111' ON EMPTY DEFAULT '999' ON ERROR, \n" +
-                "\t\taj JSON PATH '$.a' DEFAULT '{\"x\": 333}' ON EMPTY, \n" +
+                "\t\trowid,\n" +
+                "\t\tac VARCHAR(100) PATH '$.a' DEFAULT '111' ON EMPTY DEFAULT '999' ON ERROR,\n" +
+                "\t\taj JSON PATH '$.a' DEFAULT '{\"x\": 333}' ON EMPTY,\n" +
                 "\t\tbx INT EXISTS PATH '$.b'\n" +
                 "\t)\n" +
                 ") tt;", stmt.toString());
 
         assertEquals("select *\n" +
-                "from json_table('[{\"a\":\"3\"},{\"a\":2},{\"b\":1},{\"a\":0},{\"a\":[1,2]}]' '$[*]'\n" +
+                "from json_table('[{\"a\":\"3\"},{\"a\":2},{\"b\":1},{\"a\":0},{\"a\":[1,2]}]','$[*]'\n" +
                 "\tcolumns (\n" +
-                "\t\trowid, \n" +
-                "\t\tac VARCHAR(100) path '$.a' default '111' on empty default '999' on error, \n" +
-                "\t\taj JSON path '$.a' default '{\"x\": 333}' on empty, \n" +
+                "\t\trowid,\n" +
+                "\t\tac VARCHAR(100) path '$.a' default '111' on empty default '999' on error,\n" +
+                "\t\taj JSON path '$.a' default '{\"x\": 333}' on empty,\n" +
                 "\t\tbx INT exists path '$.b'\n" +
                 "\t)\n" +
                 ") tt;", stmt.toLowerCaseString());
@@ -135,19 +135,19 @@ public class MySqlSelectTest_316_json_table
         System.out.println(stmt.toString());
 
         assertEquals("SELECT *\n" +
-                "FROM JSON_TABLE('[{\"a\": 1, \"b\": [11,111]}, {\"a\": 2, \"b\": [22,222]}]' '$[*]'\n" +
+                "FROM JSON_TABLE('[{\"a\": 1, \"b\": [11,111]}, {\"a\": 2, \"b\": [22,222]}]','$[*]'\n" +
                 "\tCOLUMNS (\n" +
-                "\t\ta INT PATH '$.a', \n" +
-                "\t\tNESTED PATH '$.b[*]' COLUMNS (b1 INT PATH '$'), \n" +
+                "\t\ta INT PATH '$.a',\n" +
+                "\t\tNESTED PATH '$.b[*]' COLUMNS (b1 INT PATH '$'),\n" +
                 "\t\tNESTED PATH '$.b[*]' COLUMNS (b2 INT PATH '$')\n" +
                 "\t)\n" +
                 ") jt;", stmt.toString());
 
         assertEquals("select *\n" +
-                "from json_table('[{\"a\": 1, \"b\": [11,111]}, {\"a\": 2, \"b\": [22,222]}]' '$[*]'\n" +
+                "from json_table('[{\"a\": 1, \"b\": [11,111]}, {\"a\": 2, \"b\": [22,222]}]','$[*]'\n" +
                 "\tcolumns (\n" +
-                "\t\ta INT path '$.a', \n" +
-                "\t\tNESTED path '$.b[*]' columns (b1 INT path '$'), \n" +
+                "\t\ta INT path '$.a',\n" +
+                "\t\tNESTED path '$.b[*]' columns (b1 INT path '$'),\n" +
                 "\t\tNESTED path '$.b[*]' columns (b2 INT path '$')\n" +
                 "\t)\n" +
                 ") jt;", stmt.toLowerCaseString());
@@ -194,10 +194,10 @@ public class MySqlSelectTest_316_json_table
                 "FROM JSON_TABLE('[{\"a\": \"a_val\",\n" +
                 "      \"b\": [{\"c\": \"c_val\", \"l\": [1,2]}]},\n" +
                 "    {\"a\": \"a_val\",\n" +
-                "      \"b\": [{\"c\": \"c_val\",\"l\": [11]}, {\"c\": \"c_val\", \"l\": [22]}]}]' '$[*]'\n" +
+                "      \"b\": [{\"c\": \"c_val\",\"l\": [11]}, {\"c\": \"c_val\", \"l\": [22]}]}]','$[*]'\n" +
                 "\tCOLUMNS (\n" +
-                "\t\ttop_ord, \n" +
-                "\t\tapath VARCHAR(10) PATH '$.a', \n" +
+                "\t\ttop_ord,\n" +
+                "\t\tapath VARCHAR(10) PATH '$.a',\n" +
                 "\t\tNESTED PATH '$.b[*]' COLUMNS (bpath VARCHAR(10) PATH '$.c', ord, NESTED PATH '$.l[*]' COLUMNS (lpath varchar(10) PATH '$'))\n" +
                 "\t)\n" +
                 ") jt;", stmt.toString());
@@ -206,10 +206,10 @@ public class MySqlSelectTest_316_json_table
                 "from json_table('[{\"a\": \"a_val\",\n" +
                 "      \"b\": [{\"c\": \"c_val\", \"l\": [1,2]}]},\n" +
                 "    {\"a\": \"a_val\",\n" +
-                "      \"b\": [{\"c\": \"c_val\",\"l\": [11]}, {\"c\": \"c_val\", \"l\": [22]}]}]' '$[*]'\n" +
+                "      \"b\": [{\"c\": \"c_val\",\"l\": [11]}, {\"c\": \"c_val\", \"l\": [22]}]}]','$[*]'\n" +
                 "\tcolumns (\n" +
-                "\t\ttop_ord, \n" +
-                "\t\tapath VARCHAR(10) path '$.a', \n" +
+                "\t\ttop_ord,\n" +
+                "\t\tapath VARCHAR(10) path '$.a',\n" +
                 "\t\tNESTED path '$.b[*]' columns (bpath VARCHAR(10) path '$.c', ord, NESTED path '$.l[*]' columns (lpath varchar(10) path '$'))\n" +
                 "\t)\n" +
                 ") jt;", stmt.toLowerCaseString());
