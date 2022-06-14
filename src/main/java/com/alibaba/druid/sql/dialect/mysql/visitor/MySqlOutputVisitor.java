@@ -5434,14 +5434,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlJSONTableExpr x) {
         print0(ucase ? "JSON_TABLE(" : "json_table(");
         x.getExpr().accept(this);
-        print(' ');
+        print(',');
         x.getPath().accept(this);
         incrementIndent();
         println();
         print0(ucase ? "COLUMNS (" : "columns (");
         incrementIndent();
         println();
-        printlnAndAccept(x.getColumns(), ", ");
+        printlnAndAccept(x.getColumns(), ",");
         decrementIndent();
         println();
         print(')');
