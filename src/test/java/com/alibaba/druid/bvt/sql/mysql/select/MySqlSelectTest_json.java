@@ -17,8 +17,8 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.Assert;
+
 
 public class MySqlSelectTest_json extends MysqlTest {
 
@@ -34,4 +34,24 @@ public class MySqlSelectTest_json extends MysqlTest {
                         "\tAND hour = '00'\n" +
                         "LIMIT 10");
     }
+
+
+    public void test_01(){
+        String sql = "select *\n" +
+                "from json_table(@ytt,'$.name[*]'\n\t" +
+                "columns (\n\t\tf1 varchar(10) path '$.a',\n\t\t" +
+                "f2 varchar(10) path '$.b'\n\t" +
+                ")\n" +
+                ") tt;";
+        SQLStatement parse = parse(sql);
+        Assert.assertEquals(sql,parse.toLowerCaseString());
+    }
+
+
+
+
+
+
+
+
 }
