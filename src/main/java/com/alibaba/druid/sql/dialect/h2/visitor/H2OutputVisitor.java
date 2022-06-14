@@ -25,10 +25,6 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
-import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
@@ -36,8 +32,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 import java.util.List;
 
 public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor {
-
-    private final static Log LOG = LogFactory.getLog(H2OutputVisitor.class);
+    private static final Log LOG = LogFactory.getLog(H2OutputVisitor.class);
 
     public H2OutputVisitor(Appendable appender) {
         super(appender, DbType.h2);
@@ -117,7 +112,6 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
 
     @Override
     public boolean visit(SQLCreateTableStatement x) {
-
         /*
         https://h2database.com/html/commands.html#create_table
         CREATE [ CACHED | MEMORY ] [ { TEMP } | [ GLOBAL | LOCAL ] TEMPORARY ]
@@ -293,7 +287,6 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
 
     @Override
     public boolean visit(SQLAlterTableStatement x) {
-
         /*
         https://h2database.com/html/commands.html#alter_table_alter_column
         ALTER TABLE [ IF EXISTS ] [schemaName.]tableName
