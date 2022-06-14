@@ -22,15 +22,14 @@ import org.junit.Assert;
 
 public class WallAlterTest_0 extends TestCase {
     private String sql = "alter index idx_t1 rebuild";
-    
+
     private WallConfig config = new WallConfig();
-    
+
     protected void setUp() throws Exception {
         config.setUpdateAllow(true);
     }
-    
+
     public void testORACLE() throws Exception {
-        
         assertTrue(WallUtils.isValidateOracle(sql, config));
     }
 }

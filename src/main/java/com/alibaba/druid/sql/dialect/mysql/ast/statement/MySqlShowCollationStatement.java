@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowCollationStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
     private SQLExpr where;
     private SQLExpr pattern;
 

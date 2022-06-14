@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlDumpTest_1 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "DUMP DATA OVERWRITE INTO 'odps://cod_garuda/wenyu_meta_person' select cid, cname, dept, gender, pid from wenyu_meta_person limit 10;";
 
@@ -41,14 +40,14 @@ public class MySqlDumpTest_1 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(1, visitor.getTables().size());
         assertEquals(5, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
         assertTrue(visitor.containsTable("wenyu_meta_person"));
 //        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
-        
+
         assertTrue(visitor.containsColumn("wenyu_meta_person", "cid"));
         assertTrue(visitor.containsColumn("wenyu_meta_person", "cname"));
         assertTrue(visitor.containsColumn("wenyu_meta_person", "dept"));

@@ -15,28 +15,23 @@
  */
 package com.alibaba.druid.support.http.stat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.StringUtils;
 
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 public class WebAppStatManager {
+    public static final String SYS_PROP_INSTANCES = "druid.web.webAppStat";
 
-    public final static String             SYS_PROP_INSTANCES = "druid.web.webAppStat";
+    private static final WebAppStatManager instance = new WebAppStatManager();
 
-    private final static WebAppStatManager instance           = new WebAppStatManager();
-
-    private Set<Object>                    webAppStatSet      = null;
+    private Set<Object> webAppStatSet;
 
     public static WebAppStatManager getInstance() {
         return instance;
     }
-    
+
     public synchronized WebAppStat getWebAppStat(String contextPath) {
         Set<Object> stats = getWebAppStatSet();
         for (Object item : stats) {
@@ -47,7 +42,7 @@ public class WebAppStatManager {
                 }
             }
         }
-        
+
         WebAppStat stat = new WebAppStat(contextPath);
         this.addWebAppStatSet(stat);
         return stat;
@@ -58,7 +53,7 @@ public class WebAppStatManager {
             if (DruidDataSourceStatManager.isRegisterToSystemProperty()) {
                 webAppStatSet = getWebAppStatSet0();
             } else {
-                webAppStatSet = new CopyOnWriteArraySet<Object>();                
+                webAppStatSet = new CopyOnWriteArraySet<Object>();
             }
         }
 
@@ -103,7 +98,7 @@ public class WebAppStatManager {
 
         return allAppUriStatDataList;
     }
-    
+
     public Map<String, Object> getSessionStat(String sessionId) {
         Set<Object> stats = getWebAppStatSet();
 
@@ -113,20 +108,20 @@ public class WebAppStatManager {
                 return statData;
             }
         }
-        
+
         return null;
     }
-    
+
     public Map<String, Object> getURIStatData(String uri) {
         Set<Object> stats = getWebAppStatSet();
-        
+
         for (Object stat : stats) {
             Map<String, Object> statData = WebAppStatUtils.getURIStatData(stat, uri);
             if (statData != null) {
                 return statData;
             }
         }
-        
+
         return null;
     }
 

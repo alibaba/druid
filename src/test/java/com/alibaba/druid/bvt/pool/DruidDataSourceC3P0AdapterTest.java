@@ -11,7 +11,6 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
 
 public class DruidDataSourceC3P0AdapterTest extends TestCase {
-
     private DruidDataSourceC3P0Adapter dataSource;
 
     protected void setUp() throws Exception {

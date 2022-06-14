@@ -27,12 +27,10 @@ import java.util.List;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 public final class SQLNullExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
-
-    public SQLNullExpr(){
-
+    public SQLNullExpr() {
     }
 
-    public SQLNullExpr(SQLObject parent){
+    public SQLNullExpr(SQLObject parent) {
         this.parent = parent;
     }
 

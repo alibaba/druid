@@ -15,23 +15,22 @@
  */
 package com.alibaba.druid.util;
 
-import java.util.Properties;
-
 import javax.security.auth.callback.PasswordCallback;
 
-public class DruidPasswordCallback extends PasswordCallback {
+import java.util.Properties;
 
+public class DruidPasswordCallback extends PasswordCallback {
     private static final long serialVersionUID = 1L;
 
-    private String            url;
+    private String url;
 
-    private Properties        properties;
+    private Properties properties;
 
-    public DruidPasswordCallback(){
+    public DruidPasswordCallback() {
         this("druidDataSource password", false);
     }
 
-    public DruidPasswordCallback(String prompt, boolean echoOn){
+    public DruidPasswordCallback(String prompt, boolean echoOn) {
         super(prompt, echoOn);
     }
 

@@ -26,40 +26,39 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest41 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "  CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (\t\"NUM\" NUMBER(2,0), \n" +
-                "\t\"BLOB_COL\" BLOB, \n" +
-                "\t\"CLOB_COL\" CLOB, \n" +
-                "\t\"CH\" VARCHAR2(55), \n" +
-                "\t CONSTRAINT \"PK_A\" PRIMARY KEY (\"NUM\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"USERS\"  ENABLE, \n" +
-                "\t SUPPLEMENTAL LOG GROUP \"GGS_16346\" (\"NUM\") ALWAYS, \n" +
-                "\t SUPPLEMENTAL LOG DATA (PRIMARY KEY) COLUMNS, \n" +
-                "\t SUPPLEMENTAL LOG DATA (UNIQUE INDEX) COLUMNS, \n" +
-                "\t SUPPLEMENTAL LOG DATA (FOREIGN KEY) COLUMNS, \n" +
-                "\t SUPPLEMENTAL LOG DATA (ALL) COLUMNS, \n" +
-                "\t SUPPLEMENTAL LOG GROUP \"ALLINS_POLNO\" (\"NUM\") ALWAYS\n" +
-                "   ) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"USERS\" \n" +
-                " LOB (\"BLOB_COL\") STORE AS BASICFILE (\n" +
-                "  TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
-                "  NOCACHE LOGGING \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)) \n" +
-                " LOB (\"CLOB_COL\") STORE AS BASICFILE (\n" +
-                "  TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
-                "  NOCACHE LOGGING \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)) ";
+                "  CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (\t\"NUM\" NUMBER(2,0), \n" +
+                        "\t\"BLOB_COL\" BLOB, \n" +
+                        "\t\"CLOB_COL\" CLOB, \n" +
+                        "\t\"CH\" VARCHAR2(55), \n" +
+                        "\t CONSTRAINT \"PK_A\" PRIMARY KEY (\"NUM\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"USERS\"  ENABLE, \n" +
+                        "\t SUPPLEMENTAL LOG GROUP \"GGS_16346\" (\"NUM\") ALWAYS, \n" +
+                        "\t SUPPLEMENTAL LOG DATA (PRIMARY KEY) COLUMNS, \n" +
+                        "\t SUPPLEMENTAL LOG DATA (UNIQUE INDEX) COLUMNS, \n" +
+                        "\t SUPPLEMENTAL LOG DATA (FOREIGN KEY) COLUMNS, \n" +
+                        "\t SUPPLEMENTAL LOG DATA (ALL) COLUMNS, \n" +
+                        "\t SUPPLEMENTAL LOG GROUP \"ALLINS_POLNO\" (\"NUM\") ALWAYS\n" +
+                        "   ) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"USERS\" \n" +
+                        " LOB (\"BLOB_COL\") STORE AS BASICFILE (\n" +
+                        "  TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
+                        "  NOCACHE LOGGING \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)) \n" +
+                        " LOB (\"CLOB_COL\") STORE AS BASICFILE (\n" +
+                        "  TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
+                        "  NOCACHE LOGGING \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)) ";
 
 //        System.out.println(sql);
 
@@ -141,7 +140,7 @@ public class OracleCreateTableTest41 extends OracleTest {
                         "\tNOCACHE\n" +
                         "\tRETENTION\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

@@ -52,7 +52,7 @@ public class ClickhouseCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.identifierEquals("SETTINGS")) {
             lexer.nextToken();
-            for (;;) {
+            for (; ; ) {
                 SQLAssignItem item = this.exprParser.parseAssignItem();
                 item.setParent(ckStmt);
                 ckStmt.getSettings().add(item);

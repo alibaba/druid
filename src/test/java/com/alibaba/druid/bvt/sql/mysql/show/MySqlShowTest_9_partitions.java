@@ -22,12 +22,11 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 public class MySqlShowTest_9_partitions extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW PARTITIONS from t";
 
         SQLStatement stmt = SQLUtils.parseStatements(sql, DbType.mysql).get(0);
-        
+
         String result = SQLUtils.toMySqlString(stmt);
         assertEquals("SHOW PARTITIONS FROM t", result);
 

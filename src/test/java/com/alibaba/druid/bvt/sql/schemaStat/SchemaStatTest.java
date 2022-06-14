@@ -21,12 +21,12 @@ public class SchemaStatTest extends TestCase {
         DbType dbType = JdbcConstants.ODPS;
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         SQLStatement stmt = parser.parseStatementList().get(0);
-        
+
         SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(dbType);
         stmt.accept(statVisitor);
-        
+
         System.out.println(statVisitor.getColumns());
-        
+
         Assert.assertEquals(1, statVisitor.getColumns().size());
     }
 }

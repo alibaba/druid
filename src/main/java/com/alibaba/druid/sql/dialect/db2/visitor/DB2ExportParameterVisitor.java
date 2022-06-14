@@ -30,14 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DB2ExportParameterVisitor extends DB2OutputVisitor implements ExportParameterVisitor {
-
-
     /**
      * true= if require parameterized sql output
      */
     private final boolean requireParameterizedOutput;
 
-    public DB2ExportParameterVisitor(final List<Object> parameters,final Appendable appender,final boolean wantParameterizedOutput){
+    public DB2ExportParameterVisitor(final List<Object> parameters,
+                                     final Appendable appender,
+                                     final boolean wantParameterizedOutput) {
         super(appender, true);
         this.parameters = parameters;
         this.requireParameterizedOutput = wantParameterizedOutput;
@@ -47,22 +47,21 @@ public class DB2ExportParameterVisitor extends DB2OutputVisitor implements Expor
         this(new ArrayList<Object>());
     }
 
-    public DB2ExportParameterVisitor(final List<Object> parameters){
-        this(parameters,new StringBuilder(),false);
+    public DB2ExportParameterVisitor(final List<Object> parameters) {
+        this(parameters, new StringBuilder(), false);
     }
 
     public DB2ExportParameterVisitor(final Appendable appender) {
-        this(new ArrayList<Object>(),appender,true);
+        this(new ArrayList<Object>(), appender, true);
     }
 
-    
     public List<Object> getParameters() {
         return parameters;
     }
 
     @Override
     public boolean visit(SQLSelectItem x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         return false;
@@ -70,7 +69,7 @@ public class DB2ExportParameterVisitor extends DB2OutputVisitor implements Expor
 
     @Override
     public boolean visit(SQLOrderBy x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         return false;
@@ -78,7 +77,7 @@ public class DB2ExportParameterVisitor extends DB2OutputVisitor implements Expor
 
     @Override
     public boolean visit(SQLSelectGroupByClause x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         return false;
@@ -86,7 +85,7 @@ public class DB2ExportParameterVisitor extends DB2OutputVisitor implements Expor
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         ExportParameterVisitorUtils.exportParamterAndAccept(this.parameters, x.getArguments());
@@ -95,17 +94,17 @@ public class DB2ExportParameterVisitor extends DB2OutputVisitor implements Expor
 
     @Override
     public boolean visit(SQLInListExpr x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
-        
+
         ExportParameterVisitorUtils.exportParamterAndAccept(this.parameters, x.getTargetList());
         return true;
     }
 
     @Override
     public boolean visit(SQLBetweenExpr x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
 
@@ -114,7 +113,7 @@ public class DB2ExportParameterVisitor extends DB2OutputVisitor implements Expor
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         ExportParameterVisitorUtils.exportParameter(this.parameters, x);
@@ -123,6 +122,5 @@ public class DB2ExportParameterVisitor extends DB2OutputVisitor implements Expor
 
     @Override
     public void endVisit(DB2CreateTableStatement x) {
-
     }
 }

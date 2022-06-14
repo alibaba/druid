@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2CreateTableTest_01 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE MK.KPI_AREA_SORT_FACT_LATN_ID_MID\n" +
                 "(\n" +
@@ -80,8 +79,8 @@ public class DB2CreateTableTest_01 extends DB2Test {
                         "DATA CAPTURE NONE\n" +
                         "IN WH_APP_TEMP\n" +
                         "PARTITION BY HASH (LATN_ID, BUREAU_KEY, ADD_SUM);", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("create table MK.KPI_AREA_SORT_FACT_LATN_ID_MID (\n" +
                         "\tLATN_ID INTEGER,\n" +
                         "\tBUREAU_KEY INTEGER,\n" +
@@ -93,6 +92,6 @@ public class DB2CreateTableTest_01 extends DB2Test {
                         "DATA CAPTURE NONE\n" +
                         "IN WH_APP_TEMP\n" +
                         "partition by hash (LATN_ID, BUREAU_KEY, ADD_SUM);", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

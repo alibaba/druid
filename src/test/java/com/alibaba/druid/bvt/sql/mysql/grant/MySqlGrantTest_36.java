@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.parser.ParserException;
 import java.util.List;
 
 public class MySqlGrantTest_36 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "GRANT DELETE, CREATE, DROP ON *.* TO 'oa_2'@'localhost' with grant option";
 
@@ -37,10 +36,10 @@ public class MySqlGrantTest_36 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("GRANT DELETE, CREATE, DROP ON *.* TO 'oa_2'@'localhost' WITH GRANT OPTION", //
-                            output);
+                output);
 
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());

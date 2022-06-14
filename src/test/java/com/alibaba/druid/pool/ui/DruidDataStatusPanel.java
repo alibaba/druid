@@ -24,21 +24,19 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class DruidDataStatusPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
 
-    private static final long             serialVersionUID = 1L;
+    private final Map<String, JTextField> fields = new HashMap<String, JTextField>();
 
-    private final Map<String, JTextField> fields           = new HashMap<String, JTextField>();
-
-    private final String[]                fieldNames       = new String[] { //
-                                                           "CreateCount", "CreateErrorCount", "CreateTimespanMillis",
+    private final String[] fieldNames = new String[]{ //
+            "CreateCount", "CreateErrorCount", "CreateTimespanMillis",
             "CreateTimespanNano", "DestroyCount", //
             "ConnectCount", "ConnectErrorCount", "CloseCount", "RecycleCount", "ActiveCount", //
             "PoolingCount", "IdleCheckCount", "UI_GettingCount", "UI_GetCount", "UI_ReleaseCount" //
             , "UI_ExecutingCount" //
-                                                           };
+    };
 
-    public DruidDataStatusPanel(){
-
+    public DruidDataStatusPanel() {
         this.setLayout(new GridLayout(6, 6));
 
         for (String fieldName : fieldNames) {

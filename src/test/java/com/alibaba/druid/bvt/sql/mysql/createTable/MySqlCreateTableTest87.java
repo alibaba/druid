@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class MySqlCreateTableTest87 extends MysqlTest {
-
     public void test_one() throws Exception {
         String sql = "CREATE TABLE `test_4` (\n" +
                 "  `id` bigint(20) zerofill   unsigNed NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
@@ -50,7 +49,7 @@ public class MySqlCreateTableTest87 extends MysqlTest {
                     "\tPRIMARY KEY (`id`)\n" +
                     ") ENGINE = InnoDB AUTO_INCREMENT = 1769531 CHARSET = utf8mb4 COMMENT '10000000'", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("create table `test_4` (\n" +

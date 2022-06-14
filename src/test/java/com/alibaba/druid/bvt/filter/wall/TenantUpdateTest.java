@@ -27,13 +27,12 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class TenantUpdateTest extends TestCase {
+    private String sql = "UPDATE T_USER SET FNAME = ? WHERE FID = ?";
+    private String expect_sql = "UPDATE T_USER" + //
+            "\nSET FNAME = ?, tenant = 123" + //
+            "\nWHERE FID = ?";
 
-    private String     sql             = "UPDATE T_USER SET FNAME = ? WHERE FID = ?";
-    private String     expect_sql      = "UPDATE T_USER" + //
-                                         "\nSET FNAME = ?, tenant = 123" + //
-                                         "\nWHERE FID = ?";
-
-    private WallConfig config          = new WallConfig();
+    private WallConfig config = new WallConfig();
     private WallConfig config_callback = new WallConfig();
 
     protected void setUp() throws Exception {

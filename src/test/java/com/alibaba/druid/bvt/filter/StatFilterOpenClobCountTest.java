@@ -19,7 +19,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterOpenClobCountTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -29,19 +28,18 @@ public class StatFilterOpenClobCountTest extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setTestOnBorrow(false);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public Clob resultSet_getClob(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                    throws SQLException {
+                    throws SQLException {
                 return new ClobProxyImpl(result.getStatementProxy().getConnectionProxy().getDirectDataSource(),
-                                         result.getStatementProxy().getConnectionProxy(), new MockClob());
+                        result.getStatementProxy().getConnectionProxy(), new MockClob());
             }
 
             @Override
             public Clob resultSet_getClob(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                       throws SQLException {
+                    throws SQLException {
                 return new ClobProxyImpl(result.getStatementProxy().getConnectionProxy().getDirectDataSource(),
-                                         result.getStatementProxy().getConnectionProxy(), new MockClob());
+                        result.getStatementProxy().getConnectionProxy(), new MockClob());
             }
         });
         dataSource.init();

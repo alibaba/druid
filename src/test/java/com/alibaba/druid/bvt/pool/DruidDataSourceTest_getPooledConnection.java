@@ -20,11 +20,10 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 
 /**
  * 这个场景测试defaultAutoCommit
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_getPooledConnection extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -33,7 +32,6 @@ public class DruidDataSourceTest_getPooledConnection extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setRemoveAbandoned(true);
         dataSource.setDriver(new MockDriver() {
-
             public ResultSet executeQuery(MockStatementBase stmt, String sql) throws SQLException {
                 throw new SQLException();
             }
@@ -65,7 +63,6 @@ public class DruidDataSourceTest_getPooledConnection extends TestCase {
 
         final AtomicInteger errorCount = new AtomicInteger();
         conn.addConnectionEventListener(new ConnectionEventListener() {
-
             @Override
             public void connectionErrorOccurred(ConnectionEvent event) {
                 errorCount.incrementAndGet();
@@ -73,7 +70,6 @@ public class DruidDataSourceTest_getPooledConnection extends TestCase {
 
             @Override
             public void connectionClosed(ConnectionEvent event) {
-
             }
         });
 
@@ -81,9 +77,8 @@ public class DruidDataSourceTest_getPooledConnection extends TestCase {
         try {
             stmt.executeQuery();
         } catch (SQLException e) {
-
         }
-        
+
         Assert.assertEquals(1, errorCount.get());
         conn.close();
     }

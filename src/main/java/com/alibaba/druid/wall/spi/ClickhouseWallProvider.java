@@ -25,16 +25,14 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
-
 public class ClickhouseWallProvider extends WallProvider {
+    public static final String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/clickhouse";
 
-    public final static String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/clickhouse";
-
-    public ClickhouseWallProvider(){
+    public ClickhouseWallProvider() {
         this(new WallConfig(DEFAULT_CONFIG_DIR));
     }
 
-    public ClickhouseWallProvider(WallConfig config){
+    public ClickhouseWallProvider(WallConfig config) {
         super(config, DbType.clickhouse);
     }
 

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTriggerTest3 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "-- Create trigger 1\n" +
                 "-- delimiter //\n" +
@@ -47,6 +46,5 @@ public class MySqlCreateTriggerTest3 extends MysqlTest {
                 "\tVALUES (old.col1, old.col1 + 5, old.col1 + 7);\n" +
                 "END;", stmt.toString());
     }
-
 
 }

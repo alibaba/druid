@@ -11,7 +11,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_139 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select (tinyint_test/tinyint_1bit_test)\n" +
                 "=mediumint_test=decimal_test \n" +
@@ -19,7 +18,7 @@ public class MySqlSelectTest_139 extends MysqlTest {
                 "FROM corona_one_db_one_tb";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

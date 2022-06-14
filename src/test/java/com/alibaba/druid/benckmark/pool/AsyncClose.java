@@ -14,9 +14,9 @@ public class AsyncClose {
         DataSource ds = createDruid();
         System.out.println("init done");
 
-       for (int i = 0; i < 10; ++i) {
-           perf(ds);
-       }
+        for (int i = 0; i < 10; ++i) {
+            perf(ds);
+        }
 
         System.out.println("query done");
     }

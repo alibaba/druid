@@ -25,14 +25,13 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MySqlSelectTest_55 extends MysqlTest {
-
     public void test_date() throws Exception {
         System.out.println(new SimpleDateFormat("yyyyMMdd").parse("19050101").getTime());
         System.out.println(new SimpleDateFormat("yyyyMMdd").parse("10010101").toString());
     }
 
     public void test_0() throws Exception {
-        String sql =  "select count(0)\n" +
+        String sql = "select count(0)\n" +
                 "from tb_user\n" +
                 "where\n" +
                 "(login_name like '%j%' and v_sort between 1 and 10 )\n" +
@@ -54,12 +53,12 @@ public class MySqlSelectTest_55 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(1, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT count(0)\n" +
@@ -68,7 +67,7 @@ public class MySqlSelectTest_55 extends MysqlTest {
                             "\t\tAND v_sort BETWEEN 1 AND 10)\n" +
                             "\tOR (display_name LIKE '%j%'\n" +
                             "\t\tAND v_sort BETWEEN 1 AND 10)", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -78,7 +77,7 @@ public class MySqlSelectTest_55 extends MysqlTest {
                             "\t\tand v_sort between 1 and 10)\n" +
                             "\tor (display_name like '%j%'\n" +
                             "\t\tand v_sort between 1 and 10)", //
-                                output);
+                    output);
         }
 
         {

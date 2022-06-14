@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class OracleSchemaStatVisitorTest6 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT 'SYS_B_0',COUNT('$SYS_B_1') AS DEVICECOUNT "
                 + "FROM ("

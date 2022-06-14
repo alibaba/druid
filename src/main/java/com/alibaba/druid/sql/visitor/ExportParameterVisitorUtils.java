@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ExportParameterVisitorUtils {
-    
     //private for util class not need new instance
     private ExportParameterVisitorUtils() {
         super();
@@ -62,8 +61,6 @@ public final class ExportParameterVisitorUtils {
         }
     }
 
-    
-
     public static boolean exportParamterAndAccept(final List<Object> parameters, List<SQLExpr> list) {
         for (int i = 0, size = list.size(); i < size; ++i) {
             SQLExpr param = list.get(i);
@@ -88,7 +85,7 @@ public final class ExportParameterVisitorUtils {
 //                value = StringUtils.removeNameQuotes(vStr);
 //            }
             replace = true;
-        } else if ( param instanceof SQLNCharExpr) {
+        } else if (param instanceof SQLNCharExpr) {
             value = ((SQLNCharExpr) param).getText();
             replace = true;
         } else if (param instanceof SQLBooleanExpr) {

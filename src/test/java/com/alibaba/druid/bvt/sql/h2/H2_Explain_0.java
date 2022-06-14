@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class H2_Explain_0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "EXPLAIN SELECT * FROM TEST WHERE ID=1"; //

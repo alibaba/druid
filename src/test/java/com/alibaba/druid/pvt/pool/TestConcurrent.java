@@ -28,8 +28,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestConcurrent extends TestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -163,7 +162,7 @@ public class TestConcurrent extends TestCase {
 
     /**
      * 并发执行10000次
-     * 
+     *
      * @param threadCount
      * @throws InterruptedException
      */
@@ -174,7 +173,6 @@ public class TestConcurrent extends TestCase {
         Thread[] threads = new Thread[threadCount];
         for (int i = 0; i < threadCount; ++i) {
             threads[i] = new Thread() {
-
                 public void run() {
                     try {
                         startLatch.await();

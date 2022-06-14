@@ -24,12 +24,11 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class HiveSelectTest_44_issue_3973 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "WITH t AS (SELECT * FROM t1 ) INSERT OVERWRITE TABLE t2 SELECT * FROM t;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.hive);
-        SQLStatement stmt =  statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
         assertEquals("WITH t AS (\n" +
                 "\t\tSELECT *\n" +

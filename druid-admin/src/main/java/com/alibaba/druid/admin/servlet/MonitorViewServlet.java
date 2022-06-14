@@ -13,7 +13,6 @@ import javax.servlet.ServletException;
  **/
 @Slf4j
 public class MonitorViewServlet extends ResourceServlet {
-
     private MonitorStatService monitorStatService;
 
     public MonitorViewServlet() {

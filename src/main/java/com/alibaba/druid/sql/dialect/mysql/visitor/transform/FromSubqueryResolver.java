@@ -54,10 +54,10 @@ public class FromSubqueryResolver extends OracleASTVisitorAdapter {
         String subViewName = generateSubViewName();
 
         SQLObject parent = x.getParent();
-        if(parent instanceof SQLSelectQueryBlock) {
+        if (parent instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) parent;
             queryBlock.setFrom(subViewName, x.getAlias());
-        } else if(parent instanceof SQLJoinTableSource) {
+        } else if (parent instanceof SQLJoinTableSource) {
             SQLJoinTableSource join = (SQLJoinTableSource) parent;
             if (join.getLeft() == x) {
                 join.setLeft(subViewName, x.getAlias());

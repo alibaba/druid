@@ -12,8 +12,8 @@ import java.util.List;
 public class SQLArrayDataType extends SQLObjectImpl implements SQLDataType {
     public static final SQLArrayDataType ARRYA_CHAR = new SQLArrayDataType(SQLCharExpr.DATA_TYPE);
 
-    private DbType        dbType;
-    private SQLDataType   componentType;
+    private DbType dbType;
+    private SQLDataType componentType;
     private List<SQLExpr> arguments = new ArrayList<SQLExpr>();
 
     public SQLArrayDataType(SQLDataType componentType) {

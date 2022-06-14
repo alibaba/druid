@@ -27,7 +27,6 @@ public class HiveInsert_0 extends TestCase {
         assertEquals("insert into table students\n" +
                 "values ('fred flintstone', 35, 1.28), ('barney rubble', 32, 2.32);", SQLUtils.formatHive(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-
 //        System.out.println("Tables : " + visitor.getTables());
 //      System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());

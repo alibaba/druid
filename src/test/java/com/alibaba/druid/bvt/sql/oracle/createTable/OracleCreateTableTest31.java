@@ -27,12 +27,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest31 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE students (name person_name, age INTEGER," //
-                + "   CHECK (name.first_name IS NOT NULL AND " //
-                + "          name.last_name IS NOT NULL));";
+                "CREATE TABLE students (name person_name, age INTEGER," //
+                        + "   CHECK (name.first_name IS NOT NULL AND " //
+                        + "          name.last_name IS NOT NULL));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -42,12 +41,12 @@ public class OracleCreateTableTest31 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("CREATE TABLE students ("
-                + "\n\tname person_name,"
-                + "\n\tage INTEGER,"
-                + "\n\tCHECK (name.first_name IS NOT NULL"
-                + "\n\t\tAND name.last_name IS NOT NULL)"
-                + "\n);",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\n\tname person_name,"
+                        + "\n\tage INTEGER,"
+                        + "\n\tCHECK (name.first_name IS NOT NULL"
+                        + "\n\t\tAND name.last_name IS NOT NULL)"
+                        + "\n);",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

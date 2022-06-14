@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class HiveSelectTest_43_bug extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "from (select a.ddate\n" +
                 "        ,a.game_id\n" +

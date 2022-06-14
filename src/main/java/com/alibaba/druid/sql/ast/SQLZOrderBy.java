@@ -22,22 +22,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class SQLZOrderBy extends SQLObjectImpl implements SQLReplaceable {
-
     protected final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
 
     // for postgres
-    private boolean                            sibings;
+    private boolean sibings;
 
-    public SQLZOrderBy(){
-
+    public SQLZOrderBy() {
     }
 
-    public SQLZOrderBy(SQLExpr expr){
+    public SQLZOrderBy(SQLExpr expr) {
         SQLSelectOrderByItem item = new SQLSelectOrderByItem(expr);
         addItem(item);
     }
 
-    public SQLZOrderBy(SQLExpr expr, SQLOrderingSpecification type){
+    public SQLZOrderBy(SQLExpr expr, SQLOrderingSpecification type) {
         SQLSelectOrderByItem item = new SQLSelectOrderByItem(expr, type);
         addItem(item);
     }
@@ -56,7 +54,7 @@ public final class SQLZOrderBy extends SQLObjectImpl implements SQLReplaceable {
     public List<SQLSelectOrderByItem> getItems() {
         return this.items;
     }
-    
+
     public boolean isSibings() {
         return this.sibings;
     }
@@ -78,12 +76,18 @@ public final class SQLZOrderBy extends SQLObjectImpl implements SQLReplaceable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLZOrderBy order = (SQLZOrderBy) o;
 
-        if (sibings != order.sibings) return false;
+        if (sibings != order.sibings) {
+            return false;
+        }
         return items.equals(order.items);
     }
 
@@ -103,9 +107,8 @@ public final class SQLZOrderBy extends SQLObjectImpl implements SQLReplaceable {
 
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
-
         for (SQLSelectOrderByItem item : items) {
-            if(item.replace(expr, target)) {
+            if (item.replace(expr, target)) {
                 return true;
             }
         }

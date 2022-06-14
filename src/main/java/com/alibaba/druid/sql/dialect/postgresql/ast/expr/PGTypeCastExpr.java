@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGTypeCastExpr extends SQLCastExpr implements PGExpr {
-
     @Override
     public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {

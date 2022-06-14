@@ -18,7 +18,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterOpenBlobCountTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -28,16 +27,15 @@ public class StatFilterOpenBlobCountTest extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setTestOnBorrow(false);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public Blob resultSet_getBlob(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                    throws SQLException {
+                    throws SQLException {
                 return new MockBlob();
             }
 
             @Override
             public Blob resultSet_getBlob(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                       throws SQLException {
+                    throws SQLException {
                 return new MockBlob();
             }
         });

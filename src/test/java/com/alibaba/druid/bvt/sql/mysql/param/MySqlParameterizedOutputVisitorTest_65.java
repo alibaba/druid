@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_65 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        List<Object> outParams =  new ArrayList<Object>();
+        List<Object> outParams = new ArrayList<Object>();
 
         String sql = "select * from abc";
         assertEquals("select * from abc", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));

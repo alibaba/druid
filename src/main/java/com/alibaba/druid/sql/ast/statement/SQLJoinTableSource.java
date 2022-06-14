@@ -19,7 +19,9 @@ import com.alibaba.druid.FastsqlColumnAmbiguousException;
 import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.repository.SchemaResolveVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
@@ -29,26 +31,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplaceable {
-
-    protected SQLTableSource      left;
-    protected JoinType            joinType;
-    protected SQLTableSource      right;
-    protected SQLExpr             condition;
+    protected SQLTableSource left;
+    protected JoinType joinType;
+    protected SQLTableSource right;
+    protected SQLExpr condition;
     protected final List<SQLExpr> using = new ArrayList<SQLExpr>();
-    protected boolean             natural = false;
-    protected UDJ                 udj; // for maxcompute
-    protected boolean             asof; // for clickhouse
-    protected boolean             global; // for clickhouse
+    protected boolean natural;
+    protected UDJ udj; // for maxcompute
+    protected boolean asof; // for clickhouse
+    protected boolean global; // for clickhouse
 
-    public SQLJoinTableSource(String alias){
+    public SQLJoinTableSource(String alias) {
         super(alias);
     }
 
-    public SQLJoinTableSource(){
-
+    public SQLJoinTableSource() {
     }
 
-    public SQLJoinTableSource(SQLTableSource left, JoinType joinType, SQLTableSource right, SQLExpr condition){
+    public SQLJoinTableSource(SQLTableSource left, JoinType joinType, SQLTableSource right, SQLExpr condition) {
         this.setLeft(left);
         this.setJoinType(joinType);
         this.setRight(right);
@@ -278,37 +278,36 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     }
 
     public static enum JoinType {
-        COMMA(","), //
-        JOIN("JOIN"), //
-        INNER_JOIN("INNER JOIN"), //
-        CROSS_JOIN("CROSS JOIN"), //
-        NATURAL_JOIN("NATURAL JOIN"), //
-        NATURAL_CROSS_JOIN("NATURAL CROSS JOIN"), //
-        NATURAL_LEFT_JOIN("NATURAL LEFT JOIN"), //
-        NATURAL_RIGHT_JOIN("NATURAL RIGHT JOIN"), //
-        NATURAL_INNER_JOIN("NATURAL INNER JOIN"), //
-        LEFT_OUTER_JOIN("LEFT JOIN"), //
-        LEFT_SEMI_JOIN("LEFT SEMI JOIN"), //
-        LEFT_ANTI_JOIN("LEFT ANTI JOIN"), //
-        RIGHT_OUTER_JOIN("RIGHT JOIN"), //
-        FULL_OUTER_JOIN("FULL JOIN"),//
-        STRAIGHT_JOIN("STRAIGHT_JOIN"), //
-        OUTER_APPLY("OUTER APPLY"),//
+        COMMA(","),
+        JOIN("JOIN"),
+        INNER_JOIN("INNER JOIN"),
+        CROSS_JOIN("CROSS JOIN"),
+        NATURAL_JOIN("NATURAL JOIN"),
+        NATURAL_CROSS_JOIN("NATURAL CROSS JOIN"),
+        NATURAL_LEFT_JOIN("NATURAL LEFT JOIN"),
+        NATURAL_RIGHT_JOIN("NATURAL RIGHT JOIN"),
+        NATURAL_INNER_JOIN("NATURAL INNER JOIN"),
+        LEFT_OUTER_JOIN("LEFT JOIN"),
+        LEFT_SEMI_JOIN("LEFT SEMI JOIN"),
+        LEFT_ANTI_JOIN("LEFT ANTI JOIN"),
+        RIGHT_OUTER_JOIN("RIGHT JOIN"),
+        FULL_OUTER_JOIN("FULL JOIN"),
+        STRAIGHT_JOIN("STRAIGHT_JOIN"),
+        OUTER_APPLY("OUTER APPLY"),
         CROSS_APPLY("CROSS APPLY");
 
         public final String name;
-        public final String name_lcase;
+        public final String nameLCase;
 
-        JoinType(String name){
+        JoinType(String name) {
             this.name = name;
-            this.name_lcase = name.toLowerCase();
+            this.nameLCase = name.toLowerCase();
         }
 
         public static String toString(JoinType joinType) {
             return joinType.name;
         }
     }
-
 
     public void cloneTo(SQLJoinTableSource x) {
         x.alias = alias;
@@ -323,7 +322,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             x.setRight(right.clone());
         }
 
-        if(condition != null){
+        if (condition != null) {
             x.setCondition(condition.clone());
         }
 
@@ -385,7 +384,6 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             setLeft(rightJoin);
             rightJoin.setLeft(a);
             rightJoin.setRight(b);
-
 
             boolean on_ab_match = false;
             if (on_ab instanceof SQLBinaryOpExpr) {
@@ -536,7 +534,6 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         return findTableSourceWithColumn(hash, columnName, 0);
     }
 
-
     public SQLJoinTableSource findTableSourceWithColumn(SQLName a, SQLName b) {
         if (left.findTableSourceWithColumn(a) != null
                 && right.findTableSourceWithColumn(b) != null) {
@@ -579,7 +576,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             return rightMatch;
         }
 
-        if(rightMatch == null) {
+        if (rightMatch == null) {
             return leftMatch;
         }
 
@@ -672,20 +669,42 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         SQLJoinTableSource that = (SQLJoinTableSource) o;
 
-        if (natural != that.natural) return false;
-        if (asof != that.asof) return false;
-        if (global != that.global) return false;
-        if (left != null ? !left.equals(that.left) : that.left != null) return false;
-        if (joinType != that.joinType) return false;
-        if (right != null ? !right.equals(that.right) : that.right != null) return false;
-        if (condition != null ? !condition.equals(that.condition) : that.condition != null) return false;
-        if (using != null ? !using.equals(that.using) : that.using != null) return false;
+        if (natural != that.natural) {
+            return false;
+        }
+        if (asof != that.asof) {
+            return false;
+        }
+        if (global != that.global) {
+            return false;
+        }
+        if (left != null ? !left.equals(that.left) : that.left != null) {
+            return false;
+        }
+        if (joinType != that.joinType) {
+            return false;
+        }
+        if (right != null ? !right.equals(that.right) : that.right != null) {
+            return false;
+        }
+        if (condition != null ? !condition.equals(that.condition) : that.condition != null) {
+            return false;
+        }
+        if (using != null ? !using.equals(that.using) : that.using != null) {
+            return false;
+        }
         return udj != null ? udj.equals(that.udj) : that.udj == null;
     }
 
@@ -716,7 +735,6 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         protected List<SQLAssignItem> properties = new ArrayList<SQLAssignItem>();
 
         public UDJ() {
-
         }
 
         @Override

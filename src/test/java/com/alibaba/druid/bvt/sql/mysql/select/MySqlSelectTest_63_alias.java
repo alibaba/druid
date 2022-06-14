@@ -27,9 +27,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_63_alias extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  " SELECT totalNumber, concat(\"\",? , round(memberNumber, 0) , \"\") AS totalDisplay FROM (\n" +
+        String sql = " SELECT totalNumber, concat(\"\",? , round(memberNumber, 0) , \"\") AS totalDisplay FROM (\n" +
                 "SELECT count(1) AS totalNumber, sum(memberNumber) AS memberNumber FROM(\n" +
                 "SELECT mmd.office_id AS departID,st.no AS staffNO,st.name AS staffName,count(mmd.id) memberNumber FROM ms_member_def mmd\n" +
                 "LEFT JOIN sys_user st ON mmd.salesman_id=st.id AND st.del_flag='0'\n" +
@@ -71,7 +70,7 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
                             "\t\tGROUP BY mmd.office_id, st.no\n" +
                             "\t) gg\n" +
                             ") temp", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -94,7 +93,7 @@ public class MySqlSelectTest_63_alias extends MysqlTest {
                             "\t\tgroup by mmd.office_id, st.no\n" +
                             "\t) gg\n" +
                             ") temp", //
-                                output);
+                    output);
         }
 
         {

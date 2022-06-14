@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 
 public class MySqlSelectTest_233 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select f1 \n" +
                 "from t1\n" +
@@ -54,7 +53,6 @@ public class MySqlSelectTest_233 extends MysqlTest {
                 "FROM t2\n" +
                 "ORDER BY f1)", stmt.toString());
     }
-
 
 
 }

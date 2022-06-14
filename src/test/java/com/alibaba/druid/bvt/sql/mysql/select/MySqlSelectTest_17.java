@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_17 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM t1 STRAIGHT_JOIN t2 ON t2.a=t1.a;";
 
@@ -42,10 +41,10 @@ public class MySqlSelectTest_17 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(2, visitor.getTables().size());
     }
-    
+
     public void test_1() throws Exception {
         String sql = "SELECT * FROM t1 CROSS JOIN t2";
 
@@ -63,7 +62,7 @@ public class MySqlSelectTest_17 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(2, visitor.getTables().size());
     }
 }

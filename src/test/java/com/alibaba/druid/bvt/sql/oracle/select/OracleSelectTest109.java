@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import java.util.List;
 
 public class OracleSelectTest109 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "/* No SQL_REDO for temporary tables */";
 

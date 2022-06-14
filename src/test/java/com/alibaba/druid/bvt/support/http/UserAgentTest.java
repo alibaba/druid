@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.support.http.stat.WebAppStat;
 
 public class UserAgentTest extends TestCase {
-
     public void test_agent_ie10() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)");
@@ -442,7 +441,7 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getOSFreeBSDCount());
         Assert.assertEquals(0, stat.getOSOpenBSDCount());
     }
-    
+
     public void test_firefox_6() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2.16) Gecko/20110319 Firefox/3.6.16");
@@ -456,12 +455,12 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getBrowserIE9Count());
         Assert.assertEquals(0, stat.getBrowserOperaCount());
         Assert.assertEquals(0, stat.getBrowserSafariCount());
-        
+
         Assert.assertEquals(0, stat.getDeviceAndroidCount());
         Assert.assertEquals(0, stat.getDeviceIpadCount());
         Assert.assertEquals(0, stat.getDeviceIphoneCount());
         Assert.assertEquals(0, stat.getDeviceWindowsPhoneCount());
-        
+
         Assert.assertEquals(0, stat.getOSLinuxCount());
         Assert.assertEquals(0, stat.getOSLinuxUbuntuCount());
         Assert.assertEquals(1, stat.getOSMacOSXCount());
@@ -530,7 +529,7 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(1, stat.getOSAndroidCount());
         Assert.assertEquals(1, stat.getOSAndroid15Count());
     }
-    
+
     public void test_android_16() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (Linux; U; Android 1.6; en-gb; Dell Streak Build/Donut AppleWebKit/528.5+ (KHTML, like Gecko) Version/3.1.2 Mobile Safari/ 525.20.1");
@@ -544,12 +543,12 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getBrowserIE9Count());
         Assert.assertEquals(0, stat.getBrowserOperaCount());
         Assert.assertEquals(0, stat.getBrowserSafariCount());
-        
+
         Assert.assertEquals(1, stat.getDeviceAndroidCount());
         Assert.assertEquals(0, stat.getDeviceIpadCount());
         Assert.assertEquals(0, stat.getDeviceIphoneCount());
         Assert.assertEquals(0, stat.getDeviceWindowsPhoneCount());
-        
+
         Assert.assertEquals(1, stat.getOSLinuxCount());
         Assert.assertEquals(0, stat.getOSLinuxUbuntuCount());
         Assert.assertEquals(0, stat.getOSMacOSXCount());
@@ -590,7 +589,7 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(1, stat.getOSAndroidCount());
         Assert.assertEquals(1, stat.getOSAndroid21Count());
     }
-    
+
     public void test_android_23() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (Linux; U; Android 2.3.3; zh-cn; HTC Incredible S Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1");
@@ -604,12 +603,12 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getBrowserIE9Count());
         Assert.assertEquals(0, stat.getBrowserOperaCount());
         Assert.assertEquals(0, stat.getBrowserSafariCount());
-        
+
         Assert.assertEquals(1, stat.getDeviceAndroidCount());
         Assert.assertEquals(0, stat.getDeviceIpadCount());
         Assert.assertEquals(0, stat.getDeviceIphoneCount());
         Assert.assertEquals(0, stat.getDeviceWindowsPhoneCount());
-        
+
         Assert.assertEquals(1, stat.getOSLinuxCount());
         Assert.assertEquals(0, stat.getOSLinuxUbuntuCount());
         Assert.assertEquals(0, stat.getOSMacOSXCount());
@@ -620,7 +619,7 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(1, stat.getOSAndroidCount());
         Assert.assertEquals(1, stat.getOSAndroid23Count());
     }
-    
+
     public void test_android_4() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (Linux; U; Android 4.0.4; zh-cn; Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30");
@@ -634,12 +633,12 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getBrowserIE9Count());
         Assert.assertEquals(0, stat.getBrowserOperaCount());
         Assert.assertEquals(0, stat.getBrowserSafariCount());
-        
+
         Assert.assertEquals(1, stat.getDeviceAndroidCount());
         Assert.assertEquals(0, stat.getDeviceIpadCount());
         Assert.assertEquals(0, stat.getDeviceIphoneCount());
         Assert.assertEquals(0, stat.getDeviceWindowsPhoneCount());
-        
+
         Assert.assertEquals(1, stat.getOSLinuxCount());
         Assert.assertEquals(0, stat.getOSLinuxUbuntuCount());
         Assert.assertEquals(0, stat.getOSMacOSXCount());
@@ -680,7 +679,7 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getOSAndroidCount());
         Assert.assertEquals(0, stat.getOSAndroid21Count());
     }
-    
+
     public void test_iphone() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_1 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8B117 Safari/6531.22.7 (compatible; Googlebot-Mobile/2.1; +http://www.google.com/bot.html)");
@@ -694,12 +693,12 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getBrowserIE9Count());
         Assert.assertEquals(0, stat.getBrowserOperaCount());
         Assert.assertEquals(1, stat.getBrowserSafariCount());
-        
+
         Assert.assertEquals(0, stat.getDeviceAndroidCount());
         Assert.assertEquals(0, stat.getDeviceIpadCount());
         Assert.assertEquals(1, stat.getDeviceIphoneCount());
         Assert.assertEquals(0, stat.getDeviceWindowsPhoneCount());
-        
+
         Assert.assertEquals(0, stat.getOSLinuxCount());
         Assert.assertEquals(0, stat.getOSLinuxUbuntuCount());
         Assert.assertEquals(1, stat.getOSMacOSXCount());
@@ -710,7 +709,7 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getOSAndroidCount());
         Assert.assertEquals(0, stat.getOSAndroid21Count());
     }
-    
+
     public void test_ipad() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (iPad; CPU OS 5_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A405 Safari/7534.48.3");
@@ -724,12 +723,12 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getBrowserIE9Count());
         Assert.assertEquals(0, stat.getBrowserOperaCount());
         Assert.assertEquals(1, stat.getBrowserSafariCount());
-        
+
         Assert.assertEquals(0, stat.getDeviceAndroidCount());
         Assert.assertEquals(1, stat.getDeviceIpadCount());
         Assert.assertEquals(0, stat.getDeviceIphoneCount());
         Assert.assertEquals(0, stat.getDeviceWindowsPhoneCount());
-        
+
         Assert.assertEquals(0, stat.getOSLinuxCount());
         Assert.assertEquals(0, stat.getOSLinuxUbuntuCount());
         Assert.assertEquals(1, stat.getOSMacOSXCount());
@@ -740,7 +739,7 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getOSAndroidCount());
         Assert.assertEquals(0, stat.getOSAndroid21Count());
     }
-    
+
     public void test_opera() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Opera/9.00 (Windows NT 4.0; U; en)");
@@ -754,12 +753,12 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getBrowserIE9Count());
         Assert.assertEquals(1, stat.getBrowserOperaCount());
         Assert.assertEquals(0, stat.getBrowserSafariCount());
-        
+
         Assert.assertEquals(0, stat.getDeviceAndroidCount());
         Assert.assertEquals(0, stat.getDeviceIpadCount());
         Assert.assertEquals(0, stat.getDeviceIphoneCount());
         Assert.assertEquals(0, stat.getDeviceWindowsPhoneCount());
-        
+
         Assert.assertEquals(0, stat.getOSLinuxCount());
         Assert.assertEquals(0, stat.getOSLinuxUbuntuCount());
         Assert.assertEquals(0, stat.getOSMacOSXCount());
@@ -770,7 +769,7 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getOSAndroidCount());
         Assert.assertEquals(0, stat.getOSAndroid21Count());
     }
-    
+
     public void test_opera_1() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Opera/9.80 (Macintosh; Intel Mac OS X; U; en) Presto/2.2.15 Version/10.00");
@@ -784,12 +783,12 @@ public class UserAgentTest extends TestCase {
         Assert.assertEquals(0, stat.getBrowserIE9Count());
         Assert.assertEquals(1, stat.getBrowserOperaCount());
         Assert.assertEquals(0, stat.getBrowserSafariCount());
-        
+
         Assert.assertEquals(0, stat.getDeviceAndroidCount());
         Assert.assertEquals(0, stat.getDeviceIpadCount());
         Assert.assertEquals(0, stat.getDeviceIphoneCount());
         Assert.assertEquals(0, stat.getDeviceWindowsPhoneCount());
-        
+
         Assert.assertEquals(0, stat.getOSLinuxCount());
         Assert.assertEquals(0, stat.getOSLinuxUbuntuCount());
         Assert.assertEquals(1, stat.getOSMacOSXCount());

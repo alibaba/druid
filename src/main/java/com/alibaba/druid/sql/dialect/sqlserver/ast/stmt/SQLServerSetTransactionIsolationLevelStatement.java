@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatementImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
 public class SQLServerSetTransactionIsolationLevelStatement extends SQLServerStatementImpl implements SQLServerStatement {
-
     private String level;
 
     @Override

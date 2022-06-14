@@ -24,19 +24,18 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest61 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 
         Assert.assertTrue(provider.checkValid(//
-        "SELECT * FROM `information_schema`.`columns` WHERE TABLE_NAME='aaaa' AND TABLE_SCHEMA='xxxx'"));
+                "SELECT * FROM `information_schema`.`columns` WHERE TABLE_NAME='aaaa' AND TABLE_SCHEMA='xxxx'"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }
@@ -46,9 +45,9 @@ public class MySqlWallTest61 extends TestCase {
         provider.getConfig().setSchemaCheck(true);
 
         Assert.assertFalse(provider.checkValid(//
-        "SELECT * FROM T " + //
-                "UNION " + //
-                "SELECT * FROM `information_schema`.`columns` WHERE TABLE_NAME='aaaa' AND TABLE_SCHEMA='xxxx'"));
+                "SELECT * FROM T " + //
+                        "UNION " + //
+                        "SELECT * FROM `information_schema`.`columns` WHERE TABLE_NAME='aaaa' AND TABLE_SCHEMA='xxxx'"));
 
         Assert.assertEquals(2, provider.getTableStats().size());
     }

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OdpsSelectTest18 extends TestCase {
-
     public void test_select() throws Exception {
         String sql = "select a, b, c from tableA where a in ( select a from tableB limit 10 )";//
         assertEquals("SELECT a, b, c\n" +
@@ -42,25 +41,25 @@ public class OdpsSelectTest18 extends TestCase {
                 "\tfrom tableB\n" +
                 "\tlimit 10\n" +
                 ")", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
 //        System.out.println("Tables : " + visitor.getTables());
 //      System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-    
+
 }

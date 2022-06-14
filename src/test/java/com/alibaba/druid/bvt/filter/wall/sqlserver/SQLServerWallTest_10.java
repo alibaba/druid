@@ -24,11 +24,10 @@ import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @see
  */
 public class SQLServerWallTest_10 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
 

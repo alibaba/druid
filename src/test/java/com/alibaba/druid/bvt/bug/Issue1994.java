@@ -14,7 +14,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class Issue1994 extends TestCase {
-
     public void test_for_issue() throws Exception {
         String sql = "INSERT INTO MKTG_H_EXEC_RESULT_FACT\n" +
                 "(THE_DATE, AREA_ID, SCENE_ID, MKTG_CNT, MKTG_SUC_CNT\n" +
@@ -42,7 +41,7 @@ public class Issue1994 extends TestCase {
                 "GROUP BY T1.AREA_ID, RTRIM(TO_CHAR(T2.PID))";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-        assertEquals(1,  stmtList.size());
+        assertEquals(1, stmtList.size());
 
         SQLStatement stmt = stmtList.get(0);
 

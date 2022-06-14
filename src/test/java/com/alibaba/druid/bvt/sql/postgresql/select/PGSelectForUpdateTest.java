@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectForUpdateTest extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select pkvalue from dbtpktable where tablename = 'taturvisit' for update";
 

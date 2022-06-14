@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_26_struct extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE IF NOT EXISTS test_910_table (col19 STRUCT < col20:STRING COMMENT 'column19' >)"; //

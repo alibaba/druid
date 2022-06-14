@@ -34,7 +34,7 @@ public class PGSelectTest63_json extends TestCase {
         SQLStatement stmt = stmtList.get(0);
 
         assertEquals("SELECT '[1,2,3]'::jsonb ?| array['1']", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select '[1,2,3]'::jsonb ?| array['1']", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, stmtList.size());

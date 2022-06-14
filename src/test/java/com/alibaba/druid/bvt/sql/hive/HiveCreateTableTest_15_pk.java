@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_15_pk extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "create table pk(id1 integer, id2 integer,\n" +

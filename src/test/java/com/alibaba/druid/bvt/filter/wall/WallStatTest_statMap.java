@@ -14,7 +14,6 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class WallStatTest_statMap extends TestCase {
-
     protected void setUp() throws Exception {
         WallContext.clearContext();
     }
@@ -39,7 +38,7 @@ public class WallStatTest_statMap extends TestCase {
             Assert.assertFalse(providerB.checkValid(sql));
             providerB.addViolationEffectRowCount(11);
         }
-        
+
         WallProvider providerC = new MySqlWallProvider();
         {
             String sql = "select * from t where len(fname2) = 2 OR 1 = 1";
@@ -57,11 +56,11 @@ public class WallStatTest_statMap extends TestCase {
 
         Map<String, Object> statMapMerged = DruidStatManagerFacade.mergeWallStat(statMapA, statMapB);
         System.out.println(JSONUtils.toJSONString(statMapMerged));
-        
+
         Assert.assertEquals(2L, statMapMerged.get("checkCount"));
         Assert.assertEquals(21L, statMapMerged.get("violationEffectRowCount"));
         Assert.assertEquals(2, ((Collection<Map<String, Object>>) statMapMerged.get("blackList")).size());
-        
+
         statMapMerged = DruidStatManagerFacade.mergeWallStat(statMapMerged, statMapC);
         System.out.println(JSONUtils.toJSONString(statMapMerged));
         Assert.assertEquals(2, ((Collection<Map<String, Object>>) statMapMerged.get("blackList")).size());

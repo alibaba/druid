@@ -16,7 +16,9 @@
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -101,7 +103,6 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             print0(ucase ? "VALUES " : "values ");
             printAndAccept(valuesList, ", ");
         }
-
 
         return false;
     }
@@ -209,14 +210,12 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             printAndAccept(valuesList, ", ");
         }
 
-
         return false;
     }
 
     public boolean visit(SQLMergeStatement.MergeUpdateClause x) {
         print0(ucase ? "WHEN MATCHED " : "when matched ");
         this.indentCount++;
-
 
         SQLExpr where = x.getWhere();
         if (where != null) {
@@ -326,7 +325,8 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         return false;
     }
 
-    @Override public boolean visit(HiveMsckRepairStatement x) {
+    @Override
+    public boolean visit(HiveMsckRepairStatement x) {
         final List<SQLCommentHint> headHints = x.getHeadHintsDirect();
         if (headHints != null) {
             for (SQLCommentHint hint : headHints) {
@@ -390,7 +390,6 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             print0(ucase ? " AS " : " as ");
             print0(type);
         }
-
 
         if (x.isDeferedRebuild()) {
             print0(ucase ? " WITH DEFERRED REBUILD" : " with deferred rebuild");

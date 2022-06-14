@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest10 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE t1 CHANGE a b INTEGER;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -41,7 +40,7 @@ public class MySqlAlterTableTest10 extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE t1" + //
-                            "\n\tCHANGE COLUMN a b INTEGER;", output);
+                "\n\tCHANGE COLUMN a b INTEGER;", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());

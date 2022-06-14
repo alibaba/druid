@@ -24,13 +24,12 @@ import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class SQLServerWallTest_0 extends TestCase {
-
     private WallProvider initWallProvider() {
         WallProvider provider = new SQLServerWallProvider();
 
@@ -71,17 +70,17 @@ public class SQLServerWallTest_0 extends TestCase {
         WallProvider provider = initWallProvider();
         {
             String sql = "SELECT characteristic.columnname + '|' + RTRIM(characteristic.rpid) as rpid ," //
-                         + " characteristic.columnname, characteristic.chnname " //
-                         + "FROM characteristic" //
-                         + "     inner join content_sort" //
-                         + "         on characteristic.rpid = content_sort.rpid and content_sort.opid = 2"
-                         + "WHERE (characteristic.columnname IN (" //
-                         + "         SELECT name FROM syscolumns" //
-                         + "         WHERE (id =(SELECT id FROM sysobjects WHERE (name = 'content')))" //
-                         + "                 AND (name NOT IN ('billid', 'itemno', 'tableid', 'rpid'))" //
-                         + "         ))" //
-                         + "     AND (characteristic.closed = 0)" //
-                         + "ORDER BY content_sort.sort, characteristic.code";
+                    + " characteristic.columnname, characteristic.chnname " //
+                    + "FROM characteristic" //
+                    + "     inner join content_sort" //
+                    + "         on characteristic.rpid = content_sort.rpid and content_sort.opid = 2"
+                    + "WHERE (characteristic.columnname IN (" //
+                    + "         SELECT name FROM syscolumns" //
+                    + "         WHERE (id =(SELECT id FROM sysobjects WHERE (name = 'content')))" //
+                    + "                 AND (name NOT IN ('billid', 'itemno', 'tableid', 'rpid'))" //
+                    + "         ))" //
+                    + "     AND (characteristic.closed = 0)" //
+                    + "ORDER BY content_sort.sort, characteristic.code";
             Assert.assertFalse(provider.checkValid(sql));
         }
     }
@@ -91,10 +90,10 @@ public class SQLServerWallTest_0 extends TestCase {
 
         {
             String sql = "SELECT rpid, columnname, chnname, type, textfield" //
-                         + "     , valuefield, ddlbtable, ddlbwhere, ddlbsort, datatype "//
-                         + "FROM characteristic "//
-                         + "WHERE (closed = 0)" //
-                         + "     AND ((SELECT COUNT(*) FROM sysobjects WHERE (id IN (SELECT id FROM syscolumns WHERE name = columnname)) AND (name = 'content')) > 0) ORDER BY code";
+                    + "     , valuefield, ddlbtable, ddlbwhere, ddlbsort, datatype "//
+                    + "FROM characteristic "//
+                    + "WHERE (closed = 0)" //
+                    + "     AND ((SELECT COUNT(*) FROM sysobjects WHERE (id IN (SELECT id FROM syscolumns WHERE name = columnname)) AND (name = 'content')) > 0) ORDER BY code";
             Assert.assertFalse(provider.checkValid(sql));
         }
     }
@@ -119,10 +118,10 @@ public class SQLServerWallTest_0 extends TestCase {
         WallProvider provider = initWallProvider();
         {
             String sql = "SELECT tableid, chnname "//
-                         + "FROM r_temptable "//
-                         + "INNER JOIN  sys_func_pwr ss ON r_temptable.tableid = ss.mainid "//
-                         + "INNER JOIN  sys_func_pwr sys ON ss.parentid = sys.funcid  " //
-                         + "WHERE (ismaintable = 1)  and  1=1  and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 550) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 551) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 391) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 552) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 393) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 396) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 4628) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 4836) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 394) AND (functype = 8) AND (Closed = 0))) and ss.funcid <> 4298 and ss.funcid <> 7441 AND (ss.funcid IN  (SELECT DISTINCT funcid FROM sys_func_pwr  WHERE (functype = 8) AND (Closed = 0)  ))  ORDER BY sys.sortflag ,ss.sortflag ";
+                    + "FROM r_temptable "//
+                    + "INNER JOIN  sys_func_pwr ss ON r_temptable.tableid = ss.mainid "//
+                    + "INNER JOIN  sys_func_pwr sys ON ss.parentid = sys.funcid  " //
+                    + "WHERE (ismaintable = 1)  and  1=1  and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 550) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 551) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 391) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 552) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 393) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 396) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 4628) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 4836) AND (functype = 8) AND (Closed = 0))) and (r_temptable.tableid NOT IN (SELECT DISTINCT mainid FROM sys_func_pwr WHERE (parentid = 394) AND (functype = 8) AND (Closed = 0))) and ss.funcid <> 4298 and ss.funcid <> 7441 AND (ss.funcid IN  (SELECT DISTINCT funcid FROM sys_func_pwr  WHERE (functype = 8) AND (Closed = 0)  ))  ORDER BY sys.sortflag ,ss.sortflag ";
             Assert.assertTrue(provider.checkValid(sql));
         }
     }

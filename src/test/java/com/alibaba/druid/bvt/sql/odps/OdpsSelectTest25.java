@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class OdpsSelectTest25 extends TestCase {
-
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "INSERT overwrite TABLE ids_openapp_dau_d partition(dt = '${lastday}')\n" +
@@ -144,6 +143,5 @@ public class OdpsSelectTest25 extends TestCase {
         assertTrue(visitor.containsColumn("openapp_log_d", "utype"));
         assertTrue(visitor.containsColumn("openapp_log_d", "dt"));
     }
-
 
 }

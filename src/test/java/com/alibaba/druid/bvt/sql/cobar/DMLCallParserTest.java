@@ -40,7 +40,7 @@ public class DMLCallParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CALL p(?, ?)", output);
     }
-    
+
     public void testCall_1() throws Exception {
         String sql = "call p(@var1,'@var2',var3)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -49,7 +49,7 @@ public class DMLCallParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CALL p(@var1, '@var2', var3)", output);
     }
-    
+
     public void testCall_2() throws Exception {
         String sql = "call p()";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -58,7 +58,7 @@ public class DMLCallParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CALL p()", output);
     }
-    
+
 //    public void testCall() throws SQLSyntaxErrorException {
 //        String sql = "call p(?,?) ";
 //        SQLLexer lexer = new SQLLexer(sql);

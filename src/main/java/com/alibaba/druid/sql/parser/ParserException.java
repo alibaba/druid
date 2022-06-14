@@ -20,32 +20,37 @@ import com.alibaba.druid.FastsqlException;
 import java.io.Serializable;
 
 public class ParserException extends FastsqlException implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
-    private int line;
-    private int column;
+    private final int line;
+    private final int column;
 
-    public ParserException(){
+    public ParserException() {
+        this.line = 0;
+        this.column = 0;
     }
 
-    public ParserException(String message){
+    public ParserException(String message) {
         super(message);
+        this.line = 0;
+        this.column = 0;
     }
 
-
-
-    public ParserException(String message, Throwable e){
+    public ParserException(String message, Throwable e) {
         super(message, e);
+        this.line = 0;
+        this.column = 0;
     }
 
-    public ParserException(String message, int line, int column){
+    public ParserException(String message, int line, int column) {
         super(message);
         this.line = line;
         this.column = column;
     }
 
-    public ParserException(Throwable ex, String ksql){
-        super("parse error. detail message is :\n" + ex.getMessage() + "\nsource sql is : \n" + ksql, ex);
+    public ParserException(Throwable ex, String sql) {
+        super("parse error. detail message is :\n" + ex.getMessage() + "\nsource sql is : \n" + sql, ex);
+        this.line = 0;
+        this.column = 0;
     }
 }

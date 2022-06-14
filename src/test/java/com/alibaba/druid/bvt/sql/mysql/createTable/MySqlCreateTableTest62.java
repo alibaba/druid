@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest62 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create table a ( b varchar(15) CHARACTER SET latin1 DEFAULT NULL)";

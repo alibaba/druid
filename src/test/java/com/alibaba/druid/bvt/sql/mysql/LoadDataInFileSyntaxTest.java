@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class LoadDataInFileSyntaxTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "LOAD DATA INFILE 'data.txt' INTO TABLE db2.my_table;";
 
@@ -49,7 +48,7 @@ public class LoadDataInFileSyntaxTest extends TestCase {
         String text = output(stmtList);
 
         Assert.assertEquals("LOAD DATA INFILE '/tmp/test.txt' INTO TABLE test COLUMNS TERMINATED BY ',' LINES STARTING BY 'xxx';",
-                            text);
+                text);
     }
 
     public void test_2() throws Exception {
@@ -61,7 +60,7 @@ public class LoadDataInFileSyntaxTest extends TestCase {
         String text = output(stmtList);
 
         Assert.assertEquals("LOAD DATA INFILE '/home/Order.txt' INTO TABLE Orders (Order_Number, Order_Date, Customer_ID);",
-                            text);
+                text);
     }
 
     public void test_3() throws Exception {
@@ -73,7 +72,7 @@ public class LoadDataInFileSyntaxTest extends TestCase {
         String text = output(stmtList);
 
         Assert.assertEquals("LOAD DATA INFILE 'data.txt' INTO TABLE tbl_name COLUMNS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES;",
-                            text);
+                text);
     }
 
     private String output(List<SQLStatement> stmtList) {

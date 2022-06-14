@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class SQLServerSelectTest31 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = //
                 "select top 1 (CAST(OriganID AS VARCHAR(20)) + ',' + MobilePhoneUrl) FROM T"; //

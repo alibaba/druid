@@ -23,17 +23,16 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class OracleAnyTest extends TestCase {
-
     public void test_any() throws Exception {
         String sql = "SELECT country, prod, year, s FROM sales_view " + "MODEL PARTITION BY (country) "
-                     + "DIMENSION BY (prod, year) MEASURES (sale s) " + "IGNORE NAV "
-                     + "UNIQUE DIMENSION RULES UPSERT SEQUENTIAL ORDER (s[ANY, 2000] = 0) "
-                     + "ORDER BY country, prod, year;";
+                + "DIMENSION BY (prod, year) MEASURES (sale s) " + "IGNORE NAV "
+                + "UNIQUE DIMENSION RULES UPSERT SEQUENTIAL ORDER (s[ANY, 2000] = 0) "
+                + "ORDER BY country, prod, year;";
 
         String expect = "SELECT country, prod, year, s\n" + "FROM sales_view\n" + "MODEL\n"
-                        + "\tPARTITION BY (country)\n" + "\tDIMENSION BY (prod, year)\n" + "\tMEASURES (sale s)\n"
-                        + "\tIGNORE NAV\n" + "\tUNIQUE DIMENSION\n"
-                        + "\tRULES UPSERT SEQUENTIAL ORDER (s[ANY, 2000] = 0)\n" + "ORDER BY country, prod, year;";
+                + "\tPARTITION BY (country)\n" + "\tDIMENSION BY (prod, year)\n" + "\tMEASURES (sale s)\n"
+                + "\tIGNORE NAV\n" + "\tUNIQUE DIMENSION\n"
+                + "\tRULES UPSERT SEQUENTIAL ORDER (s[ANY, 2000] = 0)\n" + "ORDER BY country, prod, year;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

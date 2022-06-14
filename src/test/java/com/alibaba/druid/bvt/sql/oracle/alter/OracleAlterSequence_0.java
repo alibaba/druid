@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class OracleAlterSequence_0 extends TestCase {
-
     public void test_alter_seq_0() throws Exception {
         String sql = "ALTER SEQUENCE SEQ_XXX INCREMENT BY 2";
         OracleStatementParser parser = new OracleStatementParser(sql);

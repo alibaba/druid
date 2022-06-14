@@ -21,7 +21,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 
 public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM T WHERE ID IN (?)";
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
@@ -53,7 +52,7 @@ public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTes
                 "FROM T\n" +
                 "WHERE ID = ?");
     }
-    
+
     public void test_2() throws Exception {
         String sql = "SELECT * FROM T WHERE ID = ? AND Name = ?";
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
@@ -70,7 +69,7 @@ public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTes
                 "WHERE ID = ?\n" +
                 "\tAND Name = ?");
     }
-    
+
     public void test_3() throws Exception {
         String sql = "SELECT * FROM T WHERE ID IS NULL";
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
@@ -86,7 +85,7 @@ public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTes
                 "FROM T\n" +
                 "WHERE ID IS NULL");
     }
-    
+
     public void test_4() throws Exception {
         String sql = "INSERT INTO T (FID, FNAME) VALUES(?, ?)";
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
@@ -101,7 +100,7 @@ public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTes
         paramaterizeAST(sql, "INSERT INTO T (FID, FNAME)\n" +
                 "VALUES (?, ?)");
     }
-    
+
     public void test_mysql() throws Exception {
         String sql = "INSERT INTO T (FID, FNAME) VALUES(?, ?), (?, ?)";
         Assert.assertNotSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.mysql), sql);

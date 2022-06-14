@@ -15,37 +15,31 @@
  */
 package com.alibaba.druid.pool;
 
-import java.net.SocketTimeoutException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.MySqlUtils;
 
+import java.net.SocketTimeoutException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidPooledStatement extends PoolableWrapper implements Statement {
+    private static final Log LOG = LogFactory.getLog(DruidPooledStatement.class);
 
-    private final static Log        LOG            = LogFactory.getLog(DruidPooledStatement.class);
-
-    private final Statement         stmt;
+    private final Statement stmt;
     protected DruidPooledConnection conn;
-    protected List<ResultSet>       resultSetTrace;
-    protected boolean               closed         = false;
-    protected int                   fetchRowPeak   = -1;
-    protected int                   exceptionCount = 0;
+    protected List<ResultSet> resultSetTrace;
+    protected boolean closed;
+    protected int fetchRowPeak = -1;
+    protected int exceptionCount;
 
-    public DruidPooledStatement(DruidPooledConnection conn, Statement stmt){
+    public DruidPooledStatement(DruidPooledConnection conn, Statement stmt) {
         super(stmt);
 
         this.conn = conn;
@@ -130,7 +124,6 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             return;
         }
 
-
         Throwable cause = error.getCause();
         boolean socketReadTimeout = cause instanceof SocketTimeoutException
                 && "Read timed out".equals(cause.getMessage());
@@ -150,7 +143,6 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
         DruidPooledConnection killQueryConn = null;
         Statement killQueryStmt = null;
-
 
         try {
             killQueryConn = dataSource.getConnection(1000);
@@ -347,8 +339,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         String errorClassName = t.getClass().getName();
         if (errorClassName.endsWith(".CommunicationsException")
                 && conn.holder != null
-                && conn.holder.dataSource.testWhileIdle)
-        {
+                && conn.holder.dataSource.testWhileIdle) {
             DruidConnectionHolder holder = conn.holder;
             DruidAbstractDataSource dataSource = holder.dataSource;
 
@@ -400,7 +391,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     @Override
-    public final int executeUpdate(String sql, int columnIndexes[]) throws SQLException {
+    public final int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
         checkOpen();
 
         incrementExecuteUpdateCount();
@@ -419,7 +410,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     @Override
-    public final int executeUpdate(String sql, String columnNames[]) throws SQLException {
+    public final int executeUpdate(String sql, String[] columnNames) throws SQLException {
         checkOpen();
 
         incrementExecuteUpdateCount();
@@ -457,7 +448,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     @Override
-    public final boolean execute(String sql, int columnIndexes[]) throws SQLException {
+    public final boolean execute(String sql, int[] columnIndexes) throws SQLException {
         checkOpen();
 
         incrementExecuteCount();
@@ -476,7 +467,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     @Override
-    public final boolean execute(String sql, String columnNames[]) throws SQLException {
+    public final boolean execute(String sql, String[] columnNames) throws SQLException {
         checkOpen();
 
         incrementExecuteCount();

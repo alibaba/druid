@@ -9,9 +9,7 @@ import java.util.List;
 public class MySqlCheckTableStatement extends MySqlStatementImpl {
     private final List<SQLExprTableSource> tables = new ArrayList<SQLExprTableSource>();
 
-
     public MySqlCheckTableStatement() {
-
     }
 
     public void addTable(SQLExprTableSource table) {

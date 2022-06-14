@@ -10,23 +10,19 @@ import java.util.List;
 /**
  * @version 1.0
  * @ClassName MySqlCreateTableTest147_fulltext
- * @description
- *
- * | {FULLTEXT|SPATIAL} [INDEX|KEY] [index_name] (key_part,...)
- *       [index_option] ...
+ * @description | {FULLTEXT|SPATIAL} [INDEX|KEY] [index_name] (key_part,...)
+ * [index_option] ...
  * [INDEX|KEY] [index_name]都可以省略
- *
  * @Author zzy
  * @Date 2019-05-14 16:19
  */
 public class MySqlCreateTableTest147_fulltext extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "create table tt (b varchar(128), fulltext (b));";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

@@ -15,57 +15,46 @@
  */
 package com.alibaba.druid.mock;
 
+import com.alibaba.druid.mock.handler.MockExecuteHandler;
+import com.alibaba.druid.mock.handler.MySqlMockExecuteHandlerImpl;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
 import java.lang.management.ManagementFactory;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.DriverPropertyInfo;
-import java.sql.NClob;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLXML;
+import java.sql.*;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
-import com.alibaba.druid.mock.handler.MockExecuteHandler;
-import com.alibaba.druid.mock.handler.MySqlMockExecuteHandlerImpl;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
 public class MockDriver implements Driver, MockDriverMBean {
+    private static Log LOG;
 
-    private static Log                     LOG;
+    public static final MockExecuteHandler DEFAULT_HANDLER = new MySqlMockExecuteHandlerImpl();
 
-    public final static MockExecuteHandler DEFAULT_HANDLER       = new MySqlMockExecuteHandlerImpl();
+    private String prefix = "jdbc:fake:";
+    private String mockPrefix = "jdbc:mock:";
 
-    private String                         prefix                = "jdbc:fake:";
-    private String                         mockPrefix            = "jdbc:mock:";
+    private MockExecuteHandler executeHandler = DEFAULT_HANDLER;
 
-    private MockExecuteHandler             executeHandler        = DEFAULT_HANDLER;
+    public static final MockDriver instance = new MockDriver();
 
-    public final static MockDriver         instance              = new MockDriver();
+    private final AtomicLong connectCount = new AtomicLong();
+    private final AtomicLong connectionCloseCount = new AtomicLong();
 
-    private final AtomicLong               connectCount          = new AtomicLong();
-    private final AtomicLong               connectionCloseCount  = new AtomicLong();
+    private final AtomicLong connectionIdSeed = new AtomicLong(1000L);
 
-    private final AtomicLong               connectionIdSeed      = new AtomicLong(1000L);
+    private final List<MockConnection> connections = new CopyOnWriteArrayList<MockConnection>();
 
-    private final List<MockConnection>     connections           = new CopyOnWriteArrayList<MockConnection>();
+    private long idleTimeCount = 1000 * 60 * 3;
 
-    private long                           idleTimeCount         = 1000 * 60 * 3;
+    private boolean logExecuteQueryEnable = true;
 
-    private boolean                        logExecuteQueryEnable = true;
-
-    private final static String            MBEAN_NAME            = "com.alibaba.druid:type=MockDriver";
+    private static final String MBEAN_NAME = "com.alibaba.druid:type=MockDriver";
 
     static {
         registerDriver(instance);
@@ -267,7 +256,7 @@ public class MockDriver implements Driver, MockDriverMBean {
             MockResultSet rs = createMockResultSet(stmt);
 
             for (int i = 0; i < 1000; ++i) {
-                rs.getRows().add(new Object[] { i });
+                rs.getRows().add(new Object[]{i});
             }
 
             return rs;
@@ -288,11 +277,11 @@ public class MockDriver implements Driver, MockDriverMBean {
         String sql = stmt.getSql();
 
         if ("SELECT 1".equalsIgnoreCase(sql)) {
-            rs.getRows().add(new Object[] { 1 });
+            rs.getRows().add(new Object[]{1});
         } else if ("SELECT NOW()".equalsIgnoreCase(sql)) {
-            rs.getRows().add(new Object[] { new java.sql.Timestamp(System.currentTimeMillis()) });
+            rs.getRows().add(new Object[]{new java.sql.Timestamp(System.currentTimeMillis())});
         } else if ("SELECT ?".equalsIgnoreCase(sql)) {
-            rs.getRows().add(new Object[] { stmt.getParameters().get(0) });
+            rs.getRows().add(new Object[]{stmt.getParameters().get(0)});
         }
 
         return rs;

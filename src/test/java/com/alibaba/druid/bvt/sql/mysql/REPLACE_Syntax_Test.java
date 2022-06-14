@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class REPLACE_Syntax_Test extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "REPLACE INTO T SELECT * FROM T;";
 
@@ -49,9 +48,9 @@ public class REPLACE_Syntax_Test extends TestCase {
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
         Assert.assertEquals("REPLACE DELAYED INTO `online_users` (`session_id`, `user_id`, `page`, `lastview`)\nVALUES ('3580cc4e61117c0785372c426eddd11c', 'XXX', '/', NOW());",
-                            text);
+                text);
     }
-    
+
     public void test_2() throws Exception {
         String sql = " replace into t(col1,col2)values(?,?)";
 

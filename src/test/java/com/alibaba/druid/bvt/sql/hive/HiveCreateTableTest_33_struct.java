@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_33_struct extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE EXTERNAL TABLE user_snp_test_4 (\n" +

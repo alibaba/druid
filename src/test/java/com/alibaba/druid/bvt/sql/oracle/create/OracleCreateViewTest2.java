@@ -27,35 +27,34 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateViewTest2 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "  CREATE OR REPLACE FORCE VIEW \"RMAN\".\"V_001\" (\"DB_KEY\", \"DB_ID\", \"BS_KEY\", \"RECID\", \"STAMP\", \"SET_STAMP\", \"SET_COUNT\", \"BACKUP_TYPE\", \"INCREMENTAL_LEVEL\", \"PIECES\", \"START_TIME\", \"COMPLETION_TIME\", \"ELAPSED_SECONDS\", \"STATUS\", \"CONTROLFILE_INCLUDED\", \"INPUT_FILE_SCAN_ONLY\", \"KEEP\", \"KEEP_UNTIL\", \"KEEP_OPTIONS\") AS \n" +
-                "  select db.db_key,\n" +
-                "       db.db_id,\n" +
-                "       bs.bs_key,\n" +
-                "       bs.bs_recid recid,\n" +
-                "       bs.bs_stamp stamp,\n" +
-                "       bs.set_stamp,\n" +
-                "       bs.set_count,\n" +
-                "       bs.bck_type backup_type,\n" +
-                "       bs.incr_level incremental_level,\n" +
-                "       bs.pieces,\n" +
-                "       bs.start_time,\n" +
-                "       bs.completion_time,\n" +
-                "       abs((bs.completion_time - bs.start_time) * 86400) elapsed_seconds,\n" +
-                "       bs.status,\n" +
-                "       bs.controlfile_included,\n" +
-                "       bs.input_file_scan_only,\n" +
-                "       decode(keep_options, 0, 'NO',\n" +
-                "                               'YES') keep,\n" +
-                "       keep_until,\n" +
-                "       decode(keep_options, 256,  'LOGS',\n" +
-                "                            512,  'NOLOGS',\n" +
-                "                            1024, 'CONSISTENT',\n" +
-                "                                  NULL) keep_options\n" +
-                "from db, bs\n" +
-                "where db.db_key = bs.db_key    ";
+                "  CREATE OR REPLACE FORCE VIEW \"RMAN\".\"V_001\" (\"DB_KEY\", \"DB_ID\", \"BS_KEY\", \"RECID\", \"STAMP\", \"SET_STAMP\", \"SET_COUNT\", \"BACKUP_TYPE\", \"INCREMENTAL_LEVEL\", \"PIECES\", \"START_TIME\", \"COMPLETION_TIME\", \"ELAPSED_SECONDS\", \"STATUS\", \"CONTROLFILE_INCLUDED\", \"INPUT_FILE_SCAN_ONLY\", \"KEEP\", \"KEEP_UNTIL\", \"KEEP_OPTIONS\") AS \n" +
+                        "  select db.db_key,\n" +
+                        "       db.db_id,\n" +
+                        "       bs.bs_key,\n" +
+                        "       bs.bs_recid recid,\n" +
+                        "       bs.bs_stamp stamp,\n" +
+                        "       bs.set_stamp,\n" +
+                        "       bs.set_count,\n" +
+                        "       bs.bck_type backup_type,\n" +
+                        "       bs.incr_level incremental_level,\n" +
+                        "       bs.pieces,\n" +
+                        "       bs.start_time,\n" +
+                        "       bs.completion_time,\n" +
+                        "       abs((bs.completion_time - bs.start_time) * 86400) elapsed_seconds,\n" +
+                        "       bs.status,\n" +
+                        "       bs.controlfile_included,\n" +
+                        "       bs.input_file_scan_only,\n" +
+                        "       decode(keep_options, 0, 'NO',\n" +
+                        "                               'YES') keep,\n" +
+                        "       keep_until,\n" +
+                        "       decode(keep_options, 256,  'LOGS',\n" +
+                        "                            512,  'NOLOGS',\n" +
+                        "                            1024, 'CONSISTENT',\n" +
+                        "                                  NULL) keep_options\n" +
+                        "from db, bs\n" +
+                        "where db.db_key = bs.db_key    ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -96,7 +95,7 @@ public class OracleCreateViewTest2 extends OracleTest {
                         "\t, decode(keep_options, 256, 'LOGS', 512, 'NOLOGS', 1024, 'CONSISTENT', NULL) AS keep_options\n" +
                         "FROM db, bs\n" +
                         "WHERE db.db_key = bs.db_key",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

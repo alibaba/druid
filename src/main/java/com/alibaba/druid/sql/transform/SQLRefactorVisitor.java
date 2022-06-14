@@ -19,10 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SQLRefactorVisitor extends SQLASTVisitorAdapter {
-    private int havingLevel = 0;
-    private int groupByLevel = 0;
+    private int havingLevel;
+    private int groupByLevel;
 
     private char quote = '"';
+
     public SQLRefactorVisitor(DbType dbType) {
         this.dbType = dbType;
 
@@ -45,7 +46,7 @@ public class SQLRefactorVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLExprTableSource x) {
-        TableMapping mapping =findMapping(x);
+        TableMapping mapping = findMapping(x);
         if (mapping == null) {
             return true;
         }
@@ -203,7 +204,6 @@ public class SQLRefactorVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-
 
     private String quote(String name) {
         char[] chars = new char[name.length() + 2];

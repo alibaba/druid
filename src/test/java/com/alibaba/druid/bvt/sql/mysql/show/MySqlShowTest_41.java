@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlShowTest_41 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "show create table dla_table1 like mapping('mysql_table1');";
 

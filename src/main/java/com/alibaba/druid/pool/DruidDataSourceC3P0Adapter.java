@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.filter.Filter;
+
+import javax.sql.DataSource;
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -24,15 +28,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import javax.sql.DataSource;
-
-import com.alibaba.druid.filter.Filter;
-
 public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3P0AdapterMBean {
-
     private DruidDataSource dataSource;
 
-    public DruidDataSourceC3P0Adapter(){
+    public DruidDataSourceC3P0Adapter() {
         dataSource = new DruidDataSource();
 
         // setDefault
@@ -355,20 +354,20 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
 
     // ///////////////
 
-    private String  overrideDefaultUser;
-    private String  overrideDefaultPassword;
-    private int     propertyCycle;
+    private String overrideDefaultUser;
+    private String overrideDefaultPassword;
+    private int propertyCycle;
     private boolean usesTraditionalReflectiveProxies;
-    private String  userOverridesAsString;
-    private int     maxAdministrativeTaskTime;
-    private int     maxIdleTimeExcessConnections;
-    private int     maxConnectionAge;
-    private String  connectionCustomizerClassName;
-    private String  factoryClassLocation;
-    private int     acquireIncrement = 1;
+    private String userOverridesAsString;
+    private int maxAdministrativeTaskTime;
+    private int maxIdleTimeExcessConnections;
+    private int maxConnectionAge;
+    private String connectionCustomizerClassName;
+    private String factoryClassLocation;
+    private int acquireIncrement = 1;
 
-    private String  connectionTesterClassName;
-    private String  automaticTestTable;
+    private String connectionTesterClassName;
+    private String automaticTestTable;
 
     public String getConnectionTesterClassName() {
         return connectionTesterClassName;

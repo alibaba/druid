@@ -27,8 +27,7 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class TenantDeleteTest extends TestCase {
-
-    private String     sql    = "DELETE FROM orders WHERE FID = ?";
+    private String sql = "DELETE FROM orders WHERE FID = ?";
 
     private WallConfig config = new WallConfig();
 
@@ -40,13 +39,13 @@ public class TenantDeleteTest extends TestCase {
     public void testMySql() throws Exception {
         WallProvider.setTenantValue(123);
         MySqlWallProvider provider = new MySqlWallProvider(config);
-        
+
         WallProvider.setTenantValue("test");
         WallCheckResult checkResult = provider.check(sql);
         Assert.assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
         Assert.assertEquals("DELETE FROM orders" + //
-                            "\nWHERE FID = ?", resultSql);
+                "\nWHERE FID = ?", resultSql);
     }
 }

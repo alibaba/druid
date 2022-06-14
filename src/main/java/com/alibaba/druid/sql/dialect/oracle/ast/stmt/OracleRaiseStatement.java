@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleRaiseStatement extends OracleStatementImpl {
-
     private SQLExpr exception;
 
     public SQLExpr getException() {

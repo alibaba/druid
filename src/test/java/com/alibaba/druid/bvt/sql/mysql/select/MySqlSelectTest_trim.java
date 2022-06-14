@@ -13,12 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlSelectTest_trim extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select trim('x' from 'xxdxx')";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -36,7 +35,7 @@ public class MySqlSelectTest_trim extends MysqlTest {
 
         sql = "select trim('x')";
         statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        stmt = (SQLSelectStatement)statementList.get(0);
+        stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -53,7 +52,7 @@ public class MySqlSelectTest_trim extends MysqlTest {
         System.out.println(outParameters);
         sql = "select trim(TRAILING 'x' from 'xxxxxxxdxx')";
         statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        stmt = (SQLSelectStatement)statementList.get(0);
+        stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

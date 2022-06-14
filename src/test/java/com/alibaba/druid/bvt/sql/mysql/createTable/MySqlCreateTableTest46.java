@@ -24,11 +24,10 @@ import com.alibaba.druid.stat.TableStat;
 import org.junit.Assert;
 
 public class MySqlCreateTableTest46 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE lookup" + //
-                     "  (id INT, INDEX USING BTREE (id))" + //
-                     "  STATS_PERSISTENT 1;"; //
+                "  (id INT, INDEX USING BTREE (id))" + //
+                "  STATS_PERSISTENT 1;"; //
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -49,9 +48,9 @@ public class MySqlCreateTableTest46 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE lookup (" + //
-                            "\n\tid INT," + //
-                            "\n\tINDEX USING BTREE(id)" + //
-                            "\n) STATS_PERSISTENT = 1", output);
+                "\n\tid INT," + //
+                "\n\tINDEX USING BTREE(id)" + //
+                "\n) STATS_PERSISTENT = 1", output);
 
     }
 }

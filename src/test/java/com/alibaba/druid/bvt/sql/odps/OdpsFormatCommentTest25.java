@@ -14,5 +14,5 @@ public class OdpsFormatCommentTest25 extends TestCase {
         Assert.assertEquals("-- xxx"
                 + "\n-- yyy"
                 + "\nDROP FUNCTION IF EXISTS mytables;", SQLUtils.formatOdps(sql));
-    }   
+    }
 }

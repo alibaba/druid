@@ -17,9 +17,6 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
@@ -27,16 +24,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLDbLinkExpr extends SQLExprImpl implements SQLName, SQLExpr, SQLReplaceable {
-
     private SQLExpr expr;
-    private String  dbLink;
+    private String dbLink;
 
-    private long    dbLinkHashCode64;
-    private long    hashCode64;
+    private long dbLinkHashCode64;
+    private long hashCode64;
 
-
-    public SQLDbLinkExpr(){
-
+    public SQLDbLinkExpr() {
     }
 
     public String getSimpleName() {
@@ -85,7 +79,7 @@ public class SQLDbLinkExpr extends SQLExprImpl implements SQLName, SQLExpr, SQLR
     @Override
     public int hashCode() {
         long value = hashCode64();
-        return (int)(value ^ (value >>> 32));
+        return (int) (value ^ (value >>> 32));
     }
 
     @Override
@@ -129,7 +123,7 @@ public class SQLDbLinkExpr extends SQLExprImpl implements SQLName, SQLExpr, SQLR
 
                 hash ^= '@';
                 hash *= FnvHash.PRIME;
-            } else if (expr == null){
+            } else if (expr == null) {
                 hash = FnvHash.BASIC;
             } else {
                 hash = FnvHash.fnv1a_64_lower(expr.toString());

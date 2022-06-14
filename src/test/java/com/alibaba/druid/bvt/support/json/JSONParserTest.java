@@ -25,7 +25,6 @@ import org.junit.Assert;
 import com.alibaba.druid.support.json.JSONParser;
 
 public class JSONParserTest extends TestCase {
-
     public void test_parse() throws Exception {
         JSONParser parser = new JSONParser("{ \"id\":33,\"name\":\"jobs\",\"values\":[1,2,3,4], \"f1\":true, \"f2\":false,\"f3\":-234,\"f4\":3.5}");
         Map<String, Object> map = (Map<String, Object>) parser.parse();

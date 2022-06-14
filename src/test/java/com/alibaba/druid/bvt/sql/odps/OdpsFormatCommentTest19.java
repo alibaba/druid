@@ -14,5 +14,4 @@ public class OdpsFormatCommentTest19 extends TestCase {
                 + "\nSET yyy = 123;", SQLUtils.formatOdps(sql));
     }
 
-   
 }

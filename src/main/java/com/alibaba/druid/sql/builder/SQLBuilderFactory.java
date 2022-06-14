@@ -21,11 +21,10 @@ import com.alibaba.druid.sql.builder.impl.SQLSelectBuilderImpl;
 import com.alibaba.druid.sql.builder.impl.SQLUpdateBuilderImpl;
 
 public class SQLBuilderFactory {
-
     public static SQLSelectBuilder createSelectSQLBuilder(DbType dbType) {
         return new SQLSelectBuilderImpl(dbType);
     }
-    
+
     public static SQLSelectBuilder createSelectSQLBuilder(String sql, DbType dbType) {
         return new SQLSelectBuilderImpl(sql, dbType);
     }
@@ -33,7 +32,7 @@ public class SQLBuilderFactory {
     public static SQLDeleteBuilder createDeleteBuilder(DbType dbType) {
         return new SQLDeleteBuilderImpl(dbType);
     }
-    
+
     public static SQLDeleteBuilder createDeleteBuilder(String sql, DbType dbType) {
         return new SQLDeleteBuilderImpl(sql, dbType);
     }
@@ -41,7 +40,7 @@ public class SQLBuilderFactory {
     public static SQLUpdateBuilder createUpdateBuilder(DbType dbType) {
         return new SQLUpdateBuilderImpl(dbType);
     }
-    
+
     public static SQLUpdateBuilder createUpdateBuilder(String sql, DbType dbType) {
         return new SQLUpdateBuilderImpl(sql, dbType);
     }

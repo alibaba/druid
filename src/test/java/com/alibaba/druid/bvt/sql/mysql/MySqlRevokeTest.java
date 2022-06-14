@@ -26,11 +26,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlRevokeTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "REVOKE INSERT ON *.* FROM 'jeffrey'@'localhost';";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 //        print(statementList);
@@ -46,24 +45,23 @@ public class MySqlRevokeTest extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.MYSQL);
             assertEquals("REVOKE INSERT ON *.* FROM 'jeffrey'@'localhost';", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.MYSQL, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("revoke INSERT on *.* from 'jeffrey'@'localhost';", //
-                                output);
+                    output);
         }
     }
-
 
 
 }

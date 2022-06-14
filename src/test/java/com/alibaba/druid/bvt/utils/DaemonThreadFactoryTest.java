@@ -7,11 +7,10 @@ import org.junit.Assert;
 import com.alibaba.druid.util.DaemonThreadFactory;
 
 
-public class DaemonThreadFactoryTest extends TestCase  {
-    public void test_0 () throws Exception {
+public class DaemonThreadFactoryTest extends TestCase {
+    public void test_0() throws Exception {
         Runnable task = new Runnable() {
             public void run() {
-                
             }
         };
         DaemonThreadFactory factory = new DaemonThreadFactory("test");

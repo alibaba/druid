@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest8 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE t2 AUTO_INCREMENT = 3";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -41,7 +40,7 @@ public class MySqlAlterTableTest8 extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE t2" + //
-                            "\n\tAUTO_INCREMENT = 3", output);
+                "\n\tAUTO_INCREMENT = 3", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

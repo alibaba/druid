@@ -15,19 +15,6 @@
  */
 package com.alibaba.druid.stat;
 
-import java.lang.management.ManagementFactory;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.management.JMException;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -40,32 +27,40 @@ import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.MapComparator;
 import com.alibaba.druid.util.StringUtils;
 
+import javax.management.JMException;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
+import java.lang.management.ManagementFactory;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 /**
  * 注意：避免直接调用Druid相关对象例如DruidDataSource等，相关调用要到DruidStatManagerFacade里用反射实现
- * 
+ *
  * @author sandzhang[sandzhangtoo@gmail.com]
  */
 public final class DruidStatService implements DruidStatServiceMBean {
+    private static final Log LOG = LogFactory.getLog(DruidStatService.class);
 
-    private final static Log              LOG                    = LogFactory.getLog(DruidStatService.class);
+    public static final String MBEAN_NAME = "com.alibaba.druid:type=DruidStatService";
 
-    public final static String            MBEAN_NAME             = "com.alibaba.druid:type=DruidStatService";
+    private static final DruidStatService instance = new DruidStatService();
 
-    private final static DruidStatService instance               = new DruidStatService();
+    private static DruidStatManagerFacade statManagerFacade = DruidStatManagerFacade.getInstance();
 
-    private static DruidStatManagerFacade statManagerFacade      = DruidStatManagerFacade.getInstance();
+    public static final int RESULT_CODE_SUCCESS = 1;
+    public static final int RESULT_CODE_ERROR = -1;
 
-    public final static int               RESULT_CODE_SUCCESS    = 1;
-    public final static int               RESULT_CODE_ERROR      = -1;
+    private static final int DEFAULT_PAGE = 1;
+    private static final int DEFAULT_PER_PAGE_COUNT = Integer.MAX_VALUE;
+    private static final String ORDER_TYPE_DESC = "desc";
+    private static final String ORDER_TYPE_ASC = "asc";
+    private static final String DEFAULT_ORDER_TYPE = ORDER_TYPE_ASC;
+    private static final String DEFAULT_ORDERBY = "SQL";
 
-    private final static int              DEFAULT_PAGE           = 1;
-    private final static int              DEFAULT_PER_PAGE_COUNT = Integer.MAX_VALUE;
-    private static final String           ORDER_TYPE_DESC        = "desc";
-    private static final String           ORDER_TYPE_ASC         = "asc";
-    private static final String           DEFAULT_ORDER_TYPE     = ORDER_TYPE_ASC;
-    private static final String           DEFAULT_ORDERBY        = "SQL";
-
-    private DruidStatService(){
+    private DruidStatService() {
     }
 
     public static DruidStatService getInstance() {
@@ -81,7 +76,6 @@ public final class DruidStatService implements DruidStatServiceMBean {
     }
 
     public String service(String url) {
-
         Map<String, String> parameters = getParameters(url);
 
         if (url.equals("/basic.json")) {
@@ -118,7 +112,7 @@ public final class DruidStatService implements DruidStatServiceMBean {
             Integer id = StringUtils.subStringToInteger(url, "connectionInfo-", ".");
             List<?> connectionInfoList = statManagerFacade.getPoolingConnectionInfoByDataSourceId(id);
             return returnJSONResult(connectionInfoList == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS,
-                                    connectionInfoList);
+                    connectionInfoList);
         }
 
         if (url.startsWith("/activeConnectionStackTrace-") && url.endsWith(".json")) {
@@ -212,7 +206,8 @@ public final class DruidStatService implements DruidStatServiceMBean {
         return comparatorOrderBy(array, parameters);
     }
 
-    private List<Map<String, Object>> comparatorOrderBy(List<Map<String, Object>> array, Map<String, String> parameters) {
+    private List<Map<String, Object>> comparatorOrderBy(List<Map<String, Object>> array,
+                                                        Map<String, String> parameters) {
         // when open the stat page before executing some sql
         if (array == null || array.isEmpty()) {
             return null;
@@ -293,7 +288,7 @@ public final class DruidStatService implements DruidStatServiceMBean {
                 List<Map<String, Object>> sortedArray = comparatorOrderBy(tables, parameters);
                 result.put("tables", sortedArray);
             }
-            
+
             List<Map<String, Object>> functions = (List<Map<String, Object>>) result.get("functions");
             if (functions != null) {
                 List<Map<String, Object>> sortedArray = comparatorOrderBy(functions, parameters);
@@ -358,7 +353,6 @@ public final class DruidStatService implements DruidStatServiceMBean {
     public static void registerMBean() {
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
         try {
-
             ObjectName objectName = new ObjectName(MBEAN_NAME);
             if (!mbeanServer.isRegistered(objectName)) {
                 mbeanServer.registerMBean(instance, objectName);
@@ -380,12 +374,12 @@ public final class DruidStatService implements DruidStatServiceMBean {
 
     public static Map<String, String> getParameters(String url) {
         if (url == null || (url = url.trim()).length() == 0) {
-            return Collections.<String, String> emptyMap();
+            return Collections.<String, String>emptyMap();
         }
 
         String parametersStr = StringUtils.subString(url, "?", null);
         if (parametersStr == null || parametersStr.length() == 0) {
-            return Collections.<String, String> emptyMap();
+            return Collections.<String, String>emptyMap();
         }
 
         String[] parametersArray = parametersStr.split("&");

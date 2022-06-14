@@ -11,12 +11,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_142 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select count(1) from ( select aid from ysf_saas_test.abc_user_behavior_search_d where aid is not null and ds = 20180111 and bhv_obj_type = 4 and bhv_obj in ('衣服')  INTERSECT select a0.aid from (  select distinct t0.aid as aid from ( select aid,  sum(frequency)  from ysf_saas_test.abc_user_behavior_pay_d_002 where aid is not null and ds=20180111 and bhv_obj_type = 1 and brand_id in (29493) and ext_field_7 in ('4')  group by aid having  sum(frequency) >1) t0 ) a0 join (  select distinct t0.aid as aid from ( select aid,  sum(ext_field_9)  from ysf_saas_test.abc_user_behavior_pay_d_002 where aid is not null and ds=20180111 and bhv_obj_type = 1 and brand_id in (29493) and ext_field_7 in ('4')  group by aid having  sum(ext_field_9) >1) t0 ) b0 on a0.aid = b0.aid  INTERSECT select aid from ysf_saas_test.abc_user_behavior_collect_item_d_002 where aid is not null and ds=20180111 and bhv_obj_type = 1 and brand_id in (29493)   )d;\n";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

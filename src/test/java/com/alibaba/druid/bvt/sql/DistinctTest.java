@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class DistinctTest extends TestCase {
-
     private String sql = "select count(distinct *) from t";
 
     public void test_mysql() throws Exception {

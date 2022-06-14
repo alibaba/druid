@@ -18,7 +18,6 @@ package com.alibaba.druid.pool;
 import java.util.Properties;
 
 public interface DruidDataSourceC3P0AdapterMBean {
-
     String getDriverClass();
 
     String getJdbcUrl();

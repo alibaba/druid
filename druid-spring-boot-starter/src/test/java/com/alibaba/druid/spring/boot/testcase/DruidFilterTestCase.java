@@ -47,13 +47,11 @@ public class DruidFilterTestCase {
     @Configuration
     @ComponentScan
     public static class Config{
-
         /**
          * @author dk
          */
         @Component
         public static class SomeCustomFilter extends FilterAdapter {
-
             private static Logger logger = LoggerFactory.getLogger(SomeCustomFilter.class);
 
             @Override

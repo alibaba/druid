@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest92_lexer extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select * from dual where 1 < > 2 and 1 ! = 2 and 1 ^ /*aaa */ = 2"; //

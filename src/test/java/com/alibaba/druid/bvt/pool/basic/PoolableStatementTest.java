@@ -26,14 +26,12 @@ import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidPooledStatement;
 
 public class PoolableStatementTest extends TestCase {
-
-    protected Statement         raw;
+    protected Statement raw;
     protected DruidPooledStatement stmt;
 
     protected void setUp() throws Exception {
         raw = new MockStatement(null);
         stmt = new DruidPooledStatement(null, raw) {
-
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {
                     return (SQLException) error;
@@ -45,7 +43,6 @@ public class PoolableStatementTest extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-
     }
 
     public void test_basic() throws Exception {

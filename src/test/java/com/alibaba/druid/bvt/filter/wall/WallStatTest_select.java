@@ -13,7 +13,6 @@ import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 public class WallStatTest_select extends TestCase {
-
     private String sql = "select * from t where id = ?";
 
     protected void setUp() throws Exception {

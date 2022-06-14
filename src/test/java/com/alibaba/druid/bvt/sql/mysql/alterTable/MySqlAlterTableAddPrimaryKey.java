@@ -26,17 +26,16 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableAddPrimaryKey extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` CHANGE COLUMN `fid` `fid` INT(11) NOT NULL DEFAULT NULL, ADD PRIMARY KEY (`fid`) ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tCHANGE COLUMN `fid` `fid` INT(11) NOT NULL DEFAULT NULL,\n\t" + //
-                            "ADD PRIMARY KEY (`fid`);", SQLUtils.toMySqlString(stmt));
-        
+                "\n\tCHANGE COLUMN `fid` `fid` INT(11) NOT NULL DEFAULT NULL,\n\t" + //
+                "ADD PRIMARY KEY (`fid`);", SQLUtils.toMySqlString(stmt));
+
         Assert.assertEquals("alter table `test`.`tb1`" + //
                 "\n\tchange column `fid` `fid` INT(11) not null default null,\n\t" + //
                 "add primary key (`fid`);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

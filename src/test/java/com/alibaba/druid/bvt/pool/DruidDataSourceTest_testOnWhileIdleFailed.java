@@ -14,14 +14,13 @@ import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 
 /**
  * 这个场景测试defaultAutoCommit
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_testOnWhileIdleFailed extends TestCase {
-
     private DruidDataSource dataSource;
 
-    private AtomicInteger   validCount = new AtomicInteger();
+    private AtomicInteger validCount = new AtomicInteger();
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -31,7 +30,6 @@ public class DruidDataSourceTest_testOnWhileIdleFailed extends TestCase {
         dataSource.setTimeBetweenEvictionRunsMillis(20);
         dataSource.setValidationQuery("select 'x'");
         dataSource.setValidConnectionChecker(new ValidConnectionCheckerAdapter() {
-
             @Override
             public boolean isValidConnection(Connection c, String query, int validationQueryTimeout) {
                 int count = validCount.getAndIncrement();
@@ -68,12 +66,12 @@ public class DruidDataSourceTest_testOnWhileIdleFailed extends TestCase {
         Assert.assertEquals(1, dataSource.getCloseCount());
 
         Thread.sleep(21);
-        
+
         {
             PooledConnection conn = dataSource.getPooledConnection();
             conn.close();
         }
-        
+
         Assert.assertEquals(3, validCount.get()); // createValidate
 
         Assert.assertEquals(1, dataSource.getPoolingCount());

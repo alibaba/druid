@@ -12,7 +12,6 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -43,7 +42,6 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
         Thread[] threads = new Thread[THREAD_COUNT];
         for (int i = 0; i < THREAD_COUNT; ++i) {
             threads[i] = new Thread("thread-" + i) {
-
                 public void run() {
                     startLatch.countDown();
                     try {
@@ -62,7 +60,7 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
         }
 
         startLatch.await(100, TimeUnit.MILLISECONDS);
-        
+
         final CountDownLatch errorThreadEndLatch = new CountDownLatch(THREAD_COUNT);
         final AtomicLong maxWaitErrorCount = new AtomicLong();
         Thread errorThread = new Thread() {
@@ -79,9 +77,9 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
             }
         };
         errorThread.start();
-        
+
         errorThreadEndLatch.await(100, TimeUnit.MILLISECONDS);
-        
+
         Assert.assertEquals(1, maxWaitErrorCount.get());
         Assert.assertTrue(dataSource.getNotEmptySignalCount() > 0);
 

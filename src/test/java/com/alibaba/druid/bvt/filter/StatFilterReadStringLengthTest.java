@@ -16,7 +16,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterReadStringLengthTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -26,16 +25,15 @@ public class StatFilterReadStringLengthTest extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setTestOnBorrow(false);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public String resultSet_getString(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                        throws SQLException {
+                    throws SQLException {
                 return "123456";
             }
 
             @Override
             public String resultSet_getString(FilterChain chain, ResultSetProxy result, String columnIndex)
-                                                                                                           throws SQLException {
+                    throws SQLException {
                 return "1234567";
             }
         });

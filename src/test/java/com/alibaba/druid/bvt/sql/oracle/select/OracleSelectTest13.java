@@ -25,11 +25,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest13 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "select id,     table_id,     event_type,     pk_data,     transaction_id,     ignore_node_cluster_id,     gmt_create "
-                     + " from retl_data_search"
-                     + " where  id>=50001 and id<52001 and GMT_CREATE between sysdate-2 and sysdate order by id"; //
+                + " from retl_data_search"
+                + " where  id>=50001 and id<52001 and GMT_CREATE between sysdate-2 and sysdate order by id"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

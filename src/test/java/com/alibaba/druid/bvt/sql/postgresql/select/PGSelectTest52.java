@@ -36,7 +36,7 @@ public class PGSelectTest52 extends TestCase {
         assertEquals("SELECT *\n" +
                 "FROM t\n" +
                 "WHERE gmt = #{time}::timestamp WITHOUT TIME ZONE", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select *\n" +
                 "from t\n" +
                 "where gmt = #{time}::timestamp without time zone", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

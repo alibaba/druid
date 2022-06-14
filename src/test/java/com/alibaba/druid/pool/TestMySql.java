@@ -5,7 +5,6 @@ import java.sql.Connection;
 import junit.framework.TestCase;
 
 public class TestMySql extends TestCase {
-
     private DruidDataSource dataSource = new DruidDataSource();
 
     protected void setUp() throws Exception {

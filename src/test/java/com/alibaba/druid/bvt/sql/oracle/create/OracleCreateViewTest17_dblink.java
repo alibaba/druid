@@ -26,35 +26,33 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateViewTest17_dblink extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE OR REPLACE FORCE VIEW \"OA\".\"HET_MANAGER1_FW\" (\"LX\", \"HS\") AS \n" +
-                "  SELECT B.SELECTNAME LX,\n" +
-                "       AVG(FUN_CAL_TIME_BETWEEN@LINK_OMSS(TO_CHAR(TO_DATE(A.RECEIVEDATE ||\n" +
-                "                                                          A.RECEIVETIME,\n" +
-                "                                                          'YYYY-MM-DD HH24:MI:SS'),\n" +
-                "                                                  'YYYYMMDDHH24MISS'),\n" +
-                "                                          TO_CHAR(TO_DATE(D.OPERATEDATE ||\n" +
-                "                                                          D.OPERATETIME,\n" +
-                "                                                          'YYYY-MM-DD HH24:MI:SS'),\n" +
-                "                                                  'YYYYMMDDHH24MISS'))) HS\n" +
-                "  FROM WORKFLOW_CURRENTOPERATOR A,\n" +
-                "       WORKFLOW_SELECTITEM      B,\n" +
-                "       FORMTABLE_MAIN_93        C,\n" +
-                "       WORKFLOW_CURRENTOPERATOR D\n" +
-                " WHERE A.WORKFLOWID = 606\n" +
-                "   AND D.WORKFLOWID = 606\n" +
-                "   AND A.NODEID = 2249\n" +
-                "   AND D.NODEID = 2251\n" +
-                "   AND B.FIELDID = 10259\n" +
-                "   AND A.REQUESTID = C.REQUESTID\n" +
-                "   AND D.REQUESTID = C.REQUESTID\n" +
-                "   AND C.Hetonglx = B.SELECTVALUE\n" +
-                "   AND C.SHENQINGRIQI >= '2017-10-01'\n" +
-                "   AND C.SHENQINGRIQI <= '2017-12-31'\n" +
-                " GROUP BY B.SELECTNAME"
-               ;
+                "CREATE OR REPLACE FORCE VIEW \"OA\".\"HET_MANAGER1_FW\" (\"LX\", \"HS\") AS \n" +
+                        "  SELECT B.SELECTNAME LX,\n" +
+                        "       AVG(FUN_CAL_TIME_BETWEEN@LINK_OMSS(TO_CHAR(TO_DATE(A.RECEIVEDATE ||\n" +
+                        "                                                          A.RECEIVETIME,\n" +
+                        "                                                          'YYYY-MM-DD HH24:MI:SS'),\n" +
+                        "                                                  'YYYYMMDDHH24MISS'),\n" +
+                        "                                          TO_CHAR(TO_DATE(D.OPERATEDATE ||\n" +
+                        "                                                          D.OPERATETIME,\n" +
+                        "                                                          'YYYY-MM-DD HH24:MI:SS'),\n" +
+                        "                                                  'YYYYMMDDHH24MISS'))) HS\n" +
+                        "  FROM WORKFLOW_CURRENTOPERATOR A,\n" +
+                        "       WORKFLOW_SELECTITEM      B,\n" +
+                        "       FORMTABLE_MAIN_93        C,\n" +
+                        "       WORKFLOW_CURRENTOPERATOR D\n" +
+                        " WHERE A.WORKFLOWID = 606\n" +
+                        "   AND D.WORKFLOWID = 606\n" +
+                        "   AND A.NODEID = 2249\n" +
+                        "   AND D.NODEID = 2251\n" +
+                        "   AND B.FIELDID = 10259\n" +
+                        "   AND A.REQUESTID = C.REQUESTID\n" +
+                        "   AND D.REQUESTID = C.REQUESTID\n" +
+                        "   AND C.Hetonglx = B.SELECTVALUE\n" +
+                        "   AND C.SHENQINGRIQI >= '2017-10-01'\n" +
+                        "   AND C.SHENQINGRIQI <= '2017-12-31'\n" +
+                        " GROUP BY B.SELECTNAME";
 
         System.out.println(sql);
 
@@ -84,7 +82,7 @@ public class OracleCreateViewTest17_dblink extends OracleTest {
                         "\tAND C.SHENQINGRIQI >= '2017-10-01'\n" +
                         "\tAND C.SHENQINGRIQI <= '2017-12-31'\n" +
                         "GROUP BY B.SELECTNAME",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

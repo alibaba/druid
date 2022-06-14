@@ -20,12 +20,10 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableConvertCharSet extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLExpr charset;
     private SQLExpr collate;
-    
+
     public SQLAlterTableConvertCharSet() {
-        
     }
 
     public SQLExpr getCharset() {

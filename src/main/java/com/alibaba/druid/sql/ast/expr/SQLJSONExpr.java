@@ -28,13 +28,12 @@ import java.util.List;
 public class SQLJSONExpr extends SQLExprImpl implements SQLValuableExpr {
     public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("JSON");
 
-    protected String  literal;
+    protected String literal;
 
-    public SQLJSONExpr(){
-
+    public SQLJSONExpr() {
     }
 
-    public SQLJSONExpr(String literal){
+    public SQLJSONExpr(String literal) {
         this.literal = literal;
     }
 
@@ -57,8 +56,12 @@ public class SQLJSONExpr extends SQLExprImpl implements SQLValuableExpr {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLJSONExpr that = (SQLJSONExpr) o;
 

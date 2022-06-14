@@ -15,16 +15,18 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLShowProcessListStatement extends SQLStatementImpl implements SQLShowStatement {
-
     protected boolean mpp;
     private SQLExpr where;
     private SQLOrderBy orderBy;
     private SQLLimit limit;
-    private boolean full = false;
+    private boolean full;
 
     public boolean isMpp() {
         return mpp;

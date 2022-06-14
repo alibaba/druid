@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class IdentifierTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT t.1c FROM tab t";
 

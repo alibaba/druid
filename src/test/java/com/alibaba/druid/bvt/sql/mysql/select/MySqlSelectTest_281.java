@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 
 public class MySqlSelectTest_281 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select decode_unicode('\\u304a\\u306f\\u3088\\u3046\\u3054\\u3056\\u3044\\u307e\\u3059') as a;";
 
@@ -32,7 +31,6 @@ public class MySqlSelectTest_281 extends MysqlTest {
 
         assertEquals("SELECT decode_unicode('おはようございます') AS a;", stmt.toString());
     }
-
 
 
 }

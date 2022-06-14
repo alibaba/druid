@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateIndexTest_3 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create unique index index_1_id USING btree on index_1 (id) KEY_BLOCK_SIZE=10 comment '分表index'";

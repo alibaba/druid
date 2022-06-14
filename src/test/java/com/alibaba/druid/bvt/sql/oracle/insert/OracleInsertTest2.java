@@ -26,14 +26,13 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleInsertTest2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO employees " + //
-                     "      (employee_id, last_name, email, hire_date, job_id, salary)" + //
-                     "   VALUES " + //
-                     "   (employees_seq.nextval, 'Doe', 'john.doe@example.com', " + //
-                     "       SYSDATE, 'SH_CLERK', 2400) " + //
-                     "   RETURNING salary*12, job_id INTO :bnd1, :bnd2; ";
+                "      (employee_id, last_name, email, hire_date, job_id, salary)" + //
+                "   VALUES " + //
+                "   (employees_seq.nextval, 'Doe', 'john.doe@example.com', " + //
+                "       SYSDATE, 'SH_CLERK', 2400) " + //
+                "   RETURNING salary*12, job_id INTO :bnd1, :bnd2; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

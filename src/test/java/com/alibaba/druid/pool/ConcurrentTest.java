@@ -23,14 +23,13 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class ConcurrentTest extends TestCase {
-
     private String jdbcUrl;
     private String user;
     private String password;
     private String driverClass;
-    private int    minPoolSize = 50;
-    private int    maxPoolSize = 100;
-    private int    maxActive   = 500;
+    private int minPoolSize = 50;
+    private int maxPoolSize = 100;
+    private int maxActive = 500;
 
     protected void setUp() throws Exception {
         // jdbcUrl =
@@ -69,7 +68,6 @@ public class ConcurrentTest extends TestCase {
 
         for (int threadIndex = 0; threadIndex < THREAD_COUNT; ++threadIndex) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         startLatch.await();

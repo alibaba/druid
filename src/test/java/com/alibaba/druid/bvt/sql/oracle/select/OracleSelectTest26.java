@@ -25,17 +25,16 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest26 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "select * from ( select rownum rnm, z.* from (select " +
-        "   o.id,o.gmt_create as \"gm_create\",o.country as \"country\",o.status as \"status\"," +
-        "   o.logistics_company as \"company\",o.type as \"type\",o.freight/100 as \"feight\"," +
-        "   d.gmt_create as \"gm_create_1\",d.logistics_company as \"company_1\",d.package_num as \" \",d.declare_amount as \" \"," +
-        "   i.gmt_stockin as \" \",i.package_amount as \" \",i.weight as \" \"," +
-        "   u.gmt_create as \" \",u.logistics_company as \" \",u.package_amount as \" \"" +
-        " from wl_wh_order o left join wl_domestic_send d on d.wh_order_id=o.id left join wl_wh_in i on i.wh_order_id=o.id left join wl_wh_out u on u.out_order_id=o.id" +
-        " where o.id=100120667) z where rownum < :1 ) where rnm >= :2 ";
+                "select * from ( select rownum rnm, z.* from (select " +
+                        "   o.id,o.gmt_create as \"gm_create\",o.country as \"country\",o.status as \"status\"," +
+                        "   o.logistics_company as \"company\",o.type as \"type\",o.freight/100 as \"feight\"," +
+                        "   d.gmt_create as \"gm_create_1\",d.logistics_company as \"company_1\",d.package_num as \" \",d.declare_amount as \" \"," +
+                        "   i.gmt_stockin as \" \",i.package_amount as \" \",i.weight as \" \"," +
+                        "   u.gmt_create as \" \",u.logistics_company as \" \",u.package_amount as \" \"" +
+                        " from wl_wh_order o left join wl_domestic_send d on d.wh_order_id=o.id left join wl_wh_in i on i.wh_order_id=o.id left join wl_wh_out u on u.out_order_id=o.id" +
+                        " where o.id=100120667) z where rownum < :1 ) where rnm >= :2 ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MysqlAlterTableAlterCheck extends MySqlObjectImpl implements SQLAlterTableItem {
-
     private SQLName name;
     private Boolean enforced;
 

@@ -22,12 +22,11 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 public class MySqlShowTest_7_show_rule extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW RULE";
 
         SQLStatement stmt = SQLUtils.parseStatements(sql, DbType.mysql).get(0);
-        
+
         String result = SQLUtils.toMySqlString(stmt);
         assertEquals("SHOW RULE", result);
 

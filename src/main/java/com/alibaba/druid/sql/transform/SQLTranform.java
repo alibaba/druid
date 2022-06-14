@@ -19,5 +19,6 @@ import com.alibaba.druid.DbType;
 
 public interface SQLTranform {
     DbType getSourceDbType();
+
     DbType getTargetDbType();
 }

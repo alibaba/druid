@@ -23,10 +23,9 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class CursorTest extends TestCase {
-
     public void test_cursor() throws Exception {
         String sql = "SELECT department_name, CURSOR(SELECT salary, commission_pct FROM employees e WHERE e.department_id = d.department_id) "
-                     + "FROM departments d;";
+                + "FROM departments d;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
@@ -34,7 +33,7 @@ public class CursorTest extends TestCase {
         String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT department_name, CURSOR(\n\t\tSELECT salary, commission_pct\n" + "\t\tFROM employees e\n"
-                            + "\t\tWHERE e.department_id = d.department_id\n\t)\n" + "FROM departments d;", text);
+                + "\t\tWHERE e.department_id = d.department_id\n\t)\n" + "FROM departments d;", text);
 
         System.out.println(text);
     }

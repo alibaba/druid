@@ -32,14 +32,13 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
 
 public class StatFilterTest extends TestCase {
-
     public void setUp() throws Exception {
         JdbcStatManager.getInstance().reset();
     }
 
     public void tearDown() throws Exception {
         JdbcStatManager.getInstance().reset();
-        
+
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }

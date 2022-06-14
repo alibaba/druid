@@ -34,7 +34,7 @@ public class SplitTest2 extends TestCase {
         assertEquals(count, items.size());
         for (int i = 0; i < count; ++i) {
             SQLExpr item = items.get(i);
-            assertEquals(Integer.toString(i ), SQLUtils.toSQLString(item));
+            assertEquals(Integer.toString(i), SQLUtils.toSQLString(item));
         }
     }
 }

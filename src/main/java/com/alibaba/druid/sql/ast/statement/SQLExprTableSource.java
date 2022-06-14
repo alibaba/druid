@@ -29,16 +29,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplaceable {
-
-    protected SQLExpr          expr;
-    protected List<SQLName>    partitions;
+    protected SQLExpr expr;
+    protected List<SQLName> partitions;
     protected SQLTableSampling sampling;
-    protected SchemaObject     schemaObject;
+    protected SchemaObject schemaObject;
 
-    protected List<SQLName>    columns;
+    protected List<SQLName> columns;
 
     public SQLExprTableSource() {
-
     }
 
     public SQLExprTableSource(String tableName) {
@@ -163,8 +161,10 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
                 }
 
                 propertyExpr.setOwner(
-                        new SQLPropertyExpr(catalog
-                                , ((SQLIdentifierExpr) owner).getName())
+                        new SQLPropertyExpr(
+                                catalog,
+                                ((SQLIdentifierExpr) owner).getName()
+                        )
                 );
                 return true;
             } else if (owner instanceof SQLPropertyExpr) {
@@ -207,7 +207,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
                 propertyExpr.setOwner(schema);
             }
         } else {
-            if(StringUtils.isEmpty(schema)) {
+            if (StringUtils.isEmpty(schema)) {
                 return;
             }
 
@@ -493,7 +493,6 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
     }
 
     public long aliasHashCode64() {
-
         if (alias != null) {
             if (aliasHashCode64 == 0) {
                 aliasHashCode64 = FnvHash.hashCode64(alias);
@@ -510,16 +509,30 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         SQLExprTableSource that = (SQLExprTableSource) o;
 
-        if (expr != null ? !expr.equals(that.expr) : that.expr != null) return false;
-        if (partitions != null ? !partitions.equals(that.partitions) : that.partitions != null) return false;
-        if (sampling != null ? !sampling.equals(that.sampling) : that.sampling != null) return false;
-        if (schemaObject != null ? !schemaObject.equals(that.schemaObject) : that.schemaObject != null) return false;
+        if (expr != null ? !expr.equals(that.expr) : that.expr != null) {
+            return false;
+        }
+        if (partitions != null ? !partitions.equals(that.partitions) : that.partitions != null) {
+            return false;
+        }
+        if (sampling != null ? !sampling.equals(that.sampling) : that.sampling != null) {
+            return false;
+        }
+        if (schemaObject != null ? !schemaObject.equals(that.schemaObject) : that.schemaObject != null) {
+            return false;
+        }
         return columns != null ? columns.equals(that.columns) : that.columns == null;
     }
 

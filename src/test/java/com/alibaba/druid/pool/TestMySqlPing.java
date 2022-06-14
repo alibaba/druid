@@ -23,7 +23,6 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 
 public class TestMySqlPing extends TestCase {
-
     public void test_ping() throws Exception {
         String url = "jdbc:mysql://a.b.c.d:3308/dragoon_v25_masterdb";
         String user = "dragoon_admin";

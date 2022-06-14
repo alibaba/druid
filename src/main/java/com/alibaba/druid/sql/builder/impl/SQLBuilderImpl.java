@@ -20,29 +20,28 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.builder.SQLBuilder;
 
-
 public class SQLBuilderImpl implements SQLBuilder {
     public static SQLExpr toSQLExpr(Object obj, DbType dbType) {
         if (obj == null) {
             return new SQLNullExpr();
         }
-        
+
         if (obj instanceof Integer) {
             return new SQLIntegerExpr((Integer) obj);
         }
-        
+
         if (obj instanceof Number) {
             return new SQLNumberExpr((Number) obj);
         }
-        
+
         if (obj instanceof String) {
             return new SQLCharExpr((String) obj);
         }
-        
+
         if (obj instanceof Boolean) {
             return new SQLBooleanExpr((Boolean) obj);
         }
-        
+
         throw new IllegalArgumentException("not support : " + obj.getClass().getName());
     }
 }

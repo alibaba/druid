@@ -29,7 +29,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_11 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from users where uid = :uid";
 
@@ -60,8 +59,8 @@ public class MySqlSelectTest_11 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT *" + //
-                            "\nFROM users" + //
-                            "\nWHERE uid = :uid", //
-                            output);
+                        "\nFROM users" + //
+                        "\nWHERE uid = :uid", //
+                output);
     }
 }

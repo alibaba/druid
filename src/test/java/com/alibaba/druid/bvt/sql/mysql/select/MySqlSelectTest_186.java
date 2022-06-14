@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlSelectTest_186 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select count(0) from (SELECT * FROM auth_tenant WHERE type = 'tenant' AND name LIKE ?\"%\") tmp_count";
 
@@ -63,7 +62,7 @@ public class MySqlSelectTest_186 extends MysqlTest {
                         "\tWHERE type = 'tenant'\n" +
                         "\t\tAND name LIKE CONCAT(?, '%')\n" +
                         ") tmp_count", //
-                            output);
+                output);
     }
 
 }

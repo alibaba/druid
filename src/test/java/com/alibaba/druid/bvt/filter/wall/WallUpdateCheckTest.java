@@ -27,7 +27,6 @@ public class WallUpdateCheckTest extends TestCase {
             assertTrue(result.getViolations().isEmpty());
         }
         wallProvider.getConfig().setUpdateCheckHandler(new WallUpdateCheckHandler() {
-
             @Override
             public boolean check(String table, String column, Object setValue, List<Object> filterValues) {
                 return false;
@@ -38,7 +37,6 @@ public class WallUpdateCheckTest extends TestCase {
             assertTrue(result.getViolations().size() > 0);
         }
         wallProvider.getConfig().setUpdateCheckHandler(new WallUpdateCheckHandler() {
-
             @Override
             public boolean check(String table, String column, Object setValue, List<Object> filterValues) {
                 return true;
@@ -51,7 +49,6 @@ public class WallUpdateCheckTest extends TestCase {
         assertEquals(0, wallProvider.getWhiteListHitCount());
         assertEquals(0, wallProvider.getBlackListHitCount());
         wallProvider.getConfig().setUpdateCheckHandler(new WallUpdateCheckHandler() {
-
             @Override
             public boolean check(String table, String column, Object setValue, List<Object> filterValues) {
                 //增加对in语句的支持， status in (1, 2) 应该返回的filterValue为1和2

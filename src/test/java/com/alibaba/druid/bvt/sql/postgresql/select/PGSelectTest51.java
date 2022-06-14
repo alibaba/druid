@@ -82,7 +82,7 @@ public class PGSelectTest51 extends TestCase {
                 "\t\tOR A.ZIPCODE LIKE ('%' || ? || '%'))\n" +
                 ") TMP_PAGE\n" +
                 "WHERE ROWNUM <= 10", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select TMP_PAGE.*, ROWNUM as ROW_ID\n" +
                 "from (\n" +
                 "\t(select M.*, A.*\n" +

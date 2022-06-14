@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class HiveSelectTest_42_cte extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "with dycg_perform_startgametaketimelog as(\n" +
                 "select app_id, if(ver is null, '', ver) as ver, if(machine_name is null, '', split(machine_name, '-') [0]) as machine_dc, game_id, current_step, err_code\n" +

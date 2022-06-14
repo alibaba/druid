@@ -26,13 +26,13 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.Arrays;
 
 public class DB2ExprParser extends SQLExprParser {
-    public final static String[] AGGREGATE_FUNCTIONS;
+    public static final String[] AGGREGATE_FUNCTIONS;
 
-    public final static long[] AGGREGATE_FUNCTIONS_CODES;
+    public static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
-                "ROWNUMBER" };
+        String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
+                "ROWNUMBER"};
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
@@ -42,18 +42,18 @@ public class DB2ExprParser extends SQLExprParser {
         }
     }
 
-    public DB2ExprParser(String sql){
+    public DB2ExprParser(String sql) {
         this(new DB2Lexer(sql));
         this.lexer.nextToken();
         this.dbType = DbType.db2;
     }
 
-    public DB2ExprParser(String sql, SQLParserFeature... features){
+    public DB2ExprParser(String sql, SQLParserFeature... features) {
         this(new DB2Lexer(sql, features));
         this.lexer.nextToken();
     }
 
-    public DB2ExprParser(Lexer lexer){
+    public DB2ExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;

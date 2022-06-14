@@ -12,7 +12,6 @@ import java.util.Set;
  */
 public class TestNewSpout {
 
-
     public static int indexOf_nsharp(byte[] bytes, int fromIndex) {
         int end = bytes.length - 2;
         for (int i = fromIndex; i < end; ++i) {
@@ -294,7 +293,7 @@ public class TestNewSpout {
             return value;
         }
 
-        public static double str2Double(byte[] data,int start,int end) {
+        public static double str2Double(byte[] data, int start, int end) {
             long value = 0;
             long power = 0;
             for (int i = start; i < end; ++i) {
@@ -317,7 +316,6 @@ public class TestNewSpout {
     }
 
     static class SqlUtil {
-
         public static Set<String> filterDb = new HashSet<String>();
 
         private static int[] orders = new int[]{2, 3, 0, 1};

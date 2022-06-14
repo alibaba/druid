@@ -24,18 +24,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest_like_1 extends TestCase {
-
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         Assert.assertTrue(provider.checkValid(//
-        "SELECT * FROM T WHERE FID = ? OR FID LIKE 1"));
+                "SELECT * FROM T WHERE FID = ? OR FID LIKE 1"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

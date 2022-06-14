@@ -15,60 +15,59 @@
  */
 package com.alibaba.druid.wall;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.alibaba.druid.support.monitor.annotation.AggregateType;
 import com.alibaba.druid.support.monitor.annotation.MField;
 import com.alibaba.druid.support.monitor.annotation.MTable;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @MTable(name = "druid_wall_table")
 public class WallTableStatValue {
-
     @MField(aggregate = AggregateType.None)
     private String name;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   selectCount;
+    private long selectCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   selectIntoCount;
+    private long selectIntoCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   insertCount;
+    private long insertCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   updateCount;
+    private long updateCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   deleteCount;
+    private long deleteCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   truncateCount;
+    private long truncateCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   createCount;
+    private long createCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   alterCount;
+    private long alterCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   dropCount;
+    private long dropCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   replaceCount;
+    private long replaceCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   deleteDataCount;
+    private long deleteDataCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   updateDataCount;
+    private long updateDataCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   insertDataCount;
+    private long insertDataCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   fetchRowCount;
+    private long fetchRowCount;
 
     @MField(name = "f1", aggregate = AggregateType.Sum)
     protected long fetchRowCount_0_1;
@@ -80,14 +79,14 @@ public class WallTableStatValue {
     protected long fetchRowCount_10_100;
 
     @MField(name = "f1000", aggregate = AggregateType.Sum)
-    protected int  fetchRowCount_100_1000;
+    protected int fetchRowCount_100_1000;
 
     @MField(name = "f10000", aggregate = AggregateType.Sum)
-    protected int  fetchRowCount_1000_10000;
+    protected int fetchRowCount_1000_10000;
 
     @MField(name = "fmore", aggregate = AggregateType.Sum)
-    protected int  fetchRowCount_10000_more;
-    
+    protected int fetchRowCount_10000_more;
+
     @MField(name = "u1", aggregate = AggregateType.Sum)
     protected long updateDataCount_0_1;
 
@@ -98,14 +97,14 @@ public class WallTableStatValue {
     protected long updateDataCount_10_100;
 
     @MField(name = "u1000", aggregate = AggregateType.Sum)
-    protected int  updateDataCount_100_1000;
+    protected int updateDataCount_100_1000;
 
     @MField(name = "u10000", aggregate = AggregateType.Sum)
-    protected int  updateDataCount_1000_10000;
+    protected int updateDataCount_1000_10000;
 
     @MField(name = "umore", aggregate = AggregateType.Sum)
-    protected int  updateDataCount_10000_more;
-    
+    protected int updateDataCount_10000_more;
+
     @MField(name = "del_1", aggregate = AggregateType.Sum)
     protected long deleteDataCount_0_1;
 
@@ -116,16 +115,16 @@ public class WallTableStatValue {
     protected long deleteDataCount_10_100;
 
     @MField(name = "del_1000", aggregate = AggregateType.Sum)
-    protected int  deleteDataCount_100_1000;
+    protected int deleteDataCount_100_1000;
 
     @MField(name = "del_10000", aggregate = AggregateType.Sum)
-    protected int  deleteDataCount_1000_10000;
+    protected int deleteDataCount_1000_10000;
 
     @MField(name = "del_more", aggregate = AggregateType.Sum)
-    protected int  deleteDataCount_10000_more;
+    protected int deleteDataCount_10000_more;
 
     public long[] getDeleteDataHistogram() {
-        return new long[] { deleteDataCount_0_1, //
+        return new long[]{deleteDataCount_0_1, //
                 deleteDataCount_1_10, //
                 deleteDataCount_10_100, //
                 deleteDataCount_100_1000, //
@@ -134,16 +133,16 @@ public class WallTableStatValue {
         };
     }
 
-    public WallTableStatValue(){
+    public WallTableStatValue() {
         this(null);
     }
 
-    public WallTableStatValue(String name){
+    public WallTableStatValue(String name) {
         this.name = name;
     }
 
     public long[] getFetchRowHistogram() {
-        return new long[] { fetchRowCount_0_1, //
+        return new long[]{fetchRowCount_0_1, //
                 fetchRowCount_1_10, //
                 fetchRowCount_10_100, //
                 fetchRowCount_100_1000, //
@@ -154,15 +153,14 @@ public class WallTableStatValue {
 
     public long getTotalExecuteCount() {
         return selectCount //
-               + selectIntoCount //
-               + insertCount //
-               + updateCount //
-               + deleteCount //
-               + truncateCount //
-               + createCount //
-               + dropCount //
-               + replaceCount //
-        ;
+                + selectIntoCount //
+                + insertCount //
+                + updateCount //
+                + deleteCount //
+                + truncateCount //
+                + createCount //
+                + dropCount //
+                + replaceCount;
     }
 
     public String getName() {
@@ -264,9 +262,9 @@ public class WallTableStatValue {
     public long getUpdateDataCount() {
         return updateDataCount;
     }
-    
+
     public long[] getUpdateDataHistogram() {
-        return new long[] { updateDataCount_0_1, //
+        return new long[]{updateDataCount_0_1, //
                 updateDataCount_1_10, //
                 updateDataCount_10_100, //
                 updateDataCount_100_1000, //

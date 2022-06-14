@@ -26,41 +26,40 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest64 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (\t\"STOREID\" VARCHAR2(40) NOT NULL ENABLE, \n" +
-                "\t\"OPPTIME\" DATE, \n" +
-                "\t\"CREATETIME\" DATE, \n" +
-                "\t\"NAME\" VARCHAR2(254), \n" +
-                "\t\"FILEPATH\" VARCHAR2(254), \n" +
-                "\t\"FILENAME\" VARCHAR2(64), \n" +
-                "\t\"EVENTCODE\" VARCHAR2(200), \n" +
-                "\t\"FILECODE\" VARCHAR2(200), \n" +
-                "\t\"RESULTCODE\" VARCHAR2(200), \n" +
-                "\t\"RESULTMESSAGE\" VARCHAR2(4000), \n" +
-                "\t\"RESULTMEMO\" VARCHAR2(200), \n" +
-                "\t\"STATUSCODE\" VARCHAR2(200), \n" +
-                "\t\"STATUSMESSAGE\" VARCHAR2(4000), \n" +
-                "\t\"UPLOADSUCCESS\" VARCHAR2(200), \n" +
-                "\t\"BZ\" VARCHAR2(4000), \n" +
-                "\t\"DATACOUNT\" NUMBER, \n" +
-                "\t\"FILECONTS\" CLOB, \n" +
-                "\t\"XFJBH\" VARCHAR2(38)\n" +
-                "   ) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                " NOCOMPRESS NOLOGGING\n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"XINFANG\" \n" +
-                " LOB (\"FILECONTS\") STORE AS BASICFILE (\n" +
-                "  TABLESPACE \"XINFANG\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
-                "  NOCACHE NOLOGGING \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT))   ";
+                "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (\t\"STOREID\" VARCHAR2(40) NOT NULL ENABLE, \n" +
+                        "\t\"OPPTIME\" DATE, \n" +
+                        "\t\"CREATETIME\" DATE, \n" +
+                        "\t\"NAME\" VARCHAR2(254), \n" +
+                        "\t\"FILEPATH\" VARCHAR2(254), \n" +
+                        "\t\"FILENAME\" VARCHAR2(64), \n" +
+                        "\t\"EVENTCODE\" VARCHAR2(200), \n" +
+                        "\t\"FILECODE\" VARCHAR2(200), \n" +
+                        "\t\"RESULTCODE\" VARCHAR2(200), \n" +
+                        "\t\"RESULTMESSAGE\" VARCHAR2(4000), \n" +
+                        "\t\"RESULTMEMO\" VARCHAR2(200), \n" +
+                        "\t\"STATUSCODE\" VARCHAR2(200), \n" +
+                        "\t\"STATUSMESSAGE\" VARCHAR2(4000), \n" +
+                        "\t\"UPLOADSUCCESS\" VARCHAR2(200), \n" +
+                        "\t\"BZ\" VARCHAR2(4000), \n" +
+                        "\t\"DATACOUNT\" NUMBER, \n" +
+                        "\t\"FILECONTS\" CLOB, \n" +
+                        "\t\"XFJBH\" VARCHAR2(38)\n" +
+                        "   ) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        " NOCOMPRESS NOLOGGING\n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"XINFANG\" \n" +
+                        " LOB (\"FILECONTS\") STORE AS BASICFILE (\n" +
+                        "  TABLESPACE \"XINFANG\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
+                        "  NOCACHE NOLOGGING \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT))   ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -128,7 +127,7 @@ public class OracleCreateTableTest64 extends OracleTest {
                         "\tNOCACHE\n" +
                         "\tRETENTION\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

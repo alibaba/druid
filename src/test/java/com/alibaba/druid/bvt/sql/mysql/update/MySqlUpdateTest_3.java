@@ -28,10 +28,9 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlUpdateTest_3 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "update scheme.table set col_1 = 1, col2 = '2' " //
-                     + "where col_3 = 3 and (length(col_4) > 4 or col_5 <> '5')";
+                + "where col_3 = 3 and (length(col_4) > 4 or col_5 <> '5')";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -59,10 +58,10 @@ public class MySqlUpdateTest_3 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("UPDATE scheme.table" //
-                            + "\nSET col_1 = 1, col2 = '2'"//
-                            + "\nWHERE col_3 = 3" //
-                            + "\n\tAND (length(col_4) > 4" //
-                            + "\n\t\tOR col_5 <> '5')", //
-                            output);
+                        + "\nSET col_1 = 1, col2 = '2'"//
+                        + "\nWHERE col_3 = 3" //
+                        + "\n\tAND (length(col_4) > 4" //
+                        + "\n\t\tOR col_5 <> '5')", //
+                output);
     }
 }

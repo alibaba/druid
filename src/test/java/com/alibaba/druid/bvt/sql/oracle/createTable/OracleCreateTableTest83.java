@@ -24,7 +24,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest83 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
                 "CREATE TABLE NIRVANA.CS_MATURE_ADVICE (\n" +
@@ -64,7 +63,7 @@ public class OracleCreateTableTest83 extends OracleTest {
                         "\tSERVICE_URL VARCHAR(512),\n" +
                         "\tPRIMARY KEY (ID)\n" +
                         ");",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         stmt.renameColumn("ID", "FID");
 

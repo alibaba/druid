@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class SQLServerMerge_0 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "MERGE INTO tb_device_category t1\n" +
                 "USING ( select distinct device_category, factory_id from temp_device where device_category is not null\n" +

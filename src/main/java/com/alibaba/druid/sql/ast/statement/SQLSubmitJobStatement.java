@@ -15,16 +15,17 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLSubmitJobStatement extends SQLStatementImpl {
-	
-	private boolean    await;
-	private SQLStatement statment;
+    private boolean await;
+    private SQLStatement statment;
 
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -33,35 +34,35 @@ public class SQLSubmitJobStatement extends SQLStatementImpl {
         visitor.endVisit(this);
     }
 
-	@Override
-	public List<SQLObject> getChildren() {
-		ArrayList<SQLObject> children = new ArrayList<SQLObject>();
-		children.add(statment);
-		return children;
-	}
+    @Override
+    public List<SQLObject> getChildren() {
+        ArrayList<SQLObject> children = new ArrayList<SQLObject>();
+        children.add(statment);
+        return children;
+    }
 
-	public boolean isAwait() {
-		return await;
-	}
+    public boolean isAwait() {
+        return await;
+    }
 
-	public void setAwait(boolean await) {
-		this.await = await;
-	}
+    public void setAwait(boolean await) {
+        this.await = await;
+    }
 
-	public SQLStatement getStatment() {
-		return statment;
-	}
+    public SQLStatement getStatment() {
+        return statment;
+    }
 
-	public void setStatment(SQLStatement statment) {
-		this.statment = statment;
-	}
+    public void setStatment(SQLStatement statment) {
+        this.statment = statment;
+    }
 
-	public SQLSubmitJobStatement clone() {
-		SQLSubmitJobStatement x = new SQLSubmitJobStatement();
+    public SQLSubmitJobStatement clone() {
+        SQLSubmitJobStatement x = new SQLSubmitJobStatement();
 
-		if (statment != null) {
-			x.setStatment(statment.clone());
-		}
-		return x;
-	}
+        if (statment != null) {
+            x.setStatment(statment.clone());
+        }
+        return x;
+    }
 }

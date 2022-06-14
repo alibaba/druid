@@ -29,8 +29,8 @@ import java.util.Set;
 
 public class SQLBinaryOpExprGroup extends SQLExprImpl implements SQLReplaceable {
     private final SQLBinaryOperator operator;
-    private final List<SQLExpr>     items = new ArrayList<SQLExpr>();
-    private DbType                  dbType;
+    private final List<SQLExpr> items = new ArrayList<SQLExpr>();
+    private DbType dbType;
 
     public SQLBinaryOpExprGroup(SQLBinaryOperator operator) {
         this.operator = operator;
@@ -43,12 +43,18 @@ public class SQLBinaryOpExprGroup extends SQLExprImpl implements SQLReplaceable 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLBinaryOpExprGroup that = (SQLBinaryOpExprGroup) o;
 
-        if (operator != that.operator) return false;
+        if (operator != that.operator) {
+            return false;
+        }
         return items.equals(that.items);
     }
 

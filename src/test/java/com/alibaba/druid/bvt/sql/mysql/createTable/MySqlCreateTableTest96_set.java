@@ -8,13 +8,12 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest96_set extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create table test1(id int, name set('a', 'b', 'c') not null default 'a');";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(2, stmt.getTableElementList().size());

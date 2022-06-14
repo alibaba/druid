@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleInsertTest19 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "insert into TB_DUOBAO_PARTICIPATE_NUMBER ( PARTICIPATE_NUMBER, PERIOD_ID, PRODUCT_ID,number_index)"
                 + "         (SELECT ?,?,?,?  FROM DUAL)"
@@ -43,12 +42,12 @@ public class OracleInsertTest19 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("INSERT INTO TB_DUOBAO_PARTICIPATE_NUMBER (PARTICIPATE_NUMBER, PERIOD_ID, PRODUCT_ID, number_index)"
-                + "\nSELECT ?, ?, ?, ?"
-                + "\nFROM DUAL"
-                + "\nUNION ALL"
-                + "\nSELECT ?, ?, ?, ?"
-                + "\nFROM DUAL",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\nSELECT ?, ?, ?, ?"
+                        + "\nFROM DUAL"
+                        + "\nUNION ALL"
+                        + "\nSELECT ?, ?, ?, ?"
+                        + "\nFROM DUAL",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -63,10 +62,10 @@ public class OracleInsertTest19 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("TB_DUOBAO_PARTICIPATE_NUMBER")));
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PARTICIPATE_NUMBER")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PERIOD_ID")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PRODUCT_ID")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "number_index")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PARTICIPATE_NUMBER")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PERIOD_ID")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PRODUCT_ID")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "number_index")));
     }
 
 }

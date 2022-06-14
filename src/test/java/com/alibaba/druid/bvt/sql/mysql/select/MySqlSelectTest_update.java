@@ -24,13 +24,12 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_update extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select current_no from "
-                     + "update wlb_waybill_branch_rule  set current_no = current_no + ? ,gmt_modified = now()   "
-                     + "where id = ? and status = ? and end_no > current_no " 
-                     + "order by current_no desc "
-                     + "limit 10";
+                + "update wlb_waybill_branch_rule  set current_no = current_no + ? ,gmt_modified = now()   "
+                + "where id = ? and status = ? and end_no > current_no "
+                + "order by current_no desc "
+                + "limit 10";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -39,7 +38,7 @@ public class MySqlSelectTest_update extends MysqlTest {
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         String expected = "SELECT current_no"
                 + "\nFROM UPDATE wlb_waybill_branch_rule"
                 + "\nSET current_no = current_no + ?, gmt_modified = now()"

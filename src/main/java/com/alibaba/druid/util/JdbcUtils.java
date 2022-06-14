@@ -15,43 +15,34 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
+import javax.sql.DataSource;
+
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
+import java.util.*;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public final class JdbcUtils implements JdbcConstants {
-
-    private final static Log        LOG                = LogFactory.getLog(JdbcUtils.class);
+    private static final Log LOG = LogFactory.getLog(JdbcUtils.class);
 
     private static final Properties DRIVER_URL_MAPPING = new Properties();
 
-    private static Boolean mysql_driver_version_6      = null;
+    private static Boolean mysql_driver_version_6;
 
     static {
         try {
             ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
             if (ctxClassLoader != null) {
-                for (Enumeration<URL> e = ctxClassLoader.getResources("META-INF/druid-driver.properties"); e.hasMoreElements();) {
+                for (Enumeration<URL> e = ctxClassLoader.getResources("META-INF/druid-driver.properties"); e.hasMoreElements(); ) {
                     URL url = e.nextElement();
 
                     Properties property = new Properties();
@@ -161,12 +152,15 @@ public final class JdbcUtils implements JdbcConstants {
     public static void printResultSet(ResultSet rs) throws SQLException {
         printResultSet(rs, System.out);
     }
-    
+
     public static void printResultSet(ResultSet rs, PrintStream out) throws SQLException {
         printResultSet(rs, out, true, "\t");
     }
 
-    public static void printResultSet(ResultSet rs, PrintStream out, boolean printHeader, String seperator) throws SQLException {
+    public static void printResultSet(ResultSet rs,
+                                      PrintStream out,
+                                      boolean printHeader,
+                                      String seperator) throws SQLException {
         ResultSetMetaData metadata = rs.getMetaData();
         int columnCount = metadata.getColumnCount();
         if (printHeader) {
@@ -181,7 +175,6 @@ public final class JdbcUtils implements JdbcConstants {
         out.println();
 
         while (rs.next()) {
-
             for (int columnIndex = 1; columnIndex <= columnCount; ++columnIndex) {
                 if (columnIndex != 1) {
                     out.print(seperator);
@@ -192,7 +185,7 @@ public final class JdbcUtils implements JdbcConstants {
                 if (type == Types.VARCHAR || type == Types.CHAR || type == Types.NVARCHAR || type == Types.NCHAR) {
                     out.print(rs.getString(columnIndex));
                 } else if (type == Types.DATE) {
-                    Date date = rs.getDate(columnIndex);
+                    java.util.Date date = rs.getDate(columnIndex);
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
@@ -401,7 +394,7 @@ public final class JdbcUtils implements JdbcConstants {
         if (rawUrl == null) {
             return null;
         }
-        
+
         if (rawUrl.startsWith("jdbc:derby:")) {
             return "org.apache.derby.jdbc.EmbeddedDriver";
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
@@ -421,7 +414,7 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:tidb:")) {
             return TIDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:oracle:") //
-                   || rawUrl.startsWith("JDBC:oracle:")) {
+                || rawUrl.startsWith("JDBC:oracle:")) {
             return ORACLE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
             return ALI_ORACLE_DRIVER;
@@ -517,9 +510,9 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.ELASTIC_SEARCH_DRIVER;
         } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
             return JdbcConstants.CLICKHOUSE_DRIVER;
-        } else if(rawUrl.startsWith("jdbc:presto:")) {
+        } else if (rawUrl.startsWith("jdbc:presto:")) {
             return JdbcConstants.PRESTO_DRIVER;
-        } else if(rawUrl.startsWith("jdbc:trino:")) {
+        } else if (rawUrl.startsWith("jdbc:trino:")) {
             return JdbcConstants.TRINO_DRIVER;
         } else if (rawUrl.startsWith("jdbc:inspur:")) {
             return JdbcConstants.KDB_DRIVER;
@@ -642,7 +635,7 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.polardb;
         } else if (rawUrl.startsWith("jdbc:highgo:")) {
             return DbType.highgo;
-        } else if (rawUrl.startsWith("jdbc:pivotal:greenplum:")||rawUrl.startsWith("jdbc:datadirect:greenplum:")) {
+        } else if (rawUrl.startsWith("jdbc:pivotal:greenplum:") || rawUrl.startsWith("jdbc:datadirect:greenplum:")) {
             return DbType.greenplum;
         } else {
             return null;
@@ -765,12 +758,12 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static List<Map<String, Object>> executeQuery(DataSource dataSource, String sql, Object... parameters)
-                                                                                                                 throws SQLException {
+            throws SQLException {
         return executeQuery(dataSource, sql, Arrays.asList(parameters));
     }
 
     public static List<Map<String, Object>> executeQuery(DataSource dataSource, String sql, List<Object> parameters)
-                                                                                                                    throws SQLException {
+            throws SQLException {
         Connection conn = null;
         try {
             conn = dataSource.getConnection();
@@ -781,7 +774,7 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static List<Map<String, Object>> executeQuery(Connection conn, String sql, List<Object> parameters)
-                                                                                                              throws SQLException {
+            throws SQLException {
         List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
 
         PreparedStatement stmt = null;
@@ -822,7 +815,7 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static void insertToTable(DataSource dataSource, String tableName, Map<String, Object> data)
-                                                                                                       throws SQLException {
+            throws SQLException {
         Connection conn = null;
         try {
             conn = dataSource.getConnection();
@@ -840,9 +833,9 @@ public final class JdbcUtils implements JdbcConstants {
 
     public static String makeInsertToTableSql(String tableName, Collection<String> names) {
         StringBuilder sql = new StringBuilder() //
-        .append("insert into ") //
-        .append(tableName) //
-        .append("("); //
+                .append("insert into ") //
+                .append(tableName) //
+                .append("("); //
 
         int nameCount = 0;
         for (String name : names) {
@@ -864,10 +857,12 @@ public final class JdbcUtils implements JdbcConstants {
         return sql.toString();
     }
 
-    public static <T> void executeQuery(DataSource dataSource
-            , ResultSetConsumer<T> consumer
-            , String sql
-            , Object... parameters) throws SQLException {
+    public static <T> void executeQuery(
+            DataSource dataSource,
+            ResultSetConsumer<T> consumer,
+            String sql,
+            Object... parameters
+    ) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -910,7 +905,10 @@ public final class JdbcUtils implements JdbcConstants {
         return getCreateTableScript(conn, dbType, true, true);
     }
 
-    public static String getCreateTableScript(Connection conn, DbType dbType, boolean sorted, boolean simplify) throws SQLException {
+    public static String getCreateTableScript(Connection conn,
+                                              DbType dbType,
+                                              boolean sorted,
+                                              boolean simplify) throws SQLException {
         if (isMysqlDbType(dbType)) {
             return MySqlUtils.getCreateTableScript(conn, sorted, simplify);
         }

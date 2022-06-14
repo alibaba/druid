@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 
 public class MySqlSelectTest_237 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select distinct (f1) from t3;";
 
@@ -31,7 +30,6 @@ public class MySqlSelectTest_237 extends MysqlTest {
         assertEquals("SELECT DISTINCT f1\n" +
                 "FROM t3;", stmt.toString());
     }
-
 
 
 }

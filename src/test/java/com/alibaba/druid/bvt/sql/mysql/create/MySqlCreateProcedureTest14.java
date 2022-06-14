@@ -25,16 +25,15 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateProcedureTest14 extends MysqlTest {
-
     public void test_0() throws Exception {
-    	String sql = "CREATE DEFINER = 'admin'@'localhost' PROCEDURE account_count()\n" +
+        String sql = "CREATE DEFINER = 'admin'@'localhost' PROCEDURE account_count()\n" +
                 "SQL SECURITY INVOKER\n" +
                 "BEGIN\n" +
                 "  SELECT 'Number of accounts:', COUNT(*) FROM mysql.user;\n" +
                 "END;";
 
-    	List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-    	SQLStatement stmt = statementList.get(0);
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
+        SQLStatement stmt = statementList.get(0);
 //    	print(statementList);
         assertEquals(1, statementList.size());
 
@@ -54,7 +53,7 @@ public class MySqlCreateProcedureTest14 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(1, visitor.getTables().size());
         assertEquals(1, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
@@ -62,5 +61,4 @@ public class MySqlCreateProcedureTest14 extends MysqlTest {
         assertTrue(visitor.containsColumn("mysql.user", "*"));
     }
 
-    
 }

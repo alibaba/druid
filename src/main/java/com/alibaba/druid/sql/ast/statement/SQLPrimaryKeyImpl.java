@@ -18,11 +18,10 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey, SQLTableConstraint {
-    protected boolean disableNovalidate = false;
-    protected boolean clustered         = false; // sql server
+    protected boolean disableNovalidate;
+    protected boolean clustered; // sql server
 
     public SQLPrimaryKeyImpl() {
-
     }
 
     @Override

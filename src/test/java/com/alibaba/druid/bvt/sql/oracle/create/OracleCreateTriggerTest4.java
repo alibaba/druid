@@ -26,21 +26,20 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTriggerTest4 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "TRIGGER RRP.TRG_HR_AK_AFTINST AFTER INSERT ON hr_structure FOR EACH ROW\n" +
-                "DECLARE\n" +
-                "BEGIN\n" +
-                "  INSERT INTO hr_structure_temp\n" +
-                "    (com_code,CODE,NAME,status,sjcode,\n" +
-                "     isdept,type,selfcode,POS,createdate,\n" +
-                "     issync,syncdate,deptsale)\n" +
-                "  VALUES\n" +
-                "    (:NEW.com_code,:NEW.CODE,:NEW.NAME,:NEW.status,:NEW.sjcode,\n" +
-                "     :NEW.isdept,:NEW.type,:NEW.selfcode,:NEW.POS,SYSDATE,\n" +
-                "     'N',NULL,:NEW.deptsale);\n" +
-                "END;";
+                "TRIGGER RRP.TRG_HR_AK_AFTINST AFTER INSERT ON hr_structure FOR EACH ROW\n" +
+                        "DECLARE\n" +
+                        "BEGIN\n" +
+                        "  INSERT INTO hr_structure_temp\n" +
+                        "    (com_code,CODE,NAME,status,sjcode,\n" +
+                        "     isdept,type,selfcode,POS,createdate,\n" +
+                        "     issync,syncdate,deptsale)\n" +
+                        "  VALUES\n" +
+                        "    (:NEW.com_code,:NEW.CODE,:NEW.NAME,:NEW.status,:NEW.sjcode,\n" +
+                        "     :NEW.isdept,:NEW.type,:NEW.selfcode,:NEW.POS,SYSDATE,\n" +
+                        "     'N',NULL,:NEW.deptsale);\n" +
+                        "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -62,7 +61,7 @@ public class OracleCreateTriggerTest4 extends OracleTest {
                         "\t\t, :NEW.isdept, :NEW.type, :NEW.selfcode, :NEW.POS, SYSDATE\n" +
                         "\t\t, 'N', NULL, :NEW.deptsale);\n" +
                         "END;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

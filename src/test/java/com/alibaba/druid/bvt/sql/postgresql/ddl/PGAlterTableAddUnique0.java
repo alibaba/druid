@@ -12,7 +12,7 @@ import com.alibaba.druid.stat.TableStat;
 
 
 public class PGAlterTableAddUnique0 extends PGTest {
-    public void test_0 () throws Exception {
+    public void test_0() throws Exception {
         String sql = "ALTER TABLE products ADD CONSTRAINT some_name UNIQUE (product_no);";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -29,7 +29,7 @@ public class PGAlterTableAddUnique0 extends PGTest {
         System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("products")));
-        
+
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("products")).getDropCount() == 0);
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("products")).getAlterCount() == 1);
 

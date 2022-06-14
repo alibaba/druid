@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class Bug_for_order extends TestCase {
-    
     public void test_bug_for_xuershan() throws Exception {
         String sql = "select * from order";
         String format = SQLUtils.formatMySql(sql);

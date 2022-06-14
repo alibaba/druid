@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class OracleSelectGroupingTest extends TestCase {
-
     public void test_select() throws Exception {
         String sql = "SELECT COUNT(*) FROM employees e, departments d WHERE d.department_id = e.department_id GROUP BY ROLLUP (department_name, job_id);";
 

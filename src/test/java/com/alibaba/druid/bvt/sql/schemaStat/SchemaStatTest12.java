@@ -14,7 +14,6 @@ import org.junit.Assert;
 import java.util.Set;
 
 public class SchemaStatTest12 extends TestCase {
-
     public void test_schemaStat() throws Exception {
         String sql = "select work_no , nick_name , name , ifnull(sum(investment_percentage ) / 100 , 0 ) as invest_percent " +
                 "from ( " +

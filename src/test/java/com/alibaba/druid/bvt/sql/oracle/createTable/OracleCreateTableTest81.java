@@ -23,7 +23,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest81 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
                 "CREATE TABLE ZEUS.USER_LOGIN (\n" +
@@ -43,7 +42,7 @@ public class OracleCreateTableTest81 extends OracleTest {
                         "\tCOMMENTS VARCHAR(100),\n" +
                         "\tSCHEMA VARCHAR(20)\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

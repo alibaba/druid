@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OdpsSelectTest21 extends TestCase {
-
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "select wm_concat(',', a) from values('abc', 1), (null, 2) t (a, i);";//
@@ -53,6 +52,5 @@ public class OdpsSelectTest21 extends TestCase {
 
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 
 }

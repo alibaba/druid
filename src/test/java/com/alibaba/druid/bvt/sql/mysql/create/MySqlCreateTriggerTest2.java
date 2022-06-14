@@ -23,7 +23,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTriggerTest2 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create trigger employee_trigger after insert,update,delete on employee for each row call \"test.redisson.h2cluster.trigger.ClusterTrigger\"";
 
@@ -36,8 +35,8 @@ public class MySqlCreateTriggerTest2 extends MysqlTest {
 
     public void test_1() throws Exception {
         String sql = "CREATE TRIGGER testref BEFORE INSERT ON test1" + " FOR EACH ROW" + " BEGIN"
-                     + " INSERT INTO test2 SET a2 = NEW.a1;" + " DELETE FROM test3 WHERE a3 = NEW.a1;"
-                     + " UPDATE test4 SET b4 = b4 + 1 WHERE a4 = NEW.a1;" + " END;";
+                + " INSERT INTO test2 SET a2 = NEW.a1;" + " DELETE FROM test3 WHERE a3 = NEW.a1;"
+                + " UPDATE test4 SET b4 = b4 + 1 WHERE a4 = NEW.a1;" + " END;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

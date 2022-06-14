@@ -23,7 +23,6 @@ import org.junit.Assert;
 import junit.framework.TestCase;
 
 public class Case3 extends TestCase {
-
     public void test_1() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://a.b.c.d:3306/druid2");

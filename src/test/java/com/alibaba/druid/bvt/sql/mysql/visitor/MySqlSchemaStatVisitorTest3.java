@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlSchemaStatVisitorTest3 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "insert into users2 (id2, name2) select id, name FROM users where loginCount > 1";
 

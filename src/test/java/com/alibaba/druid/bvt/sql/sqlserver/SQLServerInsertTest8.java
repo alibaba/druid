@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 
 public class SQLServerInsertTest8 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "INSERT Production.ScrapReason OUTPUT INSERTED.ScrapReasonID, INSERTED.Name, INSERTED.ModifiedDate INTO @MyTableVar VALUES (N'Operator error', GETDATE());";
 
@@ -49,9 +48,9 @@ public class SQLServerInsertTest8 extends TestCase {
         stmt.accept(visitor);
 
         String formatSql = "INSERT INTO Production.ScrapReason"//
-                           + "\nOUTPUT INSERTED.ScrapReasonID, INSERTED.Name, INSERTED.ModifiedDate"//
-                           + "\n\tINTO @MyTableVar"//
-                           + "\nVALUES (N'Operator error', GETDATE());";
+                + "\nOUTPUT INSERTED.ScrapReasonID, INSERTED.Name, INSERTED.ModifiedDate"//
+                + "\n\tINTO @MyTableVar"//
+                + "\nVALUES (N'Operator error', GETDATE());";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 
@@ -74,12 +73,12 @@ public class SQLServerInsertTest8 extends TestCase {
         stmt.accept(visitor);
 
         String formatSql = "INSERT TOP (5) INTO dbo.EmployeeSales"//
-                           + "\nOUTPUT inserted.EmployeeID, inserted.FirstName, inserted.LastName, inserted.YearlySales"//
-                           + "\nSELECT sp.BusinessEntityID, c.LastName, c.FirstName, sp.SalesYTD"//
-                           + "\nFROM Sales.SalesPerson sp"//
-                           + "\nINNER JOIN Person.Person c ON sp.BusinessEntityID = c.BusinessEntityID"//
-                           + "\nWHERE sp.SalesYTD > 250000.00"//
-                           + "\nORDER BY sp.SalesYTD DESC;";
+                + "\nOUTPUT inserted.EmployeeID, inserted.FirstName, inserted.LastName, inserted.YearlySales"//
+                + "\nSELECT sp.BusinessEntityID, c.LastName, c.FirstName, sp.SalesYTD"//
+                + "\nFROM Sales.SalesPerson sp"//
+                + "\nINNER JOIN Person.Person c ON sp.BusinessEntityID = c.BusinessEntityID"//
+                + "\nWHERE sp.SalesYTD > 250000.00"//
+                + "\nORDER BY sp.SalesYTD DESC;";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 

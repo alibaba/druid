@@ -27,10 +27,9 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerAlterTableTest_11 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE dbo.doc_exd WITH NOCHECK " //
-                     + "ADD CONSTRAINT exd_check CHECK (column_a > 1) ;";
+                + "ADD CONSTRAINT exd_check CHECK (column_a > 1) ;";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
@@ -46,12 +45,12 @@ public class SQLServerAlterTableTest_11 extends TestCase {
         {
             String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
             assertEquals("ALTER TABLE dbo.doc_exd" //
-                                + "\n\tWITH NOCHECK ADD CONSTRAINT exd_check CHECK (column_a > 1);", output);
+                    + "\n\tWITH NOCHECK ADD CONSTRAINT exd_check CHECK (column_a > 1);", output);
         }
         {
             String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("alter table dbo.doc_exd" //
-                                + "\n\twith nocheck add constraint exd_check check (column_a > 1);", output);
+                    + "\n\twith nocheck add constraint exd_check check (column_a > 1);", output);
         }
         assertEquals(1, visitor.getTables().size());
         assertEquals(1, visitor.getColumns().size());

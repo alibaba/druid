@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.builder;
 
 public interface SQLDeleteBuilder {
-
     SQLDeleteBuilder from(String table);
 
     SQLDeleteBuilder from(String table, String alias);

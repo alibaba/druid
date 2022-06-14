@@ -22,11 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableRenamePartition extends SQLObjectImpl implements SQLAlterTableItem {
-
-    private boolean ifNotExists = false;
+    private boolean ifNotExists;
 
     private final List<SQLAssignItem> partition = new ArrayList<SQLAssignItem>(4);
-    private final List<SQLAssignItem> to        = new ArrayList<SQLAssignItem>(4);
+    private final List<SQLAssignItem> to = new ArrayList<SQLAssignItem>(4);
 
     public List<SQLAssignItem> getPartition() {
         return partition;

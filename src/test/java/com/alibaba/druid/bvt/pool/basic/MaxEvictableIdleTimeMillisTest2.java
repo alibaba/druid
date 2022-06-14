@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MaxEvictableIdleTimeMillisTest2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -14,7 +13,7 @@ public class MaxEvictableIdleTimeMillisTest2 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setMaxActive(50);
         dataSource.setMinIdle(5);
-        
+
 
     }
 
@@ -38,6 +37,6 @@ public class MaxEvictableIdleTimeMillisTest2 extends TestCase {
         Assert.assertTrue(dataSource.isInited());
         Assert.assertEquals(30, dataSource.getMaxEvictableIdleTimeMillis());
     }
-    
-   
+
+
 }

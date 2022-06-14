@@ -13,7 +13,6 @@ import java.util.List;
  * @date 2018/8/27 上午11:41
  */
 public class MySqlShowTest_39_stc extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW STC";
 

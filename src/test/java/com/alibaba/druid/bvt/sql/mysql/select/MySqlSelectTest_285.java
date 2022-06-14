@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 
 public class MySqlSelectTest_285 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select 'a', \"a rrr122\" , avg(`id`) as 'x Y Z' from test4dmp.test where string_test = \"abdfeed\" and date_test > \"1991-01-10 00:12:11\" group by id having `x Y Z` > 10 order by 3 limit 5;";
 
@@ -39,7 +38,6 @@ public class MySqlSelectTest_285 extends MysqlTest {
                 "ORDER BY 3\n" +
                 "LIMIT 5;", stmt.toString());
     }
-
 
 
 }

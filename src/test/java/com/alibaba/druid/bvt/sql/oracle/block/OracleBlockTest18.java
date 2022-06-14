@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleBlockTest18 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE PROCEDURE p (\n" +
                 "    sales  NUMBER,\n" +

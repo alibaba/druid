@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest88 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE \"FOGLIGHT\".\"Q_ALERT_LOG_ZJDBXE\"\n" +

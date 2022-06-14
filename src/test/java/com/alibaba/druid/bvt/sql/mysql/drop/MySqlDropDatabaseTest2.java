@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlDropDatabaseTest2 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "DROP DATABASE IF EXISTS sonar";
 
@@ -38,23 +37,23 @@ public class MySqlDropDatabaseTest2 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("DROP DATABASE IF EXISTS sonar", //
-                            output);
+                output);
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
 //        assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
 //        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
-        
+
 //        assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

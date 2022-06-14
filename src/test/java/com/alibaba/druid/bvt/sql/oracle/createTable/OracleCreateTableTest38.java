@@ -27,22 +27,21 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest38 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE list_customers "
-        + "   ( customer_id             NUMBER(6)"
-        + "   , cust_first_name         VARCHAR2(20) "
-        + "   , cust_last_name          VARCHAR2(20)"
-        + "   , cust_address            CUST_ADDRESS_TYP"
-        + "   , nls_territory           VARCHAR2(30)"
-        + "   , cust_email              VARCHAR2(40))"
-        + "   PARTITION BY LIST (nls_territory) ("
-        + "   PARTITION asia VALUES ('CHINA', 'THAILAND'),"
-        + "   PARTITION europe VALUES ('GERMANY', 'ITALY', 'SWITZERLAND'),"
-        + "   PARTITION west VALUES ('AMERICA'),"
-        + "   PARTITION east VALUES ('INDIA'),"
-        + "   PARTITION rest VALUES (DEFAULT));";
+                "CREATE TABLE list_customers "
+                        + "   ( customer_id             NUMBER(6)"
+                        + "   , cust_first_name         VARCHAR2(20) "
+                        + "   , cust_last_name          VARCHAR2(20)"
+                        + "   , cust_address            CUST_ADDRESS_TYP"
+                        + "   , nls_territory           VARCHAR2(30)"
+                        + "   , cust_email              VARCHAR2(40))"
+                        + "   PARTITION BY LIST (nls_territory) ("
+                        + "   PARTITION asia VALUES ('CHINA', 'THAILAND'),"
+                        + "   PARTITION europe VALUES ('GERMANY', 'ITALY', 'SWITZERLAND'),"
+                        + "   PARTITION west VALUES ('AMERICA'),"
+                        + "   PARTITION east VALUES ('INDIA'),"
+                        + "   PARTITION rest VALUES (DEFAULT));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -66,7 +65,7 @@ public class OracleCreateTableTest38 extends OracleTest {
                         "\tPARTITION east VALUES ('INDIA'), \n" +
                         "\tPARTITION rest VALUES (DEFAULT)\n" +
                         ");",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

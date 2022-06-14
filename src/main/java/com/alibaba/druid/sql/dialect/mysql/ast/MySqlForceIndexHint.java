@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlForceIndexHint extends MySqlIndexHintImpl {
     public MySqlForceIndexHint() {
-
     }
 
     @Override

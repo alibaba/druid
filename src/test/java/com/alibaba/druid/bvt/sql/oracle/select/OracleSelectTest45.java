@@ -25,18 +25,17 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest45 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "SELECT T1.BC_ID AS BCID，SUM(PRODUCT_NUM) AS COUNT " //
-                + "　　FROM MT_PRODUCT_ORDER T1 ,MT_ORDER T2 " //
-                + "　　WHERE T1.MT_ORDER_ID= T2.MT_ORDER_ID " //
-                + "AND T2.PUBLISH_TIME>= ? " //
-                + "AND T1.STATES = '0' AND T2.STATES = '0' " //
-                + "AND REFUND_STATE = '0' " //
-                + "AND PRODUCT_ORDER_STATE >= 300 " //
-                + "AND BC_ID in (?) " //
-                + "GROUP BY BC_ID"; //
+                "SELECT T1.BC_ID AS BCID，SUM(PRODUCT_NUM) AS COUNT " //
+                        + "　　FROM MT_PRODUCT_ORDER T1 ,MT_ORDER T2 " //
+                        + "　　WHERE T1.MT_ORDER_ID= T2.MT_ORDER_ID " //
+                        + "AND T2.PUBLISH_TIME>= ? " //
+                        + "AND T1.STATES = '0' AND T2.STATES = '0' " //
+                        + "AND REFUND_STATE = '0' " //
+                        + "AND PRODUCT_ORDER_STATE >= 300 " //
+                        + "AND BC_ID in (?) " //
+                        + "GROUP BY BC_ID"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

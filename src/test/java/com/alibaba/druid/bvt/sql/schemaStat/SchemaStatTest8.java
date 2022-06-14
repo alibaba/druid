@@ -11,7 +11,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SchemaStatTest8 extends TestCase {
-
     public void test_schemaStat() throws Exception {
         String sql = "SELECT * FROM AQLQCAT " +
                 "JOIN AQLQCATB " +

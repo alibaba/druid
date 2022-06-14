@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 
 public class MySqlSelectTest_247 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select CONVERT(id, char(20))";
 
@@ -40,7 +39,6 @@ public class MySqlSelectTest_247 extends MysqlTest {
         SQLExpr arg1 = convert.getArguments().get(1);
         assertEquals(SQLDataTypeRefExpr.class, arg1.getClass());
     }
-
 
 
 }

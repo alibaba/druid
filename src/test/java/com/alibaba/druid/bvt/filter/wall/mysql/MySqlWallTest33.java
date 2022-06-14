@@ -24,22 +24,21 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest33 extends TestCase {
-
     public void test_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?")); //
+                "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?")); //
     }
 
     public void test_true() throws Exception {
         WallConfig config = new WallConfig();
         config.setStrictSyntaxCheck(false);
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?", config)); //
+                "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?", config)); //
     }
 }

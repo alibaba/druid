@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class H2_CreateTableTest_1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE tutorials_tbl ( \n" +

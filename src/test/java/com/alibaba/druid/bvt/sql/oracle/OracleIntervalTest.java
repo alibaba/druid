@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class OracleIntervalTest extends TestCase {
-
     public void test_interval_literal() throws Exception {
         String sql = "SELECT INTERVAL '123-2' YEAR(3) TO MONTH FROM DUAL";
 
@@ -112,7 +111,7 @@ public class OracleIntervalTest extends TestCase {
         String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT (SYSTIMESTAMP - order_date) DAY(9) TO SECOND\n" + "FROM orders\n"
-                            + "WHERE order_id = 2458;", text);
+                + "WHERE order_id = 2458;", text);
 
         System.out.println(text);
     }

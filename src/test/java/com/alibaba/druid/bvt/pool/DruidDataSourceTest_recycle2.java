@@ -19,11 +19,10 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 
 /**
  * 这个场景测试initialSize > maxActive
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_recycle2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -31,7 +30,6 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             public void connection_rollback(FilterChain chain, ConnectionProxy connection) throws SQLException {
                 throw new SQLException();
             }
@@ -75,7 +73,7 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
             error = e;
         }
         Assert.assertNull(error);
-        
+
         {
             Connection conn2 = dataSource.getConnection();
             conn2.close();
@@ -93,7 +91,6 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
         final CountDownLatch endLatch = new CountDownLatch(1);
 
         Thread thread = new Thread() {
-
             public void run() {
                 try {
                     DruidPooledConnection conn = dataSource.getConnection();
@@ -123,7 +120,7 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
 
         dataSource.getLock().lock();
         lockLatch.countDown();
-        
+
         Thread.sleep(10);
 
         thread.interrupt();

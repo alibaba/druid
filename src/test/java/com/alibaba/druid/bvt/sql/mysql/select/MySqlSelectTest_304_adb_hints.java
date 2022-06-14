@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class MySqlSelectTest_304_adb_hints
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT COUNT(*)\n" +
                 "FROM t1, t2\n" +
@@ -69,23 +68,23 @@ public class MySqlSelectTest_304_adb_hints
 
     public void test_2() throws Exception {
         String sql = "SELECT count(distinct c1.custkey) " +
-                        "   from customer c1, customer c2 " +
-                        "   where c1.custkey=c2.custkey /*+output_rows=2*/" +
-                        "   and c1.custkey=1 /*+filter_factor=0.5*/";
+                "   from customer c1, customer c2 " +
+                "   where c1.custkey=c2.custkey /*+output_rows=2*/" +
+                "   and c1.custkey=1 /*+filter_factor=0.5*/";
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
         assertEquals("SELECT count(DISTINCT c1.custkey)\n" +
-                            "FROM customer c1, customer c2\n" +
-                            "WHERE c1.custkey = c2.custkey/*+output_rows=2*/\n" +
-                            "\tAND c1.custkey = 1/*+filter_factor=0.5*/", stmt.toString());
+                "FROM customer c1, customer c2\n" +
+                "WHERE c1.custkey = c2.custkey/*+output_rows=2*/\n" +
+                "\tAND c1.custkey = 1/*+filter_factor=0.5*/", stmt.toString());
     }
 
     public void test_3() throws Exception {
         String sql = "SELECT COUNT(*) \n" +
-                        "FROM  t1  , t2 \n" +
-                        "WHERE t1.c1 = t2.c1 /*+output_Rows=100*/\n" +
-                        "  AND t1.c1 < 10 ";
+                "FROM  t1  , t2 \n" +
+                "WHERE t1.c1 = t2.c1 /*+output_Rows=100*/\n" +
+                "  AND t1.c1 < 10 ";
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
@@ -326,11 +325,11 @@ public class MySqlSelectTest_304_adb_hints
 
     public void test_exists2() throws Exception {
         String sql = "SELECT count(1) " +
-        "   from customer c1 " +
-        "   where exists (" +
-        "       select c2.custkey from customer c2 " +
-        "       where c2.custkey=1 " +
-        "   ) /*+output_rows=10*/";
+                "   from customer c1 " +
+                "   where exists (" +
+                "       select c2.custkey from customer c2 " +
+                "       where c2.custkey=1 " +
+                "   ) /*+output_rows=10*/";
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
@@ -345,11 +344,11 @@ public class MySqlSelectTest_304_adb_hints
 
     public void test_not() throws Exception {
         String sql = "SELECT count(1) " +
-        "   from customer c1 " +
-        "   where not exists (" +
-        "       select c2.custkey from customer c2 " +
-        "       where c2.custkey=1 " +
-        "   ) /*+output_rows=10*/";
+                "   from customer c1 " +
+                "   where not exists (" +
+                "       select c2.custkey from customer c2 " +
+                "       where c2.custkey=1 " +
+                "   ) /*+output_rows=10*/";
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
@@ -364,8 +363,8 @@ public class MySqlSelectTest_304_adb_hints
 
     public void test_not2() throws Exception {
         String sql = "SELECT count(1) " +
-        "   from customer c1 " +
-        "   where not(c1.a > 1 && a < 10) /*+output_rows=10*/";
+                "   from customer c1 " +
+                "   where not(c1.a > 1 && a < 10) /*+output_rows=10*/";
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
@@ -403,21 +402,21 @@ public class MySqlSelectTest_304_adb_hints
     public void test_groupby2() throws Exception {
         String sql =
                 "       SELECT\n" +
-                "        * "+
-                "       FROM\n" +
-                "         supplier AS s,\n" +
-                "         lineitem AS l,\n" +
-                "         orders AS o,\n" +
-                "         customer AS c,\n" +
-                "         nation AS n1,\n" +
-                "         nation AS n2\n" +
-                "       WHERE\n" +
-                "         s.suppkey = l.suppkey\n" +
-                "         AND (\n" +
-                "           (n1.name = 'CANADA' AND n2.name = 'BRAZIL')\n" +
-                "           OR (n1.name = 'BRAZIL' AND n2.name = 'CANADA')\n" +
-                "         )/*+output_rows=1000*/" +
-                "         AND l.shipdate BETWEEN DATE '1995-01-01' AND DATE '1996-12-31' /*+output_rows=1*/";
+                        "        * " +
+                        "       FROM\n" +
+                        "         supplier AS s,\n" +
+                        "         lineitem AS l,\n" +
+                        "         orders AS o,\n" +
+                        "         customer AS c,\n" +
+                        "         nation AS n1,\n" +
+                        "         nation AS n2\n" +
+                        "       WHERE\n" +
+                        "         s.suppkey = l.suppkey\n" +
+                        "         AND (\n" +
+                        "           (n1.name = 'CANADA' AND n2.name = 'BRAZIL')\n" +
+                        "           OR (n1.name = 'BRAZIL' AND n2.name = 'CANADA')\n" +
+                        "         )/*+output_rows=1000*/" +
+                        "         AND l.shipdate BETWEEN DATE '1995-01-01' AND DATE '1996-12-31' /*+output_rows=1*/";
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
@@ -572,20 +571,20 @@ public class MySqlSelectTest_304_adb_hints
     public void test_between_and() throws Exception {
         String sql =
                 "       SELECT\n" +
-                "         n1.name                          AS supp_nation,\n" +
-                "         n2.name                          AS cust_nation,\n" +
-                "         extract(YEAR FROM l.shipdate)      AS l_year,\n" +
-                "         l.extendedprice * (1 - l.discount) AS volume\n" +
-                "       FROM\n" +
-                "         supplier AS s,\n" +
-                "         lineitem AS l,\n" +
-                "         orders AS o,\n" +
-                "         customer AS c,\n" +
-                "         nation AS n1,\n" +
-                "         nation AS n2\n" +
-                "       WHERE\n" +
-                "         l.shipdate BETWEEN DATE '1995-01-01' AND DATE '1996-12-31' /*+output_rows=1*/ \n" +
-                "         AND c.custkey = o.custkey";
+                        "         n1.name                          AS supp_nation,\n" +
+                        "         n2.name                          AS cust_nation,\n" +
+                        "         extract(YEAR FROM l.shipdate)      AS l_year,\n" +
+                        "         l.extendedprice * (1 - l.discount) AS volume\n" +
+                        "       FROM\n" +
+                        "         supplier AS s,\n" +
+                        "         lineitem AS l,\n" +
+                        "         orders AS o,\n" +
+                        "         customer AS c,\n" +
+                        "         nation AS n1,\n" +
+                        "         nation AS n2\n" +
+                        "       WHERE\n" +
+                        "         l.shipdate BETWEEN DATE '1995-01-01' AND DATE '1996-12-31' /*+output_rows=1*/ \n" +
+                        "         AND c.custkey = o.custkey";
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(
                 sql,

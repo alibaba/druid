@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreatePackageTest1 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
                 "CREATE OR REPLACE PACKAGE         ACHIEVE_CONTRACT_SPECIMEN IS\n" +
@@ -48,7 +47,7 @@ public class OracleCreatePackageTest1 extends OracleTest {
                         "\t)\n" +
                         "\t;\n" +
                         "END ACHIEVE_CONTRACT_SPECIMEN;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

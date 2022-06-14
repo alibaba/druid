@@ -26,13 +26,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class OracleIsSetExpr extends SQLExprImpl implements OracleExpr, SQLReplaceable {
-
     private SQLExpr nestedTable;
 
-    public OracleIsSetExpr(){
+    public OracleIsSetExpr() {
     }
 
-    public OracleIsSetExpr(SQLExpr nestedTable){
+    public OracleIsSetExpr(SQLExpr nestedTable) {
         this.nestedTable = nestedTable;
     }
 

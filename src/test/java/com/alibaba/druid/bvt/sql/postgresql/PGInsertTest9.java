@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGInsertTest9 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO distributors (did, dname) VALUES (10, 'Conrad International')\n" +
                 "    ON CONFLICT (did) WHERE is_active DO NOTHING;";

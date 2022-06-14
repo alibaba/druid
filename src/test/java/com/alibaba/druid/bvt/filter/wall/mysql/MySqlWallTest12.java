@@ -23,17 +23,16 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest12 extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "SELECT a.* FROM lhwbbs_threads a  " + //
-                "WHERE 1 AND a.disabled=0 AND a.ifupload&1=1  " + //
-                "ORDER BY a.created_time DESC  LIMIT 0,100")); //
+                "SELECT a.* FROM lhwbbs_threads a  " + //
+                        "WHERE 1 AND a.disabled=0 AND a.ifupload&1=1  " + //
+                        "ORDER BY a.created_time DESC  LIMIT 0,100")); //
     }
 }

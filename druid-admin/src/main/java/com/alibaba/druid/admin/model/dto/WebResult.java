@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class WebResult {
-
     @JSONField(name = "ResultCode")
     private int ResultCode;
     @JSONField(name = "Content")

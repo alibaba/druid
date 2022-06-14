@@ -7,11 +7,10 @@ import com.alibaba.druid.mock.MockDriver;
 
 
 public class OracleMockConnectionJdbc3 extends OracleMockConnection {
-
-    public OracleMockConnectionJdbc3(MockDriver driver, String url, Properties connectProperties){
+    public OracleMockConnectionJdbc3(MockDriver driver, String url, Properties connectProperties) {
         super(driver, url, connectProperties);
     }
-    
+
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
         throw new UnsupportedOperationException();

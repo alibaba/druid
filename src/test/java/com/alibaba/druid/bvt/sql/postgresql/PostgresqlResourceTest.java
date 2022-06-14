@@ -31,7 +31,6 @@ import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PostgresqlResourceTest extends PGTest {
-
     public void test_0() throws Exception {
         // 13
         exec_test("bvt/parser/postgresql-0.txt");
@@ -131,7 +130,7 @@ public class PostgresqlResourceTest extends PGTest {
     }
 
     void mergValidate(String sql, String expect) {
-    	PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 

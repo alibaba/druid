@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseCreateTableTest_subPartition2 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE ts (id INT, purchased DATE) " //
                 + "PARTITION BY RANGE(YEAR(purchased)) " //
@@ -63,7 +62,7 @@ public class OceanbaseCreateTableTest_subPartition2 extends MysqlTest {
                             "\t\tSUBPARTITION s5\n" +
                             "\t)\n" +
                             ")",
-                                result);
+                    result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -86,7 +85,7 @@ public class OceanbaseCreateTableTest_subPartition2 extends MysqlTest {
                             "\t\tsubpartition s5\n" +
                             "\t)\n" +
                             ")",
-                                result);
+                    result);
             System.out.println(result);
         }
 

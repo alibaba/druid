@@ -8,10 +8,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Jdk14LoggingImpl;
 
 public class Jdk14LoggingImplTest extends TestCase {
-
     public void test_0() throws Exception {
         Jdk14LoggingImpl impl = new Jdk14LoggingImpl(DruidDataSource.class.getName());
-       
+
         impl.isDebugEnabled();
         impl.isInfoEnabled();
         impl.isWarnEnabled();

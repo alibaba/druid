@@ -29,7 +29,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_14 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM t1 WHERE column1 = (SELECT column1 FROM t2);";
 
@@ -66,15 +65,15 @@ public class MySqlSelectTest_14 extends MysqlTest {
                         "\tSELECT column1\n" +
                         "\tFROM t2\n" +
                         ");", //
-                            output);
-        
+                output);
+
         String output_lcase = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
         Assert.assertEquals("select *" //
-                            + "\nfrom t1"//
-                            + "\nwhere column1 = ("//
-                            + "\n\tselect column1"//
-                            + "\n\tfrom t2"//
-                            + "\n);", //
-                            output_lcase);
+                        + "\nfrom t1"//
+                        + "\nwhere column1 = ("//
+                        + "\n\tselect column1"//
+                        + "\n\tfrom t2"//
+                        + "\n);", //
+                output_lcase);
     }
 }

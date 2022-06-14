@@ -18,11 +18,10 @@ import junit.framework.TestCase;
 
 /**
  * 这个场景测试minIdle > maxActive
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class PG_500_connection_Test extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -53,7 +52,6 @@ public class PG_500_connection_Test extends TestCase {
         int taskCount = 1000 * 100;
         final CountDownLatch endLatch = new CountDownLatch(taskCount);
         Runnable task = new Runnable() {
-
             @Override
             public void run() {
                 Connection conn = null;
@@ -64,7 +62,6 @@ public class PG_500_connection_Test extends TestCase {
                     stmt = conn.createStatement();
                     rs = stmt.executeQuery("SELECT 1");
                     while (rs.next()) {
-
                     }
                 } catch (SQLException ex) {
                     // skip
@@ -76,7 +73,7 @@ public class PG_500_connection_Test extends TestCase {
                 JdbcUtils.close(conn);
             }
         };
-        
+
         ExecutorService executor = Executors.newFixedThreadPool(100);
         for (int i = 0; i < taskCount; ++i) {
             executor.submit(task);

@@ -44,7 +44,6 @@ public class MySqlParameterizedOutputVisitorTest_44 extends TestCase {
 
         System.out.println(psql);
 
-
         assertEquals("SELECT ?\n" +
                 "FROM a\n" +
                 "WHERE c1 IN (date_format(date_add(curdate(), INTERVAL ? DAY), '%Y%m%d'))", psql);

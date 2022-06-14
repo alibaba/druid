@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlShowTest_3 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW FULL COLUMNS FROM `sonar`.`action_plans`";
 

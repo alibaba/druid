@@ -29,7 +29,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class OracleSelectTest106 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select * from a join b on a.id = b.aid where a.cid = 1";
@@ -42,7 +41,7 @@ public class OracleSelectTest106 extends OracleTest {
         System.out.println(stmt.toString());
 
         assertEquals(1, statementList.size());
-        
+
         SchemaRepository repository = new SchemaRepository(DbType.oracle);
         repository.resolve(stmt);
 
@@ -81,5 +80,5 @@ public class OracleSelectTest106 extends OracleTest {
 
     }
 
-   
+
 }

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLShowTableGroupsStatement extends SQLStatementImpl implements SQLShowStatement, SQLReplaceable {
-
     protected SQLName database;
 
     public SQLName getDatabase() {

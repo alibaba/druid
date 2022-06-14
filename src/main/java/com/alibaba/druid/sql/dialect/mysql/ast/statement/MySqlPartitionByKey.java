@@ -32,7 +32,7 @@ public class MySqlPartitionByKey extends SQLPartitionBy implements MySqlObject {
             throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
         }
     }
-    
+
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {

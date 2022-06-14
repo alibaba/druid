@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.visitor.functions;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
@@ -27,8 +26,7 @@ import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class If implements Function {
-
-    public final static If instance = new If();
+    public static final If instance = new If();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         final List<SQLExpr> arguments = x.getArguments();

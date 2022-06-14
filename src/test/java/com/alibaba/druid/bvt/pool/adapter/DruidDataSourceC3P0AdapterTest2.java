@@ -26,7 +26,6 @@ import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class DruidDataSourceC3P0AdapterTest2 extends PoolTestCase {
-
     public void test_0() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 

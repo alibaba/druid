@@ -176,12 +176,12 @@ public class MySqlShowColumnOutpuVisitor extends MySqlOutputVisitor {
         print("-+-");
         print('-', extra_len);
         print("-+\n");
-        
+
         return false;
     }
 
     void print(char ch, int count) {
-        for (int i = 0; i < count; ++i)  {
+        for (int i = 0; i < count; ++i) {
             print(ch);
         }
     }

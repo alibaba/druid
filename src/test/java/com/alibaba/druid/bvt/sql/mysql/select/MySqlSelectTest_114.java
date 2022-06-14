@@ -27,7 +27,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlSelectTest_114 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "select count(0) from (select id from auth WHERE 1=1 AND/**/b=2 ORDER BY create_time DESC) as total";
 
@@ -43,7 +42,7 @@ public class MySqlSelectTest_114 extends TestCase {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(1, visitor.getTables().size());
         assertEquals(3, visitor.getColumns().size());
         assertEquals(1, visitor.getConditions().size());
@@ -69,7 +68,6 @@ public class MySqlSelectTest_114 extends TestCase {
                 "\tORDER BY create_time DESC\n" +
                 ") total", psql);
     }
-    
-    
-    
+
+
 }

@@ -24,12 +24,11 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerSelectTest15 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = "SELECT TOP 50 PERCENT * FROM Persons"; //
 
         String expect = "SELECT TOP 50 PERCENT *\n" + //
-                        "FROM Persons";
+                "FROM Persons";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

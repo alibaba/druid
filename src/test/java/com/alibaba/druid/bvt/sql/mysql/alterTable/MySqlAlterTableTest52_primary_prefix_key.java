@@ -15,7 +15,6 @@ import org.junit.Assert;
  * @Date 2019-05-15 14:37
  */
 public class MySqlAlterTableTest52_primary_prefix_key extends TestCase {
-
     public void test_0() {
         String sql = "alter table test001 add primary key (b (4) asc, c (8) desc);";
 

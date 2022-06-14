@@ -19,13 +19,10 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddSupplemental extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLTableElement element;
 
-    public SQLAlterTableAddSupplemental(){
-
+    public SQLAlterTableAddSupplemental() {
     }
-
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

@@ -25,21 +25,20 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest30 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "SELECT "
-                + //
-                "/* OPT_DYN_SAMP */ "
-                + //
-                "/*+ ALL_ROWS IGNORE_WHERE_CLAUSE NO_PARALLEL(SAMPLESUB) opt_param('parallel_execution_enabled', 'false') NO_PARALLEL_INDEX(SAMPLESUB) NO_SQL_TUNE */ " //
-                + "NVL(SUM(C1),:\"SYS_B_0\"), NVL(SUM(C2),:\"SYS_B_1\") "
-                + //
-                "FROM (SELECT "
-                + //
-                "   /*+ NO_PARALLEL(\"IPAY_ACCOUNT_FUND_RCD\") FULL(\"IPAY_ACCOUNT_FUND_RCD\") NO_PARALLEL_INDEX(\"IPAY_ACCOUNT_FUND_RCD\") */ "
-                + //
-                ":\"SYS_B_2\" AS C1, :\"SYS_B_3\" AS C2 FROM \"ESCROW\".\"IPAY_ACCOUNT_FUND_RCD\" SAMPLE BLOCK (:\"SYS_B_4\" , :\"SYS_B_5\") SEED (:\"SYS_B_6\") \"IPAY_ACCOUNT_FUND_RCD\") SAMPLESUB";
+                "SELECT "
+                        + //
+                        "/* OPT_DYN_SAMP */ "
+                        + //
+                        "/*+ ALL_ROWS IGNORE_WHERE_CLAUSE NO_PARALLEL(SAMPLESUB) opt_param('parallel_execution_enabled', 'false') NO_PARALLEL_INDEX(SAMPLESUB) NO_SQL_TUNE */ " //
+                        + "NVL(SUM(C1),:\"SYS_B_0\"), NVL(SUM(C2),:\"SYS_B_1\") "
+                        + //
+                        "FROM (SELECT "
+                        + //
+                        "   /*+ NO_PARALLEL(\"IPAY_ACCOUNT_FUND_RCD\") FULL(\"IPAY_ACCOUNT_FUND_RCD\") NO_PARALLEL_INDEX(\"IPAY_ACCOUNT_FUND_RCD\") */ "
+                        + //
+                        ":\"SYS_B_2\" AS C1, :\"SYS_B_3\" AS C2 FROM \"ESCROW\".\"IPAY_ACCOUNT_FUND_RCD\" SAMPLE BLOCK (:\"SYS_B_4\" , :\"SYS_B_5\") SEED (:\"SYS_B_6\") \"IPAY_ACCOUNT_FUND_RCD\") SAMPLESUB";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

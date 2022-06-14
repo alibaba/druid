@@ -15,9 +15,7 @@ import java.util.List;
  * @Date 2019-05-09 20:08
  */
 public class MySqlCreateTableTest145_tail_hint extends MysqlTest {
-
     public void test_0() throws Exception {
-
         String sql = "CREATE TABLE `log_fake` (\n" +
                 "  `id` varchar(37) NOT NULL COMMENT 'uuid',\n" +
                 "  `merchant_id` varchar(37) DEFAULT NULL COMMENT '商户id',\n" +
@@ -50,7 +48,7 @@ public class MySqlCreateTableTest145_tail_hint extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

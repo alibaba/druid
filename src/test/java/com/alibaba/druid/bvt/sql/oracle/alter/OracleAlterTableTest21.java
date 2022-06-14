@@ -28,10 +28,9 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleAlterTableTest21 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE long_tab DROP COLUMN long_pics;";
+                "ALTER TABLE long_tab DROP COLUMN long_pics;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -50,8 +49,8 @@ public class OracleAlterTableTest21 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("ALTER TABLE long_tab"//
-                            + "\n\tDROP COLUMN long_pics;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\n\tDROP COLUMN long_pics;", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         Assert.assertEquals(1, visitor.getTables().size());
 

@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlCreateOutlineTest_0 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "create outline t2 on select ? to select /*+TDDL:slave()*/ * from ms10 where c1=?;";
 

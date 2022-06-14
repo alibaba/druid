@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest37 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select date '2001-09-28'";
 
@@ -34,7 +33,7 @@ public class PGSelectTest37 extends PGTest {
         SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals("SELECT DATE '2001-09-28'", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("select date '2001-09-28'", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());

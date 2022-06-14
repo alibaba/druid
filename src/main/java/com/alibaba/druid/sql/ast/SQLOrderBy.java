@@ -22,22 +22,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class SQLOrderBy extends SQLObjectImpl implements SQLReplaceable {
-
     protected final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
-    
+
     // for postgres
     private boolean siblings;
 
-    public SQLOrderBy(){
-
+    public SQLOrderBy() {
     }
 
-    public SQLOrderBy(SQLExpr expr){
+    public SQLOrderBy(SQLExpr expr) {
         SQLSelectOrderByItem item = new SQLSelectOrderByItem(expr);
         addItem(item);
     }
 
-    public SQLOrderBy(SQLExpr expr, SQLOrderingSpecification type){
+    public SQLOrderBy(SQLExpr expr, SQLOrderingSpecification type) {
         SQLSelectOrderByItem item = new SQLSelectOrderByItem(expr, type);
         addItem(item);
     }
@@ -56,7 +54,7 @@ public final class SQLOrderBy extends SQLObjectImpl implements SQLReplaceable {
     public List<SQLSelectOrderByItem> getItems() {
         return this.items;
     }
-    
+
     public boolean isSiblings() {
         return this.siblings;
     }
@@ -78,12 +76,18 @@ public final class SQLOrderBy extends SQLObjectImpl implements SQLReplaceable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLOrderBy order = (SQLOrderBy) o;
 
-        if (siblings != order.siblings) return false;
+        if (siblings != order.siblings) {
+            return false;
+        }
         return items.equals(order.items);
     }
 
@@ -103,9 +107,8 @@ public final class SQLOrderBy extends SQLObjectImpl implements SQLReplaceable {
 
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
-
         for (SQLSelectOrderByItem item : items) {
-            if(item.replace(expr, target)) {
+            if (item.replace(expr, target)) {
                 return true;
             }
         }

@@ -24,45 +24,44 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest55 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid(//
-        "SELECT USER()"));
+                "SELECT USER()"));
 
         Assert.assertEquals(0, provider.getTableStats().size());
     }
-    
+
     public void test_true_1() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         Assert.assertTrue(provider.checkValid(//
                 "SELECT USER() FROM DUAL"));
-        
+
         Assert.assertEquals(1, provider.getTableStats().size());
     }
-    
+
     public void test_true_2() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         Assert.assertTrue(provider.checkValid(//
                 "SELECT USER() FROM X"));
-        
+
         Assert.assertEquals(1, provider.getTableStats().size());
     }
-    
+
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         Assert.assertFalse(provider.checkValid(//
                 "select * from t where fid = 1 union SELECT USER() FROM X"));
-        
+
     }
 }

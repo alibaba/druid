@@ -15,64 +15,49 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
+import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.ParameterMetaData;
-import java.sql.PreparedStatement;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLXML;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.sql.Types;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
-
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class PreparedStatementProxyImpl extends StatementProxyImpl implements PreparedStatementProxy {
-    private         PreparedStatement           statement;
-    protected final String                      sql;
-    private         JdbcParameter[]             parameters;
-    private         int                         parametersSize;
-    private         Map<Integer, JdbcParameter> paramMap;
+    private PreparedStatement statement;
+    protected final String sql;
+    private JdbcParameter[] parameters;
+    private int parametersSize;
+    private Map<Integer, JdbcParameter> paramMap;
 
-    public PreparedStatementProxyImpl(ConnectionProxy connection, PreparedStatement statement, String sql, long id){
+    public PreparedStatementProxyImpl(ConnectionProxy connection, PreparedStatement statement, String sql, long id) {
         super(connection, statement, id);
         this.statement = statement;
         this.sql = sql;
 
         char quote = 0;
         int paramCount = 0;
-        for (int i = 0; i < sql.length();++i) {
+        for (int i = 0; i < sql.length(); ++i) {
             char ch = sql.charAt(i);
 
             if (ch == '\'') {
                 if (quote == 0) {
                     quote = ch;
                 } else if (quote == '\'') {
-                    quote =0;
+                    quote = 0;
                 }
             } else if (ch == '"') {
                 if (quote == 0) {
                     quote = ch;
                 } else if (quote == '"') {
-                    quote =0;
+                    quote = 0;
                 }
             }
 
@@ -91,7 +76,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
                 paramMap.put(i, parameters[i]);
             }
         }
-  
+
         return paramMap;
     }
 
@@ -116,7 +101,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
             parameters = Arrays.copyOf(parameters, newCapacity);
         }
         parameters[index] = parameter;
-        
+
         if (paramMap != null) {
             paramMap = null;
         }
@@ -344,8 +329,10 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setDate(int parameterIndex, Date x) throws SQLException {
-        setParameter(parameterIndex
-                , createParameter(x));
+        setParameter(
+                parameterIndex,
+                createParameter(x)
+        );
 
         createChain()
                 .preparedStatement_setDate(this, parameterIndex, x);
@@ -353,8 +340,10 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
-        setParameter(parameterIndex
-                , createParameter(Types.DATE, x, cal));
+        setParameter(
+                parameterIndex,
+                createParameter(Types.DATE, x, cal)
+        );
 
         createChain()
                 .preparedStatement_setDate(this, parameterIndex, x, cal);
@@ -362,8 +351,10 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setDouble(int parameterIndex, double x) throws SQLException {
-        setParameter(parameterIndex
-                , createParameter(Types.DOUBLE, x));
+        setParameter(
+                parameterIndex,
+                createParameter(Types.DOUBLE, x)
+        );
 
         createChain()
                 .preparedStatement_setDouble(this, parameterIndex, x);
@@ -371,16 +362,20 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setFloat(int parameterIndex, float x) throws SQLException {
-        setParameter(parameterIndex
-                , createParameter(Types.FLOAT, x));
+        setParameter(
+                parameterIndex,
+                createParameter(Types.FLOAT, x)
+        );
 
         createChain().preparedStatement_setFloat(this, parameterIndex, x);
     }
 
     @Override
     public void setInt(int parameterIndex, int x) throws SQLException {
-        setParameter(parameterIndex
-                , createParemeter(x));
+        setParameter(
+                parameterIndex,
+                createParemeter(x)
+        );
 
         createChain()
                 .preparedStatement_setInt(this, parameterIndex, x);
@@ -388,8 +383,10 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setLong(int parameterIndex, long x) throws SQLException {
-        setParameter(parameterIndex
-                , createParameter(x));
+        setParameter(
+                parameterIndex,
+                createParameter(x)
+        );
 
         createChain()
                 .preparedStatement_setLong(this, parameterIndex, x);
@@ -397,8 +394,10 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setNCharacterStream(int parameterIndex, Reader x) throws SQLException {
-        setParameter(parameterIndex
-                , createParameter(TYPE.NCharacterInputStream, x));
+        setParameter(
+                parameterIndex,
+                createParameter(TYPE.NCharacterInputStream, x)
+        );
 
         createChain()
                 .preparedStatement_setNCharacterStream(this, parameterIndex, x);
@@ -626,8 +625,10 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setString(int parameterIndex, String x) throws SQLException {
-        setParameter(parameterIndex
-                , createParameter(x));
+        setParameter(
+                parameterIndex,
+                createParameter(x)
+        );
 
         createChain()
                 .preparedStatement_setString(this, parameterIndex, x);
@@ -714,7 +715,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         if (x == null) {
             return JdbcParameterNull.DATE;
         }
-        
+
         return new JdbcParameterDate(x);
     }
 
@@ -722,7 +723,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         if (x == null) {
             return JdbcParameterNull.DECIMAL;
         }
-        
+
         return JdbcParameterDecimal.valueOf(x);
     }
 
@@ -734,7 +735,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         if (x.length() == 0) {
             return JdbcParameterString.empty;
         }
-        
+
         return new JdbcParameterString(x);
     }
 
@@ -742,7 +743,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         if (x == null) {
             return JdbcParameterNull.TIMESTAMP;
         }
-        
+
         return new JdbcParameterTimestamp(x);
     }
 
@@ -750,7 +751,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         if (x == null) {
             return JdbcParameterNull.valueOf(sqlType);
         }
-        
+
         return new JdbcParameterImpl(sqlType, x, -1, null, scaleOrLength);
     }
 
@@ -758,7 +759,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         if (value == null) {
             return JdbcParameterNull.valueOf(sqlType);
         }
-        
+
         return new JdbcParameterImpl(sqlType, value, length);
     }
 
@@ -766,7 +767,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         if (value == null) {
             return JdbcParameterNull.valueOf(sqlType);
         }
-        
+
         return new JdbcParameterImpl(sqlType, value);
     }
 
@@ -774,7 +775,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         if (value == null) {
             return JdbcParameterNull.valueOf(sqlType);
         }
-        
+
         return new JdbcParameterImpl(sqlType, value, calendar);
     }
 }

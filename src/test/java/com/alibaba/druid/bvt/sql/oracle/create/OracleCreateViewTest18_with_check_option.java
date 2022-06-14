@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateViewTest18_with_check_option extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE VIEW \"ZJ\".\"SMP_SERVICE_GROUP_DEFN\" (\"OWNER\", \"GROUP_NAME\", \"GROUP_TYPE\") AS \n" +
                 "  select OWNER, GROUP_NAME, GROUP_TYPE from SMP_SERVICE_GROUP_DEFN_\n" +
@@ -51,7 +50,7 @@ public class OracleCreateViewTest18_with_check_option extends OracleTest {
                         "FROM SMP_SERVICE_GROUP_DEFN_\n" +
                         "WHERE USER = OWNER\n" +
                         "WITH CHECK OPTION CONSTRAINT \"SMP_SERVICE_GROUP_DEFN_CNST\";",
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

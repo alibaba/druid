@@ -20,11 +20,9 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTablePartitionLifecycle extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLIntegerExpr lifecycle;
 
-    public SQLAlterTablePartitionLifecycle(){
-
+    public SQLAlterTablePartitionLifecycle() {
     }
 
     @Override

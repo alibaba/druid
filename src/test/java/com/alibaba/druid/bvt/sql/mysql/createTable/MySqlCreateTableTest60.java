@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest60 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create table t10 (pk int auto_increment primary key,f1 varchar(65500) charset latin1);";

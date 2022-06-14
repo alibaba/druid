@@ -15,25 +15,19 @@
  */
 package com.alibaba.druid.mock;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.sql.Clob;
 import java.sql.SQLException;
 
 public class MockClob implements Clob {
-
     private byte[] bytes;
     private ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    public MockClob(){
+    public MockClob() {
         this(new byte[0]);
     }
 
-    public MockClob(byte[] bytes){
+    public MockClob(byte[] bytes) {
         this.bytes = bytes;
     }
 
@@ -93,12 +87,10 @@ public class MockClob implements Clob {
 
     @Override
     public void truncate(long len) throws SQLException {
-
     }
 
     @Override
     public void free() throws SQLException {
-
     }
 
     @Override

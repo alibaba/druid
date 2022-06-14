@@ -30,7 +30,6 @@ import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class MySqlParserResourceTest extends TestCase {
-
     public void test_0() throws Exception {
 //        exec_test("bvt/parser/mysql-0.txt");
 //        exec_test("bvt/parser/mysql-1.txt");
@@ -69,7 +68,7 @@ public class MySqlParserResourceTest extends TestCase {
         String text = output(statementList);
 //        System.out.println(text);
 //        System.out.println();
-        
+
         expect = expect.replaceAll("\\r\\n", "\n");
         Assert.assertEquals("errror resource " + resource, expect, text.trim());
 
@@ -83,7 +82,6 @@ public class MySqlParserResourceTest extends TestCase {
     }
 
     void mergValidate(String sql, String expect) {
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);

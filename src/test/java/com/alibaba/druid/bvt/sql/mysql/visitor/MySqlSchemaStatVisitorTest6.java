@@ -24,33 +24,32 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSchemaStatVisitorTest6 extends TestCase {
-
-	public void test_0() throws Exception {
-		String sql = "select * from t order by trim(trim(INTERVAL 3 YEAR))";
+    public void test_0() throws Exception {
+        String sql = "select * from t order by trim(trim(INTERVAL 3 YEAR))";
 
 //		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
-		MySqlStatementParser parser = new MySqlStatementParser(sql);
-		List<SQLStatement> statementList = parser.parseStatementList();
-		SQLStatement stmt = statementList.get(0);
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
 
-		Assert.assertEquals(1, statementList.size());
+        Assert.assertEquals(1, statementList.size());
 
-		MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-		stmt.accept(visitor);
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
 
-		System.out.println(sql);
-		System.out.println("Tables : " + visitor.getTables());
-		System.out.println("fields : " + visitor.getColumns());
+        System.out.println(sql);
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 
-		Assert.assertEquals(1, visitor.getTables().size());
-		Assert.assertEquals(true, visitor.containsTable("t"));
+        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(true, visitor.containsTable("t"));
 
-		Assert.assertEquals(1, visitor.getColumns().size());
-		// Assert.assertEquals(true, visitor.getFields().contains(new
-		// Column("users", "id")));
-		// Assert.assertEquals(true, visitor.getFields().contains(new
-		// Column("users", "name")));
+        Assert.assertEquals(1, visitor.getColumns().size());
+        // Assert.assertEquals(true, visitor.getFields().contains(new
+        // Column("users", "id")));
+        // Assert.assertEquals(true, visitor.getFields().contains(new
+        // Column("users", "name")));
 
-	}
+    }
 
 }

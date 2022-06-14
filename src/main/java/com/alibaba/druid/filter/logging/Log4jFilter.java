@@ -22,11 +22,10 @@ import org.apache.log4j.Logger;
  * @author wenshao [szujobs@hotmail.com]
  */
 public class Log4jFilter extends LogFilter implements Log4jFilterMBean {
-
     private Logger dataSourceLogger = Logger.getLogger(dataSourceLoggerName);
     private Logger connectionLogger = Logger.getLogger(connectionLoggerName);
-    private Logger statementLogger  = Logger.getLogger(statementLoggerName);
-    private Logger resultSetLogger  = Logger.getLogger(resultSetLoggerName);
+    private Logger statementLogger = Logger.getLogger(statementLoggerName);
+    private Logger resultSetLogger = Logger.getLogger(resultSetLoggerName);
 
     @Override
     public String getDataSourceLoggerName() {

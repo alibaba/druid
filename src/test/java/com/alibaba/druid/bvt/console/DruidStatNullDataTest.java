@@ -15,7 +15,6 @@ import com.alibaba.druid.support.console.Option;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class DruidStatNullDataTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     private static String getSelfPid() {
@@ -23,7 +22,7 @@ public class DruidStatNullDataTest extends TestCase {
         return pid;
     }
 
-	protected void createDs() throws Exception {
+    protected void createDs() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setMinIdle(1);
         dataSource.setUrl("jdbc:h2:mem:test;");
@@ -31,17 +30,17 @@ public class DruidStatNullDataTest extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setRemoveAbandoned(true);
         dataSource.setRemoveAbandonedTimeout(600);
-		//do not execute any sql, just init the datasource.
-		dataSource.init();
-		
-	}
+        //do not execute any sql, just init the datasource.
+        dataSource.init();
 
-	protected void dispose() throws Exception {
+    }
+
+    protected void dispose() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
-	public void test_printDruidStat() throws Exception {
-		createDs();
+    public void test_printDruidStat() throws Exception {
+        createDs();
         String pid = getSelfPid();
         String[] cmdArray = {"-sql", pid};
         Option opt = Option.parseOptions(cmdArray);
@@ -52,11 +51,11 @@ public class DruidStatNullDataTest extends TestCase {
             return;
         }
 
-		cmdArray = new String[] {"-act", pid};
+        cmdArray = new String[]{"-act", pid};
         opt = Option.parseOptions(cmdArray);
         DruidStat.printDruidStat(opt);
-		dispose();
-	}
+        dispose();
+    }
 
 //    public static void main(String[] args) {
 //		Result result = JUnitCore.runClasses(DruidStatNullDataTest.class);
@@ -65,6 +64,5 @@ public class DruidStatNullDataTest extends TestCase {
 //		}
 //	}
 
-	
-	
+
 }

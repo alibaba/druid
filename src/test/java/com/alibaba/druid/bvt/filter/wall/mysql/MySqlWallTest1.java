@@ -23,7 +23,7 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
@@ -31,6 +31,6 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallTest1 extends TestCase {
     public void test_stuff() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "select count(*) from (select DATE_FORMAT(staydate,'%m月') as month,sum(a) as addnum,sum(q) as quitnum from (select staydate,1 as a,0 as q from add_person union all select quitdate,0 as a,1 as q from quit_person) t where  (DATE_FORMAT(staydate,'%Y')= ? )  group by DATE_FORMAT(staydate,'%Y-%m'))"));
+                "select count(*) from (select DATE_FORMAT(staydate,'%m月') as month,sum(a) as addnum,sum(q) as quitnum from (select staydate,1 as a,0 as q from add_person union all select quitdate,0 as a,1 as q from quit_person) t where  (DATE_FORMAT(staydate,'%Y')= ? )  group by DATE_FORMAT(staydate,'%Y-%m'))"));
     }
 }

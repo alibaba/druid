@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 
 public class MySqlSelectTest_287 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT abs(x) FILTER (where y = 1) FROM (VALUES (1, 1)) t(x, y)";
 
@@ -35,7 +34,6 @@ public class MySqlSelectTest_287 extends MysqlTest {
                 "\tVALUES (1, 1)\n" +
                 ") AS t (x, y)", stmt.toString());
     }
-
 
 
 }

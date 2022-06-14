@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_34 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select *\n" +
                 "from table1\n" +
@@ -33,7 +32,7 @@ public class MySqlSelectTest_34 extends MysqlTest {
                 "order by -ABS(10 - level) desc\n" +
                 "limit 0,100";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -48,12 +47,12 @@ public class MySqlSelectTest_34 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        Assert.assertEquals(1, visitor.getTables().size());
 //        Assert.assertEquals(1, visitor.getColumns().size());
 //        Assert.assertEquals(0, visitor.getConditions().size());
 //        Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT *\n" +
@@ -61,7 +60,7 @@ public class MySqlSelectTest_34 extends MysqlTest {
                             "WHERE level BETWEEN 10 - 5 AND 10 + 5\n" +
                             "ORDER BY -ABS(10 - level) DESC\n" +
                             "LIMIT 0, 100", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -70,10 +69,9 @@ public class MySqlSelectTest_34 extends MysqlTest {
                             "where level between 10 - 5 and 10 + 5\n" +
                             "order by -ABS(10 - level) desc\n" +
                             "limit 0, 100", //
-                                output);
+                    output);
         }
     }
-    
-    
-    
+
+
 }

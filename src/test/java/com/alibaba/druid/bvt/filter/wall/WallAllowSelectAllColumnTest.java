@@ -24,14 +24,14 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景，检测可疑的Having条件
- * @author wenshao
  *
+ * @author wenshao
  */
 public class WallAllowSelectAllColumnTest extends TestCase {
     private String sql = "select * from t where fid = ?";
-    
+
     private WallConfig config = new WallConfig();
-    
+
     protected void setUp() throws Exception {
         config.setSelectAllColumnAllow(false);
     }
@@ -39,11 +39,11 @@ public class WallAllowSelectAllColumnTest extends TestCase {
     public void testMySql() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
     }
-    
+
     public void testORACLE() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
     }
-    
+
     public void testSQLServer() throws Exception {
         Assert.assertFalse(WallUtils.isValidateSqlServer(sql, config));
     }

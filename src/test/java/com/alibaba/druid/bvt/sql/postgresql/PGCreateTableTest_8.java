@@ -25,14 +25,13 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGCreateTableTest_8 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "create table if not exists test_site_data_select_111 AS select * from postman_trace_info_one  where lng>0 and lat>0  and site_id='17814' ;";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         assertEquals("CREATE TABLE IF NOT EXISTS test_site_data_select_111\n" +
                 "AS\n" +
                 "SELECT *\n" +
@@ -40,7 +39,7 @@ public class PGCreateTableTest_8 extends PGTest {
                 "WHERE lng > 0\n" +
                 "\tAND lat > 0\n" +
                 "\tAND site_id = '17814';", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("create table if not exists test_site_data_select_111\n" +
                 "as\n" +
                 "select *\n" +
@@ -61,7 +60,7 @@ public class PGCreateTableTest_8 extends PGTest {
 
         assertTrue(visitor.getTables().get(new TableStat.Name("test_site_data_select_111")).getCreateCount() == 1);
 
-        assertEquals(4, visitor.getColumns().size() );
+        assertEquals(4, visitor.getColumns().size());
     }
 
 }

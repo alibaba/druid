@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerAlterTableTest_2 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE dependencies ADD PRIMARY KEY(id)";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -44,7 +43,7 @@ public class SQLServerAlterTableTest_2 extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("ALTER TABLE dependencies" //
-                            + "\n\tADD PRIMARY KEY (id)", output);
+                + "\n\tADD PRIMARY KEY (id)", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());

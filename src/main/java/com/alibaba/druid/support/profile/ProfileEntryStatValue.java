@@ -19,12 +19,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ProfileEntryStatValue {
-
     private String parentName;
     private String name;
     private String type;
-    private long   executeCount     = 0;
-    private long   executeTimeNanos = 0;
+    private long executeCount;
+    private long executeTimeNanos;
 
     public String getParentName() {
         return parentName;

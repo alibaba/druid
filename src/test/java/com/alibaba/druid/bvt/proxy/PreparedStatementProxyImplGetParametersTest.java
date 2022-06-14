@@ -13,8 +13,7 @@ import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PreparedStatementProxyImplGetParametersTest extends TestCase {
-
-    private String     url = "jdbc:wrap-jdbc:filters=default:name=driverTest:jdbc:mock:xxx";
+    private String url = "jdbc:wrap-jdbc:filters=default:name=driverTest:jdbc:mock:xxx";
     private Connection conn;
 
     protected void setUp() throws Exception {
@@ -37,10 +36,10 @@ public class PreparedStatementProxyImplGetParametersTest extends TestCase {
         {
             Map<Integer, JdbcParameter> paramMap1 = stmt.getParameters();
             Assert.assertNotNull(paramMap1);
-   
+
             Map<Integer, JdbcParameter> paramMap2 = stmt.getParameters();
             Assert.assertNotNull(paramMap2);
-            
+
             Assert.assertSame(paramMap1, paramMap2);
             Assert.assertEquals(paramMap1.size(), 1);
         }

@@ -26,11 +26,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateViewTest0 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "   CREATE OR REPLACE FORCE VIEW \"SC0\".\"V_001\" (\"ID\", \"GROUP_ID\", \"IND_BY_ALL\", \"IND_BY_GROUP\", \"OWNER_MEMBER_ID\", \"OWNER_MEMBER_SEQ\", \"GMT_MODIFIED\") AS \n" +
-                "  select id, GROUP_ID ,IND_BY_ALL, IND_BY_GROUP, OWNER_MEMBER_ID, OWNER_MEMBER_SEQ,gmt_modified     ";
+                "   CREATE OR REPLACE FORCE VIEW \"SC0\".\"V_001\" (\"ID\", \"GROUP_ID\", \"IND_BY_ALL\", \"IND_BY_GROUP\", \"OWNER_MEMBER_ID\", \"OWNER_MEMBER_SEQ\", \"GMT_MODIFIED\") AS \n" +
+                        "  select id, GROUP_ID ,IND_BY_ALL, IND_BY_GROUP, OWNER_MEMBER_ID, OWNER_MEMBER_SEQ,gmt_modified     ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,7 +51,7 @@ public class OracleCreateViewTest0 extends OracleTest {
                         "SELECT id, GROUP_ID, IND_BY_ALL, IND_BY_GROUP, OWNER_MEMBER_ID\n" +
                         "\t, OWNER_MEMBER_SEQ, gmt_modified\n" +
                         "FROM DUAL",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

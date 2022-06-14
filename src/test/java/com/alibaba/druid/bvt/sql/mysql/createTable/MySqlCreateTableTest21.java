@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest21 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE new_tbl (LIKE orig_tbl);";
 

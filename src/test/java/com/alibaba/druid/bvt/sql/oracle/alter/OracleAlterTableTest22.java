@@ -28,12 +28,11 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleAlterTableTest22 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE employees ADD CONSTRAINT check_comp " //
-                + "   CHECK (salary + (commission_pct*salary) <= 5000)" //
-                + "   DISABLE;";
+                "ALTER TABLE employees ADD CONSTRAINT check_comp " //
+                        + "   CHECK (salary + (commission_pct*salary) <= 5000)" //
+                        + "   DISABLE;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,8 +51,8 @@ public class OracleAlterTableTest22 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("ALTER TABLE employees" //
-                            + "\n\tADD CONSTRAINT check_comp CHECK (salary + commission_pct * salary <= 5000) DISABLE;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\n\tADD CONSTRAINT check_comp CHECK (salary + commission_pct * salary <= 5000) DISABLE;", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         Assert.assertEquals(1, visitor.getTables().size());
 

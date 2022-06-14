@@ -28,7 +28,6 @@ import com.alibaba.druid.wall.WallUtils;
 import java.util.List;
 
 public class MySqlUpdateTest_17 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "update security_group_ip_count set ip_count=GREATEST(ip_count-?, 0), gmt_modified=now() where group_id=? ";
 

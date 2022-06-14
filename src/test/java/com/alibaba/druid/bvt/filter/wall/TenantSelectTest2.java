@@ -27,14 +27,13 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class TenantSelectTest2 extends TestCase {
+    private String sql = "SELECT ID, NAME FROM orders WHERE FID = ? OR FID = ?";
+    private String expect_sql = "SELECT ID, NAME, tenant" + //
+            "\nFROM orders" + //
+            "\nWHERE FID = ?" + //
+            "\n\tOR FID = ?";
 
-    private String     sql             = "SELECT ID, NAME FROM orders WHERE FID = ? OR FID = ?";
-    private String     expect_sql      = "SELECT ID, NAME, tenant" + //
-                                         "\nFROM orders" + //
-                                         "\nWHERE FID = ?" + //
-                                         "\n\tOR FID = ?";
-
-    private WallConfig config          = new WallConfig();
+    private WallConfig config = new WallConfig();
     private WallConfig config_callback = new WallConfig();
 
     protected void setUp() throws Exception {

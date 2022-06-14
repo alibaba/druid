@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_5 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE user_info_bucketed(user_id BIGINT, firstname STRING, lastname STRING)\n" +

@@ -26,26 +26,25 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest20 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "   CREATE TABLE \"SONAR\".\"ACTIVE_RULE_NOTES\" " //
-                + "   (    \"ID\" NUMBER(38,0) NOT NULL ENABLE, " //
-                + "    \"CREATED_AT\" TIMESTAMP (6), " //
-                + "    \"UPDATED_AT\" TIMESTAMP (6), " //
-                + "    \"ACTIVE_RULE_ID\" NUMBER(38,0), " //
-                + "    \"USER_LOGIN\" VARCHAR2(40 BYTE), " //
-                + "    \"DATA\" BLOB, " //
-                + "     PRIMARY KEY (\"ID\")" //
-                + "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS " //
-                + "  TABLESPACE \"USERS\"  ENABLE" //
-                + "   ) SEGMENT CREATION DEFERRED " //
-                + "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 " //
-                + " NOCOMPRESS LOGGING" //
-                + "  TABLESPACE \"USERS\" " //
-                + " LOB (\"DATA\") STORE AS SECUREFILE (" //
-                + "  TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192" //
-                + "  NOCACHE LOGGING  NOCOMPRESS  KEEP_DUPLICATES ) ;";
+                "   CREATE TABLE \"SONAR\".\"ACTIVE_RULE_NOTES\" " //
+                        + "   (    \"ID\" NUMBER(38,0) NOT NULL ENABLE, " //
+                        + "    \"CREATED_AT\" TIMESTAMP (6), " //
+                        + "    \"UPDATED_AT\" TIMESTAMP (6), " //
+                        + "    \"ACTIVE_RULE_ID\" NUMBER(38,0), " //
+                        + "    \"USER_LOGIN\" VARCHAR2(40 BYTE), " //
+                        + "    \"DATA\" BLOB, " //
+                        + "     PRIMARY KEY (\"ID\")" //
+                        + "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS " //
+                        + "  TABLESPACE \"USERS\"  ENABLE" //
+                        + "   ) SEGMENT CREATION DEFERRED " //
+                        + "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 " //
+                        + " NOCOMPRESS LOGGING" //
+                        + "  TABLESPACE \"USERS\" " //
+                        + " LOB (\"DATA\") STORE AS SECUREFILE (" //
+                        + "  TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192" //
+                        + "  NOCACHE LOGGING  NOCOMPRESS  KEEP_DUPLICATES ) ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -86,7 +85,7 @@ public class OracleCreateTableTest20 extends OracleTest {
                         "\tNOCACHE\n" +
                         "\tKEEP_DUPLICATES\n" +
                         ");",//
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);

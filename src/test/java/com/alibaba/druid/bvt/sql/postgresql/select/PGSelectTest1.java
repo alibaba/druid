@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest1 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM t1 CROSS JOIN t2;";
 
@@ -48,25 +47,25 @@ public class PGSelectTest1 extends PGTest {
         Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getTables().size());
     }
-    
+
     public void test_1() throws Exception {
-    	String sql = "(select * from a) union select * from b";
-    	 PGSQLStatementParser parser = new PGSQLStatementParser(sql);
-         List<SQLStatement> statementList = parser.parseStatementList();
-         SQLStatement statemen = statementList.get(0);
+        String sql = "(select * from a) union select * from b";
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
 //         print(statementList);
 
-		Assert.assertEquals(1, statementList.size());
-		assertTrue(statemen instanceof PGSelectStatement);
-		PGSelectStatement select = (PGSelectStatement) statemen;
-		assertTrue(select.getSelect().getQuery() instanceof SQLUnionQuery);
-		SQLUnionQuery unionQuery = (SQLUnionQuery) select.getSelect()
-				.getQuery();
-		assertTrue(unionQuery.getLeft() instanceof SQLSelectQueryBlock);
-		assertTrue(unionQuery.getRight() instanceof SQLSelectQueryBlock);
-		SQLSelectQueryBlock leftQueryBlock = (SQLSelectQueryBlock) unionQuery
-				.getLeft();
-		assertTrue(leftQueryBlock.isParenthesized());
+        Assert.assertEquals(1, statementList.size());
+        assertTrue(statemen instanceof PGSelectStatement);
+        PGSelectStatement select = (PGSelectStatement) statemen;
+        assertTrue(select.getSelect().getQuery() instanceof SQLUnionQuery);
+        SQLUnionQuery unionQuery = (SQLUnionQuery) select.getSelect()
+                .getQuery();
+        assertTrue(unionQuery.getLeft() instanceof SQLSelectQueryBlock);
+        assertTrue(unionQuery.getRight() instanceof SQLSelectQueryBlock);
+        SQLSelectQueryBlock leftQueryBlock = (SQLSelectQueryBlock) unionQuery
+                .getLeft();
+        assertTrue(leftQueryBlock.isParenthesized());
     }
 
 }

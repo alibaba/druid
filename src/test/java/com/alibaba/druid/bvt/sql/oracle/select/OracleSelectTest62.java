@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest62 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT channel_desc, calendar_month_desc, co.country_id,\n" +

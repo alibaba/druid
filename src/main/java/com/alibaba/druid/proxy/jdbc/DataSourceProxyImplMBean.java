@@ -21,7 +21,6 @@ import java.util.Date;
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface DataSourceProxyImplMBean {
-
     String getName();
 
     String getUrl();

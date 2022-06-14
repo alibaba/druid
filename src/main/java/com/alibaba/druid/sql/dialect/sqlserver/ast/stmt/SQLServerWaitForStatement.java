@@ -22,15 +22,14 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatementImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
 public class SQLServerWaitForStatement extends SQLServerStatementImpl implements SQLServerStatement {
+    private SQLExpr delay;
 
-    private SQLExpr      delay;
-
-    private SQLExpr      time;
+    private SQLExpr time;
 
     private SQLStatement statement;
 
-    private SQLExpr      timeout;
-    
+    private SQLExpr timeout;
+
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
         if (visitor.visit(this)) {

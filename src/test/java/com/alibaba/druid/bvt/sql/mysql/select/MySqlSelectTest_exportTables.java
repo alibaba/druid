@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_exportTables extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select *\n" +
                 "from my_table\n" +
@@ -33,7 +32,7 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
                 "order by -ABS(10 - level) desc\n" +
                 "limit 0,100";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -53,7 +52,7 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
                         "WHERE level BETWEEN 10 - 5 AND 10 + 5\n" +
                         "ORDER BY -ABS(10 - level) DESC\n" +
                         "LIMIT 0, 100", //
-                            out.toString());
+                out.toString());
 
         assertNotNull(visitor.getTables());
         assertEquals(1, visitor.getTables().size());
@@ -87,5 +86,5 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
         assertEquals(2, visitor.getTables().size());
         assertEquals("[table1, table2]", visitor.getTables().toString());
     }
-    
+
 }

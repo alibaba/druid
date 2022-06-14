@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest41 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select polygon '((0,0),(1,1))' ~= polygon '((1,1),(0,0))'";
 
@@ -34,7 +33,7 @@ public class PGSelectTest41 extends PGTest {
         SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals("SELECT polygon '((0,0),(1,1))' ~= polygon '((1,1),(0,0))'", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("select polygon '((0,0),(1,1))' ~= polygon '((1,1),(0,0))'", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());

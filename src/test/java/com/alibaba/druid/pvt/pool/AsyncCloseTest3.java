@@ -27,19 +27,18 @@ import com.alibaba.druid.support.logging.NoLoggingImpl;
 import junit.framework.TestCase;
 
 public class AsyncCloseTest3 extends TestCase {
-
     protected DruidDataSource dataSource;
-    private ExecutorService   connExecutor;
-    private ExecutorService   closeExecutor;
+    private ExecutorService connExecutor;
+    private ExecutorService closeExecutor;
 
-    final AtomicInteger       errorCount = new AtomicInteger();
+    final AtomicInteger errorCount = new AtomicInteger();
 
-    private Logger            log4jLog;
-    private Level             log4jOldLevel;
+    private Logger log4jLog;
+    private Level log4jOldLevel;
 
-    private NoLoggingImpl     noLoggingImpl;
+    private NoLoggingImpl noLoggingImpl;
 
-    long                      xmx;
+    long xmx;
 
     protected void setUp() throws Exception {
         xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m;
@@ -54,7 +53,7 @@ public class AsyncCloseTest3 extends TestCase {
             this.log4jOldLevel = this.log4jLog.getLevel();
             this.log4jLog.setLevel(Level.FATAL);
         } else if (dataSourceLog instanceof NoLoggingImpl) {
-            noLoggingImpl =  (NoLoggingImpl) dataSourceLog;
+            noLoggingImpl = (NoLoggingImpl) dataSourceLog;
             noLoggingImpl.setErrorEnabled(false);
         }
 
@@ -66,7 +65,6 @@ public class AsyncCloseTest3 extends TestCase {
         dataSource.setMaxActive(16);
 
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public boolean statement_execute(FilterChain chain, StatementProxy statement,
                                              String sql) throws SQLException {
@@ -99,7 +97,6 @@ public class AsyncCloseTest3 extends TestCase {
     }
 
     public static class MyExceptionSorter extends MockExceptionSorter {
-
         @Override
         public boolean isExceptionFatal(SQLException e) {
             return true;
@@ -107,11 +104,10 @@ public class AsyncCloseTest3 extends TestCase {
     }
 
     class CloseTask implements Runnable {
-
-        private Connection     conn;
+        private Connection conn;
         private CountDownLatch latch;
 
-        public CloseTask(Connection conn, CountDownLatch latch){
+        public CloseTask(Connection conn, CountDownLatch latch) {
             this.conn = conn;
             this.latch = latch;
         }
@@ -152,7 +148,6 @@ public class AsyncCloseTest3 extends TestCase {
         final CountDownLatch execLatch = new CountDownLatch(COUNT);
 
         Runnable connTask = new Runnable() {
-
             @Override
             public void run() {
                 try {

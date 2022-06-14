@@ -27,8 +27,7 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestPoolPreparedStatement2 extends TestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -51,7 +50,7 @@ public class TestPoolPreparedStatement2 extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setPoolPreparedStatements(false);
         dataSource.setMaxPoolPreparedStatementPerConnectionSize(20);
-        
+
 //        ((StatFilter) dataSource.getProxyFilters().get(0)).setMaxSqlStatCount(100);
     }
 
@@ -98,7 +97,7 @@ public class TestPoolPreparedStatement2 extends TestCase {
         Assert.assertNotNull(poolableConn);
 
         Assert.assertEquals(dataSource.getMaxPoolPreparedStatementPerConnectionSize(),
-                            poolableConn.getConnectionHolder().getStatementPool().getMap().size());
+                poolableConn.getConnectionHolder().getStatementPool().getMap().size());
 
         conn.close();
 

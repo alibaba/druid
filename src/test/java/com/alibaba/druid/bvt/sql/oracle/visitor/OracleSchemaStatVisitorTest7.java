@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class OracleSchemaStatVisitorTest7 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT 'SYS_B_0',COUNT('$SYS_B_1') AS DEVICECOUNT "
                 + "FROM (SELECT A.OID,A.SSJG,A.OID FROM T_TX_ZLSB_ZLDYHGQ A WHERE (A.VERSIONID IS NULL OR A.VERSIONID='$SYS_B_2') UNION ALL SELECT B.OID,B.SSJG,B.OID "

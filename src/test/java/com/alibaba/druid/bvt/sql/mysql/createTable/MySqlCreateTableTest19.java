@@ -26,18 +26,17 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest19 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE new_tbl LIKE orig_tbl;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         Assert.assertEquals("CREATE TABLE new_tbl LIKE orig_tbl;", //
-                            SQLUtils.toMySqlString(stmt));
+                SQLUtils.toMySqlString(stmt));
         Assert.assertEquals("create table new_tbl like orig_tbl;", //
-                            SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());
 

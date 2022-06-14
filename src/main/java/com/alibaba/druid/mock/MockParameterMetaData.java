@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MockParameterMetaData implements ParameterMetaData {
-
-    public MockParameterMetaData(){
-
+    public MockParameterMetaData() {
     }
 
     private final List<Parameter> parameters = new ArrayList<Parameter>();
@@ -88,15 +86,14 @@ public class MockParameterMetaData implements ParameterMetaData {
     }
 
     public static class Parameter {
-
-        private int     nullable;
+        private int nullable;
         private boolean signed;
-        private int     mode;
-        private String  className;
-        private int     type;
-        private String  typeName;
-        private int     scale;
-        private int     precision;
+        private int mode;
+        private String className;
+        private int type;
+        private String typeName;
+        private int scale;
+        private int precision;
 
         public int getType() {
             return type;

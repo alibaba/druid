@@ -29,7 +29,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_2 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT CTRYNUM, FMS_INSTANCE_CD FROM DBEFMSDR.FMSA_O_WW_CTRY_AG WHERE ACCT_YR=? WITH UR";
 
@@ -60,9 +59,9 @@ public class DB2SelectTest_2 extends DB2Test {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
         Assert.assertEquals("SELECT CTRYNUM, FMS_INSTANCE_CD" //
-                            + "\nFROM DBEFMSDR.FMSA_O_WW_CTRY_AG"//
-                            + "\nWHERE ACCT_YR = ?"//
-                            + "\nWITH UR", //
-                            output);
+                        + "\nFROM DBEFMSDR.FMSA_O_WW_CTRY_AG"//
+                        + "\nWHERE ACCT_YR = ?"//
+                        + "\nWITH UR", //
+                output);
     }
 }

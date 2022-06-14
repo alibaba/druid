@@ -26,15 +26,14 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest4 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create table t_temp_11593685fc3244cf81468209484078a0 (" + //
-                     "id int not null auto_increment, " + //
-                     "score float not null, " + //
-                     "student bigint not null, " + //
-                     "primary key(id)," + //
-                     "key score(score), " + //
-                     "key student(student))";
+                "id int not null auto_increment, " + //
+                "score float not null, " + //
+                "student bigint not null, " + //
+                "primary key(id)," + //
+                "key score(score), " + //
+                "key student(student))";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

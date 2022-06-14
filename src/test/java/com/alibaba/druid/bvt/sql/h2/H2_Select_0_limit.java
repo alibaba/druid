@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class H2_Select_0_limit extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT * FROM CUSTOMER LIMIT 1000;"; //

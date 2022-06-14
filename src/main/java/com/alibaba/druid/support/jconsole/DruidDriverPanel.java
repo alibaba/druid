@@ -15,17 +15,17 @@
  */
 package com.alibaba.druid.support.jconsole;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
 import com.alibaba.druid.support.jconsole.model.DruidTableCellRenderer;
 import com.alibaba.druid.support.jconsole.model.DruidTableModel;
 import com.alibaba.druid.support.jconsole.util.TableDataProcessor;
 import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 /**
  * 请求地址：/basic.json
- * 
+ * <p>
  * 请求返回的json格式：
  * <pre>
  * {"ResultCode":1,"Content":
@@ -35,15 +35,14 @@ import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
  *          }
  * }
  * </pre>
- * 
+ *
  * @author yunnysunny [yunnysunny@gmail.com]
- * */
+ */
 public class DruidDriverPanel extends DruidPanel {
+    private static final long serialVersionUID = 1L;
+    private static final String REQUEST_URL = "/basic.json";
 
-    private static final long   serialVersionUID = 1L;
-    private static final String REQUEST_URL      = "/basic.json";
-
-    public DruidDriverPanel(){
+    public DruidDriverPanel() {
         super();
         url = REQUEST_URL;
     }

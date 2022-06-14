@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateTableSpaceTest extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create tablespace tblsp1 add datafile 'tblsp_work1' use logfile group lg_1 initial_size = 4G engine MYISAM;";

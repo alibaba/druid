@@ -35,10 +35,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.support.json.JSONUtils;
 
 public class TestTransform extends OracleTest {
-
-    private String          jdbcUrl;
-    private String          user;
-    private String          password;
+    private String jdbcUrl;
+    private String user;
+    private String password;
     private DruidDataSource dataSource;
 
     private ExecutorService executor = Executors.newFixedThreadPool(10);
@@ -92,7 +91,6 @@ public class TestTransform extends OracleTest {
     }
 
     public void test_transform() throws Exception {
-
         Connection conn = dataSource.getConnection();
 
         int count = 0;
@@ -109,10 +107,10 @@ public class TestTransform extends OracleTest {
         System.out.println("COUNT : " + count);
 
         String sql = "SELECT SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
-                     "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " + //
-                     "  FROM db_day_sql_fulltext " + //
-                     " WHERE SQL_PARSE_RESULT IS NULL" + //
-                     "  ORDER BY sql_id, piece";
+                "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " + //
+                "  FROM db_day_sql_fulltext " + //
+                " WHERE SQL_PARSE_RESULT IS NULL" + //
+                "  ORDER BY sql_id, piece";
 
         Statement stmt = conn.createStatement();
 
@@ -157,7 +155,6 @@ public class TestTransform extends OracleTest {
 
     public void schemaStat(final Record r) throws Exception {
         executor.submit(new Runnable() {
-
             public void run() {
                 try {
                     schemaStatInternal(r);
@@ -170,7 +167,7 @@ public class TestTransform extends OracleTest {
 
     public void schemaStatInternal(Record r) throws Exception {
         String sql = r.getSqlText();
-        
+
         sql = sql.replaceAll("5'HK'", "5''HK'");
         sql = sql.replaceAll("5'TW'", "5''TW'");
         sql = sql.replaceAll("5'CN'", "5''CN'");
@@ -232,10 +229,10 @@ public class TestTransform extends OracleTest {
         clearResult();
 
         String sql = "SELECT SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
-                     "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " + //
-                     "  FROM db_day_sqltext " + //
-                     // "  WHERE db_pk = 40 and snap_date = trunc(sysdate) " + //
-                     "  ORDER BY db_pk, sql_id, piece";
+                "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " + //
+                "  FROM db_day_sqltext " + //
+                // "  WHERE db_pk = 40 and snap_date = trunc(sysdate) " + //
+                "  ORDER BY db_pk, sql_id, piece";
 
         Statement stmt = conn.createStatement();
         OracleStatement oracleStmt = stmt.unwrap(OracleStatement.class);
@@ -284,11 +281,11 @@ public class TestTransform extends OracleTest {
                 r.setDbPk(rs.getLong(8));
             } else {
                 String part = rs.getString(5);
-                
+
                 if (part == null) {
                     continue;
                 }
-                
+
                 int commentIndex = part.indexOf("--");
                 if (commentIndex != -1) {
                     part = part.substring(0, commentIndex);
@@ -335,9 +332,9 @@ public class TestTransform extends OracleTest {
         }
 
         String sql = "INSERT INTO db_day_sql_fulltext " + //
-                     "(SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
-                     ", COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT)" + //
-                     " VALUES (?, ?, ?, ?, ?,   ?, ?, ?, ?)";
+                "(SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
+                ", COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT)" + //
+                " VALUES (?, ?, ?, ?, ?,   ?, ?, ?, ?)";
         Connection conn = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement(sql);
@@ -364,16 +361,15 @@ public class TestTransform extends OracleTest {
     }
 
     public static class Record {
-
-        private Date         snapshotDate;
-        private String       dbName;
-        private String       sqlId;
+        private Date snapshotDate;
+        private String dbName;
+        private String sqlId;
         private StringBuffer sqlText = new StringBuffer();
-        private Integer      piece;
-        private Integer      commandType;
-        private Date         lastSnapshotDate;
-        private Long         dbPk;
-        private String       result;
+        private Integer piece;
+        private Integer commandType;
+        private Date lastSnapshotDate;
+        private Long dbPk;
+        private String result;
 
         public String getResult() {
             return result;

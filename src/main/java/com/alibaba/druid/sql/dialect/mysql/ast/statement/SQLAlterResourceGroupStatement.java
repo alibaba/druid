@@ -57,8 +57,7 @@ public class SQLAlterResourceGroupStatement
         this.enable = enable;
     }
 
-    public Map<String, SQLExpr> getProperties()
-    {
+    public Map<String, SQLExpr> getProperties() {
         return properties;
     }
 

@@ -29,11 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExportConditions extends UDF {
-
     public String evaluate(String sql) {
         return evaluate(sql, null);
     }
-    
+
     public String evaluate(String sql, String dbType) {
         return evaluate(sql, dbType, null);
     }
@@ -55,7 +54,7 @@ public class ExportConditions extends UDF {
                 Column column = condition.getColumn();
                 String operator = condition.getOperator();
                 List<Object> values = condition.getValues();
-                
+
                 List<Object> row = new ArrayList<Object>();
                 row.add(column.getTable());
                 row.add(column.getName());
@@ -64,7 +63,7 @@ public class ExportConditions extends UDF {
                     row.add(null);
                 } else if (values.size() == 1) {
                     if (compactValues != null && compactValues.booleanValue()) {
-                        row.add(values);                        
+                        row.add(values);
                     } else {
                         row.add(values.get(0));
                     }

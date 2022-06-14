@@ -18,14 +18,13 @@ package com.alibaba.druid.pool;
 import java.sql.SQLException;
 
 public class GetConnectionTimeoutException extends SQLException {
-
     private static final long serialVersionUID = 1L;
 
-    public GetConnectionTimeoutException(String reason){
+    public GetConnectionTimeoutException(String reason) {
         super(reason);
     }
 
-    public GetConnectionTimeoutException(String message, Throwable cause){
+    public GetConnectionTimeoutException(String message, Throwable cause) {
         super(message, cause);
     }
 

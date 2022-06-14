@@ -28,22 +28,22 @@ import java.util.List;
 import java.util.Map;
 
 public class SQLCreateDatabaseStatement extends SQLStatementImpl implements SQLCreateStatement {
-    protected SQLName                         name;
-    protected String                          characterSet;
-    protected String                          collate;
-    protected List<SQLCommentHint>            hints;
-    protected boolean                         ifNotExists = false;
-    protected SQLExpr                         comment;
-    protected SQLExpr                         location; // hive
-    protected final List<SQLAssignItem>       dbProperties = new ArrayList<SQLAssignItem>();
-    protected Map<String, SQLExpr>            options = new HashMap<String, SQLExpr>(); // for ads
-    protected String                          user;
+    protected SQLName name;
+    protected String characterSet;
+    protected String collate;
+    protected List<SQLCommentHint> hints;
+    protected boolean ifNotExists;
+    protected SQLExpr comment;
+    protected SQLExpr location; // hive
+    protected final List<SQLAssignItem> dbProperties = new ArrayList<SQLAssignItem>();
+    protected Map<String, SQLExpr> options = new HashMap<String, SQLExpr>(); // for ads
+    protected String user;
 
-    protected SQLExpr                         password; // drds
+    protected SQLExpr password; // drds
     protected final List<SQLAssignItem> storedOn = new ArrayList<SQLAssignItem>(); // drds
     protected final List<List<SQLAssignItem>> storedBy = new ArrayList<List<SQLAssignItem>>(); // drds stored by
-    protected SQLExpr                         storedAs;  // drds
-    protected SQLExpr                         storedIn;  // drds
+    protected SQLExpr storedAs;  // drds
+    protected SQLExpr storedIn;  // drds
 
     //adb
     protected boolean physical;
@@ -51,8 +51,8 @@ public class SQLCreateDatabaseStatement extends SQLStatementImpl implements SQLC
     public SQLCreateDatabaseStatement() {
     }
 
-    public SQLCreateDatabaseStatement(DbType dbType){
-        super (dbType);
+    public SQLCreateDatabaseStatement(DbType dbType) {
+        super(dbType);
     }
 
     @Override

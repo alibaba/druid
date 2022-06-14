@@ -5,7 +5,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class PagerUtilsTest_hasUnorderedLimit_oracle extends TestCase {
-
     public void test_false() throws Exception {
         String sql = "SELECT *" + //
                 "\nFROM (SELECT XX.*, ROWNUM AS RN" + //

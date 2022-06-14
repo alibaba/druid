@@ -24,9 +24,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import java.util.List;
 
 public class HiveCreateTableTest_43_dla extends OracleTest {
-
     public void test_0() throws Exception {
-        String sql =  "CREATE EXTERNAL TABLE special_char1(\n" +
+        String sql = "CREATE EXTERNAL TABLE special_char1(\n" +
                 "    data_time_str string,\n" +
                 "    entity_id string,\n" +
                 "    thread string,\n" +

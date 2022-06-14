@@ -99,8 +99,7 @@ public class OracleJoinResolveTest_1_fk extends TestCase {
                 ") PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING   \n" +
                 "   STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645   \n" +
                 "    PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)   \n" +
-                "   TABLESPACE \"ECC_CPR_TSP\";\n"
-                ;
+                "   TABLESPACE \"ECC_CPR_TSP\";\n";
 
         String sql_2 = "\nCREATE TABLE \"ECC_CPR\".\"ECC_CPR_HC_CON_PERSON\" (\n" +
                 "\t\"LAST_UPDATE_DATE\" TIMESTAMP(6),\n" +

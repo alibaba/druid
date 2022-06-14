@@ -15,17 +15,16 @@
  */
 package com.alibaba.druid.wall;
 
-import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
-public class WallFunctionStat {
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
 
-    private volatile long                                 invokeCount;
-    final static AtomicLongFieldUpdater<WallFunctionStat> invokeCountUpdater = AtomicLongFieldUpdater.newUpdater(WallFunctionStat.class,
-                                                                                                                 "invokeCount");
+public class WallFunctionStat {
+    private volatile long invokeCount;
+    static final AtomicLongFieldUpdater<WallFunctionStat> invokeCountUpdater = AtomicLongFieldUpdater.newUpdater(WallFunctionStat.class,
+            "invokeCount");
 
     public long getInvokeCount() {
         return invokeCount;

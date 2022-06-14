@@ -27,12 +27,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleGrantTest_4 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "GRANT REFERENCES (employee_id), " //
-                     + "      UPDATE (employee_id, salary, commission_pct) " //
-                     + "   ON hr.employees" //
-                     + "   TO oe; ";
+                + "      UPDATE (employee_id, salary, commission_pct) " //
+                + "   ON hr.employees" //
+                + "   TO oe; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -42,9 +41,9 @@ public class OracleGrantTest_4 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("GRANT REFERENCES(employee_id),"//
-                            + " UPDATE(employee_id, salary, commission_pct)"//
-                            + " ON hr.employees TO oe;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + " UPDATE(employee_id, salary, commission_pct)"//
+                        + " ON hr.employees TO oe;",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

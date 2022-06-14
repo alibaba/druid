@@ -26,7 +26,6 @@ import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class ParamTest extends TestCase {
-
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
@@ -61,7 +60,7 @@ public class ParamTest extends TestCase {
 
             Assert.assertEquals(1, stat.getConnectionStat().getConnectCount());
             Assert.assertEquals(0, stat.getConnectionStat().getCloseCount()); // logic
-                                                                              // close不会导致计数器＋1
+            // close不会导致计数器＋1
         }
 
         dataSource.close();

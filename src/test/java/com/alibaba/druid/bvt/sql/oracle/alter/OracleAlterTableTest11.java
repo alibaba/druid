@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest11 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter table PRODUCT_IDS_ZZJ_TBD0209 move tablespace MCSHADOWTS";
+                "alter table PRODUCT_IDS_ZZJ_TBD0209 move tablespace MCSHADOWTS";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

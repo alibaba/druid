@@ -14,12 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlSelectTest_160 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select quote(\"'abc'\")";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

@@ -27,10 +27,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest34 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE long_tab (pic_id NUMBER, long_pics LONG RAW);";
+                "CREATE TABLE long_tab (pic_id NUMBER, long_pics LONG RAW);";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -40,10 +39,10 @@ public class OracleCreateTableTest34 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("CREATE TABLE long_tab ("//
-                            + "\n\tpic_id NUMBER,"//
-                            + "\n\tlong_pics LONG RAW"//
-                            + "\n);",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\n\tpic_id NUMBER,"//
+                        + "\n\tlong_pics LONG RAW"//
+                        + "\n);",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

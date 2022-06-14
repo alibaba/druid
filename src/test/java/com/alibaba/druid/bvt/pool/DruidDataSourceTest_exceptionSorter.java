@@ -17,11 +17,10 @@ import com.alibaba.druid.pool.ExceptionSorter;
 
 /**
  * 这个场景测试defaultAutoCommit
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_exceptionSorter extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -30,13 +29,11 @@ public class DruidDataSourceTest_exceptionSorter extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setRemoveAbandoned(true);
         dataSource.setDriver(new MockDriver() {
-
             public ResultSet executeQuery(MockStatementBase stmt, String sql) throws SQLException {
                 throw new SQLException();
             }
         });
         dataSource.setExceptionSorter(new ExceptionSorter() {
-
             @Override
             public boolean isExceptionFatal(SQLException e) {
                 return true;
@@ -44,7 +41,6 @@ public class DruidDataSourceTest_exceptionSorter extends TestCase {
 
             @Override
             public void configFromProperties(Properties properties) {
-                
             }
         });
 
@@ -62,7 +58,6 @@ public class DruidDataSourceTest_exceptionSorter extends TestCase {
             try {
                 stmt.executeQuery();
             } catch (SQLException e) {
-
             }
 
             conn.close();
@@ -75,7 +70,7 @@ public class DruidDataSourceTest_exceptionSorter extends TestCase {
         long createCount = dataSource.getCreateCount();
         assertTrue(createCount == 2 || createCount == 3);
         long discardCount = dataSource.getDiscardCount();
-        assertTrue("createCount : " + createCount
+        assertTrue("createCount : " + createCount + ", discardCount" + discardCount
                 , createCount == discardCount || createCount - 1 == discardCount);
         assertEquals(1, dataSource.getPoolingCount());
     }

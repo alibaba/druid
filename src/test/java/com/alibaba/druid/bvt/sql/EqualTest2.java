@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 
 public class EqualTest2 extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "INTERVAL '30.12345' SECOND(2, 4)";
         String sql_c = "INTERVAL '30.12345' SECOND(2, 3)";

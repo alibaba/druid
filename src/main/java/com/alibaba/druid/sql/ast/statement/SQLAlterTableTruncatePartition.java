@@ -23,13 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableTruncatePartition extends SQLObjectImpl implements SQLAlterTableItem {
-
     private final List<SQLName> partitions = new ArrayList<SQLName>(4);
 
     public List<SQLName> getPartitions() {
         return partitions;
     }
-    
+
     public void addPartition(SQLName partition) {
         if (partition != null) {
             partition.setParent(this);

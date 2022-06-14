@@ -27,10 +27,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleAlterTableTest24 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "RENAME new_duplications_index TO duplications_index";
+                "RENAME new_duplications_index TO duplications_index";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -49,7 +48,7 @@ public class OracleAlterTableTest24 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("RENAME new_duplications_index TO duplications_index", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         Assert.assertEquals(1, visitor.getTables().size());
 

@@ -26,19 +26,18 @@ import java.util.List;
 import java.util.Map;
 
 public class PGEvalVisitor extends PGASTVisitorAdapter implements SQLEvalVisitor {
+    private Map<String, Function> functions = new HashMap<String, Function>();
+    private List<Object> parameters = new ArrayList<Object>();
 
-    private Map<String, Function> functions        = new HashMap<String, Function>();
-    private List<Object>          parameters       = new ArrayList<Object>();
+    private int variantIndex = -1;
 
-    private int                   variantIndex     = -1;
+    private boolean markVariantIndex = true;
 
-    private boolean               markVariantIndex = true;
-
-    public PGEvalVisitor(){
+    public PGEvalVisitor() {
         this(new ArrayList<Object>(1));
     }
 
-    public PGEvalVisitor(List<Object> parameters){
+    public PGEvalVisitor(List<Object> parameters) {
         this.parameters = parameters;
     }
 
@@ -124,7 +123,7 @@ public class PGEvalVisitor extends PGASTVisitorAdapter implements SQLEvalVisitor
     public void registerFunction(String funcName, Function function) {
         functions.put(funcName, function);
     }
-    
+
     @Override
     public void unregisterFunction(String funcName) {
         functions.remove(funcName);
@@ -133,7 +132,7 @@ public class PGEvalVisitor extends PGASTVisitorAdapter implements SQLEvalVisitor
     public boolean visit(SQLIdentifierExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
-    
+
     @Override
     public boolean visit(SQLBinaryExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);

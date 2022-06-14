@@ -25,14 +25,13 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateFullTextAnalyzerTest extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create fulltext ANALYZER test1 ("
-                     + "'tokenizer' = 'dictionary-name',"
-                     + "\"charfilter\" = ['name1','name2'],"
-                     + "'tokenfilter'=['name1', 'name2']"
-                     + ")";
+                + "'tokenizer' = 'dictionary-name',"
+                + "\"charfilter\" = ['name1','name2'],"
+                + "'tokenfilter'=['name1', 'name2']"
+                + ")";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -40,18 +39,18 @@ public class MySqlCreateFullTextAnalyzerTest extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE FULLTEXT ANALYZER test1(\n"
-                            + "\"TOKENIZER\" = dictionary-name,\n"
-                            + "\"CHARFILTER\" = [\"name1\", \"name2\"],\n"
-                            + "\"TOKENFILTER\" = [\"name1\", \"name2\"]\n" + ")", output);
+                + "\"TOKENIZER\" = dictionary-name,\n"
+                + "\"CHARFILTER\" = [\"name1\", \"name2\"],\n"
+                + "\"TOKENFILTER\" = [\"name1\", \"name2\"]\n" + ")", output);
     }
 
     @Test
     public void test_create() throws Exception {
         String sql = "create fulltext ANALYZER test1 ("
-                     + "\"tokenizer\" = \"dictionary-name\","
-                     + "\"charfilter\" = [\"name1\",\"name2\"],"
-                     + "\"tokenfilter\"=[\"name1\",\"name2\"]"
-                     + ")";
+                + "\"tokenizer\" = \"dictionary-name\","
+                + "\"charfilter\" = [\"name1\",\"name2\"],"
+                + "\"tokenfilter\"=[\"name1\",\"name2\"]"
+                + ")";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -59,10 +58,10 @@ public class MySqlCreateFullTextAnalyzerTest extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE FULLTEXT ANALYZER test1(\n"
-                            + "\"TOKENIZER\" = dictionary-name,\n"
-                            + "\"CHARFILTER\" = [\"name1\", \"name2\"],\n"
-                            + "\"TOKENFILTER\" = [\"name1\", \"name2\"]\n"
-                            + ")", output);
+                + "\"TOKENIZER\" = dictionary-name,\n"
+                + "\"CHARFILTER\" = [\"name1\", \"name2\"],\n"
+                + "\"TOKENFILTER\" = [\"name1\", \"name2\"]\n"
+                + ")", output);
     }
 
     @Test
@@ -75,10 +74,10 @@ public class MySqlCreateFullTextAnalyzerTest extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE FULLTEXT ANALYZER test_analyzer(\n"
-                            + "\"TOKENIZER\" = test_alinlp,\n"
-                            + "\"CHARFILTER\" = [\"test_stconv\"],\n"
-                            + "\"TOKENFILTER\" = [\"test_pinyin\"]\n"
-                            + ");", output);
+                + "\"TOKENIZER\" = test_alinlp,\n"
+                + "\"CHARFILTER\" = [\"test_stconv\"],\n"
+                + "\"TOKENFILTER\" = [\"test_pinyin\"]\n"
+                + ");", output);
     }
 
     @Test

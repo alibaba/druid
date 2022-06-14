@@ -15,6 +15,17 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.pool.DruidAbstractDataSource.PhysicalConnectionInfo;
+import com.alibaba.druid.proxy.jdbc.WrapperProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+
+import javax.sql.ConnectionEventListener;
+import javax.sql.StatementEventListener;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -26,73 +37,61 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.sql.ConnectionEventListener;
-import javax.sql.StatementEventListener;
-
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.pool.DruidAbstractDataSource.PhysicalConnectionInfo;
-import com.alibaba.druid.proxy.jdbc.WrapperProxy;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.Utils;
-
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public final class DruidConnectionHolder {
-    private final static Log                      LOG                      = LogFactory.getLog(DruidConnectionHolder.class);
-    public static boolean                         holdabilityUnsupported   = false;
+    private static final Log LOG = LogFactory.getLog(DruidConnectionHolder.class);
+    public static boolean holdabilityUnsupported;
 
-    protected final DruidAbstractDataSource       dataSource;
-    protected final long                          connectionId;
-    protected final Connection                    conn;
+    protected final DruidAbstractDataSource dataSource;
+    protected final long connectionId;
+    protected final Connection conn;
     protected final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
-    protected final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
-    protected final long                          connectTimeMillis;
-    protected volatile long                       lastActiveTimeMillis;
-    protected volatile long                       lastExecTimeMillis;
-    protected volatile long                       lastKeepTimeMillis;
-    protected volatile long                       lastValidTimeMillis;
-    protected long                                useCount                 = 0;
-    private long                                  keepAliveCheckCount      = 0;
-    private long                                  lastNotEmptyWaitNanos;
-    private final long                            createNanoSpan;
-    protected PreparedStatementPool               statementPool;
-    protected final List<Statement>               statementTrace           = new ArrayList<Statement>(2);
-    protected final boolean                       defaultReadOnly;
-    protected final int                           defaultHoldability;
-    protected final int                           defaultTransactionIsolation;
-    protected final boolean                       defaultAutoCommit;
-    protected boolean                             underlyingReadOnly;
-    protected int                                 underlyingHoldability;
-    protected int                                 underlyingTransactionIsolation;
-    protected boolean                             underlyingAutoCommit;
-    protected volatile boolean                    discard                  = false;
-    protected volatile boolean                    active                   = false;
-    protected final Map<String, Object>           variables;
-    protected final Map<String, Object>           globleVariables;
-    final ReentrantLock                           lock                     = new ReentrantLock();
-    protected String                              initSchema;
+    protected final List<StatementEventListener> statementEventListeners = new CopyOnWriteArrayList<StatementEventListener>();
+    protected final long connectTimeMillis;
+    protected volatile long lastActiveTimeMillis;
+    protected volatile long lastExecTimeMillis;
+    protected volatile long lastKeepTimeMillis;
+    protected volatile long lastValidTimeMillis;
+    protected long useCount;
+    private long keepAliveCheckCount;
+    private long lastNotEmptyWaitNanos;
+    private final long createNanoSpan;
+    protected PreparedStatementPool statementPool;
+    protected final List<Statement> statementTrace = new ArrayList<Statement>(2);
+    protected final boolean defaultReadOnly;
+    protected final int defaultHoldability;
+    protected final int defaultTransactionIsolation;
+    protected final boolean defaultAutoCommit;
+    protected boolean underlyingReadOnly;
+    protected int underlyingHoldability;
+    protected int underlyingTransactionIsolation;
+    protected boolean underlyingAutoCommit;
+    protected volatile boolean discard;
+    protected volatile boolean active;
+    protected final Map<String, Object> variables;
+    protected final Map<String, Object> globleVariables;
+    final ReentrantLock lock = new ReentrantLock();
+    protected String initSchema;
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo)
-                                                                                                          throws SQLException{
+            throws SQLException {
         this(dataSource,
-            pyConnectInfo.getPhysicalConnection(),
-            pyConnectInfo.getConnectNanoSpan(),
-            pyConnectInfo.getVairiables(),
-            pyConnectInfo.getGlobalVairiables());
+                pyConnectInfo.getPhysicalConnection(),
+                pyConnectInfo.getConnectNanoSpan(),
+                pyConnectInfo.getVairiables(),
+                pyConnectInfo.getGlobalVairiables());
     }
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan)
-                                                                                                           throws SQLException{
+            throws SQLException {
         this(dataSource, conn, connectNanoSpan, null, null);
     }
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan,
                                  Map<String, Object> variables, Map<String, Object> globleVariables)
-                                                                                                    throws SQLException{
+            throws SQLException {
         this.dataSource = dataSource;
         this.conn = conn;
         this.createNanoSpan = connectNanoSpan;
@@ -101,7 +100,7 @@ public final class DruidConnectionHolder {
 
         this.connectTimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connectTimeMillis;
-        this.lastExecTimeMillis   = connectTimeMillis;
+        this.lastExecTimeMillis = connectTimeMillis;
 
         this.underlyingAutoCommit = conn.getAutoCommit();
 
@@ -322,7 +321,7 @@ public final class DruidConnectionHolder {
                 Statement stmt = (Statement) item;
                 JdbcUtils.close(stmt);
             }
-            
+
             statementTrace.clear();
         } finally {
             lock.unlock();

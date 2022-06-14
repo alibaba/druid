@@ -23,10 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlSelectTest_177_hints extends MysqlTest {
-
     @Test
     public void testHintAll() throws Exception {
-        String [] hintHead = {"/*+TDDL:node('node_name1')*/",
+        String[] hintHead = {"/*+TDDL:node('node_name1')*/",
 //                "/*+ TDDL({ 'extra' :{ 'MERGE_UNION' : 'false' }, 'type' : 'direct', 'vtab' : 'drds_shard', 'dbid' : 'corona_qatest_1', 'realtabs' :[ 'drds_shard_04', 'drds_shard_05', 'drds_shard_06' ]}) */",
 //                "/!+TDDL: node('node_name1')*/",
 //                "/!TDDL: MASTER()*/",
@@ -40,10 +39,10 @@ public class MySqlSelectTest_177_hints extends MysqlTest {
             String sql5 = "explain " + hintHead[i] + "insert" + hintHead[i] + " into table_1 values('id < 10');";
             String sql6 = "explain " + hintHead[i] + "update" + hintHead[i] + " table_1 set id = 1 where id < 10;";
             String sql7 = hintHead[i] + "replace" + hintHead[i] + " into table_1 values('id < 10');";
-            String sql[] = {sql1,sql2,sql7,sql3,sql4,sql5,sql6};
+            String sql[] = {sql1, sql2, sql7, sql3, sql4, sql5, sql6};
             for (int j = 0; j < sql.length; j++) {
                 System.out.println(sql[j]);
-                String parameterizedSql = ParameterizedOutputVisitorUtils.parameterizeForTDDL(sql[j],  DbType.mysql,new ArrayList<Object>(),VisitorFeature.OutputParameterizedQuesUnMergeInList,
+                String parameterizedSql = ParameterizedOutputVisitorUtils.parameterizeForTDDL(sql[j], DbType.mysql, new ArrayList<Object>(), VisitorFeature.OutputParameterizedQuesUnMergeInList,
                         VisitorFeature.OutputParameterizedUnMergeShardingTable,
                         VisitorFeature.OutputParameterizedQuesUnMergeValuesList,
                         VisitorFeature.OutputParameterizedQuesUnMergeOr);
@@ -68,12 +67,12 @@ public class MySqlSelectTest_177_hints extends MysqlTest {
                             Assert.assertNotNull(((MySqlDeleteStatement) statement).getHints().size() > 0);
                             System.out.println(((MySqlDeleteStatement) statement).getHeadHintsDirect());
                             System.out.println(((MySqlDeleteStatement) statement).getHints());
-                        } else if(statement instanceof MySqlUpdateStatement) {
+                        } else if (statement instanceof MySqlUpdateStatement) {
                             Assert.assertNotNull(((MySqlUpdateStatement) statement).getHeadHintsDirect().size() > 0);
                             Assert.assertNotNull(((MySqlUpdateStatement) statement).getHints().size() > 0);
                             System.out.println(((MySqlUpdateStatement) statement).getHeadHintsDirect());
                             System.out.println(((MySqlUpdateStatement) statement).getHints());
-                        } else if(statement instanceof MySqlExplainStatement) {
+                        } else if (statement instanceof MySqlExplainStatement) {
                             SQLStatement statement1 = ((MySqlExplainStatement) statement).getStatement();
                             if (statement1 instanceof MySqlInsertStatement) {
                                 Assert.assertNotNull(((MySqlInsertStatement) statement1).getHint() != null);
@@ -83,7 +82,7 @@ public class MySqlSelectTest_177_hints extends MysqlTest {
                                 Assert.assertNotNull(((MySqlDeleteStatement) statement1).getHints().size() > 0);
                                 System.out.println(((MySqlDeleteStatement) statement1).getHeadHintsDirect());
                                 System.out.println(((MySqlDeleteStatement) statement1).getHints());
-                            } else if(statement1 instanceof MySqlUpdateStatement) {
+                            } else if (statement1 instanceof MySqlUpdateStatement) {
                                 Assert.assertNotNull(((MySqlUpdateStatement) statement1).getHints().size() > 0);
                                 System.out.println(((MySqlUpdateStatement) statement1).getHeadHintsDirect());
                                 System.out.println(((MySqlUpdateStatement) statement1).getHints());

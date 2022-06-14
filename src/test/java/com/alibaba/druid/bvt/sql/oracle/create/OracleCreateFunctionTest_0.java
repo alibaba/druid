@@ -26,19 +26,18 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateFunctionTest_0 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE FUNCTION get_bal(acc_no IN NUMBER) \n" +
-                "   RETURN NUMBER \n" +
-                "   IS acc_bal NUMBER(11,2);\n" +
-                "   BEGIN \n" +
-                "      SELECT order_total \n" +
-                "      INTO acc_bal \n" +
-                "      FROM orders \n" +
-                "      WHERE customer_id = acc_no; \n" +
-                "      RETURN(acc_bal); \n" +
-                "    END;";
+                "CREATE FUNCTION get_bal(acc_no IN NUMBER) \n" +
+                        "   RETURN NUMBER \n" +
+                        "   IS acc_bal NUMBER(11,2);\n" +
+                        "   BEGIN \n" +
+                        "      SELECT order_total \n" +
+                        "      INTO acc_bal \n" +
+                        "      FROM orders \n" +
+                        "      WHERE customer_id = acc_no; \n" +
+                        "      RETURN(acc_bal); \n" +
+                        "    END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -60,7 +59,7 @@ public class OracleCreateFunctionTest_0 extends OracleTest {
                         "\tWHERE customer_id = acc_no;\n" +
                         "\tRETURN acc_bal;\n" +
                         "END;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

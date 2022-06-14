@@ -16,8 +16,6 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
@@ -27,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlLockTableStatement extends MySqlStatementImpl implements SQLLockTableStatement {
-
     private List<Item> items = new ArrayList<Item>();
 
     @Override
@@ -43,7 +40,7 @@ public class MySqlLockTableStatement extends MySqlStatementImpl implements SQLLo
 
         public final String name;
 
-        LockType(String name){
+        LockType(String name) {
             this.name = name;
         }
     }
@@ -57,10 +54,9 @@ public class MySqlLockTableStatement extends MySqlStatementImpl implements SQLLo
     }
 
     public static class Item extends MySqlObjectImpl {
-
         private SQLExprTableSource tableSource = new SQLExprTableSource();
 
-        private LockType           lockType;
+        private LockType lockType;
 
         private List<SQLCommentHint> hints;
 

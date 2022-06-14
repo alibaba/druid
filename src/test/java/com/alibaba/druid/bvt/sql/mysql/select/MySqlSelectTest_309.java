@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class MySqlSelectTest_309
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT *\n" +
                 "FROM `yeahmobi`.`new_eagle_log_parquet`\n" +
@@ -35,7 +34,6 @@ public class MySqlSelectTest_309
                     .parseSingleStatement(sql, DbType.mysql);
             fail();
         } catch (Exception e) {
-
         }
     }
 }

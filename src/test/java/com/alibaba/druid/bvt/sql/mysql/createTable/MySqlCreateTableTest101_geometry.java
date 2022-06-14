@@ -8,13 +8,12 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest101_geometry extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE geom (g GEOMETRY NOT NULL);";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(1, stmt.getTableElementList().size());

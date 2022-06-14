@@ -26,26 +26,25 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest38 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select * from " + "(with vw_kreis_statics_t as"
-                     + "  (select substr(xzqh,1,6) xzqh,swrslx,sum(swrs_count) acd_totle from"
-                     + "    (select xzqh,sglx,case when (swrs7 <  3) then '1'"
-                     + "       when (swrs7 <  5) then '2' when (swrs7 <=  9) then '3' else '4' end  swrslx,1 swrs_count"
-                     + "       from acduser.vw_acd_info where sglx='1' " + "       "
-                     + "                    and sgfssj  >=   ?" + "                 " + "                 "
-                     + "        )" + "   group by substr(xzqh,1,6),swrslx)" + ""
-                     + "   select e.\"XZQH\",e.\"LESS3\",e.\"F3TO5\",e.\"F5TO9\",e.\"MORE9\",kreis_code, kreis_name,px1,py1,px2,py2 from"
-                     + "    ( select" + "     xzqh," + "     nvl(max(decode(swrslx,'1',acd_totle)),0)  less3,"
-                     + "     nvl(max(decode(swrslx,'2',acd_totle)),0)  f3to5,"
-                     + "     nvl(max(decode(swrslx,'3',acd_totle)),0)  f5to9,"
-                     + "     nvl(max(decode(swrslx,'4',acd_totle)),0)  more9"
-                     + "     from( select * from acduser.vw_kreis_statics_t) group by xzqh  " + "     ) e" + ""
-                     + "  left join" + " acduser.vw_sc_kreis_code_lv2 f on e.xzqh = f.short_kreis_code) "
-                     + "   where kreis_code in" + "(select * from "
-                     + "  (select tbek_code from acduser.vw_kreis_code start with tbek_code = ? connect by prior tbek_pk=tbek_parent ) "
-                     + "where  tbek_code != ?)"; //
+                        + "  (select substr(xzqh,1,6) xzqh,swrslx,sum(swrs_count) acd_totle from"
+                        + "    (select xzqh,sglx,case when (swrs7 <  3) then '1'"
+                        + "       when (swrs7 <  5) then '2' when (swrs7 <=  9) then '3' else '4' end  swrslx,1 swrs_count"
+                        + "       from acduser.vw_acd_info where sglx='1' " + "       "
+                        + "                    and sgfssj  >=   ?" + "                 " + "                 "
+                        + "        )" + "   group by substr(xzqh,1,6),swrslx)" + ""
+                        + "   select e.\"XZQH\",e.\"LESS3\",e.\"F3TO5\",e.\"F5TO9\",e.\"MORE9\",kreis_code, kreis_name,px1,py1,px2,py2 from"
+                        + "    ( select" + "     xzqh," + "     nvl(max(decode(swrslx,'1',acd_totle)),0)  less3,"
+                        + "     nvl(max(decode(swrslx,'2',acd_totle)),0)  f3to5,"
+                        + "     nvl(max(decode(swrslx,'3',acd_totle)),0)  f5to9,"
+                        + "     nvl(max(decode(swrslx,'4',acd_totle)),0)  more9"
+                        + "     from( select * from acduser.vw_kreis_statics_t) group by xzqh  " + "     ) e" + ""
+                        + "  left join" + " acduser.vw_sc_kreis_code_lv2 f on e.xzqh = f.short_kreis_code) "
+                        + "   where kreis_code in" + "(select * from "
+                        + "  (select tbek_code from acduser.vw_kreis_code start with tbek_code = ? connect by prior tbek_pk=tbek_parent ) "
+                        + "where  tbek_code != ?)"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

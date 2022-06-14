@@ -48,12 +48,11 @@ import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class DruidStatServiceTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     @Override
     protected void setUp() throws Exception {
-        DruidStatService.getInstance().setResetEnable(true); 
+        DruidStatService.getInstance().setResetEnable(true);
         // DruidStatService is singleton, reset all for other testcase.
         DruidStatService.getInstance().service("/reset-all.json");
         // clear web app.
@@ -112,8 +111,8 @@ public class DruidStatServiceTest extends TestCase {
         conn.close();
 
         String result = DruidStatService.getInstance().service("/sql-"
-                                                                       + dataSource.getSqlStatMap().values().iterator().next().getId()
-                                                                       + ".json");
+                + dataSource.getSqlStatMap().values().iterator().next().getId()
+                + ".json");
         Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
 
         Map<String, Object> sqlStat = (Map<String, Object>) resultMap.get("Content");
@@ -132,7 +131,7 @@ public class DruidStatServiceTest extends TestCase {
         {
             DruidStatService.getInstance().service("/reset-all.json");
         }
-        
+
         String sql = "select 1";
         Connection conn = dataSource.getConnection();
 
@@ -183,7 +182,7 @@ public class DruidStatServiceTest extends TestCase {
 
     /**
      * Test basic.json request
-     * 
+     *
      * @throws Exception
      */
     public void test_statService_getBasic() throws Exception {
@@ -392,7 +391,7 @@ public class DruidStatServiceTest extends TestCase {
 
     public void test_statService_getSpring() throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext(
-                                                                        "classpath:com/alibaba/druid/stat/spring-config-stat.xml");
+                "classpath:com/alibaba/druid/stat/spring-config-stat.xml");
         UserService userService = (UserService) context.getBean("userService");
         userService.save();
         String result = DruidStatService.getInstance().service("/spring.json");
@@ -415,7 +414,7 @@ public class DruidStatServiceTest extends TestCase {
 
     public void test_statService_getSpringDetail() throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext(
-                                                                        "classpath:com/alibaba/druid/stat/spring-config-stat.xml");
+                "classpath:com/alibaba/druid/stat/spring-config-stat.xml");
         UserService userService = (UserService) context.getBean("userService");
         userService.save();
         String result = DruidStatService.getInstance().service("/spring-detail.json?class=com.alibaba.druid.stat.spring.UserService&method=save()");
@@ -431,7 +430,6 @@ public class DruidStatServiceTest extends TestCase {
     }
 
     public void test_statService_getResetAll() throws Exception {
-
         // data source mock
         String sql = "select 1";
         Connection conn = dataSource.getConnection();
@@ -474,7 +472,7 @@ public class DruidStatServiceTest extends TestCase {
 
         // spring mock
         ApplicationContext context = new ClassPathXmlApplicationContext(
-                                                                        "classpath:com/alibaba/druid/stat/spring-config-stat.xml");
+                "classpath:com/alibaba/druid/stat/spring-config-stat.xml");
         UserService userService = (UserService) context.getBean("userService");
         userService.save();
         String resultSpring = DruidStatService.getInstance().service("/spring.json");

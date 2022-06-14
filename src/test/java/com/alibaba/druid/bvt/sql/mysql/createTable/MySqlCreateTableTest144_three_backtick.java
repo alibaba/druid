@@ -15,9 +15,7 @@ import java.util.List;
  * @Date 2019-05-09 14:51
  */
 public class MySqlCreateTableTest144_three_backtick extends MysqlTest {
-
     public void test_0() throws Exception {
-
         String sql = "CREATE TABLE `dbn_product_album_info` (\n" +
                 "  `id` bigint(20) NOT NULL AUTO_INCREMENT,\n" +
                 "  `position` int(11) DEFAULT '9999',\n" +
@@ -34,7 +32,7 @@ public class MySqlCreateTableTest144_three_backtick extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest17 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "alter table rms.rms_Person_Event drop foreign key FKA382487726D72F65";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -41,7 +40,7 @@ public class MySqlAlterTableTest17 extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE rms.rms_Person_Event\n" + //
-                            "\tDROP FOREIGN KEY FKA382487726D72F65", output);
+                "\tDROP FOREIGN KEY FKA382487726D72F65", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

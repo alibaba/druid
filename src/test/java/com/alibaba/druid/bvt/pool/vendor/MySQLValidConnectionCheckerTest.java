@@ -11,7 +11,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
 
 public class MySQLValidConnectionCheckerTest extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

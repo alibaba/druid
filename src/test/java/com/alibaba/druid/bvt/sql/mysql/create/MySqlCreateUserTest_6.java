@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 
 public class MySqlCreateUserTest_6 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'password';";
 
         MySqlCreateUserStatement stmt = (MySqlCreateUserStatement) SQLUtils.parseSingleMysqlStatement(sql);
 
         assertEquals("CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'password';", //
-                            SQLUtils.toMySqlString(stmt));
+                SQLUtils.toMySqlString(stmt));
 
     }
 
@@ -37,7 +36,7 @@ public class MySqlCreateUserTest_6 extends MysqlTest {
         MySqlCreateUserStatement stmt = (MySqlCreateUserStatement) SQLUtils.parseSingleMysqlStatement(sql);
 
         assertEquals("CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'password';", //
-                            SQLUtils.toMySqlString(stmt));
+                SQLUtils.toMySqlString(stmt));
 
     }
 
@@ -47,7 +46,7 @@ public class MySqlCreateUserTest_6 extends MysqlTest {
         MySqlCreateUserStatement stmt = (MySqlCreateUserStatement) SQLUtils.parseSingleMysqlStatement(sql);
 
         assertEquals("CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'password';", //
-                            SQLUtils.toMySqlString(stmt));
+                SQLUtils.toMySqlString(stmt));
 
     }
 

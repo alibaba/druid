@@ -27,21 +27,20 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest27 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE dept_20 " //
-                + "   (employee_id     NUMBER(4), " //
-                + "    last_name       VARCHAR2(10), " //
-                + "    job_id          VARCHAR2(9), " //
-                + "    manager_id      NUMBER(4), " //
-                + "    hire_date       DATE, " //
-                + "    salary          NUMBER(7,2), " //
-                + "    commission_pct  NUMBER(7,2), " //
-                + "    department_id, " //
-                + "   CONSTRAINT fk_deptno " //
-                + "      FOREIGN  KEY (department_id) " //
-                + "      REFERENCES  departments(department_id) ); ";
+                "CREATE TABLE dept_20 " //
+                        + "   (employee_id     NUMBER(4), " //
+                        + "    last_name       VARCHAR2(10), " //
+                        + "    job_id          VARCHAR2(9), " //
+                        + "    manager_id      NUMBER(4), " //
+                        + "    hire_date       DATE, " //
+                        + "    salary          NUMBER(7,2), " //
+                        + "    commission_pct  NUMBER(7,2), " //
+                        + "    department_id, " //
+                        + "   CONSTRAINT fk_deptno " //
+                        + "      FOREIGN  KEY (department_id) " //
+                        + "      REFERENCES  departments(department_id) ); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -62,7 +61,7 @@ public class OracleCreateTableTest27 extends OracleTest {
                         "\tCONSTRAINT fk_deptno FOREIGN KEY (department_id)\n" +
                         "\t\tREFERENCES departments (department_id)\n" +
                         ");",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

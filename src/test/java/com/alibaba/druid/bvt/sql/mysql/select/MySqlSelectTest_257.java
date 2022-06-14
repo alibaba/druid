@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 
 public class MySqlSelectTest_257 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT rank() OVER (ROWS 0.5 PRECEDING)";
 

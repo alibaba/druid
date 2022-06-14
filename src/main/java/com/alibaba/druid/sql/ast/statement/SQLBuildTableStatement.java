@@ -23,8 +23,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLBuildTableStatement extends SQLStatementImpl {
     private SQLName table;
     private SQLIntegerExpr version;
-    private boolean withSplit = false;
-    private boolean force = false;
+    private boolean withSplit;
+    private boolean force;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

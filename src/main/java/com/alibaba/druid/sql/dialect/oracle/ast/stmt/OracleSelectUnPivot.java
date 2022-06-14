@@ -23,14 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleSelectUnPivot extends OracleSelectPivotBase {
-
     private NullsIncludeType nullsIncludeType;
     private final List<SQLExpr> items = new ArrayList<SQLExpr>();
 
     private final List<Item> pivotIn = new ArrayList<Item>();
 
     public OracleSelectUnPivot() {
-
     }
 
     public void accept0(OracleASTVisitor visitor) {
@@ -81,7 +79,6 @@ public class OracleSelectUnPivot extends OracleSelectPivotBase {
 
     @Override
     public OracleSelectUnPivot clone() {
-
         OracleSelectUnPivot x = new OracleSelectUnPivot();
 
         x.setNullsIncludeType(nullsIncludeType);

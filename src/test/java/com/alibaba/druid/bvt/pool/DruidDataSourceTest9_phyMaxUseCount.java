@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DruidDataSourceTest9_phyMaxUseCount extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -46,7 +45,7 @@ public class DruidDataSourceTest9_phyMaxUseCount extends TestCase {
             DruidPooledConnection conn = dataSource.getConnection();
             if (i % 10 == 0) {
                 if (conn.getConnection() == phyConn) {
-                     throw new IllegalStateException();
+                    throw new IllegalStateException();
                 }
             }
 

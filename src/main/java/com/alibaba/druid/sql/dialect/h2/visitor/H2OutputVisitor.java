@@ -16,15 +16,15 @@
 package com.alibaba.druid.sql.dialect.h2.visitor;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
-import java.util.Map;
 
 public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor {
     public H2OutputVisitor(Appendable appender) {
@@ -86,7 +86,6 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
 
     @Override
     public boolean visit(SQLCreateDatabaseStatement x) {
-
         /*
         https://h2database.com/html/commands.html#create_schema
         CREATE SCHEMA [ IF NOT EXISTS ]
@@ -106,7 +105,6 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
 
     @Override
     public boolean visit(SQLCreateIndexStatement x) {
-
         /* h2 CREATE INDEX BNF: https://h2database.com/html/commands.html#create_index
         CREATE [ UNIQUE | SPATIAL ] INDEX
         [ [ IF NOT EXISTS ] [schemaName.]indexName ]
@@ -117,7 +115,7 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
         printUcase("CREATE ");
 
         String type = x.getType();
-        if ( "UNIQUE".equalsIgnoreCase(type) || "SPATIAL".equalsIgnoreCase(type) ) {
+        if ("UNIQUE".equalsIgnoreCase(type) || "SPATIAL".equalsIgnoreCase(type)) {
             printUcase(type + ' ');
         }
 

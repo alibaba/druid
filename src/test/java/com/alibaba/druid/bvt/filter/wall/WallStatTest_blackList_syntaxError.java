@@ -10,7 +10,6 @@ import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class WallStatTest_blackList_syntaxError extends TestCase {
-
     protected void setUp() throws Exception {
         WallContext.clearContext();
     }
@@ -35,7 +34,7 @@ public class WallStatTest_blackList_syntaxError extends TestCase {
             Assert.assertEquals(1, provider.getSyntaxErrorCount());
             Assert.assertEquals(1, provider.getHardCheckCount());
         }
-        
+
         Assert.assertFalse(provider.checkValid(sql));
         {
             WallTableStat tableStat = provider.getTableStat("t");

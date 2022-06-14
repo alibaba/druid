@@ -23,13 +23,11 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 public class IdentEqualsTest extends TestCase {
-
-    private String     sql    = "select * from t where FID = 1 OR id = id";
+    private String sql = "select * from t where FID = 1 OR id = id";
 
     private WallConfig config = new WallConfig();
 
     protected void setUp() throws Exception {
-        
     }
 
     public void testMySql() throws Exception {
@@ -37,7 +35,6 @@ public class IdentEqualsTest extends TestCase {
     }
 
     public void testORACLE() throws Exception {
-
         Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

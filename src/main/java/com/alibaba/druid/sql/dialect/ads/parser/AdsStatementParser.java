@@ -7,14 +7,14 @@ import com.alibaba.druid.util.FnvHash;
 
 public class AdsStatementParser extends SQLStatementParser {
     public AdsStatementParser(String sql) {
-        super (new AdsExprParser(sql));
+        super(new AdsExprParser(sql));
     }
 
     public AdsStatementParser(String sql, SQLParserFeature... features) {
-        super (new AdsExprParser(sql, features));
+        super(new AdsExprParser(sql, features));
     }
 
-    public AdsStatementParser(Lexer lexer){
+    public AdsStatementParser(Lexer lexer) {
         super(new AdsExprParser(lexer));
     }
 

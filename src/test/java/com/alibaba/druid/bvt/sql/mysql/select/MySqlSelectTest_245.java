@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 
 public class MySqlSelectTest_245 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM tt ORDER BY c1 NULLS LAST";
 
@@ -38,7 +37,6 @@ public class MySqlSelectTest_245 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
 
 
 }

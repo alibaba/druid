@@ -13,7 +13,6 @@ import com.alibaba.druid.pool.GetConnectionTimeoutException;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 
 public class DruidConnectionHolderTest2 extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -24,9 +23,8 @@ public class DruidConnectionHolderTest2 extends PoolTestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setPoolPreparedStatements(true);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             public int connection_getTransactionIsolation(FilterChain chain, ConnectionProxy connection)
-                                                                                                        throws SQLException {
+                    throws SQLException {
                 throw new SQLException();
             }
         });

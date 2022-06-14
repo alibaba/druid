@@ -11,13 +11,13 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
 public class SQLiteWallProvider extends WallProvider {
-    public final static String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/sqlite";
+    public static final String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/sqlite";
 
-    public SQLiteWallProvider(){
+    public SQLiteWallProvider() {
         this(new WallConfig(DEFAULT_CONFIG_DIR));
     }
 
-    public SQLiteWallProvider(WallConfig config){
+    public SQLiteWallProvider(WallConfig config) {
         super(config, DbType.sqlite);
     }
 

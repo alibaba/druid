@@ -16,7 +16,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
 
 public class FailFastTest extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
     private AtomicInteger index = new AtomicInteger();
@@ -44,10 +43,10 @@ public class FailFastTest extends PoolTestCase {
                 throw ex;
             }
         };
-        
+
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setMaxWait(1000 * 1000);
-        
+
         Properties properties = new Properties();
         properties.setProperty("druid.failFast", "true");
         dataSource.configFromPropety(properties);
@@ -79,9 +78,9 @@ public class FailFastTest extends PoolTestCase {
         };
         connectThread.setName("ConnectThread");
         connectThread.start();
-        
+
         connectStartLatch.await();
-        
+
         latch.countDown();
         connectEndLatch.await(3, TimeUnit.SECONDS);
         SQLException ex = errorHolder.get();

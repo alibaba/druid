@@ -12,7 +12,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 
 public class DruidDataSourceTest_interrupt2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -33,15 +32,14 @@ public class DruidDataSourceTest_interrupt2 extends TestCase {
             Connection conn = dataSource.getConnection();
             conn.close();
         }
-        
+
         dataSource.getLock().lock();
-        
+
         try {
             final CountDownLatch startLatch = new CountDownLatch(1);
             final CountDownLatch endLatch = new CountDownLatch(1);
             final AtomicInteger errorCount = new AtomicInteger();
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         startLatch.countDown();

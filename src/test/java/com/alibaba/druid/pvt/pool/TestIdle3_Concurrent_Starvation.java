@@ -30,8 +30,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle3_Concurrent_Starvation extends TestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -61,7 +60,6 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
     }
 
     public void test_idle2() throws Exception {
-
         // 第一次创建连接
         {
             Assert.assertEquals(0, dataSource.getCreateCount());
@@ -105,7 +103,6 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
         final AtomicInteger pass = new AtomicInteger();
 
         final CyclicBarrier closedBarrier = new CyclicBarrier(threadCount, new Runnable() {
-
             public void run() {
                 Assert.assertEquals(threadCount, dataSource.getPoolingCount());
                 dataSource.shrink(false);
@@ -117,7 +114,6 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
             }
         });
         final CyclicBarrier closeBarrier = new CyclicBarrier(threadCount, new Runnable() {
-
             public void run() {
                 Assert.assertEquals(threadCount, dataSource.getActiveCount());
             }
@@ -125,12 +121,10 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
 
         for (int i = 0; i < threadCount; ++i) {
             threads[i] = new Thread("thread-" + i) {
-
                 public void run() {
                     try {
                         startLatch.await();
                         for (int i = 0; i < 1000 * 1; ++i) {
-
                             Connection conn = dataSource.getConnection();
                             closeBarrier.await();
                             PreparedStatement stmt = conn.prepareStatement("SELECT 1");

@@ -24,10 +24,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateSequenceTest_1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE SEQUENCE projects_seq START WITH 10000";
+                "CREATE SEQUENCE projects_seq START WITH 10000";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

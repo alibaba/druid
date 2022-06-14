@@ -29,7 +29,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.util.Utils;
 
 public class TestReplaceLicense extends TestCase {
-
     private String license;
     private String lineSeparator;
 
@@ -41,7 +40,7 @@ public class TestReplaceLicense extends TestCase {
         System.out.println(license);
 
         lineSeparator = "\n"; // (String) java.security.AccessController.doPrivileged(new
-                              // sun.security.action.GetPropertyAction("line.separator"));
+        // sun.security.action.GetPropertyAction("line.separator"));
     }
 
     public void test_0() throws Exception {
@@ -81,7 +80,6 @@ public class TestReplaceLicense extends TestCase {
             writer.write(newContent);
             writer.close();
         } else {
-
         }
     }
 }

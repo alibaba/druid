@@ -17,7 +17,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SQLUnifiedVisitor extends MySqlASTVisitorAdapter {
-
     @Override
     public boolean visit(MySqlSelectQueryBlock x) {
         SchemaRepository repository = new SchemaRepository(DbType.mysql);
@@ -57,7 +56,7 @@ public class SQLUnifiedVisitor extends MySqlASTVisitorAdapter {
             x.getWhere().accept(this);
         }
 
-        if(x.getGroupBy() != null) {
+        if (x.getGroupBy() != null) {
             x.getGroupBy().accept(this);
         }
         return false;

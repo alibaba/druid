@@ -11,7 +11,6 @@ import com.alibaba.druid.support.ibatis.SqlMapClientWrapper;
 import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
 
 public class SqlMapExecutorWrapperTest extends TestCase {
-
     private ClassPathXmlApplicationContext context = null;
 
     protected void setUp() throws Exception {
@@ -48,16 +47,16 @@ public class SqlMapExecutorWrapperTest extends TestCase {
         Assert.assertNotNull(error);
         wrapper.startTransaction();
         wrapper.commitTransaction();
-        
+
         wrapper.getMappedStatement("Sequence.getValue");
-        
+
         wrapper.isEnhancementEnabled();
         wrapper.isLazyLoadingEnabled();
-        
+
         wrapper.getSqlExecutor();
-        
+
         wrapper.getDelegate();
-        
+
         wrapper.getResultObjectFactory();
     }
 }

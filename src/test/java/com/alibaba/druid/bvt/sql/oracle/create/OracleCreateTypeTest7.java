@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTypeTest7 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE TYPE histogram_entry_type AUTHID CURRENT_USER AS OBJECT\n" +
                 "  (count                 NUMBER\n" +
@@ -43,7 +42,7 @@ public class OracleCreateTypeTest7 extends OracleTest {
                         "\tcount NUMBER, \n" +
                         "\tvalue NUMBER(5)\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

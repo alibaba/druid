@@ -23,12 +23,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class MySQLCreateMaterializedViewTest2 extends MysqlTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE MATERIALIZED VIEW mymv\n" +
-                "ENABLE QUERY REWRITE\n" +
-                "AS SELECT id FROM base;";
+                "CREATE MATERIALIZED VIEW mymv\n" +
+                        "ENABLE QUERY REWRITE\n" +
+                        "AS SELECT id FROM base;";
 
         SQLStatement stmt = SQLUtils.parseSingleMysqlStatement(sql);
 
@@ -37,7 +36,7 @@ public class MySQLCreateMaterializedViewTest2 extends MysqlTest {
                         "AS\n" +
                         "SELECT id\n" +
                         "FROM base;",//
-                            SQLUtils.toSQLString(stmt, DbType.mysql));
+                SQLUtils.toSQLString(stmt, DbType.mysql));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

@@ -28,10 +28,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 
 public class PoolPreparedStatementsChangeTest extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
-    private Log             dataSourceLog;
+    private Log dataSourceLog;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -84,34 +83,34 @@ public class PoolPreparedStatementsChangeTest extends PoolTestCase {
         }
         Assert.assertEquals(1, dataSource.getCachedPreparedStatementCount());
         Assert.assertEquals(1, dataSource.getCachedPreparedStatementAccessCount());
-        
+
         {
             Connection conn = dataSource.getConnection();
-            
+
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, "xxx");
             ResultSet rs = stmt.executeQuery();
-            
+
             rs.close();
-            
+
             conn.close();
         }
         Assert.assertEquals(1, dataSource.getCachedPreparedStatementCount());
         Assert.assertEquals(2, dataSource.getCachedPreparedStatementAccessCount());
-        
+
         dataSource.setPoolPreparedStatements(false);
         Assert.assertEquals(0, dataSource.getCachedPreparedStatementCount());
         Assert.assertEquals(2, dataSource.getCachedPreparedStatementAccessCount());
-        
+
         {
             Connection conn = dataSource.getConnection();
-            
+
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, "xxx");
             ResultSet rs = stmt.executeQuery();
-            
+
             rs.close();
-            
+
             conn.close();
         }
         Assert.assertEquals(0, dataSource.getCachedPreparedStatementCount());

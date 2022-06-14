@@ -29,7 +29,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_3 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "select * from t for read only";
 
@@ -60,8 +59,8 @@ public class DB2SelectTest_3 extends DB2Test {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
         Assert.assertEquals("SELECT *" //
-                            + "\nFROM t"//
-                            + "\nFOR READ ONLY", //
-                            output);
+                        + "\nFROM t"//
+                        + "\nFOR READ ONLY", //
+                output);
     }
 }

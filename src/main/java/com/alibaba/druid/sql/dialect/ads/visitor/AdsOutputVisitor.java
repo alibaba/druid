@@ -1,7 +1,6 @@
 package com.alibaba.druid.sql.dialect.ads.visitor;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -58,14 +57,11 @@ public class AdsOutputVisitor extends SQLASTOutputVisitor implements AdsVisitor 
         return false;
     }
 
-
     @Override
     public void endVisit(MySqlPrimaryKey x) {
-
     }
 
     @Override
     public void endVisit(MySqlCreateTableStatement x) {
-
     }
 }

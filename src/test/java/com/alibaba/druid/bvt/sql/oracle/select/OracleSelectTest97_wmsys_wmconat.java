@@ -29,7 +29,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT NVL(TO_CHAR(WMSYS.WM_CONCAT(NVL(O.CHILD_ITEM_CODE, O.ITEM_CODE))), ?)\n" +
@@ -100,7 +99,7 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
 
         SQLMethodInvokeExpr nvl = (SQLMethodInvokeExpr) queryBlock.getSelectList()
                 .get(0).getExpr();
-        SQLMethodInvokeExpr toChar =(SQLMethodInvokeExpr) nvl.getArguments().get(0);
+        SQLMethodInvokeExpr toChar = (SQLMethodInvokeExpr) nvl.getArguments().get(0);
         assertTrue(toChar.getArguments().get(0) instanceof SQLAggregateExpr);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

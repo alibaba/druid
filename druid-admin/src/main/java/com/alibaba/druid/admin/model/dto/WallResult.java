@@ -15,7 +15,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class WallResult {
-
     @JSONField(name = "ResultCode")
     private int ResultCode;
     @JSONField(name = "Content")
@@ -54,7 +53,6 @@ public class WallResult {
         @NoArgsConstructor
         @Data
         public static class TablesBean {
-
             @JSONField(name = "name")
             private String name;
 

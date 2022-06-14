@@ -25,7 +25,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateIndexTest_5 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE TABLE app_info (id bigint(20) NOT NULL, app_name varchar(255) NOT NULL ,PRIMARY KEY (id),INDEX idx USING BTREE (app_name) comment '') ";

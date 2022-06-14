@@ -25,10 +25,9 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleAlterIndexTest2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter index TAXI.AE_ID_AU_CATE_PROD_HMK_TMP_IND rebuild";
+                "alter index TAXI.AE_ID_AU_CATE_PROD_HMK_TMP_IND rebuild";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

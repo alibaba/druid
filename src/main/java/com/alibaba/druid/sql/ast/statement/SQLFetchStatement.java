@@ -22,11 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLFetchStatement extends SQLStatementImpl implements SQLReplaceable {
-
-    private SQLName       cursorName;
-    private boolean       bulkCollect;
+    private SQLName cursorName;
+    private boolean bulkCollect;
     private List<SQLExpr> into = new ArrayList<SQLExpr>();
-    private SQLLimit      limit;
+    private SQLLimit limit;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

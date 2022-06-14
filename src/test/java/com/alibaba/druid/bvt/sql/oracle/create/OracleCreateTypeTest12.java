@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTypeTest12 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE\n" +
                 "TYPE mybb wrapped\n" +
@@ -85,7 +84,7 @@ public class OracleCreateTypeTest12 extends OracleTest {
                         "4YeykduDwWpKI7JeaWrDQ5SWiVgwg5n0dLhcWvou/6GX6rh0K6W/m8Ayy8xQjwlppZmB8L8z\n" +
                         "vbLLUrKeK2fhZ1JJscqkTZ4s6sZ86o5CkZQ1+fmoCEHRnn2mVV986ixuyTCSREZA25hXQFfU\n" +
                         "W757xtr4B5ICysO43qOCpqYu0laZ;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

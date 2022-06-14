@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest18 extends TestCase {
-
     public void test_alter_charset() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD COLUMN `f2` VARCHAR(45) CHARACTER SET gbk NULL  FIRST ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -41,7 +40,7 @@ public class MySqlAlterTableTest18 extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) COLLATE utf8_bin NULL FIRST;", output);
     }
-    
+
     public void test_alter_charset_collate() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD COLUMN `f2` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_bin  NULL  FIRST ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

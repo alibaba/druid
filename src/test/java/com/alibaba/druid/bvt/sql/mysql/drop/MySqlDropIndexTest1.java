@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlDropIndexTest1 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "drop index index1 on t1 algorithm=default;";
 

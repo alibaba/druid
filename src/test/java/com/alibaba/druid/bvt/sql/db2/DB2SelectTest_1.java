@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_1 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM DSN81010.EMP FETCH FIRST 5 ROWS ONLY;";
 
@@ -59,8 +58,8 @@ public class DB2SelectTest_1 extends DB2Test {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
         Assert.assertEquals("SELECT *" //
-                            + "\nFROM DSN81010.EMP"
-                            + "\nFETCH FIRST 5 ROWS ONLY;", //
-                            output);
+                        + "\nFROM DSN81010.EMP"
+                        + "\nFETCH FIRST 5 ROWS ONLY;", //
+                output);
     }
 }

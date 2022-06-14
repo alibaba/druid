@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlRaftLeaderTransferStatement extends MySqlStatementImpl {
-
     private SQLCharExpr shard;
     private SQLCharExpr from;
     private SQLCharExpr to;

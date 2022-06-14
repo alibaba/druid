@@ -25,16 +25,14 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
-
 public class PGWallProvider extends WallProvider {
+    public static final String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/postgres";
 
-    public final static String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/postgres";
-
-    public PGWallProvider(){
+    public PGWallProvider() {
         this(new WallConfig(DEFAULT_CONFIG_DIR));
     }
 
-    public PGWallProvider(WallConfig config){
+    public PGWallProvider(WallConfig config) {
         super(config, DbType.postgresql);
     }
 

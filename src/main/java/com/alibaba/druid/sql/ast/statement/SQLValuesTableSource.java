@@ -35,7 +35,6 @@ public class SQLValuesTableSource extends SQLTableSourceImpl implements SQLSelec
     private List<SQLName> columns = new ArrayList<SQLName>();
 
     public SQLValuesTableSource() {
-
     }
 
     public List<SQLListExpr> getValues() {
@@ -85,7 +84,6 @@ public class SQLValuesTableSource extends SQLTableSourceImpl implements SQLSelec
 
     @Override
     public SQLValuesTableSource clone() {
-
         SQLValuesTableSource x = new SQLValuesTableSource();
 
         x.setAlias(this.alias);

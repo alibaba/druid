@@ -29,13 +29,12 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_group_concat extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT GROUP_CONCAT(ext_customer_id Separator '.') " //
-                     + "from ad_texts " //
-                     + "where customer_id=13001 " //
-                     + "and description1 like '%爱丽%' " //
-                     + "order by id asc;";
+                + "from ad_texts " //
+                + "where customer_id=13001 " //
+                + "and description1 like '%爱丽%' " //
+                + "order by id asc;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -56,7 +55,6 @@ public class MySqlSelectTest_group_concat extends MysqlTest {
         stmt.accept(visitor);
 
 
-
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
@@ -71,10 +69,10 @@ public class MySqlSelectTest_group_concat extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT GROUP_CONCAT(ext_customer_id SEPARATOR '.')" //
-                            + "\nFROM ad_texts" //
-                            + "\nWHERE customer_id = 13001" //
-                            + "\n\tAND description1 LIKE '%爱丽%'" //
-                            + "\nORDER BY id ASC;", //
-                            output);
+                        + "\nFROM ad_texts" //
+                        + "\nWHERE customer_id = 13001" //
+                        + "\n\tAND description1 LIKE '%爱丽%'" //
+                        + "\nORDER BY id ASC;", //
+                output);
     }
 }

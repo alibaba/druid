@@ -28,7 +28,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class Demo_casewhen extends TestCase {
-
     public void test_demo_0() throws Exception {
         String sql = "select case when a = 20 then b else c end from emp";
 

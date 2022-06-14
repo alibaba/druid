@@ -19,16 +19,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author peiheng.qph
  * @version $Id: AntsparkCreateTableStatement.java, v 0.1 2018年09月14日 15:02 peiheng.qph Exp $
  */
 public class AntsparkCreateTableStatement extends SQLCreateTableStatement {
-    protected List<SQLAssignItem>    mappedBy        = new ArrayList<SQLAssignItem>(1);
-    protected List<SQLExpr>          skewedBy        = new ArrayList<SQLExpr>();
-    protected List<SQLExpr>          skewedByOn      = new ArrayList<SQLExpr>();
+    protected List<SQLAssignItem> mappedBy = new ArrayList<SQLAssignItem>(1);
+    protected List<SQLExpr> skewedBy = new ArrayList<SQLExpr>();
+    protected List<SQLExpr> skewedByOn = new ArrayList<SQLExpr>();
     protected Map<String, SQLObject> serdeProperties = new LinkedHashMap<String, SQLObject>();
-    protected SQLExpr            metaLifeCycle;
+    protected SQLExpr metaLifeCycle;
     protected SQLExprTableSource datasource;
 
     public AntsparkCreateTableStatement() {
@@ -92,6 +91,7 @@ public class AntsparkCreateTableStatement extends SQLCreateTableStatement {
         }
         super.accept0(v);
     }
+
     protected void accept0(AntsparkVisitor v) {
         if (v.visit(this)) {
             acceptChild(v);

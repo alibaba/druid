@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ClickhouseLexer extends Lexer {
-    public final static Keywords DEFAULT_KEYWORDS;
+    public static final Keywords DEFAULT_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -39,7 +39,7 @@ public class ClickhouseLexer extends Lexer {
         super.keywords = DEFAULT_KEYWORDS;
     }
 
-    public ClickhouseLexer(String input, SQLParserFeature... features){
+    public ClickhouseLexer(String input, SQLParserFeature... features) {
         super(input);
         super.keywords = DEFAULT_KEYWORDS;
         for (SQLParserFeature feature : features) {

@@ -10,14 +10,13 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest137 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `c1` (\n" +
                 "        order bigint);";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -44,8 +43,6 @@ public class MySqlCreateTableTest137 extends MysqlTest {
         System.out.println(hints);
 
     }
-
-
 
 
 }

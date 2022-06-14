@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class MySqlSelectTest_302_agg
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT (CASE WHEN (`test4dmp`.`sum`(1) OVER (PARTITION BY 1) = 1) THEN 1 END) `case when sum(1) OVER (PARTITION BY 1 ) =1 then 1 end`\n" +
                 "FROM\n" +

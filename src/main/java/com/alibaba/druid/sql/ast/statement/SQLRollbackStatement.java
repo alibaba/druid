@@ -26,20 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLRollbackStatement extends SQLStatementImpl {
-
     private SQLName to;
 
     // for mysql
     private Boolean chain;
     private Boolean release;
     private SQLExpr force;
-    
+
     public SQLRollbackStatement() {
-        
     }
-    
+
     public SQLRollbackStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

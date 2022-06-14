@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleGrantTest_1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "GRANT CREATE SESSION  TO hr;";
 
@@ -39,7 +38,7 @@ public class OracleGrantTest_1 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("GRANT CREATE SESSION TO hr;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

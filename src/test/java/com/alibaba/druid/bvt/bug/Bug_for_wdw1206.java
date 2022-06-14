@@ -8,8 +8,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class Bug_for_wdw1206 extends TestCase {
-
-    private ClassLoader     ctxClassLoader;
+    private ClassLoader ctxClassLoader;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -25,7 +24,7 @@ public class Bug_for_wdw1206 extends TestCase {
 
     protected void tearDown() throws Exception {
         Thread.currentThread().setContextClassLoader(ctxClassLoader);
-        
+
         JdbcUtils.close(dataSource);
     }
 

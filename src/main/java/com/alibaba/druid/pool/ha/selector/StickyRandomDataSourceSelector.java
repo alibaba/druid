@@ -30,7 +30,7 @@ import javax.sql.DataSource;
  * @see StickyDataSourceHolder
  */
 public class StickyRandomDataSourceSelector extends RandomDataSourceSelector {
-    private final static Log LOG = LogFactory.getLog(StickyRandomDataSourceSelector.class);
+    private static final Log LOG = LogFactory.getLog(StickyRandomDataSourceSelector.class);
 
     private ThreadLocal<StickyDataSourceHolder> holders = new ThreadLocal<StickyDataSourceHolder>();
 

@@ -15,34 +15,34 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  * A MSSQLValidConnectionChecker.
  */
 public class MSSQLValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
-
     private static final long serialVersionUID = 1L;
     private static final String DEFAULT_VALIDATION_QUERY = "SELECT 1";
 
-    public MSSQLValidConnectionChecker(){
-
+    public MSSQLValidConnectionChecker() {
     }
 
-    public boolean isValidConnection(final Connection c, String validateQuery, int validationQueryTimeout) throws Exception {
+    public boolean isValidConnection(final Connection c,
+                                     String validateQuery,
+                                     int validationQueryTimeout) throws Exception {
         if (c.isClosed()) {
             return false;
         }
 
-        if(StringUtils.isEmpty(validateQuery)) {
+        if (StringUtils.isEmpty(validateQuery)) {
             validateQuery = DEFAULT_VALIDATION_QUERY;
         }
 

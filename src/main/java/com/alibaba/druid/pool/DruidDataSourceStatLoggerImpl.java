@@ -15,29 +15,28 @@
  */
 package com.alibaba.druid.pool;
 
-import static com.alibaba.druid.util.JdbcSqlStatUtils.rtrim;
+import com.alibaba.druid.stat.JdbcSqlStatValue;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import com.alibaba.druid.stat.JdbcSqlStatValue;
-import com.alibaba.druid.support.json.JSONUtils;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
+import static com.alibaba.druid.util.JdbcSqlStatUtils.rtrim;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  * @since 0.2.19
  */
 public class DruidDataSourceStatLoggerImpl extends DruidDataSourceStatLoggerAdapter {
+    private static Log LOG = LogFactory.getLog(DruidDataSourceStatLoggerImpl.class);
 
-    private static Log LOG    = LogFactory.getLog(DruidDataSourceStatLoggerImpl.class);
+    private Log logger = LOG;
 
-    private Log        logger = LOG;
-
-    public DruidDataSourceStatLoggerImpl(){
+    public DruidDataSourceStatLoggerImpl() {
         this.configFromProperties(System.getProperties());
     }
 

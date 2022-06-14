@@ -25,19 +25,18 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleBlockTest3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE " + //
-                     "  job BINARY_INTEGER := :job; " + //
-                     "  next_date DATE := :mydate;  " + //
-                     "  broken BOOLEAN := FALSE; " + //
-                     "BEGIN " + //
-                     "  get_promo_product_search; " + //
-                     "  :mydate := next_date; " + //
-                     "  IF broken THEN :b := 1; " + //
-                     "  ELSE :b := 0; " + //
-                     "  END IF; " + //
-                     "END; ";
+                "  job BINARY_INTEGER := :job; " + //
+                "  next_date DATE := :mydate;  " + //
+                "  broken BOOLEAN := FALSE; " + //
+                "BEGIN " + //
+                "  get_promo_product_search; " + //
+                "  :mydate := next_date; " + //
+                "  IF broken THEN :b := 1; " + //
+                "  ELSE :b := 0; " + //
+                "  END IF; " + //
+                "END; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

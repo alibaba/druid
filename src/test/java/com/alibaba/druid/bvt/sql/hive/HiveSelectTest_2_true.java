@@ -32,7 +32,6 @@ public class HiveSelectTest_2_true extends TestCase {
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
 
-
 //        System.out.println("Tables : " + visitor.getTables());
 //      System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());

@@ -27,14 +27,12 @@ import com.alibaba.druid.pool.DruidPooledResultSet;
 import com.alibaba.druid.pool.DruidPooledStatement;
 
 public class ResultSetTest2 extends TestCase {
-
     private DruidPooledStatement stmt;
-    private MockResultSet     raw;
+    private MockResultSet raw;
     private DruidPooledResultSet resultSet;
 
     protected void setUp() throws Exception {
         stmt = new DruidPooledStatement(null, null) {
-
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {
                     return (SQLException) error;
@@ -45,7 +43,7 @@ public class ResultSetTest2 extends TestCase {
         };
 
         raw = new MockResultSet(null);
-        raw.getRows().add(new Object[] { null });
+        raw.getRows().add(new Object[]{null});
         resultSet = new DruidPooledResultSet(stmt, raw);
     }
 
@@ -624,7 +622,6 @@ public class ResultSetTest2 extends TestCase {
 
     public void test_closeError() throws Exception {
         MockResultSet mock = new MockResultSet(null) {
-
             public void close() throws SQLException {
                 throw new SQLException();
             }

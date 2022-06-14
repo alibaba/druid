@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 
 public class SQLServerInsertTest7 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO MMS_SETTLEMENT_COM(handler,handleTime,MID,MERCHANTNAME,TOTALAMT,ACTUALAMT,"
                 + "     paymentMoney,STATUS,SERIAL_NUM,REMARKS)"

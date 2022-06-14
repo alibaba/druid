@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 
 public class MySqlSelectTest_248 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select top.* from t1 top";
 
@@ -35,7 +34,6 @@ public class MySqlSelectTest_248 extends MysqlTest {
         assertEquals("SELECT top.*\n" +
                 "FROM t1 top", stmt.toString());
     }
-
 
 
 }

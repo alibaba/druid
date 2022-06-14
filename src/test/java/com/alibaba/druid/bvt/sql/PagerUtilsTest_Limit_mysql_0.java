@@ -6,7 +6,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class PagerUtilsTest_Limit_mysql_0 extends TestCase {
-
     public void test_mysql_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.limit(sql, JdbcConstants.MYSQL, 0, 10);

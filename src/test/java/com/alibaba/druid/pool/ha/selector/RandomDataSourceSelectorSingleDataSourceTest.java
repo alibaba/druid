@@ -14,7 +14,7 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
 public class RandomDataSourceSelectorSingleDataSourceTest {
-    private final static Log LOG = LogFactory
+    private static final Log LOG = LogFactory
             .getLog(RandomDataSourceSelectorSingleDataSourceTest.class);
 
     private HighAvailableDataSource highAvailableDataSource;

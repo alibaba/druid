@@ -24,24 +24,23 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_for_3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
-				"  v_employees employees%ROWTYPE;\n" +
-				"  CURSOR c1 is SELECT * FROM employees;\n" +
-				"BEGIN\n" +
-				"  OPEN c1;\n" +
-				"  -- Fetch entire row into v_employees record:\n" +
-				"  FOR i IN 1..10 LOOP\n" +
-				"    FETCH c1 INTO v_employees;\n" +
-				"    EXIT WHEN c1%NOTFOUND;\n" +
-				"    -- Process data here\n" +
-				"  END LOOP;\n" +
-				"  CLOSE c1;\n" +
-				"END;"; //
+                "  v_employees employees%ROWTYPE;\n" +
+                "  CURSOR c1 is SELECT * FROM employees;\n" +
+                "BEGIN\n" +
+                "  OPEN c1;\n" +
+                "  -- Fetch entire row into v_employees record:\n" +
+                "  FOR i IN 1..10 LOOP\n" +
+                "    FETCH c1 INTO v_employees;\n" +
+                "    EXIT WHEN c1%NOTFOUND;\n" +
+                "    -- Process data here\n" +
+                "  END LOOP;\n" +
+                "  CLOSE c1;\n" +
+                "END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -65,42 +64,42 @@ public class Oracle_pl_for_3 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
-			System.out.println(output);
-			assertEquals("DECLARE\n" +
-							"\tv_employees employees%ROWTYPE;\n" +
-							"\tCURSOR c1 IS\n" +
-							"\t\tSELECT *\n" +
-							"\t\tFROM employees;\n" +
-							"BEGIN\n" +
-							"\tOPEN c1;\n" +
-							"\tFOR i IN 1..10\n" +
-							"\tLOOP\n" +
-							"\t\tFETCH c1 INTO v_employees;\n" +
-							"\t\tEXIT WHEN c1%NOTFOUND;\n" +
-							"\tEND LOOP;\n" +
-							"\tCLOSE c1;\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("declare\n" +
-							"\tv_employees employees%ROWTYPE;\n" +
-							"\tcursor c1 is\n" +
-							"\t\tselect *\n" +
-							"\t\tfrom employees;\n" +
-							"begin\n" +
-							"\topen c1;\n" +
-							"\tfor i in 1..10\n" +
-							"\tloop\n" +
-							"\t\tfetch c1 into v_employees;\n" +
-							"\t\texit when c1%NOTFOUND;\n" +
-							"\tend loop;\n" +
-							"\tclose c1;\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+            System.out.println(output);
+            assertEquals("DECLARE\n" +
+                            "\tv_employees employees%ROWTYPE;\n" +
+                            "\tCURSOR c1 IS\n" +
+                            "\t\tSELECT *\n" +
+                            "\t\tFROM employees;\n" +
+                            "BEGIN\n" +
+                            "\tOPEN c1;\n" +
+                            "\tFOR i IN 1..10\n" +
+                            "\tLOOP\n" +
+                            "\t\tFETCH c1 INTO v_employees;\n" +
+                            "\t\tEXIT WHEN c1%NOTFOUND;\n" +
+                            "\tEND LOOP;\n" +
+                            "\tCLOSE c1;\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("declare\n" +
+                            "\tv_employees employees%ROWTYPE;\n" +
+                            "\tcursor c1 is\n" +
+                            "\t\tselect *\n" +
+                            "\t\tfrom employees;\n" +
+                            "begin\n" +
+                            "\topen c1;\n" +
+                            "\tfor i in 1..10\n" +
+                            "\tloop\n" +
+                            "\t\tfetch c1 into v_employees;\n" +
+                            "\t\texit when c1%NOTFOUND;\n" +
+                            "\tend loop;\n" +
+                            "\tclose c1;\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

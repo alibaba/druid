@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest89 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE \"ACCOUNT\".\"GROUP_BILLGEN_REQUEST\" \n" +

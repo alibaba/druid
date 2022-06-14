@@ -27,14 +27,13 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlDeleteTest_4_force_partition extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "DELETE force all partitions car_tt FROM runoob_tbl WHERE runoob_id=3;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         Assert.assertEquals("DELETE FORCE ALL PARTITIONS car_tt\n" +
                 "FROM runoob_tbl\n" +
                 "WHERE runoob_id = 3;", SQLUtils.toMySqlString(stmt));
@@ -53,7 +52,7 @@ public class MySqlDeleteTest_4_force_partition extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());

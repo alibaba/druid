@@ -8,11 +8,9 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 /**
- *
  * @author lijun.cailj 2018/1/3
  */
 public class MysqlSelectTest_like extends MysqlTest {
-
     public void test_2() throws Exception {
         String sql = "select * from table1 where name like \"%lijun%\"";
 

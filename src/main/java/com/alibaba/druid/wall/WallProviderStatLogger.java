@@ -18,7 +18,6 @@ package com.alibaba.druid.wall;
 import java.util.Properties;
 
 public interface WallProviderStatLogger {
-
     void log(WallProviderStatValue statValue);
 
     void configFromProperties(Properties properties);

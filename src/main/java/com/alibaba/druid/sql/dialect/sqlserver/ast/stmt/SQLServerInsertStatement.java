@@ -24,12 +24,11 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLServerInsertStatement extends SQLInsertStatement implements SQLServerObject {
+    private boolean defaultValues;
 
-    private boolean            defaultValues;
+    private SQLServerTop top;
 
-    private SQLServerTop       top;
-
-    private SQLServerOutput    output;
+    private SQLServerOutput output;
 
     public SQLServerInsertStatement() {
         dbType = DbType.sqlserver;

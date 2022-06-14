@@ -33,11 +33,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by wenshao on 21/07/2017.
  */
 public class Schema {
-    private         String                  catalog;
-    private         String                  name;
-    protected final Map<Long, SchemaObject> objects    = new ConcurrentHashMap<Long, SchemaObject>(16, 0.75f, 1);
-    protected final Map<Long, SchemaObject> functions  = new ConcurrentHashMap<Long, SchemaObject>(16, 0.75f, 1);
-    private         SchemaRepository        repository;
+    private String catalog;
+    private String name;
+    protected final Map<Long, SchemaObject> objects = new ConcurrentHashMap<Long, SchemaObject>(16, 0.75f, 1);
+    protected final Map<Long, SchemaObject> functions = new ConcurrentHashMap<Long, SchemaObject>(16, 0.75f, 1);
+    private SchemaRepository repository;
 
     protected Schema(SchemaRepository repository) {
         this(repository, null);
@@ -153,14 +153,13 @@ public class Schema {
                 && object.getType() == SchemaObjectType.Sequence;
     }
 
-
     public SchemaObject findTable(SQLTableSource tableSource, String alias) {
         if (tableSource instanceof SQLExprTableSource) {
             if (StringUtils.equalsIgnoreCase(alias, tableSource.computeAlias())) {
                 SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
 
                 SchemaObject tableObject = exprTableSource.getSchemaObject();
-                if (tableObject !=  null) {
+                if (tableObject != null) {
                     return tableObject;
                 }
 

@@ -25,15 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLShowCreateMaterializedViewStatement extends SQLStatementImpl implements SQLShowStatement {
-
     private SQLExpr name;
 
     public SQLShowCreateMaterializedViewStatement() {
-
     }
 
     public SQLShowCreateMaterializedViewStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

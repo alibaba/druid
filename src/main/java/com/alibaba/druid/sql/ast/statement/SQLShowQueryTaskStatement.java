@@ -19,14 +19,13 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLShowQueryTaskStatement extends SQLStatementImpl implements SQLShowStatement, SQLReplaceable {
-    private boolean    full;
-    private SQLExpr    where;
+    private boolean full;
+    private SQLExpr where;
     private SQLOrderBy orderBy;
-    private SQLLimit   limit;
-    private SQLExpr    user;
+    private SQLLimit limit;
+    private SQLExpr user;
 
     public SQLShowQueryTaskStatement() {
-
     }
 
     @Override

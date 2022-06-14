@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 
 public class MySqlSelectTest_275 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "(select id from test4dmp.test_odps where id >100 order by id) order by id2 limit 10\n" +
                 "\n";
@@ -52,7 +51,6 @@ public class MySqlSelectTest_275 extends MysqlTest {
                 "ORDER BY id\n" +
                 "LIMIT 10)", stmt.toString());
     }
-
 
 
 }

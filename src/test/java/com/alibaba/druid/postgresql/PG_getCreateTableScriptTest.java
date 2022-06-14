@@ -31,7 +31,8 @@ public class PG_getCreateTableScriptTest extends DbTestCase {
         //String createTableScript = JdbcUtils.getCreateTableScript(conn, JdbcConstants.ORACLE);
         //System.out.println(createTableScript);
 
-        Statement stmt = conn.createStatement();;
+        Statement stmt = conn.createStatement();
+        ;
         ResultSet rs = stmt.executeQuery("SELECT * FROM pg_catalog.pg_tables " +
                 "where schemaname not in ('pg_catalog', 'information_schema', 'sys')");
         JdbcUtils.printResultSet(rs);

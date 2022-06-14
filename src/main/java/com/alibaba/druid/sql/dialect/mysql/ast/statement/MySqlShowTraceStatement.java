@@ -17,15 +17,13 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowTraceStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
     private SQLOrderBy orderBy;
-    private SQLExpr    where;
-    private SQLLimit   limit;
+    private SQLExpr where;
+    private SQLLimit limit;
 
     public SQLLimit getLimit() {
         return limit;

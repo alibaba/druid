@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleFunctionDataType extends SQLDataTypeImpl {
-    private boolean isStatic = false;
+    private boolean isStatic;
     private final List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
     private SQLDataType returnDataType;

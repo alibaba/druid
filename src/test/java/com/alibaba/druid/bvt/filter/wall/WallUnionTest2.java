@@ -24,26 +24,25 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景，被攻击者用于测试当前SQL拥有多少字段
- * 
+ *
  * @author wenshao
  */
 public class WallUnionTest2 extends TestCase {
-
     public void testMySql() throws Exception {
         WallConfig config = new WallConfig();
         config.setSelectUnionCheck(true);
         Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where f1 = 1 union select 1, 2 where 1 = 1",
-                                                    config));
+                config));
         Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where f1 = 1 union select 1, 2 where 1 = 1 --",
-                                                     config));
+                config));
     }
 
     public void testOracle() throws Exception {
         WallConfig config = new WallConfig();
         config.setSelectUnionCheck(true);
         Assert.assertTrue(WallUtils.isValidateOracle("select f1, f2 from t where f1 = 1 union select 1, 2 where 1 = 1",
-                                                     config));
+                config));
         Assert.assertFalse(WallUtils.isValidateOracle("select f1, f2 from t where f1 = 1 union select 1, 2 where 1 = 1 --",
-                                                      config));
+                config));
     }
 }

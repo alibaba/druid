@@ -26,11 +26,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest1 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE lookup" + //
-                     "  (id INT, INDEX USING BTREE (id))" + //
-                     "  ENGINE = MEMORY;";
+                "  (id INT, INDEX USING BTREE (id))" + //
+                "  ENGINE = MEMORY;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -53,6 +52,6 @@ public class MySqlCreateTableTest1 extends MysqlTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("lookup")));
 
-         Assert.assertTrue(visitor.getColumns().contains(new Column("lookup", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("lookup", "id")));
     }
 }

@@ -23,13 +23,12 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class HiveSelectTest_45_issue_3987 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "select id,number_id,parent_id,layer_id,alias,name \n" +
                 "from (select id,number_id,parent_id,layer_id,alias,name,row_number() over(distribute by number_id sort by create_time desc,id desc) rownum from hdw_ods.ods_my_coredata__dts_device_category where pdate ='') m where m.rownum = 1";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.hive);
-        SQLStatement stmt =  statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
         assertEquals("SELECT id, number_id, parent_id, layer_id, alias\n" +
                 "\t, name\n" +

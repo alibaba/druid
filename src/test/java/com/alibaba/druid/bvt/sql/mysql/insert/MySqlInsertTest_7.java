@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlInsertTest_7 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "insert into Apply (applicant_id, applytime, applytype, approver_id, end, process, start) values (?, ?, ?, ?, ?, ?, ?)";
 
@@ -47,9 +46,9 @@ public class MySqlInsertTest_7 extends MysqlTest {
         stmt.accept(visitor);
 
         Assert.assertEquals("INSERT INTO Apply (applicant_id, applytime, applytype, approver_id, end" + //
-                            "\n\t, process, start)" + //
-                            "\nVALUES (?, ?, ?, ?, ?" + //
-                            "\n\t, ?, ?)", //
-                            SQLUtils.toMySqlString(insertStmt));
+                        "\n\t, process, start)" + //
+                        "\nVALUES (?, ?, ?, ?, ?" + //
+                        "\n\t, ?, ?)", //
+                SQLUtils.toMySqlString(insertStmt));
     }
 }

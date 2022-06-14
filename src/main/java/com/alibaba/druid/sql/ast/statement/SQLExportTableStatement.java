@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLExportTableStatement extends SQLStatementImpl {
-    private SQLExprTableSource  table;
+    private SQLExprTableSource table;
     private List<SQLAssignItem> partition = new ArrayList<SQLAssignItem>();
-    private SQLExpr             to;
-    private SQLExpr             forReplication;
+    private SQLExpr to;
+    private SQLExpr forReplication;
 
     public SQLExportTableStatement() {
         dbType = DbType.hive;

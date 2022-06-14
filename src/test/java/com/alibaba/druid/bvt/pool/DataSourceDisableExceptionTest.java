@@ -11,12 +11,12 @@ public class DataSourceDisableExceptionTest extends PoolTestCase {
         DataSourceDisableException ex = new DataSourceDisableException();
         Assert.assertEquals(null, ex.getMessage());
     }
-    
+
     public void test_1() throws Exception {
         DataSourceDisableException ex = new DataSourceDisableException("XXX");
         Assert.assertEquals("XXX", ex.getMessage());
     }
-    
+
     public void test_2() throws Exception {
         DataSourceDisableException ex = new DataSourceDisableException(new IllegalStateException());
         Assert.assertTrue(ex.getCause() instanceof IllegalStateException);

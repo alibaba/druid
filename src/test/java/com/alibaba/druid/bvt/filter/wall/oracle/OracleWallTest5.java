@@ -22,10 +22,9 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallUtils;
 
 public class OracleWallTest5 extends TestCase {
-
     public void test_true() throws Exception {
         String sql = //
-        "DROP TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\"";
+                "DROP TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\"";
         Assert.assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

@@ -18,7 +18,6 @@ import org.junit.Assert;
  * @Date 2019-05-06 15:45
  */
 public class MySqlAlterTableAddIndex_10 extends TestCase {
-
     public void test_alter_table_add_index_with_options() throws Exception {
         String sql = "ALTER TABLE test001 ADD INDEX `i` using btree (`b`) key_block_size=32 comment 'hehe';";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

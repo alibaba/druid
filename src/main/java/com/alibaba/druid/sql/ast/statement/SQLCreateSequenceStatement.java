@@ -54,7 +54,6 @@ public class SQLCreateSequenceStatement extends SQLStatementImpl implements SQLC
     private SQLExpr step;
 
     public SQLCreateSequenceStatement() {
-
     }
 
     @Override

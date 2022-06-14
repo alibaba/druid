@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlSelectTest_121 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT DISTINCT o_orderkey\n" +
                 "FROM simple_query1.orders__0\n" +
@@ -30,7 +29,7 @@ public class MySqlSelectTest_121 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

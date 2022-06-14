@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
-
 public class HintsTest extends TestCase {
     public void test_hints_0() throws Exception {
         String sql = "CREATE /*!32302 TEMPORARY */ TABLE t (a INT);";
@@ -34,7 +33,7 @@ public class HintsTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE /*!32302 TEMPORARY */ TABLE t (\n\ta INT\n);", output);
     }
-    
+
     public void test_hints_1() throws Exception {
         String sql = "SELECT /*! STRAIGHT_JOIN */ col1 FROM table1,table2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -43,7 +42,7 @@ public class HintsTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT /*! STRAIGHT_JOIN */ col1\nFROM table1, table2", output);
     }
-    
+
     public void test_hints_none() throws Exception {
         String sql = "SELECT /* STRAIGHT_JOIN */ col1 FROM table1,table2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

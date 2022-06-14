@@ -25,10 +25,9 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest16_local extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE INDEX dbobjs_idx ON dbobjs (created) LOCAL";
+                "CREATE INDEX dbobjs_idx ON dbobjs (created) LOCAL";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

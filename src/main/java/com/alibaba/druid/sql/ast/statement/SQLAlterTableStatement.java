@@ -16,11 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -29,39 +25,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLAlterStatement {
-
-    private SQLExprTableSource      tableSource;
-    private List<SQLAlterTableItem> items                   = new ArrayList<SQLAlterTableItem>();
+    private SQLExprTableSource tableSource;
+    private List<SQLAlterTableItem> items = new ArrayList<SQLAlterTableItem>();
 
     // for mysql
-    private boolean                 ignore                  = false;
-    private boolean                 online                  = false;
-    private boolean                 offline                 = false;
+    private boolean ignore;
+    private boolean online;
+    private boolean offline;
 
-    private boolean                 updateGlobalIndexes     = false;
-    private boolean                 invalidateGlobalIndexes = false;
+    private boolean updateGlobalIndexes;
+    private boolean invalidateGlobalIndexes;
 
-    private boolean                 removePatiting          = false;
-    private boolean                 upgradePatiting         = false;
-    private List<SQLAssignItem>     tableOptions = new ArrayList<SQLAssignItem>();
-    private SQLPartitionBy          partition               = null;
+    private boolean removePatiting;
+    private boolean upgradePatiting;
+    private List<SQLAssignItem> tableOptions = new ArrayList<SQLAssignItem>();
+    private SQLPartitionBy partition;
 
     // odps
-    private boolean                 mergeSmallFiles         = false;
-    protected boolean               range;
-    protected final List<SQLSelectOrderByItem> clusteredBy      = new ArrayList<SQLSelectOrderByItem>();
-    protected final List<SQLSelectOrderByItem> sortedBy         = new ArrayList<SQLSelectOrderByItem>();
-    protected int                   buckets;
-    protected int                   shards;
+    private boolean mergeSmallFiles;
+    protected boolean range;
+    protected final List<SQLSelectOrderByItem> clusteredBy = new ArrayList<SQLSelectOrderByItem>();
+    protected final List<SQLSelectOrderByItem> sortedBy = new ArrayList<SQLSelectOrderByItem>();
+    protected int buckets;
+    protected int shards;
 
-    private boolean                 ifExists                 = false;
-    private boolean                 notClustered             = false;
+    private boolean ifExists;
+    private boolean notClustered;
 
-    public SQLAlterTableStatement(){
-
+    public SQLAlterTableStatement() {
     }
 
-    public SQLAlterTableStatement(DbType dbType){
+    public SQLAlterTableStatement(DbType dbType) {
         super(dbType);
     }
 

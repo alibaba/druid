@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlShowFieldsTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW FIELDS FROM `schema_migrations`";
 

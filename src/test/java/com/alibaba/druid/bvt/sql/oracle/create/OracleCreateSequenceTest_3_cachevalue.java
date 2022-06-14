@@ -26,10 +26,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateSequenceTest_3_cachevalue extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE SEQUENCE \"GJS_ZIXUN\".\"FINANCE_EXPLAIN_ID_GENERATOR\" CACHE 2";
+                "CREATE SEQUENCE \"GJS_ZIXUN\".\"FINANCE_EXPLAIN_ID_GENERATOR\" CACHE 2";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -37,9 +36,9 @@ public class OracleCreateSequenceTest_3_cachevalue extends OracleTest {
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         Assert.assertEquals("CREATE SEQUENCE \"GJS_ZIXUN\".\"FINANCE_EXPLAIN_ID_GENERATOR\" CACHE 2",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

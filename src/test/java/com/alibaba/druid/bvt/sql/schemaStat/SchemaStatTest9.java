@@ -11,7 +11,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SchemaStatTest9 extends TestCase {
-
     public void test_schemaStat() throws Exception {
         String sql = "select now() from t";
 

@@ -26,27 +26,26 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest54 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "       CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"PUSH\" NUMBER, \n" +
-                "  \"LOAD\" NUMBER, \n" +
-                "  \"TABLE_ID\" NUMBER, \n" +
-                "  \"TABLE_NAME\" VARCHAR2(50), \n" +
-                "  \"PRI_KEY\" VARCHAR2(50), \n" +
-                "  \"TEMP_TABLE_NAME\" VARCHAR2(50)\n" +
-                "   ) \n" +
-                "   ORGANIZATION EXTERNAL \n" +
-                "    ( TYPE ORACLE_LOADER\n" +
-                "      DEFAULT DIRECTORY \"DIR_MQ\"\n" +
-                "      ACCESS PARAMETERS\n" +
-                "      ( records delimited by newline fields terminated by '|'    )\n" +
-                "      LOCATION\n" +
-                "       ( 'retl-table.cfg'\n" +
-                "       )\n" +
-                "    )\n" +
-                "   REJECT LIMIT UNLIMITED     ";
+                "       CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"PUSH\" NUMBER, \n" +
+                        "  \"LOAD\" NUMBER, \n" +
+                        "  \"TABLE_ID\" NUMBER, \n" +
+                        "  \"TABLE_NAME\" VARCHAR2(50), \n" +
+                        "  \"PRI_KEY\" VARCHAR2(50), \n" +
+                        "  \"TEMP_TABLE_NAME\" VARCHAR2(50)\n" +
+                        "   ) \n" +
+                        "   ORGANIZATION EXTERNAL \n" +
+                        "    ( TYPE ORACLE_LOADER\n" +
+                        "      DEFAULT DIRECTORY \"DIR_MQ\"\n" +
+                        "      ACCESS PARAMETERS\n" +
+                        "      ( records delimited by newline fields terminated by '|'    )\n" +
+                        "      LOCATION\n" +
+                        "       ( 'retl-table.cfg'\n" +
+                        "       )\n" +
+                        "    )\n" +
+                        "   REJECT LIMIT UNLIMITED     ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -73,7 +72,7 @@ public class OracleCreateTableTest54 extends OracleTest {
                         "\t\tLOCATION ('retl-table.cfg')\n" +
                         "\t)\n" +
                         "\tREJECT LIMIT UNLIMITED",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

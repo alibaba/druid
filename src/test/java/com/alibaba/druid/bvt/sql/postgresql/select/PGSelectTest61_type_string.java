@@ -34,7 +34,7 @@ public class PGSelectTest61_type_string extends TestCase {
         SQLStatement stmt = stmtList.get(0);
 
         assertEquals("SELECT int4(varbit(4) '1010');", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select int4(varbit(4) '1010');", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, stmtList.size());

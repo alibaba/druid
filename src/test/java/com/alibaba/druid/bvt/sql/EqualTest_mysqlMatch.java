@@ -9,7 +9,6 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 
 public class EqualTest_mysqlMatch extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "MATCH (f1, f2) AGAINST (f3 IN BOOLEAN MODE)";
         String sql_c = "MATCH (f1, f2) AGAINST (f4 IN BOOLEAN MODE)";

@@ -19,9 +19,7 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLScriptCommitStatement extends SQLStatementImpl {
-
-    public SQLScriptCommitStatement(){
-
+    public SQLScriptCommitStatement() {
     }
 
     public void accept0(SQLASTVisitor visitor) {

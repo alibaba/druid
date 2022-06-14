@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSubPartitionByList extends SQLSubPartitionBy {
-
     protected SQLName column;
 
     @Override

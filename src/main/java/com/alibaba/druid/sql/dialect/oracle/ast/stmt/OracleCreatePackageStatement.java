@@ -28,7 +28,7 @@ import java.util.List;
  * Created by wenshao on 23/05/2017.
  */
 public class OracleCreatePackageStatement extends OracleStatementImpl implements SQLCreateStatement {
-    private boolean            orReplace;
+    private boolean orReplace;
     private SQLName name;
 
     private boolean body;

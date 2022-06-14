@@ -26,12 +26,11 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 public class BenchmarkExecutor {
+    private int loopCount = 1000;
+    private int executeCount = 10;
 
-    private int                       loopCount    = 1000;
-    private int                       executeCount = 10;
-
-    private final List<SQLExecutor>   sqlExecList  = new ArrayList<SQLExecutor>();
-    private final List<BenchmarkCase> caseList     = new ArrayList<BenchmarkCase>();
+    private final List<SQLExecutor> sqlExecList = new ArrayList<SQLExecutor>();
+    private final List<BenchmarkCase> caseList = new ArrayList<BenchmarkCase>();
 
     public int getExecuteCount() {
         return executeCount;
@@ -99,7 +98,7 @@ public class BenchmarkExecutor {
 
         NumberFormat format = NumberFormat.getInstance();
         System.out.println("SUM\t" + benchmarkCase.getName() + "\t" + sqlExec.getName() + "\t" + format.format(millis)
-                           + "\tYoungGC " + youngGC + "\tFullGC " + fullGC);
+                + "\tYoungGC " + youngGC + "\tFullGC " + fullGC);
     }
 
     public void handleResult(SQLExecutor sqlExec, Result result) {
@@ -109,7 +108,7 @@ public class BenchmarkExecutor {
         }
         NumberFormat format = NumberFormat.getInstance();
         System.out.println(result.getName() + "\t" + sqlExec.getName() + "\t" + format.format(result.getMillis())
-                           + "\tYoungGC " + result.getYoungGC() + "\tFullGC " + result.getFullGC());
+                + "\tYoungGC " + result.getYoungGC() + "\tFullGC " + result.getFullGC());
     }
 
     private Result executeLoop(SQLExecutor sqlExec, BenchmarkCase benchmarkCase) {
@@ -190,11 +189,10 @@ public class BenchmarkExecutor {
     }
 
     public static class Result {
-
-        private String    name;
-        private long      millis;
-        private long      youngGC;
-        private long      fullGC;
+        private String name;
+        private long millis;
+        private long youngGC;
+        private long fullGC;
         private Throwable error;
 
         public String getName() {

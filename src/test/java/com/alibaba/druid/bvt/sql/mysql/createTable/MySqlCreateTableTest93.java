@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest93 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `dc_job_instance` (\n" +
                 "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
@@ -60,7 +59,7 @@ public class MySqlCreateTableTest93 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(44, stmt.getTableElementList().size());

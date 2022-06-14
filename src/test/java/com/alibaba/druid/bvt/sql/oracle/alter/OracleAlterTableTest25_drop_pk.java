@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class OracleAlterTableTest25_drop_pk extends TestCase {
-
     public void test_alter_constraint() throws Exception {
         String sql = "alter table supplier drop primary key;";
         OracleStatementParser parser = new OracleStatementParser(sql);

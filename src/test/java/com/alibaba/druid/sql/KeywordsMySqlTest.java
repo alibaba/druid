@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.sql.parser.Keywords;
 
 public class KeywordsMySqlTest extends TestCase {
-
     public void test_sort() throws Exception {
         List<String> list = new ArrayList<String>(Keywords.DEFAULT_KEYWORDS.getKeywords().keySet());
 

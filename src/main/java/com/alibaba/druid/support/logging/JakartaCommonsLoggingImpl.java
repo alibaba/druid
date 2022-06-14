@@ -19,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logging.Log {
-
     private Log log;
 
     private int errorCount;
@@ -28,14 +27,14 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
     private int debugCount;
 
     /**
-     * @since 0.2.1
      * @param log
+     * @since 0.2.1
      */
-    public JakartaCommonsLoggingImpl(Log log){
+    public JakartaCommonsLoggingImpl(Log log) {
         this.log = log;
     }
 
-    public JakartaCommonsLoggingImpl(String loggerName){
+    public JakartaCommonsLoggingImpl(String loggerName) {
         log = LogFactory.getLog(loggerName);
     }
 

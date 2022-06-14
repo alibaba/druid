@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleInsertTest11 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO departments"
                 + "   VALUES (280, 'Recreation', DEFAULT, 1700);";
@@ -39,10 +38,10 @@ public class OracleInsertTest11 extends OracleTest {
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         Assert.assertEquals("INSERT INTO departments"//
-                            + "\nVALUES (280, 'Recreation', DEFAULT, 1700);",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\nVALUES (280, 'Recreation', DEFAULT, 1700);",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

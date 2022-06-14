@@ -31,7 +31,6 @@ import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PerfTest extends TestCase {
-
     public void test_perf() throws Exception {
         for (int i = 0; i < 10; ++i) {
             // perf("SELECT * FROM my_table WHERE TRUNC(SYSDATE) = DATE '2002-10-03';");

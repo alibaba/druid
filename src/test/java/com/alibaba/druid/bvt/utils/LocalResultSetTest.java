@@ -7,7 +7,6 @@ import org.junit.Assert;
 import com.alibaba.druid.util.jdbc.LocalResultSet;
 
 public class LocalResultSetTest extends TestCase {
-
     public void test_0() throws Exception {
         LocalResultSet rs = new LocalResultSet(null);
         rs.getRows().add(new Object[1]);

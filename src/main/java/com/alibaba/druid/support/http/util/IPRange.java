@@ -22,29 +22,36 @@ package com.alibaba.druid.support.http.util;
  * specifying the network address 130.5.5.25 with a subnet mask of 255.255.255.0 can also be expressed as 130.5.5.25/24.
  * The prefix-length notation is more compact and easier to understand than writing out the mask in its traditional
  * dotted-decimal format.
+ *
  * @author Marcel Dullaart
  * @version 1.0
  * @see IPAddress
  */
 public class IPRange {
+    /**
+     * IP address
+     */
+    private IPAddress ipAddress;
 
-    /** IP address */
-    private IPAddress ipAddress             = null;
+    /**
+     * IP subnet mask
+     */
+    private IPAddress ipSubnetMask;
 
-    /** IP subnet mask */
-    private IPAddress ipSubnetMask          = null;
+    /**
+     * extended network prefix
+     */
+    private int extendedNetworkPrefix;
 
-    /** extended network prefix */
-    private int       extendedNetworkPrefix = 0;
-
-    public IPRange(String range){
+    public IPRange(String range) {
         parseRange(range);
     }
 
     // -------------------------------------------------------------------------
+
     /**
      * Return the encapsulated IP address.
-     * 
+     *
      * @return The IP address.
      */
     public final IPAddress getIPAddress() {
@@ -52,9 +59,10 @@ public class IPRange {
     }
 
     // -------------------------------------------------------------------------
+
     /**
      * Return the encapsulated subnet mask
-     * 
+     *
      * @return The IP range's subnet mask.
      */
     public final IPAddress getIPSubnetMask() {
@@ -62,9 +70,10 @@ public class IPRange {
     }
 
     // -------------------------------------------------------------------------
+
     /**
      * Return the extended extended network prefix.
-     * 
+     *
      * @return Return the extended network prefix.
      */
     public final int getExtendedNetworkPrefix() {
@@ -72,9 +81,10 @@ public class IPRange {
     }
 
     // -------------------------------------------------------------------------
+
     /**
      * Convert the IP Range into a string representation.
-     * 
+     *
      * @return Return the string representation of the IP Address following the common format xxx.xxx.xxx.xxx/xx (IP
      * address/extended network prefixs).
      */
@@ -83,11 +93,12 @@ public class IPRange {
     }
 
     // -------------------------------------------------------------------------
+
     /**
      * Parse the IP range string representation.
-     * 
+     *
      * @param range String representation of the IP range.
-     * @exception IllegalArgumentException Throws this exception if the specified range is not a valid IP network range.
+     * @throws IllegalArgumentException Throws this exception if the specified range is not a valid IP network range.
      */
     final void parseRange(String range) {
         if (range == null) {
@@ -114,7 +125,6 @@ public class IPRange {
                 ipSubnetMask = computeMaskFromNetworkPrefix(extendedNetworkPrefix);
             }
         } catch (NumberFormatException ex) {
-
             // the remaining part is not a valid decimal value.
             // Check if it's a decimal-dotted notation.
             ipSubnetMask = new IPAddress(subnetStr);
@@ -128,15 +138,15 @@ public class IPRange {
     }
 
     // -------------------------------------------------------------------------
+
     /**
      * Compute the extended network prefix from the IP subnet mask.
-     * 
+     *
      * @param mask Reference to the subnet mask IP number.
      * @return Return the extended network prefix. Return -1 if the specified mask cannot be converted into a extended
      * prefix network.
      */
     private int computeNetworkPrefixFromMask(IPAddress mask) {
-
         int result = 0;
         int tmp = mask.getIPAddress();
 
@@ -161,7 +171,6 @@ public class IPRange {
             int octet = Integer.parseInt(binary[c], 2);
             decimalIp.append(octet);
             if (c < 3) {
-
                 decimalIp.append('.');
             }
         }
@@ -169,14 +178,14 @@ public class IPRange {
     }
 
     // -------------------------------------------------------------------------
+
     /**
      * Convert a extended network prefix integer into an IP number.
-     * 
+     *
      * @param prefix The network prefix number.
      * @return Return the IP number corresponding to the extended network prefix.
      */
     private IPAddress computeMaskFromNetworkPrefix(int prefix) {
-
         /*
          * int subnet = 0; for (int i=0; i<prefix; i++) { subnet = subnet << 1; subnet += 1; }
          */
@@ -196,9 +205,10 @@ public class IPRange {
     }
 
     // -------------------------------------------------------------------------
+
     /**
      * Check if the specified IP address is in the encapsulated range.
-     * 
+     *
      * @param address The IP address to be tested.
      * @return Return <code>true</code> if the specified IP address is in the encapsulated IP range, otherwise return
      * <code>false</code>.

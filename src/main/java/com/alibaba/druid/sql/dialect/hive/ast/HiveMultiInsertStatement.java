@@ -29,10 +29,10 @@ public class HiveMultiInsertStatement extends SQLStatementImpl {
     protected SQLWithSubqueryClause with;
     private SQLTableSource from;
 
-    private List<HiveInsert>       items = new ArrayList<HiveInsert>();
-    
+    private List<HiveInsert> items = new ArrayList<HiveInsert>();
+
     public HiveMultiInsertStatement() {
-        super (DbType.hive);
+        super(DbType.hive);
     }
 
     public void setFrom(SQLTableSource x) {
@@ -50,7 +50,7 @@ public class HiveMultiInsertStatement extends SQLStatementImpl {
     public List<HiveInsert> getItems() {
         return items;
     }
-    
+
     public void addItem(HiveInsert item) {
         if (item != null) {
             item.setParent(this);

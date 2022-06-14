@@ -7,7 +7,6 @@ package org.logicalcobwebs.proxool;
 
 
 public interface ProxoolConstants {
-
     public final String PROXOOL = "proxool";
 
     /**

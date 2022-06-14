@@ -26,15 +26,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class MySqlOrderingExpr extends SQLExprImpl implements MySqlExpr, SQLReplaceable {
-
-    protected SQLExpr                  expr;
+    protected SQLExpr expr;
     protected SQLOrderingSpecification type;
-    
+
     public MySqlOrderingExpr() {
-        
     }
-    
-    public MySqlOrderingExpr(SQLExpr expr, SQLOrderingSpecification type){
+
+    public MySqlOrderingExpr(SQLExpr expr, SQLOrderingSpecification type) {
         super();
         setExpr(expr);
         this.type = type;

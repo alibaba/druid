@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest26 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "alter table xxxx UNION = (t1, t2);";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

@@ -25,16 +25,15 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class MySqlAlterTableDropIndex_0 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` DROP INDEX `ix` ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tDROP INDEX `ix`;", SQLUtils.toMySqlString(stmt));
-        
+                "\n\tDROP INDEX `ix`;", SQLUtils.toMySqlString(stmt));
+
         assertEquals("alter table `test`.`tb1`" + //
                 "\n\tdrop index `ix`;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

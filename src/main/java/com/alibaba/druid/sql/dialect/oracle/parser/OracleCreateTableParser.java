@@ -32,12 +32,11 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 public class OracleCreateTableParser extends SQLCreateTableParser {
-
-    public OracleCreateTableParser(Lexer lexer){
+    public OracleCreateTableParser(Lexer lexer) {
         super(new OracleExprParser(lexer));
     }
 
-    public OracleCreateTableParser(String sql){
+    public OracleCreateTableParser(String sql) {
         super(new OracleExprParser(sql));
     }
 
@@ -68,7 +67,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             }
         }
 
-        for (;;) {
+        for (; ; ) {
             this.getExprParser().parseSegmentAttributes(stmt);
 
             if (lexer.identifierEquals(FnvHash.Constants.IN_MEMORY_METADATA)) {
@@ -220,7 +219,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
 
                     if (lexer.token() == Token.LPAREN) {
                         lexer.nextToken();
-                        for (;;) {
+                        for (; ; ) {
                             SQLPartition partition = this.getExprParser().parsePartition();
                             partitionByHash.addPartition(partition);
                             if (lexer.token() == Token.COMMA) {
@@ -280,16 +279,16 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                         OracleLobParameters lobParameters = new OracleLobParameters();
 
                         for_:
-                        for (;;) {
+                        for (; ; ) {
                             switch (lexer.token()) {
                                 case TABLESPACE: {
                                     lexer.nextToken();
                                     SQLName tableSpace = this.exprParser.name();
                                     lobParameters.setTableSpace(tableSpace);
                                 }
-                                    continue for_;
+                                continue for_;
                                 case ENABLE:
-                                case DISABLE:{
+                                case DISABLE: {
                                     Boolean enable = lexer.token() == Token.ENABLE;
                                     lexer.nextToken();
                                     accept(Token.STORAGE);
@@ -298,7 +297,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
 
                                     lobParameters.setEnableStorageInRow(enable);
                                 }
-                                    continue for_;
+                                continue for_;
                                 case CHUNK:
                                     lexer.nextToken();
                                     SQLExpr chunk = this.exprParser.expr();
@@ -325,7 +324,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                                     lobParameters.setStorage(storageClause);
                                     continue for_;
                                 case IDENTIFIER:
-                                    long hash = lexer.hash_lower();
+                                    long hash = lexer.hashLCase();
                                     if (hash == FnvHash.Constants.PCTVERSION) {
                                         lobParameters.setPctVersion(this.exprParser.primary());
                                         lexer.nextToken();
@@ -343,7 +342,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                     }
                 }
 
-                for (;;) {
+                for (; ; ) {
                     if (lexer.identifierEquals(FnvHash.Constants.ALLOW)) {
                         lexer.nextToken();
                         if (lexer.identifierEquals("NONSCHEMA")) {
@@ -438,7 +437,6 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
 
                     if (lexer.identifierEquals("RECORDS")) {
                         lexer.nextToken();
-
 
                         if (lexer.identifierEquals("DELIMITED")) {
                             lexer.nextToken();
@@ -554,7 +552,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             logGrp.setGroup(this.exprParser.name());
 
             accept(Token.LPAREN);
-            for (;;) {
+            for (; ; ) {
                 SQLName column = this.exprParser.name();
 
                 if (lexer.identifierEquals("NO")) {
@@ -584,12 +582,12 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             }
 
             return logGrp;
-        } else if (lexer.identifierEquals(FnvHash.Constants.DATA)){
+        } else if (lexer.identifierEquals(FnvHash.Constants.DATA)) {
             lexer.nextToken();
 
             OracleSupplementalIdKey idKey = new OracleSupplementalIdKey();
             accept(Token.LPAREN);
-            for (;;) {
+            for (; ; ) {
                 if (lexer.token() == Token.ALL) {
                     lexer.nextToken();
                     idKey.setAll(true);

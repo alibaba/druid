@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreatePackageTest5 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
                 "CREATE OR REPLACE package body         cms_con_attributes_pkg is\n" +
@@ -72,7 +71,7 @@ public class OracleCreatePackageTest5 extends OracleTest {
                         "\t\tRETURN;\n" +
                         "\tEND;\n" +
                         "END cms_con_attributes_pkg;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

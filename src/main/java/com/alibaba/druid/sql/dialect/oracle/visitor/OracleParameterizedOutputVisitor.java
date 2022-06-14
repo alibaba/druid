@@ -20,18 +20,17 @@ import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 
 public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implements ParameterizedVisitor {
-
-    public OracleParameterizedOutputVisitor(){
+    public OracleParameterizedOutputVisitor() {
         this(new StringBuilder());
         this.config(VisitorFeature.OutputParameterized, true);
     }
 
-    public OracleParameterizedOutputVisitor(Appendable appender){
+    public OracleParameterizedOutputVisitor(Appendable appender) {
         super(appender);
         this.config(VisitorFeature.OutputParameterized, true);
     }
 
-    public OracleParameterizedOutputVisitor(Appendable appender, boolean printPostSemi){
+    public OracleParameterizedOutputVisitor(Appendable appender, boolean printPostSemi) {
         super(appender, printPostSemi);
         this.config(VisitorFeature.OutputParameterized, true);
     }

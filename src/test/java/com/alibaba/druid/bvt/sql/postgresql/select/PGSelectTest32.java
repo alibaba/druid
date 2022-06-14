@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest32 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select 'abc' SIMILAR TO '%(b|d)%'";
 
@@ -34,7 +33,7 @@ public class PGSelectTest32 extends PGTest {
         SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals("SELECT 'abc' SIMILAR TO '%(b|d)%'", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("select 'abc' similar to '%(b|d)%'", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());

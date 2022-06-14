@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerAlterTableTest_5 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE project_measures DROP COLUMN diff_value_1, diff_value_2, diff_value_3";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -44,7 +43,7 @@ public class SQLServerAlterTableTest_5 extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("ALTER TABLE project_measures" //
-                            + "\n\tDROP COLUMN diff_value_1, diff_value_2, diff_value_3", output);
+                + "\n\tDROP COLUMN diff_value_1, diff_value_2, diff_value_3", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(3, visitor.getColumns().size());

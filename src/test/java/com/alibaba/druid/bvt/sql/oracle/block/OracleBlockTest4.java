@@ -25,18 +25,17 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleBlockTest4 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE" + //
-                     "  done  BOOLEAN;" + //
-                     "BEGIN" + //
-                     "  FOR i IN 1..50 LOOP" + //
-                     "    IF done THEN" + //
-                     "       GOTO end_loop;" + //
-                     "    END IF;" + //
-                     "  <<end_loop>>" + //
-                     "  END LOOP;" + //
-                     "END;";
+                "  done  BOOLEAN;" + //
+                "BEGIN" + //
+                "  FOR i IN 1..50 LOOP" + //
+                "    IF done THEN" + //
+                "       GOTO end_loop;" + //
+                "    END IF;" + //
+                "  <<end_loop>>" + //
+                "  END LOOP;" + //
+                "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

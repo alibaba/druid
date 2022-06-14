@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2SelectTest_23 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "select current date,current timestamp from dual";
 
@@ -58,10 +57,10 @@ public class DB2SelectTest_23 extends DB2Test {
 
         Assert.assertEquals("SELECT CURRENT DATE, CURRENT TIMESTAMP\n" +
                         "FROM dual", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("select CURRENT DATE, CURRENT TIMESTAMP\n" +
                         "from dual", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

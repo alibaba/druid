@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 
 public class EqualTest_orderBy extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "ORDER BY f1";
         String sql_c = "ORDER BY f2";
@@ -31,10 +30,10 @@ public class EqualTest_orderBy extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new SQLOrderBy(), new SQLOrderBy());
         Assert.assertEquals(new SQLOrderBy().hashCode(), new SQLOrderBy().hashCode());
-        
+
         Assert.assertEquals(new SQLSelectOrderByItem(), new SQLSelectOrderByItem());
         Assert.assertEquals(new SQLSelectOrderByItem().hashCode(), new SQLSelectOrderByItem().hashCode());
     }

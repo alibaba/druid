@@ -25,17 +25,16 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableDropIndex_1 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` DROP INDEX `ix`, DROP INDEX `ix2` ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tDROP INDEX `ix`," + //
-                            "\n\tDROP INDEX `ix2`;", SQLUtils.toMySqlString(stmt));
-        
+                "\n\tDROP INDEX `ix`," + //
+                "\n\tDROP INDEX `ix2`;", SQLUtils.toMySqlString(stmt));
+
         Assert.assertEquals("alter table `test`.`tb1`" + //
                 "\n\tdrop index `ix`," + //
                 "\n\tdrop index `ix2`;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

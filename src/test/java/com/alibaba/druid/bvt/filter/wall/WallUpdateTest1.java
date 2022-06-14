@@ -25,9 +25,9 @@ import com.alibaba.druid.wall.WallUtils;
 
 public class WallUpdateTest1 extends TestCase {
     private String sql = "UPDATE T_USER SET FNAME = ? WHERE FID = ?";
-    
+
     private WallConfig config = new WallConfig();
-    
+
     protected void setUp() throws Exception {
         config.setUpdateAllow(false);
     }
@@ -35,9 +35,8 @@ public class WallUpdateTest1 extends TestCase {
     public void testMySql() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
     }
-    
+
     public void testORACLE() throws Exception {
-        
         Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

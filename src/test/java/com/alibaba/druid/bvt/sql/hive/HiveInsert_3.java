@@ -36,13 +36,10 @@ public class HiveInsert_3 extends TestCase {
                 "insert overwrite table sale_detail_multi partition (sale_date='2010', region='china')\n" +
                 "select shop_name, customer_id, total_price;", SQLUtils.formatHive(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-
         System.out.println("Tables : " + visitor.getTables());
-      System.out.println("fields : " + visitor.getColumns());
-      System.out.println("coditions : " + visitor.getConditions());
-      System.out.println("orderBy : " + visitor.getOrderByColumns());
-
-
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(2, visitor.getTables().size());
         assertEquals(5, visitor.getColumns().size());
@@ -53,7 +50,6 @@ public class HiveInsert_3 extends TestCase {
         assertTrue(visitor.containsColumn("sale_detail", "shop_name"));
         assertTrue(visitor.containsColumn("sale_detail", "customer_id"));
         assertTrue(visitor.containsColumn("sale_detail", "total_price"));
-
 
     }
 }

@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseCreateTableTest_partitionByKey extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create table k2(id int primary key, name varchar(20)) partition by key() partitions 2"; //
 
@@ -37,20 +36,20 @@ public class OceanbaseCreateTableTest_partitionByKey extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE k2 ("
-                    + "\n\tid int PRIMARY KEY,"
-                    + "\n\tname varchar(20)"
-                    + "\n)"
-                    + "\nPARTITION BY KEY () PARTITIONS 2",
-                                result);
+                            + "\n\tid int PRIMARY KEY,"
+                            + "\n\tname varchar(20)"
+                            + "\n)"
+                            + "\nPARTITION BY KEY () PARTITIONS 2",
+                    result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table k2 ("
-                    + "\n\tid int primary key,"
-                    + "\n\tname varchar(20)"
-                    + "\n)"
-                    + "\npartition by key () partitions 2",
-                                result);
+                            + "\n\tid int primary key,"
+                            + "\n\tname varchar(20)"
+                            + "\n)"
+                            + "\npartition by key () partitions 2",
+                    result);
         }
 
         Assert.assertEquals(1, stmtList.size());

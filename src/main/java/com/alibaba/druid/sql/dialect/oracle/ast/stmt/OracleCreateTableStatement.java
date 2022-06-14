@@ -19,8 +19,8 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
@@ -33,43 +33,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement, OracleSegmentAttributes {
+    private boolean inMemoryMetadata;
 
-    private boolean                   inMemoryMetadata;
-
-    private boolean                   cursorSpecificSegment;
+    private boolean cursorSpecificSegment;
 
     // NOPARALLEL
-    private Boolean                   parallel;
-    private SQLExpr                   parallelValue;
+    private Boolean parallel;
+    private SQLExpr parallelValue;
 
-    private OracleStorageClause       storage;
-    private OracleLobStorageClause    lobStorage;
+    private OracleStorageClause storage;
+    private OracleLobStorageClause lobStorage;
 
-    private Integer                   pctfree;
-    private Integer                   pctused;
-    private Integer                   initrans;
-    private Integer                   maxtrans;
-    private Integer                   pctincrease;
+    private Integer pctfree;
+    private Integer pctused;
+    private Integer initrans;
+    private Integer maxtrans;
+    private Integer pctincrease;
 
+    private Integer compressLevel;
+    private boolean compressForOltp;
 
-    private Integer                   compressLevel;
-    private boolean                   compressForOltp;
+    private Boolean cache;
 
-    private Boolean                   cache;
+    private DeferredSegmentCreation deferredSegmentCreation;
 
-    private DeferredSegmentCreation   deferredSegmentCreation;
+    private Boolean enableRowMovement;
 
-    private Boolean                   enableRowMovement;
+    private List<SQLName> clusterColumns = new ArrayList<SQLName>();
+    private SQLName cluster;
 
-    private List<SQLName>             clusterColumns = new ArrayList<SQLName>();
-    private SQLName                   cluster;
+    private Organization organization;
 
-    private Organization              organization;
-
-    private SQLName                   of;
-    private OIDIndex                  oidIndex;
-    private boolean                   monitoring;
-    private List<SQLName>             including = new ArrayList<SQLName>();
+    private SQLName of;
+    private OIDIndex oidIndex;
+    private boolean monitoring;
+    private List<SQLName> including = new ArrayList<SQLName>();
     private OracleXmlColumnProperties xmlTypeColumnProperties;
 
     public void simplify() {
@@ -93,9 +91,9 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
         super.simplify();
     }
-    
+
     public OracleCreateTableStatement() {
-        super (DbType.oracle);
+        super(DbType.oracle);
     }
 
     public OracleLobStorageClause getLobStorage() {
@@ -404,7 +402,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.xmlTypeColumnProperties = x;
     }
 
-    public static class OIDIndex extends OracleSegmentAttributesImpl implements OracleSQLObject{
+    public static class OIDIndex extends OracleSegmentAttributesImpl implements OracleSQLObject {
         private SQLName name;
 
         @Override

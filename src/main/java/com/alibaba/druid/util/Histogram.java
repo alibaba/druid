@@ -19,11 +19,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLongArray;
 
 public class Histogram {
-
-    private final long[]          ranges;
+    private final long[] ranges;
     private final AtomicLongArray rangeCounters;
 
-    public Histogram(long... ranges){
+    public Histogram(long... ranges) {
         this.ranges = ranges;
         this.rangeCounters = new AtomicLongArray(ranges.length + 1);
     }
@@ -38,7 +37,7 @@ public class Histogram {
         return new Histogram(rangeValues);
     }
 
-    public Histogram(TimeUnit timeUnit, long... ranges){
+    public Histogram(TimeUnit timeUnit, long... ranges) {
         this.ranges = new long[ranges.length];
         for (int i = 0; i < ranges.length; i++) {
             this.ranges[i] = TimeUnit.MILLISECONDS.convert(ranges[i], timeUnit);

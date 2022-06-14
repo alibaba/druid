@@ -28,17 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatement {
+    private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
+    private SQLExpr returning;
+    private boolean defaultValues;
 
-
-    private List<ValuesClause>     valuesList = new ArrayList<ValuesClause>();
-    private SQLExpr                returning;
-    private boolean			       defaultValues = false;
-
-    private List<SQLExpr>          onConflictTarget;
-    private SQLName                onConflictConstraint;
-    private SQLExpr                onConflictWhere;
-    private SQLExpr                onConflictUpdateWhere;
-    private boolean                onConflictDoNothing;
+    private List<SQLExpr> onConflictTarget;
+    private SQLName onConflictConstraint;
+    private SQLExpr onConflictWhere;
+    private SQLExpr onConflictUpdateWhere;
+    private boolean onConflictDoNothing;
     private List<SQLUpdateSetItem> onConflictUpdateSetItems;
 
     public PGInsertStatement() {
@@ -66,7 +64,6 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
         this.returning = returning;
     }
 
-
     public ValuesClause getValues() {
         if (valuesList.isEmpty()) {
             return null;
@@ -92,15 +89,15 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
     }
 
     public boolean isDefaultValues() {
-		return defaultValues;
-	}
+        return defaultValues;
+    }
 
-	public void setDefaultValues(boolean defaultValues) {
-		this.defaultValues = defaultValues;
-	}
+    public void setDefaultValues(boolean defaultValues) {
+        this.defaultValues = defaultValues;
+    }
 
-	protected void accept0(SQLASTVisitor visitor) {
-        if(visitor instanceof PGASTVisitor) {
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof PGASTVisitor) {
             accept0((PGASTVisitor) visitor);
         } else {
             super.accept0(visitor);

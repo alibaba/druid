@@ -31,7 +31,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerCreateIndexTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])";
 
@@ -40,9 +39,9 @@ public class SQLServerCreateIndexTest extends TestCase {
         SQLCreateIndexStatement stmt = (SQLCreateIndexStatement) statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         Assert.assertEquals("CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);

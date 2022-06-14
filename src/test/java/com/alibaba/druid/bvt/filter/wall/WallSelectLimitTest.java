@@ -25,9 +25,9 @@ import org.junit.Assert;
 
 public class WallSelectLimitTest extends TestCase {
     private String sql = "select * from t";
-    
+
     private WallConfig config = new WallConfig();
-    
+
     protected void setUp() throws Exception {
         config.setSelectLimit(1000);
     }

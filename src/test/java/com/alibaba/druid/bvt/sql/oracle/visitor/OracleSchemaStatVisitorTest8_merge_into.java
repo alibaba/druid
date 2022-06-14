@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class OracleSchemaStatVisitorTest8_merge_into extends TestCase {
-    private final static DbType dbType = JdbcConstants.ORACLE;
+    private static final DbType dbType = JdbcConstants.ORACLE;
 
     public void test_0() throws Exception {
         String sql = "MERGE INTO (\n" +

@@ -15,7 +15,7 @@ public class BoxTest extends PGTest {
         String sql = "box '((0,0),(1,1))' + point '(2.0,0)'";
         PGExprParser parser = new PGExprParser(sql);
         SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) parser.expr();
-        
+
         PGBoxExpr box = (PGBoxExpr) binaryExpr.getLeft();
         PGPointExpr point = (PGPointExpr) binaryExpr.getRight();
         Assert.assertEquals("BOX '((0,0),(1,1))' + POINT '(2.0,0)'", binaryExpr.toString());

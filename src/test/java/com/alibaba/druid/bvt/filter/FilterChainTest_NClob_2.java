@@ -34,17 +34,15 @@ import com.alibaba.druid.proxy.jdbc.NClobProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class FilterChainTest_NClob_2 extends TestCase {
-
-    private DruidDataSource        dataSource;
+    private DruidDataSource dataSource;
     private CallableStatementProxy statement;
 
-    private int                    invokeCount = 0;
+    private int invokeCount = 0;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
         MockCallableStatement mockStmt = new MockCallableStatement(null, "") {
-
             @Override
             public Object getObject(int parameterIndex) throws SQLException {
                 invokeCount++;
@@ -70,16 +68,16 @@ public class FilterChainTest_NClob_2 extends TestCase {
         Assert.assertTrue(clob instanceof NClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
+
     public void test_getClob_1() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
-        
+
         Clob clob = chain.callableStatement_getClob(statement, "1");
-        
+
         Assert.assertTrue(clob instanceof NClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
+
 
     public void test_getObject() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
@@ -89,16 +87,16 @@ public class FilterChainTest_NClob_2 extends TestCase {
         Assert.assertTrue(clob instanceof NClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
+
     public void test_getObject_1() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
-        
+
         Clob clob = (Clob) chain.callableStatement_getObject(statement, "1");
-        
+
         Assert.assertTrue(clob instanceof NClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
+
     public void test_getObject_2() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
@@ -107,12 +105,12 @@ public class FilterChainTest_NClob_2 extends TestCase {
         Assert.assertTrue(clob instanceof NClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
+
     public void test_getObject_3() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
-        
+
         Clob clob = (Clob) chain.callableStatement_getObject(statement, "1", Collections.<String, Class<?>>emptyMap());
-        
+
         Assert.assertTrue(clob instanceof NClobProxy);
         Assert.assertEquals(1, invokeCount);
     }

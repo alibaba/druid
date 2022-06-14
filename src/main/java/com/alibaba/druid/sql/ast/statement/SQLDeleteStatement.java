@@ -28,21 +28,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceable {
-    protected SQLWithSubqueryClause  with;
+    protected SQLWithSubqueryClause with;
 
     protected SQLTableSource tableSource;
-    protected SQLExpr        where;
+    protected SQLExpr where;
     protected SQLTableSource from;
     protected SQLTableSource using;
 
-    protected boolean        only      = false;
+    protected boolean only;
 
-    public SQLDeleteStatement(){
-
+    public SQLDeleteStatement() {
     }
-    
-    public SQLDeleteStatement(DbType dbType){
-        super (dbType);
+
+    public SQLDeleteStatement(DbType dbType) {
+        super(dbType);
     }
 
     protected void cloneTo(SQLDeleteStatement x) {

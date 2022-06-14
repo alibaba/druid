@@ -19,7 +19,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterOpenClobCountTest2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -29,33 +28,32 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setTestOnBorrow(false);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                      throws SQLException {
+                    throws SQLException {
                 return new ClobProxyImpl(result.getStatementProxy().getConnectionProxy().getDirectDataSource(),
-                                         result.getStatementProxy().getConnectionProxy(), new MockClob());
+                        result.getStatementProxy().getConnectionProxy(), new MockClob());
             }
 
             @Override
             public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                         throws SQLException {
+                    throws SQLException {
                 return new ClobProxyImpl(result.getStatementProxy().getConnectionProxy().getDirectDataSource(),
-                                         result.getStatementProxy().getConnectionProxy(), new MockClob());
+                        result.getStatementProxy().getConnectionProxy(), new MockClob());
             }
 
             @Override
             public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex,
                                               java.util.Map<String, Class<?>> map) throws SQLException {
                 return new ClobProxyImpl(result.getStatementProxy().getConnectionProxy().getDirectDataSource(),
-                                         result.getStatementProxy().getConnectionProxy(), new MockClob());
+                        result.getStatementProxy().getConnectionProxy(), new MockClob());
             }
 
             @Override
             public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnIndex,
                                               java.util.Map<String, Class<?>> map) throws SQLException {
                 return new ClobProxyImpl(result.getStatementProxy().getConnectionProxy().getDirectDataSource(),
-                                         result.getStatementProxy().getConnectionProxy(), new MockClob());
+                        result.getStatementProxy().getConnectionProxy(), new MockClob());
             }
         });
         dataSource.init();
@@ -115,7 +113,7 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
         sqlStat.reset();
         Assert.assertEquals(0, sqlStat.getClobOpenCount());
     }
-    
+
     public void test_stat_2() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -128,10 +126,10 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        rs.getObject(1, Collections.<String,Class<?>>emptyMap());
-        rs.getObject(2, Collections.<String,Class<?>>emptyMap());
-        rs.getObject(3, Collections.<String,Class<?>>emptyMap());
-        rs.getObject(4, Collections.<String,Class<?>>emptyMap());
+        rs.getObject(1, Collections.<String, Class<?>>emptyMap());
+        rs.getObject(2, Collections.<String, Class<?>>emptyMap());
+        rs.getObject(3, Collections.<String, Class<?>>emptyMap());
+        rs.getObject(4, Collections.<String, Class<?>>emptyMap());
         rs.close();
         stmt.close();
 
@@ -142,7 +140,7 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
         sqlStat.reset();
         Assert.assertEquals(0, sqlStat.getClobOpenCount());
     }
-    
+
     public void test_stat_4() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -155,11 +153,11 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        rs.getObject("1", Collections.<String,Class<?>>emptyMap());
-        rs.getObject("2", Collections.<String,Class<?>>emptyMap());
-        rs.getObject("3", Collections.<String,Class<?>>emptyMap());
-        rs.getObject("4", Collections.<String,Class<?>>emptyMap());
-        rs.getObject("5", Collections.<String,Class<?>>emptyMap());
+        rs.getObject("1", Collections.<String, Class<?>>emptyMap());
+        rs.getObject("2", Collections.<String, Class<?>>emptyMap());
+        rs.getObject("3", Collections.<String, Class<?>>emptyMap());
+        rs.getObject("4", Collections.<String, Class<?>>emptyMap());
+        rs.getObject("5", Collections.<String, Class<?>>emptyMap());
         rs.close();
         stmt.close();
 

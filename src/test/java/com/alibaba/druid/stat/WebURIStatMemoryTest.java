@@ -8,7 +8,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.support.http.stat.WebURIStat;
 
 public class WebURIStatMemoryTest extends TestCase {
-
     public void test_0() throws Exception {
         WebURIStat item = new WebURIStat("");
         gc();

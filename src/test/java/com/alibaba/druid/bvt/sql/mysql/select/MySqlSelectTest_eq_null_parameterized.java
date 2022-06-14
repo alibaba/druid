@@ -17,7 +17,6 @@ import java.util.List;
  * @Date 2019-07-16 17:28
  */
 public class MySqlSelectTest_eq_null_parameterized extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from test_null_shard where id = null;";
 

@@ -5,8 +5,7 @@ import java.sql.Statement;
 
 
 public class OracleMockResultSetJdbc3 extends OracleMockResultSet {
-
-    public OracleMockResultSetJdbc3(Statement statement){
+    public OracleMockResultSetJdbc3(Statement statement) {
         super(statement);
     }
 

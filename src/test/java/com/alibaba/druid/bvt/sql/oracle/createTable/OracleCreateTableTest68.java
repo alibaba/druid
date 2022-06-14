@@ -24,20 +24,19 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest68 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "  CREATE TABLE \"JWGZPT\".\"A\" \n" +
-                "   (    \"XM\" VARCHAR2(100), \n" +
-                "    \"SFZH\" VARCHAR2(20), \n" +
-                "    \"GZDW\" VARCHAR2(200)\n" +
-                "   ) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                " NOCOMPRESS LOGGING\n" +
-                "  STORAGE(INITIAL 81920 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"TBS_JWGZPT\" ";
+                "  CREATE TABLE \"JWGZPT\".\"A\" \n" +
+                        "   (    \"XM\" VARCHAR2(100), \n" +
+                        "    \"SFZH\" VARCHAR2(20), \n" +
+                        "    \"GZDW\" VARCHAR2(200)\n" +
+                        "   ) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        " NOCOMPRESS LOGGING\n" +
+                        "  STORAGE(INITIAL 81920 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"TBS_JWGZPT\" ";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -69,7 +68,7 @@ public class OracleCreateTableTest68 extends OracleTest {
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         stmt.accept(visitor);

@@ -26,10 +26,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleAlterTypeTest0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TYPE \"ZEUS\".\"STRCAT_TYPE\" COMPILE BODY REUSE SETTINGS;";
+                "ALTER TYPE \"ZEUS\".\"STRCAT_TYPE\" COMPILE BODY REUSE SETTINGS;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

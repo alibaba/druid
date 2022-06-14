@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableEnableKeys extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "alter table tableName ENABLE KEYS";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -40,8 +39,8 @@ public class MySqlAlterTableEnableKeys extends TestCase {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("ALTER TABLE tableName" + //
-                            "\n\tENABLE KEYS", SQLUtils.toMySqlString(stmt));
-        
+                "\n\tENABLE KEYS", SQLUtils.toMySqlString(stmt));
+
         Assert.assertEquals("alter table tableName" + //
                 "\n\tenable keys", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

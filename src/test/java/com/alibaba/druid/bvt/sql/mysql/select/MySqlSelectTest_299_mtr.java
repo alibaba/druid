@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 
 public class MySqlSelectTest_299_mtr
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT HEX(_ucs2 0x0123456789A), _ucs2 0x0123456789A;";
 

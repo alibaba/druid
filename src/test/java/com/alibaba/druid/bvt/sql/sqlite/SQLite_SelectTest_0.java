@@ -30,7 +30,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SQLite_SelectTest_0 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select first_name, last_name from mytable limit 3, 4";
 
@@ -47,7 +46,7 @@ public class SQLite_SelectTest_0 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());

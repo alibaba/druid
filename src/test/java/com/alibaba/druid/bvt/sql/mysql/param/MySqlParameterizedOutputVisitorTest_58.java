@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_58 extends TestCase {
     final DbType dbType = JdbcConstants.MYSQL;
-    public void test_for_parameterize() throws Exception {
 
+    public void test_for_parameterize() throws Exception {
         String sql = "select * from t where id = 101";
 
         List<Object> params = new ArrayList<Object>();

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 
 public class MySqlSelectTest_270 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select '\\0', \"\\0\"";
 

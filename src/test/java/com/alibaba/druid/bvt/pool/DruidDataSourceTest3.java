@@ -15,12 +15,11 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 
 /**
  * 这个场景测试并发初始化
- * @author wenshao [szujobs@hotmail.com]
  *
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest3 extends TestCase {
-
-    private DruidDataSource    dataSource;
+    private DruidDataSource dataSource;
     private volatile Exception error;
     private volatile Exception errorB;
 
@@ -31,7 +30,6 @@ public class DruidDataSourceTest3 extends TestCase {
         dataSource.setInitialSize(1);
 
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
                 try {
                     Thread.sleep(Long.MAX_VALUE);
@@ -53,7 +51,6 @@ public class DruidDataSourceTest3 extends TestCase {
         final CountDownLatch endLatch = new CountDownLatch(1);
 
         Thread threadA = new Thread("A") {
-
             public void run() {
                 try {
                     startedLatch.countDown();
@@ -76,7 +73,6 @@ public class DruidDataSourceTest3 extends TestCase {
         final CountDownLatch startedLatchB = new CountDownLatch(1);
         final CountDownLatch endLatchB = new CountDownLatch(1);
         Thread threadB = new Thread("B") {
-
             public void run() {
                 try {
                     startedLatchB.countDown();
@@ -93,7 +89,7 @@ public class DruidDataSourceTest3 extends TestCase {
 
         threadB.interrupt();
         endLatchB.await();
-        
+
         Assert.assertNotNull(errorB);
         Assert.assertTrue(errorB.getCause() instanceof InterruptedException);
 
@@ -102,7 +98,7 @@ public class DruidDataSourceTest3 extends TestCase {
         endLatch.await();
         endLatchB.await();
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getCreateErrorCount());
 
     }

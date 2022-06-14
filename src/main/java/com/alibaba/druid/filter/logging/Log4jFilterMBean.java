@@ -19,5 +19,4 @@ package com.alibaba.druid.filter.logging;
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface Log4jFilterMBean extends LogFilterMBean {
-
 }

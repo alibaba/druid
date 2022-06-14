@@ -24,12 +24,11 @@ import com.alibaba.druid.stat.TableStat;
 import org.junit.Assert;
 
 public class MySqlCreateTableTest50 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE  TABLE `test`.`a` (" //
-                     + "  `ida` INT NOT NULL COMMENT 'aaa' ,"//
-                     + "  PRIMARY KEY (`ida`) )"//
-                     + " COMMENT = 'bb';"; //
+                + "  `ida` INT NOT NULL COMMENT 'aaa' ,"//
+                + "  PRIMARY KEY (`ida`) )"//
+                + " COMMENT = 'bb';"; //
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -50,10 +49,10 @@ public class MySqlCreateTableTest50 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE `test`.`a` (" //
-                            + "\n\t`ida` INT NOT NULL COMMENT 'aaa',"//
-                            + "\n\tPRIMARY KEY (`ida`)"//
-                            + "\n) COMMENT 'bb'",//
-                            output);
+                        + "\n\t`ida` INT NOT NULL COMMENT 'aaa',"//
+                        + "\n\tPRIMARY KEY (`ida`)"//
+                        + "\n) COMMENT 'bb'",//
+                output);
 
     }
 }

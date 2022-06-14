@@ -13,15 +13,14 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleListAggTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT prod_id, LISTAGG(cust_first_name||' '||cust_last_name, '; ') \n" //
-                     + "  WITHIN GROUP (ORDER BY amount_sold DESC) cust_list\n" //
-                     + "FROM sales, customers\n" //
-                     + "WHERE sales.cust_id = customers.cust_id AND cust_gender = 'M' \n" //
-                     + "  AND cust_credit_limit = 15000 AND prod_id BETWEEN 15 AND 18 \n" //
-                     + "  AND channel_id = 2 AND time_id > '01-JAN-01'\n" //
-                     + "GROUP BY prod_id;";
+                + "  WITHIN GROUP (ORDER BY amount_sold DESC) cust_list\n" //
+                + "FROM sales, customers\n" //
+                + "WHERE sales.cust_id = customers.cust_id AND cust_gender = 'M' \n" //
+                + "  AND cust_credit_limit = 15000 AND prod_id BETWEEN 15 AND 18 \n" //
+                + "  AND channel_id = 2 AND time_id > '01-JAN-01'\n" //
+                + "GROUP BY prod_id;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -40,7 +39,7 @@ public class OracleListAggTest extends OracleTest {
                         "\tAND channel_id = 2\n" +
                         "\tAND time_id > '01-JAN-01'\n" +
                         "GROUP BY prod_id;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

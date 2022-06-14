@@ -23,7 +23,6 @@ import org.junit.Assert;
 import junit.framework.TestCase;
 
 public class MapComparatorTest extends TestCase {
-
     private String orderByKey = "orderby";
 
     public void test_comparator_date() throws Exception {
@@ -54,21 +53,21 @@ public class MapComparatorTest extends TestCase {
         Map<String, Date[]> map1 = new HashMap<String, Date[]>();
         Map<String, Date[]> map2 = new HashMap<String, Date[]>();
 
-        map1.put(orderByKey, new Date[] { new Date(now) });
-        map2.put(orderByKey, new Date[] { new Date(now - 1) });
+        map1.put(orderByKey, new Date[]{new Date(now)});
+        map2.put(orderByKey, new Date[]{new Date(now - 1)});
         Assert.assertEquals(!desc, comparator.compare(map1, map2) > 0);
 
-        map2.put(orderByKey, new Date[] { new Date(now) });
+        map2.put(orderByKey, new Date[]{new Date(now)});
         Assert.assertEquals(true, comparator.compare(map1, map2) == 0);
 
-        map2.put(orderByKey, new Date[] { new Date(now + 1) });
+        map2.put(orderByKey, new Date[]{new Date(now + 1)});
         Assert.assertEquals(!desc, comparator.compare(map1, map2) < 0);
 
         map2.put(orderByKey, null);
         Assert.assertEquals(!desc, comparator.compare(map1, map2) > 0);
 
         map1.put(orderByKey, null);
-        map2.put(orderByKey, new Date[] { new Date(now) });
+        map2.put(orderByKey, new Date[]{new Date(now)});
         Assert.assertEquals(!desc, comparator.compare(map1, map2) < 0);
 
         map1.put(orderByKey, null);

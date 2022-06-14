@@ -26,7 +26,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleUpdateTest5_encoding_error extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "update x1_use_agent t2   set t2.start_time =to_date((select to_char(sysdate,'yyyy-mm-dd HH24:mi:ss') from dual), 'yyyy-mm-dd HH24:mi:ss'),  t2.end_time=to_date((select to_char(sysdate + interval '1' year ,'yyyy-mm-dd HH24:mi:ss') from dual), 'yyyy-mm-dd HH24:mi:ss') where t2.attr2 ='ZB201708311440560'";
 
@@ -46,7 +45,7 @@ public class OracleUpdateTest5_encoding_error extends OracleTest {
                         "\tFROM dual\n" +
                         "), 'yyyy-mm-dd HH24:mi:ss')\n" +
                         "WHERE t2.attr2 = 'ZB201708311440560'",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -61,7 +60,7 @@ public class OracleUpdateTest5_encoding_error extends OracleTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("x1_use_agent")));
 
-         assertTrue(visitor.getColumns().contains(new TableStat.Column("x1_use_agent", "start_time")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("x1_use_agent", "start_time")));
     }
 
 }

@@ -10,7 +10,6 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

@@ -12,7 +12,6 @@ import java.util.List;
  * @create 2018-08-02
  */
 public class H2_InsertTest_0 {
-
     @Test
     public void test_insertSet() {
         String sql = "insert into tb1 set name='n1',age=12,date='1990-11-11 12:12:12'";

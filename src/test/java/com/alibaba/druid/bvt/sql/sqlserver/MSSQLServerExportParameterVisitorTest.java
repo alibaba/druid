@@ -12,7 +12,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.MSSQLServerExportParameterVisitor;
 
 public class MSSQLServerExportParameterVisitorTest extends TestCase {
-
     public void test_sqlserver() throws Exception {
         String sql = "select fname, count(*) from t where fid = 1 group by fname order by 1";
 
@@ -22,7 +21,7 @@ public class MSSQLServerExportParameterVisitorTest extends TestCase {
         List<Object> parameters = new ArrayList<Object>();
         MSSQLServerExportParameterVisitor visitor = new MSSQLServerExportParameterVisitor(parameters);
         stmt.accept(visitor);
-        
+
         Assert.assertEquals(1, parameters.size());
         Assert.assertEquals(1, parameters.get(0));
     }

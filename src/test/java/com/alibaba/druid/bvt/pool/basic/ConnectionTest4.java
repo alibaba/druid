@@ -37,8 +37,7 @@ import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class ConnectionTest4 extends PoolTestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -138,7 +137,7 @@ public class ConnectionTest4 extends PoolTestCase {
             SQLException error = null;
             try {
                 conn.prepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
-                                      ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                        ResultSet.HOLD_CURSORS_OVER_COMMIT);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -155,7 +154,7 @@ public class ConnectionTest4 extends PoolTestCase {
             SQLException error = null;
             try {
                 conn.prepareStatement(null, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
-                                      ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                        ResultSet.HOLD_CURSORS_OVER_COMMIT);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -238,13 +237,13 @@ public class ConnectionTest4 extends PoolTestCase {
         MockPreparedStatement raw = null;
         {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
-                                                           ResultSet.CONCUR_READ_ONLY);
+                    ResultSet.CONCUR_READ_ONLY);
             raw = stmt.unwrap(MockPreparedStatement.class);
             stmt.close();
         }
         {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
-                                                           ResultSet.CONCUR_READ_ONLY);
+                    ResultSet.CONCUR_READ_ONLY);
             Assert.assertSame(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
@@ -258,15 +257,15 @@ public class ConnectionTest4 extends PoolTestCase {
         MockPreparedStatement raw = null;
         {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
-                                                           ResultSet.CONCUR_READ_ONLY,
-                                                           ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.CONCUR_READ_ONLY,
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT);
             raw = stmt.unwrap(MockPreparedStatement.class);
             stmt.close();
         }
         {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
-                                                           ResultSet.CONCUR_READ_ONLY,
-                                                           ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.CONCUR_READ_ONLY,
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT);
             Assert.assertSame(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
@@ -336,7 +335,7 @@ public class ConnectionTest4 extends PoolTestCase {
             SQLException error = null;
             try {
                 conn.prepareCall("SELECT 1", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
-                                 ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                        ResultSet.HOLD_CURSORS_OVER_COMMIT);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -386,13 +385,13 @@ public class ConnectionTest4 extends PoolTestCase {
         MockPreparedStatement raw = null;
         {
             PreparedStatement stmt = conn.prepareCall("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
-                                                      ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
             raw = stmt.unwrap(MockPreparedStatement.class);
             stmt.close();
         }
         {
             PreparedStatement stmt = conn.prepareCall("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
-                                                      ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
             Assert.assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
@@ -406,13 +405,13 @@ public class ConnectionTest4 extends PoolTestCase {
         MockPreparedStatement raw = null;
         {
             PreparedStatement stmt = conn.prepareCall("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
-                                                      ResultSet.CONCUR_READ_ONLY);
+                    ResultSet.CONCUR_READ_ONLY);
             raw = stmt.unwrap(MockPreparedStatement.class);
             stmt.close();
         }
         {
             PreparedStatement stmt = conn.prepareCall("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
-                                                      ResultSet.CONCUR_READ_ONLY);
+                    ResultSet.CONCUR_READ_ONLY);
             Assert.assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
@@ -451,7 +450,7 @@ public class ConnectionTest4 extends PoolTestCase {
             SQLException error = null;
             try {
                 conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
-                                     ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                        ResultSet.HOLD_CURSORS_OVER_COMMIT);
             } catch (SQLException ex) {
                 error = ex;
             }

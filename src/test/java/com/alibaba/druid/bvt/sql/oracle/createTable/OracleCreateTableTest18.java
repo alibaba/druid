@@ -26,22 +26,21 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest18 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "  CREATE TABLE \"SONAR\".\"AUTHORS\" " //
-                + "   (    \"ID\" NUMBER(38,0) NOT NULL ENABLE, " //
-                + "    \"PERSON_ID\" NUMBER(38,0) NOT NULL ENABLE, " //
-                + "    \"LOGIN\" VARCHAR2(100 BYTE), " //
-                + "    \"CREATED_AT\" TIMESTAMP (6), " //
-                + "    \"UPDATED_AT\" TIMESTAMP (6), " //
-                + "     PRIMARY KEY (\"ID\")" //
-                + "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS " //
-                + "  TABLESPACE \"USERS\"  ENABLE" //
-                + "   ) SEGMENT CREATION DEFERRED " //
-                + "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 " //
-                + " NOCOMPRESS LOGGING" //
-                + "  TABLESPACE \"USERS\" ;";
+                "  CREATE TABLE \"SONAR\".\"AUTHORS\" " //
+                        + "   (    \"ID\" NUMBER(38,0) NOT NULL ENABLE, " //
+                        + "    \"PERSON_ID\" NUMBER(38,0) NOT NULL ENABLE, " //
+                        + "    \"LOGIN\" VARCHAR2(100 BYTE), " //
+                        + "    \"CREATED_AT\" TIMESTAMP (6), " //
+                        + "    \"UPDATED_AT\" TIMESTAMP (6), " //
+                        + "     PRIMARY KEY (\"ID\")" //
+                        + "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS " //
+                        + "  TABLESPACE \"USERS\"  ENABLE" //
+                        + "   ) SEGMENT CREATION DEFERRED " //
+                        + "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 " //
+                        + " NOCOMPRESS LOGGING" //
+                        + "  TABLESPACE \"USERS\" ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -72,7 +71,7 @@ public class OracleCreateTableTest18 extends OracleTest {
                         "NOCOMPRESS\n" +
                         "LOGGING\n" +
                         "TABLESPACE \"USERS\";", //
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);

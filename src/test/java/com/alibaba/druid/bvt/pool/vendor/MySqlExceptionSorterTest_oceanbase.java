@@ -16,17 +16,17 @@ public class MySqlExceptionSorterTest_oceanbase extends PoolTestCase {
         SQLException exception = new SQLException("", "", -9000);
         Assert.assertTrue(sorter.isExceptionFatal(exception));
     }
-    
+
     public void test_true_1() throws Exception {
         MySqlExceptionSorter sorter = new MySqlExceptionSorter();
         Assert.assertFalse(sorter.isExceptionFatal(new SQLException("", "", -10000)));
     }
-    
+
     public void test_false() throws Exception {
         MySqlExceptionSorter sorter = new MySqlExceptionSorter();
         Assert.assertFalse(sorter.isExceptionFatal(new SQLException("", "", -10001)));
     }
-    
+
     public void test_false_1() throws Exception {
         MySqlExceptionSorter sorter = new MySqlExceptionSorter();
         Assert.assertTrue(sorter.isExceptionFatal(new SQLException("", "", -8000)));

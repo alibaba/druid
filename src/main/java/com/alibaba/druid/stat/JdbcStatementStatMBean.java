@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.stat;
 
-import java.util.Date;
-
 import javax.management.JMException;
 import javax.management.openmbean.CompositeData;
 
-public interface JdbcStatementStatMBean {
+import java.util.Date;
 
+public interface JdbcStatementStatMBean {
     long getCreateCount();
 
     long getPrepareCount();

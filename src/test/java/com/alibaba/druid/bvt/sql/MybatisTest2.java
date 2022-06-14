@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class MybatisTest2 extends TestCase {
-
     private String sql = "select * from t where id = ${id}";
 
     public void test_mysql() throws Exception {

@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateAddLogFileGroupTest extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE LOGFILE GROUP lg1 ADD UNDOFILE 'undo.dat' INITIAL_SIZE = 10M ENGINE = InnoDB;";

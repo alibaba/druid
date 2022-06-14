@@ -22,11 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDeclareStatement extends SQLStatementImpl {
-
     protected List<SQLDeclareItem> items = new ArrayList<SQLDeclareItem>();
-    
-    public SQLDeclareStatement() {
 
+    public SQLDeclareStatement() {
     }
 
     public SQLDeclareStatement(SQLName name, SQLDataType dataType) {

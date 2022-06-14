@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.support.spring.stat;
 
-import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+import com.alibaba.druid.support.profile.Profiler;
 
 import java.util.Date;
 import java.util.Map;
@@ -24,65 +24,64 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
-import com.alibaba.druid.support.profile.Profiler;
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
 
 public class SpringMethodStat {
+    private static final ThreadLocal<SpringMethodStat> currentLocal = new ThreadLocal<SpringMethodStat>();
 
-    private final static ThreadLocal<SpringMethodStat>       currentLocal                     = new ThreadLocal<SpringMethodStat>();
+    private final SpringMethodInfo methodInfo;
 
-    private final SpringMethodInfo                           methodInfo;
+    private final AtomicInteger runningCount = new AtomicInteger();
+    private final AtomicInteger concurrentMax = new AtomicInteger();
+    private final AtomicLong executeCount = new AtomicLong(0);
+    private final AtomicLong executeErrorCount = new AtomicLong(0);
+    private final AtomicLong executeTimeNano = new AtomicLong();
 
-    private final AtomicInteger                              runningCount                     = new AtomicInteger();
-    private final AtomicInteger                              concurrentMax                    = new AtomicInteger();
-    private final AtomicLong                                 executeCount                     = new AtomicLong(0);
-    private final AtomicLong                                 executeErrorCount                = new AtomicLong(0);
-    private final AtomicLong                                 executeTimeNano                  = new AtomicLong();
+    private final AtomicLong jdbcFetchRowCount = new AtomicLong();
+    private final AtomicLong jdbcUpdateCount = new AtomicLong();
+    private final AtomicLong jdbcExecuteCount = new AtomicLong();
+    private final AtomicLong jdbcExecuteErrorCount = new AtomicLong();
+    private final AtomicLong jdbcExecuteTimeNano = new AtomicLong();
 
-    private final AtomicLong                                 jdbcFetchRowCount                = new AtomicLong();
-    private final AtomicLong                                 jdbcUpdateCount                  = new AtomicLong();
-    private final AtomicLong                                 jdbcExecuteCount                 = new AtomicLong();
-    private final AtomicLong                                 jdbcExecuteErrorCount            = new AtomicLong();
-    private final AtomicLong                                 jdbcExecuteTimeNano              = new AtomicLong();
+    private final AtomicLong jdbcCommitCount = new AtomicLong();
+    private final AtomicLong jdbcRollbackCount = new AtomicLong();
 
-    private final AtomicLong                                 jdbcCommitCount                  = new AtomicLong();
-    private final AtomicLong                                 jdbcRollbackCount                = new AtomicLong();
+    private final AtomicLong jdbcPoolConnectionOpenCount = new AtomicLong();
+    private final AtomicLong jdbcPoolConnectionCloseCount = new AtomicLong();
 
-    private final AtomicLong                                 jdbcPoolConnectionOpenCount      = new AtomicLong();
-    private final AtomicLong                                 jdbcPoolConnectionCloseCount     = new AtomicLong();
+    private final AtomicLong jdbcResultSetOpenCount = new AtomicLong();
+    private final AtomicLong jdbcResultSetCloseCount = new AtomicLong();
 
-    private final AtomicLong                                 jdbcResultSetOpenCount           = new AtomicLong();
-    private final AtomicLong                                 jdbcResultSetCloseCount          = new AtomicLong();
+    private volatile Throwable lastError;
+    private volatile long lastErrorTimeMillis;
 
-    private volatile Throwable                               lastError;
-    private volatile long                                    lastErrorTimeMillis;
+    private volatile long histogram_0_1;
+    private volatile long histogram_1_10;
+    private volatile long histogram_10_100;
+    private volatile long histogram_100_1000;
+    private volatile int histogram_1000_10000;
+    private volatile int histogram_10000_100000;
+    private volatile int histogram_100000_1000000;
+    private volatile int histogram_1000000_more;
 
-    private volatile long                                    histogram_0_1;
-    private volatile long                                    histogram_1_10;
-    private volatile long                                    histogram_10_100;
-    private volatile long                                    histogram_100_1000;
-    private volatile int                                     histogram_1000_10000;
-    private volatile int                                     histogram_10000_100000;
-    private volatile int                                     histogram_100000_1000000;
-    private volatile int                                     histogram_1000000_more;
+    static final AtomicLongFieldUpdater<SpringMethodStat> histogram_0_1_Updater = AtomicLongFieldUpdater.newUpdater(SpringMethodStat.class,
+            "histogram_0_1");
+    static final AtomicLongFieldUpdater<SpringMethodStat> histogram_1_10_Updater = AtomicLongFieldUpdater.newUpdater(SpringMethodStat.class,
+            "histogram_1_10");
+    static final AtomicLongFieldUpdater<SpringMethodStat> histogram_10_100_Updater = AtomicLongFieldUpdater.newUpdater(SpringMethodStat.class,
+            "histogram_10_100");
+    static final AtomicLongFieldUpdater<SpringMethodStat> histogram_100_1000_Updater = AtomicLongFieldUpdater.newUpdater(SpringMethodStat.class,
+            "histogram_100_1000");
+    static final AtomicIntegerFieldUpdater<SpringMethodStat> histogram_1000_10000_Updater = AtomicIntegerFieldUpdater.newUpdater(SpringMethodStat.class,
+            "histogram_1000_10000");
+    static final AtomicIntegerFieldUpdater<SpringMethodStat> histogram_10000_100000_Updater = AtomicIntegerFieldUpdater.newUpdater(SpringMethodStat.class,
+            "histogram_10000_100000");
+    static final AtomicIntegerFieldUpdater<SpringMethodStat> histogram_100000_1000000_Updater = AtomicIntegerFieldUpdater.newUpdater(SpringMethodStat.class,
+            "histogram_100000_1000000");
+    static final AtomicIntegerFieldUpdater<SpringMethodStat> histogram_1000000_more_Updater = AtomicIntegerFieldUpdater.newUpdater(SpringMethodStat.class,
+            "histogram_1000000_more");
 
-    final static AtomicLongFieldUpdater<SpringMethodStat>    histogram_0_1_Updater            = AtomicLongFieldUpdater.newUpdater(SpringMethodStat.class,
-                                                                                                                                  "histogram_0_1");
-    final static AtomicLongFieldUpdater<SpringMethodStat>    histogram_1_10_Updater           = AtomicLongFieldUpdater.newUpdater(SpringMethodStat.class,
-                                                                                                                                  "histogram_1_10");
-    final static AtomicLongFieldUpdater<SpringMethodStat>    histogram_10_100_Updater         = AtomicLongFieldUpdater.newUpdater(SpringMethodStat.class,
-                                                                                                                                  "histogram_10_100");
-    final static AtomicLongFieldUpdater<SpringMethodStat>    histogram_100_1000_Updater       = AtomicLongFieldUpdater.newUpdater(SpringMethodStat.class,
-                                                                                                                                  "histogram_100_1000");
-    final static AtomicIntegerFieldUpdater<SpringMethodStat> histogram_1000_10000_Updater     = AtomicIntegerFieldUpdater.newUpdater(SpringMethodStat.class,
-                                                                                                                                     "histogram_1000_10000");
-    final static AtomicIntegerFieldUpdater<SpringMethodStat> histogram_10000_100000_Updater   = AtomicIntegerFieldUpdater.newUpdater(SpringMethodStat.class,
-                                                                                                                                     "histogram_10000_100000");
-    final static AtomicIntegerFieldUpdater<SpringMethodStat> histogram_100000_1000000_Updater = AtomicIntegerFieldUpdater.newUpdater(SpringMethodStat.class,
-                                                                                                                                     "histogram_100000_1000000");
-    final static AtomicIntegerFieldUpdater<SpringMethodStat> histogram_1000000_more_Updater   = AtomicIntegerFieldUpdater.newUpdater(SpringMethodStat.class,
-                                                                                                                                     "histogram_1000000_more");
-
-    public SpringMethodStat(SpringMethodInfo methodInfo){
+    public SpringMethodStat(SpringMethodInfo methodInfo) {
         this.methodInfo = methodInfo;
     }
 
@@ -120,7 +119,7 @@ public class SpringMethodStat {
             this.lastError = null;
             this.lastErrorTimeMillis = 0;
         }
-        
+
         val.histogram_0_1 = get(this, histogram_0_1_Updater, reset);
         val.histogram_1_10 = get(this, histogram_1_10_Updater, reset);
         val.histogram_10_100 = get(this, histogram_10_100_Updater, reset);
@@ -184,7 +183,7 @@ public class SpringMethodStat {
 
         int running = runningCount.incrementAndGet();
 
-        for (;;) {
+        for (; ; ) {
             int max = concurrentMax.get();
             if (running > max) {
                 if (concurrentMax.compareAndSet(max, running)) {
@@ -237,7 +236,7 @@ public class SpringMethodStat {
     }
 
     public long[] getHistogramValues() {
-        return new long[] {
+        return new long[]{
                 //
                 histogram_0_1, //
                 histogram_1_10, //

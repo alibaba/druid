@@ -22,7 +22,6 @@ public class MySqlShowPlanCacheStatement extends MySqlStatementImpl implements M
     private SQLSelect select;
 
     public MySqlShowPlanCacheStatement() {
-
     }
 
     public MySqlShowPlanCacheStatement(SQLSelect select) {

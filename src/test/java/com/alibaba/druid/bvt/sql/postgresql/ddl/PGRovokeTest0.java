@@ -12,7 +12,7 @@ import com.alibaba.druid.stat.TableStat;
 
 
 public class PGRovokeTest0 extends PGTest {
-    public void test_0 () throws Exception {
+    public void test_0() throws Exception {
         String sql = "REVOKE ALL ON accounts FROM PUBLIC;";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -29,7 +29,7 @@ public class PGRovokeTest0 extends PGTest {
         System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("accounts")));
-        
+
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("accounts")).getDropCount() == 0);
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("accounts")).getAlterCount() == 0);
 

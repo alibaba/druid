@@ -25,12 +25,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest33 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "SELECT /*+ Q1647000 NO_EXPAND ROWID(A1) */ " + //
-        "A1.\"PRODUCT_ID\",A1.\"SUMMARY\",A1.\"DESCRIPTION\",A1.\"DESCRIPTION2\" " + //
-        "FROM \"ALIBABA1949\".\"WS_PRODUCT_DETAIL\" A1"; //
+                "SELECT /*+ Q1647000 NO_EXPAND ROWID(A1) */ " + //
+                        "A1.\"PRODUCT_ID\",A1.\"SUMMARY\",A1.\"DESCRIPTION\",A1.\"DESCRIPTION2\" " + //
+                        "FROM \"ALIBABA1949\".\"WS_PRODUCT_DETAIL\" A1"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -55,7 +54,7 @@ public class OracleSelectTest33 extends OracleTest {
         Assert.assertEquals(4, visitor.getColumns().size());
 
 //         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW_LOGISTICS", "*")));
-         
+
 //         Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

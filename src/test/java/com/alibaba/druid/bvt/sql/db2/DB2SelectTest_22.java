@@ -29,7 +29,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_22 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT ID,IDENTITY,BUSICODE"
                 + " FROM BUSINESS_ENTERPRISE_BUSIINFO"
@@ -59,26 +58,26 @@ public class DB2SelectTest_22 extends DB2Test {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("BUSINESS_ENTERPRISE_BUSIINFO")));
 
-         Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "ID")));
-         Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "IDENTITY")));
-         Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "BUSICODE")));
-         Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "SYSCODE")));
-         Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "INTIME")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "ID")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "IDENTITY")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "BUSICODE")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "SYSCODE")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "INTIME")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         Assert.assertEquals("SELECT ID, IDENTITY, BUSICODE"
-                + "\nFROM BUSINESS_ENTERPRISE_BUSIINFO"
-                + "\nWHERE SYSCODE = '603'"
-                + "\nORDER BY INTIME DESC"
-                + "\nFETCH FIRST 1 ROWS ONLY", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                        + "\nFROM BUSINESS_ENTERPRISE_BUSIINFO"
+                        + "\nWHERE SYSCODE = '603'"
+                        + "\nORDER BY INTIME DESC"
+                        + "\nFETCH FIRST 1 ROWS ONLY", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("select ID, IDENTITY, BUSICODE"
-                + "\nfrom BUSINESS_ENTERPRISE_BUSIINFO"
-                + "\nwhere SYSCODE = '603'"
-                + "\norder by INTIME desc"
-                + "\nfetch first 1 rows only", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                        + "\nfrom BUSINESS_ENTERPRISE_BUSIINFO"
+                        + "\nwhere SYSCODE = '603'"
+                        + "\norder by INTIME desc"
+                        + "\nfetch first 1 rows only", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

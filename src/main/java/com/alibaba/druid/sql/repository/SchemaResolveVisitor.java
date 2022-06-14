@@ -23,26 +23,24 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import static com.alibaba.druid.sql.repository.SchemaResolveVisitorFactory.resolve;
-import static com.alibaba.druid.sql.repository.SchemaResolveVisitorFactory.resolveIdent;
-import static com.alibaba.druid.sql.repository.SchemaResolveVisitorFactory.resolveUnion;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.alibaba.druid.sql.repository.SchemaResolveVisitorFactory.*;
 
 /**
  * Created by wenshao on 03/08/2017.
  */
 public interface SchemaResolveVisitor extends SQLASTVisitor {
-
     boolean isEnabled(Option option);
+
     int getOptions();
 
     public static enum Option {
         ResolveAllColumn,
         ResolveIdentifierAlias,
-        CheckColumnAmbiguous
-        ;
+        CheckColumnAmbiguous;
+
         private Option() {
             mask = (1 << ordinal());
         }
@@ -67,7 +65,9 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
     SchemaRepository getRepository();
 
     Context getContext();
+
     Context createContext(SQLObject object);
+
     void popContext();
 
     static class Context {
@@ -191,7 +191,6 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
         resolve(this, x);
         return false;
     }
-
 
     default boolean visit(SQLIdentifierExpr x) {
         resolveIdent(this, x);

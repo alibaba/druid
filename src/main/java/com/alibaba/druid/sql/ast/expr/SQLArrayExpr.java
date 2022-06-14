@@ -15,19 +15,20 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLArrayExpr extends SQLExprImpl implements SQLReplaceable  {
-
-    private SQLExpr       expr;
+public class SQLArrayExpr extends SQLExprImpl implements SQLReplaceable {
+    private SQLExpr expr;
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
     public SQLArrayExpr() {
-
     }
 
     public SQLArrayExpr clone() {
@@ -100,19 +101,32 @@ public class SQLArrayExpr extends SQLExprImpl implements SQLReplaceable  {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         SQLArrayExpr other = (SQLArrayExpr) obj;
         if (expr == null) {
-            if (other.expr != null) return false;
-        } else if (!expr.equals(other.expr)) return false;
+            if (other.expr != null) {
+                return false;
+            }
+        } else if (!expr.equals(other.expr)) {
+            return false;
+        }
         if (values == null) {
-            if (other.values != null) return false;
-        } else if (!values.equals(other.values)) return false;
+            if (other.values != null) {
+                return false;
+            }
+        } else if (!values.equals(other.values)) {
+            return false;
+        }
         return true;
     }
-
 
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {

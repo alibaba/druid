@@ -17,7 +17,8 @@ package com.alibaba.druid.sql.dialect.odps.ast;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.SQLZOrderBy;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
     private SQLZOrderBy zOrderBy;
 
-    public OdpsSelectQueryBlock(){
+    public OdpsSelectQueryBlock() {
         dbType = DbType.odps;
 
         clusterBy = new ArrayList<SQLSelectOrderByItem>();

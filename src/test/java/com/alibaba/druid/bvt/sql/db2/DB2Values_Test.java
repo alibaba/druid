@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2Values_Test extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "values 1";
 

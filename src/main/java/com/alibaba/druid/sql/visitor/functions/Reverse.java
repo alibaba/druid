@@ -21,10 +21,9 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
-
 public class Reverse implements Function {
-    public final static Reverse instance = new Reverse();
-    
+    public static final Reverse instance = new Reverse();
+
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getArguments().size() != 1) {
             return SQLEvalVisitor.EVAL_ERROR;

@@ -17,7 +17,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class OracleKillSessionTest extends DbTestCase {
-    private final static Log LOG                     = LogFactory.getLog(OracleKillSessionTest.class);
+    private static final Log LOG = LogFactory.getLog(OracleKillSessionTest.class);
 
     private ScheduledExecutorService scheduler;
 
@@ -56,9 +56,9 @@ public class OracleKillSessionTest extends DbTestCase {
             rs = pstmt.executeQuery();
             JdbcUtils.printResultSet(rs);
         } finally {
-             JdbcUtils.close(rs);
-             JdbcUtils.close(pstmt);
-             JdbcUtils.close(conn);
+            JdbcUtils.close(rs);
+            JdbcUtils.close(pstmt);
+            JdbcUtils.close(conn);
         }
     }
 

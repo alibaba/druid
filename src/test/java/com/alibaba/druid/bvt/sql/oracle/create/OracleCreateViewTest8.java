@@ -27,13 +27,12 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateViewTest8 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        " CREATE VIEW emp_sal (emp_id, last_name, \n" +
-                "      email UNIQUE RELY DISABLE NOVALIDATE,\n" +
-                "   CONSTRAINT id_pk PRIMARY KEY (emp_id) RELY DISABLE NOVALIDATE)\n" +
-                "   AS SELECT employee_id, last_name, email FROM employees;";
+                " CREATE VIEW emp_sal (emp_id, last_name, \n" +
+                        "      email UNIQUE RELY DISABLE NOVALIDATE,\n" +
+                        "   CONSTRAINT id_pk PRIMARY KEY (emp_id) RELY DISABLE NOVALIDATE)\n" +
+                        "   AS SELECT employee_id, last_name, email FROM employees;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -51,7 +50,7 @@ public class OracleCreateViewTest8 extends OracleTest {
                         "AS\n" +
                         "SELECT employee_id, last_name, email\n" +
                         "FROM employees;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

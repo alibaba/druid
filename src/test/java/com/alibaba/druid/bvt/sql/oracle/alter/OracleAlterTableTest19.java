@@ -28,13 +28,12 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleAlterTableTest19 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE warehouses" //
-                + "   ADD CONSTRAINT wh_unq UNIQUE (warehouse_id, warehouse_name)"//
-                + "   USING INDEX PCTFREE 5"//
-                + "  EXCEPTIONS INTO wrong_id;";
+                "ALTER TABLE warehouses" //
+                        + "   ADD CONSTRAINT wh_unq UNIQUE (warehouse_id, warehouse_name)"//
+                        + "   USING INDEX PCTFREE 5"//
+                        + "  EXCEPTIONS INTO wrong_id;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

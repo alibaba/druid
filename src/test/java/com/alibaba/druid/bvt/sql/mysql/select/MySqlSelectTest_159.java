@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlSelectTest_159 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT COUNT(*) AS COUNT \n" +
                 "FROM ( \n" +
@@ -30,7 +29,7 @@ public class MySqlSelectTest_159 extends MysqlTest {
                 "FROM dws_ascm_cost_di  WHERE 1 = 1   AND 1 = 1   AND 1 = 1   AND 1 = 1   AND 1 = 1   AND brand_id = '119079'   AND stat_date >= '20170401'   AND stat_date <= '20180228'  GROUP BY 1, CASE WHEN '0' <> '0' THEN channel ELSE CAST(-1 AS bigint) END, CASE WHEN '0' <> '0' THEN group_name ELSE '-' END, CASE WHEN '0' <> '0' THEN city ELSE '-1' END, CASE WHEN '0' <> '0' THEN supplier_code ELSE '-' END, CASE WHEN '0' <> '0' THEN supplier_name ELSE '-' END, CASE WHEN '0' <> '0' THEN CAST(brand_id AS bigint) ELSE CAST(-1 AS bigint) END, CASE WHEN '0' <> '0' THEN brand_name ELSE '-' END  ) 成本汇总  LEFT JOIN dim_channel_maochao dcm ON 成本汇总.渠道 = dcm.id  LEFT JOIN dim_city_maochao dcm1 ON CAST(成本汇总.城市 AS bigint) = dcm1.id ) quark_t1";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

@@ -27,23 +27,22 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateViewTest5 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "   CREATE OR REPLACE FORCE VIEW \"SC_001\".\"TB_001\" (\"OBJECT_NAME\", \"SESSION_ID\", \"ORACLE_USERNAME\", \"OS_USER_NAME\", \"SQL_ACTIONS\", \"LOCK_MODE\") AS \n" +
-                "  SELECT /*+ no_merge(lo) */\n" +
-                "       DO.object_name, lo.SESSION_ID, lo.oracle_username, lo.OS_USER_NAME,\n" +
-                "       DECODE(locked_mode,\n" +
-                "              1, 'SELECT',\n" +
-                "              2, 'SELECT FOR UPDATE / LOCK ROW SHARE',\n" +
-                "              3, 'INSERT/UPDATE/DELETE/LOCK ROW EXCLUSIVE',\n" +
-                "              4, 'CREATE INDEX/LOCK SHARE',\n" +
-                "              5, 'LOCK SHARE ROW EXCLUSIVE',\n" +
-                "              6, 'ALTER TABLE/DROP TABLE/DROP INDEX/TRUNCATE TABLE/LOCK EXCLUSIVE') sql_actions,\n" +
-                "       DECODE(locked_mode, 1, 'NULL', 2, 'SS - SUB SHARE', 3, 'SX - SUB EXCLUSIVE',\n" +
-                "              4, 'S - SHARE', 5, 'SSX - SHARE/SUB EXCLUSIVE', 6, 'X - EXCLUSIVE') Lock_mode\n" +
-                "  FROM sys.V_$LOCKED_OBJECT lo, TB_002 DO\n" +
-                " WHERE DO.object_id = lo.object_id   ";
+                "   CREATE OR REPLACE FORCE VIEW \"SC_001\".\"TB_001\" (\"OBJECT_NAME\", \"SESSION_ID\", \"ORACLE_USERNAME\", \"OS_USER_NAME\", \"SQL_ACTIONS\", \"LOCK_MODE\") AS \n" +
+                        "  SELECT /*+ no_merge(lo) */\n" +
+                        "       DO.object_name, lo.SESSION_ID, lo.oracle_username, lo.OS_USER_NAME,\n" +
+                        "       DECODE(locked_mode,\n" +
+                        "              1, 'SELECT',\n" +
+                        "              2, 'SELECT FOR UPDATE / LOCK ROW SHARE',\n" +
+                        "              3, 'INSERT/UPDATE/DELETE/LOCK ROW EXCLUSIVE',\n" +
+                        "              4, 'CREATE INDEX/LOCK SHARE',\n" +
+                        "              5, 'LOCK SHARE ROW EXCLUSIVE',\n" +
+                        "              6, 'ALTER TABLE/DROP TABLE/DROP INDEX/TRUNCATE TABLE/LOCK EXCLUSIVE') sql_actions,\n" +
+                        "       DECODE(locked_mode, 1, 'NULL', 2, 'SS - SUB SHARE', 3, 'SX - SUB EXCLUSIVE',\n" +
+                        "              4, 'S - SHARE', 5, 'SSX - SHARE/SUB EXCLUSIVE', 6, 'X - EXCLUSIVE') Lock_mode\n" +
+                        "  FROM sys.V_$LOCKED_OBJECT lo, TB_002 DO\n" +
+                        " WHERE DO.object_id = lo.object_id   ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -66,7 +65,7 @@ public class OracleCreateViewTest5 extends OracleTest {
                         "\t, DECODE(locked_mode, 1, 'NULL', 2, 'SS - SUB SHARE', 3, 'SX - SUB EXCLUSIVE', 4, 'S - SHARE', 5, 'SSX - SHARE/SUB EXCLUSIVE', 6, 'X - EXCLUSIVE') AS Lock_mode\n" +
                         "FROM sys.V_$LOCKED_OBJECT lo, TB_002 DO\n" +
                         "WHERE DO.object_id = lo.object_id",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateDatabaseTest2 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE DATABASE testRep CHARACTER SET utf8 COLLATE utf8_general_ci";

@@ -15,26 +15,24 @@
  */
 package com.alibaba.druid.support.spring.stat.annotation;
 
-import javax.annotation.Resource;
-
+import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
 import org.springframework.aop.framework.AbstractAdvisingBeanPostProcessor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
-import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
+import javax.annotation.Resource;
 
 @SuppressWarnings("serial")
 public class StatAnnotationBeanPostProcessor extends AbstractAdvisingBeanPostProcessor implements BeanFactoryAware {
+    @Resource(name = "druid-stat-interceptor")
+    private DruidStatInterceptor druidStatInterceptor;
 
-	@Resource(name="druid-stat-interceptor")
-	private DruidStatInterceptor druidStatInterceptor;
-	
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		setBeforeExistingAdvisors(true);
-		StatAnnotationAdvisor advisor = new StatAnnotationAdvisor(druidStatInterceptor);
-		advisor.setBeanFactory(beanFactory);
-		this.advisor = advisor;
-	}
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        setBeforeExistingAdvisors(true);
+        StatAnnotationAdvisor advisor = new StatAnnotationAdvisor(druidStatInterceptor);
+        advisor.setBeanFactory(beanFactory);
+        this.advisor = advisor;
+    }
 
 }

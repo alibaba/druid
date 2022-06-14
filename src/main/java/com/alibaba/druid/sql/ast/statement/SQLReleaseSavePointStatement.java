@@ -25,15 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLReleaseSavePointStatement extends SQLStatementImpl {
-
     private SQLExpr name;
-    
+
     public SQLReleaseSavePointStatement() {
-        
     }
-    
+
     public SQLReleaseSavePointStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public SQLExpr getName() {

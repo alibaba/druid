@@ -25,10 +25,9 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest8_cluster extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE INDEX idx_personnel ON CLUSTER personnel; ";
+                "CREATE INDEX idx_personnel ON CLUSTER personnel; ";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

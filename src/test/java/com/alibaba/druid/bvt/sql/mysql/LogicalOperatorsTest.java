@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class LogicalOperatorsTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT 10 IS TRUE;";
 
@@ -182,8 +181,7 @@ public class LogicalOperatorsTest extends TestCase {
     }
 
 
-
-    public void test14(){
+    public void test14() {
         String sql = "SELECT ~1;";
 
         SQLStatementParser parser = new MySqlStatementParser(sql);
@@ -204,7 +202,7 @@ public class LogicalOperatorsTest extends TestCase {
         Assert.assertEquals("SELECT ~(1 + 1);", text);
     }
 
-    public void test15(){
+    public void test15() {
         String sql = "SELECT * FROM SUNTEST WHERE ~ID = 1;";
 
         SQLStatementParser parser = new MySqlStatementParser(sql);
@@ -224,6 +222,7 @@ public class LogicalOperatorsTest extends TestCase {
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
         Assert.assertEquals("SELECT *\nFROM SUNTEST\nWHERE ~(ID = 1);", text);
     }
+
     private String output(List<SQLStatement> stmtList) {
         return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }

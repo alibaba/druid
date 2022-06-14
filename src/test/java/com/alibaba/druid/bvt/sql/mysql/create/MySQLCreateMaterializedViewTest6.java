@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 
 public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
-
     public void test1() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
                 "  PRIMARY KEY(id)\n" +

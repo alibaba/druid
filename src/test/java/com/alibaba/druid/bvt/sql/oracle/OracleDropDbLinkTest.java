@@ -27,10 +27,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleDropDbLinkTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "DROP PUBLIC DATABASE LINK remote";
+                "DROP PUBLIC DATABASE LINK remote";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -38,7 +37,7 @@ public class OracleDropDbLinkTest extends OracleTest {
         print(statementList);
 
         Assert.assertEquals("DROP PUBLIC DATABASE LINK remote",
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);
@@ -48,7 +47,7 @@ public class OracleDropDbLinkTest extends OracleTest {
 
     public void test_1() throws Exception {
         String sql = //
-        "DROP DATABASE LINK local;";
+                "DROP DATABASE LINK local;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -56,7 +55,7 @@ public class OracleDropDbLinkTest extends OracleTest {
         print(statementList);
 
         Assert.assertEquals("DROP DATABASE LINK local;",
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);

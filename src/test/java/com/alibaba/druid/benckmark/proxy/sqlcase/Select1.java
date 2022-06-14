@@ -25,11 +25,10 @@ import com.alibaba.druid.benckmark.proxy.BenchmarkCase;
 import com.alibaba.druid.benckmark.proxy.SQLExecutor;
 
 public class Select1 extends BenchmarkCase {
-
-    private String     sql;
+    private String sql;
     private Connection conn;
 
-    public Select1(){
+    public Select1() {
         super("Select1");
 
         sql = "SELECT 1";

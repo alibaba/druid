@@ -14,7 +14,6 @@ import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class UnwrapTest_filter extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -40,16 +39,16 @@ public class UnwrapTest_filter extends PoolTestCase {
     public void test_unwrap() throws Exception {
         Connection conn = dataSource.getConnection();
         conn.close();
-        
+
         Assert.assertTrue(dataSource.isWrapperFor(StatFilter.class));
         Assert.assertNotNull(dataSource.unwrap(StatFilter.class));
-        
+
         Assert.assertTrue(dataSource.isWrapperFor(MergeStatFilter.class));
         Assert.assertNotNull(dataSource.unwrap(MergeStatFilter.class));
-        
+
         Assert.assertTrue(dataSource.isWrapperFor(LogFilter.class));
         Assert.assertNotNull(dataSource.unwrap(LogFilter.class));
-        
+
         Assert.assertTrue(dataSource.isWrapperFor(Log4jFilter.class));
         Assert.assertNotNull(dataSource.unwrap(Log4jFilter.class));
     }

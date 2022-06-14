@@ -25,24 +25,23 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateProcedureTest2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE OR REPLACE PROCEDURE transfer (" + //
-                     "  from_acct  NUMBER," + //
-                     "  to_acct    NUMBER," + //
-                     "  amount     NUMBER" + //
-                     ") AS " + //
-                     "BEGIN" + //
-                     "  UPDATE accounts" + //
-                     "  SET balance = balance - amount" + //
-                     "  WHERE account_id = from_acct;" + //
-                     " " + //
-                     "  UPDATE accounts" + //
-                     "  SET balance = balance + amount" + //
-                     "  WHERE account_id = to_acct;" + //
-                     " " + //
-                     "  COMMIT WRITE IMMEDIATE NOWAIT;" + //
-                     "END;"; //
+                "  from_acct  NUMBER," + //
+                "  to_acct    NUMBER," + //
+                "  amount     NUMBER" + //
+                ") AS " + //
+                "BEGIN" + //
+                "  UPDATE accounts" + //
+                "  SET balance = balance - amount" + //
+                "  WHERE account_id = from_acct;" + //
+                " " + //
+                "  UPDATE accounts" + //
+                "  SET balance = balance + amount" + //
+                "  WHERE account_id = to_acct;" + //
+                " " + //
+                "  COMMIT WRITE IMMEDIATE NOWAIT;" + //
+                "END;"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -85,7 +84,7 @@ public class OracleCreateProcedureTest2 extends OracleTest {
         Assert.assertEquals(1, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getRelationships().size());
 
-         Assert.assertTrue(visitor.containsColumn("accounts", "balance"));
-         Assert.assertTrue(visitor.containsColumn("accounts", "account_id"));
+        Assert.assertTrue(visitor.containsColumn("accounts", "balance"));
+        Assert.assertTrue(visitor.containsColumn("accounts", "account_id"));
     }
 }

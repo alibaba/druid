@@ -12,7 +12,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_156 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT SQL_SMALL_RESULT ((NULL) is  not  FALSE) \n" +
                 "FROM corona_select_multi_db_one_tb AS layer_0_left_tb \n" +
@@ -21,7 +20,7 @@ public class MySqlSelectTest_156 extends MysqlTest {
                 "WHERE layer_0_right_tb.time_test='x6' NOT BETWEEN 96 AND layer_0_right_tb.bigint_test;\n";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

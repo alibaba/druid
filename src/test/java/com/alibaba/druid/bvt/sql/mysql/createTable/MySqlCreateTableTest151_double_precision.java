@@ -15,7 +15,6 @@ import java.util.List;
  * @Date 2019-05-15 14:07
  */
 public class MySqlCreateTableTest151_double_precision extends TestCase {
-
     public void test_0() {
         String sql = "create temporary table tb_etaqf (\n" +
                 "\t `col_mcdw` double precision(10,2)\n" +
@@ -23,7 +22,7 @@ public class MySqlCreateTableTest151_double_precision extends TestCase {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

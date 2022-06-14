@@ -26,37 +26,36 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest47 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "  CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (\t\"ID\" NUMBER, \n" +
-                "\t\"IS_DELETED\" CHAR(1), \n" +
-                "\t\"GMT_MODIFIED\" DATE, \n" +
-                "\t\"GMT_CREATE\" DATE, \n" +
-                "\t\"CREATOR\" VARCHAR2(32), \n" +
-                "\t\"MODIFIER\" VARCHAR2(32), \n" +
-                "\t\"SEND_TIME\" DATE, \n" +
-                "\t\"SUBJECT\" VARCHAR2(256), \n" +
-                "\t\"SENDER\" VARCHAR2(128), \n" +
-                "\t\"PROVIDER\" VARCHAR2(16), \n" +
-                "\t\"AVINFO_ID\" NUMBER, \n" +
-                "\t\"CONTENT\" CLOB, \n" +
-                "\t CONSTRAINT \"AV_EMAIL_PK\" PRIMARY KEY (\"ID\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 4194304 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APPINDX1M\"  ENABLE\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
-                "\n" +
-                "  STORAGE(INITIAL 4194304 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APPDATA1M\" \n" +
-                " LOB (\"CONTENT\") STORE AS (\n" +
-                "  TABLESPACE \"APPDATA1M\" ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
-                "  NOCACHE LOGGING \n" +
-                "  STORAGE(INITIAL 4194304 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT))";
+                "  CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (\t\"ID\" NUMBER, \n" +
+                        "\t\"IS_DELETED\" CHAR(1), \n" +
+                        "\t\"GMT_MODIFIED\" DATE, \n" +
+                        "\t\"GMT_CREATE\" DATE, \n" +
+                        "\t\"CREATOR\" VARCHAR2(32), \n" +
+                        "\t\"MODIFIER\" VARCHAR2(32), \n" +
+                        "\t\"SEND_TIME\" DATE, \n" +
+                        "\t\"SUBJECT\" VARCHAR2(256), \n" +
+                        "\t\"SENDER\" VARCHAR2(128), \n" +
+                        "\t\"PROVIDER\" VARCHAR2(16), \n" +
+                        "\t\"AVINFO_ID\" NUMBER, \n" +
+                        "\t\"CONTENT\" CLOB, \n" +
+                        "\t CONSTRAINT \"AV_EMAIL_PK\" PRIMARY KEY (\"ID\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 4194304 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APPINDX1M\"  ENABLE\n" +
+                        "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                        "\n" +
+                        "  STORAGE(INITIAL 4194304 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APPDATA1M\" \n" +
+                        " LOB (\"CONTENT\") STORE AS (\n" +
+                        "  TABLESPACE \"APPDATA1M\" ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
+                        "  NOCACHE LOGGING \n" +
+                        "  STORAGE(INITIAL 4194304 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT))";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -131,7 +130,7 @@ public class OracleCreateTableTest47 extends OracleTest {
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

@@ -22,23 +22,20 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelectTableSource {
-
     protected OracleSelectPivotBase pivot;
 
-    public OracleSelectJoin(String alias){
+    public OracleSelectJoin(String alias) {
         super(alias);
     }
 
-    public OracleSelectJoin(){
-
+    public OracleSelectJoin() {
     }
 
-    public OracleSelectJoin(SQLTableSource left, JoinType joinType, SQLTableSource right, SQLExpr condition){
-        super (left, joinType, right, condition);
+    public OracleSelectJoin(SQLTableSource left, JoinType joinType, SQLTableSource right, SQLExpr condition) {
+        super(left, joinType, right, condition);
     }
 
     public OracleSelectPivotBase getPivot() {
@@ -72,13 +69,21 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         OracleSelectJoin that = (OracleSelectJoin) o;
 
-        if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) return false;
+        if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) {
+            return false;
+        }
         return flashback != null ? flashback.equals(that.flashback) : that.flashback == null;
     }
 
@@ -89,7 +94,7 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
         return result;
     }
 
-    public String toString () {
+    public String toString() {
         return SQLUtils.toOracleString(this);
     }
 

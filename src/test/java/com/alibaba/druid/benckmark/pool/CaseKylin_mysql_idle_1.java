@@ -29,29 +29,28 @@ import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class CaseKylin_mysql_idle_1 extends TestCase {
+    private String jdbcUrl;
+    private String user;
+    private String password;
+    private String driverClass;
+    private int initialSize = 1;
+    private int minIdle = 1;
+    private int maxIdle = 20;
+    private int maxActive = 20;
+    private int maxWait = 60000;
+    private String validationQuery = null;     // "SELECT 1";
+    private int threadCount = 15;
+    private int TEST_COUNT = 3;
+    final int LOOP_COUNT = 1000 * 10;
+    private boolean testWhileIdle = true;
+    private boolean testOnBorrow = false;
+    private boolean testOnReturn = false;
 
-    private String  jdbcUrl;
-    private String  user;
-    private String  password;
-    private String  driverClass;
-    private int     initialSize                   = 1;
-    private int     minIdle                       = 1;
-    private int     maxIdle                       = 20;
-    private int     maxActive                     = 20;
-    private int     maxWait                       = 60000;
-    private String  validationQuery               = null;     // "SELECT 1";
-    private int     threadCount                   = 15;
-    private int     TEST_COUNT                    = 3;
-    final int       LOOP_COUNT                    = 1000 * 10;
-    private boolean testWhileIdle                 = true;
-    private boolean testOnBorrow                  = false;
-    private boolean testOnReturn                  = false;
-
-    private boolean removeAbandoned               = true;
-    private int     removeAbandonedTimeout        = 180;
-    private long    timeBetweenEvictionRunsMillis = 60000;
-    private long    minEvictableIdleTimeMillis    = 1800000;
-    private int     numTestsPerEvictionRun        = 20;
+    private boolean removeAbandoned = true;
+    private int removeAbandonedTimeout = 180;
+    private long timeBetweenEvictionRunsMillis = 60000;
+    private long minEvictableIdleTimeMillis = 1800000;
+    private int numTestsPerEvictionRun = 20;
 
     protected void setUp() throws Exception {
         // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -112,12 +111,10 @@ public class CaseKylin_mysql_idle_1 extends TestCase {
     }
 
     private void p0(final DataSource dataSource, String name, int threadCount) throws Exception {
-
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; ++i) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         startLatch.await();
@@ -151,6 +148,6 @@ public class CaseKylin_mysql_idle_1 extends TestCase {
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
         System.out.println("thread " + threadCount + " " + name + " millis : "
-                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+                + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }

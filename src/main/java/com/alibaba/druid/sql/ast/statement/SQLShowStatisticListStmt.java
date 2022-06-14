@@ -24,12 +24,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLShowStatisticListStmt extends SQLStatementImpl implements SQLShowStatement {
-
     private SQLExprTableSource tableSource;
-    private boolean            full;
+    private boolean full;
 
     public SQLShowStatisticListStmt() {
-        super (DbType.odps);
+        super(DbType.odps);
     }
 
     public SQLExprTableSource getTableSource() {

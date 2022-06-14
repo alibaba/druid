@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest72 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE TABLE \"MessageInstance\" ("
@@ -40,7 +39,7 @@ public class MySqlCreateTableTest72 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         Column column = visitor.getColumn("MessageInstance", "id");
         Assert.assertNotNull(column);
         Assert.assertEquals("int", column.getDataType());
@@ -54,7 +53,7 @@ public class MySqlCreateTableTest72 extends MysqlTest {
                     + "\n\tKEY \"ix_messageId\" (\"messageId\")"
                     + "\n)", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table \"MessageInstance\" ("

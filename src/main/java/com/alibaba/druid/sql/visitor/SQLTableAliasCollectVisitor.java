@@ -2,7 +2,6 @@ package com.alibaba.druid.sql.visitor;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.util.FnvHash;
 
@@ -15,7 +14,7 @@ public class SQLTableAliasCollectVisitor extends SQLASTVisitorAdapter {
     protected volatile int seed;
 
     public boolean visit(SQLLateralViewTableSource x) {
-        String alias =x.getAlias();
+        String alias = x.getAlias();
         if (alias == null) {
             return false;
         }
@@ -26,7 +25,7 @@ public class SQLTableAliasCollectVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLValuesTableSource x) {
-        String alias =x.getAlias();
+        String alias = x.getAlias();
         if (alias == null) {
             return false;
         }
@@ -37,7 +36,7 @@ public class SQLTableAliasCollectVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLUnionQueryTableSource x) {
-        String alias =x.getAlias();
+        String alias = x.getAlias();
         if (alias == null) {
             x.getUnion().accept(this);
             return false;
@@ -49,7 +48,7 @@ public class SQLTableAliasCollectVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLSubqueryTableSource x) {
-        String alias =x.getAlias();
+        String alias = x.getAlias();
         if (alias == null) {
             x.getSelect().accept(this);
             return false;
@@ -114,7 +113,7 @@ public class SQLTableAliasCollectVisitor extends SQLASTVisitorAdapter {
 
     public String genAlias(int seed) {
         String alias = null;
-        for (; seed < 100;) {
+        for (; seed < 100; ) {
             String str = "G" + (seed++);
             if (!containsTableSource(str)) {
                 alias = str;

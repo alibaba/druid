@@ -25,7 +25,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGCreateTableTest_12 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE \"public\".\"city\" (\n" +
                 "  \"id\" varchar(6) COLLATE \"default\" NOT NULL,\n" +
@@ -37,13 +36,13 @@ public class PGCreateTableTest_12 extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         assertEquals("CREATE TABLE \"public\".\"city\" (\n" +
                 "\t\"id\" varchar(6) NOT NULL,\n" +
                 "\t\"name\" varchar(32) NOT NULL\n" +
                 ")\n" +
                 "WITH (OIDS = false);", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("create table \"public\".\"city\" (\n" +
                 "\t\"id\" varchar(6) not null,\n" +
                 "\t\"name\" varchar(32) not null\n" +
@@ -62,7 +61,7 @@ public class PGCreateTableTest_12 extends PGTest {
 
         assertTrue(visitor.getTables().get(new TableStat.Name("public.city")).getCreateCount() == 1);
 
-        assertEquals(2, visitor.getColumns().size() );
+        assertEquals(2, visitor.getColumns().size());
     }
 
 }

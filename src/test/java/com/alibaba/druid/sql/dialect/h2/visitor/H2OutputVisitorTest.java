@@ -12,7 +12,6 @@ import java.sql.Statement;
 import java.util.List;
 
 public class H2OutputVisitorTest {
-
     @BeforeClass
     public static void loadDriver() {
         org.h2.Driver.load();

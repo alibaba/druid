@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
 
 public class TestOracle extends TestCase {
-
     private String jdbcUrl;
     private String user;
     private String password;

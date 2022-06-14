@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.ads.parser.AdsStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 public class MySqlSelectTest_adsHintAndTypeConvert extends MysqlTest {
-
     public void test_1() throws Exception {
         String sql = "/*+engine=mpp*/ select timestamp '2017-01-01 11:11:11'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

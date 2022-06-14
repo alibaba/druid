@@ -24,14 +24,13 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateSequenceTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE SEQUENCE customers_seq" + //
-                " START WITH     1000" + //
-                " INCREMENT BY   1" + //
-                " NOCACHE" + //
-                " NOCYCLE;";
+                "CREATE SEQUENCE customers_seq" + //
+                        " START WITH     1000" + //
+                        " INCREMENT BY   1" + //
+                        " NOCACHE" + //
+                        " NOCYCLE;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

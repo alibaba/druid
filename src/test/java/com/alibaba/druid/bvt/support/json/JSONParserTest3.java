@@ -11,7 +11,7 @@ import com.alibaba.druid.util.Utils;
 public class JSONParserTest3 extends TestCase {
     public void test_parse() throws Exception {
         String text = Utils.readFromResource("bvt/sonar-sql.json");
-        Map<String, Object> result = (Map<String, Object>)JSONUtils.parse(text);
+        Map<String, Object> result = (Map<String, Object>) JSONUtils.parse(text);
         LinkedHashMap wallStats = (LinkedHashMap) result.get("Content");
         System.out.println(wallStats.get("blackList"));
     }

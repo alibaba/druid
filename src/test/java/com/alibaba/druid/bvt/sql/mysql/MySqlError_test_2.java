@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 public class MySqlError_test_2 extends MysqlTest {
-
     public void test_0() {
         String sql = "Describe sdb_goods free_postage";
 

@@ -32,18 +32,16 @@ public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuable
     private Number number;
     private String type;
 
-    public SQLIntegerExpr(Number number){
+    public SQLIntegerExpr(Number number) {
         this.number = number;
     }
 
-
-    public SQLIntegerExpr(Number number, SQLObject parent){
+    public SQLIntegerExpr(Number number, SQLObject parent) {
         this.number = number;
         this.parent = parent;
     }
 
-    public SQLIntegerExpr(){
-
+    public SQLIntegerExpr() {
     }
 
     public Number getNumber() {

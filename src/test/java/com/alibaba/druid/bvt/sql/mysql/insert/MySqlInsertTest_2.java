@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlInsertTest_2 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO tbl_name (col1,col2) VALUES(15,col1*2);";
 
@@ -45,6 +44,6 @@ public class MySqlInsertTest_2 extends MysqlTest {
         stmt.accept(visitor);
 
         Assert.assertEquals("INSERT INTO tbl_name (col1, col2)" + //
-                            "\nVALUES (15, col1 * 2);", SQLUtils.toMySqlString(insertStmt));
+                "\nVALUES (15, col1 * 2);", SQLUtils.toMySqlString(insertStmt));
     }
 }

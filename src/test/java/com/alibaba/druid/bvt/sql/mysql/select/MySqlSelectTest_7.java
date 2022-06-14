@@ -27,21 +27,20 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_7 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from tb order by id asc,name desc";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
-        
+
         SQLSelect select = selectStmt.getSelect();
         Assert.assertNotNull(select.getQuery());
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
         Assert.assertNotNull(queryBlock.getOrderBy());
-        
+
 //        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
@@ -53,7 +52,7 @@ public class MySqlSelectTest_7 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());

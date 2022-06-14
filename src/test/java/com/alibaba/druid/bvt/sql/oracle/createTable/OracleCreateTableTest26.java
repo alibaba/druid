@@ -26,19 +26,18 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest26 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE dept_20 " //
-                + "   (employee_id     NUMBER(4), "//
-                + "    last_name       VARCHAR2(10), "//
-                + "    job_id          VARCHAR2(9), "//
-                + "    manager_id      NUMBER(4), "//
-                + "    hire_date       DATE, "//
-                + "    salary          NUMBER(7,2), "//
-                + "    commission_pct  NUMBER(7,2), "//
-                + "    department_id   CONSTRAINT fk_deptno "//
-                + "                    REFERENCES departments(department_id) ); ";
+                "CREATE TABLE dept_20 " //
+                        + "   (employee_id     NUMBER(4), "//
+                        + "    last_name       VARCHAR2(10), "//
+                        + "    job_id          VARCHAR2(9), "//
+                        + "    manager_id      NUMBER(4), "//
+                        + "    hire_date       DATE, "//
+                        + "    salary          NUMBER(7,2), "//
+                        + "    commission_pct  NUMBER(7,2), "//
+                        + "    department_id   CONSTRAINT fk_deptno "//
+                        + "                    REFERENCES departments(department_id) ); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -48,17 +47,17 @@ public class OracleCreateTableTest26 extends OracleTest {
         assertEquals(1, statementList.size());
 
         assertEquals("CREATE TABLE dept_20 (" //
-                            + "\n\temployee_id NUMBER(4),"//
-                            + "\n\tlast_name VARCHAR2(10),"//
-                            + "\n\tjob_id VARCHAR2(9),"//
-                            + "\n\tmanager_id NUMBER(4),"//
-                            + "\n\thire_date DATE,"//
-                            + "\n\tsalary NUMBER(7, 2),"//
-                            + "\n\tcommission_pct NUMBER(7, 2),"//
-                            + "\n\tdepartment_id"//
-                            + "\n\t\tCONSTRAINT fk_deptno REFERENCES departments (department_id)"//
-                            + "\n);",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\n\temployee_id NUMBER(4),"//
+                        + "\n\tlast_name VARCHAR2(10),"//
+                        + "\n\tjob_id VARCHAR2(9),"//
+                        + "\n\tmanager_id NUMBER(4),"//
+                        + "\n\thire_date DATE,"//
+                        + "\n\tsalary NUMBER(7, 2),"//
+                        + "\n\tcommission_pct NUMBER(7, 2),"//
+                        + "\n\tdepartment_id"//
+                        + "\n\t\tCONSTRAINT fk_deptno REFERENCES departments (department_id)"//
+                        + "\n);",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlSelectTest_116_with_cube extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT string_test, time_test, sum(int_test2) as sum_int FROM test_realtime1 GROUP BY ROLLUP (string_test, time_test) ORDER BY sum_int, string_test, time_test";
 
@@ -16,7 +15,7 @@ public class MySqlSelectTest_116_with_cube extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

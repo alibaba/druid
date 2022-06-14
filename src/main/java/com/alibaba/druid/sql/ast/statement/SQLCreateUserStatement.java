@@ -28,7 +28,6 @@ public class SQLCreateUserStatement extends SQLStatementImpl {
     private SQLName defaultTableSpace;
 
     public SQLCreateUserStatement() {
-
     }
 
     public SQLName getUser() {

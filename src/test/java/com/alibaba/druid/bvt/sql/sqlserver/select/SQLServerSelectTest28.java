@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SQLServerSelectTest28 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = //
                 "select next value for orderId"; //

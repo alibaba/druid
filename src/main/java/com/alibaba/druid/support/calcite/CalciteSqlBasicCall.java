@@ -10,13 +10,12 @@ import org.apache.calcite.sql.parser.SqlParserPos;
  * @author lijun.cailj 2017/11/21
  */
 public class CalciteSqlBasicCall extends SqlBasicCall {
-
     public CalciteSqlBasicCall(SqlOperator operator, SqlNode[] operands, SqlParserPos pos) {
         super(operator, operands, pos);
     }
 
     public CalciteSqlBasicCall(SqlOperator operator, SqlNode[] operands, SqlParserPos pos, boolean expanded,
-                                  SqlLiteral functionQualifier) {
+                               SqlLiteral functionQualifier) {
         super(operator, operands, pos, expanded, functionQualifier);
     }
 }

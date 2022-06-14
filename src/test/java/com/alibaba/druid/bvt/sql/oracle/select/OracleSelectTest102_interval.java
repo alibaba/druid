@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest102_interval extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT id, bill_batch_no, partner_id, currency, original_amount\n" +
@@ -87,5 +86,5 @@ public class OracleSelectTest102_interval extends OracleTest {
         assertEquals(1, visitor.getOrderByColumns().size());
     }
 
-   
+
 }

@@ -26,42 +26,41 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest58 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "    CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"ID\" NUMBER NOT NULL ENABLE, \n" +
-                "  \"PROPS\" VARCHAR2(4000), \n" +
-                "   CONSTRAINT \"PRODUCT_PROPERTY_SEARCH_PK\" PRIMARY KEY (\"ID\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255  LOGGING \n" +
-                "  STORAGE(\n" +
-                "  BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APPINDX1K\"  LOCAL\n" +
-                " (PARTITION \"P1\" \n" +
-                "  PCTFREE 10 INITRANS 2 MAXTRANS 255 \n" +
-                "  STORAGE(INITIAL 24117248 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APPINDX1K\" , \n" +
-                " PARTITION \"P2\" \n" +
-                "  PCTFREE 10 INITRANS 2 MAXTRANS 255 \n" +
-                "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APPINDX1K\" )  ENABLE\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255  LOGGING \n" +
-                "  STORAGE(\n" +
-                "  BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APP_DATA1K\" \n" +
-                "  PARTITION BY RANGE (\"ID\") \n" +
-                " (PARTITION \"P1\"  VALUES LESS THAN (2000000000) \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                "  STORAGE(INITIAL 150994944 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APPDATA1M\" NOCOMPRESS , \n" +
-                " PARTITION \"P2\"  VALUES LESS THAN (MAXVALUE) \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APP_DATA1K\" NOCOMPRESS )   ";
+                "    CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"ID\" NUMBER NOT NULL ENABLE, \n" +
+                        "  \"PROPS\" VARCHAR2(4000), \n" +
+                        "   CONSTRAINT \"PRODUCT_PROPERTY_SEARCH_PK\" PRIMARY KEY (\"ID\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255  LOGGING \n" +
+                        "  STORAGE(\n" +
+                        "  BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APPINDX1K\"  LOCAL\n" +
+                        " (PARTITION \"P1\" \n" +
+                        "  PCTFREE 10 INITRANS 2 MAXTRANS 255 \n" +
+                        "  STORAGE(INITIAL 24117248 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APPINDX1K\" , \n" +
+                        " PARTITION \"P2\" \n" +
+                        "  PCTFREE 10 INITRANS 2 MAXTRANS 255 \n" +
+                        "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APPINDX1K\" )  ENABLE\n" +
+                        "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255  LOGGING \n" +
+                        "  STORAGE(\n" +
+                        "  BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APP_DATA1K\" \n" +
+                        "  PARTITION BY RANGE (\"ID\") \n" +
+                        " (PARTITION \"P1\"  VALUES LESS THAN (2000000000) \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        "  STORAGE(INITIAL 150994944 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APPDATA1M\" NOCOMPRESS , \n" +
+                        " PARTITION \"P2\"  VALUES LESS THAN (MAXVALUE) \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APP_DATA1K\" NOCOMPRESS )   ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -130,7 +129,7 @@ public class OracleCreateTableTest58 extends OracleTest {
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
                         "\t\t)\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

@@ -41,7 +41,6 @@ public class MySqlParameterizedOutputVisitorTest_46 extends TestCase {
 
         System.out.println(psql);
 
-
         assertEquals("SELECT COUNT(*) AS count, `ipv_uv_1d_001` AS col\n" +
                 "FROM (\n" +
                 "\t(SELECT ipv_uv_1d_001\n" +

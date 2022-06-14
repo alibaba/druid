@@ -23,8 +23,7 @@ import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 public class Ascii implements Function {
-
-    public final static Ascii instance = new Ascii();
+    public static final Ascii instance = new Ascii();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getArguments().isEmpty()) {
@@ -32,12 +31,12 @@ public class Ascii implements Function {
         }
         SQLExpr param = x.getArguments().get(0);
         param.accept(visitor);
-        
+
         Object paramValue = param.getAttributes().get(EVAL_VALUE);
         if (paramValue == null) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
-        
+
         if (paramValue == EVAL_VALUE_NULL) {
             return EVAL_VALUE_NULL;
         }

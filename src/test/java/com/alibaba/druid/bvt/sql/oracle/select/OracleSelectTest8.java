@@ -25,12 +25,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest8 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT d.department_id, e.last_name" + //
-                     "   FROM departments d, employees e" + //
-                     "   WHERE d.department_id = e.department_id(+)" + //
-                     "   ORDER BY d.department_id, e.last_name;";
+                "   FROM departments d, employees e" + //
+                "   WHERE d.department_id = e.department_id(+)" + //
+                "   ORDER BY d.department_id, e.last_name;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -29,7 +29,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_11 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT A.F_0201, A.F_0301, A.F_0802, A.F_2100"
                 + "\nFROM A, B"
@@ -65,7 +64,7 @@ public class DB2SelectTest_11 extends DB2Test {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("A")));
 
-         Assert.assertTrue(visitor.getColumns().contains(new Column("A", "F_0201")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("A", "F_0201")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
@@ -83,8 +82,8 @@ public class DB2SelectTest_11 extends DB2Test {
                         "\t\tFROM B\n" +
                         "\t)\n" +
                         "\tAND A.F_2100 > 0", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         assertEquals("select A.F_0201, A.F_0301, A.F_0802, A.F_2100\n" +
                         "from A, B\n" +
                         "where B.F_2211 = '5'\n" +
@@ -99,6 +98,6 @@ public class DB2SelectTest_11 extends DB2Test {
                         "\t\tfrom B\n" +
                         "\t)\n" +
                         "\tand A.F_2100 > 0", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

@@ -20,7 +20,7 @@ import java.util.Calendar;
 
 public final class JdbcParameterLong implements JdbcParameter {
     private static JdbcParameterLong[] cache;
-    
+
     static {
         int cacheSize = 127;
         cache = new JdbcParameterLong[cacheSize];
@@ -28,18 +28,18 @@ public final class JdbcParameterLong implements JdbcParameter {
             cache[i] = new JdbcParameterLong(i);
         }
     }
-    
+
     private final long value;
 
-    private JdbcParameterLong(long value){
+    private JdbcParameterLong(long value) {
         this.value = value;
     }
-    
+
     public static JdbcParameterLong valueOf(long value) {
         if (value >= 0 && value < cache.length) {
             return cache[(int) value];
         }
-        
+
         return new JdbcParameterLong(value);
     }
 

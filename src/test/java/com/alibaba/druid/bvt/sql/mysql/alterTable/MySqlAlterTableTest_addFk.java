@@ -26,10 +26,9 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest_addFk extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "alter table Test2 add index FK4CF5DC0F5DD7C31 (test1_name), " + //
-                     "add constraint FK4CF5DC0F5DD7C31 foreign key (test1_name) references Test1 (name)";
+                "add constraint FK4CF5DC0F5DD7C31 foreign key (test1_name) references Test1 (name)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
@@ -43,13 +42,13 @@ public class MySqlAlterTableTest_addFk extends TestCase {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("ALTER TABLE Test2" + //
-                                    "\n\tADD INDEX FK4CF5DC0F5DD7C31 (test1_name)," + //
-                                    "\n\tADD CONSTRAINT FK4CF5DC0F5DD7C31 FOREIGN KEY (test1_name) REFERENCES Test1 (name)",
-                                    SQLUtils.toMySqlString(stmt));
-        
+                        "\n\tADD INDEX FK4CF5DC0F5DD7C31 (test1_name)," + //
+                        "\n\tADD CONSTRAINT FK4CF5DC0F5DD7C31 FOREIGN KEY (test1_name) REFERENCES Test1 (name)",
+                SQLUtils.toMySqlString(stmt));
+
         Assert.assertEquals("alter table Test2" + //
-                "\n\tadd index FK4CF5DC0F5DD7C31 (test1_name)," + //
-                "\n\tadd constraint FK4CF5DC0F5DD7C31 foreign key (test1_name) references Test1 (name)",
+                        "\n\tadd index FK4CF5DC0F5DD7C31 (test1_name)," + //
+                        "\n\tadd constraint FK4CF5DC0F5DD7C31 foreign key (test1_name) references Test1 (name)",
                 SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(2, visitor.getTables().size());

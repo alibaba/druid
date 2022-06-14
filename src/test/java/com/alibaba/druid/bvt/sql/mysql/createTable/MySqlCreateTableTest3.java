@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest3 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE tk (col1 INT, col2 CHAR(5), col3 DATE)    PARTITION BY KEY(col3)    PARTITIONS 4;";
 

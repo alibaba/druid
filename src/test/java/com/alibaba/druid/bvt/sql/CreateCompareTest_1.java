@@ -93,11 +93,11 @@ public class CreateCompareTest_1 extends TestCase {
 
         SQLCreateTableStatement.sort(stmtList);
 
-        assertEquals("XT_DJ_XT", ((SQLCreateTableStatement)stmtList.get(0)).getName().getSimpleName());
-        assertEquals("XT_DM_GN", ((SQLCreateTableStatement)stmtList.get(1)).getName().getSimpleName());
-        assertEquals("XT_DJ_YH", ((SQLCreateTableStatement)stmtList.get(2)).getName().getSimpleName());
-        assertEquals("XT_DJ_GN", ((SQLCreateTableStatement)stmtList.get(3)).getName().getSimpleName());
-        assertEquals("XT_DJ_YHCD", ((SQLCreateTableStatement)stmtList.get(4)).getName().getSimpleName());
+        assertEquals("XT_DJ_XT", ((SQLCreateTableStatement) stmtList.get(0)).getName().getSimpleName());
+        assertEquals("XT_DM_GN", ((SQLCreateTableStatement) stmtList.get(1)).getName().getSimpleName());
+        assertEquals("XT_DJ_YH", ((SQLCreateTableStatement) stmtList.get(2)).getName().getSimpleName());
+        assertEquals("XT_DJ_GN", ((SQLCreateTableStatement) stmtList.get(3)).getName().getSimpleName());
+        assertEquals("XT_DJ_YHCD", ((SQLCreateTableStatement) stmtList.get(4)).getName().getSimpleName());
 
         String sortedSql = SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
         System.out.println(sortedSql);

@@ -26,15 +26,14 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTriggerTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\" " //
-                + "BEFORE INSERT"//
-                + "    ON \"AO_4AEACD_WEBHOOK_DAO\"   FOR EACH ROW "//
-                + "BEGIN"//
-                + "    SELECT \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\".NEXTVAL INTO :NEW.\"ID\" FROM DUAL;"//
-                + "END;";
+                "CREATE TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\" " //
+                        + "BEFORE INSERT"//
+                        + "    ON \"AO_4AEACD_WEBHOOK_DAO\"   FOR EACH ROW "//
+                        + "BEGIN"//
+                        + "    SELECT \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\".NEXTVAL INTO :NEW.\"ID\" FROM DUAL;"//
+                        + "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,7 +51,7 @@ public class OracleCreateTriggerTest extends OracleTest {
                         "\tINTO :NEW.\"ID\"\n" +
                         "\tFROM DUAL;\n" +
                         "END;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

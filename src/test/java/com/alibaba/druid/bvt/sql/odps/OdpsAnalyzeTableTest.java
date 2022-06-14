@@ -11,7 +11,7 @@ public class OdpsAnalyzeTableTest extends TestCase {
         String sql = "analyze table t partition(pt='1') compute statistics";
         Assert.assertEquals("ANALYZE TABLE t PARTITION (pt = '1') COMPUTE STATISTICS", SQLUtils.formatOdps(sql));
     }
-    
+
     public void test_no_partition() throws Exception {
         String sql = "analyze table t compute statistics";
         Assert.assertEquals("ANALYZE TABLE t COMPUTE STATISTICS", SQLUtils.formatOdps(sql));

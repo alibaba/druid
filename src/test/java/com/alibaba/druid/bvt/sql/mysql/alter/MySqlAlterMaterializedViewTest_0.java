@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
 
 public class MySqlAlterMaterializedViewTest_0 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER MATERIALIZED VIEW view_name\n" +
                 "REFRESH COMPLETE ON DEMAND\n" +
@@ -30,7 +29,7 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         assertEquals("ALTER MATERIALIZED VIEW view_name\n" +
                 "REFRESH COMPLETE ON DEMAND\n" +
                 "ENABLE QUERY REWRITE", SQLUtils.toMySqlString(stmt));
@@ -132,8 +131,8 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
 
     public void test_alter_all() {
         ok("ALTER MATERIALIZED VIEW mymv \n" +
-                "REFRESH NEXT current_date() + INTERVAL 15 DAY\n" +
-                "DISABLE QUERY REWRITE;",
+                        "REFRESH NEXT current_date() + INTERVAL 15 DAY\n" +
+                        "DISABLE QUERY REWRITE;",
                 "ALTER MATERIALIZED VIEW mymv\n" +
                         "REFRESH NEXT current_date() + INTERVAL 15 DAY\n" +
                         "DISABLE QUERY REWRITE;");
@@ -213,6 +212,5 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
         System.out.println(stmt.toString());
         assertEquals(expectedSql, stmt.toString());
     }
-
 
 }

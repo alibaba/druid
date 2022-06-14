@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 
 public class Binlog_Test extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "RESET MASTER, QUERY CACHE, SLAVE";
 
@@ -37,7 +36,6 @@ public class Binlog_Test extends TestCase {
 
         Assert.assertEquals("RESET MASTER, QUERY CACHE, SLAVE;", text);
     }
-    
 
 
     private String output(List<SQLStatement> stmtList) {

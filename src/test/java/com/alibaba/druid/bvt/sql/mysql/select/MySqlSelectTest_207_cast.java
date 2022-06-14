@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlSelectTest_207_cast extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT  a.key_label as keyLabel,\n" +
                 "            a.key_type_cd as keyType,\n" +

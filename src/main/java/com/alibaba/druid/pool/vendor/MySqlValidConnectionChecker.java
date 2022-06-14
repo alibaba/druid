@@ -15,15 +15,6 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
-
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
@@ -33,23 +24,31 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 
-public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
 
+public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
     public static final int DEFAULT_VALIDATION_QUERY_TIMEOUT = 1;
     public static final String DEFAULT_VALIDATION_QUERY = "SELECT 1";
 
     private static final long serialVersionUID = 1L;
-    private static final Log  LOG              = LogFactory.getLog(MySqlValidConnectionChecker.class);
+    private static final Log LOG = LogFactory.getLog(MySqlValidConnectionChecker.class);
 
     private Class<?> clazz;
-    private Method   ping;
-    private boolean  usePingMethod = false;
+    private Method ping;
+    private boolean usePingMethod;
 
     public MySqlValidConnectionChecker() {
         this(false);
     }
 
-    public MySqlValidConnectionChecker(boolean usePingMethod){
+    public MySqlValidConnectionChecker(boolean usePingMethod) {
         try {
             clazz = Utils.loadClass("com.mysql.jdbc.MySQLConnection");
             if (clazz == null) {
@@ -92,7 +91,9 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
         this.usePingMethod = usePingMethod;
     }
 
-    public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
+    public boolean isValidConnection(Connection conn,
+                                     String validateQuery,
+                                     int validationQueryTimeout) throws Exception {
         if (conn.isClosed()) {
             return false;
         }

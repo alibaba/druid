@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 
 public class EqualTest_cast extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "cast(a as varchar(50))";
         String sql_c = "cast(b as varchar(50))";
@@ -31,10 +30,10 @@ public class EqualTest_cast extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new SQLCastExpr(), new SQLCastExpr());
         Assert.assertEquals(new SQLCastExpr().hashCode(), new SQLCastExpr().hashCode());
-        
+
         Assert.assertEquals(new SQLDataTypeImpl(), new SQLDataTypeImpl());
         Assert.assertEquals(new SQLDataTypeImpl().hashCode(), new SQLDataTypeImpl().hashCode());
     }

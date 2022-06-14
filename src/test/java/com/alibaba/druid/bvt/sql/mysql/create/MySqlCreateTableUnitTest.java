@@ -16,7 +16,6 @@ import java.util.List;
  * @Date 2019-05-31 17:39
  */
 public class MySqlCreateTableUnitTest extends MysqlTest {
-
     public void test_0_table_options() throws Exception {
         String sql = "auto_increment 1\n" +
                 "avg_row_length 1\n" +

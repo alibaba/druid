@@ -31,9 +31,7 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySQLParameterizedTest extends TestCase {
-
     public void test() {
-
     }
 
     void paramaterizeAST(String sql, String expected) {
@@ -43,7 +41,6 @@ public class MySQLParameterizedTest extends TestCase {
     }
 
     void validate(String sql, String expect) {
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -60,7 +57,6 @@ public class MySQLParameterizedTest extends TestCase {
     }
 
     void validateOracle(String sql, String expect) {
-
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);

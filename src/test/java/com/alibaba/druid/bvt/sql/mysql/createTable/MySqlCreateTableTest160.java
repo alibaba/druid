@@ -7,7 +7,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 
 
 public class MySqlCreateTableTest160 extends MysqlTest {
-
     public void test_0() throws Exception {
         //for ADB
         String sql = "CREATE TABLE IF NOT EXISTS bar (LIKE a INCLUDING PROPERTIES)";

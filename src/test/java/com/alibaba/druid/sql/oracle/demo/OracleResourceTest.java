@@ -33,7 +33,6 @@ import java.io.Reader;
 import java.util.List;
 
 public class OracleResourceTest extends OracleTest {
-
     public void test_0() throws Exception {
         File file = new File("/Users/wenshao/Downloads/unknownSql(2).txt");
 
@@ -63,7 +62,6 @@ public class OracleResourceTest extends OracleTest {
     }
 
     void mergValidate(String sql, String expect) {
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);

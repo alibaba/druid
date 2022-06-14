@@ -12,7 +12,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class SchemaStatTest15 extends TestCase {
-
     public void test_schemaStat() throws Exception {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         repository.acceptDDL("create table table1 (fid bigint, f1 varchar(100), f2 varchar(100))");
@@ -44,6 +43,7 @@ public class SchemaStatTest15 extends TestCase {
         assertTrue(statVisitor.containsColumn("table1", "f2"));
         assertTrue(statVisitor.containsColumn("UNKNOWN", "f3"));
     }
+
     public void test_schemaStat_2() throws Exception {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         repository.acceptDDL("create table table1 (fid bigint, f1 varchar(100), f2 varchar(100));");

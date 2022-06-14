@@ -6,7 +6,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class PagerUtilsTest_Limit_SQLServer_6 extends TestCase {
-
     public void test_db2_union() throws Exception {
         String sql = "SELECT t.name USER_NAME, t.xxx FROM t_sd_users t ORDER BY t.name ASC";
         String result = PagerUtils.limit(sql, JdbcConstants.SQL_SERVER, 10, 10);

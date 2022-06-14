@@ -22,12 +22,11 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class MySqlSelectTest_310
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT orders.extras->\"$.case_no\"";
 
         SQLStatement stmt = SQLUtils
-                    .parseSingleStatement(sql, DbType.mysql);
+                .parseSingleStatement(sql, DbType.mysql);
 
         assertEquals("SELECT orders.extras -> '$.case_no'", stmt.toString());
     }

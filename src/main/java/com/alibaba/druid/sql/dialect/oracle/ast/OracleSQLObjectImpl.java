@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements OracleSQLObject {
-
-    public OracleSQLObjectImpl(){
-
+    public OracleSQLObjectImpl() {
     }
 
     @Override

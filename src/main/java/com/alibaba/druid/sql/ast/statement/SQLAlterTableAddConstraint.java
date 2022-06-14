@@ -19,15 +19,13 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddConstraint extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLConstraint constraint;
-    private boolean      withNoCheck = false;
+    private boolean withNoCheck;
 
-    public SQLAlterTableAddConstraint(){
-
+    public SQLAlterTableAddConstraint() {
     }
 
-    public SQLAlterTableAddConstraint(SQLConstraint constraint){
+    public SQLAlterTableAddConstraint(SQLConstraint constraint) {
         this.setConstraint(constraint);
     }
 

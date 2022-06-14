@@ -24,8 +24,8 @@ public class Issue1737 extends TestCase {
         parseStatement.accept(visitor);
         final List<Object> plist = visitor.getParameters();
         sql = out.toString();
-        System.out.println("src:"+sql);
-        System.out.println("sql:"+sql);
+        System.out.println("src:" + sql);
+        System.out.println("sql:" + sql);
         System.out.println(" params: " + JSON.toJSONString(plist));
 
         assertEquals("[\"name\",[\"A\",\"B\"]]", JSON.toJSONString(plist));

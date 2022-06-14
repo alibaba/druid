@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class MySqlCreateTableTest89 extends MysqlTest {
-
     public void test_one() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS `test_table_normal`(  \n" +
                 "scoreID INTEGER NOT NULL PRIMARY KEY,  \n" +
@@ -59,7 +58,7 @@ public class MySqlCreateTableTest89 extends MysqlTest {
                     "\tCONSTRAINT CHK_SCORE_ZIP CHECK (SCORE > 0)\n" +
                     ")", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("create table if not exists `test_table_normal` (\n" +

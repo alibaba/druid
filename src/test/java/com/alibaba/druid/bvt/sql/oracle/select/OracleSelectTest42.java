@@ -25,12 +25,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest42 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "SELECT ALL * FROM t_department  " + //
-                "WHERE name IN ('0000','4444') " + //
-                "ORDER BY name ASC"; //
+                "SELECT ALL * FROM t_department  " + //
+                        "WHERE name IN ('0000','4444') " + //
+                        "ORDER BY name ASC"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -55,9 +54,9 @@ public class OracleSelectTest42 extends OracleTest {
         String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT ALL *" + //
-                            "\nFROM t_department" + //
-                            "\nWHERE name IN ('0000', '4444')" + //
-                            "\nORDER BY name ASC", text);
+                "\nFROM t_department" + //
+                "\nWHERE name IN ('0000', '4444')" + //
+                "\nORDER BY name ASC", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid.pool.vendor;
 
+import com.alibaba.druid.pool.ExceptionSorter;
+
 import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
-import com.alibaba.druid.pool.ExceptionSorter;
-
 public class MySqlExceptionSorter implements ExceptionSorter {
-
     @Override
     public boolean isExceptionFatal(SQLException e) {
         if (e instanceof SQLRecoverableException) {
@@ -36,7 +35,7 @@ public class MySqlExceptionSorter implements ExceptionSorter {
         if (sqlState != null && sqlState.startsWith("08")) {
             return true;
         }
-        
+
         switch (errorCode) {
             // Communications Errors
             case 1040: // ER_CON_COUNT_ERROR
@@ -46,18 +45,18 @@ public class MySqlExceptionSorter implements ExceptionSorter {
             case 1081: // ER_IPSOCK_ERROR
             case 1129: // ER_HOST_IS_BLOCKED
             case 1130: // ER_HOST_NOT_PRIVILEGED
-            // Authentication Errors
+                // Authentication Errors
             case 1045: // ER_ACCESS_DENIED_ERROR
-            // Resource errors
+                // Resource errors
             case 1004: // ER_CANT_CREATE_FILE
             case 1005: // ER_CANT_CREATE_TABLE
             case 1015: // ER_CANT_LOCK
             case 1021: // ER_DISK_FULL
             case 1041: // ER_OUT_OF_RESOURCES
-            // Out-of-memory errors
+                // Out-of-memory errors
             case 1037: // ER_OUTOFMEMORY
             case 1038: // ER_OUT_OF_SORTMEMORY
-            // Access denied
+                // Access denied
             case 1142: // ER_TABLEACCESS_DENIED_ERROR
             case 1227: // ER_SPECIFIC_ACCESS_DENIED_ERROR
 
@@ -68,12 +67,12 @@ public class MySqlExceptionSorter implements ExceptionSorter {
             default:
                 break;
         }
-        
+
         // for oceanbase
         if (errorCode >= -9000 && errorCode <= -8000) {
             return true;
         }
-        
+
         String className = e.getClass().getName();
         if (className.endsWith(".CommunicationsException")) {
             return true;
@@ -85,7 +84,7 @@ public class MySqlExceptionSorter implements ExceptionSorter {
                     && message.endsWith("is still active. No statements may be issued when any streaming result sets are open and in use on a given connection. Ensure that you have called .close() on any active streaming result sets before attempting more queries.")) {
                 return true;
             }
-            
+
             final String errorText = message.toUpperCase();
 
             if ((errorCode == 0 && (errorText.contains("COMMUNICATIONS LINK FAILURE")) //
@@ -109,13 +108,12 @@ public class MySqlExceptionSorter implements ExceptionSorter {
 
             cause = cause.getCause();
         }
-        
+
         return false;
     }
 
     @Override
     public void configFromProperties(Properties properties) {
-
     }
 
 }

@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlMigrateStatement extends MySqlStatementImpl {
-
     private SQLName schema;
     private SQLCharExpr shardNames;
     private SQLIntegerExpr migrateType;

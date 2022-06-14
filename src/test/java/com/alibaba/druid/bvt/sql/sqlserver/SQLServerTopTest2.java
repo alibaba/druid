@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerTopTest2 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "SELECT TOP ? * FROM T";
 

@@ -15,11 +15,9 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.io.Serializable;
@@ -27,12 +25,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
-
     private static final long serialVersionUID = 1L;
-    private boolean           not              = false;
-    private SQLExpr           expr;
+    private boolean not;
+    private SQLExpr expr;
 
-    public SQLSelect          subQuery;
+    public SQLSelect subQuery;
 
     // for ads query hint
     public SQLCommentHint hint;
@@ -40,15 +37,14 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable, SQLR
     // for clickhouse
     private boolean global;
 
-    public SQLInSubQueryExpr(){
-
+    public SQLInSubQueryExpr() {
     }
 
-    public SQLInSubQueryExpr(SQLSelect select){
+    public SQLInSubQueryExpr(SQLSelect select) {
         setSubQuery(select);
     }
 
-    public SQLInSubQueryExpr(SQLExpr expr, SQLSelectQueryBlock queryBlock){
+    public SQLInSubQueryExpr(SQLExpr expr, SQLSelectQueryBlock queryBlock) {
         setExpr(expr);
         setSubQuery(new SQLSelect(queryBlock));
     }
@@ -84,7 +80,6 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable, SQLR
         }
         this.expr = expr;
     }
-
 
     public SQLSelect getSubQuery() {
         return this.subQuery;

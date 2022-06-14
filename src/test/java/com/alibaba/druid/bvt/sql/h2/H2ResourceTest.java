@@ -30,7 +30,6 @@ import java.io.Reader;
 import java.util.List;
 
 public class H2ResourceTest extends TestCase {
-
     public void test_0() throws Exception {
         exec_test("bvt/parser/h2-0.txt");
     }
@@ -96,6 +95,5 @@ public class H2ResourceTest extends TestCase {
 
         Assert.assertEquals(expect, out.toString());
     }
-
 
 }

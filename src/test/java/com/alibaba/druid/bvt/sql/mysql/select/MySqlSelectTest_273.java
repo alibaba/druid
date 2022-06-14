@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 
 public class MySqlSelectTest_273 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "/*+ engine= MPP, dump-header= [DUMP DATA]*/\n" +
                 "SELECT t3.sim_aid AS __aid\n" +
@@ -99,7 +98,6 @@ public class MySqlSelectTest_273 extends MysqlTest {
                 "\tOR (t3.sum_score = 1986\n" +
                 "\t\tAND t3.sim_aid % 100 < 97)", stmt.toString());
     }
-
 
 
 }

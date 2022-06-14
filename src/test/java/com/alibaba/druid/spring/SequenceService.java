@@ -23,12 +23,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SequenceService implements SequenceServiceMBean, ISequenceService {
-    private Lock          lock      = new ReentrantLock();
+    private Lock lock = new ReentrantLock();
 
-    private ISequenceDao  dao;
-    private String        name      = "druid-spring-test";
+    private ISequenceDao dao;
+    private String name = "druid-spring-test";
 
-    private String        seed;
+    private String seed;
 
     private AtomicInteger increment = new AtomicInteger();
 

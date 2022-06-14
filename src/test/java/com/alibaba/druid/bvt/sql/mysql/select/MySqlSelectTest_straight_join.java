@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_straight_join extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select count(*) from nation n1 join nation n2 on n1.nationkey = n2.nationkey straight_join nation n3 on n2.nationkey=n3.nationkey;";
 
@@ -37,7 +36,7 @@ public class MySqlSelectTest_straight_join extends MysqlTest {
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         String expected = "SELECT count(*)\n" +
                 "FROM nation n1\n" +
                 "\tJOIN nation n2 ON n1.nationkey = n2.nationkey\n" +

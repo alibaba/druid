@@ -30,9 +30,8 @@ import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class DruidDataSourceFactoryTest extends TestCase {
-
     private DruidDataSource dataSource;
-    
+
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }

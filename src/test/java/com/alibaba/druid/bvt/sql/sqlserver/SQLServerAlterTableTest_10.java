@@ -27,10 +27,9 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerAlterTableTest_10 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE dbo.doc_exc ADD column_b VARCHAR(20) NULL "//
-                     + "    CONSTRAINT exb_unique UNIQUE ;";
+                + "    CONSTRAINT exb_unique UNIQUE ;";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);

@@ -11,7 +11,6 @@ import junit.framework.TestCase;
 import java.sql.SQLException;
 
 public class DruidConnectionHolderTest extends PoolTestCase {
-
     Driver driver;
     private DruidDataSource dataSource;
 
@@ -30,7 +29,6 @@ public class DruidConnectionHolderTest extends PoolTestCase {
             dataSource.setTestOnBorrow(false);
             dataSource.setInitialSize(1);
             dataSource.getProxyFilters().add(new FilterAdapter() {
-
                 public int connection_getTransactionIsolation(FilterChain chain, ConnectionProxy connection)
                         throws SQLException {
                     throw createSyntaxException();

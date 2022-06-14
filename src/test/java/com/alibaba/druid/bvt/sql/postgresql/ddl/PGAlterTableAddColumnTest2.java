@@ -11,7 +11,7 @@ import java.util.List;
 
 
 public class PGAlterTableAddColumnTest2 extends PGTest {
-    public void test_0 () throws Exception {
+    public void test_0() throws Exception {
         String sql = "ALTER TABLE t_user ADD column aaa VARCHAR(10)";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -29,7 +29,7 @@ public class PGAlterTableAddColumnTest2 extends PGTest {
         System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_user")));
-        
+
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("t_user")).getAlterCount() == 1);
 
         Assert.assertTrue(visitor.getColumns().size() == 1);

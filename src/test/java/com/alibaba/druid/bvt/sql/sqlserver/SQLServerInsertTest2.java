@@ -24,15 +24,14 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerInsertTest2 extends TestCase {
-
     public void test_multi_values() throws Exception {
         String sql = "INSERT INTO test (name)" + //
-                     "VALUES (N'a'), (N'b'), (N'c')";
+                "VALUES (N'a'), (N'b'), (N'c')";
 
         String expect = "INSERT INTO test (name)" + //
-                        "\nVALUES (N'a')," + //
-                        "\n(N'b')," + //
-                        "\n(N'c')";
+                "\nVALUES (N'a')," + //
+                "\n(N'b')," + //
+                "\n(N'c')";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

@@ -24,13 +24,12 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景，检测
- * 
+ *
  * @author wenshao
  */
 public class WallUpdateTest3 extends TestCase {
-
-    private String     sql    = "UPDATE T_USER SET FNAME = ? WHERE 1 = 1";
-    private String     sql2   = "UPDATE T_USER SET FNAME = ? WHERE id = 1 or1 = 1";
+    private String sql = "UPDATE T_USER SET FNAME = ? WHERE 1 = 1";
+    private String sql2 = "UPDATE T_USER SET FNAME = ? WHERE id = 1 or1 = 1";
 
     private WallConfig config = new WallConfig();
 

@@ -25,13 +25,12 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest57 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT TRIM(BOTH FROM EUCD) AS \"value\",NTLANG1 AS \"text\" " //
-                + " FROM T_HT_WREM_ENUMLANG_D"
-                + " WHERE TYPE=?"
-                + " ORDER BY \"value\" ASC"; //
+                        + " FROM T_HT_WREM_ENUMLANG_D"
+                        + " WHERE TYPE=?"
+                        + " ORDER BY \"value\" ASC"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 
 public class EqualTest_OracleTimestampExpr extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "TIMESTAMP '' AT TIME ZONE ''";
         String sql_c = "TIMESTAMP '' AT TIME ZONE 'a'";
@@ -30,7 +29,7 @@ public class EqualTest_OracleTimestampExpr extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new SQLTimestampExpr(), new SQLTimestampExpr());
         Assert.assertEquals(new SQLTimestampExpr().hashCode(), new SQLTimestampExpr().hashCode());
     }

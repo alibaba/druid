@@ -21,14 +21,12 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLExprStatement extends SQLStatementImpl implements SQLReplaceable {
-
     private SQLExpr expr;
 
-    public SQLExprStatement(){
-
+    public SQLExprStatement() {
     }
 
-    public SQLExprStatement(SQLExpr expr){
+    public SQLExprStatement(SQLExpr expr) {
         this.expr = expr;
     }
 

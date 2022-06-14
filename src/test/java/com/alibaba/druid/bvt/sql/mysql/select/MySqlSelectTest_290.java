@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 
 public class MySqlSelectTest_290 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT\n" +
                 "        houseInfo.id\n" +
@@ -681,7 +680,6 @@ public class MySqlSelectTest_290 extends MysqlTest {
 
         System.out.println(stmt.toString());
     }
-
 
 
 }

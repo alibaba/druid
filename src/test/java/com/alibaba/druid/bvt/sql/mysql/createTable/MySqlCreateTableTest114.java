@@ -13,7 +13,6 @@ import java.sql.Types;
 import java.util.List;
 
 public class MySqlCreateTableTest114 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE best_sign_cont_task ( \n" +
                 "  sys_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL COMMENT '系统时间' \n" +
@@ -21,7 +20,7 @@ public class MySqlCreateTableTest114 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(1, stmt.getTableElementList().size());

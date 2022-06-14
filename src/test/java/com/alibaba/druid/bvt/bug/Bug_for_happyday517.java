@@ -30,16 +30,15 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Bug_for_happyday517 extends PoolTestCase {
-
     private DruidDataSource dataSource;
-    private MockDriver      driver;
+    private MockDriver driver;
     private int originalDataSourceCount = 0;
 
     protected void setUp() throws Exception {
         super.setUp();
 
         originalDataSourceCount = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
-        
+
         driver = new MockDriver();
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -73,7 +72,7 @@ public class Bug_for_happyday517 extends PoolTestCase {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE,
-                                              ResultSet.CLOSE_CURSORS_AT_COMMIT);
+                ResultSet.CLOSE_CURSORS_AT_COMMIT);
 
         MockStatement mockStmt = stmt.unwrap(MockStatement.class);
 
@@ -107,7 +106,7 @@ public class Bug_for_happyday517 extends PoolTestCase {
 
         String sql = "select 1";
         Statement stmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE,
-                                               ResultSet.CLOSE_CURSORS_AT_COMMIT);
+                ResultSet.CLOSE_CURSORS_AT_COMMIT);
 
         MockPreparedStatement mockStmt = stmt.unwrap(MockPreparedStatement.class);
 
@@ -141,7 +140,7 @@ public class Bug_for_happyday517 extends PoolTestCase {
 
         String sql = "select 1";
         Statement stmt = conn.prepareCall(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE,
-                                          ResultSet.CLOSE_CURSORS_AT_COMMIT);
+                ResultSet.CLOSE_CURSORS_AT_COMMIT);
 
         Statement mockStmt = stmt.unwrap(Statement.class);
 

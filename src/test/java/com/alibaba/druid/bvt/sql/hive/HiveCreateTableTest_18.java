@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_18 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE json_nested_test (\n" +

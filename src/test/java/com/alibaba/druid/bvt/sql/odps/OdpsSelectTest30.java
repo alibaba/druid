@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class OdpsSelectTest30 extends TestCase {
-
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "select a/100.0 from dual where 1=1;";//
@@ -35,28 +34,27 @@ public class OdpsSelectTest30 extends TestCase {
         assertEquals("select a / 100.0\n" +
                 "from dual\n" +
                 "where 1 = 1;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
         assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
         System.out.println("Tables : " + visitor.getTables());
-      System.out.println("fields : " + visitor.getColumns());
+        System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(0, visitor.getTables().size());
         assertEquals(1, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));
-        
+
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 
 }

@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreatePackageTest3 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
                 "\n" +
@@ -125,7 +124,7 @@ public class OracleCreatePackageTest3 extends OracleTest {
                         "\tRETURN VARCHAR2\n" +
                         "\t\n" +
                         "END Mail_fck_bpi;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

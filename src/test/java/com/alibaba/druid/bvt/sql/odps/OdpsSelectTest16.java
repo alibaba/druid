@@ -27,32 +27,31 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class OdpsSelectTest16 extends TestCase {
-
     public void test_select() throws Exception {
         String sql = "SELECT \"\\n\" FROM dual;";//
         Assert.assertEquals("SELECT '\\n'" +
                 "\nFROM dual;", SQLUtils.formatOdps(sql));
         Assert.assertEquals("select '\\n'" +
                 "\nfrom dual;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
 //        System.out.println("Tables : " + visitor.getTables());
 //      System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-    
+
 }

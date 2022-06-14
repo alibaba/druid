@@ -24,12 +24,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlCreateProcedureTest10 extends MysqlTest {
-
     public void test_0() throws Exception {
-    	String sql = "CREATE PROCEDURE p2(p INT) SET @x = p ;";
+        String sql = "CREATE PROCEDURE p2(p INT) SET @x = p ;";
 
-    	List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-    	SQLStatement statemen = statementList.get(0);
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
+        SQLStatement statemen = statementList.get(0);
 //    	print(statementList);
         assertEquals(1, statementList.size());
 
@@ -40,11 +39,10 @@ public class MySqlCreateProcedureTest10 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
     }
 
-    
 }

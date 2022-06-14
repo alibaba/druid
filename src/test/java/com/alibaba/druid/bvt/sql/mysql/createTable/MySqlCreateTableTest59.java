@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest59 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create table t3 (a long, b long byte);";
@@ -37,9 +36,9 @@ public class MySqlCreateTableTest59 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE t3 (" //
-                            + "\n\ta long," //
-                            + "\n\tb long byte" //
-                            + "\n)", output);
+                + "\n\ta long," //
+                + "\n\tb long byte" //
+                + "\n)", output);
 
     }
 }

@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateServerTest extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "-- Create server\n" +

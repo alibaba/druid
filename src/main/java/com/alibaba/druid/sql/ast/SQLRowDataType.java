@@ -1,9 +1,9 @@
 package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLStructDataType.Field;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.sql.ast.SQLStructDataType.Field;
 
 import java.sql.Types;
 import java.util.ArrayList;
@@ -15,7 +15,6 @@ public class SQLRowDataType extends SQLObjectImpl implements SQLDataType {
     private List<Field> fields = new ArrayList<Field>();
 
     public SQLRowDataType() {
-
     }
 
     public SQLRowDataType(DbType dbType) {

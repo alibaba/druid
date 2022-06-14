@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest17 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "select /* EXEC_FROM_DBMS_XPLAN */ 1, prev_sql_id, prev_child_number from v$session where sid=userenv('sid') and username is not null and prev_hash_value <> 0 "; //
 

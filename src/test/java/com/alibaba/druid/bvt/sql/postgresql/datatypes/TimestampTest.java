@@ -12,7 +12,7 @@ public class TimestampTest extends PGTest {
         SQLTimestampExpr expr = (SQLTimestampExpr) parser.expr();
         System.out.println(expr.toString());
     }
-    
+
     public void test_timestamp_with_timezone() throws Exception {
         String sql = "TIMESTAMP WITH TIME ZONE '2004-10-19 10:23:54+02'";
         PGExprParser parser = new PGExprParser(sql);

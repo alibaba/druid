@@ -34,22 +34,22 @@ public class SQLSetStatement extends SQLStatementImpl {
     private Option option;
 
     private List<SQLAssignItem> items = new ArrayList<SQLAssignItem>();
-    
+
     private List<SQLCommentHint> hints;
 
-    public SQLSetStatement(){
+    public SQLSetStatement() {
     }
-    
-    public SQLSetStatement(DbType dbType){
-        super (dbType);
+
+    public SQLSetStatement(DbType dbType) {
+        super(dbType);
     }
-    
-    public SQLSetStatement(SQLExpr target, SQLExpr value){
+
+    public SQLSetStatement(SQLExpr target, SQLExpr value) {
         this(target, value, null);
     }
 
-    public SQLSetStatement(SQLExpr target, SQLExpr value, DbType dbType){
-        super (dbType);
+    public SQLSetStatement(SQLExpr target, SQLExpr value, DbType dbType) {
+        super(dbType);
         SQLAssignItem item = new SQLAssignItem(target, value);
         item.setParent(this);
         this.items.add(item);

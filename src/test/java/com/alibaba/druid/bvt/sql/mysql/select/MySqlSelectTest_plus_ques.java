@@ -15,7 +15,6 @@ import java.util.List;
  * @Date 2019-07-17 10:30
  */
 public class MySqlSelectTest_plus_ques extends MysqlTest {
-
     public void test_0() {
         String sql = "select +?;";
 

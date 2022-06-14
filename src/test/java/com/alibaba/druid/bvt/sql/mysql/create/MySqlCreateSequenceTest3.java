@@ -24,10 +24,9 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlCreateSequenceTest3 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE GROUP SEQUENCE seq1 START WITH 123 UNIT COUNT 1 INDEX 0";
+                "CREATE GROUP SEQUENCE seq1 START WITH 123 UNIT COUNT 1 INDEX 0";
         System.out.println(sql);
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql);
         SQLStatement stmt = statementList.get(0);

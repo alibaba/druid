@@ -10,7 +10,6 @@ import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OdpsSetLabelTest2 extends TestCase {
-
     public void test_odps() throws Exception {
         String sql = "SET LABEL S3 TO TABLE xx(f1,f2)";
         OdpsStatementParser parser = new OdpsStatementParser(sql);

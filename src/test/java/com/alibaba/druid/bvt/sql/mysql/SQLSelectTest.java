@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class SQLSelectTest extends TestCase {
-
     public void test_select() throws Exception {
         String sql = "SELECT ALL FID FROM T1;SELECT DISTINCT FID FROM T1;SELECT DISTINCTROW FID FROM T1;";
 
@@ -88,7 +87,7 @@ public class SQLSelectTest extends TestCase {
 
         output(stmtList);
     }
-    
+
     public void test_select_7() throws Exception {
         String sql = "select * from ((select * from test1) UNION (select * from test2) UNION (select * from test3)) where t1='温高铁';";
 

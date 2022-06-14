@@ -24,10 +24,9 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateSynonymTest_2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE OR REPLACE SYNONYM CSCLIENT.ECC_CUST_AREA_INFO FOR ECC_CUST.ECC_CUST_AREA_INFO";
+                "CREATE OR REPLACE SYNONYM CSCLIENT.ECC_CUST_AREA_INFO FOR ECC_CUST.ECC_CUST_AREA_INFO";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

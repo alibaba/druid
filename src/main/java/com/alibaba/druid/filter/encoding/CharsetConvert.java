@@ -19,18 +19,17 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * 字符编码转换器
- * 
+ *
  * @author xianmao.hexm 2007-3-5 09:51:33
  */
 public class CharsetConvert {
+    private String clientEncoding;
 
-    private String  clientEncoding = null;
+    private String serverEncoding;
 
-    private String  serverEncoding = null;
+    private boolean enable;
 
-    private boolean enable         = false;
-
-    public CharsetConvert(String clientEncoding, String serverEncoding){
+    public CharsetConvert(String clientEncoding, String serverEncoding) {
         this.clientEncoding = clientEncoding;
         this.serverEncoding = serverEncoding;
         if (clientEncoding != null && serverEncoding != null && !clientEncoding.equalsIgnoreCase(serverEncoding)) {
@@ -40,7 +39,7 @@ public class CharsetConvert {
 
     /**
      * 字符串编码
-     * 
+     *
      * @param s String
      * @return String
      * @throws UnsupportedEncodingException
@@ -54,7 +53,7 @@ public class CharsetConvert {
 
     /**
      * 字符串解码
-     * 
+     *
      * @param s String
      * @return String
      * @throws UnsupportedEncodingException
@@ -68,7 +67,7 @@ public class CharsetConvert {
 
     /**
      * 判断空字符串
-     * 
+     *
      * @param s String
      * @return boolean
      */

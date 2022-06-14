@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE TABLE wl_track_task ( id NUMBER NOT NULL, gmt_modified DATE NOT NULL, gmt_create DATE NOT NULL, task_status VARCHAR2(8) NOT NULL, task_error_msg VARCHAR2(512), task_update_count NUMBER, logistics_no VARCHAR2(32) NOT NULL, logistics_type NUMBER NOT NULL ) tablespace escrow_data";
+                "CREATE TABLE wl_track_task ( id NUMBER NOT NULL, gmt_modified DATE NOT NULL, gmt_create DATE NOT NULL, task_status VARCHAR2(8) NOT NULL, task_error_msg VARCHAR2(512), task_update_count NUMBER, logistics_no VARCHAR2(32) NOT NULL, logistics_type NUMBER NOT NULL ) tablespace escrow_data";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

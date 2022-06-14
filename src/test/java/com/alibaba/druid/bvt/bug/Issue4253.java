@@ -1,4 +1,5 @@
 package com.alibaba.druid.bvt.bug;
+
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;

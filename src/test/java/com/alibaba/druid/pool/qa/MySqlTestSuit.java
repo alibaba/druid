@@ -12,13 +12,12 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class MySqlTestSuit extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
         //System.setProperty("druid.log.rs", "false");
         //System.setProperty("druid.log.stmt", "false");
-        
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://192.168.122.26:3306/druid");
         dataSource.setUsername("root");
@@ -34,7 +33,6 @@ public class MySqlTestSuit extends TestCase {
     }
 
     public void test_suit() throws Exception {
-
         createTable();
         {
             Connection conn = dataSource.getConnection();
@@ -54,7 +52,7 @@ public class MySqlTestSuit extends TestCase {
             stmt.close();
             conn.close();
         }
-        
+
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();

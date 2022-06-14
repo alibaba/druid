@@ -30,23 +30,22 @@ import java.util.*;
 public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQLLiteralExpr {
     public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("timestamp");
 
-    protected String  literal;
-    protected String  timeZone;
-    protected boolean withTimeZone = false;
+    protected String literal;
+    protected String timeZone;
+    protected boolean withTimeZone;
 
-    public SQLTimestampExpr(){
-        
+    public SQLTimestampExpr() {
     }
 
-    public SQLTimestampExpr(String literal){
+    public SQLTimestampExpr(String literal) {
         this.literal = literal;
     }
 
-    public SQLTimestampExpr(Date date){
+    public SQLTimestampExpr(Date date) {
         setLiteral(date);
     }
 
-    public SQLTimestampExpr(Date date, TimeZone timeZone){
+    public SQLTimestampExpr(Date date, TimeZone timeZone) {
         setLiteral(date, timeZone);
     }
 
@@ -294,21 +293,21 @@ public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQ
             return false;
         }
 
-        if(c4 != '-') {
+        if (c4 != '-') {
             return false;
         }
 
         final int month, day;
         char M0 = 0, M1 = 0, d0 = 0, d1 = 0;
         if (c8 == ' ') {
-            if(c6 != '-') {
+            if (c6 != '-') {
                 return false;
             }
 
             M1 = c5;
             d1 = c7;
         } else if (c9 == ' ') {
-            if(c6 == '-') {
+            if (c6 == '-') {
                 M1 = c5;
                 d0 = c7;
                 d1 = c8;
@@ -483,7 +482,7 @@ public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQ
                     m1 = x3;
                     h1 = x5;
                     h0 = x6;
-                } else if (x5 == ':'){
+                } else if (x5 == ':') {
                     m1 = x3;
                     m0 = x4;
                     h0 = 0;

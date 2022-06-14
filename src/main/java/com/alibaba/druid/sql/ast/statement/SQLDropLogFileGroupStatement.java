@@ -25,16 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropLogFileGroupStatement extends SQLStatementImpl implements SQLDropStatement {
-
     private SQLExpr name;
     private SQLExpr engine;
 
     public SQLDropLogFileGroupStatement() {
-
     }
 
     public SQLDropLogFileGroupStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

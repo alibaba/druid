@@ -1,17 +1,20 @@
 
-body{
-	font-size:12px;
-	padding-top: 60px;
-	padding-bottom: 40px;
+body {
+    font-size: 12px;
+    padding-top: 60px;
+    padding-bottom: 40px;
 }
+
 a {
-	cursor:pointer;
+    cursor: pointer;
 }
+
 #dataTable th > a {
     color: #555555;
 }
+
 #dataTable th {
-	background-color: #E5E5E5;
+    background-color: #E5E5E5;
     border-bottom-color: #FFC40D;
     color: #555555;
     cursor: pointer;
@@ -25,19 +28,20 @@ a {
 }
 
 .td_lable {
-	font-weight: bold;
-	width: 220px;
-	background-color: #E5E5E5;
+    font-weight: bold;
+    width: 220px;
+    background-color: #E5E5E5;
 }
 
 
 .striped {
-	background-color: #fff;
+    background-color: #fff;
 }
 
 #dataTable1 th > a {
     color: #555555;
 }
+
 #dataTable1 th {
     background-color: #E5E5E5;
     border-bottom-color: #FFC40D;
@@ -49,6 +53,7 @@ a {
 #dataTable2 th > a {
     color: #555555;
 }
+
 #dataTable2 th {
     background-color: #E5E5E5;
     border-bottom-color: #FFC40D;

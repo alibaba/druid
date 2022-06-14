@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGDeleteTest2 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "DELETE FROM tasks WHERE CURRENT OF c_tasks;";
 
@@ -49,5 +48,5 @@ public class PGDeleteTest2 extends PGTest {
         Assert.assertTrue(visitor.getColumns().isEmpty());
     }
 
-    
+
 }

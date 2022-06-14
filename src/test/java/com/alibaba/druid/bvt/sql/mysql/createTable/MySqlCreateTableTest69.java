@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest69 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE TABLE t1 ("
@@ -51,7 +50,7 @@ public class MySqlCreateTableTest69 extends MysqlTest {
                     "\tPARTITION p1 VALUES IN (1)\n" +
                     ")", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table t1 (\n" +
@@ -61,6 +60,6 @@ public class MySqlCreateTableTest69 extends MysqlTest {
                     "partition by list (s2) (\n" +
                     "\tpartition p1 values in (1)\n" +
                     ")", output);
-            }
+        }
     }
 }

@@ -36,8 +36,7 @@ import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class DataSourceTest3 extends PoolTestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -241,7 +240,7 @@ public class DataSourceTest3 extends PoolTestCase {
         dataSource.getValidConnectionCheckerClassName();
         dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker(false));
         Assert.assertEquals(MySqlValidConnectionChecker.class.getName(),
-                            dataSource.getValidConnectionCheckerClassName());
+                dataSource.getValidConnectionCheckerClassName());
     }
 
     public void test_setConnectionInitSqls_1() throws Exception {
@@ -250,13 +249,12 @@ public class DataSourceTest3 extends PoolTestCase {
     }
 
     public static class MyPasswordCallbackClassName extends PasswordCallback {
-
-        public MyPasswordCallbackClassName(){
+        public MyPasswordCallbackClassName() {
             super("password", false);
         }
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 

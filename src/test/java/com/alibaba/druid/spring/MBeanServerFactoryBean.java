@@ -22,7 +22,6 @@ import javax.management.MBeanServer;
 import org.springframework.beans.factory.FactoryBean;
 
 public class MBeanServerFactoryBean implements FactoryBean {
-
     public MBeanServer getObject() throws Exception {
         return ManagementFactory.getPlatformMBeanServer();
     }

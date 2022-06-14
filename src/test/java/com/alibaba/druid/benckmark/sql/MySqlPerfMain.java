@@ -25,14 +25,13 @@ import com.alibaba.druid.sql.test.TestUtils;
 import com.alibaba.druid.util.Utils;
 
 public class MySqlPerfMain {
-
     public static void main(String[] args) throws Exception {
         System.out.println(System.getProperty("java.vm.name") + " " + System.getProperty("java.runtime.version"));
         List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
         System.out.println(arguments);
-        
+
         String sql = Utils.readFromResource("benchmark/sql/ob_sql.txt");
-        
+
         for (int i = 0; i < 10; ++i) {
             perfMySql(sql);
         }

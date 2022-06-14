@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGDeleteTest extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "DELETE FROM films USING producers WHERE producer_id = producers.id AND producers.name = 'foo';";
 
@@ -58,16 +57,16 @@ public class PGDeleteTest extends PGTest {
     }
 
     public void test_1() {
-		String sql = "delete from test01 as a where a.id = 2";
-		PGSQLStatementParser parser = new PGSQLStatementParser(sql);
-		List<SQLStatement> statementList = parser.parseStatementList();
-		SQLStatement statemen = statementList.get(0);
+        String sql = "delete from test01 as a where a.id = 2";
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
 //		print(statementList);
-		assertTrue(statementList.size() == 1);
-		assertTrue(statemen instanceof PGDeleteStatement);
-		PGDeleteStatement delete = (PGDeleteStatement) statemen;
-		assertTrue(delete.getAlias().equalsIgnoreCase("a"));
-		assertTrue(delete.getTableName().getSimpleName().equals("test01"));
-	}
-    
+        assertTrue(statementList.size() == 1);
+        assertTrue(statemen instanceof PGDeleteStatement);
+        PGDeleteStatement delete = (PGDeleteStatement) statemen;
+        assertTrue(delete.getAlias().equalsIgnoreCase("a"));
+        assertTrue(delete.getTableName().getSimpleName().equals("test01"));
+    }
+
 }

@@ -15,37 +15,36 @@
  */
 package com.alibaba.druid.stat;
 
-import java.util.Date;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import com.alibaba.druid.util.Histogram;
+import com.alibaba.druid.util.JMXUtils;
 
 import javax.management.JMException;
 import javax.management.openmbean.CompositeData;
 
-import com.alibaba.druid.util.Histogram;
-import com.alibaba.druid.util.JMXUtils;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class JdbcStatementStat implements JdbcStatementStatMBean {
+    private final AtomicLong createCount = new AtomicLong(0);                                     // 执行createStatement的计数
+    private final AtomicLong prepareCount = new AtomicLong(0);                                     // 执行parepareStatement的计数
+    private final AtomicLong prepareCallCount = new AtomicLong(0);                                     // 执行preCall的计数
+    private final AtomicLong closeCount = new AtomicLong(0);                                     // Statement关闭的计数
 
-    private final AtomicLong    createCount      = new AtomicLong(0);                                     // 执行createStatement的计数
-    private final AtomicLong    prepareCount     = new AtomicLong(0);                                     // 执行parepareStatement的计数
-    private final AtomicLong    prepareCallCount = new AtomicLong(0);                                     // 执行preCall的计数
-    private final AtomicLong    closeCount       = new AtomicLong(0);                                     // Statement关闭的计数
+    private final AtomicInteger runningCount = new AtomicInteger();
+    private final AtomicInteger concurrentMax = new AtomicInteger();
 
-    private final AtomicInteger runningCount     = new AtomicInteger();
-    private final AtomicInteger concurrentMax    = new AtomicInteger();
+    private final AtomicLong count = new AtomicLong();
+    private final AtomicLong errorCount = new AtomicLong();
 
-    private final AtomicLong    count            = new AtomicLong();
-    private final AtomicLong    errorCount       = new AtomicLong();
+    private final AtomicLong nanoTotal = new AtomicLong();
 
-    private final AtomicLong    nanoTotal        = new AtomicLong();
+    private Throwable lastError;
+    private long lastErrorTime;
 
-    private Throwable           lastError;
-    private long                lastErrorTime;
+    private long lastSampleTime;
 
-    private long                lastSampleTime   = 0;
-
-    private final Histogram     histogram        = new Histogram(new long[] { 10, 100, 1000, 1000 * 10 });
+    private final Histogram histogram = new Histogram(new long[]{10, 100, 1000, 1000 * 10});
 
     public long[] getHistogramRanges() {
         return histogram.getRanges();
@@ -85,7 +84,7 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
     public void beforeExecute() {
         int invoking = runningCount.incrementAndGet();
 
-        for (;;) {
+        for (; ; ) {
             int max = concurrentMax.get();
             if (invoking > max) {
                 if (concurrentMax.compareAndSet(max, invoking)) {

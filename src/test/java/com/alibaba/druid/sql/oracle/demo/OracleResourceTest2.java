@@ -28,7 +28,6 @@ import java.io.File;
 import java.util.List;
 
 public class OracleResourceTest2 extends OracleTest {
-
     public void test_0() throws Exception {
         File file = new File("/Users/wenshao/Downloads/ff.sql");
 
@@ -58,7 +57,6 @@ public class OracleResourceTest2 extends OracleTest {
     }
 
     void mergValidate(String sql, String expect) {
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);

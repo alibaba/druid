@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleContinueStatement extends OracleStatementImpl {
-
     private SQLExpr when;
     private String label;
 

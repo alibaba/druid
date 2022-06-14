@@ -20,22 +20,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MonitorContext {
-
-    public static String              DEFAULT_DOMAIN;
+    public static String DEFAULT_DOMAIN;
 
     private final Map<String, Object> attributes = new HashMap<String, Object>();
 
-    private String                    domain  = "default";
-    private String                    app     = "default";
-    private String                    cluster = "default";
-    private String                    host;
-    private int                       pid;
+    private String domain = "default";
+    private String app = "default";
+    private String cluster = "default";
+    private String host;
+    private int pid;
 
-    private Date                      collectTime;
-    private Date                      startTime;
+    private Date collectTime;
+    private Date startTime;
 
-    public MonitorContext(){
-
+    public MonitorContext() {
     }
 
     public Date getCollectTime() {

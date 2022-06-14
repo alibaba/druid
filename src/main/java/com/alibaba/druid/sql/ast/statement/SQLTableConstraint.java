@@ -16,5 +16,4 @@
 package com.alibaba.druid.sql.ast.statement;
 
 public interface SQLTableConstraint extends SQLConstraint, SQLTableElement {
-
 }

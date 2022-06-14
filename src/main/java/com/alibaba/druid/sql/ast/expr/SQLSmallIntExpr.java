@@ -22,19 +22,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLSmallIntExpr extends SQLNumericLiteralExpr implements SQLValuableExpr {
-
     private Short value;
 
-    public SQLSmallIntExpr(){
-
+    public SQLSmallIntExpr() {
     }
 
-    public SQLSmallIntExpr(short value){
+    public SQLSmallIntExpr(short value) {
         super();
         this.value = value;
     }
 
-    public SQLSmallIntExpr(String value){
+    public SQLSmallIntExpr(String value) {
         if (value.startsWith("--")) {
             value = value.substring(2);
         }
@@ -69,6 +67,7 @@ public class SQLSmallIntExpr extends SQLNumericLiteralExpr implements SQLValuabl
 
         visitor.endVisit(this);
     }
+
     @Override
     public int hashCode() {
         final int prime = 31;

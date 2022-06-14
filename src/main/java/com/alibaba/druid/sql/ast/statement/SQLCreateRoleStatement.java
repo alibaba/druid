@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
@@ -26,14 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLCreateRoleStatement extends SQLStatementImpl implements SQLCreateStatement {
-    private SQLName              name;
-    protected boolean            ifNotExists = false;
+    private SQLName name;
+    protected boolean ifNotExists;
 
-    public SQLCreateRoleStatement(){
+    public SQLCreateRoleStatement() {
     }
 
-    public SQLCreateRoleStatement(DbType dbType){
-        super (dbType);
+    public SQLCreateRoleStatement(DbType dbType) {
+        super(dbType);
     }
 
     @Override
@@ -64,7 +63,7 @@ public class SQLCreateRoleStatement extends SQLStatementImpl implements SQLCreat
     public boolean isIfNotExists() {
         return ifNotExists;
     }
-    
+
     public void setIfNotExists(boolean ifNotExists) {
         this.ifNotExists = ifNotExists;
     }

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateUserTest_4 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE USER 'jeffrey'@'localhost'"
                 + " IDENTIFIED WITH my_auth_plugin;";
@@ -39,25 +38,25 @@ public class MySqlCreateUserTest_4 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         Assert.assertEquals("CREATE USER 'jeffrey'@'localhost' IDENTIFIED WITH my_auth_plugin;", //
-                            SQLUtils.toMySqlString(stmt));
-        
+                SQLUtils.toMySqlString(stmt));
+
         Assert.assertEquals("create user 'jeffrey'@'localhost' identified with my_auth_plugin;", //
-                            SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

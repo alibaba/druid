@@ -11,7 +11,6 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 
 public class DruidPooledConnectionTest1 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -20,7 +19,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setFilters("stat");
         dataSource.setPoolPreparedStatements(true);
-        
+
     }
 
     protected void tearDown() throws Exception {
@@ -39,7 +38,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getRecycleCount());
         Assert.assertEquals(1, dataSource.getCloseCount());
         Assert.assertEquals(1, dataSource.getPoolingCount());
@@ -58,7 +57,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
         Assert.assertNotNull(error);
 
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getRecycleCount());
         Assert.assertEquals(1, dataSource.getCloseCount());
         Assert.assertEquals(1, dataSource.getPoolingCount());
@@ -77,7 +76,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
 
         conn.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getRecycleCount());
         Assert.assertEquals(1, dataSource.getCloseCount());
         Assert.assertEquals(1, dataSource.getPoolingCount());
@@ -89,7 +88,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
 
         conn.close();
         conn.recycle();
-        
+
         Assert.assertEquals(1, dataSource.getRecycleCount());
         Assert.assertEquals(1, dataSource.getCloseCount());
         Assert.assertEquals(1, dataSource.getPoolingCount());
@@ -102,7 +101,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
         conn.recycle();
         conn.recycle();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getRecycleCount());
         Assert.assertEquals(1, dataSource.getCloseCount());
         Assert.assertEquals(1, dataSource.getPoolingCount());

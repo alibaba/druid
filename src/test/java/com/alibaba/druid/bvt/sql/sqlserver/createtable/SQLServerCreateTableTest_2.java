@@ -31,7 +31,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerCreateTableTest_2 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE #Test (C1 nvarchar(10), C2 nvarchar(50), C3 datetime);";
 
@@ -43,10 +42,10 @@ public class SQLServerCreateTableTest_2 extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("CREATE TABLE #Test (" //
-                            + "\n\tC1 nvarchar(10),"//
-                            + "\n\tC2 nvarchar(50),"//
-                            + "\n\tC3 datetime"//
-                            + "\n);", output);
+                + "\n\tC1 nvarchar(10),"//
+                + "\n\tC2 nvarchar(50),"//
+                + "\n\tC3 datetime"//
+                + "\n);", output);
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);

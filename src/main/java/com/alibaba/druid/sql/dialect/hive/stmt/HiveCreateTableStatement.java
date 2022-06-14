@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -29,16 +28,16 @@ import java.util.List;
 import java.util.Map;
 
 public class HiveCreateTableStatement extends SQLCreateTableStatement {
-    protected List<SQLExpr>          skewedBy        = new ArrayList<SQLExpr>();
-    protected List<SQLExpr>          skewedByOn      = new ArrayList<SQLExpr>();
+    protected List<SQLExpr> skewedBy = new ArrayList<SQLExpr>();
+    protected List<SQLExpr> skewedByOn = new ArrayList<SQLExpr>();
     protected Map<String, SQLObject> serdeProperties = new LinkedHashMap<String, SQLObject>();
-    protected SQLExpr                metaLifeCycle;
+    protected SQLExpr metaLifeCycle;
 
-    protected boolean                likeQuery       = false; // for DLA
+    protected boolean likeQuery; // for DLA
 
-    protected List<SQLAssignItem>    mappedBy        = new ArrayList<SQLAssignItem>(1);
-    protected SQLExpr                intoBuckets;
-    protected SQLExpr                using;
+    protected List<SQLAssignItem> mappedBy = new ArrayList<SQLAssignItem>(1);
+    protected SQLExpr intoBuckets;
+    protected SQLExpr using;
 
     public HiveCreateTableStatement() {
         this.dbType = DbType.hive;
@@ -66,7 +65,6 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
         acceptChild(v, metaLifeCycle);
         acceptChild(v, intoBuckets);
     }
-
 
     public void cloneTo(HiveCreateTableStatement x) {
         super.cloneTo(x);
@@ -155,13 +153,11 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
         return mappedBy;
     }
 
-    public SQLExpr getIntoBuckets()
-    {
+    public SQLExpr getIntoBuckets() {
         return intoBuckets;
     }
 
-    public void setIntoBuckets(SQLExpr intoBuckets)
-    {
+    public void setIntoBuckets(SQLExpr intoBuckets) {
         this.intoBuckets = intoBuckets;
     }
 

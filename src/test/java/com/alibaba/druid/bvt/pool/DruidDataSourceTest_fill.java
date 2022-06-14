@@ -7,10 +7,9 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceTest_fill extends TestCase {
-
     private DruidDataSource dataSource;
 
-    private int             maxActive = 10;
+    private int maxActive = 10;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();

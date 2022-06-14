@@ -26,14 +26,13 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
 public class OracleWallProvider extends WallProvider {
+    public static final String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/oracle";
 
-    public final static String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/oracle";
-
-    public OracleWallProvider(){
+    public OracleWallProvider() {
         this(new WallConfig(DEFAULT_CONFIG_DIR));
     }
 
-    public OracleWallProvider(WallConfig config){
+    public OracleWallProvider(WallConfig config) {
         super(config, DbType.oracle);
     }
 

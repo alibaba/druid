@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.statement.SQLDropStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleDropDbLinkStatement extends OracleStatementImpl implements SQLDropStatement {
-
     private boolean isPublic;
 
     private SQLName name;

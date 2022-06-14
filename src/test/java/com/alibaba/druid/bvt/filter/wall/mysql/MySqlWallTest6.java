@@ -23,15 +23,14 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest6 extends TestCase {
-
     public void test_stuff() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "SELECT a.* FROM vote_info a where a.id<10 or (id <5 or 1=1) limit 1,10"));
+                "SELECT a.* FROM vote_info a where a.id<10 or (id <5 or 1=1) limit 1,10"));
     }
 }

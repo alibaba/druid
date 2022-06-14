@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerDropIndex_Test_2 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "DROP INDEX IX_ProductVendor_VendorID     ON Purchasing.ProductVendor;";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);

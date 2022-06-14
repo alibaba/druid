@@ -15,27 +15,16 @@
  */
 package com.alibaba.druid.support.jconsole.model;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicTableHeaderUI;
+import javax.swing.table.*;
+
+import java.awt.*;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.UIManager;
-import javax.swing.plaf.basic.BasicTableHeaderUI;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-
 public class GroupableTableHeaderUI extends BasicTableHeaderUI {
-
     private int m_height;
 
     private Dimension createHeaderSize(long width) {
@@ -68,7 +57,6 @@ public class GroupableTableHeaderUI extends BasicTableHeaderUI {
             TableCellRenderer renderer = aColumn.getHeaderRenderer();
             if (renderer == null) {
                 renderer = new DefaultTableCellRenderer() {
-
                     private static final long serialVersionUID = 1L;
 
                     @Override
@@ -88,7 +76,7 @@ public class GroupableTableHeaderUI extends BasicTableHeaderUI {
                 };
             }
             Component comp = renderer.getTableCellRendererComponent(header.getTable(), aColumn.getHeaderValue(), false,
-                                                                    false, -1, column);
+                    false, -1, column);
             int cHeight = comp.getPreferredSize().height;
             Enumeration<ColumnGroup> enumeration = ((GroupableTableHeader) header).getColumnGroups(aColumn);
             if (enumeration != null) {
@@ -176,7 +164,6 @@ public class GroupableTableHeaderUI extends BasicTableHeaderUI {
         //
         if (renderer == null) {
             renderer = new DefaultTableCellRenderer() {
-
                 private static final long serialVersionUID = 1L;
 
                 @Override
@@ -198,7 +185,7 @@ public class GroupableTableHeaderUI extends BasicTableHeaderUI {
 
         String headerValue = aColumn.getHeaderValue().toString();
         Component component = renderer.getTableCellRendererComponent(header.getTable(), headerValue, false, false, -1,
-                                                                     columnIndex);
+                columnIndex);
 
         rendererPane.add(component);
         rendererPane.paintComponent(g, component, header, cellRect.x, cellRect.y, cellRect.width, cellRect.height, true);
@@ -209,7 +196,6 @@ public class GroupableTableHeaderUI extends BasicTableHeaderUI {
         //
         if (renderer == null) {
             renderer = new DefaultTableCellRenderer() {
-
                 private static final long serialVersionUID = 1L;
 
                 @Override
@@ -231,7 +217,7 @@ public class GroupableTableHeaderUI extends BasicTableHeaderUI {
 
         String headerValue = cGroup.getHeaderValue().toString();
         Component component = renderer.getTableCellRendererComponent(header.getTable(), headerValue, false, false, -1,
-                                                                     -1);
+                -1);
 
         rendererPane.add(component);
         rendererPane.paintComponent(g, component, header, cellRect.x, cellRect.y, cellRect.width, cellRect.height, true);
