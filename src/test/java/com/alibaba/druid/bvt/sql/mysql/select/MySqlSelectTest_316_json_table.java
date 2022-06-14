@@ -37,14 +37,14 @@ public class MySqlSelectTest_316_json_table
         System.out.println(stmt.toString());
 
         assertEquals("SELECT *\n" +
-                "FROM JSON_TABLE('[ {\"c1\": null} ]' '$[*]'\n" +
+                "FROM JSON_TABLE('[ {\"c1\": null} ]','$[*]'\n" +
                 "\tCOLUMNS (\n" +
                 "\t\tc1 INT PATH '$.c1' DEFAULT ERROR ON ERROR\n" +
                 "\t)\n" +
                 ") jt;", stmt.toString());
 
         assertEquals("select *\n" +
-                "from json_table('[ {\"c1\": null} ]' '$[*]'\n" +
+                "from json_table('[ {\"c1\": null} ]','$[*]'\n" +
                 "\tcolumns (\n" +
                 "\t\tc1 INT path '$.c1' default ERROR on error\n" +
                 "\t)\n" +
