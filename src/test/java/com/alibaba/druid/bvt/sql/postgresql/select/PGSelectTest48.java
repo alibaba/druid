@@ -39,7 +39,7 @@ public class PGSelectTest48 extends TestCase {
 
         assertEquals("SELECT \"result\" ->> 'PROD_TYPE_NAME', \"result\" ->> 'IMAGES'\n" +
                 "FROM mobile_info_cnmo", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select \"result\" ->> 'PROD_TYPE_NAME', \"result\" ->> 'IMAGES'\n" +
                 "from mobile_info_cnmo", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

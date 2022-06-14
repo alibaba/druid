@@ -22,7 +22,6 @@ import java.sql.PreparedStatement;
 import junit.framework.TestCase;
 
 public class TestOracle extends TestCase {
-
     public void test_0() throws Exception {
         String url = "jdbc:oracle:thin:@a.b.c.d:1521:orcl";
         Class.forName("oracle.jdbc.driver.OracleDriver");

@@ -24,40 +24,39 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_for_1 extends OracleTest {
+    public void test_0() throws Exception {
+        String sql = "DECLARE\n" +
+                "  TYPE empcurtyp IS REF CURSOR;\n" +
+                "  TYPE namelist IS TABLE OF employees.last_name%TYPE;\n" +
+                "  TYPE sallist IS TABLE OF employees.salary%TYPE;\n" +
+                "  emp_cv  empcurtyp;\n" +
+                "  names   namelist;\n" +
+                "  sals    sallist;\n" +
+                "BEGIN\n" +
+                "  OPEN emp_cv FOR\n" +
+                "    SELECT last_name, salary FROM employees\n" +
+                "    WHERE job_id = 'SA_REP'\n" +
+                "    ORDER BY salary DESC;\n" +
+                "\n" +
+                "  FETCH emp_cv BULK COLLECT INTO names, sals;\n" +
+                "  CLOSE emp_cv;\n" +
+                "  -- loop through the names and sals collections\n" +
+                "  FOR i IN names.FIRST .. names.LAST\n" +
+                "  LOOP\n" +
+                "    DBMS_OUTPUT.PUT_LINE\n" +
+                "      ('Name = ' || names(i) || ', salary = ' || sals(i));\n" +
+                "  END LOOP;\n" +
+                "END;"; //
 
-	public void test_0() throws Exception {
-		String sql = "DECLARE\n" +
-				"  TYPE empcurtyp IS REF CURSOR;\n" +
-				"  TYPE namelist IS TABLE OF employees.last_name%TYPE;\n" +
-				"  TYPE sallist IS TABLE OF employees.salary%TYPE;\n" +
-				"  emp_cv  empcurtyp;\n" +
-				"  names   namelist;\n" +
-				"  sals    sallist;\n" +
-				"BEGIN\n" +
-				"  OPEN emp_cv FOR\n" +
-				"    SELECT last_name, salary FROM employees\n" +
-				"    WHERE job_id = 'SA_REP'\n" +
-				"    ORDER BY salary DESC;\n" +
-				"\n" +
-				"  FETCH emp_cv BULK COLLECT INTO names, sals;\n" +
-				"  CLOSE emp_cv;\n" +
-				"  -- loop through the names and sals collections\n" +
-				"  FOR i IN names.FIRST .. names.LAST\n" +
-				"  LOOP\n" +
-				"    DBMS_OUTPUT.PUT_LINE\n" +
-				"      ('Name = ' || names(i) || ', salary = ' || sals(i));\n" +
-				"  END LOOP;\n" +
-				"END;"; //
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
+        SQLStatement stmt = statementList.get(0);
 
-		List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		SQLStatement stmt = statementList.get(0);
+        assertEquals(1, statementList.size());
 
-		assertEquals(1, statementList.size());
-
-		SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
-		for (SQLStatement statement : statementList) {
-			statement.accept(visitor);
-		}
+        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
+        for (SQLStatement statement : statementList) {
+            statement.accept(visitor);
+        }
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
@@ -65,7 +64,7 @@ public class Oracle_pl_for_1 extends OracleTest {
 //        System.out.println("relationships : " + visitor.getRelationships());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-		assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
 
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
@@ -74,56 +73,56 @@ public class Oracle_pl_for_1 extends OracleTest {
 //        Assert.assertEquals(3, visitor.getConditions().size());
 //        Assert.assertEquals(1, visitor.getRelationships().size());
 
-		// Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toOracleString(stmt);
-			System.out.println(output);
-			assertEquals("DECLARE\n" +
-							"\tTYPE empcurtyp IS REF CURSOR;\n" +
-							"\tTYPE employees.last_name IS TABLE OF employees.last_name%TYPE;\n" +
-							"\tTYPE employees.salary IS TABLE OF employees.salary%TYPE;\n" +
-							"\temp_cv empcurtyp;\n" +
-							"\tnames namelist;\n" +
-							"\tsals sallist;\n" +
-							"BEGIN\n" +
-							"\tOPEN emp_cv FOR \n" +
-							"\t\tSELECT last_name, salary\n" +
-							"\t\tFROM employees\n" +
-							"\t\tWHERE job_id = 'SA_REP'\n" +
-							"\t\tORDER BY salary DESC;\n" +
-							"\tFETCH emp_cv BULK COLLECT INTO names, sals;\n" +
-							"\tCLOSE emp_cv;\n" +
-							"\tFOR i IN names.FIRST..names.LAST\n" +
-							"\tLOOP\n" +
-							"\t\tDBMS_OUTPUT.PUT_LINE('Name = ' || names(i) || ', salary = ' || sals(i));\n" +
-							"\tEND LOOP;\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("declare\n" +
-							"\ttype empcurtyp is REF CURSOR;\n" +
-							"\ttype employees.last_name is TABLE OF employees.last_name%TYPE;\n" +
-							"\ttype employees.salary is TABLE OF employees.salary%TYPE;\n" +
-							"\temp_cv empcurtyp;\n" +
-							"\tnames namelist;\n" +
-							"\tsals sallist;\n" +
-							"begin\n" +
-							"\topen emp_cv for \n" +
-							"\t\tselect last_name, salary\n" +
-							"\t\tfrom employees\n" +
-							"\t\twhere job_id = 'SA_REP'\n" +
-							"\t\torder by salary desc;\n" +
-							"\tfetch emp_cv bulk collect into names, sals;\n" +
-							"\tclose emp_cv;\n" +
-							"\tfor i in names.FIRST..names.LAST\n" +
-							"\tloop\n" +
-							"\t\tDBMS_OUTPUT.PUT_LINE('Name = ' || names(i) || ', salary = ' || sals(i));\n" +
-							"\tend loop;\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toOracleString(stmt);
+            System.out.println(output);
+            assertEquals("DECLARE\n" +
+                            "\tTYPE empcurtyp IS REF CURSOR;\n" +
+                            "\tTYPE employees.last_name IS TABLE OF employees.last_name%TYPE;\n" +
+                            "\tTYPE employees.salary IS TABLE OF employees.salary%TYPE;\n" +
+                            "\temp_cv empcurtyp;\n" +
+                            "\tnames namelist;\n" +
+                            "\tsals sallist;\n" +
+                            "BEGIN\n" +
+                            "\tOPEN emp_cv FOR \n" +
+                            "\t\tSELECT last_name, salary\n" +
+                            "\t\tFROM employees\n" +
+                            "\t\tWHERE job_id = 'SA_REP'\n" +
+                            "\t\tORDER BY salary DESC;\n" +
+                            "\tFETCH emp_cv BULK COLLECT INTO names, sals;\n" +
+                            "\tCLOSE emp_cv;\n" +
+                            "\tFOR i IN names.FIRST..names.LAST\n" +
+                            "\tLOOP\n" +
+                            "\t\tDBMS_OUTPUT.PUT_LINE('Name = ' || names(i) || ', salary = ' || sals(i));\n" +
+                            "\tEND LOOP;\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("declare\n" +
+                            "\ttype empcurtyp is REF CURSOR;\n" +
+                            "\ttype employees.last_name is TABLE OF employees.last_name%TYPE;\n" +
+                            "\ttype employees.salary is TABLE OF employees.salary%TYPE;\n" +
+                            "\temp_cv empcurtyp;\n" +
+                            "\tnames namelist;\n" +
+                            "\tsals sallist;\n" +
+                            "begin\n" +
+                            "\topen emp_cv for \n" +
+                            "\t\tselect last_name, salary\n" +
+                            "\t\tfrom employees\n" +
+                            "\t\twhere job_id = 'SA_REP'\n" +
+                            "\t\torder by salary desc;\n" +
+                            "\tfetch emp_cv bulk collect into names, sals;\n" +
+                            "\tclose emp_cv;\n" +
+                            "\tfor i in names.FIRST..names.LAST\n" +
+                            "\tloop\n" +
+                            "\t\tDBMS_OUTPUT.PUT_LINE('Name = ' || names(i) || ', salary = ' || sals(i));\n" +
+                            "\tend loop;\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

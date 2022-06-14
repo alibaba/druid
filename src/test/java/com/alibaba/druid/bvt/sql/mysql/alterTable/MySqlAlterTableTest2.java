@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest2 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD COLUMN `f2` VARCHAR(45) NULL  FIRST ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -40,8 +39,8 @@ public class MySqlAlterTableTest2 extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tADD COLUMN `f2` VARCHAR(45) NULL AFTER `fid`," + //
-                            "\n\tADD COLUMN `f3` VARCHAR(45) NULL FIRST `f2`", output);
+                "\n\tADD COLUMN `f2` VARCHAR(45) NULL AFTER `fid`," + //
+                "\n\tADD COLUMN `f3` VARCHAR(45) NULL FIRST `f2`", output);
     }
 
 }

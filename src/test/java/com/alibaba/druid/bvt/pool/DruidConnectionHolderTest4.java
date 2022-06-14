@@ -13,7 +13,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 
 public class DruidConnectionHolderTest4 extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -56,9 +55,9 @@ public class DruidConnectionHolderTest4 extends PoolTestCase {
         stmt.close();
 
         conn.close();
-        
+
         Assert.assertEquals(1, holder.getStatementPool().size());
-        
+
         holder.toString();
     }
 }

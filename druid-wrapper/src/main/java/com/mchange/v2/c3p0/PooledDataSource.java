@@ -4,5 +4,4 @@ import javax.sql.DataSource;
 
 
 public interface PooledDataSource extends DataSource {
-
 }

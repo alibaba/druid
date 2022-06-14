@@ -16,8 +16,6 @@
 package com.alibaba.druid.support.metrics;
 
 public class MetricCollector {
-
     public void collect() throws Exception {
-
     }
 }

@@ -16,24 +16,25 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropCatalogStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
-
     private SQLExpr name;
     private boolean ifExists;
     private boolean external;
 
     public SQLDropCatalogStatement() {
-
     }
 
     public SQLDropCatalogStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

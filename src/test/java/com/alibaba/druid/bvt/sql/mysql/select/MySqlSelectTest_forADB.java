@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlSelectTest_forADB extends MysqlTest {
-
     public void test_0() throws Exception {
         parseTrue("select distinct timediff(time \"11:25:00\" , time_test) as col5 from test order by 1 limit 9,6",
                 "SELECT DISTINCT timediff(TIME '11:25:00', time_test) AS col5\n" +

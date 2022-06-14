@@ -23,17 +23,15 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDropTableSpaceStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
-
     private SQLName name;
     private boolean ifExists;
     private SQLExpr engine;
-    
+
     public SQLDropTableSpaceStatement() {
-        
     }
-    
+
     public SQLDropTableSpaceStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

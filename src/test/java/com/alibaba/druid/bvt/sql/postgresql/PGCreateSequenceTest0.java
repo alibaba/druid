@@ -25,7 +25,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGCreateSequenceTest0 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "\n" +
                 "create sequence SEQ_CONTRACT_OPER_ID    \n" +
@@ -38,9 +37,9 @@ public class PGCreateSequenceTest0 extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         assertEquals("CREATE SEQUENCE SEQ_CONTRACT_OPER_ID START WITH 1 INCREMENT BY 1 NO MAXVALUE NO CYCLE CACHE 10;", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("create sequence SEQ_CONTRACT_OPER_ID start with 1 increment by 1 no maxvalue no cycle cache 10;", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, statementList.size());

@@ -242,7 +242,7 @@ public class SqlTypeUDF extends UDF {
 
                 int semiCnt = 0;
                 for_:
-                for(Token token = null;;) {
+                for (Token token = null; ; ) {
                     lexer.nextToken();
 
                     if (token == Token.VARIANT && lexer.token() == Token.COLONEQ) {
@@ -262,7 +262,6 @@ public class SqlTypeUDF extends UDF {
                     }
                 }
             } catch (ParserException ignored) {
-
             }
 
             sqlType = SQLType.ERROR;
@@ -331,7 +330,6 @@ public class SqlTypeUDF extends UDF {
             }
             return sqlType.name();
         } catch (ParserException ignored) {
-
         }
         return null;
     }

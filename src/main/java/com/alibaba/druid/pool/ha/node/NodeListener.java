@@ -19,11 +19,7 @@ import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -34,12 +30,12 @@ import java.util.concurrent.locks.ReentrantLock;
  * @see Observable
  */
 public abstract class NodeListener extends Observable {
-    private final static Log LOG = LogFactory.getLog(NodeListener.class);
+    private static final Log LOG = LogFactory.getLog(NodeListener.class);
 
     private String prefix = "";
     private Properties properties = new Properties();
-    private Date lastUpdateTime = null;
-    private Observer observer = null;
+    private Date lastUpdateTime;
+    private Observer observer;
     private Lock lock = new ReentrantLock();
 
     /**

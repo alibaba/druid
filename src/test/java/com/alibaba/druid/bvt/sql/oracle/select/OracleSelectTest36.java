@@ -31,16 +31,15 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest36 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "select ID,name from fastsql_test where (name>=? or name is null) and card_id<?"; //
+                "select ID,name from fastsql_test where (name>=? or name is null) and card_id<?"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
-        
+
         String result = SQLUtils.toOracleString(stmt);
         String result_lcase = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
         Assert.assertEquals("SELECT ID, name"
@@ -48,25 +47,25 @@ public class OracleSelectTest36 extends OracleTest {
                 + "\nWHERE (name >= ?"
                 + "\n\t\tOR name IS NULL)"
                 + "\n\tAND card_id < ?", result);
-        
+
         Assert.assertEquals("select ID, name"
                 + "\nfrom fastsql_test"
                 + "\nwhere (name >= ?"
                 + "\n\t\tor name is null)"
                 + "\n\tand card_id < ?", result_lcase);
-        
+
         {
             SQLSelect select = ((SQLSelectStatement) stmt).getSelect();
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) select.getQuery();
             SQLBinaryOpExpr where = (SQLBinaryOpExpr) queryBlock.getWhere();
             Assert.assertEquals(SQLBinaryOperator.BooleanAnd, where.getOperator());
-            
+
             SQLBinaryOpExpr left = (SQLBinaryOpExpr) where.getLeft();
             Assert.assertEquals(SQLBinaryOperator.BooleanOr, left.getOperator());
-            
+
             SQLBinaryOpExpr nameGTEQ = (SQLBinaryOpExpr) left.getLeft();
             Assert.assertEquals(SQLBinaryOperator.GreaterThanOrEqual, nameGTEQ.getOperator());
-            
+
             SQLBinaryOpExpr nameIS = (SQLBinaryOpExpr) left.getRight();
             Assert.assertEquals(SQLBinaryOperator.Is, nameIS.getOperator());
         }
@@ -88,9 +87,9 @@ public class OracleSelectTest36 extends OracleTest {
 
         Assert.assertEquals(3, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "ID")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "name")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "card_id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "ID")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "name")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "card_id")));
 
         // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }

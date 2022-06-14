@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class H2Lexer extends Lexer {
-    public final static Keywords DEFAULT_H2_KEYWORDS;
+    public static final Keywords DEFAULT_H2_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -45,12 +45,12 @@ public class H2Lexer extends Lexer {
         DEFAULT_H2_KEYWORDS = new Keywords(map);
     }
 
-    public H2Lexer(String input){
+    public H2Lexer(String input) {
         super(input, null, DbType.h2);
         super.keywords = DEFAULT_H2_KEYWORDS;
     }
 
-    public H2Lexer(String input, SQLParserFeature... features){
+    public H2Lexer(String input, SQLParserFeature... features) {
         super(input, null, DbType.h2);
         super.keywords = DEFAULT_H2_KEYWORDS;
         for (SQLParserFeature feature : features) {

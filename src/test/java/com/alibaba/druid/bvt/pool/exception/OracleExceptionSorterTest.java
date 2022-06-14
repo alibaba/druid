@@ -15,12 +15,11 @@ import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleExceptionSorterTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-        
+
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());
@@ -69,10 +68,10 @@ public class OracleExceptionSorterTest extends TestCase {
         } catch (SQLException ex) {
             commitError = ex;
         }
-        
+
         Assert.assertNotNull(commitError);
         Assert.assertSame(exception, commitError.getCause());
-        
+
         conn.close();
     }
 

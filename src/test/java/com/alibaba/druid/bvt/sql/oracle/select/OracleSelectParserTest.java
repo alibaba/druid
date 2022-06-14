@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class OracleSelectParserTest extends TestCase {
-
     public void test_select() throws Exception {
         String sql = "SELECT last_name, department_id FROM employees WHERE department_id = (SELECT department_id FROM employees WHERE last_name = 'Lorentz') ORDER BY last_name, department_id;";
 

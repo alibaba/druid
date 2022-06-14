@@ -16,8 +16,7 @@
 package com.alibaba.druid;
 
 public interface Constants {
+    public static final String DRUID_STAT_SQL_MAX_SIZE = "druid.stat.sql.MaxSize";
 
-    public final static String DRUID_STAT_SQL_MAX_SIZE             = "druid.stat.sql.MaxSize";
-
-    public final static String DRUID_TIME_BETWEEN_LOG_STATS_MILLIS = "druid.timeBetweenLogStatsMillis";
+    public static final String DRUID_TIME_BETWEEN_LOG_STATS_MILLIS = "druid.timeBetweenLogStatsMillis";
 }

@@ -22,10 +22,8 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLShowViewsStatement extends SQLStatementImpl implements SQLShowStatement, SQLReplaceable {
-
     protected SQLName database;
     protected SQLExpr like;
-    
 
     public SQLName getDatabase() {
         return database;

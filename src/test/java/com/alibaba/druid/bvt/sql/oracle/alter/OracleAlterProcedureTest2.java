@@ -25,10 +25,9 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleAlterProcedureTest2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER PROCEDURE \"ALIBABA1949\".\"FIX_PRODUCT_ADDITION_YZS_0210\" COMPILE REUSE SETTINGS";
+                "ALTER PROCEDURE \"ALIBABA1949\".\"FIX_PRODUCT_ADDITION_YZS_0210\" COMPILE REUSE SETTINGS";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

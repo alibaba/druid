@@ -28,7 +28,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle3_Concurrent extends TestCase {
-
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
@@ -95,14 +94,13 @@ public class TestIdle3_Concurrent extends TestCase {
     }
 
     private void concurrent(final MockDriver driver, final DruidDataSource dataSource, final int count)
-                                                                                                       throws Exception {
+            throws Exception {
         final int LOOP_COUNT = 1000;
         Thread[] threads = new Thread[count];
         final CyclicBarrier barrier = new CyclicBarrier(count);
         final CountDownLatch endLatch = new CountDownLatch(count);
         for (int i = 0; i < count; ++i) {
             threads[i] = new Thread("thread-" + i) {
-
                 public void run() {
                     try {
                         for (int i = 0; i < LOOP_COUNT; ++i) {

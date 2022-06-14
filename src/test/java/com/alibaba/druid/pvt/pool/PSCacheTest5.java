@@ -12,7 +12,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PSCacheTest5 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -38,9 +37,9 @@ public class PSCacheTest5 extends TestCase {
         for (int i = 0; i < 1000; ++i) {
             Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement("select 1");
-            
+
             Assert.assertSame(mockStmt, ps.unwrap(MockPreparedStatement.class));
-            
+
             ps.execute();
             ps.close();
             conn.close();

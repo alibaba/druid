@@ -12,9 +12,8 @@ import java.util.List;
  * Date 2019-06-18 23:41
  */
 public class DrdsRemoveDDLJob extends MySqlStatementImpl implements SQLStatement {
-
-    private boolean allCompleted = false;
-    private boolean allPending = false;
+    private boolean allCompleted;
+    private boolean allPending;
     private List<Long> jobIds = new ArrayList<Long>();
 
     public void accept0(MySqlASTVisitor visitor) {

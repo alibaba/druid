@@ -24,29 +24,28 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest40 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "WITH a AS (" + //
-                "   SELECT to_char(csl.create_time,'yyyyMMdd') create_time, cwl.client_key ck, csl.src_id src_id " + //
-                "   FROM t0 csl, t1 cwl " + //
-                "   WHERE 1 =1 AND csl.src_id = cwl.src_id AND csl.curr_url = cwl.curr_url " + //
-                "       AND to_char(csl.create_time,'yyyyMMdd') BETWEEN ? " + //
-                "       AND ? AND cwl.day = to_char(csl.create_time,'yyyyMMdd') " + //
-                "   GROUP BY cwl.client_key, csl.src_id, csl.create_time ORDER BY csl.src_id )" + //
-                ", b AS (" + //
-                "   SELECT itn.buyerpaytime, itn.esc_orderid, itn.oldck, " + //
-                "       MAX(con.PAYED_AMOUNT) gmv, MAX(con.buyer_onlyid) buyer " + //
-                "   FROM t01 itn, t02 don, t03 con " + //
-                "   WHERE don.esc_orderid = itn.esc_orderid " + //
-                "       AND con.esc_orderid = itn.esc_orderid " + //
-                "       AND don.order_status IN (4,5,6,7,8) AND itn.buyerpaytime BETWEEN ? AND ? " + //
-                "   GROUP BY itn.esc_orderid, itn.oldck, itn.buyerpaytime ) " + //
-                "SELECT MAX(cos.location) AS position , a.src_id AS srcid , " + //
-                "   COUNT(DISTINCT b.esc_orderid) AS orders , SUM(b.gmv) AS uvGmv, " + //
-                "   COUNT(DISTINCT buyer) AS buyers FROM a, b, cp_operate_statistics cos " + //
-                "WHERE a.ck = b.oldck(+) AND to_char(cos.day,'yyyyMMdd') = a.create_time " + //
-                "   AND a.create_time = b.buyerpaytime AND a.src_id = cos.src_id GROUP BY a.src_id ORDER BY a.src_id"; //
+                "WITH a AS (" + //
+                        "   SELECT to_char(csl.create_time,'yyyyMMdd') create_time, cwl.client_key ck, csl.src_id src_id " + //
+                        "   FROM t0 csl, t1 cwl " + //
+                        "   WHERE 1 =1 AND csl.src_id = cwl.src_id AND csl.curr_url = cwl.curr_url " + //
+                        "       AND to_char(csl.create_time,'yyyyMMdd') BETWEEN ? " + //
+                        "       AND ? AND cwl.day = to_char(csl.create_time,'yyyyMMdd') " + //
+                        "   GROUP BY cwl.client_key, csl.src_id, csl.create_time ORDER BY csl.src_id )" + //
+                        ", b AS (" + //
+                        "   SELECT itn.buyerpaytime, itn.esc_orderid, itn.oldck, " + //
+                        "       MAX(con.PAYED_AMOUNT) gmv, MAX(con.buyer_onlyid) buyer " + //
+                        "   FROM t01 itn, t02 don, t03 con " + //
+                        "   WHERE don.esc_orderid = itn.esc_orderid " + //
+                        "       AND con.esc_orderid = itn.esc_orderid " + //
+                        "       AND don.order_status IN (4,5,6,7,8) AND itn.buyerpaytime BETWEEN ? AND ? " + //
+                        "   GROUP BY itn.esc_orderid, itn.oldck, itn.buyerpaytime ) " + //
+                        "SELECT MAX(cos.location) AS position , a.src_id AS srcid , " + //
+                        "   COUNT(DISTINCT b.esc_orderid) AS orders , SUM(b.gmv) AS uvGmv, " + //
+                        "   COUNT(DISTINCT buyer) AS buyers FROM a, b, cp_operate_statistics cos " + //
+                        "WHERE a.ck = b.oldck(+) AND to_char(cos.day,'yyyyMMdd') = a.create_time " + //
+                        "   AND a.create_time = b.buyerpaytime AND a.src_id = cos.src_id GROUP BY a.src_id ORDER BY a.src_id"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -55,7 +54,7 @@ public class OracleSelectTest40 extends OracleTest {
         System.out.println(stmt);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 

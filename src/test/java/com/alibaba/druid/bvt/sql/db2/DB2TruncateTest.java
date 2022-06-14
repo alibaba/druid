@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2TruncateTest extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "TRUNCATE TASK_AICSFSM_QUERY_BATCH_TEMP IMMEDIATE";
 
@@ -58,9 +57,9 @@ public class DB2TruncateTest extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         Assert.assertEquals("TRUNCATE TABLE TASK_AICSFSM_QUERY_BATCH_TEMP IMMEDIATE", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("truncate table TASK_AICSFSM_QUERY_BATCH_TEMP immediate", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

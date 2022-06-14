@@ -28,7 +28,6 @@ import com.alibaba.druid.wall.WallUtils;
 import java.util.List;
 
 public class MySqlUpdateTest_16 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "update am_activity_prize set lock_left_count=lock_left_count-120.0, lock_count=lock_count+0.0 where id=?";
 
@@ -60,14 +59,14 @@ public class MySqlUpdateTest_16 extends MysqlTest {
             assertEquals("UPDATE am_activity_prize\n" +
                             "SET lock_left_count = lock_left_count - 120.0, lock_count = lock_count + 0.0\n" +
                             "WHERE id = ?", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("update am_activity_prize\n" +
                             "set lock_left_count = lock_left_count - 120.0, lock_count = lock_count + 0.0\n" +
                             "where id = ?", //
-                                output);
+                    output);
         }
 
         assertTrue(WallUtils.isValidateMySql(sql));

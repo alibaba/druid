@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSetTest2 extends PGTest {
-
     protected void setUp() throws Exception {
         super.setUp();
 

@@ -24,21 +24,20 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest58 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(false);
 
         Assert.assertTrue(provider.checkValid(//
-        "SELECT COUNT(*) FROM information_schema.processlist " + //
-                "WHERE user <> 'replication' AND id <> CONNECTION_ID() " + //
-                "AND time > 60 AND command <> 'Sleep'"));
+                "SELECT COUNT(*) FROM information_schema.processlist " + //
+                        "WHERE user <> 'replication' AND id <> CONNECTION_ID() " + //
+                        "AND time > 60 AND command <> 'Sleep'"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

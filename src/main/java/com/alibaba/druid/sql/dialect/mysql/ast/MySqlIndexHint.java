@@ -19,15 +19,14 @@ public interface MySqlIndexHint extends MySqlHint {
     public static enum Option {
         JOIN("JOIN"),
         ORDER_BY("ORDER BY"),
-        GROUP_BY("GROUP BY")
-        ;
-        
+        GROUP_BY("GROUP BY");
+
         public final String name;
-        public final String name_lcase;
-        
+        public final String nameLCase;
+
         Option(String name) {
             this.name = name;
-            this.name_lcase = name.toLowerCase();
+            this.nameLCase = name.toLowerCase();
         }
     }
 }

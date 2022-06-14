@@ -24,16 +24,15 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import junit.framework.TestCase;
 
 public class SQLServerRowNumberTest2 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "SELECT * FROM ("
-                     + //
-                     "   SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate Desc, FAlertLevel, FAlertType)  AS RowNumber, *"
-                     + //
-                     "        from monitor_business" + //
-                     "   where FRemoveAlert = ?" + //
-                     " ) AS temp_table" + //
-                     "   WHERE RowNumber BETWEEN ? AND ?";
+                + //
+                "   SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate Desc, FAlertLevel, FAlertType)  AS RowNumber, *"
+                + //
+                "        from monitor_business" + //
+                "   where FRemoveAlert = ?" + //
+                " ) AS temp_table" + //
+                "   WHERE RowNumber BETWEEN ? AND ?";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
@@ -54,16 +53,16 @@ public class SQLServerRowNumberTest2 extends TestCase {
                 ") temp_table\n" +
                 "where RowNumber between ? and ?", SQLUtils.toSQLServerString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-    
+
     public void test_isEmpty_2() throws Exception {
         String sql = "SELECT * FROM ("
-                     + //
-                     "   SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate Desc, FAlertLevel, FAlertType)  AS RowNumber, *"
-                     + //
-                     "        from monitor_business" + //
-                     "   where FRemoveAlert = ?" + //
-                     " ) AS temp_table" + //
-                     "   WHERE RowNumber NOT BETWEEN ? AND ?";
+                + //
+                "   SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate Desc, FAlertLevel, FAlertType)  AS RowNumber, *"
+                + //
+                "        from monitor_business" + //
+                "   where FRemoveAlert = ?" + //
+                " ) AS temp_table" + //
+                "   WHERE RowNumber NOT BETWEEN ? AND ?";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

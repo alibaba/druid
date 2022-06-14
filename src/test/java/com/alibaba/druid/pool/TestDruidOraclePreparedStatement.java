@@ -24,10 +24,9 @@ import junit.framework.TestCase;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TestDruidOraclePreparedStatement extends TestCase {
-
-    private String          jdbcUrl;
-    private String          user;
-    private String          password;
+    private String jdbcUrl;
+    private String user;
+    private String password;
 
     private DruidDataSource dataSource;
 
@@ -50,7 +49,6 @@ public class TestDruidOraclePreparedStatement extends TestCase {
     }
 
     public void test_0() throws Exception {
-
         Class.forName(JdbcUtils.getDriverClassName(jdbcUrl));
 
 //        {
@@ -88,7 +86,6 @@ public class TestDruidOraclePreparedStatement extends TestCase {
             stmt.setInt(1, 1);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
 
             rs.close();

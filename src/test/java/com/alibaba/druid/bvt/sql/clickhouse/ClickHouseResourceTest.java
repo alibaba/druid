@@ -35,7 +35,6 @@ import java.io.Reader;
 import java.util.List;
 
 public class ClickHouseResourceTest extends OracleTest {
-
     public void test_0() throws Exception {
         exec_test("bvt/parser/clickhouse-0.txt");
     }
@@ -78,6 +77,22 @@ public class ClickHouseResourceTest extends OracleTest {
 
     public void test_10() throws Exception {
         exec_test("bvt/parser/clickhouse-10.txt");
+    }
+
+    public void test_11() throws Exception {
+        exec_test("bvt/parser/clickhouse-11.txt");
+    }
+
+    public void test_12() throws Exception {
+        exec_test("bvt/parser/clickhouse-12.txt");
+    }
+
+    public void test_13() throws Exception {
+        exec_test("bvt/parser/clickhouse-13.txt");
+    }
+
+    public void test_14() throws Exception {
+        exec_test("bvt/parser/clickhouse-14.txt");
     }
 
     public void exec_test(String resource) throws Exception {

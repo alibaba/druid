@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowTriggersStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
     private SQLName database;
     private SQLExpr like;
     private SQLExpr where;

@@ -22,10 +22,10 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLShowTablesStatement extends SQLStatementImpl implements SQLShowStatement, SQLReplaceable {
-    private boolean extended = false;
+    private boolean extended;
     protected SQLName database;
     protected SQLExpr like;
-    
+
     // for mysql
     protected boolean full;
     protected SQLExpr where;
@@ -57,7 +57,7 @@ public class SQLShowTablesStatement extends SQLStatementImpl implements SQLShowS
 
         this.like = like;
     }
-    
+
     public boolean isFull() {
         return full;
     }
@@ -73,7 +73,7 @@ public class SQLShowTablesStatement extends SQLStatementImpl implements SQLShowS
     public void setWhere(SQLExpr where) {
         this.where = where;
     }
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {

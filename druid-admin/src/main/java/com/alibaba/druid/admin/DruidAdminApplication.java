@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 @EnableConfigurationProperties(MonitorProperties.class)
 public class DruidAdminApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(DruidAdminApplication.class, args);
     }

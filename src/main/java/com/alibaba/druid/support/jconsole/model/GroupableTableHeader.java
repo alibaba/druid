@@ -15,20 +15,19 @@
  */
 package com.alibaba.druid.support.jconsole.model;
 
-import java.util.Enumeration;
-import java.util.Vector;
-
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import java.util.Enumeration;
+import java.util.Vector;
+
 public class GroupableTableHeader extends JTableHeader {
-
-    private static final long     serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     // private static final String uiClassID = "GroupableTableHeaderUI";
-    protected Vector<ColumnGroup> columnGroups     = null;
+    protected Vector<ColumnGroup> columnGroups;
 
-    public GroupableTableHeader(TableColumnModel model){
+    public GroupableTableHeader(TableColumnModel model) {
         super(model);
         setUI(new GroupableTableHeaderUI());
         setReorderingAllowed(false);

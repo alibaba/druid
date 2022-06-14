@@ -14,12 +14,11 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class AsyncCloseTest extends TestCase {
-
     protected DruidDataSource dataSource;
-    private ExecutorService   connExecutor;
-    private ExecutorService   closeExecutor;
+    private ExecutorService connExecutor;
+    private ExecutorService closeExecutor;
 
-    final AtomicInteger       errorCount = new AtomicInteger();
+    final AtomicInteger errorCount = new AtomicInteger();
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -32,7 +31,7 @@ public class AsyncCloseTest extends TestCase {
         closeExecutor = Executors.newFixedThreadPool(100);
 
     }
-    
+
     protected void tearDown() throws Exception {
         dataSource.close();
     }
@@ -45,11 +44,10 @@ public class AsyncCloseTest extends TestCase {
     }
 
     class CloseTask implements Runnable {
-
-        private Connection     conn;
+        private Connection conn;
         private CountDownLatch latch;
 
-        public CloseTask(Connection conn, CountDownLatch latch){
+        public CloseTask(Connection conn, CountDownLatch latch) {
             this.conn = conn;
             this.latch = latch;
         }
@@ -76,7 +74,6 @@ public class AsyncCloseTest extends TestCase {
         final CountDownLatch closeLatch = new CountDownLatch(COUNT * 2);
 
         Runnable connTask = new Runnable() {
-
             @Override
             public void run() {
                 try {

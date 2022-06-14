@@ -26,7 +26,6 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class TestIdleForKylin extends TestCase {
-
     public void test_idle() throws Exception {
         MockDriver driver = MockDriver.instance;
 

@@ -19,9 +19,8 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleSetTransactionStatement extends OracleStatementImpl implements OracleStatement {
-
-    private boolean readOnly = false;
-    private boolean write = false;
+    private boolean readOnly;
+    private boolean write;
 
     private SQLExpr name;
 

@@ -23,20 +23,19 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest11 extends TestCase {
-
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
-        "SELECT *, MATCH(question_content_fulltext) " + //
-                "AGAINST('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE) AS score " + //
-                "FROM aws_question " + //
-                "WHERE MATCH(question_content_fulltext) " + //
-                "   AGAINST('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE)  " + //
-                "ORDER BY score DESC, agree_count DESC LIMIT 10")); //
+                "SELECT *, MATCH(question_content_fulltext) " + //
+                        "AGAINST('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE) AS score " + //
+                        "FROM aws_question " + //
+                        "WHERE MATCH(question_content_fulltext) " + //
+                        "   AGAINST('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE)  " + //
+                        "ORDER BY score DESC, agree_count DESC LIMIT 10")); //
     }
 }

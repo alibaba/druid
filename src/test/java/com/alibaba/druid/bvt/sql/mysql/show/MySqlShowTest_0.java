@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlShowTest_0 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW TRIGGERS FROM `sonar` LIKE 'action_plans'";
 
@@ -64,10 +63,10 @@ public class MySqlShowTest_0 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
 
-                System.out.println("Tables : " + visitor.getTables());
-                System.out.println("fields : " + visitor.getColumns());
-                System.out.println("coditions : " + visitor.getConditions());
-                System.out.println("orderBy : " + visitor.getOrderByColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

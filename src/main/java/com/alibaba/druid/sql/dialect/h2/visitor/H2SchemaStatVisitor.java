@@ -20,10 +20,9 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 public class H2SchemaStatVisitor extends SchemaStatVisitor implements H2ASTVisitor {
     public H2SchemaStatVisitor() {
-
     }
 
     public H2SchemaStatVisitor(SchemaRepository repository) {
-        super (repository);
+        super(repository);
     }
 }

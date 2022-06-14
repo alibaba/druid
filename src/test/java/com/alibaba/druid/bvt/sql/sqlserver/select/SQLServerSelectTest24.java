@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SQLServerSelectTest24 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = //
                 "SELECT TOP 100 *\n" +

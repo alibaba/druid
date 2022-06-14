@@ -25,12 +25,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest7 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "create table \"ALIBABA1949\".\"SYS_JOURNAL_209051\" (" + //
-                "C0 VARCHAR2(256),  opcode char(1), partno number,  rid rowid, primary key( C0 , rid )" + //
-                ") organization index TABLESPACE \"APPINDX1M\"";
+                "create table \"ALIBABA1949\".\"SYS_JOURNAL_209051\" (" + //
+                        "C0 VARCHAR2(256),  opcode char(1), partno number,  rid rowid, primary key( C0 , rid )" + //
+                        ") organization index TABLESPACE \"APPINDX1M\"";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

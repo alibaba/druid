@@ -50,7 +50,7 @@ public class OracleListAggTest1 extends OracleTest {
                         "\t\tGROUP BY T.ID\n" +
                         "\t) T1 ON T.ID = T1.ID \n" +
                         "WHERE t.IS_DELETED = 0",//
-                            SQLUtils.toSQLString(stmt, dbType));
+                SQLUtils.toSQLString(stmt, dbType));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
         stmt.accept(visitor);

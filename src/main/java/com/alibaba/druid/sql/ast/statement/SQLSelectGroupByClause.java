@@ -27,17 +27,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLSelectGroupByClause extends SQLObjectImpl implements SQLReplaceable {
+    private final List<SQLExpr> items = new ArrayList<SQLExpr>();
+    private SQLExpr having;
+    private boolean withRollUp;
+    private boolean withCube;
 
-    private final List<SQLExpr> items      = new ArrayList<SQLExpr>();
-    private SQLExpr             having;
-    private boolean             withRollUp = false;
-    private boolean             withCube   = false;
+    private boolean distinct;
+    private boolean paren;
 
-    private boolean             distinct   = false;
-    private boolean             paren      = false;
-
-    public SQLSelectGroupByClause(){
-
+    public SQLSelectGroupByClause() {
     }
 
     @Override
@@ -73,8 +71,7 @@ public class SQLSelectGroupByClause extends SQLObjectImpl implements SQLReplacea
     public void setWithRollUp(boolean withRollUp) {
         this.withRollUp = withRollUp;
     }
-    
-    
+
     public boolean isWithCube() {
         return withCube;
     }
@@ -186,8 +183,7 @@ public class SQLSelectGroupByClause extends SQLObjectImpl implements SQLReplacea
     }
 
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -219,8 +215,7 @@ public class SQLSelectGroupByClause extends SQLObjectImpl implements SQLReplacea
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int result = items != null ? items.hashCode() : 0;
         result = 31 * result + (having != null ? having.hashCode() : 0);
         result = 31 * result + (withRollUp ? 1 : 0);

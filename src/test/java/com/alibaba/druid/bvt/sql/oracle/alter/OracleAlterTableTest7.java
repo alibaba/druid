@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest7 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE wl_ship_order modify ( forwarder_service DEFAULT 'UPS', status DEFAULT 500 )";
+                "ALTER TABLE wl_ship_order modify ( forwarder_service DEFAULT 'UPS', status DEFAULT 500 )";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -53,8 +52,8 @@ public class OracleAlterTableTest7 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_ship_order", "forwarder_service")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_ship_order", "status")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_ship_order", "forwarder_service")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_ship_order", "status")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

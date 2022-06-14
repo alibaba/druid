@@ -27,12 +27,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateViewTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE OR REPLACE VIEW view_name AS\n" + //
-                     "SELECT fname\n" + //
-                     "FROM table_name\n" + //
-                     "WHERE fid = ?";
+                "SELECT fname\n" + //
+                "FROM table_name\n" + //
+                "WHERE fid = ?";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

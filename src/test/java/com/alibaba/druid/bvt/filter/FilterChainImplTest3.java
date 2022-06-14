@@ -19,7 +19,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class FilterChainImplTest3 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -27,14 +26,15 @@ public class FilterChainImplTest3 extends TestCase {
 
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setFilters("stat,log4j,wall,encoding");
-        dataSource.getProxyFilters().add(new FilterAdapter() {} );
+        dataSource.getProxyFilters().add(new FilterAdapter() {
+        });
         dataSource.setDbType("mysql");
-        
+
         dataSource.setDriver(new MockDriver() {
             public ResultSet executeQuery(MockStatementBase stmt, String sql) throws SQLException {
                 return null;
             }
-            
+
             public MockStatement createMockStatement(MockConnection conn) {
                 return new MockStatement(conn) {
                     public ResultSet getResultSet() throws SQLException {
@@ -59,7 +59,7 @@ public class FilterChainImplTest3 extends TestCase {
         stmt.close();
         conn.close();
     }
-    
+
     public void test_executeQuery_2() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareCall("select ?");
@@ -68,7 +68,7 @@ public class FilterChainImplTest3 extends TestCase {
         stmt.close();
         conn.close();
     }
-    
+
     public void test_executeQuery_3() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -76,7 +76,7 @@ public class FilterChainImplTest3 extends TestCase {
         stmt.close();
         conn.close();
     }
-    
+
     public void test_execute() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();

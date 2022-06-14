@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE wl_ship_order modify ( forwarder_service NOT NULL , status NOT NULL )";
+                "ALTER TABLE wl_ship_order modify ( forwarder_service NOT NULL , status NOT NULL )";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

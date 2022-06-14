@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleReturningClause extends OracleSQLObjectImpl implements SQLReplaceable {
-
-    private List<SQLExpr> items  = new ArrayList<SQLExpr>();
+    private List<SQLExpr> items = new ArrayList<SQLExpr>();
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
     public List<SQLExpr> getItems() {

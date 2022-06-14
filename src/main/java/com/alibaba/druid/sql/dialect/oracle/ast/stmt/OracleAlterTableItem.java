@@ -19,5 +19,4 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 
 public abstract class OracleAlterTableItem extends OracleSQLObjectImpl implements SQLAlterTableItem {
-
 }

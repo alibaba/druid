@@ -24,9 +24,9 @@ import com.alibaba.druid.wall.WallUtils;
 
 public class WallInsertTest extends TestCase {
     private String sql = "INSERT INTO T (F1, F2) VALUES (1, 2)";
-    
+
     private WallConfig config = new WallConfig();
-    
+
     protected void setUp() throws Exception {
         config.setInsertAllow(false);
     }
@@ -34,9 +34,8 @@ public class WallInsertTest extends TestCase {
     public void testMySql() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
     }
-    
+
     public void testORACLE() throws Exception {
-        
         Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

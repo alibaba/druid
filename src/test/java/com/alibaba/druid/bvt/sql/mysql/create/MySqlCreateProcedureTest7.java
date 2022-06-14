@@ -25,25 +25,23 @@ import org.junit.Assert;
 import java.util.List;
 
 /**
- * 
- * @Description: create procedure parameter type support
  * @author zz email:455910092@qq.com
- * @date 2015-9-14
  * @version V1.0
+ * @Description: create procedure parameter type support
+ * @date 2015-9-14
  */
 public class MySqlCreateProcedureTest7 extends MysqlTest {
-
     public void test_0() throws Exception {
-    	String sql="CREATE DEFINER=test@% PROCEDURE test11111()"
-    	        + "\nBEGIN"
-    	        + "\ndeclare v_a date default '2007-4-10';"
-    	        + "\ndeclare v_b date default '2007-4-11';"
-    	        + "\ndeclare v_c datetime default '2004-4-9 0:0:0';"
-    	        + "\nEND";
-	
-    	MySqlStatementParser parser=new MySqlStatementParser(sql);
-    	List<SQLStatement> statementList = parser.parseStatementList();
-    	SQLStatement stmt = statementList.get(0);
+        String sql = "CREATE DEFINER=test@% PROCEDURE test11111()"
+                + "\nBEGIN"
+                + "\ndeclare v_a date default '2007-4-10';"
+                + "\ndeclare v_b date default '2007-4-11';"
+                + "\ndeclare v_c datetime default '2004-4-9 0:0:0';"
+                + "\nEND";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
 //    	print(statementList);
         Assert.assertEquals(1, statementList.size());
 
@@ -54,7 +52,7 @@ public class MySqlCreateProcedureTest7 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE PROCEDURE test11111 ()"
                 + "\nBEGIN"
@@ -62,7 +60,7 @@ public class MySqlCreateProcedureTest7 extends MysqlTest {
                 + "\n\tDECLARE v_b date DEFAULT '2007-4-11';"
                 + "\n\tDECLARE v_c datetime DEFAULT '2004-4-9 0:0:0';"
                 + "\nEND", output);
-        
+
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());

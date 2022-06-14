@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest4 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "alter table test   add  dspcode  char(200)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -42,8 +41,8 @@ public class MySqlAlterTableTest4 extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE test" + //
-                            "\n\tADD COLUMN dspcode char(200)", output);
-        
+                "\n\tADD COLUMN dspcode char(200)", output);
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertTrue(visitor.getColumns().contains(new Column("test", "dspcode")));

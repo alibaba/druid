@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlAlterUserTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "ALTER USER 'jeffrey'@'localhost' PASSWORD EXPIRE;";
 
@@ -37,10 +36,10 @@ public class MySqlAlterUserTest extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER USER 'jeffrey'@'localhost' PASSWORD EXPIRE;", //
-                            output);
+                output);
 
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

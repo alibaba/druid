@@ -14,7 +14,6 @@ import org.junit.Assert;
 import java.util.Set;
 
 public class SchemaStatTest10 extends TestCase {
-
     public void test_schemaStat() throws Exception {
         String sql = "select a.id, b.name from table1 a inner join table2 b on a.id = b.id";
 

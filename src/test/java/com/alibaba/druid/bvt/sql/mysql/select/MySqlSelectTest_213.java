@@ -24,7 +24,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_213 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select 'a\\'b\\'c\\'d\\'e' from t";
 

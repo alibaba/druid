@@ -5,7 +5,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -24,8 +24,8 @@ public class Issue1737 extends TestCase {
         parseStatement.accept(visitor);
         final List<Object> plist = visitor.getParameters();
         sql = out.toString();
-        System.out.println("src:"+sql);
-        System.out.println("sql:"+sql);
+        System.out.println("src:" + sql);
+        System.out.println("sql:" + sql);
         System.out.println(" params: " + JSON.toJSONString(plist));
 
         assertEquals("[\"name\",[\"A\",\"B\"]]", JSON.toJSONString(plist));

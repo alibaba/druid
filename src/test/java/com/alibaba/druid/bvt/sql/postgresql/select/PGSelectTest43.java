@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest43 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select task_id from mod_period_time where task_id in (SELECT task_id as b FROM mod_period_time order by task_id desc limit 1)";
 
@@ -41,7 +40,7 @@ public class PGSelectTest43 extends PGTest {
                 "\tORDER BY task_id DESC\n" +
                 "\tLIMIT 1\n" +
                 ")", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select task_id\n" +
                 "from mod_period_time\n" +
                 "where task_id in (\n" +

@@ -38,7 +38,6 @@ public class MySqlInsertBenchmark_2 extends TestCase {
         long startMillis = System.currentTimeMillis();
         for (int i = 0; i < 1000 * 1000; ++i) {
 
-
             List<SQLStatement> stmt = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
 //            stmt.toString();
         }
@@ -49,7 +48,6 @@ public class MySqlInsertBenchmark_2 extends TestCase {
     public void perf_keepInsertValueClauseStrinng() {
         long startMillis = System.currentTimeMillis();
         for (int i = 0; i < 1000 * 1000; ++i) {
-
             SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, JdbcConstants.MYSQL);
             parser.config(SQLParserFeature.KeepInsertValueClauseOriginalString, true);
             List<SQLStatement> stmtList = parser.parseStatementList();

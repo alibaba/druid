@@ -21,7 +21,6 @@ import com.alibaba.druid.support.http.util.IPAddress;
 import com.alibaba.druid.support.http.util.IPRange;
 
 public class IPRangeTest extends TestCase {
-
     public void test_ipRange_0() throws Exception {
         IPRange rang = new IPRange("128.242.127.0/24");
 
@@ -31,7 +30,7 @@ public class IPRangeTest extends TestCase {
         assertTrue(rang.isIPAddressInRange(new IPAddress("128.242.127.2")));
 
         assertFalse(rang.isIPAddressInRange(new IPAddress("128.242.126.2")));
-        
+
         rang.toString();
     }
 
@@ -69,16 +68,16 @@ public class IPRangeTest extends TestCase {
 
         assertTrue(rang.isIPAddressInRange(new IPAddress("2.16.200.0")));
     }
-    
+
     public void test_ipRange_5() throws Exception {
         IPRange rang = new IPRange("1.1.1.1");
 
         assertTrue(rang.isIPAddressInRange(new IPAddress("1.1.1.1")));
     }
-    
+
     public void test_ipRange_6() throws Exception {
         IPRange rang = new IPRange("128.242.127.3");
-        
+
         assertTrue(rang.isIPAddressInRange(new IPAddress("128.242.127.3")));
         assertFalse(rang.isIPAddressInRange(new IPAddress("128.242.127.4")));
     }

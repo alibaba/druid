@@ -30,7 +30,6 @@ import com.alibaba.druid.sql.repository.SchemaRepository;
 import java.util.List;
 
 public class MySqlSelectTest_183_mpp extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT \"cid\", 3 + \"f2\" FROM \"wenyu_meta_test\".\"WENYU_META_TEST_02\" LIMIT 4";
 
@@ -71,7 +70,7 @@ public class MySqlSelectTest_183_mpp extends MysqlTest {
         assertEquals("SELECT \"cid\", 3 + \"f2\"\n" +
                         "FROM \"wenyu_meta_test\".\"WENYU_META_TEST_02\"\n" +
                         "LIMIT 4", //
-                            output);
+                output);
 
         assertEquals("wenyu_meta_test.WENYU_META_TEST_02", visitor.getTables().entrySet().iterator().next().getKey().getName());
         assertEquals("cid", visitor.getColumns().iterator().next().getName());

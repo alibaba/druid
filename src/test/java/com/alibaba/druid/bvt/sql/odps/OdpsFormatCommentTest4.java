@@ -16,8 +16,7 @@ public class OdpsFormatCommentTest4 extends TestCase {
                 + "\n -- comment_1" //
                 + "\ninsert overwrite table c partition(ds='20150711')" //
                 + "\nselect f0, f1, f2" //
-                + "\nwhere name rlike 'kk';"
-                ;//
+                + "\nwhere name rlike 'kk';";//
         Assert.assertEquals("FROM (\n" +
                 "\tSELECT *\n" +
                 "\tFROM xxx\n" +

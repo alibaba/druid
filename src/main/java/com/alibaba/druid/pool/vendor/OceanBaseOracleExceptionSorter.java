@@ -1,19 +1,16 @@
 package com.alibaba.druid.pool.vendor;
 
-import java.io.Serializable;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import com.alibaba.druid.pool.ExceptionSorter;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
 public class OceanBaseOracleExceptionSorter extends OracleExceptionSorter {
-
-    private final static Log LOG = LogFactory.getLog(OracleExceptionSorter.class);
+    private static final Log LOG = LogFactory.getLog(OracleExceptionSorter.class);
     private static final long serialVersionUID = -9146226891418913174L;
     private Set<Integer> fatalErrorCodes = new HashSet<Integer>();
 
@@ -138,7 +135,8 @@ public class OceanBaseOracleExceptionSorter extends OracleExceptionSorter {
                 || error_text.indexOf("COULD NOT CREATE CONNECTION") > -1
                 || error_text.indexOf("ACCESS DENIED FOR USER") > -1
                 || error_text.indexOf("NO DATASOURCE") > -1
-                || error_text.indexOf("NO ALIVE DATASOURCE") > -1) {// errorCode忽略并且异常信息为连接出错
+                || error_text.indexOf("NO ALIVE DATASOURCE") > -1) {
+            // errorCode忽略并且异常信息为连接出错
             return true;
         }
 

@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseAlterTableAddPartitionTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "ALTER TABLE members ADD PARTITION (PARTITION p3 VALUES LESS THAN (2000));"; //
 
@@ -37,14 +36,14 @@ public class OceanbaseAlterTableAddPartitionTest extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("ALTER TABLE members"
-                    + "\n\tADD PARTITION (PARTITION p3 VALUES LESS THAN (2000));",
-                                result);
+                            + "\n\tADD PARTITION (PARTITION p3 VALUES LESS THAN (2000));",
+                    result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("alter table members"
-                    + "\n\tadd partition (partition p3 values less than (2000));",
-                                result);
+                            + "\n\tadd partition (partition p3 values less than (2000));",
+                    result);
         }
         print(stmtList);
 

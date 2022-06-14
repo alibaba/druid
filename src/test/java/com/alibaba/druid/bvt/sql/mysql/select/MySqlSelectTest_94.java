@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import java.util.List;
 
 public class MySqlSelectTest_94 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from test where name = 'cail\\1';";
 
@@ -124,6 +123,7 @@ public class MySqlSelectTest_94 extends MysqlTest {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         assertEquals("/*+ a=1,b=2*/\n" + "SELECT count(DISTINCT a)\n" + "FROM test\n" + "WHERE name = 'cai\t';", stmt.toString());
     }
+
     public void test_8() throws Exception {
         String sql = "/*+engine=MPP*/ with tmp1 as ( select uid, ugroups_str from dw.test_multivalue1 where uid = 101 ) select tmp1.uid, tmp1.ugroups_str from tmp1";
 
@@ -134,13 +134,13 @@ public class MySqlSelectTest_94 extends MysqlTest {
 
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         assertEquals("/*+engine=MPP*/\n"
-                     + "WITH tmp1 AS (\n"
-                     + "\t\tSELECT uid, ugroups_str\n"
-                     + "\t\tFROM dw.test_multivalue1\n"
-                     + "\t\tWHERE uid = 101\n"
-                     + "\t)\n"
-                     + "SELECT tmp1.uid, tmp1.ugroups_str\n"
-                     + "FROM tmp1", stmt.toString());
+                + "WITH tmp1 AS (\n"
+                + "\t\tSELECT uid, ugroups_str\n"
+                + "\t\tFROM dw.test_multivalue1\n"
+                + "\t\tWHERE uid = 101\n"
+                + "\t)\n"
+                + "SELECT tmp1.uid, tmp1.ugroups_str\n"
+                + "FROM tmp1", stmt.toString());
     }
 
     public void test_9() throws Exception {
@@ -153,10 +153,10 @@ public class MySqlSelectTest_94 extends MysqlTest {
 
         SQLCreateTableStatement stmt = (SQLCreateTableStatement) statementList.get(0);
         assertEquals("CREATE TABLE testkey3 (\n"
-                     + "\tkey varchar(4),\n"
-                     + "\tid int,\n"
-                     + "\tPRIMARY KEY (key)\n"
-                     + ");", stmt.toString());
+                + "\tkey varchar(4),\n"
+                + "\tid int,\n"
+                + "\tPRIMARY KEY (key)\n"
+                + ");", stmt.toString());
     }
 
 }

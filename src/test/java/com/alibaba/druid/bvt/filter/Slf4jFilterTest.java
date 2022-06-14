@@ -11,7 +11,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class Slf4jFilterTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -28,10 +27,10 @@ public class Slf4jFilterTest extends TestCase {
 
     public void test_slf4j() throws Exception {
         dataSource.init();
-        
+
         Slf4jLogFilter filter = dataSource.unwrap(Slf4jLogFilter.class);
         Assert.assertNotNull(filter);
-        
+
         Connection conn = dataSource.getConnection();
         conn.close();
     }

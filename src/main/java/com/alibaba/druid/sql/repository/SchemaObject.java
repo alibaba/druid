@@ -28,7 +28,7 @@ import com.alibaba.druid.util.FnvHash;
 public class SchemaObject {
     private final Schema schema;
     private final String name;
-    private final long   hashCode64;
+    private final long hashCode64;
 
     private final SchemaObjectType type;
     private SQLStatement statement;

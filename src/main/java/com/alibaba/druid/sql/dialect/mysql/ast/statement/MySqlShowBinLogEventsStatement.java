@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowBinLogEventsStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
     private SQLExpr in;
     private SQLExpr from;
     private SQLLimit limit;

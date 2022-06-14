@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import java.util.List;
 
 public class OracleCreateTableTest91 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE \"IX\".\"AQ$_ORDERS_QUEUETABLE_G\" \n" +

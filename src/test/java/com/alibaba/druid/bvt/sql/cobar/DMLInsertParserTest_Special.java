@@ -32,7 +32,7 @@ public class DMLInsertParserTest_Special extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("INSERT LOW_PRIORITY INTO t1 (col1, t1.col2)\nVALUES (123, '123''4')" + //
-                "\nON DUPLICATE KEY UPDATE ex.col1 = ?",
-                            output);
+                        "\nON DUPLICATE KEY UPDATE ex.col1 = ?",
+                output);
     }
 }

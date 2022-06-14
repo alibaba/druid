@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest14 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "select /* EXEC_FROM_DBMS_XPLAN */ case when upper(sql_text) like '%DBMS_XPLAN%' then 0 else 1 end case, SQL_ID, child_number"
-                     + " from v$sql where SQL_ID ='90jx354zd6jx5' and child_number =0"; //
+                + " from v$sql where SQL_ID ='90jx354zd6jx5' and child_number =0"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

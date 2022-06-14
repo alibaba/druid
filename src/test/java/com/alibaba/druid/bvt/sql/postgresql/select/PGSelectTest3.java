@@ -24,13 +24,12 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest3 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT TITLE_ID,WEB_ID,MENU_TYPE_ID,MENU_ID,TITLE" + //
-                     ",SOURCE,INFO,RECOMMEND_FLAG,CREATE_TIME,CREATE_IP,CREATE_ACCENDANT_ID" + //
-                     ",LAST_UPD_TIME,LAST_UPD_IP,LAST_UPD_ACCENDANT_ID,'http://cmp2.test.com/cmps' AS STR_BASE_URL" + //
-                     ",'html' AS STR_SUFFIX FROM WEB_DATA_TITLE_LIST" + //
-                     " WHERE WEB_ID=? AND MENU_ID=? AND MENU_TYPE_ID=? ORDER BY RECOMMEND_FLAG DESC ,LAST_UPD_TIME DESC  OFFSET ? LIMIT ?";
+                ",SOURCE,INFO,RECOMMEND_FLAG,CREATE_TIME,CREATE_IP,CREATE_ACCENDANT_ID" + //
+                ",LAST_UPD_TIME,LAST_UPD_IP,LAST_UPD_ACCENDANT_ID,'http://cmp2.test.com/cmps' AS STR_BASE_URL" + //
+                ",'html' AS STR_SUFFIX FROM WEB_DATA_TITLE_LIST" + //
+                " WHERE WEB_ID=? AND MENU_ID=? AND MENU_TYPE_ID=? ORDER BY RECOMMEND_FLAG DESC ,LAST_UPD_TIME DESC  OFFSET ? LIMIT ?";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

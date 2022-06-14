@@ -15,53 +15,38 @@
  */
 package com.alibaba.druid.mock;
 
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.CallableStatement;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.NClob;
-import java.sql.PreparedStatement;
-import java.sql.SQLClientInfoException;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLXML;
-import java.sql.Savepoint;
-import java.sql.Statement;
-import java.sql.Struct;
+import com.alibaba.druid.util.jdbc.ConnectionBase;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import com.alibaba.druid.util.jdbc.ConnectionBase;
-
 public class MockConnection extends ConnectionBase implements Connection {
+    // private static final Log LOG = LogFactory.getLog(MockConnection.class);
 
-    // private final static Log LOG = LogFactory.getLog(MockConnection.class);
+    private boolean closed;
 
-    private boolean         closed               = false;
+    private MockDriver driver;
+    private int savepointIdSeed;
+    private List<Savepoint> savepoints = new ArrayList<Savepoint>();
 
-    private MockDriver      driver;
-    private int             savepointIdSeed      = 0;
-    private List<Savepoint> savepoints           = new ArrayList<Savepoint>();
+    private long id;
 
-    private long            id;
+    private final long createdTimeMillis = System.currentTimeMillis();
+    private long lastActiveTimeMillis = System.currentTimeMillis();
 
-    private final long      createdTimeMillis    = System.currentTimeMillis();
-    private long            lastActiveTimeMillis = System.currentTimeMillis();
+    private SQLException error;
 
-    private SQLException    error;
+    private String lastSql;
 
-    private String          lastSql;
-
-    public MockConnection(){
+    public MockConnection() {
         this(null, null, null);
     }
 
-    public MockConnection(MockDriver driver, String url, Properties connectProperties){
+    public MockConnection(MockDriver driver, String url, Properties connectProperties) {
         super(url, connectProperties);
 
         this.driver = driver;
@@ -218,7 +203,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
-                                                                                                      throws SQLException {
+            throws SQLException {
         checkState();
 
         MockPreparedStatement stmt = createMockPreparedStatement(sql);
@@ -248,7 +233,6 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
-
     }
 
     @Override
@@ -314,7 +298,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
-                                                                                                           throws SQLException {
+            throws SQLException {
         checkState();
 
         MockStatement stmt = createMockStatement();
@@ -432,12 +416,10 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public void setClientInfo(String name, String value) throws SQLClientInfoException {
-
     }
 
     @Override
     public void setClientInfo(Properties properties) throws SQLClientInfoException {
-
     }
 
     @Override

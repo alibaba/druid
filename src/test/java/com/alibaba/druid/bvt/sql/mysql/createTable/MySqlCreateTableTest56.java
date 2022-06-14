@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest56 extends MysqlTest {
-
     @Test
     public void test_union() throws Exception {
         String sql = "CREATE TABLE tableA (datasn varchar(100) NOT NULL,PRIMARY KEY(datasn)) ENGINE=MRG_MyISAM DEFAULT CHARSET=utf8 UNION=(tableB,tableC)";
@@ -46,16 +45,16 @@ public class MySqlCreateTableTest56 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE tableA (" //
-                                + "\n\tdatasn varchar(100) NOT NULL," //
-                                + "\n\tPRIMARY KEY (datasn)" //
-                                + "\n) ENGINE = MRG_MyISAM CHARSET = utf8 UNION = (tableB, tableC)", output);
+                    + "\n\tdatasn varchar(100) NOT NULL," //
+                    + "\n\tPRIMARY KEY (datasn)" //
+                    + "\n) ENGINE = MRG_MyISAM CHARSET = utf8 UNION = (tableB, tableC)", output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table tableA (" //
-                                + "\n\tdatasn varchar(100) not null," //
-                                + "\n\tprimary key (datasn)" //
-                                + "\n) engine = MRG_MyISAM charset = utf8 union = (tableB, tableC)", output);
+                    + "\n\tdatasn varchar(100) not null," //
+                    + "\n\tprimary key (datasn)" //
+                    + "\n) engine = MRG_MyISAM charset = utf8 union = (tableB, tableC)", output);
         }
     }
 }

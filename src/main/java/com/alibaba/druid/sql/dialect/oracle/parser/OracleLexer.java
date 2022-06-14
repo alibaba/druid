@@ -24,8 +24,7 @@ import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OracleLexer extends Lexer {
-
-    public final static Keywords DEFAULT_ORACLE_KEYWORDS;
+    public static final Keywords DEFAULT_ORACLE_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -118,19 +117,19 @@ public class OracleLexer extends Lexer {
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
 
-    public OracleLexer(char[] input, int inputLength, boolean skipComment){
+    public OracleLexer(char[] input, int inputLength, boolean skipComment) {
         super(input, inputLength, skipComment);
         super.keywords = DEFAULT_ORACLE_KEYWORDS;
     }
 
-    public OracleLexer(String input){
+    public OracleLexer(String input) {
         super(input);
         this.skipComment = true;
         this.keepComments = true;
         super.keywords = DEFAULT_ORACLE_KEYWORDS;
     }
 
-    public OracleLexer(String input, SQLParserFeature... features){
+    public OracleLexer(String input, SQLParserFeature... features) {
         super(input);
         this.skipComment = true;
         this.keepComments = true;
@@ -259,7 +258,7 @@ public class OracleLexer extends Lexer {
                 bufPos++;
             }
 
-            for (;!isEOF();) {
+            for (; !isEOF(); ) {
                 if (ch == '*' && charAt(pos + 1) == '/') {
                     bufPos += 2;
                     scanChar();
@@ -298,7 +297,7 @@ public class OracleLexer extends Lexer {
             scanChar();
             bufPos++;
 
-            for (;;) {
+            for (; ; ) {
                 if (ch == '\r') {
                     if (charAt(pos + 1) == '\n') {
                         bufPos += 2;
@@ -332,8 +331,6 @@ public class OracleLexer extends Lexer {
         }
     }
 
-
-
     public void scanNumber() {
         mark = pos;
 
@@ -342,7 +339,7 @@ public class OracleLexer extends Lexer {
             ch = charAt(++pos);
         }
 
-        for (;;) {
+        for (; ; ) {
             if (ch >= '0' && ch <= '9') {
                 bufPos++;
             } else {
@@ -362,7 +359,7 @@ public class OracleLexer extends Lexer {
             ch = charAt(++pos);
             isDouble = true;
 
-            for (;;) {
+            for (; ; ) {
                 if (ch >= '0' && ch <= '9') {
                     bufPos++;
                 } else {
@@ -381,7 +378,7 @@ public class OracleLexer extends Lexer {
                 ch = charAt(++pos);
             }
 
-            for (;;) {
+            for (; ; ) {
                 if (ch >= '0' && ch <= '9') {
                     bufPos++;
                 } else {

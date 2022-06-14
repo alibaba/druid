@@ -25,10 +25,9 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleAlterTriggerTest2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter TRIGGER RETL.TRG_COMPANY_SYNC compile";
+                "alter TRIGGER RETL.TRG_COMPANY_SYNC compile";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

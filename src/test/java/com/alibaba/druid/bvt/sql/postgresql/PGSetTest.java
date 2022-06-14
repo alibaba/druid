@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PGSetTest extends PGTest {
-
     protected void setUp() throws Exception {
         super.setUp();
 

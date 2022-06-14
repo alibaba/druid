@@ -24,18 +24,17 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE PROCEDURE remove_emp (employee_id NUMBER) AS\n" +
-				"   tot_emps NUMBER;\n" +
-				"   BEGIN\n" +
-				"      DELETE FROM employees\n" +
-				"      WHERE employees.employee_id = remove_emp.employee_id;\n" +
-				"   tot_emps := tot_emps - 1;\n" +
-				"   END;"; //
+                "   tot_emps NUMBER;\n" +
+                "   BEGIN\n" +
+                "      DELETE FROM employees\n" +
+                "      WHERE employees.employee_id = remove_emp.employee_id;\n" +
+                "   tot_emps := tot_emps - 1;\n" +
+                "   END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		SQLStatement stmt = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -44,7 +43,7 @@ public class Oracle_pl_0 extends OracleTest {
             statement.accept(visitor);
         }
 
-		System.out.println(stmt);
+        System.out.println(stmt);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -56,7 +55,7 @@ public class Oracle_pl_0 extends OracleTest {
         assertEquals(1, visitor.getColumns().size());
 
         assertTrue(visitor.containsTable("employees"));
-		assertTrue(visitor.containsColumn("employees", "employee_id"));
+        assertTrue(visitor.containsColumn("employees", "employee_id"));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
 
 //        Assert.assertEquals(7, visitor.getColumns().size());
@@ -65,33 +64,33 @@ public class Oracle_pl_0 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("CREATE PROCEDURE remove_emp (\n" +
-							"\temployee_id NUMBER\n" +
-							")\n" +
-							"AS\n" +
-							"\ttot_emps NUMBER;\n" +
-							"BEGIN\n" +
-							"\tDELETE FROM employees\n" +
-							"\tWHERE employees.employee_id = remove_emp.employee_id;\n" +
-							"\ttot_emps := tot_emps - 1;\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("create procedure remove_emp (\n" +
-							"\temployee_id NUMBER\n" +
-							")\n" +
-							"as\n" +
-							"\ttot_emps NUMBER;\n" +
-							"begin\n" +
-							"\tdelete from employees\n" +
-							"\twhere employees.employee_id = remove_emp.employee_id;\n" +
-							"\ttot_emps := tot_emps - 1;\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toOracleString(stmt);
+            assertEquals("CREATE PROCEDURE remove_emp (\n" +
+                            "\temployee_id NUMBER\n" +
+                            ")\n" +
+                            "AS\n" +
+                            "\ttot_emps NUMBER;\n" +
+                            "BEGIN\n" +
+                            "\tDELETE FROM employees\n" +
+                            "\tWHERE employees.employee_id = remove_emp.employee_id;\n" +
+                            "\ttot_emps := tot_emps - 1;\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("create procedure remove_emp (\n" +
+                            "\temployee_id NUMBER\n" +
+                            ")\n" +
+                            "as\n" +
+                            "\ttot_emps NUMBER;\n" +
+                            "begin\n" +
+                            "\tdelete from employees\n" +
+                            "\twhere employees.employee_id = remove_emp.employee_id;\n" +
+                            "\ttot_emps := tot_emps - 1;\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

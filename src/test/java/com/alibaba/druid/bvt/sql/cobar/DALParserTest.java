@@ -27,9 +27,7 @@ import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
-
 public class DALParserTest extends TestCase {
-
     public void testdesc() throws Exception {
         String sql = "desc tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -300,7 +298,6 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW CHARACTER SET LIKE 'utf8'", output);
     }
 
-
     public void test_show_character_set_1() throws Exception {
         String sql = "SHOW CHARACTER SET where Charset = 'big5'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -309,7 +306,6 @@ public class DALParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW CHARACTER SET WHERE Charset = 'big5'", output);
     }
-
 
     public void test_show_character_set_2() throws Exception {
         String sql = "SHOW CHARACTER SET";
@@ -860,7 +856,6 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW STC HIS", output);
     }
 
-
     public void test_show_procedure_code() throws Exception {
         String sql = "SHOW procedure code x";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -950,7 +945,6 @@ public class DALParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW PROFILES", output);
     }
-
 
     public void test_show_profile() throws Exception {
         String sql = "SHOW profile";
@@ -1051,7 +1045,6 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW RULE FROM A WHERE 1 = 1 ORDER BY A LIMIT 10", output);
     }
 
-
     public void test_show_rule_1() throws Exception {
         String sql = "SHOW FULL RULE FROM A WHERE 1=1 ORDER BY A LIMIT 10";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1069,6 +1062,7 @@ public class DALParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW TABLE STATUS FROM mysql", output);
     }
+
     public void test_show_table_status_1() throws Exception {
         String sql = "SHOW TABLE STATUS LIKE 'test%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1077,6 +1071,7 @@ public class DALParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW TABLE STATUS LIKE 'test%'", output);
     }
+
     public void test_show_table_status_2() throws Exception {
         String sql = "SHOW TABLE STATUS FROM testdb.test_group LIKE 'test%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1085,6 +1080,7 @@ public class DALParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW TABLE STATUS FROM testdb.test_group LIKE 'test%'", output);
     }
+
     public void test_show_table_status_3() throws Exception {
         String sql = "SHOW TABLE STATUS FROM testdb.test_group WHERE schema_name = 'ss' or schema_name = 'ss1'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1094,6 +1090,7 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW TABLE STATUS FROM testdb.test_group WHERE schema_name = 'ss'\n"
                 + "OR schema_name = 'ss1'", output);
     }
+
     public void test_show_table_status_4() throws Exception {
         String sql = "SHOW TABLE STATUS IN testdb.test_group WHERE schema_name = 'ss' or schema_name = 'ss1'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1157,7 +1154,6 @@ public class DALParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW FULL TABLES FROM a", output);
     }
-
 
     public void test_show_tables_2() throws Exception {
         String sql = "SHOW FULL TABLES LIKE a";
@@ -1317,7 +1313,6 @@ public class DALParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("EXPLAIN PLANCACHE", output);
     }
-
 
 //
 //    public void testShow() throws Exception {

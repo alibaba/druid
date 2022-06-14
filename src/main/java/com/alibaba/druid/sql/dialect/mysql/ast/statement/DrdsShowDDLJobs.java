@@ -12,8 +12,7 @@ import java.util.List;
  * Date 2019-06-16 21:37
  */
 public class DrdsShowDDLJobs extends MySqlStatementImpl implements SQLShowStatement {
-
-    private boolean full = false;
+    private boolean full;
     private List<Long> jobIds = new ArrayList<Long>();
 
     public void accept0(MySqlASTVisitor visitor) {

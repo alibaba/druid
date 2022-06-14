@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_42_with_cte extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "WITH\n" +
                 "  cte1 AS (SELECT a, b FROM table1),\n" +
@@ -48,7 +47,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getConditions().size());
@@ -75,7 +74,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
                             "FROM cte1\n" +
                             "\tJOIN cte2\n" +
                             "WHERE cte1.a = cte2.c;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -91,7 +90,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
                             "from cte1\n" +
                             "\tjoin cte2\n" +
                             "where cte1.a = cte2.c;", //
-                                output);
+                    output);
         }
 
         {

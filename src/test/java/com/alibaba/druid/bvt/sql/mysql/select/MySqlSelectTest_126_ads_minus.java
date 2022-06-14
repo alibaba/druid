@@ -9,7 +9,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_126_ads_minus extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select q.case_id as case_id\n" +
                 "from (\n" +
@@ -27,7 +26,7 @@ public class MySqlSelectTest_126_ads_minus extends MysqlTest {
                 "\t\twhere q.case_id in ((select case_id from tpp_action_case where action_code=999990 ) MINUS (select case_id from tpp_action_case where action_code=999997))";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

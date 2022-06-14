@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.support.http;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import com.alibaba.druid.filter.stat.StatFilterContextListenerAdapter;
 import com.alibaba.druid.support.http.stat.WebAppStat;
 import com.alibaba.druid.support.http.stat.WebRequestStat;
@@ -27,25 +23,29 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.DruidWebUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 public class AbstractWebStatImpl {
-    private final static Log LOG                                          = LogFactory.getLog(AbstractWebStatImpl.class);
+    private static final Log LOG = LogFactory.getLog(AbstractWebStatImpl.class);
 
-    public final static int                DEFAULT_MAX_STAT_SESSION_COUNT = 1000 * 1;
+    public static final int DEFAULT_MAX_STAT_SESSION_COUNT = 1000 * 1;
 
-    protected WebAppStat                   webAppStat                     = null;
+    protected WebAppStat webAppStat;
 
-    protected boolean                      sessionStatEnable              = true;
-    protected int                          sessionStatMaxCount            = DEFAULT_MAX_STAT_SESSION_COUNT;
-    protected boolean                      createSession                  = false;
-    protected boolean                      profileEnable                  = false;
+    protected boolean sessionStatEnable = true;
+    protected int sessionStatMaxCount = DEFAULT_MAX_STAT_SESSION_COUNT;
+    protected boolean createSession;
+    protected boolean profileEnable;
 
-    protected String                       contextPath;
+    protected String contextPath;
 
-    protected String                       principalSessionName;
-    protected String                       principalCookieName;
-    protected String                       realIpHeader;
+    protected String principalSessionName;
+    protected String principalCookieName;
+    protected String realIpHeader;
 
-    protected WebStatFilterContextListener statFilterContextListener      = new WebStatFilterContextListener();
+    protected WebStatFilterContextListener statFilterContextListener = new WebStatFilterContextListener();
 
     public boolean isSessionStatEnable() {
         return sessionStatEnable;
@@ -200,7 +200,6 @@ public class AbstractWebStatImpl {
     }
 
     public class WebStatFilterContextListener extends StatFilterContextListenerAdapter {
-
         @Override
         public void addUpdateCount(int updateCount) {
             WebRequestStat reqStat = WebRequestStat.current();

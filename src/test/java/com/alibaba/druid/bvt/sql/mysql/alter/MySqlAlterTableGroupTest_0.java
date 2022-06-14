@@ -22,15 +22,15 @@ import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
 
 public class MySqlAlterTableGroupTest_0 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "alter tablegroup new_ddl.ddl_test_1 k1=v1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         assertEquals("ALTER TABLEGROUP new_ddl.ddl_test_1 k1 = v1", SQLUtils.toMySqlString(stmt));
     }
+
     public void test_alter_2() throws Exception {
         String sql = "alter tablegroup new_ddl.ddl_test_1 k1=123";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

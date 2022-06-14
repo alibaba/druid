@@ -45,13 +45,13 @@ public class PoolUpdaterTest {
         event.setNodeName("foo");
         event.setType(NodeEventTypeEnum.DELETE);
 
-        updater.update(new FileNodeListener(), new NodeEvent[] { event });
+        updater.update(new FileNodeListener(), new NodeEvent[]{event});
         validateDeleteNode();
 
         event = new NodeEvent();
         event.setNodeName("foo");
         event.setType(NodeEventTypeEnum.ADD);
-        updater.update(new FileNodeListener(), new NodeEvent[] { event });
+        updater.update(new FileNodeListener(), new NodeEvent[]{event});
         assertFalse(updater.getNodesToDel().contains("foo"));
         assertFalse(haDataSource.isInBlackList("foo"));
     }
@@ -100,7 +100,7 @@ public class PoolUpdaterTest {
         event.setNodeName("foo");
         event.setType(NodeEventTypeEnum.DELETE);
 
-        updater.update(new FileNodeListener(), new NodeEvent[] { event });
+        updater.update(new FileNodeListener(), new NodeEvent[]{event});
         assertTrue(haDataSource.getDataSourceMap().containsKey("foo"));
     }
 

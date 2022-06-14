@@ -84,7 +84,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
                     constraint.setParent(stmt);
                     stmt.getTableElementList().add((SQLTableElement) constraint);
                 } else if (token == Token.TABLESPACE) {
-                    throw new ParserException("TODO "  + lexer.info());
+                    throw new ParserException("TODO " + lexer.info());
                 } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     stmt.getTableElementList().add(column);
@@ -151,7 +151,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             accept(Token.BY);
             accept(Token.LPAREN);
 
-            for (;;) {
+            for (; ; ) {
                 if (lexer.token() != Token.IDENTIFIER) {
                     throw new ParserException("expect identifier. " + lexer.info());
                 }
@@ -200,7 +200,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
             accept(Token.ON);
             accept(Token.LPAREN);
-            for (;;) {
+            for (; ; ) {
                 if (lexer.token() == Token.LPAREN) {
                     SQLListExpr list = new SQLListExpr();
                     lexer.nextToken();
@@ -298,7 +298,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         if (lexer.token() == Token.LIKE) {
             lexer.nextToken();
             Lexer.SavePoint mark = lexer.mark();
-            if(lexer.token() == Token.SELECT) {
+            if (lexer.token() == Token.SELECT) {
                 stmt.setLikeQuery(true);
                 SQLSelect select = this.createSQLSelectParser().select();
                 stmt.setSelect(select);
@@ -341,7 +341,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         lexer.nextToken();
         accept(Token.LPAREN);
 
-        for (;;) {
+        for (; ; ) {
             String name = lexer.stringVal();
             lexer.nextToken();
             if (lexer.token() == Token.DOT) {
@@ -408,7 +408,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
 
             accept(Token.LPAREN);
 
-            for (;;) {
+            for (; ; ) {
                 String name = lexer.stringVal();
                 lexer.nextToken();
                 accept(Token.EQ);

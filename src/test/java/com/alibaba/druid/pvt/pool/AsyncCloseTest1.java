@@ -20,17 +20,16 @@ import com.alibaba.druid.support.logging.NoLoggingImpl;
 import junit.framework.TestCase;
 
 public class AsyncCloseTest1 extends TestCase {
-
     protected DruidDataSource dataSource;
-    private ExecutorService   connExecutor;
-    private ExecutorService   closeExecutor;
+    private ExecutorService connExecutor;
+    private ExecutorService closeExecutor;
 
-    final AtomicInteger       errorCount = new AtomicInteger();
-    
-    private Logger            log4jLog;
-    private Level             log4jOldLevel;
+    final AtomicInteger errorCount = new AtomicInteger();
 
-    private NoLoggingImpl     noLoggingImpl;
+    private Logger log4jLog;
+    private Level log4jOldLevel;
+
+    private NoLoggingImpl noLoggingImpl;
 
     protected void setUp() throws Exception {
         Field logField = DruidDataSource.class.getDeclaredField("LOG");
@@ -41,10 +40,10 @@ public class AsyncCloseTest1 extends TestCase {
             this.log4jOldLevel = this.log4jLog.getLevel();
             this.log4jLog.setLevel(Level.FATAL);
         } else if (dataSourceLog instanceof NoLoggingImpl) {
-            noLoggingImpl =  (NoLoggingImpl) dataSourceLog;
+            noLoggingImpl = (NoLoggingImpl) dataSourceLog;
             noLoggingImpl.setErrorEnabled(false);
         }
-        
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
 //        dataSource.setAsyncCloseConnectionEnable(true);
@@ -55,7 +54,7 @@ public class AsyncCloseTest1 extends TestCase {
         closeExecutor = Executors.newFixedThreadPool(128);
 
     }
-    
+
     protected void tearDown() throws Exception {
         dataSource.close();
         if (log4jLog != null) {
@@ -73,11 +72,10 @@ public class AsyncCloseTest1 extends TestCase {
     }
 
     class CloseTask implements Runnable {
-
-        private Connection     conn;
+        private Connection conn;
         private CountDownLatch latch;
 
-        public CloseTask(Connection conn, CountDownLatch latch){
+        public CloseTask(Connection conn, CountDownLatch latch) {
             this.conn = conn;
             this.latch = latch;
         }
@@ -104,7 +102,6 @@ public class AsyncCloseTest1 extends TestCase {
         final CountDownLatch closeLatch = new CountDownLatch(COUNT * 2);
 
         Runnable connTask = new Runnable() {
-
             @Override
             public void run() {
                 try {

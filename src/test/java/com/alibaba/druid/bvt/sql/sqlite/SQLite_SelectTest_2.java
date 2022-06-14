@@ -28,7 +28,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SQLite_SelectTest_2 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from mytable ORDER BY id DESC limit 0,10";
 
@@ -45,7 +44,7 @@ public class SQLite_SelectTest_2 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());

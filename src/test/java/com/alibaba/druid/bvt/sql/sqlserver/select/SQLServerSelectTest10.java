@@ -24,25 +24,24 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerSelectTest10 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "SELECT c.FirstName, c.LastName, e.Title, a.AddressLine1, a.City" + //
-                     " , sp.Name AS [State/Province], a.PostalCode" + //
-                     " INTO dbo.EmployeeAddresses" + //
-                     " FROM Person.Contact AS c" + //
-                     " JOIN HumanResources.Employee AS e ON e.ContactID = c.ContactID" + //
-                     " JOIN HumanResources.EmployeeAddress AS ea ON ea.EmployeeID = e.EmployeeID" + //
-                     " JOIN Person.Address AS a on a.AddressID = ea.AddressID" + //
-                     " JOIN Person.StateProvince as sp ON sp.StateProvinceID = a.StateProvinceID;";
+                " , sp.Name AS [State/Province], a.PostalCode" + //
+                " INTO dbo.EmployeeAddresses" + //
+                " FROM Person.Contact AS c" + //
+                " JOIN HumanResources.Employee AS e ON e.ContactID = c.ContactID" + //
+                " JOIN HumanResources.EmployeeAddress AS ea ON ea.EmployeeID = e.EmployeeID" + //
+                " JOIN Person.Address AS a on a.AddressID = ea.AddressID" + //
+                " JOIN Person.StateProvince as sp ON sp.StateProvinceID = a.StateProvinceID;";
 
         String expect = "SELECT c.FirstName, c.LastName, e.Title, a.AddressLine1, a.City" + //
-                        "\n\t, sp.Name AS [State/Province], a.PostalCode" + //
-                        "\nINTO dbo.EmployeeAddresses" + //
-                        "\nFROM Person.Contact c" + //
-                        "\n\tJOIN HumanResources.Employee e ON e.ContactID = c.ContactID" + //
-                        "\n\tJOIN HumanResources.EmployeeAddress ea ON ea.EmployeeID = e.EmployeeID" + //
-                        "\n\tJOIN Person.Address a ON a.AddressID = ea.AddressID" + //
-                        "\n\tJOIN Person.StateProvince sp ON sp.StateProvinceID = a.StateProvinceID;";
+                "\n\t, sp.Name AS [State/Province], a.PostalCode" + //
+                "\nINTO dbo.EmployeeAddresses" + //
+                "\nFROM Person.Contact c" + //
+                "\n\tJOIN HumanResources.Employee e ON e.ContactID = c.ContactID" + //
+                "\n\tJOIN HumanResources.EmployeeAddress ea ON ea.EmployeeID = e.EmployeeID" + //
+                "\n\tJOIN Person.Address a ON a.AddressID = ea.AddressID" + //
+                "\n\tJOIN Person.StateProvince sp ON sp.StateProvinceID = a.StateProvinceID;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

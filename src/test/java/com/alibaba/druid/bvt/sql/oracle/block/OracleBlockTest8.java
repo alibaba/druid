@@ -26,33 +26,32 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleBlockTest8 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE" + //
-                     "  daily_order_total    NUMBER(12,2);" + //
-                     "  weekly_order_total   NUMBER(12,2); " + //
-                     "  monthly_order_total  NUMBER(12,2);" + //
-                     "BEGIN" + //
-                     "   COMMIT; -- end previous transaction\n" + //
-                     "   SET TRANSACTION READ ONLY NAME 'Calculate Order Totals';" + //
-                     "" + //
-                     "   SELECT SUM (order_total)" + //
-                     "   INTO daily_order_total" + //
-                     "   FROM orders" + //
-                     "   WHERE order_date = SYSDATE;" + //
-                     "" + //
-                     "   SELECT SUM (order_total)" + //
-                     "   INTO weekly_order_total" + //
-                     "   FROM orders" + //
-                     "   WHERE order_date = SYSDATE - 7;" + //
-                     "" + //
-                     "   SELECT SUM (order_total)" + //
-                     "   INTO monthly_order_total" + //
-                     "   FROM orders" + //
-                     "   WHERE order_date = SYSDATE - 30;" + //
-                     "" + //
-                     "   COMMIT; -- ends read-only transaction\n" + //
-                     "END;"; //
+                "  daily_order_total    NUMBER(12,2);" + //
+                "  weekly_order_total   NUMBER(12,2); " + //
+                "  monthly_order_total  NUMBER(12,2);" + //
+                "BEGIN" + //
+                "   COMMIT; -- end previous transaction\n" + //
+                "   SET TRANSACTION READ ONLY NAME 'Calculate Order Totals';" + //
+                "" + //
+                "   SELECT SUM (order_total)" + //
+                "   INTO daily_order_total" + //
+                "   FROM orders" + //
+                "   WHERE order_date = SYSDATE;" + //
+                "" + //
+                "   SELECT SUM (order_total)" + //
+                "   INTO weekly_order_total" + //
+                "   FROM orders" + //
+                "   WHERE order_date = SYSDATE - 7;" + //
+                "" + //
+                "   SELECT SUM (order_total)" + //
+                "   INTO monthly_order_total" + //
+                "   FROM orders" + //
+                "   WHERE order_date = SYSDATE - 30;" + //
+                "" + //
+                "   COMMIT; -- ends read-only transaction\n" + //
+                "END;"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class OracleEXTRACTTest2 extends TestCase {
-
     public void test_Extract() throws Exception {
         String sql = "SELECT warehouse_name, EXTRACT(warehouse_spec, '/Warehouse/Docks')\n" +
                 "   \"Number of Docks\"\n" +

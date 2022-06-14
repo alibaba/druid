@@ -10,7 +10,6 @@ import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
 
 public class LogFilterTest4 extends TestCase {
-
     public void test_properties() throws Exception {
         LogFilter filter = new Log4jFilter();
 
@@ -21,7 +20,6 @@ public class LogFilterTest4 extends TestCase {
     }
 
     public void test_properties_1() throws Exception {
-
         System.setProperty("druid.log.conn", "false");
         System.setProperty("druid.log.stmt", "false");
         System.setProperty("druid.log.rs", "false");
@@ -34,15 +32,15 @@ public class LogFilterTest4 extends TestCase {
             Assert.assertEquals(false, filter.isStatementLogEnabled());
             Assert.assertEquals(true, filter.isStatementExecutableSqlLogEnable());
             Assert.assertEquals(false, filter.isResultSetLogEnabled());
-            
+
             Properties properties = new Properties();
             properties.setProperty("druid.log.conn", "true");
             properties.setProperty("druid.log.stmt", "true");
             properties.setProperty("druid.log.rs", "true");
             properties.setProperty("druid.log.stmt.executableSql", "false");
-            
+
             filter.configFromProperties(properties);
-            
+
             Assert.assertEquals(true, filter.isConnectionLogEnabled());
             Assert.assertEquals(true, filter.isStatementLogEnabled());
             Assert.assertEquals(false, filter.isStatementExecutableSqlLogEnable());

@@ -28,9 +28,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class Bug_for_xuershan extends TestCase {
-
     private DruidDataSource dataSource;
-    private MockDriver      driver;
+    private MockDriver driver;
 
     protected void setUp() throws Exception {
         driver = new MockDriver() {
@@ -38,12 +37,12 @@ public class Bug_for_xuershan extends TestCase {
                 return null;
             }
         };
-        
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xx");
         dataSource.setDriver(driver);
     }
-    
+
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest18 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "WITH RECURSIVE t(n) AS ("
                 + "    SELECT 1"
@@ -61,7 +60,7 @@ public class PGSelectTest18 extends PGTest {
                     "from t\n" +
                     "limit 100;", result);
         }
-        
+
         Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();

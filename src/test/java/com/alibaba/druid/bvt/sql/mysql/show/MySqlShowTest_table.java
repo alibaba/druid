@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlShowTest_table extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW FULL TABLES FROM sonar LIKE 'a'";
 

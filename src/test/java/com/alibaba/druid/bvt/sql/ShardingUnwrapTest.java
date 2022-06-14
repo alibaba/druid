@@ -10,7 +10,6 @@ public class ShardingUnwrapTest extends TestCase {
     SQLASTOutputVisitor visitor = new SQLASTOutputVisitor(new StringBuffer());
 
     public void test_sharding_unwrap() throws Exception {
-
         assertEquals("t_like_count", visitor.unwrapShardingTable("t_like_count0057"));
         assertEquals("t_like_count", visitor.unwrapShardingTable("`t_like_count0057`"));
         assertEquals("t_like_count", visitor.unwrapShardingTable("\"t_like_count0057\""));

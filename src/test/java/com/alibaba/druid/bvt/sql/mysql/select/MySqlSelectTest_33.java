@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_33 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select COUNT() AS count,\n" +
                 "DATE_FORMAT(DATE(reg_time), '%Y-%m-%d') AS date,\n" +
@@ -35,7 +34,7 @@ public class MySqlSelectTest_33 extends MysqlTest {
                 "and reg_time <='2016-12-01 23:59:59'\n" +
                 "group by DATE(reg_time),HOUR(reg_time) DIV 2";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -50,12 +49,12 @@ public class MySqlSelectTest_33 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        Assert.assertEquals(1, visitor.getTables().size());
 //        Assert.assertEquals(1, visitor.getColumns().size());
 //        Assert.assertEquals(0, visitor.getConditions().size());
 //        Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT COUNT() AS count, DATE_FORMAT(DATE(reg_time), '%Y-%m-%d') AS date\n" +
@@ -65,7 +64,7 @@ public class MySqlSelectTest_33 extends MysqlTest {
                             "\tAND reg_time >= '2016-12-01 00:00:00'\n" +
                             "\tAND reg_time <= '2016-12-01 23:59:59'\n" +
                             "GROUP BY DATE(reg_time), HOUR(reg_time) DIV 2", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -76,10 +75,9 @@ public class MySqlSelectTest_33 extends MysqlTest {
                             "\tand reg_time >= '2016-12-01 00:00:00'\n" +
                             "\tand reg_time <= '2016-12-01 23:59:59'\n" +
                             "group by DATE(reg_time), HOUR(reg_time) div 2", //
-                                output);
+                    output);
         }
     }
-    
-    
-    
+
+
 }

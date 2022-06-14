@@ -24,7 +24,6 @@ import com.alibaba.druid.filter.encoding.CharsetParameter;
  * @author gang.su
  */
 public class CharsetParameterTest extends TestCase {
-
     public void testQ() {
         CharsetParameter c = new CharsetParameter();
         c.setClientEncoding("1");

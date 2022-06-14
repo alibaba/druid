@@ -14,7 +14,6 @@ import java.util.List;
  * @date 2018/12/12 10:01 AM
  */
 public class MySqlCreateIndexTest_11_adb extends MysqlTest {
-
     @Test
     public void test_0() throws Exception {
         String sql = "CREATE FULLTEXT INDEX `g_i_seller` ON t_order (`seller_id`)";

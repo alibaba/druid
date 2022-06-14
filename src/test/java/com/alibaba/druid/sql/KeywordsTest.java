@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerLexer;
 import com.alibaba.druid.sql.parser.Keywords;
 
 public class KeywordsTest extends TestCase {
-
     public void test_sort() throws Exception {
         List<String> list = new ArrayList<String>(SQLServerLexer.DEFAULT_SQL_SERVER_KEYWORDS.getKeywords().keySet());
 

@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.mock;
 
+import com.alibaba.druid.util.jdbc.ResultSetBase;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -22,18 +24,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.util.jdbc.ResultSetBase;
-
 public class MockResultSet extends ResultSetBase implements ResultSet {
-
-    private int            rowIndex = -1;
+    private int rowIndex = -1;
     private List<Object[]> rows;
 
-    public MockResultSet(Statement statement){
+    public MockResultSet(Statement statement) {
         this(statement, new ArrayList<Object[]>());
     }
 
-    public MockResultSet(Statement statement, List<Object[]> rows){
+    public MockResultSet(Statement statement, List<Object[]> rows) {
         super(statement);
         this.rows = rows;
         super.metaData = new MockResultSetMetaData();

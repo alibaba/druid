@@ -60,9 +60,8 @@ public class SignatureUtils {
                 case 'P':
                     return java.sql.Timestamp.class;
 
-
                 default:
-                     break;
+                    break;
             }
         }
 

@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class OracleLiteralTest extends TestCase {
-
     public void test_oracle() throws Exception {
         String sql = "SELECT FROM_TZ(TIMESTAMP '2007-11-20 08:00:00', '3:00') FROM DUAL;";
 

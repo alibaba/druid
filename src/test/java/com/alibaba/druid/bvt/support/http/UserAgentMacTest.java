@@ -22,7 +22,6 @@ import com.alibaba.druid.support.http.stat.WebAppStat;
 
 
 public class UserAgentMacTest extends TestCase {
-    
     public void test_mac_firefox() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2) Gecko/20100115 Firefox/3.6");

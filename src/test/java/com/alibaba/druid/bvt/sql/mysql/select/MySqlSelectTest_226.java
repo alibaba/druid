@@ -26,7 +26,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_226 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT sum(`price`) AS aggregate, `aa` \n" +
                 "FROM `na_orders`\n" +

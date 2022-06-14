@@ -15,7 +15,7 @@ public class SQLJoinTest extends TestCase {
     public void test_0() throws Exception {
         SQLSelectStatement stmt = (SQLSelectStatement)
                 SQLUtils.parseStatements("select a.* from t_user a inner join t_group b on a.gid = b.id", JdbcConstants.ORACLE)
-                .get(0);
+                        .get(0);
 
         SQLSelectQueryBlock queryBlock = stmt.getSelect().getQueryBlock();
         assertNotNull(queryBlock);

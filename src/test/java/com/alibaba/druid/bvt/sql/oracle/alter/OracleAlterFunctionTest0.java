@@ -26,10 +26,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleAlterFunctionTest0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER FUNCTION \"ZEUS\".\"STRCAT\" COMPILE REUSE SETTINGS;";
+                "ALTER FUNCTION \"ZEUS\".\"STRCAT\" COMPILE REUSE SETTINGS;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

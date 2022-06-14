@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateIndexTest3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "create index PRODUCT_ADDITION_NCID_IND on PRODUCT_ADDITION(NEW_CLUSTER_ID,GMT_LAST_FEEDBACK) tablespace APPINDX4M online parallel 4";
+                "create index PRODUCT_ADDITION_NCID_IND on PRODUCT_ADDITION(NEW_CLUSTER_ID,GMT_LAST_FEEDBACK) tablespace APPINDX4M online parallel 4";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,8 +51,8 @@ public class OracleCreateIndexTest3 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_ADDITION", "NEW_CLUSTER_ID")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_ADDITION", "GMT_LAST_FEEDBACK")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_ADDITION", "NEW_CLUSTER_ID")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_ADDITION", "GMT_LAST_FEEDBACK")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }

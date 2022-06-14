@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlSelectTest_99_union_order extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select id as id1 from ll union select id as id1 from rr order by id desc;";
 

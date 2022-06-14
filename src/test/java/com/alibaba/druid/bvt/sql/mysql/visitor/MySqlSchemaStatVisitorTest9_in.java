@@ -23,31 +23,30 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlSchemaStatVisitorTest9_in extends TestCase {
-
-	public void test_0() throws Exception {
-		String sql = "SELECT name FROM employee WHERE no in ('1', '2');";
+    public void test_0() throws Exception {
+        String sql = "SELECT name FROM employee WHERE no in ('1', '2');";
 
 //		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
-		MySqlStatementParser parser = new MySqlStatementParser(sql);
-		List<SQLStatement> statementList = parser.parseStatementList();
-		SQLStatement stmt = statementList.get(0);
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
 
-		assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-		MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-		stmt.accept(visitor);
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
 
-		System.out.println(stmt.toString());
+        System.out.println(stmt.toString());
 
 //		System.out.println(sql);
-		System.out.println("Tables : " + visitor.getTables());
-		System.out.println("fields : " + visitor.getColumns());
-		System.out.println(visitor.getConditions());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println(visitor.getConditions());
 
-		assertEquals(1, visitor.getTables().size());
-		assertEquals("[employee.no IN (\"1\", \"2\")]", visitor.getConditions().toString());
-		// Column("users", "name")));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals("[employee.no IN (\"1\", \"2\")]", visitor.getConditions().toString());
+        // Column("users", "name")));
 
-	}
+    }
 
 }

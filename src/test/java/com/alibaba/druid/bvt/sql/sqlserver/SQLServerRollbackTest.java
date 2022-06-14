@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLServerRollbackTest extends TestCase {
-
     public void test_0() {
         String sql = "ROLLBACK WORK";
 

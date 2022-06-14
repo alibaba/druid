@@ -25,14 +25,13 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest18_global extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE INDEX cost_ix ON sales (amount_sold)\n" +
-                "   GLOBAL PARTITION BY RANGE (amount_sold)\n" +
-                "      (PARTITION p1 VALUES LESS THAN (1000),\n" +
-                "       PARTITION p2 VALUES LESS THAN (2500),\n" +
-                "       PARTITION p3 VALUES LESS THAN (MAXVALUE));";
+                "CREATE INDEX cost_ix ON sales (amount_sold)\n" +
+                        "   GLOBAL PARTITION BY RANGE (amount_sold)\n" +
+                        "      (PARTITION p1 VALUES LESS THAN (1000),\n" +
+                        "       PARTITION p2 VALUES LESS THAN (2500),\n" +
+                        "       PARTITION p3 VALUES LESS THAN (MAXVALUE));";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

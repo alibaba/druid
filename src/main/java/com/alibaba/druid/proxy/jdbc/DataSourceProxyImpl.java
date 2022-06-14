@@ -15,21 +15,6 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
-import java.sql.Driver;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.management.JMException;
-import javax.management.openmbean.CompositeDataSupport;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
-
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
@@ -38,32 +23,41 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 
+import javax.management.JMException;
+import javax.management.openmbean.CompositeDataSupport;
+import javax.security.auth.callback.NameCallback;
+import javax.security.auth.callback.PasswordCallback;
+
+import java.sql.Driver;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImplMBean {
-
-    private final Driver                rawDriver;
+    private final Driver rawDriver;
 
     private final DataSourceProxyConfig config;
 
-    private long                        id;
+    private long id;
 
-    private final long                  createdTimeMillis = System.currentTimeMillis();
+    private final long createdTimeMillis = System.currentTimeMillis();
 
-    private Properties                  properties;
+    private Properties properties;
 
-    private String                      dbType;
+    private String dbType;
 
-    private final AtomicLong            connectionIdSeed  = new AtomicLong(10000);
-    private final AtomicLong            statementIdSeed   = new AtomicLong(20000);
-    private final AtomicLong            resultSetIdSeed   = new AtomicLong(50000);
-    private final AtomicLong            metaDataIdSeed    = new AtomicLong(100000);
-    private final AtomicLong            transactionIdSeed = new AtomicLong(0);
+    private final AtomicLong connectionIdSeed = new AtomicLong(10000);
+    private final AtomicLong statementIdSeed = new AtomicLong(20000);
+    private final AtomicLong resultSetIdSeed = new AtomicLong(50000);
+    private final AtomicLong metaDataIdSeed = new AtomicLong(100000);
+    private final AtomicLong transactionIdSeed = new AtomicLong(0);
 
-    private final JdbcDataSourceStat    dataSourceStat;
+    private final JdbcDataSourceStat dataSourceStat;
 
-    public DataSourceProxyImpl(Driver rawDriver, DataSourceProxyConfig config){
+    public DataSourceProxyImpl(Driver rawDriver, DataSourceProxyConfig config) {
         super();
         this.rawDriver = rawDriver;
         this.config = config;

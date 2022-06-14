@@ -62,7 +62,7 @@ public class PGSelectTest69_interval extends TestCase {
                 "WHERE j.job_status = 1\n" +
                 "\tAND j.timeout_advice = 0\n" +
                 "\tAND j.execute_begin <= NOW() - CAST(? AS interval) * 60", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select job_id, task_id, process_id, job_type, job_status\n" +
                 "\t, execute_server, execute_result, execute_times, execute_begin, execute_end\n" +
                 "\t, timeout_advice, create_time, update_time, opr_user, opr_time\n" +

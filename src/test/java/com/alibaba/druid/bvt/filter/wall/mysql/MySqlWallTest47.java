@@ -24,23 +24,22 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest47 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid(//
-        "update Fans," + //
-                " (select 361659 as ToID, 5 as Score " + //
-                "   union all select 382885 as ToID, 2 as Score" + //
-                "   union all select 407537 as ToID, 6 as Score) temp  " + //
-                "set Fans.score = Fans.score+temp.Score " + //
-                "where Fans.FansID = 382885 and Fans.UserID = temp.ToID"));
+                "update Fans," + //
+                        " (select 361659 as ToID, 5 as Score " + //
+                        "   union all select 382885 as ToID, 2 as Score" + //
+                        "   union all select 407537 as ToID, 6 as Score) temp  " + //
+                        "set Fans.score = Fans.score+temp.Score " + //
+                        "where Fans.FansID = 382885 and Fans.UserID = temp.ToID"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

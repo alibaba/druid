@@ -37,7 +37,7 @@ public class PGSelectTest45 extends PGTest {
         Assert.assertEquals("SELECT count(1)\n" +
                 "FROM t_user\n" +
                 "WHERE property ?| 'name'", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("select count(1)\n" +
                 "from t_user\n" +
                 "where property ?| 'name'", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

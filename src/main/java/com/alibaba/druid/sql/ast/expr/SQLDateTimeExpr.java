@@ -30,12 +30,10 @@ public class SQLDateTimeExpr extends SQLExprImpl implements SQLLiteralExpr, SQLV
 
     private SQLExpr literal;
 
-    public SQLDateTimeExpr(){
-
+    public SQLDateTimeExpr() {
     }
 
-
-    public SQLDateTimeExpr(Date now, TimeZone timeZone){
+    public SQLDateTimeExpr(Date now, TimeZone timeZone) {
         setLiteral(now, timeZone);
     }
 
@@ -144,13 +142,14 @@ public class SQLDateTimeExpr extends SQLExprImpl implements SQLLiteralExpr, SQLV
         return Collections.emptyList();
     }
 
-    public static long supportDbTypes = DbType.of(DbType.mysql
-            , DbType.oracle
-            , DbType.presto
-            , DbType.trino
-            , DbType.postgresql
-            , DbType.mariadb
-            , DbType.tidb
+    public static long supportDbTypes = DbType.of(
+            DbType.mysql,
+            DbType.oracle,
+            DbType.presto,
+            DbType.trino,
+            DbType.postgresql,
+            DbType.mariadb,
+            DbType.tidb
     );
 
     public static boolean isSupport(DbType dbType) {

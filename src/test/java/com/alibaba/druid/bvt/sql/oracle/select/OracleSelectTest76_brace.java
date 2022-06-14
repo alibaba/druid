@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest76_brace extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "((SELECT *\n" +

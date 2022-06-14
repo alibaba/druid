@@ -34,7 +34,6 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 
 public class OdpsMultiInsertTest extends TestCase {
-
     public void test_0() throws Exception {
         exec_test("bvt/parser/odps-1.sql");
     }
@@ -70,7 +69,6 @@ public class OdpsMultiInsertTest extends TestCase {
     }
 
     void mergValidate(String sql, String expect) {
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
@@ -85,6 +83,5 @@ public class OdpsMultiInsertTest extends TestCase {
 
         Assert.assertEquals(expect, out.toString());
     }
-
 
 }

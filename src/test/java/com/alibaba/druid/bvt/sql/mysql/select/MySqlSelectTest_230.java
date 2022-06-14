@@ -26,7 +26,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_230 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT CAST('test collated returns' AS CHAR CHARACTER SET utf8) COLLATE utf8_bin AS anon_1";
 

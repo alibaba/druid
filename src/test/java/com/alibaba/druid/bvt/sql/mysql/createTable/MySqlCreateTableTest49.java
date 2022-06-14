@@ -24,17 +24,16 @@ import com.alibaba.druid.stat.TableStat;
 import org.junit.Assert;
 
 public class MySqlCreateTableTest49 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "    create table tauth (" //
-                     + "        cid varchar(36) not null unique,"//
-                     + "        cdesc varchar(200),"//
-                     + "        cname varchar(100) not null,"//
-                     + "        cseq decimal(22,0),"//
-                     + "        curl varchar(200),"//
-                     + "        cpid varchar(36),"//
-                     + "        primary key (cid)"//
-                     + "    )"; //
+                + "        cid varchar(36) not null unique,"//
+                + "        cdesc varchar(200),"//
+                + "        cname varchar(100) not null,"//
+                + "        cseq decimal(22,0),"//
+                + "        curl varchar(200),"//
+                + "        cpid varchar(36),"//
+                + "        primary key (cid)"//
+                + "    )"; //
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -55,15 +54,15 @@ public class MySqlCreateTableTest49 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE tauth (" //
-                            + "\n\tcid varchar(36) NOT NULL UNIQUE,"//
-                            + "\n\tcdesc varchar(200),"//
-                            + "\n\tcname varchar(100) NOT NULL,"//
-                            + "\n\tcseq decimal(22, 0),"//
-                            + "\n\tcurl varchar(200),"//
-                            + "\n\tcpid varchar(36),"//
-                            + "\n\tPRIMARY KEY (cid)"//
-                            + "\n)",//
-                            output);
+                        + "\n\tcid varchar(36) NOT NULL UNIQUE,"//
+                        + "\n\tcdesc varchar(200),"//
+                        + "\n\tcname varchar(100) NOT NULL,"//
+                        + "\n\tcseq decimal(22, 0),"//
+                        + "\n\tcurl varchar(200),"//
+                        + "\n\tcpid varchar(36),"//
+                        + "\n\tPRIMARY KEY (cid)"//
+                        + "\n)",//
+                output);
 
     }
 }

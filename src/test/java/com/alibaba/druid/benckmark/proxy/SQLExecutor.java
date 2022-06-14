@@ -19,10 +19,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public abstract class SQLExecutor {
-
     private final String name;
 
-    public SQLExecutor(String name){
+    public SQLExecutor(String name) {
         this.name = name;
     }
 

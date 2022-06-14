@@ -36,7 +36,7 @@ public class PGSelectTest60_array extends TestCase {
         assertEquals("SELECT COL1\n" +
                 "FROM TABLE\n" +
                 "WHERE NID = ANY(ARRAY[1, 2, 3])", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select COL1\n" +
                 "from TABLE\n" +
                 "where NID = ANY(ARRAY[1, 2, 3])", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

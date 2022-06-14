@@ -17,15 +17,12 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableCompression extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLCharExpr name;
 
-    public SQLAlterTableCompression(){
-
+    public SQLAlterTableCompression() {
     }
 
     @Override

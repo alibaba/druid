@@ -16,18 +16,16 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlSetTransactionStatement extends MySqlStatementImpl {
-
     private Boolean global;
 
     private Boolean session;
     private boolean local;
 
-    private String  isolationLevel;
-    private String  accessModel;
+    private String isolationLevel;
+    private String accessModel;
 
     private SQLExpr policy;
 

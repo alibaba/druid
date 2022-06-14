@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest23 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select id, login_name, name, password, salt, roles, register_date from user WHERE ( name like ? ) limit ? offset ?";
 
@@ -39,7 +38,7 @@ public class PGSelectTest23 extends PGTest {
                 + "\nFROM user"
                 + "\nWHERE name LIKE ?"
                 + "\nLIMIT ? OFFSET ?", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("select id, login_name, name, password, salt"
                 + "\n\t, roles, register_date"
                 + "\nfrom user"

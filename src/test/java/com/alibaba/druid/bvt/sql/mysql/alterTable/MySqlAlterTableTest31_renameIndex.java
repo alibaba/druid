@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest31_renameIndex extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE test_table_normal\n" +
                 "RENAME INDEX old_index_name TO new_index_name";

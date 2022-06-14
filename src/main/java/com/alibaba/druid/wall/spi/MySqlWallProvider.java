@@ -26,22 +26,22 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
 public class MySqlWallProvider extends WallProvider {
+    public static final String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/mysql";
 
-    public final static String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/mysql";
-
-    public MySqlWallProvider(){
+    public MySqlWallProvider() {
         this(new WallConfig(DEFAULT_CONFIG_DIR));
     }
 
-    public MySqlWallProvider(WallConfig config){
+    public MySqlWallProvider(WallConfig config) {
         super(config, DbType.mysql);
     }
 
     @Override
     public SQLStatementParser createParser(String sql) {
-        return new MySqlStatementParser(sql
-                , SQLParserFeature.EnableSQLBinaryOpExprGroup
-                , SQLParserFeature.StrictForWall
+        return new MySqlStatementParser(
+                sql,
+                SQLParserFeature.EnableSQLBinaryOpExprGroup,
+                SQLParserFeature.StrictForWall
         );
     }
 

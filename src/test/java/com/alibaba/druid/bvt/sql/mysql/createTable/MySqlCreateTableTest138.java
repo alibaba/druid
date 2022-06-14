@@ -10,7 +10,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest138 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `t_push_branch3` (\n" +
                 "  `id` varchar(50) NOT NULL COMMENT '主键id',\n" +
@@ -39,7 +38,7 @@ public class MySqlCreateTableTest138 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -125,9 +124,6 @@ public class MySqlCreateTableTest138 extends MysqlTest {
                 ");", stmt.toLowerCaseString());
 
     }
-
-
-
 
 
 }

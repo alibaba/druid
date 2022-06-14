@@ -31,7 +31,7 @@ public class Log4jFilterTest extends TestCase {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
-    
+
     public void test_logger() throws Exception {
         Log4jFilter filter = new Log4jFilter();
 
@@ -227,10 +227,9 @@ public class Log4jFilterTest extends TestCase {
     }
 
     public static class FakeLogger extends Logger {
-
         private boolean enable;
 
-        public FakeLogger(String name, boolean enable){
+        public FakeLogger(String name, boolean enable) {
             super(name);
             this.enable = enable;
         }

@@ -23,7 +23,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_224 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select userid, order, unionid from t";
 

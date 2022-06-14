@@ -7,12 +7,7 @@ package com.alibaba.druid.sql.dialect.antspark.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.antspark.ast.AntsparkCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -22,7 +17,6 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 /**
- *
  * @author peiheng.qph
  * @version $Id: AntsparkCreateTableParser.java, v 0.1 2018年09月14日 15:03 peiheng.qph Exp $
  */
@@ -34,6 +28,7 @@ public class AntsparkCreateTableParser extends SQLCreateTableParser {
     public AntsparkCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
     }
+
     public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
         AntsparkCreateTableStatement stmt = new AntsparkCreateTableStatement();
 
@@ -85,7 +80,7 @@ public class AntsparkCreateTableParser extends SQLCreateTableParser {
                     constraint.setParent(stmt);
                     stmt.getTableElementList().add((SQLTableElement) constraint);
                 } else if (token == Token.TABLESPACE) {
-                    throw new ParserException("TODO "  + lexer.info());
+                    throw new ParserException("TODO " + lexer.info());
                 } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     stmt.getTableElementList().add(column);
@@ -106,9 +101,9 @@ public class AntsparkCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
         //add using
-        if(lexer.token()== Token.USING){
+        if (lexer.token() == Token.USING) {
             lexer.nextToken();
-            SQLName expr=this.exprParser.name();
+            SQLName expr = this.exprParser.name();
             stmt.setDatasource(expr);
         }
 
@@ -129,7 +124,7 @@ public class AntsparkCreateTableParser extends SQLCreateTableParser {
             accept(Token.BY);
             accept(Token.LPAREN);
 
-            for (;;) {
+            for (; ; ) {
                 if (lexer.token() != Token.IDENTIFIER) {
                     throw new ParserException("expect identifier. " + lexer.info());
                 }
@@ -178,7 +173,7 @@ public class AntsparkCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
             accept(Token.ON);
             accept(Token.LPAREN);
-            for (;;) {
+            for (; ; ) {
                 if (lexer.token() == Token.LPAREN) {
                     SQLListExpr list = new SQLListExpr();
                     lexer.nextToken();
@@ -257,7 +252,7 @@ public class AntsparkCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
             accept(Token.LPAREN);
 
-            for (;;) {
+            for (; ; ) {
                 String name = lexer.stringVal();
                 lexer.nextToken();
                 accept(Token.EQ);

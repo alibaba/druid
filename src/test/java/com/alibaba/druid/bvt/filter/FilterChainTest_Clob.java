@@ -34,12 +34,11 @@ import java.util.Collections;
 import java.util.Properties;
 
 public class FilterChainTest_Clob extends TestCase {
-
     private DruidDataSource dataSource;
-    private StatementProxy  statement;
-    private MockResultSet   mockResultSet;
+    private StatementProxy statement;
+    private MockResultSet mockResultSet;
 
-    private int             invokeCount = 0;
+    private int invokeCount = 0;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -48,7 +47,6 @@ public class FilterChainTest_Clob extends TestCase {
         statement = new StatementProxyImpl(conn, null, 1);
 
         mockResultSet = new MockResultSet(null) {
-
             public Object getObject(int columnIndex) throws SQLException {
                 invokeCount++;
                 return new MockClob();
@@ -97,21 +95,21 @@ public class FilterChainTest_Clob extends TestCase {
         Assert.assertTrue(clob instanceof ClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
+
     public void test_resultSet_getObject_2() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
-        
+
         Clob clob = (Clob) chain.resultSet_getObject(new ResultSetProxyImpl(statement, mockResultSet, 1, null), 1, Collections.<String, Class<?>>emptyMap());
-        
+
         Assert.assertTrue(clob instanceof ClobProxy);
         Assert.assertEquals(1, invokeCount);
     }
-    
+
     public void test_resultSet_getObject_3() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
-        
+
         Clob clob = (Clob) chain.resultSet_getObject(new ResultSetProxyImpl(statement, mockResultSet, 1, null), "1", Collections.<String, Class<?>>emptyMap());
-        
+
         Assert.assertTrue(clob instanceof ClobProxy);
         Assert.assertEquals(1, invokeCount);
     }

@@ -12,13 +12,11 @@ public class OdpsFormatCommentTest6 extends TestCase {
                 + "\nfrom t "//
                 + "\nwhere status = '20' -- comment xxx"
                 + "\nand flag & 127 > 0 -- comment kkkkk"
-                + "\n;"
-                ;//
+                + "\n;";//
         Assert.assertEquals("SELECT *"
                 + "\nFROM t"
                 + "\nWHERE status = '20' -- comment xxx"
                 + "\n\tAND flag & 127 > 0 -- comment kkkkk;", SQLUtils.formatOdps(sql));
     }
 
-   
 }

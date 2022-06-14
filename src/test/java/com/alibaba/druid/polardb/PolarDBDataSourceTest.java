@@ -15,7 +15,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PolarDBDataSourceTest extends TestCase {
-
     private String jdbcUrl;
     private DruidDataSource dataSource;
 
@@ -42,8 +41,7 @@ public class PolarDBDataSourceTest extends TestCase {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT 1");
         ResultSet rs = stmt.executeQuery();
-        while(rs.next()) {
-
+        while (rs.next()) {
         }
         JdbcUtils.close(rs);
         JdbcUtils.close(stmt);

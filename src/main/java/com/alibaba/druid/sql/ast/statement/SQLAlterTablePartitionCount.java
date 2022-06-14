@@ -15,17 +15,14 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTablePartitionCount extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLIntegerExpr count;
 
-    public SQLAlterTablePartitionCount(){
-
+    public SQLAlterTablePartitionCount() {
     }
 
     @Override

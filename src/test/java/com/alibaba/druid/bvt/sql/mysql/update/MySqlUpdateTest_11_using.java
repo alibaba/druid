@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlUpdateTest_11_using extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "update t1, t2, t3 inner join t4 using (col_name1, col_name2)\n" +
                 "set t1.value_col = t3.new_value_col, t4.`some-col*` = `t2`.`***` * 2\n" +
@@ -64,7 +63,7 @@ public class MySqlUpdateTest_11_using extends MysqlTest {
                             "SET t1.value_col = t3.new_value_col, t4.`some-col*` = `t2`.`***` * 2\n" +
                             "WHERE t1.pk = t2.fk_t1_pk\n" +
                             "\tAND t2.id = t4.fk_id_entity;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -73,7 +72,7 @@ public class MySqlUpdateTest_11_using extends MysqlTest {
                             "set t1.value_col = t3.new_value_col, t4.`some-col*` = `t2`.`***` * 2\n" +
                             "where t1.pk = t2.fk_t1_pk\n" +
                             "\tand t2.id = t4.fk_id_entity;", //
-                                output);
+                    output);
         }
 
         assertTrue(WallUtils.isValidateMySql(sql));

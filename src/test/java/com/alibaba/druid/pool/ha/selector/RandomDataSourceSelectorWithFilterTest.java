@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class RandomDataSourceSelectorWithFilterTest {
-    private final static Log LOG = LogFactory.getLog(RandomDataSourceSelectorWithFilterTest.class);
+    private static final Log LOG = LogFactory.getLog(RandomDataSourceSelectorWithFilterTest.class);
     private HighAvailableDataSource highAvailableDataSource;
     private CounterValidConnectionChecker checker;
 
@@ -106,7 +106,7 @@ public class RandomDataSourceSelectorWithFilterTest {
     private void createTable(Connection connection) {
         try {
             executeSQL(connection, "create table foo (bar varchar(1))");
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             try {
                 executeSQL(connection, "drop table foo");
                 executeSQL(connection, "create table foo (bar varchar(1))");

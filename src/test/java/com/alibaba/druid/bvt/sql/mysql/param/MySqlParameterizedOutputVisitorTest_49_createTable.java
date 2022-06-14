@@ -43,7 +43,6 @@ public class MySqlParameterizedOutputVisitorTest_49_createTable extends TestCase
 
         System.out.println(psql);
 
-
         assertEquals("CREATE TABLE projects (\n" +
                 "\tlong_name int(3) NOT NULL DEFAULT 1 + 2\n" +
                 ")", psql);

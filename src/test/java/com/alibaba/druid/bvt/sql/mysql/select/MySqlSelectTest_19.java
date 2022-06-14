@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_19 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM mj_list WHERE ( uid = 1 ) AND ( status = 1 ) ORDER BY view DESC LIMIT 10";
 
@@ -42,7 +41,7 @@ public class MySqlSelectTest_19 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getConditions().size());

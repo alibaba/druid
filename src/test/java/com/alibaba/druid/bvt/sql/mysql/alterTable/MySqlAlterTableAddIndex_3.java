@@ -26,16 +26,15 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableAddIndex_3 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE t_order ADD UNIQUE GLOBAL INDEX `g_i_buyer` (`buyer_id`) COVERING (order_snapshot) dbpartition by hash(`buyer_id`);";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         Assert.assertEquals("ALTER TABLE t_order\n" +
                 "\tADD UNIQUE GLOBAL INDEX `g_i_buyer` (`buyer_id`) COVERING (order_snapshot) DBPARTITION BY hash(`buyer_id`);", SQLUtils.toMySqlString(stmt));
-        
+
         Assert.assertEquals("alter table t_order\n" +
                 "\tadd unique global index `g_i_buyer` (`buyer_id`) covering (order_snapshot) dbpartition by hash(`buyer_id`);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

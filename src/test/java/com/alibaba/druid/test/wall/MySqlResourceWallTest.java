@@ -29,7 +29,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlResourceWallTest extends TestCase {
-
     private String[] items;
 
 
@@ -69,7 +68,6 @@ public class MySqlResourceWallTest extends TestCase {
 
 //        Assert.assertFalse(provider.checkValid(sql));
     }
-
 
 
     @Test

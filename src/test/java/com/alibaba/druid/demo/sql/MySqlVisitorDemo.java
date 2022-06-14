@@ -31,6 +31,7 @@ public class MySqlVisitorDemo extends TestCase {
 
     public static class ExportTableAliasVisitor extends MySqlASTVisitorAdapter {
         private Map<String, SQLTableSource> aliasMap = new HashMap<String, SQLTableSource>();
+
         public boolean visit(SQLExprTableSource x) {
             String alias = x.getAlias();
             aliasMap.put(alias, x);

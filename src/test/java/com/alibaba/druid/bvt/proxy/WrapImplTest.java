@@ -30,7 +30,6 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.Utils;
 
 public class WrapImplTest extends TestCase {
-
     private static String url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j,encoding,null:name=demo:jdbc:derby:classpath:petstore-db";
 
     public void test_clone() throws Exception {

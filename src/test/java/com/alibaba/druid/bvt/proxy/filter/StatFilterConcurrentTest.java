@@ -26,10 +26,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStat;
 
 public class StatFilterConcurrentTest extends TestCase {
-
     private DruidDataSource dataSource;
-    private StatFilter      statFilter;
-    private int             LOOP_COUNT = 1000 * 1;
+    private StatFilter statFilter;
+    private int LOOP_COUNT = 1000 * 1;
 
     public void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -58,7 +57,6 @@ public class StatFilterConcurrentTest extends TestCase {
 
         for (int i = 0; i < threadCount; ++i) {
             threads[i] = new Thread() {
-
                 public void run() {
                     try {
                         for (int i = 0; i < LOOP_COUNT; ++i) {

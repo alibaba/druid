@@ -20,14 +20,12 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowTableStatusStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
     private SQLName database;
     private SQLName tableGroup;
     private SQLExpr like;
     private SQLExpr where;
 
     public MySqlShowTableStatusStatement() {
-
     }
 
     public SQLName getDatabase() {

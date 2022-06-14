@@ -25,10 +25,9 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleAlterViewTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter VIEW ALIBABA1949.COMPANY_VIEW_2 compile";
+                "alter VIEW ALIBABA1949.COMPANY_VIEW_2 compile";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

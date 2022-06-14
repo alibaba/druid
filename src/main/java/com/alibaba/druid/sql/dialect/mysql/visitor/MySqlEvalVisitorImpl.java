@@ -26,19 +26,18 @@ import java.util.List;
 import java.util.Map;
 
 public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLEvalVisitor {
+    private Map<String, Function> functions = new HashMap<String, Function>();
+    private List<Object> parameters = new ArrayList<Object>();
 
-    private Map<String, Function> functions        = new HashMap<String, Function>();
-    private List<Object>          parameters       = new ArrayList<Object>();
+    private int variantIndex = -1;
 
-    private int                   variantIndex     = -1;
+    private boolean markVariantIndex = true;
 
-    private boolean               markVariantIndex = true;
-
-    public MySqlEvalVisitorImpl(){
+    public MySqlEvalVisitorImpl() {
         this(new ArrayList<Object>(1));
     }
 
-    public MySqlEvalVisitorImpl(List<Object> parameters){
+    public MySqlEvalVisitorImpl(List<Object> parameters) {
         this.parameters = parameters;
     }
 
@@ -81,11 +80,11 @@ public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLE
     public boolean visit(SQLNumberExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
-    
+
     public boolean visit(SQLHexExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
-    
+
     @Override
     public boolean visit(SQLBinaryExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
@@ -147,7 +146,7 @@ public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLE
     public void unregisterFunction(String funcName) {
         functions.remove(funcName);
     }
-    
+
     @Override
     public boolean visit(SQLBooleanExpr x) {
         x.getAttributes().put(EVAL_VALUE, x.getBooleanValue());

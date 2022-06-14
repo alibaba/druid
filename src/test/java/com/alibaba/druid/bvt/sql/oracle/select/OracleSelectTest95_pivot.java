@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest95_pivot extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 " select *\n" +

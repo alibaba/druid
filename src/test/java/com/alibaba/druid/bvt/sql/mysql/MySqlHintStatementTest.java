@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
 
 public class MySqlHintStatementTest extends TestCase {
-
     public void test() {
         String sql = "DROP TABLE IF EXISTS `item_similarity`;"//
                 + "\n/*!40101 SET @saved_cs_client     = @@character_set_client */;"//

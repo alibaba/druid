@@ -12,7 +12,6 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class ResourceTest extends TestCase {
-
     private String[] items;
 
     protected void setUp() throws Exception {
@@ -29,7 +28,7 @@ public class ResourceTest extends TestCase {
 
         for (int i = 0; i < items.length; ++i) {
             String sql = items[i];
-            
+
             WallCheckResult result = provider.check(sql);
             if (result.getViolations().size() > 0) {
                 Violation violation = result.getViolations().get(0);

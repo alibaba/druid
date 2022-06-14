@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.FullTextType;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MysqlDropFullTextStatement extends MySqlStatementImpl implements SQLDropStatement {
-
     private FullTextType type;
 
     private SQLName name;

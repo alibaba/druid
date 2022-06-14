@@ -18,10 +18,8 @@ package com.alibaba.druid.support.spring.stat.config;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 public class DruidStatNamespaceHandler extends NamespaceHandlerSupport {
-
-	@Override
-	public void init() {
-		registerBeanDefinitionParser("annotation-driven", new DruidStatBeanDefinitionParser());  
-	}
-
+    @Override
+    public void init() {
+        registerBeanDefinitionParser("annotation-driven", new DruidStatBeanDefinitionParser());
+    }
 }

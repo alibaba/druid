@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SQLServerParameterizedOutputVisitorTest_2 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE dbo.AO_B9A0F0_APPLIED_TEMPLATE ( ID INTEGER IDENTITY(1,1) NOT NULL, PROJECT_ID BIGINT CONSTRAINT df_AO_B9A0F0_APPLIED_TEMPLATE_PROJECT_ID DEFAULT 0, PROJECT_TEMPLATE_MODULE_KEY VARCHAR(255), PROJECT_TEMPLATE_WEB_ITEM_KEY VARCHAR(255), CONSTRAINT pk_AO_B9A0F0_APPLIED_TEMPLATE_ID PRIMARY KEY(ID) )";
         assertEquals("CREATE TABLE dbo.AO_B9A0F0_APPLIED_TEMPLATE (\n" +

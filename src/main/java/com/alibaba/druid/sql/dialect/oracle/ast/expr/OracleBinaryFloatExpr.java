@@ -24,14 +24,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements OracleExpr {
-
     private Float value;
 
-    public OracleBinaryFloatExpr(){
-
+    public OracleBinaryFloatExpr() {
     }
 
-    public OracleBinaryFloatExpr(Float value){
+    public OracleBinaryFloatExpr(Float value) {
         super();
         this.value = value;
     }

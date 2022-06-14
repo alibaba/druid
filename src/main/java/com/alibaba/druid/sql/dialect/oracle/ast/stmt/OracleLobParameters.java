@@ -19,7 +19,6 @@ public class OracleLobParameters extends OracleSQLObjectImpl {
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
-
     }
 
     public OracleStorageClause getStorage() {

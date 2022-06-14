@@ -38,21 +38,19 @@ import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementHolder;
 
 public class PoolablePreparedStatementTest extends TestCase {
-
-    protected MockPreparedStatement        raw;
+    protected MockPreparedStatement raw;
     protected DruidPooledPreparedStatement stmt;
 
     protected void setUp() throws Exception {
-        DruidDataSource                dataSource = new DruidDataSource();
+        DruidDataSource dataSource = new DruidDataSource();
         MockConnection mockConn = new MockConnection();
         DruidConnectionHolder connHolder = new DruidConnectionHolder(dataSource, mockConn, 0);
         DruidPooledConnection conn = new DruidPooledConnection(connHolder);
 
         raw = new MockPreparedStatement(null, null);
         stmt = new DruidPooledPreparedStatement(conn, new PreparedStatementHolder(new PreparedStatementKey("", null,
-                                                                                                           null, 0, 0,
-                                                                                                           0), raw)) {
-
+                null, 0, 0,
+                0), raw)) {
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {
                     return (SQLException) error;
@@ -337,7 +335,6 @@ public class PoolablePreparedStatementTest extends TestCase {
     }
 
     public void test_updateCharacterStream_2() throws Exception {
-
         stmt.setCharacterStream(1, (Reader) null, 1L);
 
         {
@@ -352,7 +349,6 @@ public class PoolablePreparedStatementTest extends TestCase {
     }
 
     public void test_setRef() throws Exception {
-
         stmt.setRef(1, null);
 
         {
@@ -367,7 +363,6 @@ public class PoolablePreparedStatementTest extends TestCase {
     }
 
     public void test_setArray() throws Exception {
-
         stmt.setArray(1, null);
 
         {

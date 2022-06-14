@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.dialect.db2.ast.DB2StatementImpl;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 
 public class DB2ValuesStatement extends DB2StatementImpl {
-
     private SQLExpr expr;
 
     @Override

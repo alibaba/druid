@@ -3,7 +3,6 @@ package com.alibaba.druid.sql.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.util.FnvHash;
@@ -74,9 +73,9 @@ public class SQLDataTypeValidator extends SQLASTVisitorAdapter {
         }
     }
 
-    private static String[] odpsTypes = null;
-    private static String[] hiveTypes = null;
-    private static String[] mysqlTypes = null;
+    private static String[] odpsTypes;
+    private static String[] hiveTypes;
+    private static String[] mysqlTypes;
 
     public static SQLDataTypeValidator of(DbType dbType) {
         Set<String> typeSet = null;

@@ -12,7 +12,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
  * Created by kaiwang.ckw on 15/05/2017.
  */
 public class StatementConverter {
-
     // remove 'for update' from 'select ... for update'
     public static boolean rewriteSelect(SQLSelectStatement stmt) {
         SQLSelectQuery q = stmt.getSelect().getQuery();

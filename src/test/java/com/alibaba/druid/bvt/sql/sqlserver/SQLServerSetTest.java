@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisito
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLServerSetTest extends TestCase {
-
     public void test_0() {
         String sql = "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
 

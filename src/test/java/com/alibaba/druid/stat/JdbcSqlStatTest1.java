@@ -6,7 +6,6 @@ import java.text.NumberFormat;
 import junit.framework.TestCase;
 
 public class JdbcSqlStatTest1 extends TestCase {
-
     private JdbcDataSourceStat dataSourceStat = new JdbcDataSourceStat("", "");
 
     public void test_0() throws Exception {

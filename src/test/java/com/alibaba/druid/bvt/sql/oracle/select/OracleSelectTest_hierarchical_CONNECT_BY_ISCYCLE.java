@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleSelectTest_hierarchical_CONNECT_BY_ISCYCLE extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT last_name \"Employee\", CONNECT_BY_ISCYCLE \"Cycle\",\n" +
                 "   LEVEL, SYS_CONNECT_BY_PATH(last_name, '/') \"Path\"\n" +

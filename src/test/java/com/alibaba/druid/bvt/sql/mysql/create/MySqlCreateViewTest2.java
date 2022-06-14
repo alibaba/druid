@@ -28,7 +28,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateViewTest2 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create view revenue0 as \n" +
                 "select l_suppkey as supplier_no, sum(l_extendedprice * (1 - l_discount)) as total_revenue \n" +

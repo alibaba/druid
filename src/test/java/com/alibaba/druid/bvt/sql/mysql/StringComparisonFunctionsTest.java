@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class StringComparisonFunctionsTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT '?' LIKE 'ae' COLLATE latin1_german2_ci;";
 

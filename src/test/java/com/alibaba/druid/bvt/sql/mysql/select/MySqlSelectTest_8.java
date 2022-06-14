@@ -27,21 +27,20 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_8 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select 1";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
-        
+
         SQLSelect select = selectStmt.getSelect();
         Assert.assertNotNull(select.getQuery());
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
         Assert.assertNull(queryBlock.getOrderBy());
-        
+
 //        print(statementList);
 
         Assert.assertEquals(1, statementList.size());

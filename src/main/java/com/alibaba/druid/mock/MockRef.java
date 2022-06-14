@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class MockRef implements Ref {
-
     private String baseTypeName;
     private Object object;
 

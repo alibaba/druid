@@ -20,11 +20,9 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableBlockSize extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLIntegerExpr size;
 
-    public SQLAlterTableBlockSize(){
-
+    public SQLAlterTableBlockSize() {
     }
 
     @Override

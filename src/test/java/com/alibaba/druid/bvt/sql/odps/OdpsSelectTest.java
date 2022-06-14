@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class OdpsSelectTest extends TestCase {
-
     public void test_distribute_by() throws Exception {
         String sql = "select region from sale_detail distribute by region;";//
         assertEquals("SELECT region" //

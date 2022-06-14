@@ -34,24 +34,23 @@ import com.jolbox.bonecp.BoneCPDataSource;
 
 /**
  * TestOnBo 类Case1.java的实现描述：TODO 类实现描述
- * 
+ *
  * @author admin 2011-5-28 下午03:47:40
  */
 public class Case2 extends TestCase {
-
-    private String  jdbcUrl;
-    private String  user;
-    private String  password;
-    private String  driverClass;
-    private int     initialSize     = 10;
-    private int     minPoolSize     = 10;
-    private int     maxPoolSize     = 50;
-    private int     maxActive       = 50;
-    private String  validationQuery = "SELECT 1";
-    private int     threadCount     = 100;
-    private int     executeCount    = 4;
-    final int       LOOP_COUNT      = (1000 * 100) / executeCount;
-    private boolean testOnBorrow    = true;
+    private String jdbcUrl;
+    private String user;
+    private String password;
+    private String driverClass;
+    private int initialSize = 10;
+    private int minPoolSize = 10;
+    private int maxPoolSize = 50;
+    private int maxActive = 50;
+    private String validationQuery = "SELECT 1";
+    private int threadCount = 100;
+    private int executeCount = 4;
+    final int LOOP_COUNT = (1000 * 100) / executeCount;
+    private boolean testOnBorrow = true;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -131,7 +130,6 @@ public class Case2 extends TestCase {
     }
 
     private void p0(final DataSource dataSource, String name, int threadCount) throws Exception {
-
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);
         final AtomicLong blockedStat = new AtomicLong();
@@ -139,7 +137,6 @@ public class Case2 extends TestCase {
 
         for (int i = 0; i < threadCount; ++i) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         startLatch.await();
@@ -182,7 +179,7 @@ public class Case2 extends TestCase {
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
         System.out.println("thread " + threadCount + " " + name + " millis : "
-                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC
-                           + " blockedCount " + blockedStat.get() + " waitedCount " + waitedStat.get());
+                + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC
+                + " blockedCount " + blockedStat.get() + " waitedCount " + waitedStat.get());
     }
 }

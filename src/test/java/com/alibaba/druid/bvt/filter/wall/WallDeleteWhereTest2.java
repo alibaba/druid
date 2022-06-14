@@ -26,7 +26,6 @@ import com.alibaba.druid.wall.WallUtils;
  * @author wenshao
  */
 public class WallDeleteWhereTest2 extends TestCase {
-
     private String sql = "DELETE FROM T WHERE id = 0 or 1 = 1 --";
     private String sql1 = "DELETE FROM T WHERE id = 0 or 1 = 1 #and c=1";
 

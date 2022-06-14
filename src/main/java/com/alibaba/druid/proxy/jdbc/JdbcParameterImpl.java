@@ -18,14 +18,13 @@ package com.alibaba.druid.proxy.jdbc;
 import java.util.Calendar;
 
 public final class JdbcParameterImpl implements JdbcParameter {
-
-    private final int      sqlType;
-    private final Object   value;
-    private final long     length;
+    private final int sqlType;
+    private final Object value;
+    private final long length;
     private final Calendar calendar;
-    private final int      scaleOrLength;
+    private final int scaleOrLength;
 
-    public JdbcParameterImpl(int sqlType, Object value, long length, Calendar calendar, int scaleOrLength){
+    public JdbcParameterImpl(int sqlType, Object value, long length, Calendar calendar, int scaleOrLength) {
         this.sqlType = sqlType;
         this.value = value;
         this.length = length;
@@ -33,19 +32,19 @@ public final class JdbcParameterImpl implements JdbcParameter {
         this.scaleOrLength = scaleOrLength;
     }
 
-    public JdbcParameterImpl(int sqlType, Object value, long length, Calendar calendar){
+    public JdbcParameterImpl(int sqlType, Object value, long length, Calendar calendar) {
         this(sqlType, value, -1, null, -1);
     }
 
-    public JdbcParameterImpl(int sqlType, Object value){
+    public JdbcParameterImpl(int sqlType, Object value) {
         this(sqlType, value, -1, null);
     }
 
-    public JdbcParameterImpl(int sqlType, Object value, long length){
+    public JdbcParameterImpl(int sqlType, Object value, long length) {
         this(sqlType, value, length, null);
     }
 
-    public JdbcParameterImpl(int sqlType, Object value, Calendar calendar){
+    public JdbcParameterImpl(int sqlType, Object value, Calendar calendar) {
         this(sqlType, value, -1, calendar);
     }
 

@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import java.util.List;
 
 public class OracleCreateProcedureTest6 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE PROCEDURE wraptest wrapped \n" +
                 "a000000\n" +

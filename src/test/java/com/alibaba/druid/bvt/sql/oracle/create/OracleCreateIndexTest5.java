@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateIndexTest5 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        " CREATE UNIQUE INDEX \"FINANCE\".\"SYS_IOT_TOP_179872\" on \"FINANCE\".\"SYS_JOURNAL_179871\"(\"C0\",\"RID\") INDEX ONLY TOPLEVEL TABLESPACE \"FINANCE\" STORAGE( BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT) NOPARALLEL ;";
+                " CREATE UNIQUE INDEX \"FINANCE\".\"SYS_IOT_TOP_179872\" on \"FINANCE\".\"SYS_JOURNAL_179871\"(\"C0\",\"RID\") INDEX ONLY TOPLEVEL TABLESPACE \"FINANCE\" STORAGE( BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT) NOPARALLEL ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,7 +51,7 @@ public class OracleCreateIndexTest5 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("FINANCE.SYS_JOURNAL_179871", "RID")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("FINANCE.SYS_JOURNAL_179871", "RID")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }

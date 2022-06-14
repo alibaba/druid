@@ -16,7 +16,6 @@ import java.util.List;
  * @Date 2019-07-02 15:18
  */
 public class MySqlCreateTable_refactor_test extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create table test001\n" +
                 "(" +

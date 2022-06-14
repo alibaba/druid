@@ -15,11 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLOver;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -27,11 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleAnalytic extends SQLOver implements SQLReplaceable, OracleExpr {
-
     private OracleAnalyticWindowing windowing;
 
     public OracleAnalytic() {
-
     }
 
     @Override
@@ -90,7 +84,6 @@ public class OracleAnalytic extends SQLOver implements SQLReplaceable, OracleExp
 
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
-
         for (int i = 0; i < partitionBy.size(); i++) {
             if (partitionBy.get(i) == expr) {
                 partitionBy.set(i, target);

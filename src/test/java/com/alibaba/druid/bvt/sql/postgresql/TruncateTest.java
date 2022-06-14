@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class TruncateTest extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "TRUNCATE bigtable, fattable;";
 

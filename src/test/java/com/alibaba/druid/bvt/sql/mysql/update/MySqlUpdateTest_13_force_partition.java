@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlUpdateTest_13_force_partition extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "UPDATE force all partitions car_tt  set gps_url=null  WHERE  id = ?";
 
@@ -60,14 +59,14 @@ public class MySqlUpdateTest_13_force_partition extends MysqlTest {
             Assert.assertEquals("UPDATE FORCE ALL PARTITIONS car_tt\n" +
                             "SET gps_url = NULL\n" +
                             "WHERE id = ?", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("update force all partitions car_tt\n" +
                             "set gps_url = null\n" +
                             "where id = ?", //
-                                output);
+                    output);
         }
 
         assertTrue(WallUtils.isValidateMySql(sql));

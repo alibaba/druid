@@ -28,7 +28,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2SelectTest_26 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT LATN_ID,\n" +
                 "CASE WHEN BUREAU_KEY = 116 THEN 46 ELSE BUREAU_KEY END BUREAU_KEY,\n" +
@@ -124,8 +123,8 @@ public class DB2SelectTest_26 extends DB2Test {
                         "\t\tWHEN BUREAU_KEY = 116 THEN 46\n" +
                         "\t\tELSE BUREAU_KEY\n" +
                         "\tEND", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("select LATN_ID\n" +
                         "\t, case \n" +
                         "\t\twhen BUREAU_KEY = 116 then 46\n" +
@@ -165,6 +164,6 @@ public class DB2SelectTest_26 extends DB2Test {
                         "\t\twhen BUREAU_KEY = 116 then 46\n" +
                         "\t\telse BUREAU_KEY\n" +
                         "\tend", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

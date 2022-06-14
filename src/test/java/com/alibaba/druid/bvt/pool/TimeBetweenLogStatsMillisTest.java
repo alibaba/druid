@@ -8,7 +8,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TimeBetweenLogStatsMillisTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -32,10 +31,10 @@ public class TimeBetweenLogStatsMillisTest extends TestCase {
         Assert.assertEquals(0, dataSource.getResetCount());
         dataSource.setConnectionProperties("druid.resetStatEnable=true");
         Assert.assertEquals(true, dataSource.isResetStatEnable());
-        
+
         dataSource.setConnectionProperties("druid.resetStatEnable=false");
         Assert.assertEquals(false, dataSource.isResetStatEnable());
-        
+
         dataSource.setConnectionProperties("druid.resetStatEnable=xxx");
     }
 }

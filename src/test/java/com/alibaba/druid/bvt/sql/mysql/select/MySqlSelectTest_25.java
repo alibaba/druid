@@ -25,11 +25,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_25 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select truncate(AVG(mark),2) from tabName where spu = ? and is_delete=0 and is_check = '2'";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -44,32 +43,31 @@ public class MySqlSelectTest_25 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(3, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT truncate(AVG(mark), 2)"
-                    + "\nFROM tabName"
-                    + "\nWHERE spu = ?"
-                    + "\n\tAND is_delete = 0"
-                    + "\n\tAND is_check = '2'", //
-                                output);
+                            + "\nFROM tabName"
+                            + "\nWHERE spu = ?"
+                            + "\n\tAND is_delete = 0"
+                            + "\n\tAND is_check = '2'", //
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("select truncate(avg(mark), 2)"
-                    + "\nfrom tabName"
-                    + "\nwhere spu = ?"
-                    + "\n\tand is_delete = 0"
-                    + "\n\tand is_check = '2'", //
-                                output);
+                            + "\nfrom tabName"
+                            + "\nwhere spu = ?"
+                            + "\n\tand is_delete = 0"
+                            + "\n\tand is_check = '2'", //
+                    output);
         }
     }
-    
-    
-    
+
+
 }

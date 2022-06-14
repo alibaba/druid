@@ -26,7 +26,6 @@ import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PSCacheTest2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -69,7 +68,7 @@ public class PSCacheTest2 extends TestCase {
 
     public void test_txn() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         conn.setAutoCommit(true);
 
         String sql = "select 1";

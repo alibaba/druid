@@ -20,13 +20,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DirectSQLExecutor extends SQLExecutor {
-
     private final String jdbcUrl;
     private final String user;
     private final String password;
     private final String driverClassName;
 
-    public DirectSQLExecutor(String name, String jdbcUrl, String user, String password){
+    public DirectSQLExecutor(String name, String jdbcUrl, String user, String password) {
         super(name);
 
         this.jdbcUrl = jdbcUrl;

@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseAlterTableDropPartitionTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "ALTER TABLE tnrange DROP PARTITION p1;"; //
 
@@ -37,7 +36,7 @@ public class OceanbaseAlterTableDropPartitionTest extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("ALTER TABLE tnrange" + //
-                                "\n\tDROP PARTITION p1;", result);
+                    "\n\tDROP PARTITION p1;", result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);

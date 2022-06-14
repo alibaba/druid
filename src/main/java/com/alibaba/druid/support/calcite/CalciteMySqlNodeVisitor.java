@@ -26,7 +26,6 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
     static Map<Long, SqlOperator> operators = new HashMap<Long, SqlOperator>();
 
     static {
-
         List<SqlOperator> list = SqlStdOperatorTable.instance().getOperatorList();
         for (SqlOperator op : list) {
             long h = FnvHash.hashCode64(op.getName());
@@ -48,7 +47,6 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         return sqlNode;
     }
 
-
     public boolean visit(SQLInsertStatement x) {
         SqlNodeList keywords = new SqlNodeList(new ArrayList<SqlNode>(), SqlParserPos.ZERO);
 
@@ -66,7 +64,6 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
             SqlNode[] rows = new SqlNode[valuesList.size()];
             for (int j = 0; j < valuesList.size(); j++) {
-
                 List<SQLExpr> values = valuesList.get(j).getValues();
 
                 SqlNode[] valueNodes = new SqlNode[values.size()];
@@ -102,7 +99,6 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
         SqlNode[] rows = new SqlNode[valuesList.size()];
         for (int j = 0; j < valuesList.size(); j++) {
-
             List<SQLExpr> values = valuesList.get(j).getValues();
 
             SqlNode[] valueNodes = new SqlNode[values.size()];
@@ -120,8 +116,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
     }
 
     public boolean visit(MySqlUpdateStatement x) {
-
-        if(x.getTableSource().getClass() != SQLExprTableSource.class) {
+        if (x.getTableSource().getClass() != SQLExprTableSource.class) {
             throw new UnsupportedOperationException("Support single table only for SqlUpdate statement of calcite.");
         }
         SQLExprTableSource tableSource = (SQLExprTableSource) x.getTableSource();
@@ -139,9 +134,8 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
         SqlNode condition = convertToSqlNode(x.getWhere());
 
-
         SqlIdentifier alias = null;
-        if(x.getTableSource().getAlias() != null) {
+        if (x.getTableSource().getAlias() != null) {
             alias = new SqlIdentifier(tableSource.getAlias(), SqlParserPos.ZERO);
         }
 
@@ -151,15 +145,13 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
     }
 
     public boolean visit(MySqlDeleteStatement x) {
-
         SQLExprTableSource tableSource = (SQLExprTableSource) x.getTableSource();
         SqlNode targetTable = convertToSqlNode(tableSource.getExpr());
 
         SqlNode condition = convertToSqlNode(x.getWhere());
 
-
         SqlIdentifier alias = null;
-        if(x.getTableSource().getAlias() != null) {
+        if (x.getTableSource().getAlias() != null) {
             alias = new SqlIdentifier(tableSource.getAlias(), SqlParserPos.ZERO);
         }
 
@@ -170,7 +162,6 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
     @Override
     public boolean visit(SQLUnionQuery x) {
-
         SqlNode[] nodes;
         if (x.getRelations().size() > 2) {
             nodes = new SqlNode[x.getRelations().size()];
@@ -181,7 +172,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
             SqlNode left = convertToSqlNode(x.getLeft());
             SqlNode right = convertToSqlNode(x.getRight());
 
-            nodes = new SqlNode[] {left, right};
+            nodes = new SqlNode[]{left, right};
         }
 
         //order by
@@ -252,9 +243,9 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         Class<?> clazz = x.getClass();
         if (clazz == SQLJoinTableSource.class) {
             visit((SQLJoinTableSource) x);
-        } else  if (clazz == SQLExprTableSource.class) {
+        } else if (clazz == SQLExprTableSource.class) {
             visit((SQLExprTableSource) x);
-        } else  if (clazz == SQLSubqueryTableSource.class) {
+        } else if (clazz == SQLSubqueryTableSource.class) {
             visit((SQLSubqueryTableSource) x);
         } else {
             x.accept(this);
@@ -277,8 +268,8 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
         if (x.getAlias() != null) {
             SqlIdentifier alias = new SqlIdentifier(x.computeAlias(), SqlParserPos.ZERO);
-            SqlBasicCall as = new SqlBasicCall(SqlStdOperatorTable.AS, new SqlNode[] { table, alias },
-                                               SqlParserPos.ZERO);
+            SqlBasicCall as = new SqlBasicCall(SqlStdOperatorTable.AS, new SqlNode[]{table, alias},
+                    SqlParserPos.ZERO);
             sqlNode = as;
         } else {
             sqlNode = table;
@@ -308,58 +299,66 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         switch (joinType) {
             case COMMA:
                 this.sqlNode = new SqlJoin(SqlParserPos.ZERO, left,
-                                           SqlLiteral.createBoolean(false, SqlParserPos.ZERO),
-                                           JoinType.COMMA.symbol(SqlParserPos.ZERO), right,
-                                           JoinConditionType.NONE.symbol(SqlParserPos.ZERO),
-                                           null);
+                        SqlLiteral.createBoolean(false, SqlParserPos.ZERO),
+                        JoinType.COMMA.symbol(SqlParserPos.ZERO), right,
+                        JoinConditionType.NONE.symbol(SqlParserPos.ZERO),
+                        null);
                 break;
             case JOIN:
             case INNER_JOIN:
                 if (condition == null) {
-                    this.sqlNode = new SqlJoin(SqlParserPos.ZERO
-                                                , left
-                                                , SqlLiteral.createBoolean(false, SqlParserPos.ZERO)
-                                                , JoinType.COMMA.symbol(SqlParserPos.ZERO)
-                                                , right
-                                                , conditionType
-                                                , null);
+                    this.sqlNode = new SqlJoin(
+                            SqlParserPos.ZERO,
+                            left,
+                            SqlLiteral.createBoolean(false, SqlParserPos.ZERO),
+                            JoinType.COMMA.symbol(SqlParserPos.ZERO),
+                            right,
+                            conditionType,
+                            null
+                    );
                 } else {
-                    this.sqlNode = new SqlJoin(SqlParserPos.ZERO, left
-                                                , SqlLiteral.createBoolean(false, SqlParserPos.ZERO)
-                                                , JoinType.INNER.symbol(SqlParserPos.ZERO), right
-                                                , conditionType
-                                                , condition);
+                    this.sqlNode = new SqlJoin(
+                            SqlParserPos.ZERO,
+                            left,
+                            SqlLiteral.createBoolean(false, SqlParserPos.ZERO),
+                            JoinType.INNER.symbol(SqlParserPos.ZERO),
+                            right,
+                            conditionType,
+                            condition
+                    );
                 }
                 break;
             case LEFT_OUTER_JOIN:
                 this.sqlNode = new SqlJoin(SqlParserPos.ZERO,
-                                           left,
-                                           SqlLiteral.createBoolean(false, SqlParserPos.ZERO),
-                                           JoinType.LEFT.symbol(SqlParserPos.ZERO),
-                                           right,
-                                           conditionType,
-                                           condition);
+                        left,
+                        SqlLiteral.createBoolean(false, SqlParserPos.ZERO),
+                        JoinType.LEFT.symbol(SqlParserPos.ZERO),
+                        right,
+                        conditionType,
+                        condition);
                 break;
             case RIGHT_OUTER_JOIN:
                 this.sqlNode = new SqlJoin(SqlParserPos.ZERO,
-                                           left,
-                                           SqlLiteral.createBoolean(false, SqlParserPos.ZERO),
-                                           JoinType.RIGHT.symbol(SqlParserPos.ZERO),
-                                           right,
-                                           conditionType,
-                                           condition);
+                        left,
+                        SqlLiteral.createBoolean(false, SqlParserPos.ZERO),
+                        JoinType.RIGHT.symbol(SqlParserPos.ZERO),
+                        right,
+                        conditionType,
+                        condition);
                 break;
             case NATURAL_JOIN:
-                this.sqlNode = new SqlJoin(SqlParserPos.ZERO,
-                                           left,
-                                           SqlLiteral.createBoolean(true, SqlParserPos.ZERO),
-                                           JoinType.COMMA.symbol(SqlParserPos.ZERO),
-                                           right,
-                                           JoinConditionType.NONE.symbol(SqlParserPos.ZERO),
-                                           null);
+                this.sqlNode = new SqlJoin(
+                        SqlParserPos.ZERO,
+                        left,
+                        SqlLiteral.createBoolean(true, SqlParserPos.ZERO),
+                        JoinType.COMMA.symbol(SqlParserPos.ZERO),
+                        right,
+                        JoinConditionType.NONE.symbol(SqlParserPos.ZERO),
+                        null);
                 break;
             case CROSS_JOIN:
-                this.sqlNode = new SqlJoin(SqlParserPos.ZERO,
+                this.sqlNode = new SqlJoin(
+                        SqlParserPos.ZERO,
                         left,
                         SqlLiteral.createBoolean(false, SqlParserPos.ZERO),
                         JoinType.CROSS.symbol(SqlParserPos.ZERO),
@@ -377,15 +376,17 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
                         null);
                 break;
             case FULL_OUTER_JOIN:
-                this.sqlNode = new SqlJoin(SqlParserPos.ZERO
-                        , left
-                        , SqlLiteral.createBoolean(false, SqlParserPos.ZERO)
-                        , JoinType.FULL.symbol(SqlParserPos.ZERO)
-                        , right
-                        , condition == null
-                            ? JoinConditionType.NONE.symbol(SqlParserPos.ZERO)
-                            : conditionType
-                            , condition);
+                this.sqlNode = new SqlJoin(
+                        SqlParserPos.ZERO,
+                        left,
+                        SqlLiteral.createBoolean(false, SqlParserPos.ZERO),
+                        JoinType.FULL.symbol(SqlParserPos.ZERO),
+                        right,
+                        condition == null
+                                ? JoinConditionType.NONE.symbol(SqlParserPos.ZERO)
+                                : conditionType,
+                        condition
+                );
                 break;
             default:
                 throw new UnsupportedOperationException("unsupported : " + joinType);
@@ -406,7 +407,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
             SqlNode[] operands;
             if (columns.isEmpty()) {
-                operands = new SqlNode[] { sqlNode, aliasIdentifier };
+                operands = new SqlNode[]{sqlNode, aliasIdentifier};
             } else {
                 operands = new SqlNode[columns.size() + 2];
                 operands[0] = sqlNode;
@@ -430,7 +431,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         if (alias != null) {
             SqlIdentifier aliasIdentifier = new SqlIdentifier(alias, SqlParserPos.ZERO);
             sqlNode = new SqlBasicCall(SqlStdOperatorTable.AS,
-                    new SqlNode[] { sqlNode, aliasIdentifier },
+                    new SqlNode[]{sqlNode, aliasIdentifier},
                     SqlParserPos.ZERO);
         }
 
@@ -446,7 +447,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         }
         SqlNode right = convertToSqlNode(x.subQuery);
 
-        sqlNode = new SqlBasicCall(subOperator, new SqlNode[] { left, right }, SqlParserPos.ZERO);
+        sqlNode = new SqlBasicCall(subOperator, new SqlNode[]{left, right}, SqlParserPos.ZERO);
         return false;
     }
 
@@ -581,73 +582,78 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         SqlNodeList hints = convertHints(x.getHints());
 
         if (orderBy != null && x.getParent() instanceof SQLUnionQuery) {
-            this.sqlNode = new com.alibaba.druid.support.calcite.TDDLSqlSelect(SqlParserPos.ZERO
-                    , keywordList
-                    , selectList
-                    , from
-                    , where
-                    , groupBySqlNode
-                    , having
-                    , null
-                    , null
-                    , offset
-                    , fetch
-                    , hints
-                    , null
+            this.sqlNode = new com.alibaba.druid.support.calcite.TDDLSqlSelect(
+                    SqlParserPos.ZERO,
+                    keywordList,
+                    selectList,
+                    from,
+                    where,
+                    groupBySqlNode,
+                    having,
+                    null,
+                    null,
+                    offset,
+                    fetch,
+                    hints,
+                    null
             );
-            sqlNode = new SqlOrderBy(SqlParserPos.ZERO
-                    , sqlNode
-                    , orderBySqlNode
-                    , null
-                    , fetch
+            sqlNode = new SqlOrderBy(
+                    SqlParserPos.ZERO,
+                    sqlNode,
+                    orderBySqlNode,
+                    null,
+                    fetch
             );
         } else {
             if (orderBySqlNode == null) {
                 orderBySqlNode = SqlNodeList.EMPTY;
             }
             if (hints == null || SqlNodeList.isEmptyList(hints)) {
-                this.sqlNode = new SqlSelect(SqlParserPos.ZERO
-                        , keywordList
-                        , selectList
-                        , from
-                        , where
-                        , groupBySqlNode
-                        , having
-                        , null
-                        , SqlNodeList.EMPTY
-                        , null
-                        , null
-                        , null
+                this.sqlNode = new SqlSelect(
+                        SqlParserPos.ZERO,
+                        keywordList,
+                        selectList,
+                        from,
+                        where,
+                        groupBySqlNode,
+                        having,
+                        null,
+                        SqlNodeList.EMPTY,
+                        null,
+                        null,
+                        null
                 );
 
                 if ((!SqlNodeList.isEmptyList(orderBySqlNode))
                         || offset != null
                         || fetch != null
                 ) {
-                    sqlNode = new SqlOrderBy(SqlParserPos.ZERO
-                            , sqlNode
-                            , orderBySqlNode
-                            , offset
-                            , fetch);
+                    sqlNode = new SqlOrderBy(
+                            SqlParserPos.ZERO,
+                            sqlNode,
+                            orderBySqlNode,
+                            offset,
+                            fetch
+                    );
                 }
             } else {
-                this.sqlNode = new com.alibaba.druid.support.calcite.TDDLSqlSelect(SqlParserPos.ZERO
-                        , keywordList
-                        , selectList
-                        , from
-                        , where
-                        , groupBySqlNode
-                        , having
-                        , null
-                        , orderBySqlNode
-                        , offset
-                        , fetch
-                        , hints
-                        , null
+                this.sqlNode = new com.alibaba.druid.support.calcite.TDDLSqlSelect(
+                        SqlParserPos.ZERO,
+                        keywordList,
+                        selectList,
+                        from,
+                        where,
+                        groupBySqlNode,
+                        having,
+                        null,
+                        orderBySqlNode,
+                        offset,
+                        fetch,
+                        hints,
+                        null
                 );
             }
         }
-
 
         return false;
     }
@@ -675,7 +681,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
             typeName = "DECIMAL";
         }
 
-        SqlIdentifier dataTypeNode = (SqlIdentifier)convertToSqlNode(
+        SqlIdentifier dataTypeNode = (SqlIdentifier) convertToSqlNode(
                 new SQLIdentifierExpr(typeName));
 
         int scale = -1;
@@ -683,25 +689,35 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
         List<SQLExpr> arguments = dataType.getArguments();
         if (arguments != null && !arguments.isEmpty()) {
-            scale = ((SQLNumericLiteralExpr)arguments.get(0)).getNumber().intValue();
+            scale = ((SQLNumericLiteralExpr) arguments.get(0)).getNumber().intValue();
             if (arguments.size() > 1) {
                 precision = ((SQLNumericLiteralExpr) arguments.get(1)).getNumber().intValue();
             }
         }
 
-        SqlDataTypeSpec sqlDataTypeSpec
-                = new SqlDataTypeSpec(
-                new SqlBasicTypeNameSpec(toSqlTypeName(dataType), scale, precision, SqlParserPos.ZERO)
-                , SqlParserPos.ZERO);
+        SqlDataTypeSpec sqlDataTypeSpec = new SqlDataTypeSpec(
+                new SqlBasicTypeNameSpec(
+                        toSqlTypeName(dataType),
+                        scale,
+                        precision,
+                        SqlParserPos.ZERO
+                ),
+                SqlParserPos.ZERO
+        );
 
         SqlOperator sqlOperator = new SqlCastFunction();
 
-        this.sqlNode = new com.alibaba.druid.support.calcite.CalciteSqlBasicCall(sqlOperator, new SqlNode[]{ sqlNode, sqlDataTypeSpec}, SqlParserPos.ZERO,
-                                               false, functionQualifier);
+        this.sqlNode = new com.alibaba.druid.support.calcite.CalciteSqlBasicCall(
+                sqlOperator,
+                new SqlNode[]{sqlNode, sqlDataTypeSpec},
+                SqlParserPos.ZERO,
+                false,
+                functionQualifier
+        );
         return false;
     }
 
-    public boolean visit(SQLCaseExpr x) {// CASE WHEN
+    public boolean visit(SQLCaseExpr x) {
         SQLExpr valueExpr = x.getValueExpr();
         SqlNode nodeValue = null;
         SqlNodeList nodeWhen = new SqlNodeList(SqlParserPos.ZERO);
@@ -772,17 +788,18 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
                 SqlOrderBy orderBy = (SqlOrderBy) query;
 
                 SqlWith w = new SqlWith(SqlParserPos.ZERO, withList, orderBy.query);
-                sqlNode = new SqlOrderBy(SqlParserPos.ZERO
-                        , w
-                        , orderBy.orderList
-                        , orderBy.offset
-                        , orderBy.fetch
+                sqlNode = new SqlOrderBy(
+                        SqlParserPos.ZERO,
+                        w,
+                        orderBy.orderList,
+                        orderBy.offset,
+                        orderBy.fetch
                 );
             } else {
                 sqlNode = new SqlWith(SqlParserPos.ZERO, withList, query);
             }
 
-            if(query instanceof SqlSelect) {
+            if (query instanceof SqlSelect) {
                 SqlSelect select = (SqlSelect) query;
                 SqlNode fetch = select.getFetch();
                 SqlNodeList orderList = select.getOrderList();
@@ -797,11 +814,12 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
                         orderByList = SqlNodeList.EMPTY;
                     }
 
-                    sqlNode = new SqlOrderBy(SqlParserPos.ZERO
-                            , sqlNode
-                            , orderByList
-                            , null
-                            , fetch
+                    sqlNode = new SqlOrderBy(
+                            SqlParserPos.ZERO,
+                            sqlNode,
+                            orderByList,
+                            null,
+                            fetch
                     );
 
                     if (fetch != null) {
@@ -834,10 +852,9 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
     @Override
     public boolean visit(SQLSelectStatement x) {
-
         SqlNode sqlNode = convertToSqlNode(x.getSelect());
 
-        if(sqlNode instanceof com.alibaba.druid.support.calcite.TDDLSqlSelect) {
+        if (sqlNode instanceof com.alibaba.druid.support.calcite.TDDLSqlSelect) {
             com.alibaba.druid.support.calcite.TDDLSqlSelect select = (com.alibaba.druid.support.calcite.TDDLSqlSelect) sqlNode;
 
             SqlNodeList headHints = convertHints(x.getHeadHintsDirect());
@@ -897,14 +914,15 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         if (alias != null && alias.length() > 0) {
             String alias2 = x.getAlias2();
             sqlNode = new SqlBasicCall(SqlStdOperatorTable.AS,
-                    new SqlNode[] { sqlNode, new SqlIdentifier(SQLUtils.normalize(alias2, DbType.mysql), SqlParserPos.ZERO) },
+                    new SqlNode[]{sqlNode, new SqlIdentifier(SQLUtils.normalize(alias2, DbType.mysql), SqlParserPos.ZERO)},
                     SqlParserPos.ZERO);
         }
 
         return false;
     }
 
-    @Override public boolean visit(SQLIdentifierExpr x) {
+    @Override
+    public boolean visit(SQLIdentifierExpr x) {
         if (x.getName().equalsIgnoreCase("unknown")) {
             sqlNode = SqlLiteral.createUnknown(SqlParserPos.ZERO);
             return false;
@@ -980,7 +998,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
             if (group == null) {
                 group = calciteNode;
             } else {
-                group = new SqlBasicCall(operator, new SqlNode[] {group, calciteNode}, SqlParserPos.ZERO);;
+                group = new SqlBasicCall(operator, new SqlNode[]{group, calciteNode}, SqlParserPos.ZERO);
             }
         }
         this.sqlNode = group;
@@ -1108,9 +1126,9 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
                     }
                 }
             }
-                break;
+            break;
             case IsNot:
-                if(rightExpr instanceof SQLNullExpr) {
+                if (rightExpr instanceof SQLNullExpr) {
                     operator = SqlStdOperatorTable.IS_NOT_NULL;
                 } else if (rightExpr instanceof SQLIdentifierExpr) {
                     long hashCode64 = ((SQLIdentifierExpr) rightExpr).nameHashCode64();
@@ -1126,8 +1144,8 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
                     } else if (hashCode64 == FnvHash.Constants.UNKNOWN) {
                         operator = SqlStdOperatorTable.IS_NOT_UNKNOWN;
                     }
-                } else if(rightExpr instanceof SQLBooleanExpr){
-                    if(((SQLBooleanExpr) rightExpr).getValue()){
+                } else if (rightExpr instanceof SQLBooleanExpr) {
+                    if (((SQLBooleanExpr) rightExpr).getValue()) {
                         operator = SqlStdOperatorTable.IS_NOT_TRUE;
                     } else {
                         operator = SqlStdOperatorTable.IS_NOT_FALSE;
@@ -1136,7 +1154,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
                 break;
             case Escape: {
                 SqlBasicCall like = (SqlBasicCall) left;
-                sqlNode = new SqlBasicCall(like.getOperator(), new SqlNode[] { like.operands[0], like.operands[1], right },
+                sqlNode = new SqlBasicCall(like.getOperator(), new SqlNode[]{like.operands[0], like.operands[1], right},
                         SqlParserPos.ZERO);
                 return false;
             }
@@ -1145,12 +1163,11 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
         }
 
-
         if (someOrAllOperator != null) {
-            this.sqlNode = new SqlBasicCall(someOrAllOperator, new SqlNode[] { left, right },
+            this.sqlNode = new SqlBasicCall(someOrAllOperator, new SqlNode[]{left, right},
                     SqlParserPos.ZERO);
         } else {
-            if(operator == SqlStdOperatorTable.IS_NULL
+            if (operator == SqlStdOperatorTable.IS_NULL
                     || operator == SqlStdOperatorTable.IS_NOT_NULL
                     || operator == SqlStdOperatorTable.IS_TRUE
                     || operator == SqlStdOperatorTable.IS_NOT_TRUE) {
@@ -1159,7 +1176,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
                         SqlParserPos.ZERO);
             } else {
                 this.sqlNode = new SqlBasicCall(operator,
-                        new SqlNode[]{left,right},
+                        new SqlNode[]{left, right},
                         SqlParserPos.ZERO);
             }
         }
@@ -1187,8 +1204,8 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         SqlOperator sqlOperator = SqlStdOperatorTable.EXISTS;
         SqlNode sqlNode = sqlOperator.createCall(SqlParserPos.ZERO,
                 convertToSqlNode(x.getSubQuery()));
-        if(x.isNot()){
-            sqlNode = SqlStdOperatorTable.NOT.createCall(SqlParserPos.ZERO,sqlNode);
+        if (x.isNot()) {
+            sqlNode = SqlStdOperatorTable.NOT.createCall(SqlParserPos.ZERO, sqlNode);
         }
         this.sqlNode = sqlNode;
         return false;
@@ -1278,7 +1295,6 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
         String methodName = x.getMethodName();
 
-
         long hashCode64 = x.methodNameHashCode64();
 
         functionOperator = func(hashCode64);
@@ -1305,7 +1321,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         this.sqlNode = functionOperator.createCall(functionQualifier,
                 SqlParserPos.ZERO,
                 SqlParserUtil.toNodeArray(argNodes)
-                );
+        );
 
         SQLOrderBy orderBy = x.getOrderBy();
         if (orderBy != null) {
@@ -1331,22 +1347,22 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
             }
             SqlNode upperBound = createSymbol(windowingBetweenEndBound);
 
-            SqlWindow window = new SqlWindow(SqlParserPos.ZERO
-                    , null
-                    , null
-                    , convertToSqlNodeList(over.getPartitionBy())
-                    , convertOrderby(over.getOrderBy())
-                    , SqlLiteral.createBoolean(isRow, SqlParserPos.ZERO)
-                    , lowerBound
-                    , upperBound
-                    , null
+            SqlWindow window = new SqlWindow(
+                    SqlParserPos.ZERO,
+                    null,
+                    null,
+                    convertToSqlNodeList(over.getPartitionBy()),
+                    convertOrderby(over.getOrderBy()),
+                    SqlLiteral.createBoolean(isRow, SqlParserPos.ZERO),
+                    lowerBound,
+                    upperBound,
+                    null
             );
             sqlNode = SqlStdOperatorTable.OVER.createCall(
                     SqlParserPos.ZERO,
                     aggNode,
                     window);
         }
-
 
         SQLExpr filter = x.getFilter();
         if (filter != null) {
@@ -1358,7 +1374,6 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
                     aggNode,
                     sqlNode);
         }
-
 
         return false;
     }
@@ -1388,7 +1403,6 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
         SqlOperator functionOperator = func(nameHashCode64);
 
-
         String methodName = x.getMethodName();
 
         if (functionOperator == null) {
@@ -1399,9 +1413,9 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
                     this.sqlNode = new com.alibaba.druid.support.calcite.CalciteSqlBasicCall(functionOperator,
                             new SqlNode[]{
-                                    SqlLiteral.createSymbol(SqlTrimFunction.Flag.BOTH, SqlParserPos.ZERO)
-                                    , SqlCharStringLiteral.createCharString(" ", SqlParserPos.ZERO)
-                                    , sqlNode
+                                    SqlLiteral.createSymbol(SqlTrimFunction.Flag.BOTH, SqlParserPos.ZERO),
+                                    SqlCharStringLiteral.createCharString(" ", SqlParserPos.ZERO),
+                                    sqlNode
                             },
                             SqlParserPos.ZERO,
                             false,
@@ -1422,7 +1436,6 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
         SqlLiteral functionQualifier = null;
 
-
         for (SQLExpr exp : arguments) {
             argNodes.add(convertToSqlNode(exp));
         }
@@ -1433,29 +1446,27 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         ) {
             SqlIdentifier arg0 = (SqlIdentifier) argNodes.get(0);
             TimeUnit timeUnit = TimeUnit.valueOf(arg0.toString().toUpperCase());
-            argNodes.set(0
-                    , SqlLiteral.createSymbol(timeUnit, SqlParserPos.ZERO)
-            );
+            argNodes.set(0, SqlLiteral.createSymbol(timeUnit, SqlParserPos.ZERO));
         }
 
         this.sqlNode = new com.alibaba.druid.support.calcite.CalciteSqlBasicCall(functionOperator,
-                                               SqlParserUtil.toNodeArray(argNodes),
-                                               SqlParserPos.ZERO,
-                                               false,
-                                               functionQualifier);
+                SqlParserUtil.toNodeArray(argNodes),
+                SqlParserPos.ZERO,
+                false,
+                functionQualifier);
         return false;
     }
 
     public boolean visit(SQLInListExpr x) {
         SqlNodeList sqlNodes = convertToSqlNodeList(x.getTargetList());
         SqlOperator sqlOperator = x.isNot() ? SqlStdOperatorTable.NOT_IN : SqlStdOperatorTable.IN;
-        sqlNode = new SqlBasicCall(sqlOperator, new SqlNode[] { convertToSqlNode(x.getExpr()), sqlNodes },
-                                   SqlParserPos.ZERO);
+        sqlNode = new SqlBasicCall(sqlOperator, new SqlNode[]{convertToSqlNode(x.getExpr()), sqlNodes},
+                SqlParserPos.ZERO);
 
         return false;
     }
 
-    public boolean visit(SQLVariantRefExpr x){
+    public boolean visit(SQLVariantRefExpr x) {
         if ("?".equals(x.getName())) {
             this.sqlNode = new SqlDynamicParam(x.getIndex(),
                     SqlParserPos.ZERO);
@@ -1472,11 +1483,11 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         switch (operator) {
             case NOT:
                 this.sqlNode = SqlStdOperatorTable.NOT.createCall(SqlParserPos.ZERO,
-                                                                  convertToSqlNode(x.getExpr()));
+                        convertToSqlNode(x.getExpr()));
                 break;
             case Negative:
                 this.sqlNode = SqlStdOperatorTable.UNARY_MINUS.createCall(SqlParserPos.ZERO,
-                                                                          convertToSqlNode(x.getExpr()));
+                        convertToSqlNode(x.getExpr()));
                 break;
             case Not:
             case Compl:
@@ -1514,7 +1525,6 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         return new SqlNodeList(nodes, SqlParserPos.ZERO);
     }
 
-
     protected SqlNode convertToSqlNode(SQLObject ast) {
         if (ast == null) {
             return null;
@@ -1535,16 +1545,16 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         for (SQLSelectOrderByItem item : items) {
             SqlNode node = convertToSqlNode(item.getExpr());
             if (item.getType() == SQLOrderingSpecification.DESC) {
-                node = new SqlBasicCall(SqlStdOperatorTable.DESC, new SqlNode[] { node }, SqlParserPos.ZERO);
+                node = new SqlBasicCall(SqlStdOperatorTable.DESC, new SqlNode[]{node}, SqlParserPos.ZERO);
             }
             SQLSelectOrderByItem.NullsOrderType nullsOrderType = item.getNullsOrderType();
             if (nullsOrderType != null) {
                 switch (nullsOrderType) {
                     case NullsFirst:
-                        node = new SqlBasicCall(SqlStdOperatorTable.NULLS_FIRST, new SqlNode[] { node }, SqlParserPos.ZERO);
+                        node = new SqlBasicCall(SqlStdOperatorTable.NULLS_FIRST, new SqlNode[]{node}, SqlParserPos.ZERO);
                         break;
                     case NullsLast:
-                        node = new SqlBasicCall(SqlStdOperatorTable.NULLS_LAST, new SqlNode[] { node }, SqlParserPos.ZERO);
+                        node = new SqlBasicCall(SqlStdOperatorTable.NULLS_LAST, new SqlNode[]{node}, SqlParserPos.ZERO);
                         break;
                     default:
                         break;
@@ -1574,7 +1584,6 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
     }
 
     private SqlNodeList convertTDDLHint(TDDLHint hint) {
-
         List<TDDLHint.Function> functions = hint.getFunctions();
         List<SqlNode> funNodes = new ArrayList<SqlNode>(functions.size());
 
@@ -1590,10 +1599,10 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
                 SqlNode argValue = convertToSqlNode(argument.getValue());
 
                 List<SqlNode> arg = new ArrayList<SqlNode>();
-                if(argName != null) {
+                if (argName != null) {
                     arg.add(argName);
                 }
-                if(argValue != null) {
+                if (argValue != null) {
                     arg.add(argValue);
                 }
 
@@ -1609,7 +1618,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
 
             SqlNode funNode = new SqlBasicCall(
                     new SqlUnresolvedFunction(new SqlIdentifier(functionName, SqlParserPos.ZERO), null, null,
-                                              null, null, SqlFunctionCategory.USER_DEFINED_FUNCTION), argNodes,
+                            null, null, SqlFunctionCategory.USER_DEFINED_FUNCTION), argNodes,
                     SqlParserPos.ZERO);
 
             funNodes.add(funNode);
@@ -1621,6 +1630,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
     /**
      * If there are multiple VALUES, and all values in VALUES CLAUSE are literal,
      * convert the value clauses to a single value clause.
+     *
      * @param valuesClauseList
      * @return
      */
@@ -1646,7 +1656,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
     }
 
     public boolean visit(SQLIntervalExpr x) {
-        TimeUnit timeUnits[] = getTimeUnit(x.getUnit());
+        TimeUnit[] timeUnits = getTimeUnit(x.getUnit());
         List<SqlNode> convertedArgs = new ArrayList<SqlNode>(2);
         SqlIntervalQualifier unitNode = new SqlIntervalQualifier(timeUnits[0], timeUnits[1], SqlParserPos.ZERO);
         SqlLiteral valueNode = (SqlLiteral) convertToSqlNode(x.getValue());
@@ -1756,19 +1766,22 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
     @Override
     public boolean visit(SQLExtractExpr x) {
         x.getValue().accept(this);
-        TimeUnit timeUnits[] = getTimeUnit(x.getUnit());
+        TimeUnit[] timeUnits = getTimeUnit(x.getUnit());
 
         sqlNode = SqlStdOperatorTable.EXTRACT
-                .createCall(SqlParserPos.ZERO
-                        , new SqlIntervalQualifier(timeUnits[0], timeUnits[1], SqlParserPos.ZERO)
-                        , sqlNode);
+                .createCall(
+                        SqlParserPos.ZERO,
+                        new SqlIntervalQualifier(timeUnits[0], timeUnits[1], SqlParserPos.ZERO),
+                        sqlNode
+                );
         return false;
     }
 
     @Override
     public boolean visit(SQLGroupingSetExpr x) {
-        sqlNode = SqlStdOperatorTable.GROUPING_SETS.createCall(SqlParserPos.ZERO
-                , convertToSqlNodeList(x.getParameters())
+        sqlNode = SqlStdOperatorTable.GROUPING_SETS.createCall(
+                SqlParserPos.ZERO,
+                convertToSqlNodeList(x.getParameters())
         );
         return false;
     }
@@ -1785,18 +1798,20 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
         return false;
     }
 
-
     @Override
     public boolean visit(SQLUnnestTableSource x) {
         sqlNode = SqlStdOperatorTable.UNNEST
-                .createCall(SqlParserPos.ZERO
-                        , convertToSqlNodeList(x.getItems()));
+                .createCall(
+                        SqlParserPos.ZERO,
+                        convertToSqlNodeList(x.getItems())
+                );
 
         String alias = x.getAlias();
         if (alias != null) {
-            sqlNode = new SqlBasicCall(SqlStdOperatorTable.AS
-                        , new SqlNode[] { sqlNode, new SqlIdentifier(alias, SqlParserPos.ZERO) }
-                        , SqlParserPos.ZERO
+            sqlNode = new SqlBasicCall(
+                    SqlStdOperatorTable.AS,
+                    new SqlNode[]{sqlNode, new SqlIdentifier(alias, SqlParserPos.ZERO)},
+                    SqlParserPos.ZERO
             );
         }
         return false;
@@ -1812,12 +1827,13 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
     public boolean visit(MySqlExplainStatement x) {
         x.getStatement().accept(this);
         SqlNode explicandum = this.sqlNode;
-        sqlNode = new SqlExplain(SqlParserPos.ZERO
-                , explicandum
-                , SqlLiteral.createSymbol(SqlExplainLevel.EXPPLAN_ATTRIBUTES, SqlParserPos.ZERO)
-                , SqlLiteral.createSymbol(SqlExplain.Depth.PHYSICAL, SqlParserPos.ZERO)
-                , SqlLiteral.createSymbol(SqlExplainFormat.TEXT, SqlParserPos.ZERO)
-                , 0
+        sqlNode = new SqlExplain(
+                SqlParserPos.ZERO,
+                explicandum,
+                SqlLiteral.createSymbol(SqlExplainLevel.EXPPLAN_ATTRIBUTES, SqlParserPos.ZERO),
+                SqlLiteral.createSymbol(SqlExplain.Depth.PHYSICAL, SqlParserPos.ZERO),
+                SqlLiteral.createSymbol(SqlExplainFormat.TEXT, SqlParserPos.ZERO),
+                0
         );
         return false;
     }

@@ -30,7 +30,6 @@ import java.io.Reader;
 import java.util.List;
 
 public class DB2ResourceTest extends OracleTest {
-
     public void test_0() throws Exception {
         exec_test("bvt/parser/db2-0.txt");
     }

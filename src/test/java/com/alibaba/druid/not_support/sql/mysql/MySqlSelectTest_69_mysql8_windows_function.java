@@ -28,9 +28,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_69_mysql8_windows_function extends MysqlTest {
-
     public static void test_0() throws Exception {
-        String sql =  "SELECT\n" +
+        String sql = "SELECT\n" +
                 "         val,\n" +
                 "         ROW_NUMBER()   OVER w AS 'row_number',\n" +
                 "         CUME_DIST()    OVER w AS 'cume_dist',\n" +
@@ -63,7 +62,7 @@ public class MySqlSelectTest_69_mysql8_windows_function extends MysqlTest {
                             "\t)\n" +
                             "SELECT *\n" +
                             "FROM ancestors;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -79,7 +78,7 @@ public class MySqlSelectTest_69_mysql8_windows_function extends MysqlTest {
                             "\t)\n" +
                             "select *\n" +
                             "from ancestors;", //
-                                output);
+                    output);
         }
 
         {

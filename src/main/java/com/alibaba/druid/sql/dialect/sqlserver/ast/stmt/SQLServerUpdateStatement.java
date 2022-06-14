@@ -24,12 +24,11 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLServerStatement {
-
-    private SQLServerTop    top;
+    private SQLServerTop top;
     private SQLServerOutput output;
-    
-    public SQLServerUpdateStatement(){
-        super (DbType.sqlserver);
+
+    public SQLServerUpdateStatement() {
+        super(DbType.sqlserver);
     }
 
     public SQLServerTop getTop() {

@@ -14,7 +14,6 @@ import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class ConfigFilterTest4 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

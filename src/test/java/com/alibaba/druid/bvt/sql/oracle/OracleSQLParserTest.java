@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 
 public class OracleSQLParserTest extends TestCase {
 
-
     public void test_1() throws Exception {
         String sql = "SELECT employees_seq.nextval FROM DUAL;";
 

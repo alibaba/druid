@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest126_drds extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE xx\n" +
                 "DBPARTITION BY hash(name1) TBPARTITION BY hash(name2) TBPARTITIONS 4\n" +
@@ -21,7 +20,7 @@ public class MySqlCreateTableTest126_drds extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -36,7 +35,6 @@ public class MySqlCreateTableTest126_drds extends MysqlTest {
                 ")", stmt.toString());
 
     }
-
 
 
 }

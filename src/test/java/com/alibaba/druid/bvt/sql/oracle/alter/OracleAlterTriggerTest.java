@@ -25,10 +25,9 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleAlterTriggerTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter trigger DDL_TRIGGER_FOR_DATABASE ENABLE";
+                "alter trigger DDL_TRIGGER_FOR_DATABASE ENABLE";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

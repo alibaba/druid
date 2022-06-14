@@ -23,14 +23,13 @@ import java.util.List;
 
 public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKeyConstraint {
     private SQLExprTableSource referencedTable;
-    private List<SQLName>      referencingColumns = new ArrayList<SQLName>();
-    private List<SQLName>      referencedColumns  = new ArrayList<SQLName>();
-    private boolean            onDeleteCascade    = false;
-    private boolean            onDeleteSetNull    = false;
-    private boolean            disableNovalidate  = false;
+    private List<SQLName> referencingColumns = new ArrayList<SQLName>();
+    private List<SQLName> referencedColumns = new ArrayList<SQLName>();
+    private boolean onDeleteCascade;
+    private boolean onDeleteSetNull;
+    private boolean disableNovalidate;
 
-    public SQLForeignKeyImpl(){
-
+    public SQLForeignKeyImpl() {
     }
 
     @Override
@@ -104,7 +103,7 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
             acceptChild(visitor, this.getReferencingColumns());
             acceptChild(visitor, this.getReferencedColumns());
         }
-        visitor.endVisit(this);        
+        visitor.endVisit(this);
     }
 
     public void cloneTo(SQLForeignKeyImpl x) {
@@ -137,37 +136,36 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
         FULL("FULL"), PARTIAL("PARTIAL"), SIMPLE("SIMPLE");
 
         public final String name;
-        public final String name_lcase;
+        public final String nameLCase;
 
-        Match(String name){
+        Match(String name) {
             this.name = name;
-            this.name_lcase = name.toLowerCase();
+            this.nameLCase = name.toLowerCase();
         }
     }
 
     public static enum On {
-        DELETE("DELETE"), //
+        DELETE("DELETE"),
         UPDATE("UPDATE");
 
         public final String name;
-        public final String name_lcase;
+        public final String nameLCase;
 
-        On(String name){
+        On(String name) {
             this.name = name;
-            this.name_lcase = name.toLowerCase();
+            this.nameLCase = name.toLowerCase();
         }
     }
 
     public static enum Option {
-
         RESTRICT("RESTRICT"), CASCADE("CASCADE"), SET_NULL("SET NULL"), NO_ACTION("NO ACTION"), SET_DEFAULT("SET DEFAULT");
 
         public final String name;
-        public final String name_lcase;
+        public final String nameLCase;
 
-        Option(String name){
+        Option(String name) {
             this.name = name;
-            this.name_lcase = name.toLowerCase();
+            this.nameLCase = name.toLowerCase();
         }
 
         public String getText() {

@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerSelectTest1 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "USE AdventureWorks2008R2;";
 

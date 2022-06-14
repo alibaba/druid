@@ -24,37 +24,36 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DROP TABLE employees_temp;\n" +
-				"CREATE TABLE employees_temp AS\n" +
-				"  SELECT employee_id, first_name, last_name \n" +
-				"  FROM employees;\n" +
-				" \n" +
-				"DECLARE\n" +
-				"  emp_id          employees_temp.employee_id%TYPE := 299;\n" +
-				"  emp_first_name  employees_temp.first_name%TYPE  := 'Bob';\n" +
-				"  emp_last_name   employees_temp.last_name%TYPE   := 'Henry';\n" +
-				"BEGIN\n" +
-				"  INSERT INTO employees_temp (employee_id, first_name, last_name) \n" +
-				"  VALUES (emp_id, emp_first_name, emp_last_name);\n" +
-				" \n" +
-				"  UPDATE employees_temp\n" +
-				"  SET first_name = 'Robert'\n" +
-				"  WHERE employee_id = emp_id;\n" +
-				" \n" +
-				"  DELETE FROM employees_temp\n" +
-				"  WHERE employee_id = emp_id\n" +
-				"  RETURNING first_name, last_name\n" +
-				"  INTO emp_first_name, emp_last_name;\n" +
-				" \n" +
-				"  COMMIT;\n" +
-				"  DBMS_OUTPUT.PUT_LINE (emp_first_name || ' ' || emp_last_name);\n" +
-				"END;"; //
+                "CREATE TABLE employees_temp AS\n" +
+                "  SELECT employee_id, first_name, last_name \n" +
+                "  FROM employees;\n" +
+                " \n" +
+                "DECLARE\n" +
+                "  emp_id          employees_temp.employee_id%TYPE := 299;\n" +
+                "  emp_first_name  employees_temp.first_name%TYPE  := 'Bob';\n" +
+                "  emp_last_name   employees_temp.last_name%TYPE   := 'Henry';\n" +
+                "BEGIN\n" +
+                "  INSERT INTO employees_temp (employee_id, first_name, last_name) \n" +
+                "  VALUES (emp_id, emp_first_name, emp_last_name);\n" +
+                " \n" +
+                "  UPDATE employees_temp\n" +
+                "  SET first_name = 'Robert'\n" +
+                "  WHERE employee_id = emp_id;\n" +
+                " \n" +
+                "  DELETE FROM employees_temp\n" +
+                "  WHERE employee_id = emp_id\n" +
+                "  RETURNING first_name, last_name\n" +
+                "  INTO emp_first_name, emp_last_name;\n" +
+                " \n" +
+                "  COMMIT;\n" +
+                "  DBMS_OUTPUT.PUT_LINE (emp_first_name || ' ' || emp_last_name);\n" +
+                "END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(3, statementList.size());
-		SQLStatement stmt = statementList.get(2);
+        assertEquals(3, statementList.size());
+        SQLStatement stmt = statementList.get(2);
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -78,45 +77,45 @@ public class Oracle_pl_1 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("DECLARE\n" +
-							"\temp_id employees_temp.employee_id%TYPE := 299;\n" +
-							"\temp_first_name employees_temp.first_name%TYPE := 'Bob';\n" +
-							"\temp_last_name employees_temp.last_name%TYPE := 'Henry';\n" +
-							"BEGIN\n" +
-							"\tINSERT INTO employees_temp (employee_id, first_name, last_name)\n" +
-							"\tVALUES (emp_id, emp_first_name, emp_last_name);\n" +
-							"\tUPDATE employees_temp\n" +
-							"\tSET first_name = 'Robert'\n" +
-							"\tWHERE employee_id = emp_id;\n" +
-							"\tDELETE FROM employees_temp\n" +
-							"\tWHERE employee_id = emp_id\n" +
-							"\tRETURNING first_name, last_name INTO emp_first_name, emp_last_name;\n" +
-							"\tCOMMIT;\n" +
-							"\tDBMS_OUTPUT.PUT_LINE(emp_first_name || ' ' || emp_last_name);\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("declare\n" +
-							"\temp_id employees_temp.employee_id%TYPE := 299;\n" +
-							"\temp_first_name employees_temp.first_name%TYPE := 'Bob';\n" +
-							"\temp_last_name employees_temp.last_name%TYPE := 'Henry';\n" +
-							"begin\n" +
-							"\tinsert into employees_temp (employee_id, first_name, last_name)\n" +
-							"\tvalues (emp_id, emp_first_name, emp_last_name);\n" +
-							"\tupdate employees_temp\n" +
-							"\tset first_name = 'Robert'\n" +
-							"\twhere employee_id = emp_id;\n" +
-							"\tdelete from employees_temp\n" +
-							"\twhere employee_id = emp_id\n" +
-							"\treturning first_name, last_name into emp_first_name, emp_last_name;\n" +
-							"\tcommit;\n" +
-							"\tDBMS_OUTPUT.PUT_LINE(emp_first_name || ' ' || emp_last_name);\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toOracleString(stmt);
+            assertEquals("DECLARE\n" +
+                            "\temp_id employees_temp.employee_id%TYPE := 299;\n" +
+                            "\temp_first_name employees_temp.first_name%TYPE := 'Bob';\n" +
+                            "\temp_last_name employees_temp.last_name%TYPE := 'Henry';\n" +
+                            "BEGIN\n" +
+                            "\tINSERT INTO employees_temp (employee_id, first_name, last_name)\n" +
+                            "\tVALUES (emp_id, emp_first_name, emp_last_name);\n" +
+                            "\tUPDATE employees_temp\n" +
+                            "\tSET first_name = 'Robert'\n" +
+                            "\tWHERE employee_id = emp_id;\n" +
+                            "\tDELETE FROM employees_temp\n" +
+                            "\tWHERE employee_id = emp_id\n" +
+                            "\tRETURNING first_name, last_name INTO emp_first_name, emp_last_name;\n" +
+                            "\tCOMMIT;\n" +
+                            "\tDBMS_OUTPUT.PUT_LINE(emp_first_name || ' ' || emp_last_name);\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("declare\n" +
+                            "\temp_id employees_temp.employee_id%TYPE := 299;\n" +
+                            "\temp_first_name employees_temp.first_name%TYPE := 'Bob';\n" +
+                            "\temp_last_name employees_temp.last_name%TYPE := 'Henry';\n" +
+                            "begin\n" +
+                            "\tinsert into employees_temp (employee_id, first_name, last_name)\n" +
+                            "\tvalues (emp_id, emp_first_name, emp_last_name);\n" +
+                            "\tupdate employees_temp\n" +
+                            "\tset first_name = 'Robert'\n" +
+                            "\twhere employee_id = emp_id;\n" +
+                            "\tdelete from employees_temp\n" +
+                            "\twhere employee_id = emp_id\n" +
+                            "\treturning first_name, last_name into emp_first_name, emp_last_name;\n" +
+                            "\tcommit;\n" +
+                            "\tDBMS_OUTPUT.PUT_LINE(emp_first_name || ' ' || emp_last_name);\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

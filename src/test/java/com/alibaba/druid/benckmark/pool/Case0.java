@@ -32,27 +32,26 @@ import com.jolbox.bonecp.BoneCPDataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class Case0 extends TestCase {
+    private String jdbcUrl;
+    private String user;
+    private String password;
+    private String driverClass;
+    private int initialSize = 1;
+    private int minIdle = 3;
+    private int maxIdle = 8;
+    private int maxActive = 8;
+    private String validationQuery = "SELECT 1";
+    private boolean testOnBorrow = false;
 
-    private String   jdbcUrl;
-    private String   user;
-    private String   password;
-    private String   driverClass;
-    private int      initialSize                = 1;
-    private int      minIdle                    = 3;
-    private int      maxIdle                    = 8;
-    private int      maxActive                  = 8;
-    private String   validationQuery            = "SELECT 1";
-    private boolean  testOnBorrow               = false;
-
-    private long     minEvictableIdleTimeMillis = 3000;
-    public final int LOOP_COUNT                 = 5;
-    public final int COUNT                      = 1000 * 1000 * 1;
+    private long minEvictableIdleTimeMillis = 3000;
+    public final int LOOP_COUNT = 5;
+    public final int COUNT = 1000 * 1000 * 1;
 
     protected void setUp() throws Exception {
-         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-         user = "dragoon25";
-         password = "dragoon25";
-         driverClass = "com.alibaba.druid.mock.MockDriver";
+        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+        user = "dragoon25";
+        password = "dragoon25";
+        driverClass = "com.alibaba.druid.mock.MockDriver";
 
 //        jdbcUrl = "jdbc:mysql://a.b.c.d:3306/masterdb";
 //        user = "x";
@@ -126,7 +125,7 @@ public class Case0 extends TestCase {
         }
         System.out.println();
     }
-    
+
     public void f_test_c3p0() throws Exception {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         // dataSource.(10);
@@ -153,14 +152,14 @@ public class Case0 extends TestCase {
         // dataSource.setMaxActive(50);
         dataSource.setMinIdle(minIdle);
         dataSource.setMaxActive(maxIdle);
-        
+
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
         // dataSource.setPoolPreparedStatements(true);
         // dataSource.setMaxOpenPreparedStatements(100);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
-        
+
         for (int i = 0; i < LOOP_COUNT; ++i) {
             p0(dataSource, "tomcat-jdbc");
         }
@@ -185,6 +184,6 @@ public class Case0 extends TestCase {
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
         System.out.println(name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC "
-                           + fullGC);
+                + fullGC);
     }
 }

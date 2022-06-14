@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLServerDeclareTest extends TestCase {
-
     public void test_0() {
         String sql = "declare @is_updated bit";
 
@@ -32,7 +31,7 @@ public class SQLServerDeclareTest extends TestCase {
 
         Assert.assertEquals("DECLARE @is_updated bit", text);
     }
-    
+
     public void test_1() {
         String sql = "DECLARE @Group nvarchar(50), @Sales money=1;";
 
@@ -45,7 +44,7 @@ public class SQLServerDeclareTest extends TestCase {
 
         Assert.assertEquals("DECLARE @Group nvarchar(50), @Sales money = 1;", text);
     }
-    
+
     public void test_2() {
         String sql = "DECLARE @cursor CURSOR";
 
@@ -70,11 +69,11 @@ public class SQLServerDeclareTest extends TestCase {
         String text = SQLUtils.toSQLString(stmtList, JdbcUtils.SQL_SERVER);
 
         String expected = "DECLARE @MyTableVar TABLE ("//
-                          + "\n\tEmpID int NOT NULL,"//
-                          + "\n\tOldVacationHours int,"//
-                          + "\n\tNewVacationHours int,"//
-                          + "\n\tModifiedDate datetime"//
-                          + "\n);";
+                + "\n\tEmpID int NOT NULL,"//
+                + "\n\tOldVacationHours int,"//
+                + "\n\tNewVacationHours int,"//
+                + "\n\tModifiedDate datetime"//
+                + "\n);";
         Assert.assertEquals(expected, text);
     }
 

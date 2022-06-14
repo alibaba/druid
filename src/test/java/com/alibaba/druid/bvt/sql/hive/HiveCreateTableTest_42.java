@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class HiveCreateTableTest_42 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS default.create_test (id int COMMENT '学号', name string COMMENT '姓名')ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe' WITH SERDEPROPERTIES(\"serialization.encoding\"='gbk');";
 

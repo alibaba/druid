@@ -26,18 +26,17 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock.Isolation;
 import com.alibaba.druid.sql.parser.*;
 
 public class DB2SelectParser extends SQLSelectParser {
-
-    public DB2SelectParser(SQLExprParser exprParser){
+    public DB2SelectParser(SQLExprParser exprParser) {
         super(exprParser);
         dbType = DbType.db2;
     }
 
-    public DB2SelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+    public DB2SelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
         super(exprParser, selectListCache);
         dbType = DbType.db2;
     }
 
-    public DB2SelectParser(String sql){
+    public DB2SelectParser(String sql) {
         this(new DB2ExprParser(sql));
     }
 
@@ -93,14 +92,13 @@ public class DB2SelectParser extends SQLSelectParser {
         parseHierachical(queryBlock);
 
         parseGroupBy(queryBlock);
-        
+
         if (lexer.token() == Token.ORDER) {
             SQLOrderBy orderBy = parseOrderBy();
             queryBlock.setOrderBy(orderBy);
         }
 
-
-        for (;;) {
+        for (; ; ) {
             if (lexer.token() == Token.FETCH) {
                 lexer.nextToken();
                 accept(Token.FIRST);
@@ -112,7 +110,7 @@ public class DB2SelectParser extends SQLSelectParser {
                 accept(Token.ONLY);
                 continue;
             }
-            
+
             if (lexer.token() == Token.WITH) {
                 lexer.nextToken();
                 if (lexer.identifierEquals("RR")) {
@@ -129,10 +127,10 @@ public class DB2SelectParser extends SQLSelectParser {
                 lexer.nextToken();
                 continue;
             }
-            
+
             if (lexer.token() == Token.FOR) {
                 lexer.nextToken();
-                
+
                 if (lexer.token() == Token.UPDATE) {
                     queryBlock.setForUpdate(true);
                     lexer.nextToken();
@@ -142,11 +140,11 @@ public class DB2SelectParser extends SQLSelectParser {
                     queryBlock.setForReadOnly(true);
                 }
             }
-            
+
             if (lexer.token() == Token.OPTIMIZE) {
                 lexer.nextToken();
                 accept(Token.FOR);
-                
+
                 queryBlock.setOptimizeFor(this.expr());
                 if (lexer.identifierEquals("ROW")) {
                     lexer.nextToken();
@@ -154,7 +152,7 @@ public class DB2SelectParser extends SQLSelectParser {
                     acceptIdentifier("ROWS");
                 }
             }
-            
+
             break;
         }
 

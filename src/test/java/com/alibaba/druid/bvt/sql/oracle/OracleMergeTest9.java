@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleMergeTest9 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "MERGE INTO tb_xxx_test t1\n" +
                 "USING (SELECT '1' AS aa_item_id, '2' AS mem_test_id FROM dual) t2\n" +
@@ -50,7 +49,7 @@ public class OracleMergeTest9 extends OracleTest {
                         ") t2 ON (t1.aa_item_id = t2.aa_item_id\n" +
                         "AND t1.mem_test_id = t2.mem_test_id) \n" +
                         "WHEN NOT MATCHED THEN INSERT (aa_id, aa_item_id, gg_id, test_id) VALUES (?, ?, ?, ?)",
-                            result);
+                result);
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));

@@ -7,7 +7,6 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.ast.expr.SQLGroupingSetExpr;
 
 public class EqualTest_groupSet extends TestCase {
-
     public void test_eq() throws Exception {
         SQLGroupingSetExpr exprA = new SQLGroupingSetExpr();
         SQLGroupingSetExpr exprB = new SQLGroupingSetExpr();

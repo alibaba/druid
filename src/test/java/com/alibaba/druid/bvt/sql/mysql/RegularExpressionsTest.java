@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class RegularExpressionsTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT 'Monty!' REGEXP '.*'";
 
@@ -45,7 +44,7 @@ public class RegularExpressionsTest extends TestCase {
         List<SQLStatement> stmtList = parser.parseStatementList();
 
         String text = output(stmtList);
-        
+
         String e = "SELECT 'new*\n*line' REGEXP 'new\\*.\\*line';";
 
         Assert.assertEquals("SELECT 'new*\n*line' REGEXP 'new\\\\*.\\\\*line';", text);

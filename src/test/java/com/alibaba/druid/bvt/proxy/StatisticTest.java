@@ -24,7 +24,6 @@ import com.alibaba.druid.stat.JdbcConnectionStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class StatisticTest extends TestCase {
-
     public void test_stat() throws Exception {
         JdbcConnectionStat stat = new JdbcConnectionStat();
         Assert.assertEquals(null, stat.getConnectLastTime());
@@ -33,7 +32,7 @@ public class StatisticTest extends TestCase {
         stat.setActiveCount(2);
         Assert.assertEquals(2, stat.getActiveMax());
     }
-    
+
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());

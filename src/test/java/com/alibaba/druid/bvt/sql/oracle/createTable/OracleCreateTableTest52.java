@@ -26,30 +26,29 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest52 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"ID\" NUMBER NOT NULL ENABLE, \n" +
-                "  \"GMT_CREATE\" DATE NOT NULL ENABLE, \n" +
-                "  \"GMT_MODIFIED\" DATE NOT NULL ENABLE, \n" +
-                "  \"ADMIN_SEQ\" NUMBER, \n" +
-                "  \"COMPANY_ID\" NUMBER, \n" +
-                "  \"NOW_LEVEL\" NUMBER, \n" +
-                "  \"GMV_30DAY\" NUMBER, \n" +
-                "  \"REFUND_30DAY\" NUMBER, \n" +
-                "  \"REPUTATION_30DAY\" NUMBER, \n" +
-                "  \"REBUY_AMOUNT\" NUMBER, \n" +
-                "  \"STANDARD_CNT\" NUMBER, \n" +
-                "   CONSTRAINT \"WS_SELLER_LEVEL_PK\" PRIMARY KEY (\"ID\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APPDATA1M\"  ENABLE\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APPDATA1M\"  ENABLE ROW MOVEMENT     ";
+                "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"ID\" NUMBER NOT NULL ENABLE, \n" +
+                        "  \"GMT_CREATE\" DATE NOT NULL ENABLE, \n" +
+                        "  \"GMT_MODIFIED\" DATE NOT NULL ENABLE, \n" +
+                        "  \"ADMIN_SEQ\" NUMBER, \n" +
+                        "  \"COMPANY_ID\" NUMBER, \n" +
+                        "  \"NOW_LEVEL\" NUMBER, \n" +
+                        "  \"GMV_30DAY\" NUMBER, \n" +
+                        "  \"REFUND_30DAY\" NUMBER, \n" +
+                        "  \"REPUTATION_30DAY\" NUMBER, \n" +
+                        "  \"REBUY_AMOUNT\" NUMBER, \n" +
+                        "  \"STANDARD_CNT\" NUMBER, \n" +
+                        "   CONSTRAINT \"WS_SELLER_LEVEL_PK\" PRIMARY KEY (\"ID\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APPDATA1M\"  ENABLE\n" +
+                        "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APPDATA1M\"  ENABLE ROW MOVEMENT     ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -106,7 +105,7 @@ public class OracleCreateTableTest52 extends OracleTest {
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

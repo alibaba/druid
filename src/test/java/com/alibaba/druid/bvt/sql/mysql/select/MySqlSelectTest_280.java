@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 
 public class MySqlSelectTest_280 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select date(created_at)创建日期,\n" +
                 "count(distinct task_id)整体维修创建量,\n" +
@@ -74,7 +73,6 @@ public class MySqlSelectTest_280 extends MysqlTest {
                 "\tAND date(created_at) <= date_sub(curdate(), INTERVAL 1 DAY)\n" +
                 "GROUP BY date(created_at)", stmt.toString());
     }
-
 
 
 }

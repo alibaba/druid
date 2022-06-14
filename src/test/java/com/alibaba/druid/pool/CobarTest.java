@@ -29,14 +29,14 @@ public class CobarTest extends TestCase {
     private String password;
     private String driverClass;
     private DruidDataSource dataSource;
-    
+
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:mysql://a.b.c.d:8066/pt_dragoon_masterdb_test?useUnicode=true&characterEncoding=UTF-8";
         user = "pt_dragoon_test";
         password = "pt_dragoon_test";
         driverClass = "com.mysql.jdbc.Driver";
     }
-    
+
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
@@ -51,9 +51,9 @@ public class CobarTest extends TestCase {
         dataSource.setExceptionSorter(MySqlExceptionSorter.class.getName());
 
         Connection conn = dataSource.getConnection();
-        
+
         conn.close();
-        
+
         dataSource.close();
     }
 }

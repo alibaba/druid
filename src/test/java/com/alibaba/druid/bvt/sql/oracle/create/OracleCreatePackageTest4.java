@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreatePackageTest4 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
                 "CREATE OR REPLACE PACKAGE         XON_CALC_RIGHT_PRICE_PKG IS\n" +
@@ -119,7 +118,7 @@ public class OracleCreatePackageTest4 extends OracleTest {
                         "\t)\n" +
                         "\t;\n" +
                         "END XON_CALC_RIGHT_PRICE_PKG;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

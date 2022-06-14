@@ -13,7 +13,6 @@ import java.sql.Types;
 import java.util.List;
 
 public class MySqlCreateTableTest112 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE opening_lines ( " +
                 "id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY" +
@@ -25,7 +24,7 @@ public class MySqlCreateTableTest112 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(5, stmt.getTableElementList().size());

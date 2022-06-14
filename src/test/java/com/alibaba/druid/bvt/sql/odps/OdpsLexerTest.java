@@ -58,7 +58,6 @@ public class OdpsLexerTest extends TestCase {
         assertEquals("${PN}_events", lexer.stringVal());
     }
 
-
     public void test_error_0() throws Exception {
         String str = "1 `aaa\n${PN}_events";
         OdpsLexer lexer = new OdpsLexer(str);
@@ -75,7 +74,6 @@ public class OdpsLexerTest extends TestCase {
         assertEquals(Token.IDENTIFIER, lexer.token());
         assertEquals("${PN}_events", lexer.stringVal());
     }
-
 
     public void test_error_1() throws Exception {
         String str = "`aaa\n${PN}_events";

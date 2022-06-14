@@ -24,22 +24,21 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest7 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select id, name, parameters, \"algModuleRule.id\", \"algModuleRule.name\"" + //
-                     ", \"algModuleRule.assembleType\", \"algModuleRule.algmIds\", \"algModuleRule.subAlgmIds\"" + //
-                     ", \"algModuleRule.algmRatio\", \"algModuleRule.algmMaxRatio\", \"algModuleRule.objectType\"" + //
-                     ", \"cateRule.id\", \"cateRule.name\", \"cateRule.assembleType\", \"cateRule.algmIds\"" + //
-                     ", \"cateRule.algmRatio\", \"cateRule.algmMaxRatio\", \"appObject.id\",\"appObject.name\"" + //
-                     ", \"appObject.beanId\" " + //
-                     "from cnres.function_select_irecom_scene()" + //
-                     " as a( id text,name text,parameters text, \"algModuleRule.id\" text,\"algModuleRule.name\" text" + //
-                     "    , \"algModuleRule.assembleType\" text,\"algModuleRule.algmIds\" text" + //
-                     "    , \"algModuleRule.subAlgmIds\" text,\"algModuleRule.algmRatio\" text" + //
-                     "    , \"algModuleRule.algmMaxRatio\" text, \"algModuleRule.objectType\" text" + //
-                     "    , \"cateRule.id\" text, \"cateRule.name\" text, \"cateRule.assembleType\" text" + //
-                     "    , \"cateRule.algmIds\" text, \"cateRule.algmRatio\" text, \"cateRule.algmMaxRatio\" text" + //
-                     "    , \"appObject.id\" text,\"appObject.name\" text, \"appObject.beanId\" text)";
+                ", \"algModuleRule.assembleType\", \"algModuleRule.algmIds\", \"algModuleRule.subAlgmIds\"" + //
+                ", \"algModuleRule.algmRatio\", \"algModuleRule.algmMaxRatio\", \"algModuleRule.objectType\"" + //
+                ", \"cateRule.id\", \"cateRule.name\", \"cateRule.assembleType\", \"cateRule.algmIds\"" + //
+                ", \"cateRule.algmRatio\", \"cateRule.algmMaxRatio\", \"appObject.id\",\"appObject.name\"" + //
+                ", \"appObject.beanId\" " + //
+                "from cnres.function_select_irecom_scene()" + //
+                " as a( id text,name text,parameters text, \"algModuleRule.id\" text,\"algModuleRule.name\" text" + //
+                "    , \"algModuleRule.assembleType\" text,\"algModuleRule.algmIds\" text" + //
+                "    , \"algModuleRule.subAlgmIds\" text,\"algModuleRule.algmRatio\" text" + //
+                "    , \"algModuleRule.algmMaxRatio\" text, \"algModuleRule.objectType\" text" + //
+                "    , \"cateRule.id\" text, \"cateRule.name\" text, \"cateRule.assembleType\" text" + //
+                "    , \"cateRule.algmIds\" text, \"cateRule.algmRatio\" text, \"cateRule.algmMaxRatio\" text" + //
+                "    , \"appObject.id\" text,\"appObject.name\" text, \"appObject.beanId\" text)";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

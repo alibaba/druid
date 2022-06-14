@@ -16,11 +16,9 @@
 package com.alibaba.druid.sql.visitor.functions;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
-import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
 import java.util.List;
 
@@ -28,8 +26,7 @@ import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class IfNull implements Function {
-
-    public final static IfNull instance = new IfNull();
+    public static final IfNull instance = new IfNull();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         final List<SQLExpr> arguments = x.getArguments();
@@ -45,7 +42,7 @@ public class IfNull implements Function {
             SQLExpr valueExpr = arguments.get(1);
             valueExpr.accept(visitor);
             return valueExpr.getAttributes().get(EVAL_VALUE);
-        } else  {
+        } else {
             return itemValue;
         }
     }

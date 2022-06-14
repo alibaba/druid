@@ -12,7 +12,6 @@ import java.util.List;
  * Date 2019-06-16 21:45
  */
 public class DrdsCancelDDLJob extends MySqlStatementImpl implements SQLStatement {
-
     private List<Long> jobIds = new ArrayList<Long>();
 
     public void accept0(MySqlASTVisitor visitor) {

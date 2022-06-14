@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 
 public class WallStatTest_select_2
         extends TestCase {
-
     private String sql = "SELECT *\n" +
             "FROM `t`\n" +
             "WHERE `t`.`col1` = '1'\n" +

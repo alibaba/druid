@@ -15,7 +15,9 @@
  */
 package com.alibaba.druid.support.http.stat;
 
-import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.LRUCache;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,108 +31,105 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.LRUCache;
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
 
 public class WebAppStat {
+    private static final Log LOG = LogFactory.getLog(WebAppStat.class);
 
-    private final static Log                        LOG                            = LogFactory.getLog(WebAppStat.class);
+    public static final int DEFAULT_MAX_STAT_URI_COUNT = 1000;
+    public static final int DEFAULT_MAX_STAT_SESSION_COUNT = 1000;
 
-    public final static int                         DEFAULT_MAX_STAT_URI_COUNT     = 1000;
-    public final static int                         DEFAULT_MAX_STAT_SESSION_COUNT = 1000;
+    private static final ThreadLocal<WebAppStat> currentLocal = new ThreadLocal<WebAppStat>();
 
-    private final static ThreadLocal<WebAppStat>    currentLocal                   = new ThreadLocal<WebAppStat>();
+    private volatile int maxStatUriCount = DEFAULT_MAX_STAT_URI_COUNT;
+    private volatile int maxStatSessionCount = DEFAULT_MAX_STAT_SESSION_COUNT;
 
-    private volatile int                            maxStatUriCount                = DEFAULT_MAX_STAT_URI_COUNT;
-    private volatile int                            maxStatSessionCount            = DEFAULT_MAX_STAT_SESSION_COUNT;
+    private final AtomicInteger runningCount = new AtomicInteger();
+    private final AtomicInteger concurrentMax = new AtomicInteger();
+    private final AtomicLong requestCount = new AtomicLong(0);
+    private final AtomicLong sessionCount = new AtomicLong(0);
 
-    private final AtomicInteger                     runningCount                   = new AtomicInteger();
-    private final AtomicInteger                     concurrentMax                  = new AtomicInteger();
-    private final AtomicLong                        requestCount                   = new AtomicLong(0);
-    private final AtomicLong                        sessionCount                   = new AtomicLong(0);
+    private final AtomicLong jdbcFetchRowCount = new AtomicLong();
+    private final AtomicLong jdbcUpdateCount = new AtomicLong();
+    private final AtomicLong jdbcExecuteCount = new AtomicLong();
+    private final AtomicLong jdbcExecuteTimeNano = new AtomicLong();
 
-    private final AtomicLong                        jdbcFetchRowCount              = new AtomicLong();
-    private final AtomicLong                        jdbcUpdateCount                = new AtomicLong();
-    private final AtomicLong                        jdbcExecuteCount               = new AtomicLong();
-    private final AtomicLong                        jdbcExecuteTimeNano            = new AtomicLong();
+    private final AtomicLong jdbcCommitCount = new AtomicLong();
+    private final AtomicLong jdbcRollbackCount = new AtomicLong();
 
-    private final AtomicLong                        jdbcCommitCount                = new AtomicLong();
-    private final AtomicLong                        jdbcRollbackCount              = new AtomicLong();
+    private final ConcurrentMap<String, WebURIStat> uriStatMap = new ConcurrentHashMap<String, WebURIStat>(
+            16,
+            0.75f,
+            1);
+    private final LRUCache<String, WebSessionStat> sessionStatMap;
 
-    private final ConcurrentMap<String, WebURIStat> uriStatMap                     = new ConcurrentHashMap<String, WebURIStat>(
-                                                                                                                               16,
-                                                                                                                               0.75f,
-                                                                                                                               1);
-    private final LRUCache<String, WebSessionStat>  sessionStatMap;
+    private final ReadWriteLock sessionStatLock = new ReentrantReadWriteLock();
 
-    private final ReadWriteLock                     sessionStatLock                = new ReentrantReadWriteLock();
+    private final AtomicLong uriStatMapFullCount = new AtomicLong();
+    private final AtomicLong uriSessionMapFullCount = new AtomicLong();
 
-    private final AtomicLong                        uriStatMapFullCount            = new AtomicLong();
-    private final AtomicLong                        uriSessionMapFullCount         = new AtomicLong();
+    private final AtomicLong osMacOSXCount = new AtomicLong(0);
+    private final AtomicLong osWindowsCount = new AtomicLong(0);
+    private final AtomicLong osLinuxCount = new AtomicLong(0);
+    private final AtomicLong osSymbianCount = new AtomicLong(0);
+    private final AtomicLong osFreeBSDCount = new AtomicLong(0);
+    private final AtomicLong osOpenBSDCount = new AtomicLong(0);
+    private final AtomicLong osAndroidCount = new AtomicLong(0);
 
-    private final AtomicLong                        osMacOSXCount                  = new AtomicLong(0);
-    private final AtomicLong                        osWindowsCount                 = new AtomicLong(0);
-    private final AtomicLong                        osLinuxCount                   = new AtomicLong(0);
-    private final AtomicLong                        osSymbianCount                 = new AtomicLong(0);
-    private final AtomicLong                        osFreeBSDCount                 = new AtomicLong(0);
-    private final AtomicLong                        osOpenBSDCount                 = new AtomicLong(0);
-    private final AtomicLong                        osAndroidCount                 = new AtomicLong(0);
+    private final AtomicLong osWindows98Count = new AtomicLong();
+    private final AtomicLong osWindowsXPCount = new AtomicLong();
+    private final AtomicLong osWindows2000Count = new AtomicLong();
+    private final AtomicLong osWindowsVistaCount = new AtomicLong();
+    private final AtomicLong osWindows7Count = new AtomicLong();
+    private final AtomicLong osWindows8Count = new AtomicLong();
 
-    private final AtomicLong                        osWindows98Count               = new AtomicLong();
-    private final AtomicLong                        osWindowsXPCount               = new AtomicLong();
-    private final AtomicLong                        osWindows2000Count             = new AtomicLong();
-    private final AtomicLong                        osWindowsVistaCount            = new AtomicLong();
-    private final AtomicLong                        osWindows7Count                = new AtomicLong();
-    private final AtomicLong                        osWindows8Count                = new AtomicLong();
+    private final AtomicLong osAndroid15Count = new AtomicLong(0);
+    private final AtomicLong osAndroid16Count = new AtomicLong(0);
+    private final AtomicLong osAndroid20Count = new AtomicLong(0);
+    private final AtomicLong osAndroid21Count = new AtomicLong(0);
+    private final AtomicLong osAndroid22Count = new AtomicLong(0);
+    private final AtomicLong osAndroid23Count = new AtomicLong(0);
+    private final AtomicLong osAndroid30Count = new AtomicLong(0);
+    private final AtomicLong osAndroid31Count = new AtomicLong(0);
+    private final AtomicLong osAndroid32Count = new AtomicLong(0);
+    private final AtomicLong osAndroid40Count = new AtomicLong(0);
+    private final AtomicLong osAndroid41Count = new AtomicLong(0);
+    private final AtomicLong osAndroid42Count = new AtomicLong(0);
+    private final AtomicLong osAndroid43Count = new AtomicLong(0);
 
-    private final AtomicLong                        osAndroid15Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid16Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid20Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid21Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid22Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid23Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid30Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid31Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid32Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid40Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid41Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid42Count               = new AtomicLong(0);
-    private final AtomicLong                        osAndroid43Count               = new AtomicLong(0);
+    private final AtomicLong osLinuxUbuntuCount = new AtomicLong(0);
 
-    private final AtomicLong                        osLinuxUbuntuCount             = new AtomicLong(0);
+    private final AtomicLong browserIECount = new AtomicLong(0);
+    private final AtomicLong browserFirefoxCount = new AtomicLong(0);
+    private final AtomicLong browserChromeCount = new AtomicLong(0);
+    private final AtomicLong browserSafariCount = new AtomicLong(0);
+    private final AtomicLong browserOperaCount = new AtomicLong(0);
 
-    private final AtomicLong                        browserIECount                 = new AtomicLong(0);
-    private final AtomicLong                        browserFirefoxCount            = new AtomicLong(0);
-    private final AtomicLong                        browserChromeCount             = new AtomicLong(0);
-    private final AtomicLong                        browserSafariCount             = new AtomicLong(0);
-    private final AtomicLong                        browserOperaCount              = new AtomicLong(0);
+    private final AtomicLong browserIE5Count = new AtomicLong(0);
+    private final AtomicLong browserIE6Count = new AtomicLong(0);
+    private final AtomicLong browserIE7Count = new AtomicLong(0);
+    private final AtomicLong browserIE8Count = new AtomicLong(0);
+    private final AtomicLong browserIE9Count = new AtomicLong(0);
+    private final AtomicLong browserIE10Count = new AtomicLong(0);
 
-    private final AtomicLong                        browserIE5Count                = new AtomicLong(0);
-    private final AtomicLong                        browserIE6Count                = new AtomicLong(0);
-    private final AtomicLong                        browserIE7Count                = new AtomicLong(0);
-    private final AtomicLong                        browserIE8Count                = new AtomicLong(0);
-    private final AtomicLong                        browserIE9Count                = new AtomicLong(0);
-    private final AtomicLong                        browserIE10Count               = new AtomicLong(0);
+    private final AtomicLong browser360SECount = new AtomicLong(0);
 
-    private final AtomicLong                        browser360SECount              = new AtomicLong(0);
+    private final AtomicLong deviceAndroidCount = new AtomicLong(0);
+    private final AtomicLong deviceIpadCount = new AtomicLong(0);
+    private final AtomicLong deviceIphoneCount = new AtomicLong(0);
+    private final AtomicLong deviceWindowsPhoneCount = new AtomicLong(0);
 
-    private final AtomicLong                        deviceAndroidCount             = new AtomicLong(0);
-    private final AtomicLong                        deviceIpadCount                = new AtomicLong(0);
-    private final AtomicLong                        deviceIphoneCount              = new AtomicLong(0);
-    private final AtomicLong                        deviceWindowsPhoneCount        = new AtomicLong(0);
+    private final AtomicLong botCount = new AtomicLong();
+    private final AtomicLong botBaiduCount = new AtomicLong();
+    private final AtomicLong botYoudaoCount = new AtomicLong();
+    private final AtomicLong botGoogleCount = new AtomicLong();
+    private final AtomicLong botMsnCount = new AtomicLong();
+    private final AtomicLong botBingCount = new AtomicLong();
+    private final AtomicLong botSosoCount = new AtomicLong();
+    private final AtomicLong botSogouCount = new AtomicLong();
+    private final AtomicLong botYahooCount = new AtomicLong();
 
-    private final AtomicLong                        botCount                       = new AtomicLong();
-    private final AtomicLong                        botBaiduCount                  = new AtomicLong();
-    private final AtomicLong                        botYoudaoCount                 = new AtomicLong();
-    private final AtomicLong                        botGoogleCount                 = new AtomicLong();
-    private final AtomicLong                        botMsnCount                    = new AtomicLong();
-    private final AtomicLong                        botBingCount                   = new AtomicLong();
-    private final AtomicLong                        botSosoCount                   = new AtomicLong();
-    private final AtomicLong                        botSogouCount                  = new AtomicLong();
-    private final AtomicLong                        botYahooCount                  = new AtomicLong();
-
-    private String                                  contextPath;
+    private String contextPath;
 
     public static WebAppStat current() {
         return currentLocal.get();
@@ -217,15 +216,15 @@ public class WebAppStat {
         deviceWindowsPhoneCount.set(0);
     }
 
-    public WebAppStat(){
+    public WebAppStat() {
         this(null);
     }
 
-    public WebAppStat(String contextPath){
+    public WebAppStat(String contextPath) {
         this(contextPath, DEFAULT_MAX_STAT_SESSION_COUNT);
     }
 
-    public WebAppStat(String contextPath, int maxStatSessionCount){
+    public WebAppStat(String contextPath, int maxStatSessionCount) {
         this.contextPath = contextPath;
         this.maxStatSessionCount = maxStatSessionCount;
 
@@ -241,7 +240,7 @@ public class WebAppStat {
 
         int running = runningCount.incrementAndGet();
 
-        for (;;) {
+        for (; ; ) {
             int max = concurrentMax.get();
             if (running > max) {
                 if (concurrentMax.compareAndSet(max, running)) {
@@ -466,19 +465,19 @@ public class WebAppStat {
     public Map<String, Object> getStatData() {
         return getStatValue(false).getStatData();
     }
-    
+
     public List<WebURIStatValue> getURIStatValueList(boolean reset) {
         List<WebURIStatValue> list = new ArrayList<WebURIStatValue>(this.uriStatMap.size());
-        
+
         for (WebURIStat uriStat : this.uriStatMap.values()) {
             WebURIStatValue statValue = uriStat.getValue(reset);
-            
+
             if (statValue.getRunningCount() == 0 && statValue.getRequestCount() == 0) {
                 continue;
             }
             list.add(statValue);
         }
-        
+
         return list;
     }
 
@@ -554,7 +553,6 @@ public class WebAppStat {
         }
 
         if (isIE) {
-
             browserIECount.incrementAndGet();
 
             char v1 = ' ', v2 = ' ';

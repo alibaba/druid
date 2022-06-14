@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 
 public class MySqlSelectTest_243 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "Select DISTINCT buyer_id,\n" +
                 "       DISTINCT buyer_full_name\n" +
@@ -55,7 +54,6 @@ public class MySqlSelectTest_243 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
 
 
 }

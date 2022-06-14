@@ -24,11 +24,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateSynonymTest2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE PUBLIC SYNONYM emp_table \n" +
-                "   FOR hr.employees@remote.us.oracle.com;";
+                "CREATE PUBLIC SYNONYM emp_table \n" +
+                        "   FOR hr.employees@remote.us.oracle.com;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

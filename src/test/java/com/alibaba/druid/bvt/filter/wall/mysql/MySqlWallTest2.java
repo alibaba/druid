@@ -23,20 +23,19 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest2 extends TestCase {
-
     public void test_stuff() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "select * from person_qingjia " + //
-                "where isxiao=1  " + //
-                "and ((starttime between 2013-01-15 and 2013-01-15)" + //
-                "        or (endtime between 2013-01- 15 and 2013-01-15)" + //
-                ") " + //
-                "order by xiaojiatime desc"));
+                "select * from person_qingjia " + //
+                        "where isxiao=1  " + //
+                        "and ((starttime between 2013-01-15 and 2013-01-15)" + //
+                        "        or (endtime between 2013-01- 15 and 2013-01-15)" + //
+                        ") " + //
+                        "order by xiaojiatime desc"));
     }
 }

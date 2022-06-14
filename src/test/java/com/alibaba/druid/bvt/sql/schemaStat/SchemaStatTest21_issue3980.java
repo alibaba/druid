@@ -13,7 +13,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class SchemaStatTest21_issue3980 extends TestCase {
-
     public void test_schemaStat() throws Exception {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
 

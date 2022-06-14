@@ -29,7 +29,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_13 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from test /*!40101fff*/";
 
@@ -60,7 +59,7 @@ public class MySqlSelectTest_13 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT *" //
-                            + "\nFROM test/*!40101fff*/", //
-                            output);
+                        + "\nFROM test/*!40101fff*/", //
+                output);
     }
 }

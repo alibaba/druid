@@ -31,15 +31,14 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerCreateTableTest_5 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE dbo.AO_563AEE_ACTOR_ENTITY (" //
-                     + "    FULL_NAME VARCHAR(255),"//
-                     + "    ID INTEGER IDENTITY(1,1) NOT NULL,"//
-                     + "    PROFILE_PAGE_URI VARCHAR(767),"//
-                     + "    PROFILE_PICTURE_URI VARCHAR(767),"//
-                     + "    USERNAME VARCHAR(255),"//
-                     + ")";
+                + "    FULL_NAME VARCHAR(255),"//
+                + "    ID INTEGER IDENTITY(1,1) NOT NULL,"//
+                + "    PROFILE_PAGE_URI VARCHAR(767),"//
+                + "    PROFILE_PICTURE_URI VARCHAR(767),"//
+                + "    USERNAME VARCHAR(255),"//
+                + ")";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -49,12 +48,12 @@ public class SQLServerCreateTableTest_5 extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("CREATE TABLE dbo.AO_563AEE_ACTOR_ENTITY (" //
-                            + "\n\tFULL_NAME VARCHAR(255),"//
-                            + "\n\tID INTEGER DEFAULT NULL IDENTITY (1, 1),"//
-                            + "\n\tPROFILE_PAGE_URI VARCHAR(767),"//
-                            + "\n\tPROFILE_PICTURE_URI VARCHAR(767),"//
-                            + "\n\tUSERNAME VARCHAR(255)"//
-                            + "\n)", output);
+                + "\n\tFULL_NAME VARCHAR(255),"//
+                + "\n\tID INTEGER DEFAULT NULL IDENTITY (1, 1),"//
+                + "\n\tPROFILE_PAGE_URI VARCHAR(767),"//
+                + "\n\tPROFILE_PICTURE_URI VARCHAR(767),"//
+                + "\n\tUSERNAME VARCHAR(255)"//
+                + "\n)", output);
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);

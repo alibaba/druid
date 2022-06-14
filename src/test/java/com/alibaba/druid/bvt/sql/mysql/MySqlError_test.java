@@ -22,10 +22,9 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 public class MySqlError_test extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "insert into userdetectitem26 (nick,volume) values(?,?) " + //
-                     "ON DUPLICATE KEY UPDATE title = ?,picURL = ?,scoreExceed = ?,score=";
+                "ON DUPLICATE KEY UPDATE title = ?,picURL = ?,scoreExceed = ?,score=";
 
         Exception error = null;
 
@@ -35,7 +34,7 @@ public class MySqlError_test extends MysqlTest {
         } catch (Exception e) {
             error = e;
         }
-        
+
         Assert.assertNotNull(error);
         Assert.assertEquals("EOF, score=", error.getMessage());
     }

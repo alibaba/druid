@@ -27,17 +27,16 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest8 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE Persons\n" + //
-                     "(\n" + //
-                     "Id_P int NOT NULL,\n" + //
-                     "LastName varchar(255) NOT NULL,\n" + //
-                     "FirstName varchar(255),\n" + //
-                     "Address varchar(255),\n" + //
-                     "City varchar(255),\n" + //
-                     "CHECK (Id_P>0)\n" + //
-                     ")";
+                "(\n" + //
+                "Id_P int NOT NULL,\n" + //
+                "LastName varchar(255) NOT NULL,\n" + //
+                "FirstName varchar(255),\n" + //
+                "Address varchar(255),\n" + //
+                "City varchar(255),\n" + //
+                "CHECK (Id_P>0)\n" + //
+                ")";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

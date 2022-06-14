@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlGrantTest_4 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "GRANT SELECT, INSERT ON mydb.* TO 'someuser'@'somehost'";
 
@@ -38,23 +37,23 @@ public class MySqlGrantTest_4 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("GRANT SELECT, INSERT ON mydb.* TO 'someuser'@'somehost'", //
-                            output);
+                output);
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

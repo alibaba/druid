@@ -26,94 +26,93 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest49 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        " CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"ID\" NUMBER NOT NULL ENABLE, \n" +
-                "  \"GMT_CREATE\" DATE, \n" +
-                "  \"GMT_MODIFIED\" DATE, \n" +
-                "  \"POSTING_TYPE\" VARCHAR2(20), \n" +
-                "  \"POSTING_ID\" NUMBER, \n" +
-                "  \"SYS_FRAUD\" NUMBER, \n" +
-                "  \"CONFIRM_FRAUD\" NUMBER, \n" +
-                "  \"FRAUD_RESON\" VARCHAR2(128), \n" +
-                "  \"USER_ID\" NUMBER, \n" +
-                "  \"IDENTIFIER_ID\" NUMBER, \n" +
-                "  \"POSTING_CREATE\" DATE, \n" +
-                "  \"POSTING_MODIFIER\" DATE, \n" +
-                "  \"MEMBER_ID\" VARCHAR2(32), \n" +
-                "  \"MEMBER_LEVEL\" VARCHAR2(16), \n" +
-                "  \"SERVICE_VALUE\" VARCHAR2(32), \n" +
-                "  \"ADDRESS\" VARCHAR2(256), \n" +
-                "  \"COUNTRY\" VARCHAR2(64), \n" +
-                "  \"PROVINCE\" VARCHAR2(128), \n" +
-                "  \"CITY\" VARCHAR2(128), \n" +
-                "  \"ZIP\" VARCHAR2(32), \n" +
-                "  \"FIRST_NAME\" VARCHAR2(128), \n" +
-                "  \"LAST_NAME\" VARCHAR2(128), \n" +
-                "  \"PHONE_COUNTRY\" VARCHAR2(8), \n" +
-                "  \"PHONE_AREA\" VARCHAR2(8), \n" +
-                "  \"PHONE_NUMBER\" VARCHAR2(128), \n" +
-                "  \"FAX_COUNTRY\" VARCHAR2(8), \n" +
-                "  \"FAX_AREA\" VARCHAR2(8), \n" +
-                "  \"FAX_NUMBER\" VARCHAR2(128), \n" +
-                "  \"IP_COUNTRY\" VARCHAR2(128), \n" +
-                "  \"MOBILE_NO\" VARCHAR2(128), \n" +
-                "  \"EMAIL\" VARCHAR2(128), \n" +
-                "  \"ALT_EMAIL\" VARCHAR2(128), \n" +
-                "  \"COMPANY\" VARCHAR2(128), \n" +
-                "  \"HOMEPAGE_URL\" VARCHAR2(128), \n" +
-                "  \"CATEGORY_ID_1\" NUMBER, \n" +
-                "  \"CATEGORY_ID_2\" NUMBER, \n" +
-                "  \"CATEGORY_ID_3\" NUMBER, \n" +
-                "  \"CATEGORY_ID_4\" NUMBER, \n" +
-                "  \"CATEGORY_ID_5\" NUMBER, \n" +
-                "  \"SUBJECT\" VARCHAR2(256), \n" +
-                "  \"KEYWORDS\" VARCHAR2(512), \n" +
-                "  \"DETAIL\" CLOB, \n" +
-                "  \"POSTING_STATUS\" VARCHAR2(16), \n" +
-                "  \"OFFER_TYPE\" VARCHAR2(32)\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                "  STORAGE(\n" +
-                "  BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APP_DATA1K\" \n" +
-                " LOB (\"DETAIL\") STORE AS (\n" +
-                "  ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
-                "  NOCACHE LOGGING \n" +
-                "  STORAGE(\n" +
-                "  BUFFER_POOL DEFAULT)) \n" +
-                "  PARTITION BY RANGE (\"GMT_CREATE\") \n" +
-                " (PARTITION \"P2008\"  VALUES LESS THAN (TO_DATE(' 2009-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APP_DATA1K\" \n" +
-                " LOB (\"DETAIL\") STORE AS (\n" +
-                "  TABLESPACE \"APP_DATA1K\" ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
-                "  NOCACHE LOGGING \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)) NOCOMPRESS , \n" +
-                " PARTITION \"P2009\"  VALUES LESS THAN (TO_DATE(' 2010-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APP_DATA1K\" \n" +
-                " LOB (\"DETAIL\") STORE AS (\n" +
-                "  TABLESPACE \"APP_DATA1K\" ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
-                "  NOCACHE LOGGING \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)) NOCOMPRESS , \n" +
-                " PARTITION \"P2010\"  VALUES LESS THAN (TO_DATE(' 2011-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APPDATA1M\" \n" +
-                " LOB (\"DETAIL\") STORE AS (\n" +
-                "  TABLESPACE \"BOPSDATATS\" ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
-                "  NOCACHE LOGGING \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)) NOCOMPRESS )   ";
+                " CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"ID\" NUMBER NOT NULL ENABLE, \n" +
+                        "  \"GMT_CREATE\" DATE, \n" +
+                        "  \"GMT_MODIFIED\" DATE, \n" +
+                        "  \"POSTING_TYPE\" VARCHAR2(20), \n" +
+                        "  \"POSTING_ID\" NUMBER, \n" +
+                        "  \"SYS_FRAUD\" NUMBER, \n" +
+                        "  \"CONFIRM_FRAUD\" NUMBER, \n" +
+                        "  \"FRAUD_RESON\" VARCHAR2(128), \n" +
+                        "  \"USER_ID\" NUMBER, \n" +
+                        "  \"IDENTIFIER_ID\" NUMBER, \n" +
+                        "  \"POSTING_CREATE\" DATE, \n" +
+                        "  \"POSTING_MODIFIER\" DATE, \n" +
+                        "  \"MEMBER_ID\" VARCHAR2(32), \n" +
+                        "  \"MEMBER_LEVEL\" VARCHAR2(16), \n" +
+                        "  \"SERVICE_VALUE\" VARCHAR2(32), \n" +
+                        "  \"ADDRESS\" VARCHAR2(256), \n" +
+                        "  \"COUNTRY\" VARCHAR2(64), \n" +
+                        "  \"PROVINCE\" VARCHAR2(128), \n" +
+                        "  \"CITY\" VARCHAR2(128), \n" +
+                        "  \"ZIP\" VARCHAR2(32), \n" +
+                        "  \"FIRST_NAME\" VARCHAR2(128), \n" +
+                        "  \"LAST_NAME\" VARCHAR2(128), \n" +
+                        "  \"PHONE_COUNTRY\" VARCHAR2(8), \n" +
+                        "  \"PHONE_AREA\" VARCHAR2(8), \n" +
+                        "  \"PHONE_NUMBER\" VARCHAR2(128), \n" +
+                        "  \"FAX_COUNTRY\" VARCHAR2(8), \n" +
+                        "  \"FAX_AREA\" VARCHAR2(8), \n" +
+                        "  \"FAX_NUMBER\" VARCHAR2(128), \n" +
+                        "  \"IP_COUNTRY\" VARCHAR2(128), \n" +
+                        "  \"MOBILE_NO\" VARCHAR2(128), \n" +
+                        "  \"EMAIL\" VARCHAR2(128), \n" +
+                        "  \"ALT_EMAIL\" VARCHAR2(128), \n" +
+                        "  \"COMPANY\" VARCHAR2(128), \n" +
+                        "  \"HOMEPAGE_URL\" VARCHAR2(128), \n" +
+                        "  \"CATEGORY_ID_1\" NUMBER, \n" +
+                        "  \"CATEGORY_ID_2\" NUMBER, \n" +
+                        "  \"CATEGORY_ID_3\" NUMBER, \n" +
+                        "  \"CATEGORY_ID_4\" NUMBER, \n" +
+                        "  \"CATEGORY_ID_5\" NUMBER, \n" +
+                        "  \"SUBJECT\" VARCHAR2(256), \n" +
+                        "  \"KEYWORDS\" VARCHAR2(512), \n" +
+                        "  \"DETAIL\" CLOB, \n" +
+                        "  \"POSTING_STATUS\" VARCHAR2(16), \n" +
+                        "  \"OFFER_TYPE\" VARCHAR2(32)\n" +
+                        "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        "  STORAGE(\n" +
+                        "  BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APP_DATA1K\" \n" +
+                        " LOB (\"DETAIL\") STORE AS (\n" +
+                        "  ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
+                        "  NOCACHE LOGGING \n" +
+                        "  STORAGE(\n" +
+                        "  BUFFER_POOL DEFAULT)) \n" +
+                        "  PARTITION BY RANGE (\"GMT_CREATE\") \n" +
+                        " (PARTITION \"P2008\"  VALUES LESS THAN (TO_DATE(' 2009-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APP_DATA1K\" \n" +
+                        " LOB (\"DETAIL\") STORE AS (\n" +
+                        "  TABLESPACE \"APP_DATA1K\" ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
+                        "  NOCACHE LOGGING \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)) NOCOMPRESS , \n" +
+                        " PARTITION \"P2009\"  VALUES LESS THAN (TO_DATE(' 2010-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APP_DATA1K\" \n" +
+                        " LOB (\"DETAIL\") STORE AS (\n" +
+                        "  TABLESPACE \"APP_DATA1K\" ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
+                        "  NOCACHE LOGGING \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)) NOCOMPRESS , \n" +
+                        " PARTITION \"P2010\"  VALUES LESS THAN (TO_DATE(' 2011-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN')) \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APPDATA1M\" \n" +
+                        " LOB (\"DETAIL\") STORE AS (\n" +
+                        "  TABLESPACE \"BOPSDATATS\" ENABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
+                        "  NOCACHE LOGGING \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)) NOCOMPRESS )   ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -238,7 +237,7 @@ public class OracleCreateTableTest49 extends OracleTest {
                         "\t\t)\n" +
                         "\t\tNOCOMPRESS\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

@@ -24,12 +24,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest43 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "SELECT * FROM table(t_department)  " + //
-                "WHERE name IN ('0000','4444') " + //
-                "ORDER BY name ASC"; //
+                "SELECT * FROM table(t_department)  " + //
+                        "WHERE name IN ('0000','4444') " + //
+                        "ORDER BY name ASC"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

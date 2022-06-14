@@ -24,18 +24,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest46 extends TestCase {
-
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid(//
-        "select aid,subject,dateline from www_subject where subject like '%%' order by aid desc limit 30;"));
+                "select aid,subject,dateline from www_subject where subject like '%%' order by aid desc limit 30;"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

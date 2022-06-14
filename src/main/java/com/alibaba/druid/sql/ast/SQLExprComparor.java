@@ -3,7 +3,7 @@ package com.alibaba.druid.sql.ast;
 import java.util.Comparator;
 
 public class SQLExprComparor implements Comparator<SQLExpr> {
-    public final static SQLExprComparor instance = new SQLExprComparor();
+    public static final SQLExprComparor instance = new SQLExprComparor();
 
     @Override
     public int compare(SQLExpr a, SQLExpr b) {

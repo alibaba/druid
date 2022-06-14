@@ -28,15 +28,13 @@ import java.util.Collections;
 import java.util.List;
 
 public final class SQLNotExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
-
     private static final long serialVersionUID = 1L;
-    public SQLExpr            expr;
+    public SQLExpr expr;
 
-    public SQLNotExpr(){
-
+    public SQLNotExpr() {
     }
 
-    public SQLNotExpr(SQLExpr expr){
+    public SQLNotExpr(SQLExpr expr) {
         if (expr != null) {
             expr.setParent(this);
         }

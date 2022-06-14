@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest5 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT t1.department_id, t2.* FROM hr_info t1, TABLE(t1.people) t2" + //
-                     "   WHERE t2.department_id = t1.department_id;";
+                "   WHERE t2.department_id = t1.department_id;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

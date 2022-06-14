@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateIndexTest_4 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE INDEX idx_t_uid on stu_score (uid) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT";

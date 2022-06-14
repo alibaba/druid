@@ -16,20 +16,23 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.alibaba.druid.wall.*;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class MySqlWallVisitor extends WallVisitorBase implements WallVisitor, MySqlASTVisitor {
-    public MySqlWallVisitor(WallProvider provider){
-        super (provider);
+    public MySqlWallVisitor(WallProvider provider) {
+        super(provider);
     }
 
     @Override
@@ -71,7 +74,7 @@ public class MySqlWallVisitor extends WallVisitorBase implements WallVisitor, My
             if (varName.equalsIgnoreCase("@@session") || varName.equalsIgnoreCase("@@global")) {
                 if (!(parent instanceof SQLSelectItem) && !(parent instanceof SQLAssignItem)) {
                     violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY,
-                                                                 "variable in condition not allow", toSQL(x)));
+                            "variable in condition not allow", toSQL(x)));
                     return false;
                 }
 
@@ -80,14 +83,14 @@ public class MySqlWallVisitor extends WallVisitorBase implements WallVisitor, My
                     if (!isTop) {
                         boolean allow = true;
                         if (isDeny(varName)
-                            && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(varExpr))) {
+                                && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(varExpr))) {
                             allow = false;
                         }
 
                         if (!allow) {
                             violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY,
-                                                                         "variable not allow : " + x.getName(),
-                                                                         toSQL(x)));
+                                    "variable not allow : " + x.getName(),
+                                    toSQL(x)));
                         }
                     }
                 }
@@ -143,10 +146,9 @@ public class MySqlWallVisitor extends WallVisitorBase implements WallVisitor, My
         }
 
         if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
-
             final WallTopStatementContext topStatementContext = WallVisitorUtils.getWallTopStatementContext();
             if (topStatementContext != null
-                && (topStatementContext.fromSysSchema() || topStatementContext.fromSysTable())) {
+                    && (topStatementContext.fromSysSchema() || topStatementContext.fromSysTable())) {
                 return false;
             }
 
@@ -159,7 +161,7 @@ public class MySqlWallVisitor extends WallVisitorBase implements WallVisitor, My
 
                 if (!allow) {
                     violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
-                                                                                         + x.getName(), toSQL(x)));
+                            + x.getName(), toSQL(x)));
                 }
             }
         }

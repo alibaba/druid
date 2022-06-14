@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlShowTest_16_createView extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW CREATE VIEW view_name";
 

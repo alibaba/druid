@@ -23,18 +23,17 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableDrop_Test extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `rules` DROP `enabled`";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         Assert.assertEquals("ALTER TABLE `rules`" //
-                            + "\n\tDROP COLUMN `enabled`", SQLUtils.toMySqlString(stmt));
-        
+                + "\n\tDROP COLUMN `enabled`", SQLUtils.toMySqlString(stmt));
+
         Assert.assertEquals("alter table `rules`" //
-                            + "\n\tdrop column `enabled`", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                + "\n\tdrop column `enabled`", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

@@ -19,15 +19,13 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowStatusStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
-    private boolean global  = false;
-    private boolean session = false;
+    private boolean global;
+    private boolean session;
 
     private SQLExpr like;
     private SQLExpr where;
 
     public MySqlShowStatusStatement() {
-
     }
 
     public boolean isGlobal() {

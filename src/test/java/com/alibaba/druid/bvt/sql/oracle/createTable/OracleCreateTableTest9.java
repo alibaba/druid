@@ -25,15 +25,14 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest9 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE GLOBAL TEMPORARY TABLE \"ESCROW\".\"RUPD$_HT_TASK_TRADE_HISTOR\" (" + //
-                "\"ID\" NUMBER, " + //
-                "dmltype$$ varchar2(1), " + //
-                "snapid integer, " + //
-                "change_vector$$ raw(255)" + //
-                ") ON COMMIT PRESERVE ROWS";
+                "CREATE GLOBAL TEMPORARY TABLE \"ESCROW\".\"RUPD$_HT_TASK_TRADE_HISTOR\" (" + //
+                        "\"ID\" NUMBER, " + //
+                        "dmltype$$ varchar2(1), " + //
+                        "snapid integer, " + //
+                        "change_vector$$ raw(255)" + //
+                        ") ON COMMIT PRESERVE ROWS";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -59,11 +58,11 @@ public class OracleCreateTableTest9 extends OracleTest {
 
         Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR", "ID"));
         Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
-                                                                             "dmltype$$"));
+                "dmltype$$"));
         Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
-                                                                             "snapid"));
+                "snapid"));
         Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
-                                                                             "change_vector$$"));
+                "change_vector$$"));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

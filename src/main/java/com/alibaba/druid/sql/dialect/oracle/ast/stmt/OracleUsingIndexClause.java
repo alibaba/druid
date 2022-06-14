@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLPartition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -29,17 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleUsingIndexClause extends OracleSegmentAttributesImpl implements OracleSQLObject {
+    private SQLObject index;
+    private Boolean enable;
 
-    private SQLObject           index;
-    private Boolean             enable            = null;
-
-    private boolean             computeStatistics = false;
-    private boolean             reverse;
+    private boolean computeStatistics;
+    private boolean reverse;
 
     private List<SQLPartition> localPartitionIndex = new ArrayList<SQLPartition>();
 
-    public OracleUsingIndexClause(){
-
+    public OracleUsingIndexClause() {
     }
 
     protected void accept0(SQLASTVisitor visitor) {

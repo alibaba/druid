@@ -6,7 +6,6 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import junit.framework.TestCase;
 
 public class ProfileEnableTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

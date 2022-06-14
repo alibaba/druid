@@ -24,12 +24,11 @@ import com.alibaba.druid.stat.TableStat;
 import org.junit.Assert;
 
 public class MySqlCreateTableTest51 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `test` (" //
-                     + "`Id` int(11) NOT NULL," //
-                     + "`text` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL"//
-                     + ") ENGINE=InnoDB DEFAULT CHARSET=gbk";
+                + "`Id` int(11) NOT NULL," //
+                + "`text` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL"//
+                + ") ENGINE=InnoDB DEFAULT CHARSET=gbk";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -51,10 +50,10 @@ public class MySqlCreateTableTest51 extends MysqlTest {
         String output = SQLUtils.toMySqlString(stmt);
 //        System.out.println(output);
         Assert.assertEquals("CREATE TABLE `test` (" //
-                            + "\n\t`Id` int(11) NOT NULL,"//
-                            + "\n\t`text` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL"//
-                            + "\n) ENGINE = InnoDB CHARSET = gbk",//
-                            output);
+                        + "\n\t`Id` int(11) NOT NULL,"//
+                        + "\n\t`text` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL"//
+                        + "\n) ENGINE = InnoDB CHARSET = gbk",//
+                output);
 
     }
 }

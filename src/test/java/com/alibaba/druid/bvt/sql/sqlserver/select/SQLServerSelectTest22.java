@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SQLServerSelectTest22 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = "DELETE T FROM abc T"; //
 

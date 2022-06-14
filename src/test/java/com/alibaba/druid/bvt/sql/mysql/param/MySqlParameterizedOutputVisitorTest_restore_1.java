@@ -22,7 +22,7 @@ public class MySqlParameterizedOutputVisitorTest_restore_1 extends TestCase {
                 "\tAND `buyer_resource`.`seller_id` = ?\n" +
                 "\tAND (`buyer_resource`.`AVAILABLE_COUNT` IS ?)\n" +
                 "LIMIT ?, ?";
-        String params = "[1957025290,1,\"2017-10-16 23:34:28.519\",\"2017-10-16 23:34:28.519\",2933220011L,[0,-1],0,20]";
+        String params = "[1957025290,1,\"2017-10-16 23:34:28.519\",\"2017-10-16 23:34:28.519\",2933220011,[0,-1],0,20]";
         params = params.replaceAll("''", "'");
         sqlTemplate = SQLUtils.formatMySql(sqlTemplate);
         String formattedSql = ParseUtil.restore(sqlTemplate, null, params);

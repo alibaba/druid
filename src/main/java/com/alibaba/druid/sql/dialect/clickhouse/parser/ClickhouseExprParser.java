@@ -27,12 +27,12 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.Arrays;
 
 public class ClickhouseExprParser extends SQLExprParser {
-    private final static String[] AGGREGATE_FUNCTIONS;
-    private final static long[]   AGGREGATE_FUNCTIONS_CODES;
+    private static final String[] AGGREGATE_FUNCTIONS;
+    private static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
-                "ROWNUMBER" };
+        String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
+                "ROWNUMBER"};
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
@@ -42,17 +42,17 @@ public class ClickhouseExprParser extends SQLExprParser {
         }
     }
 
-    public ClickhouseExprParser(String sql){
+    public ClickhouseExprParser(String sql) {
         this(new ClickhouseLexer(sql));
         this.lexer.nextToken();
     }
 
-    public ClickhouseExprParser(String sql, SQLParserFeature... features){
+    public ClickhouseExprParser(String sql, SQLParserFeature... features) {
         this(new ClickhouseLexer(sql, features));
         this.lexer.nextToken();
     }
 
-    public ClickhouseExprParser(Lexer lexer){
+    public ClickhouseExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;

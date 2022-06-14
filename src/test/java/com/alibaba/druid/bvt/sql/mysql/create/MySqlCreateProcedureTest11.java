@@ -24,9 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlCreateProcedureTest11 extends MysqlTest {
-
     public void test_0() throws Exception {
-    	String sql = "CREATE PROCEDURE curdemo()\n" +
+        String sql = "CREATE PROCEDURE curdemo()\n" +
                 "BEGIN\n" +
                 "  DECLARE done INT DEFAULT FALSE;\n" +
                 "  DECLARE a CHAR(16);\n" +
@@ -55,8 +54,8 @@ public class MySqlCreateProcedureTest11 extends MysqlTest {
                 "  CLOSE cur2;\n" +
                 "END;";
 
-    	List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-    	SQLStatement stmt = statementList.get(0);
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
+        SQLStatement stmt = statementList.get(0);
 //    	print(statementList);
 //        assertEquals(1, statementList.size());
 
@@ -69,11 +68,10 @@ public class MySqlCreateProcedureTest11 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(3, visitor.getTables().size());
         assertEquals(3, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
     }
 
-    
 }

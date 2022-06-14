@@ -27,7 +27,6 @@ import com.alibaba.druid.wall.spi.SQLServerWallProvider;
  * @author wenshao
  */
 public class WallCommentTest extends TestCase {
-
     public void testORACLE() throws Exception {
         String sql = "SELECT F1, F2 FROM ABC --test";
 
@@ -36,7 +35,7 @@ public class WallCommentTest extends TestCase {
 
         Assert.assertEquals(1, provider.getCommentDenyStat().getDenyCount());
     }
-    
+
     public void testmysql() throws Exception {
         String sql = "SELECT F1, F2 FROM ABC -- test";
 
@@ -45,7 +44,7 @@ public class WallCommentTest extends TestCase {
 
         Assert.assertEquals(1, provider.getCommentDenyStat().getDenyCount());
     }
-    
+
     public void testsqlserver() throws Exception {
         String sql = "SELECT F1, F2 FROM ABC --test";
 

@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class InformixSelectTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "select skip 500 first 500 * from pub_menu ";
 
@@ -36,7 +35,7 @@ public class InformixSelectTest extends TestCase {
 
         Assert.assertEquals("SELECT SKIP 500 FIRST 500 *\n" +
                 "FROM pub_menu", SQLUtils.toSQLString(stmt, JdbcConstants.INFORMIX));
-        
+
         Assert.assertEquals("select skip 500 first 500 *\n" +
                 "from pub_menu", SQLUtils.toSQLString(stmt, JdbcConstants.INFORMIX, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

@@ -26,19 +26,17 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateViewTest13 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "SELECT rbi.rma_id, rbi.last_update_time\n" +
-                "FROM ktv_epm.ktv_eq_rprboarditem rbi\n" +
-                "JOIN ktv_epm.ktv_eq_rma_header rma ON rma.rma_id = rbi.rma_id \n" +
-                "\tJOIN ktv_epm.ktv_eq_rprsenditem rsi ON rsi.e_rprboardid = rbi.e_rprboardid\n" +
-                "AND rsi.e_boardid = rbi.e_boardid \n" +
-                "WHERE rbi.rma_id > ?\n" +
-                "\tAND rsi.e_rprsendid = ?\n" +
-                "\tAND rsi.e_boardid IN (?)\n" +
-                "FOR UPDATE(rbi.rma_id)\n"
-               ;
+                "SELECT rbi.rma_id, rbi.last_update_time\n" +
+                        "FROM ktv_epm.ktv_eq_rprboarditem rbi\n" +
+                        "JOIN ktv_epm.ktv_eq_rma_header rma ON rma.rma_id = rbi.rma_id \n" +
+                        "\tJOIN ktv_epm.ktv_eq_rprsenditem rsi ON rsi.e_rprboardid = rbi.e_rprboardid\n" +
+                        "AND rsi.e_boardid = rbi.e_boardid \n" +
+                        "WHERE rbi.rma_id > ?\n" +
+                        "\tAND rsi.e_rprsendid = ?\n" +
+                        "\tAND rsi.e_boardid IN (?)\n" +
+                        "FOR UPDATE(rbi.rma_id)\n";
 
         System.out.println(sql);
 
@@ -58,7 +56,7 @@ public class OracleCreateViewTest13 extends OracleTest {
                         "\tAND rsi.e_rprsendid = ?\n" +
                         "\tAND rsi.e_boardid IN (?)\n" +
                         "FOR UPDATE(rbi.rma_id)",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

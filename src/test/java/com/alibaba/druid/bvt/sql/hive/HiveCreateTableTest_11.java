@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_11 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE empty_key_value_store\n" +

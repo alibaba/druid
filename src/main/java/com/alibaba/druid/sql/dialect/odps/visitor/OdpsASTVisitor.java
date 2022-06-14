@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 
 public interface OdpsASTVisitor extends HiveASTVisitor {
-
     default void endVisit(OdpsCreateTableStatement x) {
         endVisit((SQLCreateTableStatement) x);
     }
@@ -34,7 +33,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsUDTFSQLSelectItem x) {
-
     }
 
     default boolean visit(OdpsUDTFSQLSelectItem x) {
@@ -42,7 +40,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsSetLabelStatement x) {
-
     }
 
     default boolean visit(OdpsSetLabelStatement x) {
@@ -58,7 +55,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsAddStatisticStatement x) {
-
     }
 
     default boolean visit(OdpsAddStatisticStatement x) {
@@ -66,7 +62,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsRemoveStatisticStatement x) {
-
     }
 
     default boolean visit(OdpsRemoveStatisticStatement x) {
@@ -74,7 +69,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsStatisticClause.TableCount x) {
-
     }
 
     default boolean visit(OdpsStatisticClause.TableCount x) {
@@ -82,7 +76,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsStatisticClause.ExpressionCondition x) {
-
     }
 
     default boolean visit(OdpsStatisticClause.ExpressionCondition x) {
@@ -90,7 +83,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsStatisticClause.NullValue x) {
-
     }
 
     default boolean visit(OdpsStatisticClause.NullValue x) {
@@ -98,7 +90,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsStatisticClause.DistinctValue x) {
-
     }
 
     default boolean visit(OdpsStatisticClause.DistinctValue x) {
@@ -106,7 +97,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsStatisticClause.ColumnSum x) {
-
     }
 
     default boolean visit(OdpsStatisticClause.ColumnSum x) {
@@ -114,7 +104,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsStatisticClause.ColumnMax x) {
-
     }
 
     default boolean visit(OdpsStatisticClause.ColumnMax x) {
@@ -122,7 +111,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsStatisticClause.ColumnMin x) {
-
     }
 
     default boolean visit(OdpsStatisticClause.ColumnMin x) {
@@ -130,7 +118,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsReadStatement x) {
-
     }
 
     default boolean visit(OdpsReadStatement x) {
@@ -138,7 +125,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsShowGrantsStmt x) {
-
     }
 
     default boolean visit(OdpsShowGrantsStmt x) {
@@ -146,7 +132,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsShowChangelogsStatement x) {
-
     }
 
     default boolean visit(OdpsShowChangelogsStatement x) {
@@ -154,7 +139,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsListStmt x) {
-
     }
 
     default boolean visit(OdpsListStmt x) {
@@ -181,7 +165,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsAddFileStatement x) {
-
     }
 
     default boolean visit(OdpsAddUserStatement x) {
@@ -189,7 +172,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsAddUserStatement x) {
-
     }
 
     default boolean visit(OdpsRemoveUserStatement x) {
@@ -197,7 +179,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsRemoveUserStatement x) {
-
     }
 
     default boolean visit(OdpsAlterTableSetChangeLogs x) {
@@ -205,7 +186,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsAlterTableSetChangeLogs x) {
-
     }
 
     default boolean visit(OdpsCountStatement x) {
@@ -213,7 +193,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsCountStatement x) {
-
     }
 
     default boolean visit(OdpsQueryAliasStatement x) {
@@ -221,7 +200,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsQueryAliasStatement x) {
-
     }
 
     default boolean visit(OdpsTransformExpr x) {
@@ -229,7 +207,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsTransformExpr x) {
-
     }
 
     default boolean visit(OdpsExstoreStatement x) {
@@ -237,7 +214,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsExstoreStatement x) {
-
     }
 
     default boolean visit(OdpsNewExpr x) {
@@ -245,7 +221,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsNewExpr x) {
-
     }
 
     default boolean visit(OdpsInstallPackageStatement x) {
@@ -253,7 +228,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsInstallPackageStatement x) {
-
     }
 
     default boolean visit(OdpsDeclareVariableStatement x) {
@@ -261,7 +235,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsDeclareVariableStatement x) {
-
     }
 
     default boolean visit(OdpsAddAccountProviderStatement x) {
@@ -269,7 +242,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsAddAccountProviderStatement x) {
-
     }
 
     default boolean visit(OdpsUnloadStatement x) {
@@ -277,7 +249,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsUnloadStatement x) {
-
     }
 
     default boolean visit(OdpsAlterTableSetFileFormat x) {
@@ -285,7 +256,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsAlterTableSetFileFormat x) {
-
     }
 
     default boolean visit(OdpsRestoreStatement x) {
@@ -293,7 +263,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsRestoreStatement x) {
-
     }
 
     default boolean visit(OdpsUndoTableStatement x) {
@@ -301,7 +270,6 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(OdpsUndoTableStatement x) {
-
     }
 
 }

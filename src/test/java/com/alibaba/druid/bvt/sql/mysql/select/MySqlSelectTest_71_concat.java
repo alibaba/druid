@@ -27,9 +27,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_71_concat extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "select 'afdf' \"erwhg\" \"ads\" 'dgs' \"rter\" as tstDiffQuoteConcat;";
+        String sql = "select 'afdf' \"erwhg\" \"ads\" 'dgs' \"rter\" as tstDiffQuoteConcat;";
 
         System.out.println(sql);
 
@@ -44,12 +43,12 @@ public class MySqlSelectTest_71_concat extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT 'afdferwhgadsdgsrter' AS tstDiffQuoteConcat;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select 'afdferwhgadsdgsrter' as tstDiffQuoteConcat;", //
-                                output);
+                    output);
         }
 
         {

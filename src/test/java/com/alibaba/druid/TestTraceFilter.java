@@ -27,7 +27,6 @@ import com.alibaba.druid.util.JMXUtils;
 
 @SuppressWarnings("deprecation")
 public class TestTraceFilter extends TestCase {
-
     public void test_loop() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("stat,trace");

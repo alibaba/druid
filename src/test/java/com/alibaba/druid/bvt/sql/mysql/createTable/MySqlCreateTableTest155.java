@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 public class MySqlCreateTableTest155
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create table pk(id int primary key , name varchar)";
 

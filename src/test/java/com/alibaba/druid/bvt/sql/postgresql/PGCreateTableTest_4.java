@@ -27,13 +27,12 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGCreateTableTest_4 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE products (" + //
-                     "    product_no integer," + //
-                     "    name text," + //
-                     "    price numeric CHECK (price > 0)" + //
-                     ");";
+                "    product_no integer," + //
+                "    name text," + //
+                "    price numeric CHECK (price > 0)" + //
+                ");";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -45,7 +44,7 @@ public class PGCreateTableTest_4 extends PGTest {
                 + "\n\tprice numeric"
                 + "\n\t\tCHECK (price > 0)"
                 + "\n);", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("create table products ("
                 + "\n\tproduct_no integer,"
                 + "\n\tname text,"

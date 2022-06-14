@@ -27,7 +27,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlUpdateTest_2 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "UPDATE `z_code` SET (f1, f2) = (1, 2)";
 
@@ -45,7 +44,7 @@ public class MySqlUpdateTest_2 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());

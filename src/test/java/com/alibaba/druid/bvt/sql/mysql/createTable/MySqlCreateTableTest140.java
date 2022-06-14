@@ -8,13 +8,12 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest140 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE foo AS SELECT * FROM t WITH NO DATA";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -32,9 +31,6 @@ public class MySqlCreateTableTest140 extends MysqlTest {
                 "with no data", stmt.toLowerCaseString());
 
     }
-
-
-
 
 
 }

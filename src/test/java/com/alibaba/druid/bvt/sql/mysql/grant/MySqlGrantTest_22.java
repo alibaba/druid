@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlGrantTest_22 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "GRANT LOCK TABLES ON mydb.* TO 'someuser'@'somehost';";
 
@@ -38,10 +37,10 @@ public class MySqlGrantTest_22 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("GRANT LOCK TABLES ON mydb.* TO 'someuser'@'somehost';", //
-                            output);
+                output);
 //
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
@@ -54,7 +53,7 @@ public class MySqlGrantTest_22 extends MysqlTest {
 
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

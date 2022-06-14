@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -26,17 +25,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropUserStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
-
     private List<SQLExpr> users = new ArrayList<SQLExpr>(2);
 
-    protected boolean ifExists = false;
-    
+    protected boolean ifExists;
+
     public SQLDropUserStatement() {
-        
     }
-    
+
     public SQLDropUserStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public boolean isIfExists() {

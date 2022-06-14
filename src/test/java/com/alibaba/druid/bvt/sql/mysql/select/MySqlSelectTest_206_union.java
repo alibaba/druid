@@ -24,12 +24,11 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlSelectTest_206_union extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT uid FROM (select uid, cid, category, empid from comb_opportunity_sales_relation_online where uid = 1723876714657374)  \n" +
                 "union SELECT uid FROM (select uid, cid, category, empid from comb_opportunity_sales_relation_offline where uid = 1723876714657374) ";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);

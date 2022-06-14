@@ -23,8 +23,7 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 public class MustParameterizedTest2 extends TestCase {
-
-    private String     sql    = "select * from t where id in (3, 5)";
+    private String sql = "select * from t where id in (3, 5)";
 
     private WallConfig config = new WallConfig();
 
@@ -37,7 +36,6 @@ public class MustParameterizedTest2 extends TestCase {
     }
 
     public void testORACLE() throws Exception {
-
         Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

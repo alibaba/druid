@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_6 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT all id FROM DSN81010.EMP;";
 
@@ -58,10 +57,10 @@ public class DB2SelectTest_6 extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         Assert.assertEquals("SELECT ALL id" //
-                            + "\nFROM DSN81010.EMP;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+                        + "\nFROM DSN81010.EMP;", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         Assert.assertEquals("select all id" //
-                            + "\nfrom DSN81010.EMP;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                        + "\nfrom DSN81010.EMP;", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

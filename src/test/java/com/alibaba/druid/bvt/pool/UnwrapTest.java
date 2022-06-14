@@ -21,11 +21,9 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 
 public class UnwrapTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(true);
@@ -50,7 +48,7 @@ public class UnwrapTest extends TestCase {
 
         Assert.assertTrue(conn.isWrapperFor(MockConnection.class));
         Assert.assertNotNull(conn.unwrap(MockConnection.class));
-        
+
         PreparedStatement stmt = conn.prepareStatement("select ?");
 
         Assert.assertTrue(stmt.isWrapperFor(Statement.class));
@@ -67,7 +65,7 @@ public class UnwrapTest extends TestCase {
 
         Assert.assertTrue(stmt.isWrapperFor(PreparedStatementProxyImpl.class));
         Assert.assertNotNull(stmt.unwrap(PreparedStatementProxyImpl.class));
-        
+
         Assert.assertTrue(stmt.isWrapperFor(MockPreparedStatement.class));
         Assert.assertNotNull(stmt.unwrap(MockPreparedStatement.class));
 
@@ -79,13 +77,13 @@ public class UnwrapTest extends TestCase {
 
         Assert.assertTrue(rs.isWrapperFor(ResultSetProxy.class));
         Assert.assertNotNull(rs.unwrap(ResultSetProxy.class));
-        
+
         Assert.assertTrue(rs.isWrapperFor(ResultSetProxyImpl.class));
         Assert.assertNotNull(rs.unwrap(ResultSetProxyImpl.class));
-        
+
         Assert.assertTrue(rs.isWrapperFor(MockResultSet.class));
         Assert.assertNotNull(rs.unwrap(MockResultSet.class));
-        
+
         rs.close();
 
         stmt.close();

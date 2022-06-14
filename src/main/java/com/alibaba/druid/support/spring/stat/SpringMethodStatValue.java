@@ -15,71 +15,70 @@
  */
 package com.alibaba.druid.support.spring.stat;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.alibaba.druid.support.monitor.annotation.AggregateType;
 import com.alibaba.druid.support.monitor.annotation.MField;
 import com.alibaba.druid.support.monitor.annotation.MTable;
 import com.alibaba.druid.util.Utils;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @MTable(name = "druid_springmethod")
 public class SpringMethodStatValue {
-
-    @MField(groupBy = true, aggregate=AggregateType.None)
+    @MField(groupBy = true, aggregate = AggregateType.None)
     private String className;
 
-    @MField(groupBy = true, aggregate=AggregateType.None)
+    @MField(groupBy = true, aggregate = AggregateType.None)
     private String signature;
 
     @MField(aggregate = AggregateType.Last)
-    private int    runningCount;
+    private int runningCount;
 
     @MField(aggregate = AggregateType.Max)
-    private int    concurrentMax;
+    private int concurrentMax;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   executeCount;
+    private long executeCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   executeErrorCount;
+    private long executeErrorCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   executeTimeNano;
+    private long executeTimeNano;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   jdbcFetchRowCount;
+    private long jdbcFetchRowCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   jdbcUpdateCount;
+    private long jdbcUpdateCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   jdbcExecuteCount;
+    private long jdbcExecuteCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   jdbcExecuteErrorCount;
+    private long jdbcExecuteErrorCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   jdbcExecuteTimeNano;
+    private long jdbcExecuteTimeNano;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   jdbcCommitCount;
+    private long jdbcCommitCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   jdbcRollbackCount;
+    private long jdbcRollbackCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   jdbcPoolConnectionOpenCount;
+    private long jdbcPoolConnectionOpenCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   jdbcPoolConnectionCloseCount;
+    private long jdbcPoolConnectionCloseCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   jdbcResultSetOpenCount;
+    private long jdbcResultSetOpenCount;
 
     @MField(aggregate = AggregateType.Sum)
-    private long   jdbcResultSetCloseCount;
+    private long jdbcResultSetCloseCount;
 
     @MField(aggregate = AggregateType.Last)
     private String lastErrorClass;
@@ -91,31 +90,31 @@ public class SpringMethodStatValue {
     private String lastErrorStackTrace;
 
     @MField(aggregate = AggregateType.Last)
-    private long   lastErrorTimeMillis;
+    private long lastErrorTimeMillis;
 
-    @MField(name = "h1", aggregate=AggregateType.Sum)
-    long           histogram_0_1;
+    @MField(name = "h1", aggregate = AggregateType.Sum)
+    long histogram_0_1;
 
-    @MField(name = "h10", aggregate=AggregateType.Sum)
-    long           histogram_1_10;
+    @MField(name = "h10", aggregate = AggregateType.Sum)
+    long histogram_1_10;
 
-    @MField(name = "h100", aggregate=AggregateType.Sum)
-    long           histogram_10_100;
+    @MField(name = "h100", aggregate = AggregateType.Sum)
+    long histogram_10_100;
 
-    @MField(name = "h1000", aggregate=AggregateType.Sum)
-    long           histogram_100_1000;
+    @MField(name = "h1000", aggregate = AggregateType.Sum)
+    long histogram_100_1000;
 
-    @MField(name = "h10000", aggregate=AggregateType.Sum)
-    int            histogram_1000_10000;
+    @MField(name = "h10000", aggregate = AggregateType.Sum)
+    int histogram_1000_10000;
 
-    @MField(name = "h100000", aggregate=AggregateType.Sum)
-    int            histogram_10000_100000;
+    @MField(name = "h100000", aggregate = AggregateType.Sum)
+    int histogram_10000_100000;
 
-    @MField(name = "h1000000", aggregate=AggregateType.Sum)
-    int            histogram_100000_1000000;
+    @MField(name = "h1000000", aggregate = AggregateType.Sum)
+    int histogram_100000_1000000;
 
-    @MField(name = "hmore", aggregate=AggregateType.Sum)
-    int            histogram_1000000_more;
+    @MField(name = "hmore", aggregate = AggregateType.Sum)
+    int histogram_1000000_more;
 
     public String getClassName() {
         return className;
@@ -294,7 +293,7 @@ public class SpringMethodStatValue {
     }
 
     public long[] getHistogram() {
-        return new long[] {
+        return new long[]{
                 //
                 histogram_0_1, //
                 histogram_1_10, //

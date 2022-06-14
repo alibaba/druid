@@ -16,10 +16,9 @@
 package com.alibaba.druid.benckmark.proxy;
 
 public abstract class BenchmarkCase {
-
     private final String name;
 
-    public BenchmarkCase(String name){
+    public BenchmarkCase(String name) {
         super();
         this.name = name;
     }
@@ -29,12 +28,10 @@ public abstract class BenchmarkCase {
     }
 
     public void setUp(SQLExecutor sqlExec) throws Exception {
-
     }
 
     public abstract void execute(SQLExecutor sqlExec) throws Exception;
 
     public void tearDown(SQLExecutor sqlExec) throws Exception {
-
     }
 }

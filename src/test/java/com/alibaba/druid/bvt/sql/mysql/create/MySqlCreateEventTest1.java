@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateEventTest1 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create definer = 'ivan'@'%' event testevent1 on schedule every 1 hour ends '2016-11-05 23:59:00'\n" +

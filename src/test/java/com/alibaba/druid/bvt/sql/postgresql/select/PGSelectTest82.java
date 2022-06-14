@@ -10,7 +10,7 @@ import java.util.List;
 public class PGSelectTest82
         extends TestCase {
     public void test_0() throws Exception {
-        String sql =  "select count(distinct h.user_id) \n" +
+        String sql = "select count(distinct h.user_id) \n" +
                 " FROM dblink (\n" +
                 "'dbname=dz_statistics host=127.0.0.1 user=xxx  password= xxx ',\n" +
                 "'select user_id from user_product_view_history where create_time > ''2019-10-04 00:00:00''')\n" +

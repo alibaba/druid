@@ -9,7 +9,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
-
 public class EvalSelectTest extends TestCase {
     public void test_select() throws Exception {
         List<List<Object>> rows = new ArrayList<List<Object>>();

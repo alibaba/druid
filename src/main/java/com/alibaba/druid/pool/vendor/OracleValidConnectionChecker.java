@@ -15,28 +15,26 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Properties;
-
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Properties;
+
 public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
+    private static final long serialVersionUID = -2227528634302168877L;
 
-    private static final long serialVersionUID     = -2227528634302168877L;
+    private int timeout = 1;
 
+    private String defaultValidateQuery = "SELECT 'x' FROM DUAL";
 
-    private int               timeout              = 1;
-
-    private String            defaultValidateQuery = "SELECT 'x' FROM DUAL";
-
-    public OracleValidConnectionChecker(){
+    public OracleValidConnectionChecker() {
         configFromProperties(System.getProperties());
     }
 
@@ -57,7 +55,9 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
         this.timeout = seconds;
     }
 
-    public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
+    public boolean isValidConnection(Connection conn,
+                                     String validateQuery,
+                                     int validationQueryTimeout) throws Exception {
         if (validateQuery == null || validateQuery.isEmpty()) {
             validateQuery = this.defaultValidateQuery;
         }

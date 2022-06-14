@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 
 public class OdpsAddStatisticStatement extends OdpsStatementImpl implements SQLAlterStatement {
-
     private SQLExprTableSource table;
 
     private OdpsStatisticClause statisticClause;

@@ -21,11 +21,10 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatement {
-
-    private boolean       returning;
+    private boolean returning;
 
     public PGDeleteStatement() {
-        super (DbType.postgresql);
+        super(DbType.postgresql);
     }
 
     public boolean isReturning() {

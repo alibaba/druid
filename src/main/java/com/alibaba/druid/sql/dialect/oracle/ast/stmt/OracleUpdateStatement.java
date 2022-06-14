@@ -27,12 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleUpdateStatement extends SQLUpdateStatement implements OracleStatement, SQLReplaceable {
+    private List<SQLHint> hints = new ArrayList<SQLHint>(1);
+    private boolean only;
+    private String alias;
 
-    private List<SQLHint>       hints         = new ArrayList<SQLHint>(1);
-    private boolean             only          = false;
-    private String              alias;
-
-    private final List<SQLExpr>       returningInto = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> returningInto = new ArrayList<SQLExpr>();
 
     public OracleUpdateStatement() {
         super(DbType.oracle);
@@ -73,7 +72,6 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
         visitor.endVisit(this);
     }
 
-
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
         boolean replace = super.replace(expr, target);
@@ -91,7 +89,6 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
 
         return false;
     }
-
 
     public String getAlias() {
         return this.alias;
@@ -130,18 +127,36 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         OracleUpdateStatement that = (OracleUpdateStatement) o;
 
-        if (with != null ? !with.equals(that.getWith()) : that.getWith() != null) return false;
-        if (!items.equals(that.getItems())) return false;
-        if (where != null ? !where.equals(that.getWhere()) : that.getWhere() != null) return false;
-        if (from != null ? !from.equals(that.getFrom()) : that.getFrom() != null) return false;
-        if (hints != null ? !hints.equals(that.hints) : that.hints != null) return false;
-        if (tableSource != null ? !tableSource.equals(that.tableSource) : that.tableSource != null) return false;
-        if (returning != null ? !returning.equals(that.returning) : that.returning != null) return false;
+        if (with != null ? !with.equals(that.getWith()) : that.getWith() != null) {
+            return false;
+        }
+        if (!items.equals(that.getItems())) {
+            return false;
+        }
+        if (where != null ? !where.equals(that.getWhere()) : that.getWhere() != null) {
+            return false;
+        }
+        if (from != null ? !from.equals(that.getFrom()) : that.getFrom() != null) {
+            return false;
+        }
+        if (hints != null ? !hints.equals(that.hints) : that.hints != null) {
+            return false;
+        }
+        if (tableSource != null ? !tableSource.equals(that.tableSource) : that.tableSource != null) {
+            return false;
+        }
+        if (returning != null ? !returning.equals(that.returning) : that.returning != null) {
+            return false;
+        }
         return orderBy != null ? orderBy.equals(that.orderBy) : that.orderBy == null;
     }
 

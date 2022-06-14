@@ -29,7 +29,6 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import junit.framework.TestCase;
 
 public class CALL_Test extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CALL p(@version, @increment);";
 

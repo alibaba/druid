@@ -19,15 +19,14 @@ import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
 
 public class Large10ConcurrentTest extends TestCase {
-
-    private DruidDataSource[]        dataSources;
+    private DruidDataSource[] dataSources;
     private ScheduledExecutorService scheduler;
 
-    private ExecutorService          executor;
+    private ExecutorService executor;
 
     protected void setUp() throws Exception {
         long xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m
-        
+
         final int dataSourceCount;
 
         if (xmx <= 256) {
@@ -41,9 +40,9 @@ public class Large10ConcurrentTest extends TestCase {
         } else {
             dataSourceCount = 1024 * 16;
         }
-        
+
         dataSources = new DruidDataSource[dataSourceCount];
-        
+
         executor = Executors.newFixedThreadPool(100);
         scheduler = Executors.newScheduledThreadPool(10);
         for (int i = 0; i < dataSources.length; ++i) {
@@ -79,7 +78,6 @@ public class Large10ConcurrentTest extends TestCase {
                 final DataSource dataSource = dataSources[i];
                 final int index = i * 8 + j;
                 Runnable task = new Runnable() {
-
                     public void run() {
                         try {
                             connections[index] = dataSource.getConnection();
@@ -95,11 +93,11 @@ public class Large10ConcurrentTest extends TestCase {
             }
         }
         connLatch.await();
-        
+
         for (int i = 0; i < dataSources.length; ++i) {
             Assert.assertEquals(8, dataSources[i].getActiveCount());
         }
-        
+
         for (int i = 0; i < dataSources.length; ++i) {
             Assert.assertEquals(0, dataSources[i].getPoolingCount());
         }

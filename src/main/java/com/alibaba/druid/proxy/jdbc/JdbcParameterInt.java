@@ -19,9 +19,8 @@ import java.sql.Types;
 import java.util.Calendar;
 
 public final class JdbcParameterInt implements JdbcParameter {
-    
     private static JdbcParameterInt[] cache;
-    
+
     static {
         int cacheSize = 127;
         cache = new JdbcParameterInt[cacheSize];
@@ -32,15 +31,15 @@ public final class JdbcParameterInt implements JdbcParameter {
 
     private final int value;
 
-    private JdbcParameterInt(int value){
+    private JdbcParameterInt(int value) {
         this.value = value;
     }
-    
+
     public static JdbcParameterInt valueOf(int value) {
         if (value >= 0 && value < cache.length) {
             return cache[value];
         }
-        
+
         return new JdbcParameterInt(value);
     }
 

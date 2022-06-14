@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class SQLPartitionBy extends SQLObjectImpl {
-    protected SQLSubPartitionBy  subPartitionBy;
-    protected SQLExpr            partitionsCount;
-    protected boolean            linear;
+    protected SQLSubPartitionBy subPartitionBy;
+    protected SQLExpr partitionsCount;
+    protected boolean linear;
     protected List<SQLPartition> partitions = new ArrayList<SQLPartition>();
-    protected List<SQLName>      storeIn    = new ArrayList<SQLName>();
-    protected List<SQLExpr>      columns    = new ArrayList<SQLExpr>();
+    protected List<SQLName> storeIn = new ArrayList<SQLName>();
+    protected List<SQLExpr> columns = new ArrayList<SQLExpr>();
 
     protected SQLIntegerExpr lifecycle;
 
@@ -117,7 +117,7 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
         for (SQLExpr column : columns) {
             if (column instanceof SQLIdentifierExpr
                     && ((SQLIdentifierExpr) column)
-                        .nameHashCode64() == columnNameHashCode64) {
+                    .nameHashCode64() == columnNameHashCode64) {
                 return true;
             }
         }

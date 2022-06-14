@@ -27,26 +27,24 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 /**
- * 
  * Description: procedure begin-end, loop, while use label
  * author zz email:455910092@qq.com
  * date 2015-9-14
  * version V1.0
  */
 public class MySqlCreateProcedureTest5 extends MysqlTest {
-
     public void test_0() throws Exception {
-    	String sql="create or replace procedure sp_name(level int,age int)"+
-				" begin"+
-				" declare c1 cursor for select id,age from test;"+
-				" open c1;"+
-				" fetch c1 into x;"+
-				" close c1;"+
-				" end";
-	
-    	MySqlStatementParser parser=new MySqlStatementParser(sql);
-    	List<SQLStatement> statementList = parser.parseStatementList();
-    	SQLStatement stmt = statementList.get(0);
+        String sql = "create or replace procedure sp_name(level int,age int)" +
+                " begin" +
+                " declare c1 cursor for select id,age from test;" +
+                " open c1;" +
+                " fetch c1 into x;" +
+                " close c1;" +
+                " end";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
 //    	print(statementList);
         assertEquals(1, statementList.size());
 
@@ -59,15 +57,15 @@ public class MySqlCreateProcedureTest5 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(1, visitor.getTables().size());
         assertEquals(1, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
-        
+
         assertTrue(visitor.containsColumn("test", "id"));
 //        assertTrue(visitor.containsColumn("test", "age")));
     }
-    
+
 }

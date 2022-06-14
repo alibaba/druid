@@ -1,7 +1,7 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -24,9 +24,9 @@ public class MySqlParameterizedOutputVisitorTest_43 extends TestCase {
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
         String sql = "UPDATE `feel_07`.feed_item_receive SET `attributes` = ?, `gmt_modified` = ?, `lock_version` = ? WHERE `feed_id` = ?";
-        String params = "[\"enableTime:1498682416713,src:top,importFrom:0\",\"2017-06-29 04:40:20\",1,313825887478L]";
+        String params = "[\"enableTime:1498682416713,src:top,importFrom:0\",\"2017-06-29 04:40:20\",1,313825887478]";
         String table = "[\"`feel_07`.`feed_item_receive_0502`\"]";
-        String restoredSql = restore(sql,table,params);
+        String restoredSql = restore(sql, table, params);
 
         assertEquals("UPDATE `feel_07`.`feed_item_receive_0502`\n" +
                 "SET `attributes` = 'enableTime:1498682416713,src:top,importFrom:0', `gmt_modified` = '2017-06-29 04:40:20', `lock_version` = 1\n" +
@@ -36,7 +36,7 @@ public class MySqlParameterizedOutputVisitorTest_43 extends TestCase {
 
     public static String restore(String sql, String table, String params/*JSONArray paramsArray, JSONArray destArray*/) {
         JSONArray destArray = JSON.parseArray(table.replaceAll("''", "'"));
-        params = StringUtils.replace(params.replaceAll("''", "'"), "\\\"","\"");
+        params = StringUtils.replace(params.replaceAll("''", "'"), "\\\"", "\"");
         JSONArray paramsArray = JSON.parseArray(params);
         DbType dbType = JdbcConstants.MYSQL;
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);

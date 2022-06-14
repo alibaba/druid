@@ -22,7 +22,7 @@ public interface DruidDriverMBean {
     String getDruidVersion();
 
     long getConnectCount();
-    
+
     void resetStat();
 
     String getAcceptPrefix();

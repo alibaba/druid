@@ -33,7 +33,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_16 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select a from t where not a>1 and not b<1";
 
@@ -81,6 +80,6 @@ public class MySqlSelectTest_16 extends MysqlTest {
                         "FROM t\n" +
                         "WHERE (NOT a > 1)\n" +
                         "\tAND NOT b < 1", //
-                            output);
+                output);
     }
 }

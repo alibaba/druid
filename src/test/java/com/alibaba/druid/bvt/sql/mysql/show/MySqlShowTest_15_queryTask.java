@@ -31,12 +31,11 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import java.util.List;
 
 public class MySqlShowTest_15_queryTask extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW QUERY_TASK";
 
         SQLStatement stmt = SQLUtils.parseStatements(sql, DbType.mysql).get(0);
-        
+
         String result = SQLUtils.toMySqlString(stmt);
         assertEquals("SHOW QUERY_TASK", result);
 
@@ -53,13 +52,13 @@ public class MySqlShowTest_15_queryTask extends MysqlTest {
         String sql = "SHOW QUERY_TASK where name > 1 order by name desc limit 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql, SQLParserFeature.TDDLHint);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLShowQueryTaskStatement stmt = (SQLShowQueryTaskStatement)statementList.get(0);
+        SQLShowQueryTaskStatement stmt = (SQLShowQueryTaskStatement) statementList.get(0);
 
         String result = SQLUtils.toMySqlString(stmt);
         assertEquals("SHOW QUERY_TASK\n"
-                     + "WHERE name > 1\n"
-                     + "ORDER BY name DESC\n"
-                     + "LIMIT 1", result);
+                + "WHERE name > 1\n"
+                + "ORDER BY name DESC\n"
+                + "LIMIT 1", result);
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(DbType.mysql);
         stmt.accept(visitor);
@@ -68,9 +67,9 @@ public class MySqlShowTest_15_queryTask extends MysqlTest {
         assertEquals(1, visitor.getColumns().size());
         assertEquals(1, visitor.getConditions().size());
 
-        stmt.replace(stmt.getWhere(),new SQLBinaryOpExpr(new SQLIdentifierExpr("a"),
-                                                                       SQLBinaryOperator.Equality,
-                                                                       new SQLBigIntExpr(1L)));
+        stmt.replace(stmt.getWhere(), new SQLBinaryOpExpr(new SQLIdentifierExpr("a"),
+                SQLBinaryOperator.Equality,
+                new SQLBigIntExpr(1L)));
 
         stmt.getOrderBy().replace(stmt.getOrderBy().getItems().get(0).getExpr(), new SQLIdentifierExpr("a"));
 

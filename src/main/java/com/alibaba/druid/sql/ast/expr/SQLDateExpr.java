@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.MySqlUtils;
 
@@ -30,8 +29,7 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
 
     private String literal;
 
-    public SQLDateExpr(){
-
+    public SQLDateExpr() {
     }
 
     public SQLDateExpr(String literal) {
@@ -77,7 +75,7 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
     }
 
     public Date getDate() {
-       return getDate(null);
+        return getDate(null);
     }
 
     public Date getDate(TimeZone timeZone) {
@@ -203,16 +201,18 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
         return Collections.emptyList();
     }
 
-    public static long supportDbTypes = DbType.of(DbType.mysql
-            , DbType.oracle
-            , DbType.presto
-            , DbType.trino
-            , DbType.postgresql
-            , DbType.ads
-            , DbType.hive
-            , DbType.odps
-            , DbType.mariadb
-            , DbType.tidb);
+    public static long supportDbTypes = DbType.of(
+            DbType.mysql,
+            DbType.oracle,
+            DbType.presto,
+            DbType.trino,
+            DbType.postgresql,
+            DbType.ads,
+            DbType.hive,
+            DbType.odps,
+            DbType.mariadb,
+            DbType.tidb
+    );
 
     public static boolean isSupport(DbType dbType) {
         return (dbType.mask & supportDbTypes) != 0;
@@ -251,7 +251,7 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
             return false;
         }
 
-        if(c4 != '-') {
+        if (c4 != '-') {
             return false;
         }
 
@@ -356,16 +356,16 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
         char[] chars = new char[10];
-        chars[0] = (char) (year/1000 + '0');
-        chars[1] = (char) ((year/100)%10 + '0');
-        chars[2] = (char) ((year/10)%10 + '0');
-        chars[3] = (char) (year%10 + '0');
+        chars[0] = (char) (year / 1000 + '0');
+        chars[1] = (char) ((year / 100) % 10 + '0');
+        chars[2] = (char) ((year / 10) % 10 + '0');
+        chars[3] = (char) (year % 10 + '0');
         chars[4] = '-';
-        chars[5] = (char) (month/10 + '0');
-        chars[6] = (char) (month%10 + '0');
+        chars[5] = (char) (month / 10 + '0');
+        chars[6] = (char) (month % 10 + '0');
         chars[7] = '-';
-        chars[8] = (char) (dayOfMonth/10 + '0');
-        chars[9] = (char) (dayOfMonth%10 + '0');
+        chars[8] = (char) (dayOfMonth / 10 + '0');
+        chars[9] = (char) (dayOfMonth % 10 + '0');
 
         return new String(chars);
     }

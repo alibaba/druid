@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLLoopStatement extends SQLStatementImpl {
-
     private String labelName;
 
     private final List<SQLStatement> statements = new ArrayList<SQLStatement>();

@@ -24,9 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_53_match extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "SELECT *, `MATCH`(question_content_fulltext) " + //
+        String sql = "SELECT *, `MATCH`(question_content_fulltext) " + //
                 "`AGAINST`('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE) AS score " + //
                 "FROM aws_question " + //
                 "WHERE MATCH(question_content_fulltext) " + //
@@ -48,35 +47,35 @@ public class MySqlSelectTest_53_match extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(1, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT *, MATCH (question_content_fulltext) AGAINST ('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE) AS score\n"
-                         + "FROM aws_question\n"
-                         + "WHERE MATCH (question_content_fulltext) AGAINST ('2015431867 2636826089 3807520117 2796321160 2615920174') > 1\n"
-                         + "ORDER BY score DESC, agree_count DESC\n" + "LIMIT 10", //
-                         output);
+                            + "FROM aws_question\n"
+                            + "WHERE MATCH (question_content_fulltext) AGAINST ('2015431867 2636826089 3807520117 2796321160 2615920174') > 1\n"
+                            + "ORDER BY score DESC, agree_count DESC\n" + "LIMIT 10", //
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select *, match (question_content_fulltext) against ('2015431867 2636826089 3807520117 2796321160 2615920174' in boolean mode) as score\n"
-                         + "from aws_question\n"
-                         + "where match (question_content_fulltext) against ('2015431867 2636826089 3807520117 2796321160 2615920174') > 1\n"
-                         + "order by score desc, agree_count desc\n" + "limit 10", //
-                         output);
+                            + "from aws_question\n"
+                            + "where match (question_content_fulltext) against ('2015431867 2636826089 3807520117 2796321160 2615920174') > 1\n"
+                            + "order by score desc, agree_count desc\n" + "limit 10", //
+                    output);
         }
 
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
             assertEquals("SELECT *, MATCH (question_content_fulltext) AGAINST (? IN BOOLEAN MODE) AS score\n"
-                         + "FROM aws_question\n" + "WHERE MATCH (question_content_fulltext) AGAINST (?) > ?\n"
-                         + "ORDER BY score DESC, agree_count DESC\n" + "LIMIT ?", //
-                         output);
+                            + "FROM aws_question\n" + "WHERE MATCH (question_content_fulltext) AGAINST (?) > ?\n"
+                            + "ORDER BY score DESC, agree_count DESC\n" + "LIMIT ?", //
+                    output);
         }
     }
 }

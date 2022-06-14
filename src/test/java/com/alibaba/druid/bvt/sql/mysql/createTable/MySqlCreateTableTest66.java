@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest66 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create table hp_db.g20_relationship_communication_daily(                   "
@@ -51,7 +50,7 @@ public class MySqlCreateTableTest66 extends MysqlTest {
                     + "\n\tb_iden_string varchar,"
                     + "\n\tcounter bigint,"
                     + "\n\tdurationtime bigint"
-                    + "\n)" 
+                    + "\n)"
                     + "\nPARTITION BY HASH KEY(a_iden_string) PARTITION NUM 100"
                     + "\nSUBPARTITION BY LIST (bdt bigint)"
                     + "\nSUBPARTITION OPTIONS (available_Partition_Num = 90)"
@@ -64,7 +63,7 @@ public class MySqlCreateTableTest66 extends MysqlTest {
                     + "\n\tb_iden_string varchar,"
                     + "\n\tcounter bigint,"
                     + "\n\tdurationtime bigint"
-                    + "\n)" 
+                    + "\n)"
                     + "\npartition by hash key(a_iden_string) partition num 100"
                     + "\nsubpartition by list (bdt bigint)"
                     + "\nsubpartition options (available_Partition_Num = 90)"

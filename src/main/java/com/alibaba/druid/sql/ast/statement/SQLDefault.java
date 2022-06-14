@@ -21,16 +21,14 @@ import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDefault extends SQLConstraintImpl implements SQLTableElement, SQLTableConstraint, SQLReplaceable {
-
     private SQLExpr expr;
     private SQLExpr column;
-    private boolean withValues = false;
+    private boolean withValues;
 
-    public SQLDefault(){
-
+    public SQLDefault() {
     }
 
-    public SQLDefault(SQLExpr expr, SQLExpr column){
+    public SQLDefault(SQLExpr expr, SQLExpr column) {
         this.setExpr(expr);
         this.setColumn(column);
     }

@@ -25,12 +25,11 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateFullTextDictTest extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create fulltext dictionary test1 ("
-                     + " word varchar comment 'comment1' "
-                     + ") comment 'comment1'";
+                + " word varchar comment 'comment1' "
+                + ") comment 'comment1'";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -38,11 +37,12 @@ public class MySqlCreateFullTextDictTest extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE FULLTEXT DICTIONARY test1(\n"
-                            + "word varchar COMMENT 'comment1'\n"
-                            + ") COMMENT 'comment1'", output);
+                + "word varchar COMMENT 'comment1'\n"
+                + ") COMMENT 'comment1'", output);
     }
 
-    @Test public void test_1() throws Exception {
+    @Test
+    public void test_1() throws Exception {
         String sql = "show fulltext dictionaries";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
@@ -53,7 +53,8 @@ public class MySqlCreateFullTextDictTest extends MysqlTest {
         Assert.assertEquals("SHOW FULLTEXT DICTIONARIES", output);
     }
 
-    @Test public void test_2() throws Exception {
+    @Test
+    public void test_2() throws Exception {
         String sql = "show fulltext dictionaries";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
@@ -64,7 +65,8 @@ public class MySqlCreateFullTextDictTest extends MysqlTest {
         Assert.assertEquals("SHOW FULLTEXT DICTIONARIES", output);
     }
 
-    @Test public void test_3() throws Exception {
+    @Test
+    public void test_3() throws Exception {
         String sql = "drop fulltext dictionary dic_name";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);

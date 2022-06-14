@@ -30,7 +30,6 @@ import org.junit.Assert;
  * @see
  */
 public class MySqlWallTest91 extends TestCase {
-
     private WallProvider initWallProvider() {
         WallProvider provider = new MySqlWallProvider();
 

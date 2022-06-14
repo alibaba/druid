@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE pageviews (userid VARCHAR(64), link STRING, came_from STRING)\n" +
@@ -34,8 +33,6 @@ public class HiveCreateTableTest_2 extends OracleTest {
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
         print(statementList);
-
-
 
         Assert.assertEquals(1, statementList.size());
 

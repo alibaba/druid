@@ -27,38 +27,37 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGCommentTest extends PGTest {
-	
-	public void test_0() {
-		String sql = "/*multiline comment test"
-				+ ".\r\n multiline comment test select * from a;";
+    public void test_0() {
+        String sql = "/*multiline comment test"
+                + ".\r\n multiline comment test select * from a;";
 
-		PGSQLStatementParser parser;
-		try {
-			parser = new PGSQLStatementParser(sql);
-			parser.parseStatementList();
-		} catch (Exception e) {
-			assertTrue(e instanceof ParserException);
-		}
-	}
-	
-	public void test_1() {
-		String sql = "select a.id,--single line comment test a.name from a;";
+        PGSQLStatementParser parser;
+        try {
+            parser = new PGSQLStatementParser(sql);
+            parser.parseStatementList();
+        } catch (Exception e) {
+            assertTrue(e instanceof ParserException);
+        }
+    }
 
-		PGSQLStatementParser parser;
-		try {
-			parser = new PGSQLStatementParser(sql);
-			parser.parseStatementList();
-		} catch (Exception e) {
-			assertTrue(e instanceof ParserException);
-		}
-	}
+    public void test_1() {
+        String sql = "select a.id,--single line comment test a.name from a;";
+
+        PGSQLStatementParser parser;
+        try {
+            parser = new PGSQLStatementParser(sql);
+            parser.parseStatementList();
+        } catch (Exception e) {
+            assertTrue(e instanceof ParserException);
+        }
+    }
 
     public void test_2() throws Exception {
         String sql = "/*multiline comment test"
-        		+ ".\r\n multiline comment test*"
-        		+ "/select --single line comment test\r\na.id,"
-        		+ "/*multiline comment test*/"
-        		+ "a.name from a;";
+                + ".\r\n multiline comment test*"
+                + "/select --single line comment test\r\na.id,"
+                + "/*multiline comment test*/"
+                + "a.name from a;";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

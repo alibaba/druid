@@ -18,10 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
@@ -35,27 +32,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
-
     protected SQLExpr expr;
-    protected String  alias;
+    protected String alias;
 
-    protected boolean connectByRoot = false;
+    protected boolean connectByRoot;
     protected transient long aliasHashCode64;
     protected List<String> aliasList;
 
-    public SQLSelectItem(){
-
+    public SQLSelectItem() {
     }
 
-    public SQLSelectItem(SQLExpr expr){
+    public SQLSelectItem(SQLExpr expr) {
         this(expr, null);
     }
 
-    public SQLSelectItem(int value){
+    public SQLSelectItem(int value) {
         this(new SQLIntegerExpr(value), null);
     }
 
-    public SQLSelectItem(SQLExpr expr, String alias){
+    public SQLSelectItem(SQLExpr expr, String alias) {
         this.expr = expr;
         this.alias = alias;
 
@@ -63,8 +58,8 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
             expr.setParent(this);
         }
     }
-    
-    public SQLSelectItem(SQLExpr expr, String alias, boolean connectByRoot){
+
+    public SQLSelectItem(SQLExpr expr, String alias, boolean connectByRoot) {
         this.connectByRoot = connectByRoot;
         this.expr = expr;
         this.alias = alias;
@@ -74,7 +69,7 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         }
     }
 
-    public SQLSelectItem(SQLExpr expr, List<String> aliasList, boolean connectByRoot){
+    public SQLSelectItem(SQLExpr expr, List<String> aliasList, boolean connectByRoot) {
         this.connectByRoot = connectByRoot;
         this.expr = expr;
         this.aliasList = aliasList;
@@ -173,7 +168,9 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
@@ -276,11 +273,22 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
             String ident = ((SQLPropertyExpr) expr).getName();
             if ("*".equals(ident)) {
                 SQLTableSource resolvedTableSource = ((SQLPropertyExpr) expr).getResolvedTableSource();
-                if (resolvedTableSource != null
-                        && resolvedTableSource.findColumn(alias_hash) != null) {
-                    return true;
+                if (resolvedTableSource == null) {
+                    return false;
                 }
-                return false;
+
+                boolean isParentTableSource = false;
+                if (resolvedTableSource instanceof SQLSubqueryTableSource) {
+                    for (SQLObject parent = this.getParent(); parent != null; parent = parent.getParent()) {
+                        if (parent == resolvedTableSource) {
+                            isParentTableSource = true;
+                            break;
+                        }
+                    }
+                }
+
+                return (!isParentTableSource)
+                        && resolvedTableSource.findColumn(alias_hash) != null;
             }
 
             return alias == null && ((SQLPropertyExpr) expr).nameHashCode64() == alias_hash;

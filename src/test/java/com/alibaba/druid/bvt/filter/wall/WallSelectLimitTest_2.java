@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 
 public class WallSelectLimitTest_2 extends TestCase {
     private WallConfig config = new WallConfig();
-    
+
     protected void setUp() throws Exception {
         config.setSelectLimit(1000);
     }

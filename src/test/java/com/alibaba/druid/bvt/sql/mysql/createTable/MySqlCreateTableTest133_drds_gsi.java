@@ -13,34 +13,32 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 public class MySqlCreateTableTest133_drds_gsi extends MysqlTest {
-
     // Constraint XXX may not show in parsed sql, so removed it.
-    private static final String       CREATE_TABLE_BASE    = "CREATE TABLE IF NOT EXISTS `full_type_table` (\n"
-                                                             + "\tpk INT NOT NULL PRIMARY KEY AUTO_INCREMENT,\n"
-                                                             + "\tid1 INT,\n" + "\tid2 INT,\n"
-                                                             + "\tid3 VARCHAR(100),\n" + "\tvc1 VARCHAR(100),\n"
-                                                             + "\tvc3 VARCHAR(100),\n"
-                                                             + "\tINDEX idx1 USING HASH(id1),\n"
-                                                             + "\tKEY idx2 USING HASH (id2),\n"
-                                                             + "\tFULLTEXT KEY idx4 (id3(20)),\n"
-                                                             + "\tUNIQUE idx3 USING BTREE (vc1(20))";
-    private static final String       CREATE_TABLE_TAIL    = "\n) ENGINE = INNODB AUTO_INCREMENT = 2 AVG_ROW_LENGTH = 100 "
-                                                             + "CHARACTER SET = utf8 COLLATE = utf8_bin CHECKSUM = 0 COMMENT 'abcd'\n"
-                                                             + "DBPARTITION BY HASH(id1);";
+    private static final String CREATE_TABLE_BASE = "CREATE TABLE IF NOT EXISTS `full_type_table` (\n"
+            + "\tpk INT NOT NULL PRIMARY KEY AUTO_INCREMENT,\n"
+            + "\tid1 INT,\n" + "\tid2 INT,\n"
+            + "\tid3 VARCHAR(100),\n" + "\tvc1 VARCHAR(100),\n"
+            + "\tvc3 VARCHAR(100),\n"
+            + "\tINDEX idx1 USING HASH(id1),\n"
+            + "\tKEY idx2 USING HASH (id2),\n"
+            + "\tFULLTEXT KEY idx4 (id3(20)),\n"
+            + "\tUNIQUE idx3 USING BTREE (vc1(20))";
+    private static final String CREATE_TABLE_TAIL = "\n) ENGINE = INNODB AUTO_INCREMENT = 2 AVG_ROW_LENGTH = 100 "
+            + "CHARACTER SET = utf8 COLLATE = utf8_bin CHECKSUM = 0 COMMENT 'abcd'\n"
+            + "DBPARTITION BY HASH(id1);";
 
-    private static final String       FULL_TYPE_TABLE      = CREATE_TABLE_BASE + CREATE_TABLE_TAIL;
+    private static final String FULL_TYPE_TABLE = CREATE_TABLE_BASE + CREATE_TABLE_TAIL;
 
-    private static final List<String> GSI_DEFINITIONS      = new ArrayList<String>();
+    private static final List<String> GSI_DEFINITIONS = new ArrayList<String>();
 
-    private static final List<String> GSI_DEF_HEAD         = new ArrayList<String>();
-    private static final List<String> GSI_DEF_COLUMN_DB    = new ArrayList<String>();
-    private static final List<String> GSI_DEF_COLUMN_TB    = new ArrayList<String>();
-    private static final List<String> GSI_DEF_SHARDING_DB  = new ArrayList<String>();
-    private static final List<String> GSI_DEF_SHARDING_TB  = new ArrayList<String>();
+    private static final List<String> GSI_DEF_HEAD = new ArrayList<String>();
+    private static final List<String> GSI_DEF_COLUMN_DB = new ArrayList<String>();
+    private static final List<String> GSI_DEF_COLUMN_TB = new ArrayList<String>();
+    private static final List<String> GSI_DEF_SHARDING_DB = new ArrayList<String>();
+    private static final List<String> GSI_DEF_SHARDING_TB = new ArrayList<String>();
     private static final List<String> GSI_DEF_INDEX_OPTION = new ArrayList<String>();
 
     static {
-
         GSI_DEF_HEAD.add("GLOBAL INDEX");
         GSI_DEF_HEAD.add("UNIQUE GLOBAL");
         // GSI_DEF_HEAD.add("GLOBAL UNIQUE INDEX");
@@ -86,7 +84,7 @@ public class MySqlCreateTableTest133_drds_gsi extends MysqlTest {
     private static void buildGsiDef(String head, String option, String column, List<String> gsiDefShardingDb) {
         for (String sharding : gsiDefShardingDb) {
             GSI_DEFINITIONS.add("\t" + head + " " + column + " " + sharding + (StringUtils.isBlank(option) ? "" : " ")
-                                + option);
+                    + option);
         }
     }
 

@@ -20,10 +20,9 @@ import java.sql.Types;
 import java.util.Calendar;
 
 public final class JdbcParameterTimestamp implements JdbcParameter {
-
     private final Timestamp value;
 
-    public JdbcParameterTimestamp(Timestamp value){
+    public JdbcParameterTimestamp(Timestamp value) {
         this.value = value;
     }
 

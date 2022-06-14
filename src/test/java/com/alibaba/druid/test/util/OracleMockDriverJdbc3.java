@@ -29,7 +29,7 @@ public class OracleMockDriverJdbc3 extends MockDriver {
     public Connection connect(String url, Properties info) throws SQLException {
         return new OracleMockConnectionJdbc3(this, url, info);
     }
-    
+
     @Override
     public int getMajorVersion() {
         return 10;
@@ -39,11 +39,11 @@ public class OracleMockDriverJdbc3 extends MockDriver {
     public int getMinorVersion() {
         return 0;
     }
-    
+
     public MockResultSet createMockResultSet(MockStatementBase stmt) {
         return new OracleMockResultSetJdbc3(stmt);
     }
-    
+
     public OracleMockPreparedStatement createMockPreparedStatement(MockConnection conn, String sql) {
         return new OracleMockPreparedStatementJdbc3((OracleMockConnection) conn, sql);
     }

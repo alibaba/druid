@@ -21,7 +21,7 @@ public class HiveLoadDataStatement extends SQLStatementImpl {
     private boolean overwrite;
     private SQLExprTableSource into;
 
-    private final List<SQLExpr> partition  = new ArrayList<SQLExpr>(4);
+    private final List<SQLExpr> partition = new ArrayList<SQLExpr>(4);
 
     private SQLExternalRecordFormat format;
     private SQLExpr storedBy;

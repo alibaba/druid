@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGInsertTest3 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO films SELECT * FROM tmp_films WHERE date_prod < '2004-05-07';";
 

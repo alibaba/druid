@@ -77,7 +77,6 @@ public abstract class SQLPrivilegeStatement extends SQLStatementImpl {
         return privileges;
     }
 
-
     public SQLObjectType getResourceType() {
         return resourceType;
     }
@@ -85,6 +84,5 @@ public abstract class SQLPrivilegeStatement extends SQLStatementImpl {
     public void setResourceType(SQLObjectType x) {
         this.resourceType = x;
     }
-
 
 }

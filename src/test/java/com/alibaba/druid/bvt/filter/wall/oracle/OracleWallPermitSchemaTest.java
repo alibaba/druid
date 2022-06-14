@@ -22,15 +22,14 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallUtils;
 
 public class OracleWallPermitSchemaTest extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateOracle("select banner from sys.v_$version where rownum=1"));
         Assert.assertTrue(WallUtils.isValidateOracle("select banner from sys.v where rownum=1"));
     }
-    
+
     public void test_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select banner from sys.v_$version where rownum=1"));
         Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select banner from sys.v where rownum=1"));
     }
-    
+
 }

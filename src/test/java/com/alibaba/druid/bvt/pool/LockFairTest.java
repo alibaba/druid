@@ -10,7 +10,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class LockFairTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -38,7 +37,7 @@ public class LockFairTest extends TestCase {
             Connection conn = dataSource.getConnection();
             conn.close();
         }
-        
+
         dataSource.setMaxWait(0);
 
         Assert.assertEquals(true, ((ReentrantLock) dataSource.getLock()).isFair());
@@ -49,7 +48,6 @@ public class LockFairTest extends TestCase {
     }
 
     public void test_fair_1() throws Exception {
-
         Connection conn = dataSource.getConnection();
         conn.close();
 

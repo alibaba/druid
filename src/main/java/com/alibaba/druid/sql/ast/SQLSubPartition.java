@@ -19,17 +19,17 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSubPartition extends OracleSegmentAttributesImpl {
-    protected SQLName           name;
+    protected SQLName name;
     protected SQLPartitionValue values;
-    protected SQLName           tableSpace;
+    protected SQLName tableSpace;
 
     // for mysql
-    protected SQLExpr           dataDirectory;
-    protected SQLExpr           indexDirectory;
-    protected SQLExpr           maxRows;
-    protected SQLExpr           minRows;
-    protected SQLExpr           engine;
-    protected SQLExpr           comment;
+    protected SQLExpr dataDirectory;
+    protected SQLExpr indexDirectory;
+    protected SQLExpr maxRows;
+    protected SQLExpr minRows;
+    protected SQLExpr engine;
+    protected SQLExpr comment;
 
     public SQLName getName() {
         return name;
@@ -41,7 +41,7 @@ public class SQLSubPartition extends OracleSegmentAttributesImpl {
         }
         this.name = name;
     }
-    
+
     public SQLPartitionValue getValues() {
         return values;
     }

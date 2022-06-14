@@ -13,7 +13,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 
 public class PreparedStatementProxyImplTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

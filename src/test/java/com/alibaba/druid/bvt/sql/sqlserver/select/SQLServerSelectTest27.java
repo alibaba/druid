@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SQLServerSelectTest27 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = //
                 "set identity_insert tb_coupon OFF"; //

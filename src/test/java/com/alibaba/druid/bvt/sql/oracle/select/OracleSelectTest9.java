@@ -25,15 +25,14 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest9 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT e.employee_id, e.salary, e.commission_pct" + //
-                     "   FROM employees e JOIN departments d" + //
-                     "   USING (department_id)" + //
-                     "   WHERE job_id = 'SA_REP'" + //
-                     "   AND location_id = 2500" + //
-                     "   ORDER BY e.employee_id" + //
-                     "   FOR UPDATE OF e.salary;";
+                "   FROM employees e JOIN departments d" + //
+                "   USING (department_id)" + //
+                "   WHERE job_id = 'SA_REP'" + //
+                "   AND location_id = 2500" + //
+                "   ORDER BY e.employee_id" + //
+                "   FOR UPDATE OF e.salary;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

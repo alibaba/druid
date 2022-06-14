@@ -12,13 +12,12 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_176_hints extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT a.*,b.start_time,b.end_time,b.user_limit,b.member_limit,b.attributes,b.merchant_code,b.terminal FROM wdk_buygift_item a, wdk_online_activity b  WHERE a.act_id=b.act_id and a.status  =1 and b.status=1 and a.buy_item_id = '564779304647' /* ignore * 107074005 */ and a.shop_id=160039352 and b.start_time <=now() and b.end_time>now() order by act_id desc limit 1";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.EnableSQLBinaryOpExprGroup,
                 SQLParserFeature.OptimizedForParameterized);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

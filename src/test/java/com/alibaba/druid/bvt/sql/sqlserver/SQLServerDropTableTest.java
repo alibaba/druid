@@ -24,7 +24,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class SQLServerDropTableTest extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "DROP TABLE IF EXISTS test";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);

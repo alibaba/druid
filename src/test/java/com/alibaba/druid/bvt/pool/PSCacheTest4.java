@@ -28,7 +28,6 @@ import com.alibaba.druid.pool.PreparedStatementPool;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PSCacheTest4 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -68,7 +67,7 @@ public class PSCacheTest4 extends TestCase {
         DruidPooledPreparedStatement stmt_1_F;
         DruidPooledPreparedStatement stmt_1_G;
         DruidPooledPreparedStatement stmt_1_H;
-        
+
         DruidPooledResultSet rs_0;
         DruidPooledResultSet rs_1_A;
         DruidPooledResultSet rs_1_B;
@@ -81,69 +80,69 @@ public class PSCacheTest4 extends TestCase {
 
         stmt_0 = (DruidPooledPreparedStatement) conn.prepareStatement(sql_0);
         rs_0 = (DruidPooledResultSet) stmt_0.executeQuery();
-        
+
         Assert.assertTrue(stmt_0.getPreparedStatementHolder().isInUse());
 
         stmt_1_A = (DruidPooledPreparedStatement) conn.prepareStatement(sql_1);
         rs_1_A = (DruidPooledResultSet) stmt_1_A.executeQuery();
-        
+
         Assert.assertTrue(stmt_0.getPreparedStatementHolder().isInUse());
         Assert.assertTrue(stmt_1_A.getPreparedStatementHolder().isInUse());
-        
+
         stmt_1_B = (DruidPooledPreparedStatement) conn.prepareStatement(sql_1);
         rs_1_B = (DruidPooledResultSet) stmt_1_B.executeQuery();
         rs_1_B.close();
         stmt_1_B.close();
-        
+
         Assert.assertTrue(stmt_0.getPreparedStatementHolder().isInUse());
         Assert.assertTrue(stmt_1_A.getPreparedStatementHolder().isInUse());
         Assert.assertFalse(stmt_1_B.getPreparedStatementHolder().isInUse());
-        
+
         stmt_1_C = (DruidPooledPreparedStatement) conn.prepareStatement(sql_1);
         rs_1_C = (DruidPooledResultSet) stmt_1_C.executeQuery();
         rs_1_C.close();
         stmt_1_C.close();
-        
+
         Assert.assertTrue(stmt_0.getPreparedStatementHolder().isInUse());
         Assert.assertTrue(stmt_1_A.getPreparedStatementHolder().isInUse());
         Assert.assertFalse(stmt_1_B.getPreparedStatementHolder().isInUse());
         Assert.assertFalse(stmt_1_C.getPreparedStatementHolder().isInUse());
-        
+
         stmt_1_D = (DruidPooledPreparedStatement) conn.prepareStatement(sql_1);
         rs_1_D = (DruidPooledResultSet) stmt_1_D.executeQuery();
         rs_1_D.close();
         stmt_1_D.close();
-        
+
         Assert.assertTrue(stmt_0.getPreparedStatementHolder().isInUse());
         Assert.assertTrue(stmt_1_A.getPreparedStatementHolder().isInUse());
         Assert.assertFalse(stmt_1_B.getPreparedStatementHolder().isInUse());
         Assert.assertFalse(stmt_1_C.getPreparedStatementHolder().isInUse());
         Assert.assertFalse(stmt_1_D.getPreparedStatementHolder().isInUse());
-        
+
         stmt_1_E = (DruidPooledPreparedStatement) conn.prepareStatement(sql_1);
         rs_1_E = (DruidPooledResultSet) stmt_1_E.executeQuery();
         rs_1_E.close();
         stmt_1_E.close();
-        
+
         rs_1_A.close();
         stmt_1_A.close();
-        
+
         stmt_1_F = (DruidPooledPreparedStatement) conn.prepareStatement(sql_1);
         rs_1_F = (DruidPooledResultSet) stmt_1_F.executeQuery();
         rs_1_F.close();
         stmt_1_F.close();
-        
+
         stmt_1_G = (DruidPooledPreparedStatement) conn.prepareStatement(sql_1);
         rs_1_G = (DruidPooledResultSet) stmt_1_G.executeQuery();
-        
+
         stmt_1_H = (DruidPooledPreparedStatement) conn.prepareStatement(sql_1);
         rs_1_H = (DruidPooledResultSet) stmt_1_H.executeQuery();
         rs_1_H.close();
         stmt_1_H.close();
-        
+
         rs_1_G.close();
         stmt_1_G.close();
-        
+
         conn.close();
     }
 }

@@ -23,7 +23,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_221 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT\n" +
                 "    (\n" +

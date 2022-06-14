@@ -26,7 +26,6 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.DruidPasswordCallback;
 
 public class PasswordCallbackTest extends TestCase {
-
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
@@ -52,16 +51,15 @@ public class PasswordCallbackTest extends TestCase {
     }
 
     public static class TestPasswordCallback extends DruidPasswordCallback {
-
         private static final long serialVersionUID = 1L;
 
-        private Properties        properties;
+        private Properties properties;
 
-        public TestPasswordCallback(){
+        public TestPasswordCallback() {
             super("test", false);
         }
 
-        public TestPasswordCallback(String prompt, boolean echoOn){
+        public TestPasswordCallback(String prompt, boolean echoOn) {
             super(prompt, echoOn);
         }
 

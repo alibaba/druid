@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleInsertTest20_first extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT FIRST\n" +
                 "   WHEN ottl < 100000 THEN\n" +
@@ -70,7 +69,7 @@ public class OracleInsertTest20_first extends OracleTest {
                         "\t, c.cust_email AS cem\n" +
                         "FROM orders o, customers c\n" +
                         "WHERE o.customer_id = c.customer_id;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -85,7 +84,7 @@ public class OracleInsertTest20_first extends OracleTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("orders")));
 
-         assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "customer_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "customer_id")));
     }
 
 }

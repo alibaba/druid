@@ -26,29 +26,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleLobStorageClause extends OracleSegmentAttributesImpl implements OracleSQLObject {
+    private SQLName segementName;
 
-    private SQLName             segementName;
+    private final List<SQLName> items = new ArrayList<SQLName>();
 
-    private final List<SQLName> items      = new ArrayList<SQLName>();
+    private boolean secureFile;
+    private boolean basicFile;
 
-    private boolean             secureFile = false;
-    private boolean             basicFile  = false;
+    private Boolean enable;
 
+    private SQLExpr chunk;
 
-    private Boolean             enable;
+    private Boolean cache;
+    private Boolean logging;
 
-    private SQLExpr             chunk;
-
-    private Boolean             cache;
-    private Boolean             logging;
-
-    private Boolean             compress;
-    private Boolean             keepDuplicate;
-    private boolean             retention;
+    private Boolean compress;
+    private Boolean keepDuplicate;
+    private boolean retention;
 
     private OracleStorageClause storageClause;
 
-    private SQLExpr             pctversion;
+    private SQLExpr pctversion;
 
     protected void accept0(SQLASTVisitor visitor) {
         this.accept0((OracleASTVisitor) visitor);

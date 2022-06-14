@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class MySqlPerfMain_visitor {
-
     public static void main(String[] args) throws Exception {
         System.out.println(System.getProperty("java.vm.name") + " " + System.getProperty("java.runtime.version"));
         List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
@@ -45,7 +44,7 @@ public class MySqlPerfMain_visitor {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        
+
         long startMillis = System.currentTimeMillis();
         for (int i = 0; i < 1000 * 1000 * 1; ++i) {
             execMySql(statementList);

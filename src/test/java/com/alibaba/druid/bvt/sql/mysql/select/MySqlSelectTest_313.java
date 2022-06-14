@@ -24,7 +24,6 @@ import java.util.List;
 
 public class MySqlSelectTest_313
         extends MysqlTest {
-
     public void test1() {
         String sql = "SELECT 1 FROM t1, t3 RIGHT JOIN t2 ON t2.b=t3.b ";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.mysql);

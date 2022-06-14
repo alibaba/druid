@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 public class MySqlError_test_1 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM pp_items WHERE uid= ORDER BY id DESC LIMIT ?,?";
         Exception error = null;

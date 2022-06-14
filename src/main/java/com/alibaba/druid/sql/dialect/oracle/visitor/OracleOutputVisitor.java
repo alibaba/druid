@@ -42,17 +42,17 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import java.util.List;
 
 public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleASTVisitor {
-
     private final boolean printPostSemi;
+
     {
         this.dbType = DbType.oracle;
     }
 
-    public OracleOutputVisitor(Appendable appender){
+    public OracleOutputVisitor(Appendable appender) {
         this(appender, true);
     }
 
-    public OracleOutputVisitor(Appendable appender, boolean printPostSemi){
+    public OracleOutputVisitor(Appendable appender, boolean printPostSemi) {
         super(appender);
         this.printPostSemi = printPostSemi;
     }
@@ -71,7 +71,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OracleAnalytic x) {
         print0(ucase ? "(" : "(");
-        
+
         boolean space = false;
         if (x.getPartitionBy().size() > 0) {
             print0(ucase ? "PARTITION BY " : "partition by ");
@@ -102,7 +102,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         print(')');
-        
+
         return false;
     }
 
@@ -120,7 +120,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print0(ucase ? " BETWEEN " : " between ");
                 betweenExpr.getBeginExpr().accept(this);
                 print(' ');
-                print0(ucase ? beginBound.name : beginBound.name_lower);
+                print0(ucase ? beginBound.name : beginBound.nameLCase);
                 print0(ucase ? " AND " : " and ");
                 betweenExpr.getEndExpr().accept(this);
                 return false;
@@ -131,8 +131,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         return false;
     }
-
-
 
     public boolean visit(OracleDeleteStatement x) {
         print0(ucase ? "DELETE " : "delete ");
@@ -266,7 +264,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             }
 
             println();
-            print0(ucase ? x.getJoinType().name : x.getJoinType().name_lcase);
+            print0(ucase ? x.getJoinType().name : x.getJoinType().nameLCase);
             print(' ');
 
             if (right instanceof SQLJoinTableSource) {
@@ -599,7 +597,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OracleUpdateStatement x) {
         print0(ucase ? "UPDATE " : "update ");
-        
+
         if (x.getHints().size() > 0) {
             printAndAccept(x.getHints(), ", ");
             print(' ');
@@ -962,16 +960,16 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(OracleInsertStatement x) {
         //visit((SQLInsertStatement) x);
-        
+
         print0(ucase ? "INSERT " : "insert ");
-        
+
         if (x.getHints().size() > 0) {
             printAndAccept(x.getHints(), ", ");
             print(' ');
         }
 
         print0(ucase ? "INTO " : "into ");
-        
+
         x.getTableSource().accept(this);
 
         printInsertColumns(x.getColumns());
@@ -2338,7 +2336,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "REVERSE" : "reverse");
         }
 
-
         return false;
     }
 
@@ -2347,7 +2344,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print0(ucase ? "LOB (" : "lob (");
         printAndAccept(x.getItems(), ",");
         print0(ucase ? ") STORE AS" : ") store as");
-
 
         if (x.isSecureFile()) {
             print0(ucase ? " SECUREFILE" : " securefile");
@@ -2510,7 +2506,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleCreateTableStatement.Organization x) {
-
         String type = x.getType();
 
         print0(ucase ? "ORGANIZATION " : "organization ");
@@ -2752,7 +2747,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                             && ((OracleFunctionDataType) dataType).getBlock() != null) {
                         // skip
                         println();
-                    } else  if (dataType instanceof OracleProcedureDataType
+                    } else if (dataType instanceof OracleProcedureDataType
                             && ((OracleProcedureDataType) dataType).getBlock() != null) {
                         // skip
                         println();

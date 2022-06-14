@@ -22,7 +22,6 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallUtils;
 
 public class MySqlWallPermitFunctionTest extends TestCase {
-
     public void test_permitTable() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql("SELECT *FROM T UNION SELECT User,Password FROM mysql.user"));
         Assert.assertFalse(WallUtils.isValidateMySql("SELECT *FROM T UNION SELECT User,Password FROM `mysql`.`user`"));

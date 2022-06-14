@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class H2_AlterTableTest_0 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = //
                 "alter table ACT_GE_BYTEARRAY add constraint ACT_FK_BYTEARR_DEPL foreign key (DEPLOYMENT_ID_) references ACT_RE_DEPLOYMENT (ID_);"; //
@@ -33,8 +32,6 @@ public class H2_AlterTableTest_0 extends TestCase {
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.H2);
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
-
-
 
         Assert.assertEquals(1, statementList.size());
 

@@ -23,28 +23,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLPartition extends OracleSegmentAttributesImpl implements OracleSegmentAttributes {
+    protected SQLName name;
 
-    protected SQLName               name;
-
-    protected SQLExpr               subPartitionsCount;
+    protected SQLExpr subPartitionsCount;
 
     protected List<SQLSubPartition> subPartitions = new ArrayList<SQLSubPartition>();
 
-    protected SQLPartitionValue     values;
-    
+    protected SQLPartitionValue values;
+
     // for mysql
-    protected SQLExpr           dataDirectory;
-    protected SQLExpr           indexDirectory;
-    protected SQLExpr           maxRows;
-    protected SQLExpr           minRows;
-    protected SQLExpr           engine;
-    protected SQLExpr           comment;
+    protected SQLExpr dataDirectory;
+    protected SQLExpr indexDirectory;
+    protected SQLExpr maxRows;
+    protected SQLExpr minRows;
+    protected SQLExpr engine;
+    protected SQLExpr comment;
 
     // for oracle
     protected boolean segmentCreationImmediate;
     protected boolean segmentCreationDeferred;
 
     private SQLObject lobStorage;
+
+    private SQLExpr locality;
+
+    public SQLExpr getLocality() {
+        return locality;
+    }
+
+    public void setLocality(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.locality = x;
+    }
 
     public SQLName getName() {
         return name;
@@ -82,7 +94,7 @@ public class SQLPartition extends OracleSegmentAttributesImpl implements OracleS
     public List<SQLSubPartition> getSubPartitions() {
         return subPartitions;
     }
-    
+
     public void addSubPartition(SQLSubPartition partition) {
         if (partition != null) {
             partition.setParent(this);
@@ -155,7 +167,7 @@ public class SQLPartition extends OracleSegmentAttributesImpl implements OracleS
         }
         this.comment = comment;
     }
-    
+
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);

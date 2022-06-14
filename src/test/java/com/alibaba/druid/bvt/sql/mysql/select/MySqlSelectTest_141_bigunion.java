@@ -12,7 +12,6 @@ import com.alibaba.druid.wall.WallUtils;
 import java.util.List;
 
 public class MySqlSelectTest_141_bigunion extends MysqlTest {
-
     public void test_small_10() throws Exception {
         StringBuilder buf = new StringBuilder();
         {

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 
 public class MySqlSelectTest_241 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select job_names.job_name from cover_rage_job_org as org RIGHT JOIN (\n" +
                 " select job_names.job_name as job_name\n" +
@@ -47,7 +46,6 @@ public class MySqlSelectTest_241 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
 
 
 }

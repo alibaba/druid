@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class EvalTest_add extends TestCase {
-
     public void test_byte() throws Exception {
         Assert.assertEquals(3, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "? + ?", (byte) 1, (byte) 2));
     }

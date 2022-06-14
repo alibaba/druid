@@ -4,8 +4,7 @@ import java.sql.SQLException;
 
 
 public class OracleMockPreparedStatementJdbc3 extends OracleMockPreparedStatement {
-
-    public OracleMockPreparedStatementJdbc3(OracleMockConnection conn, String sql){
+    public OracleMockPreparedStatementJdbc3(OracleMockConnection conn, String sql) {
         super(conn, sql);
     }
 

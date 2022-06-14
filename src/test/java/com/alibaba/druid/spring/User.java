@@ -16,15 +16,13 @@
 package com.alibaba.druid.spring;
 
 public class User {
-
-    private long   id;
+    private long id;
     private String name;
 
-    public User(){
-
+    public User() {
     }
 
-    public User(long id, String name){
+    public User(long id, String name) {
         this.id = id;
         this.name = name;
     }

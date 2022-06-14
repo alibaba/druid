@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest25 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select COALESCE((SELECT project_deduct_mandays from mytable_01 limit 1)) from t";
 
@@ -39,7 +38,7 @@ public class PGSelectTest25 extends PGTest {
                 + "\n\t\tLIMIT 1"
                 + "\n\t))"
                 + "\nFROM t", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("select COALESCE(("
                 + "\n\t\tselect project_deduct_mandays"
                 + "\n\t\tfrom mytable_01"

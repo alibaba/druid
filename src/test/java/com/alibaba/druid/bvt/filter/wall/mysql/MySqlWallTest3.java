@@ -23,17 +23,16 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest3 extends TestCase {
-
     public void test_stuff() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "SELECT COUNT(p.id) FROM TB_PRO p" + //
-                "        INNER JOIN   TB_Db  b ON b.id =p.dbid " + //
-                "        WHERE p.index_status='0' AND p.sc=?"));
+                "SELECT COUNT(p.id) FROM TB_PRO p" + //
+                        "        INNER JOIN   TB_Db  b ON b.id =p.dbid " + //
+                        "        WHERE p.index_status='0' AND p.sc=?"));
     }
 }

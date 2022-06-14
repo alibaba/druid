@@ -26,16 +26,15 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateViewTest9_check_option extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        " CREATE VIEW clerk AS\n" +
-                "   SELECT employee_id, last_name, department_id, job_id \n" +
-                "   FROM employees\n" +
-                "   WHERE job_id = 'PU_CLERK' \n" +
-                "      or job_id = 'SH_CLERK' \n" +
-                "      or job_id = 'ST_CLERK'\n" +
-                "   WITH CHECK OPTION;";
+                " CREATE VIEW clerk AS\n" +
+                        "   SELECT employee_id, last_name, department_id, job_id \n" +
+                        "   FROM employees\n" +
+                        "   WHERE job_id = 'PU_CLERK' \n" +
+                        "      or job_id = 'SH_CLERK' \n" +
+                        "      or job_id = 'ST_CLERK'\n" +
+                        "   WITH CHECK OPTION;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,7 +51,7 @@ public class OracleCreateViewTest9_check_option extends OracleTest {
                         "\tOR job_id = 'SH_CLERK'\n" +
                         "\tOR job_id = 'ST_CLERK'\n" +
                         "WITH CHECK OPTION;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

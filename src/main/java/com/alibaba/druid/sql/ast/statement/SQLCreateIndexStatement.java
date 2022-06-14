@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCreateStatement, SQLIndex {
-
     private SQLIndexDefinition indexDefinition = new SQLIndexDefinition();
 
     private boolean concurrently; // for pg
@@ -158,7 +157,6 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
 
         return null;
     }
-
 
     public SQLCreateIndexStatement clone() {
         SQLCreateIndexStatement x = new SQLCreateIndexStatement();

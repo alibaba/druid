@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleGrantTest_5 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "grant resource, connect, create view, create procedure, create sequence to DZFP_CX;";
 
@@ -37,7 +36,7 @@ public class OracleGrantTest_5 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("GRANT RESOURCE, CONNECT, CREATE VIEW, CREATE PROCEDURE, CREATE SEQUENCE TO DZFP_CX;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         stmt.accept(visitor);

@@ -15,6 +15,21 @@
  */
 package com.alibaba.druid.pool.ha;
 
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.pool.DruidAbstractDataSource;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.WrapperAdapter;
+import com.alibaba.druid.pool.ha.node.FileNodeListener;
+import com.alibaba.druid.pool.ha.node.NodeListener;
+import com.alibaba.druid.pool.ha.node.PoolUpdater;
+import com.alibaba.druid.pool.ha.selector.DataSourceSelector;
+import com.alibaba.druid.pool.ha.selector.DataSourceSelectorEnum;
+import com.alibaba.druid.pool.ha.selector.DataSourceSelectorFactory;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
+import javax.sql.DataSource;
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -29,34 +44,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 
-import javax.sql.DataSource;
-
-import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.pool.DruidAbstractDataSource;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.WrapperAdapter;
-import com.alibaba.druid.pool.ha.node.FileNodeListener;
-import com.alibaba.druid.pool.ha.node.NodeListener;
-import com.alibaba.druid.pool.ha.node.PoolUpdater;
-import com.alibaba.druid.pool.ha.selector.DataSourceSelector;
-import com.alibaba.druid.pool.ha.selector.DataSourceSelectorEnum;
-import com.alibaba.druid.pool.ha.selector.DataSourceSelectorFactory;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
 /**
  * DataSource class which contains multiple DataSource objects.
  *
  * @author DigitalSonic
  */
 public class HighAvailableDataSource extends WrapperAdapter implements DataSource {
-    private final static Log LOG = LogFactory.getLog(HighAvailableDataSource.class);
-    private final static String DEFAULT_DATA_SOURCE_FILE = "ha-datasource.properties";
+    private static final Log LOG = LogFactory.getLog(HighAvailableDataSource.class);
+    private static final String DEFAULT_DATA_SOURCE_FILE = "ha-datasource.properties";
 
     // Properties copied from DruidAbstractDataSource BEGIN
     private String driverClassName;
     private Properties connectProperties = new Properties();
-    private String connectionProperties = null;
+    private String connectionProperties;
 
     private int initialSize = DruidAbstractDataSource.DEFAULT_INITIAL_SIZE;
     private int maxActive = DruidAbstractDataSource.DEFAULT_MAX_ACTIVE_SIZE;
@@ -69,8 +69,8 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     private boolean testOnReturn = DruidAbstractDataSource.DEFAULT_TEST_ON_RETURN;
     private boolean testWhileIdle = DruidAbstractDataSource.DEFAULT_WHILE_IDLE;
 
-    private boolean poolPreparedStatements = false;
-    private boolean sharePreparedStatements = false;
+    private boolean poolPreparedStatements;
+    private boolean sharePreparedStatements;
     private int maxPoolPreparedStatementPerConnectionSize = 10;
 
     private int queryTimeout;
@@ -97,9 +97,9 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
     private String dataSourceFile = DEFAULT_DATA_SOURCE_FILE;
     private String propertyPrefix = "";
     private int poolPurgeIntervalSeconds = PoolUpdater.DEFAULT_INTERVAL;
-    private boolean allowEmptyPoolWhenUpdate = false;
+    private boolean allowEmptyPoolWhenUpdate;
 
-    private volatile boolean inited = false;
+    private volatile boolean inited;
 
     private PoolUpdater poolUpdater = new PoolUpdater(this);
     private NodeListener nodeListener;

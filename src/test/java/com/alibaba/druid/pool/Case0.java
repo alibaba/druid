@@ -23,15 +23,14 @@ import junit.framework.TestCase;
 import com.alibaba.druid.util.JMXUtils;
 
 public class Case0 extends TestCase {
-
     private String jdbcUrl;
     private String user;
     private String password;
     private String driverClass;
-    private int    initialSize = 1;
-    private int    minPoolSize = 1;
-    private int    maxPoolSize = 2;
-    private int    maxActive   = 2;
+    private int initialSize = 1;
+    private int minPoolSize = 1;
+    private int maxPoolSize = 2;
+    private int maxActive = 2;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -67,7 +66,7 @@ public class Case0 extends TestCase {
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
             Connection conn = dataSource.getConnection();
-            
+
             conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             Assert.assertEquals(initialSize, dataSource.getCreateCount());

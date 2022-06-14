@@ -8,7 +8,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 public class HashMapMemoryTest extends TestCase {
-
     public void test_0() throws Exception {
         HashMap item = new HashMap();
         gc();

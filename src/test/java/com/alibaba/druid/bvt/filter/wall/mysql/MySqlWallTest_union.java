@@ -23,7 +23,6 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 public class MySqlWallTest_union extends TestCase {
-
     public void testUnion() throws Exception {
         WallConfig config = new WallConfig();
         config.setSelectUnionCheck(true);
@@ -38,15 +37,14 @@ public class MySqlWallTest_union extends TestCase {
         Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select c1, c2", config)); //union select item is not const
 
         Assert.assertTrue(WallUtils.isValidateMySql("SELECT typeid, typename FROM (SELECT typeid, typename FROM materialtype UNION ALL SELECT ? AS typeid, ? AS typename) a ORDER BY typeid",
-                                                    config)); // union select item has alias
+                config)); // union select item has alias
 
         Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from (select 1 as f1, 2 as f2) t union select 'u1', 'u2' --", config)); // from is subQuery
 
-        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 'u1' as u1, 'u2' as u2",  config)); // union select item has alias
+        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 'u1' as u1, 'u2' as u2", config)); // union select item has alias
     }
 
-    public void testUnion2() throws Exception
-    {
+    public void testUnion2() throws Exception {
 //        assertFalse(
 //                WallUtils.isValidateMySql("SELECT name, surname FROM users WHERE name='' UNION SELECT @@version, 'string1'")
 //        );
@@ -55,7 +53,7 @@ public class MySqlWallTest_union extends TestCase {
                 WallUtils.isValidateMySql("SELECT name, surname FROM users WHERE name='' UNION SELECT /*! @@version,*/ 'string1'")
         );
 
-    assertFalse(
+        assertFalse(
                 WallUtils.isValidateMySql("SELECT name, surname FROM users WHERE name=' ' UNION SELECT /*! (select table_name FROM information_schema.tables limit 1,1),*/ 'string1'")
         );
 

@@ -25,16 +25,14 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
-
 public class DB2WallProvider extends WallProvider {
+    public static final String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/db2";
 
-    public final static String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/db2";
-
-    public DB2WallProvider(){
+    public DB2WallProvider() {
         this(new WallConfig(DEFAULT_CONFIG_DIR));
     }
 
-    public DB2WallProvider(WallConfig config){
+    public DB2WallProvider(WallConfig config) {
         super(config, DbType.db2);
     }
 

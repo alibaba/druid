@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest23 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "select (select decode(count(*),1,'YES','NO') FROM sys.obj$ o, sys.user$ u WHERE u.name = 'PERFSTAT' AND o.owner# = u.user# AND o.name = 'STATSPACK' AND o.type# = 11 AND o.status = 1) is_installed , (select  nvl(INTERVAL,'') from dba_jobs where what like 'statspack.snap%' and SCHEMA_USER='PERFSTAT' and rownum =1) freq from dual"; //
+                "select (select decode(count(*),1,'YES','NO') FROM sys.obj$ o, sys.user$ u WHERE u.name = 'PERFSTAT' AND o.owner# = u.user# AND o.name = 'STATSPACK' AND o.type# = 11 AND o.status = 1) is_installed , (select  nvl(INTERVAL,'') from dba_jobs where what like 'statspack.snap%' and SCHEMA_USER='PERFSTAT' and rownum =1) freq from dual"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -54,7 +53,7 @@ public class OracleSelectTest23 extends OracleTest {
 
         Assert.assertEquals(9, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sys.user$", "name")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sys.user$", "name")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }

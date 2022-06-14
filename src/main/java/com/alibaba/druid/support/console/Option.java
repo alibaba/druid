@@ -18,29 +18,28 @@ package com.alibaba.druid.support.console;
 import java.io.PrintStream;
 
 public class Option {
+    public static final int DATA_SOURCE = 1;
+    public static final int SQL = 2;
+    public static final int ACTIVE_CONN = 4;
 
-    public static final int DATA_SOURCE = 1 ;
-    public static final int SQL         = 2 ;
-    public static final int ACTIVE_CONN = 4 ;
-
-    private int printDataType = 0;
+    private int printDataType;
     private int pid = -1;
     private int id = -1;
-	private int interval = -1;
-	private boolean detailPrint;
+    private int interval = -1;
+    private boolean detailPrint;
 
-	private PrintStream printStream = System.out;
+    private PrintStream printStream = System.out;
 
     public void addPrintDataType(int newValue) {
-        this.printDataType= this.printDataType |  newValue;
+        this.printDataType = this.printDataType | newValue;
     }
 
     public static boolean isPrintHelp(String[] args) {
-        if (args == null ) {
+        if (args == null) {
             return true;
         }
-        for (String arg: args) {
-            if (arg.equals("-help") ) {
+        for (String arg : args) {
+            if (arg.equals("-help")) {
                 return true;
             }
         }
@@ -48,23 +47,25 @@ public class Option {
     }
 
     public boolean printSqlData() {
-        return ((printDataType & SQL) ==  SQL);
+        return ((printDataType & SQL) == SQL);
     }
+
     public boolean printDataSourceData() {
-        return ( (printDataType & DATA_SOURCE) == DATA_SOURCE);
+        return ((printDataType & DATA_SOURCE) == DATA_SOURCE);
     }
+
     public boolean printActiveConn() {
-        return ( (printDataType & ACTIVE_CONN) == ACTIVE_CONN);
+        return ((printDataType & ACTIVE_CONN) == ACTIVE_CONN);
     }
 
     public int getPrintDataType() {
         return this.printDataType;
     }
 
-
     public void setPid(int pid) {
-        this.pid=pid;
+        this.pid = pid;
     }
+
     public int getPid() {
         return this.pid;
     }
@@ -82,91 +83,91 @@ public class Option {
         }
     }
 
-	private static int parsePositiveInt(String v) {
-		try {
+    private static int parsePositiveInt(String v) {
+        try {
             return Integer.parseInt(v);
-		} catch (NumberFormatException e) {
-			return -1;
-		}
-	}
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
 
-    public static Option parseOptions(String[] args) throws OptionParseException{
+    public static Option parseOptions(String[] args) throws OptionParseException {
         Option option = new Option();
-		int i = 0;
-        if (args.length < 1 ) {
+        int i = 0;
+        if (args.length < 1) {
             throw new OptionParseException("not enough arguments!");
         }
 
         while (i < args.length) {
-			int v1 = parsePositiveInt(args[i]);
+            int v1 = parsePositiveInt(args[i]);
 
-			//check last two arguments
-            if ( (i == args.length - 2) && v1 > 0) {
-				int v2 = parsePositiveInt(args[i+1]);
-				if ( v2 > 0) {
-					option.setPid(v1);
-					option.setInterval(v2);
-				} else {
-		             throw new OptionParseException("请在参数的最后位置上 指定 pid 和 refresh-interval");
-				}
-				break;
-            } else if ( i == args.length -1 ) {
-				option.setPid(v1);
-			}
-		
+            //check last two arguments
+            if ((i == args.length - 2) && v1 > 0) {
+                int v2 = parsePositiveInt(args[i + 1]);
+                if (v2 > 0) {
+                    option.setPid(v1);
+                    option.setInterval(v2);
+                } else {
+                    throw new OptionParseException("请在参数的最后位置上 指定 pid 和 refresh-interval");
+                }
+                break;
+            } else if (i == args.length - 1) {
+                option.setPid(v1);
+            }
+
             if (args[i].equals("-sql")) {
                 option.addPrintDataType(SQL);
             } else if (args[i].equals("-ds")) {
                 option.addPrintDataType(DATA_SOURCE);
-            }  else if (args[i].equals("-act")) {
+            } else if (args[i].equals("-act")) {
                 option.addPrintDataType(ACTIVE_CONN);
-            }  else if (args[i].equals("-detail")) {
-				option.setDetailPrint(true);
+            } else if (args[i].equals("-detail")) {
+                option.setDetailPrint(true);
             } else if (args[i].equals("-id")) {
-            	 try {
-                     int id = Integer.parseInt(args[i+1]);
-                     option.setId(id);
-					 i++;
-                 } catch (NumberFormatException e) {
-                     throw new OptionParseException("id参数必须是整数");
-                 }
+                try {
+                    int id = Integer.parseInt(args[i + 1]);
+                    option.setId(id);
+                    i++;
+                } catch (NumberFormatException e) {
+                    throw new OptionParseException("id参数必须是整数");
+                }
             }
             i++;
-		}
-        
+        }
+
         if (option.getPrintDataType() == 0) {
             throw new OptionParseException("请在{'-sql','-ds','-act'}参数中选择一个或多个");
         }
-        if (option.getPid() == -1 ) {
+        if (option.getPid() == -1) {
             throw new OptionParseException("请在参数中指定 pid");
         }
         return option;
     }
 
     public static void printHelp(String errorMsg) {
-		printHelp(System.out, errorMsg);
-	}
+        printHelp(System.out, errorMsg);
+    }
 
     public static void printHelp() {
-		printHelp(System.out, null);
-	}
+        printHelp(System.out, null);
+    }
 
     public static void printHelp(PrintStream out, String errorMsg) {
-		if (errorMsg != null ) {
-			out.println(errorMsg);
-			out.println();
-		}
+        if (errorMsg != null) {
+            out.println(errorMsg);
+            out.println();
+        }
         out.println("Usage: druidStat -help | -sql -ds -act [-detail] [-id id] <pid> [refresh-interval]");
         out.println();
         out.println("参数: ");
-        out.println("  -help             打印此帮助信息"); 
-        out.println("  -sql              打印SQL统计数据"); 
-        out.println("  -ds               打印DataSource统计数据"); 
-        out.println("  -act              打印活动连接的堆栈信息"); 
+        out.println("  -help             打印此帮助信息");
+        out.println("  -sql              打印SQL统计数据");
+        out.println("  -ds               打印DataSource统计数据");
+        out.println("  -act              打印活动连接的堆栈信息");
         out.println("  -detail           打印统计数据的全部字段信息");
-        out.println("  -id id            要打印的数据的具体id值" );
-        out.println("  pid               使用druid连接池的jvm进程id"); 
-        out.println("  refresh-interval  自动刷新时间间隔, 以秒为单位" );
+        out.println("  -id id            要打印的数据的具体id值");
+        out.println("  pid               使用druid连接池的jvm进程id");
+        out.println("  refresh-interval  自动刷新时间间隔, 以秒为单位");
 
         out.println();
         out.println("说明: ");
@@ -190,36 +191,38 @@ public class Option {
         out.println("      >druidStat -ds -sql -act 3983");
         out.println("  每隔5秒自动打印ds统计数据");
         out.println("      >druidStat -ds 3983 5");
-	}
+    }
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setDetailPrint(boolean detailPrint) {
-		this.detailPrint=detailPrint;
-	}
-	public boolean isDetailPrint() {
-		return this.detailPrint;
-	}
+    public void setDetailPrint(boolean detailPrint) {
+        this.detailPrint = detailPrint;
+    }
 
-	public void setInterval(int interval) {
-		this.interval=interval;
-	}
-	public int getInterval() {
-		return this.interval;
-	}
+    public boolean isDetailPrint() {
+        return this.detailPrint;
+    }
 
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }
 
-	public void setPrintStream(PrintStream printStream) {
-		this.printStream=printStream;
-	}
-	public PrintStream getPrintStream() {
-		return this.printStream;
-	}
+    public int getInterval() {
+        return this.interval;
+    }
+
+    public void setPrintStream(PrintStream printStream) {
+        this.printStream = printStream;
+    }
+
+    public PrintStream getPrintStream() {
+        return this.printStream;
+    }
 
 }

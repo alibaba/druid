@@ -26,10 +26,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OnlineOracleTest3 extends TestCase {
-
-    private String          jdbcUrl;
-    private String          user;
-    private String          password;
+    private String jdbcUrl;
+    private String user;
+    private String password;
     private DruidDataSource dataSource;
 
     public void setUp() throws Exception {

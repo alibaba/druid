@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlUpdateTest_9 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "update tb1 a , tb2 b set a.name='abc' where a.id=b.id";
 
@@ -61,14 +60,14 @@ public class MySqlUpdateTest_9 extends MysqlTest {
             Assert.assertEquals("UPDATE tb1 a, tb2 b\n" +
                             "SET a.name = 'abc'\n" +
                             "WHERE a.id = b.id", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("update tb1 a, tb2 b\n" +
                             "set a.name = 'abc'\n" +
                             "where a.id = b.id", //
-                                output);
+                    output);
         }
     }
 }

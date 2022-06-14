@@ -23,47 +23,46 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest77 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        " CREATE OR REPLACE FORCE VIEW \"TPC_CPR\".\"TPC_CPR_ITEM_PRICE_V\" (\"CONTRACT_HEADER_ID\", \"CONTRACT_NUMBER\", \"CONTRACT_PRODUCT_ID\", \"PROD_ID\", \"PROD_DES\", \"MI\", \"CONTRACT_DEVICE_ID\", \"DEV_ID\", \"DEV_DES\", \"SITE_ID\", \"SITE_QUANTITY\", \"SITE_DES\", \"CONTRACT_MODULE_ID\", \"MOD_ID\", \"MOD_DES\", \"MODULE_QUANTITY\", \"CONTRACT_ITEM_ID\", \"ITEM_ID\", \"ITEM_DES\", \"ITEM_TYPE\", \"ITEM_QUANTITY\", \"HARD_PARAM\", \"SOFT_PARAM\", \"MAKE_PARAM\", \"RISK_PARAM\", \"SOFT_COST_PARAM\", \"PROD_MANAGER\", \"COST_PRICE04\", \"CONFIRM_ITEM_PARAM\", \"CONFIRM_FLAG04\", \"COST_PRICE\", \"COST_PRICE_PARAMETER\", \"OLD_COST\", \"LIST_PRICE\", \"ITEM_CODE\", \"CONFIRM_COST_PRICE04\", \"PROD_ATTRIBUTE_ID\", \"ITEM_CHIP\") AS \n" +
-                "  select Mod.CONTRACT_HEADER_ID,'',Mod.CONTRACT_PRODUCT_ID,\n" +
-                "Mod.PROD_ID , Mod.PROD_DES,Mod.MI, Mod.CONTRACT_DEVICE_ID, Mod.DEV_ID,Mod.DEV_DES,\n" +
-                "Mod.SITE_ID , Mod.SITE_QUANTITY, Mod.SITE_DES, Mod.CONTRACT_MODULE_ID,\n" +
-                "Mod.MOD_ID, Mod.MOD_DES, Mod.module_quantity, I.CONTRACT_ITEM_ID, I.INVENTORY_ITEM_ID\n" +
-                "ITEM_ID, I.DESCRIPTION ITEM_DES,I.ATTRIBUTE1 ITEM_TYPE , I.item_quantity,\n" +
-                "Mod.hard_param,Mod.soft_param, Mod.make_param, Mod.risk_param, Mod.soft_cost_param,\n" +
-                "Mod.prod_manager, I.COST_PRICE04, I.CONFIRM_ITEM_PARAM, I.CONFIRM_FLAG04,\n" +
-                "I.cost_price, I.COST_PRICE_PARAMETER,I.OLD_COST,I.LIST_PRICE,I.ITEM_CODE,\n" +
-                "I.CONFIRM_COST_PRICE04,I.PROD_ATTRIBUTE_ID,I.ITEM_CHIP from ( SELECT p.CONTRACT_HEADER_ID,'',P.CONTRACT_PRODUCT_ID,\n" +
-                "P.INVENTORY_ITEM_ID PROD_ID,P.DESCRIPTION PROD_DES,P.MI, D.CONTRACT_DEVICE_ID,\n" +
-                "D.INVENTORY_ITEM_ID DEV_ID,D.DESCRIPTION DEV_DES, S.SITE_ID, S.SITE_QUANTITY,\n" +
-                "( S.SITE_ADDRESS||S.SECOND_LEVEL|| S.THIRD_LEVEL|| S.FOURTH_LEVEL) SITE_DES,\n" +
-                "M.CONTRACT_MODULE_ID, M.INVENTORY_ITEM_ID MOD_ID , M.DESCRIPTION MOD_DES,\n" +
-                "M.module_quantity, p.hard_param, p.soft_param, p.make_param,p.risk_param,\n" +
-                "p.soft_cost_param, p.prod_manager FROM ( SELECT PROD.*,SYS_ITEM1.ATTRIBUTE2\n" +
-                "MI,SYS_ITEM1.DESCRIPTION, SYS_ITEM1.ATTRIBUTE3 PROD_MANAGER , SYS_ITEM1.HARD_PARAM,\n" +
-                "SYS_ITEM1.SOFT_PARAM,SYS_ITEM1.MAKE_PARAM,SYS_ITEM1.RISK_PARAM, SYS_ITEM1.SOFT_COST_PARAM\n" +
-                "FROM TPC_CPR.TPC_CPR_PRODUCTS PROD, TPC_CPR.TPC_CPR_SYSTEM_ITEMS SYS_ITEM1\n" +
-                "WHERE PROD.INVENTORY_ITEM_ID = SYS_ITEM1.INVENTORY_ITEM_ID AND SYS_ITEM1.ITEM_TYPE\n" +
-                "= 'CP' AND PROD.ENABLED_FLAG = 'Y') P, ( SELECT DEV.*,SYS_ITEM2.DESCRIPTION\n" +
-                "FROM TPC_CPR.TPC_CPR_DEVICES DEV,TPC_CPR.TPC_CPR_SYSTEM_ITEMS SYS_ITEM2\n" +
-                "WHERE DEV.INVENTORY_ITEM_ID = SYS_ITEM2.INVENTORY_ITEM_ID AND SYS_ITEM2.ITEM_TYPE\n" +
-                "= 'SB' AND DEV.ENABLED_FLAG = 'Y') D, ( SELECT SITE.* FROM TPC_CPR.TPC_CPR_SITES\n" +
-                "SITE WHERE SITE.ENABLED_FLAG = 'Y') S, ( SELECT MOD.*,SYS_ITEM3.DESCRIPTION\n" +
-                "FROM TPC_CPR.TPC_CPR_MODULES MOD,TPC_CPR.TPC_CPR_SYSTEM_ITEMS SYS_ITEM3\n" +
-                "WHERE MOD.INVENTORY_ITEM_ID = SYS_ITEM3.INVENTORY_ITEM_ID AND SYS_ITEM3.ITEM_TYPE\n" +
-                "= 'MK' AND MOD.ENABLED_FLAG = 'Y') M WHERE P.CONTRACT_PRODUCT_ID = D.CONTRACT_PRODUCT_ID\n" +
-                "AND D.CONTRACT_DEVICE_ID = S.CONTRACT_DEVICE_ID AND S.SITE_ID = M.SITE_ID\n" +
-                ") Mod LEFT JOIN ( ( SELECT ITEM.CONTRACT_MODULE_ID CONTRACT_MODULE_ID,\n" +
-                "ITEM.INVENTORY_ITEM_ID, ITEM.CONTRACT_ITEM_ID, SYS_ITEM.DESCRIPTION, SYS_ITEM.ATTRIBUTE1,\n" +
-                "ITEM.ITEM_QUANTITY, SYS_ITEM.CATALOG_SOFTWARE_FLAG, P.COST_PRICE, P.COST_PRICE_PARAMETER,\n" +
-                "P.CONFIRM_FLAG,P.COST_PRICE04, P.CONFIRM_ITEM_PARAM, P.CONFIRM_FLAG04,\n" +
-                "P.OLD_COST,P.LIST_PRICE, SYS_ITEM.ITEM_CODE, P.CONFIRM_COST_PRICE04, SYS_ITEM.ITEM_ID\n" +
-                "PROD_ATTRIBUTE_ID,SYS_ITEM.ITEM_CHIP FROM TPC_CPR.TPC_CPR_ITEMS ITEM, TPC_CPR.TPC_CPR_SYSTEM_ITEMS\n" +
-                "SYS_ITEM, TPC_CPR.TPC_CPR_PRICE P where ITEM.INVENTORY_ITEM_ID = P.INVENTORY_ITEM_ID\n" +
-                "AND ITEM.INVENTORY_ITEM_ID = SYS_ITEM.INVENTORY_ITEM_ID AND ITEM.ENABLED_FLAG\n" +
-                "= 'Y' ) ) I ON Mod.CONTRACT_MODULE_ID = I.CONTRACT_MODULE_ID ";
+                " CREATE OR REPLACE FORCE VIEW \"TPC_CPR\".\"TPC_CPR_ITEM_PRICE_V\" (\"CONTRACT_HEADER_ID\", \"CONTRACT_NUMBER\", \"CONTRACT_PRODUCT_ID\", \"PROD_ID\", \"PROD_DES\", \"MI\", \"CONTRACT_DEVICE_ID\", \"DEV_ID\", \"DEV_DES\", \"SITE_ID\", \"SITE_QUANTITY\", \"SITE_DES\", \"CONTRACT_MODULE_ID\", \"MOD_ID\", \"MOD_DES\", \"MODULE_QUANTITY\", \"CONTRACT_ITEM_ID\", \"ITEM_ID\", \"ITEM_DES\", \"ITEM_TYPE\", \"ITEM_QUANTITY\", \"HARD_PARAM\", \"SOFT_PARAM\", \"MAKE_PARAM\", \"RISK_PARAM\", \"SOFT_COST_PARAM\", \"PROD_MANAGER\", \"COST_PRICE04\", \"CONFIRM_ITEM_PARAM\", \"CONFIRM_FLAG04\", \"COST_PRICE\", \"COST_PRICE_PARAMETER\", \"OLD_COST\", \"LIST_PRICE\", \"ITEM_CODE\", \"CONFIRM_COST_PRICE04\", \"PROD_ATTRIBUTE_ID\", \"ITEM_CHIP\") AS \n" +
+                        "  select Mod.CONTRACT_HEADER_ID,'',Mod.CONTRACT_PRODUCT_ID,\n" +
+                        "Mod.PROD_ID , Mod.PROD_DES,Mod.MI, Mod.CONTRACT_DEVICE_ID, Mod.DEV_ID,Mod.DEV_DES,\n" +
+                        "Mod.SITE_ID , Mod.SITE_QUANTITY, Mod.SITE_DES, Mod.CONTRACT_MODULE_ID,\n" +
+                        "Mod.MOD_ID, Mod.MOD_DES, Mod.module_quantity, I.CONTRACT_ITEM_ID, I.INVENTORY_ITEM_ID\n" +
+                        "ITEM_ID, I.DESCRIPTION ITEM_DES,I.ATTRIBUTE1 ITEM_TYPE , I.item_quantity,\n" +
+                        "Mod.hard_param,Mod.soft_param, Mod.make_param, Mod.risk_param, Mod.soft_cost_param,\n" +
+                        "Mod.prod_manager, I.COST_PRICE04, I.CONFIRM_ITEM_PARAM, I.CONFIRM_FLAG04,\n" +
+                        "I.cost_price, I.COST_PRICE_PARAMETER,I.OLD_COST,I.LIST_PRICE,I.ITEM_CODE,\n" +
+                        "I.CONFIRM_COST_PRICE04,I.PROD_ATTRIBUTE_ID,I.ITEM_CHIP from ( SELECT p.CONTRACT_HEADER_ID,'',P.CONTRACT_PRODUCT_ID,\n" +
+                        "P.INVENTORY_ITEM_ID PROD_ID,P.DESCRIPTION PROD_DES,P.MI, D.CONTRACT_DEVICE_ID,\n" +
+                        "D.INVENTORY_ITEM_ID DEV_ID,D.DESCRIPTION DEV_DES, S.SITE_ID, S.SITE_QUANTITY,\n" +
+                        "( S.SITE_ADDRESS||S.SECOND_LEVEL|| S.THIRD_LEVEL|| S.FOURTH_LEVEL) SITE_DES,\n" +
+                        "M.CONTRACT_MODULE_ID, M.INVENTORY_ITEM_ID MOD_ID , M.DESCRIPTION MOD_DES,\n" +
+                        "M.module_quantity, p.hard_param, p.soft_param, p.make_param,p.risk_param,\n" +
+                        "p.soft_cost_param, p.prod_manager FROM ( SELECT PROD.*,SYS_ITEM1.ATTRIBUTE2\n" +
+                        "MI,SYS_ITEM1.DESCRIPTION, SYS_ITEM1.ATTRIBUTE3 PROD_MANAGER , SYS_ITEM1.HARD_PARAM,\n" +
+                        "SYS_ITEM1.SOFT_PARAM,SYS_ITEM1.MAKE_PARAM,SYS_ITEM1.RISK_PARAM, SYS_ITEM1.SOFT_COST_PARAM\n" +
+                        "FROM TPC_CPR.TPC_CPR_PRODUCTS PROD, TPC_CPR.TPC_CPR_SYSTEM_ITEMS SYS_ITEM1\n" +
+                        "WHERE PROD.INVENTORY_ITEM_ID = SYS_ITEM1.INVENTORY_ITEM_ID AND SYS_ITEM1.ITEM_TYPE\n" +
+                        "= 'CP' AND PROD.ENABLED_FLAG = 'Y') P, ( SELECT DEV.*,SYS_ITEM2.DESCRIPTION\n" +
+                        "FROM TPC_CPR.TPC_CPR_DEVICES DEV,TPC_CPR.TPC_CPR_SYSTEM_ITEMS SYS_ITEM2\n" +
+                        "WHERE DEV.INVENTORY_ITEM_ID = SYS_ITEM2.INVENTORY_ITEM_ID AND SYS_ITEM2.ITEM_TYPE\n" +
+                        "= 'SB' AND DEV.ENABLED_FLAG = 'Y') D, ( SELECT SITE.* FROM TPC_CPR.TPC_CPR_SITES\n" +
+                        "SITE WHERE SITE.ENABLED_FLAG = 'Y') S, ( SELECT MOD.*,SYS_ITEM3.DESCRIPTION\n" +
+                        "FROM TPC_CPR.TPC_CPR_MODULES MOD,TPC_CPR.TPC_CPR_SYSTEM_ITEMS SYS_ITEM3\n" +
+                        "WHERE MOD.INVENTORY_ITEM_ID = SYS_ITEM3.INVENTORY_ITEM_ID AND SYS_ITEM3.ITEM_TYPE\n" +
+                        "= 'MK' AND MOD.ENABLED_FLAG = 'Y') M WHERE P.CONTRACT_PRODUCT_ID = D.CONTRACT_PRODUCT_ID\n" +
+                        "AND D.CONTRACT_DEVICE_ID = S.CONTRACT_DEVICE_ID AND S.SITE_ID = M.SITE_ID\n" +
+                        ") Mod LEFT JOIN ( ( SELECT ITEM.CONTRACT_MODULE_ID CONTRACT_MODULE_ID,\n" +
+                        "ITEM.INVENTORY_ITEM_ID, ITEM.CONTRACT_ITEM_ID, SYS_ITEM.DESCRIPTION, SYS_ITEM.ATTRIBUTE1,\n" +
+                        "ITEM.ITEM_QUANTITY, SYS_ITEM.CATALOG_SOFTWARE_FLAG, P.COST_PRICE, P.COST_PRICE_PARAMETER,\n" +
+                        "P.CONFIRM_FLAG,P.COST_PRICE04, P.CONFIRM_ITEM_PARAM, P.CONFIRM_FLAG04,\n" +
+                        "P.OLD_COST,P.LIST_PRICE, SYS_ITEM.ITEM_CODE, P.CONFIRM_COST_PRICE04, SYS_ITEM.ITEM_ID\n" +
+                        "PROD_ATTRIBUTE_ID,SYS_ITEM.ITEM_CHIP FROM TPC_CPR.TPC_CPR_ITEMS ITEM, TPC_CPR.TPC_CPR_SYSTEM_ITEMS\n" +
+                        "SYS_ITEM, TPC_CPR.TPC_CPR_PRICE P where ITEM.INVENTORY_ITEM_ID = P.INVENTORY_ITEM_ID\n" +
+                        "AND ITEM.INVENTORY_ITEM_ID = SYS_ITEM.INVENTORY_ITEM_ID AND ITEM.ENABLED_FLAG\n" +
+                        "= 'Y' ) ) I ON Mod.CONTRACT_MODULE_ID = I.CONTRACT_MODULE_ID ";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -164,7 +163,7 @@ public class OracleCreateTableTest77 extends OracleTest {
                         "\t\t\tAND ITEM.INVENTORY_ITEM_ID = SYS_ITEM.INVENTORY_ITEM_ID\n" +
                         "\t\t\tAND ITEM.ENABLED_FLAG = 'Y'\n" +
                         "\t) I ON Mod.CONTRACT_MODULE_ID = I.CONTRACT_MODULE_ID ",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

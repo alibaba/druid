@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HiveInsertStatement extends SQLInsertStatement implements SQLStatement {
-    private boolean              ifNotExists = false;
+    private boolean ifNotExists;
 
     public HiveInsertStatement() {
         dbType = DbType.hive;

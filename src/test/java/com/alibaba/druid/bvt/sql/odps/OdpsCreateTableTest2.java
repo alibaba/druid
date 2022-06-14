@@ -10,7 +10,6 @@ import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OdpsCreateTableTest2 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE sale_detail as select * from dual;";
         OdpsStatementParser parser = new OdpsStatementParser(sql);

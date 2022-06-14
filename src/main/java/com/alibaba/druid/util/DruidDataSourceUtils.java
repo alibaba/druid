@@ -15,25 +15,24 @@
  */
 package com.alibaba.druid.util;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-
-import javax.management.ObjectName;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
-public class DruidDataSourceUtils {
+import javax.management.ObjectName;
 
-    private final static Log LOG = LogFactory.getLog(DruidDataSourceUtils.class);
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+
+public class DruidDataSourceUtils {
+    private static final Log LOG = LogFactory.getLog(DruidDataSourceUtils.class);
 
     public static String getUrl(Object druidDataSource) {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).getUrl();
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("getUrl");
             Object obj = method.invoke(druidDataSource);
@@ -43,12 +42,12 @@ public class DruidDataSourceUtils {
             return null;
         }
     }
-    
+
     public static long getID(Object druidDataSource) {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).getID();
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("getID");
             Object obj = method.invoke(druidDataSource);
@@ -58,12 +57,12 @@ public class DruidDataSourceUtils {
             return -1;
         }
     }
-    
+
     public static String getName(Object druidDataSource) {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).getName();
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("getName");
             Object obj = method.invoke(druidDataSource);
@@ -78,7 +77,7 @@ public class DruidDataSourceUtils {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).getObjectName();
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("getObjectName");
             Object obj = method.invoke(druidDataSource);
@@ -93,7 +92,7 @@ public class DruidDataSourceUtils {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).getSqlStat(sqlId);
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("getSqlStat", int.class);
             return method.invoke(druidDataSource, sqlId);
@@ -107,7 +106,7 @@ public class DruidDataSourceUtils {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).isRemoveAbandoned();
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("isRemoveAbandoned");
             Object obj = method.invoke(druidDataSource);
@@ -123,7 +122,7 @@ public class DruidDataSourceUtils {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).getStatDataForMBean();
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("getStatDataForMBean");
             Object obj = method.invoke(druidDataSource);
@@ -139,7 +138,7 @@ public class DruidDataSourceUtils {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).getStatData();
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("getStatData");
             Object obj = method.invoke(druidDataSource);
@@ -150,12 +149,12 @@ public class DruidDataSourceUtils {
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings("rawtypes")
     public static Map getSqlStatMap(Object druidDataSource) {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).getSqlStatMap();
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("getSqlStatMap");
             Object obj = method.invoke(druidDataSource);
@@ -165,13 +164,13 @@ public class DruidDataSourceUtils {
             return null;
         }
     }
-    
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static Map<String, Object> getWallStatMap(Object druidDataSource) {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).getWallStatMap();
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("getWallStatMap");
             Object obj = method.invoke(druidDataSource);
@@ -181,13 +180,13 @@ public class DruidDataSourceUtils {
             return null;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public static List<Map<String, Object>> getPoolingConnectionInfo(Object druidDataSource) {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).getPoolingConnectionInfo();
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("getPoolingConnectionInfo");
             Object obj = method.invoke(druidDataSource);
@@ -197,13 +196,13 @@ public class DruidDataSourceUtils {
             return null;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public static List<String> getActiveConnectionStackTrace(Object druidDataSource) {
         if (druidDataSource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDataSource).getActiveConnectionStackTrace();
         }
-        
+
         try {
             Method method = druidDataSource.getClass().getMethod("getActiveConnectionStackTrace");
             Object obj = method.invoke(druidDataSource);

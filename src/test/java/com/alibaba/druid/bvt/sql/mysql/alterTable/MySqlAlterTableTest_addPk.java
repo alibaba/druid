@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 public class MySqlAlterTableTest_addPk extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE test.table ADD PRIMARY KEY test_pk(id);";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -42,8 +41,8 @@ public class MySqlAlterTableTest_addPk extends TestCase {
 
         assertEquals("ALTER TABLE test.table\n" +
                         "\tADD PRIMARY KEY (id);",
-                                    SQLUtils.toMySqlString(stmt));
-        
+                SQLUtils.toMySqlString(stmt));
+
         assertEquals("alter table test.table\n" +
                         "\tadd primary key (id);",
                 SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

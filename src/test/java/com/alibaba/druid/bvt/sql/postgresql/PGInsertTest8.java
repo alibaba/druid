@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGInsertTest8 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO distributors (did, dname) VALUES (9, 'Antwerp Design')\n" +
                 "    ON CONFLICT ON CONSTRAINT distributors_pkey DO NOTHING;";

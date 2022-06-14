@@ -13,5 +13,5 @@ public class OdpsFormatCommentTest26 extends TestCase {
                 + "\nAS"
                 + "\nSELECT *"
                 + "\nFROM dual;", SQLUtils.formatOdps(sql));
-    }   
+    }
 }

@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 
 public class SchemaStatTest_odps extends TestCase {
-
     public void test_schemaStat() throws Exception {
         File file = new File("/Users/wenshao/Downloads/odps_sql_1.txt");
         String sql = FileUtils.readFileToString(file);

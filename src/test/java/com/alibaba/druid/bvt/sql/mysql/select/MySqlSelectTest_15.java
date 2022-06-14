@@ -29,7 +29,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_15 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT 1--1 from t where id = 1";
 
@@ -60,8 +59,8 @@ public class MySqlSelectTest_15 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT 1 - -1" //
-                            + "\nFROM t" //
-                            + "\nWHERE id = 1", //
-                            output);
+                        + "\nFROM t" //
+                        + "\nWHERE id = 1", //
+                output);
     }
 }

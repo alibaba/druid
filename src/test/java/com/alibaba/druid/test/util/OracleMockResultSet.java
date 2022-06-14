@@ -33,8 +33,7 @@ import com.alibaba.druid.mock.MockResultSet;
 
 
 public class OracleMockResultSet extends MockResultSet implements OracleResultSet {
-
-    public OracleMockResultSet(Statement statement){
+    public OracleMockResultSet(Statement statement) {
         super(statement);
     }
 
@@ -315,193 +314,193 @@ public class OracleMockResultSet extends MockResultSet implements OracleResultSe
     @Override
     public void updateARRAY(int arg0, ARRAY arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateARRAY(String arg0, ARRAY arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateBFILE(int arg0, BFILE arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateBFILE(String arg0, BFILE arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateBLOB(int arg0, BLOB arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateBLOB(String arg0, BLOB arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateBfile(int arg0, BFILE arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateBfile(String arg0, BFILE arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateCHAR(int arg0, CHAR arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateCHAR(String arg0, CHAR arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateCLOB(int arg0, CLOB arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateCLOB(String arg0, CLOB arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateCustomDatum(int arg0, CustomDatum arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateCustomDatum(String arg0, CustomDatum arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateDATE(int arg0, DATE arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateDATE(String arg0, DATE arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateINTERVALDS(int arg0, INTERVALDS arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateINTERVALYM(int arg0, INTERVALYM arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateNUMBER(int arg0, NUMBER arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateNUMBER(String arg0, NUMBER arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateORAData(int arg0, ORAData arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateORAData(String arg0, ORAData arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateOracleObject(int arg0, Datum arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateOracleObject(String arg0, Datum arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateRAW(int arg0, RAW arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateRAW(String arg0, RAW arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateREF(int arg0, REF arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateREF(String arg0, REF arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateROWID(int arg0, ROWID arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateROWID(String arg0, ROWID arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateSTRUCT(int arg0, STRUCT arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateSTRUCT(String arg0, STRUCT arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -522,19 +521,19 @@ public class OracleMockResultSet extends MockResultSet implements OracleResultSe
     @Override
     public void updateTIMESTAMP(int arg0, TIMESTAMP arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateTIMESTAMPLTZ(int arg0, TIMESTAMPLTZ arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateTIMESTAMPTZ(int arg0, TIMESTAMPTZ arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -552,31 +551,31 @@ public class OracleMockResultSet extends MockResultSet implements OracleResultSe
     @Override
     public void updateINTERVALDS(String arg0, INTERVALDS arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateINTERVALYM(String arg0, INTERVALYM arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateTIMESTAMP(String arg0, TIMESTAMP arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateTIMESTAMPLTZ(String arg0, TIMESTAMPLTZ arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void updateTIMESTAMPTZ(String arg0, TIMESTAMPTZ arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

@@ -24,20 +24,19 @@ import java.util.List;
 import java.util.Map;
 
 public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalVisitor {
+    private List<Object> parameters = new ArrayList<Object>();
 
-    private List<Object>        parameters       = new ArrayList<Object>();
+    private Map<String, Function> functions = new HashMap<String, Function>();
 
-    private Map<String, Function> functions        = new HashMap<String, Function>();
+    private int variantIndex = -1;
 
-    private int                 variantIndex     = -1;
+    private boolean markVariantIndex = true;
 
-    private boolean             markVariantIndex = true;
-
-    public SQLEvalVisitorImpl(){
+    public SQLEvalVisitorImpl() {
         this(new ArrayList<Object>(1));
     }
 
-    public SQLEvalVisitorImpl(List<Object> parameters){
+    public SQLEvalVisitorImpl(List<Object> parameters) {
         this.parameters = parameters;
     }
 
@@ -76,7 +75,7 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
     public boolean visit(SQLNumberExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
-    
+
     public boolean visit(SQLHexExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
@@ -123,7 +122,7 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
     public void registerFunction(String funcName, Function function) {
         functions.put(funcName, function);
     }
-    
+
     public boolean visit(SQLIdentifierExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
@@ -132,7 +131,7 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
     public void unregisterFunction(String funcName) {
         functions.remove(funcName);
     }
-    
+
     @Override
     public boolean visit(SQLBooleanExpr x) {
         x.getAttributes().put(EVAL_VALUE, x.getBooleanValue());

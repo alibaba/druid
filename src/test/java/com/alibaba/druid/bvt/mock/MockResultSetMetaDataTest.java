@@ -28,7 +28,6 @@ import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase;
 import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 
 public class MockResultSetMetaDataTest extends TestCase {
-
     public void test_resultSet_metadata() throws Exception {
         MockResultSetMetaData meta = new MockResultSetMetaData();
         Assert.assertTrue(meta.isWrapperFor(MockResultSetMetaData.class));

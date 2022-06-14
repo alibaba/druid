@@ -2,7 +2,6 @@ package com.alibaba.druid.sql.dialect.odps.ast;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 
 public class OdpsDeclareVariableStatement extends OdpsStatementImpl {
@@ -11,7 +10,6 @@ public class OdpsDeclareVariableStatement extends OdpsStatementImpl {
     private SQLExpr initValue;
 
     public OdpsDeclareVariableStatement() {
-
     }
 
     public OdpsDeclareVariableStatement(String variant, SQLExpr initValue) {

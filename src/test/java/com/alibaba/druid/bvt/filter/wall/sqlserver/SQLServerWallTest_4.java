@@ -24,20 +24,19 @@ import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class SQLServerWallTest_4 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
 
         provider.getConfig().setSelectHavingAlwayTrueCheck(true);
 
         Assert.assertTrue(provider.checkValid(//
-        "insert into t (fid, name) values (1, HOST_NAME())"));
+                "insert into t (fid, name) values (1, HOST_NAME())"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
         Assert.assertTrue(provider.getTableStats().containsKey("t"));

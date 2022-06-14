@@ -25,11 +25,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_24 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from company where id=1 and not (name='e') and addr='a'";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -44,12 +43,12 @@ public class MySqlSelectTest_24 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(3, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT *\n" +
@@ -57,7 +56,7 @@ public class MySqlSelectTest_24 extends MysqlTest {
                             "WHERE id = 1\n" +
                             "\tAND (NOT name = 'e')\n" +
                             "\tAND addr = 'a'", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -66,10 +65,9 @@ public class MySqlSelectTest_24 extends MysqlTest {
                             "where id = 1\n" +
                             "\tand (not name = 'e')\n" +
                             "\tand addr = 'a'", //
-                                output);
+                    output);
         }
     }
-    
-    
-    
+
+
 }

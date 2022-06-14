@@ -25,15 +25,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLSizeExpr extends SQLExprImpl {
-
     private SQLExpr value;
-    private Unit    unit;
+    private Unit unit;
 
-    public SQLSizeExpr(){
-
+    public SQLSizeExpr() {
     }
 
-    public SQLSizeExpr(String value, char unit){
+    public SQLSizeExpr(String value, char unit) {
         this.unit = Unit.valueOf(Character.toString(unit).toUpperCase());
         if (value.indexOf('.') == -1) {
             this.value = new SQLIntegerExpr(Integer.parseInt(value));
@@ -42,7 +40,7 @@ public class SQLSizeExpr extends SQLExprImpl {
         }
     }
 
-    public SQLSizeExpr(SQLExpr value, Unit unit){
+    public SQLSizeExpr(SQLExpr value, Unit unit) {
         super();
         this.value = value;
         this.unit = unit;
@@ -95,12 +93,18 @@ public class SQLSizeExpr extends SQLExprImpl {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLSizeExpr that = (SQLSizeExpr) o;
 
-        if (value != null ? !value.equals(that.value) : that.value != null) return false;
+        if (value != null ? !value.equals(that.value) : that.value != null) {
+            return false;
+        }
         return unit == that.unit;
     }
 

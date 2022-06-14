@@ -26,22 +26,21 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateMaterializedViewTest0 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE MATERIALIZED VIEW sales_summary AS\n" +
-                "  SELECT\n" +
-                "      seller_no,\n" +
-                "      invoice_date,\n" +
-                "      sum(invoice_amt) as sales_amt\n" +
-                "    FROM invoice\n" +
-                "    WHERE invoice_date < CURRENT_DATE\n" +
-                "    GROUP BY\n" +
-                "      seller_no,\n" +
-                "      invoice_date\n" +
-                "    ORDER BY\n" +
-                "      seller_no,\n" +
-                "      invoice_date;\n";
+                "CREATE MATERIALIZED VIEW sales_summary AS\n" +
+                        "  SELECT\n" +
+                        "      seller_no,\n" +
+                        "      invoice_date,\n" +
+                        "      sum(invoice_amt) as sales_amt\n" +
+                        "    FROM invoice\n" +
+                        "    WHERE invoice_date < CURRENT_DATE\n" +
+                        "    GROUP BY\n" +
+                        "      seller_no,\n" +
+                        "      invoice_date\n" +
+                        "    ORDER BY\n" +
+                        "      seller_no,\n" +
+                        "      invoice_date;\n";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -57,7 +56,7 @@ public class OracleCreateMaterializedViewTest0 extends OracleTest {
                         "WHERE invoice_date < CURRENT_DATE\n" +
                         "GROUP BY seller_no, invoice_date\n" +
                         "ORDER BY seller_no, invoice_date;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

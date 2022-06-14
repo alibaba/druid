@@ -10,7 +10,6 @@ import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class WallProviderTest extends TestCase {
-
     public void test_getSqlStat() throws Exception {
         String whiteSql_1 = "select * from t1 where fid = 1";
         String whiteSql_2 = "select * from t1 where fid = 2";
@@ -42,10 +41,10 @@ public class WallProviderTest extends TestCase {
 
         Assert.assertTrue(provider.checkValid(whiteSql_1));
         Assert.assertTrue(provider.checkValid(whiteSql_2));
-        
+
         Assert.assertFalse(provider.checkValid(blackSql_1));
         Assert.assertFalse(provider.checkValid(blackSql_2));
-        
+
         for (int i = 1000; i < 1000 * 2; ++i) {
             String sql_x = "select * from t1 where fid = " + i;
             Assert.assertTrue(provider.checkValid(sql_x));
@@ -56,39 +55,39 @@ public class WallProviderTest extends TestCase {
         Assert.assertEquals(2, provider.getSqlList().size());
 
         Assert.assertFalse(provider.checkValid("slelc"));
-        
+
         {
             WallProviderStatValue statValue = provider.getStatValue(true);
             Assert.assertNotNull(statValue);
-            
+
             Assert.assertEquals(2, statValue.getTables().size());
             Assert.assertEquals(1, statValue.getFunctions().size());
-            
+
             Assert.assertEquals(1009, statValue.getCheckCount());
             Assert.assertEquals(2, statValue.getBlackListHitCount());
             Assert.assertEquals(4, statValue.getHardCheckCount());
             Assert.assertEquals(1, statValue.getSyntaxErrorCount());
             Assert.assertEquals(5, statValue.getViolationCount());
             Assert.assertEquals(1003, statValue.getWhiteListHitCount());
-            
+
             Assert.assertEquals(1, statValue.getWhiteList().size());
             Assert.assertEquals(2, statValue.getBlackList().size());
         }
-        
+
         {
             WallProviderStatValue statValue = provider.getStatValue(true);
             Assert.assertNotNull(statValue);
-            
+
             Assert.assertEquals(0, statValue.getTables().size());
             Assert.assertEquals(0, statValue.getFunctions().size());
-            
+
             Assert.assertEquals(0, statValue.getCheckCount());
             Assert.assertEquals(0, statValue.getBlackListHitCount());
             Assert.assertEquals(0, statValue.getHardCheckCount());
             Assert.assertEquals(0, statValue.getSyntaxErrorCount());
             Assert.assertEquals(0, statValue.getViolationCount());
             Assert.assertEquals(0, statValue.getWhiteListHitCount());
-            
+
             Assert.assertEquals(0, statValue.getWhiteList().size());
             Assert.assertEquals(0, statValue.getBlackList().size());
         }

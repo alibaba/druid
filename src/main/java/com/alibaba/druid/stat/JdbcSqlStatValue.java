@@ -15,152 +15,151 @@
  */
 package com.alibaba.druid.stat;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.management.JMException;
-
 import com.alibaba.druid.support.monitor.annotation.AggregateType;
 import com.alibaba.druid.support.monitor.annotation.MField;
 import com.alibaba.druid.support.monitor.annotation.MTable;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.Utils;
 
+import javax.management.JMException;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 @MTable(name = "druid_sql")
 public class JdbcSqlStatValue {
+    protected long id;
 
-    protected long      id;
+    protected String sql;
 
-    protected String    sql;
-
-    @MField(groupBy = true, aggregate = AggregateType.None, hashFor = "sql", hashForType="sql")
-    private long        sqlHash;
+    @MField(groupBy = true, aggregate = AggregateType.None, hashFor = "sql", hashForType = "sql")
+    private long sqlHash;
 
     @MField(aggregate = AggregateType.None)
-    protected String    dataSource;
+    protected String dataSource;
 
     @MField(name = "lastStartTime", aggregate = AggregateType.Max)
-    protected long      executeLastStartTime;
+    protected long executeLastStartTime;
 
     @MField(name = "batchTotal", aggregate = AggregateType.Sum)
-    protected long      executeBatchSizeTotal;
+    protected long executeBatchSizeTotal;
 
     @MField(name = "batchToMax", aggregate = AggregateType.Max)
-    protected int       executeBatchSizeMax;
+    protected int executeBatchSizeMax;
 
     @MField(name = "execSuccessCount", aggregate = AggregateType.Sum)
-    protected long      executeSuccessCount;
+    protected long executeSuccessCount;
 
     @MField(name = "execNanoTotal", aggregate = AggregateType.Sum)
-    protected long      executeSpanNanoTotal;
+    protected long executeSpanNanoTotal;
 
     @MField(name = "execNanoMax", aggregate = AggregateType.Sum)
-    protected long      executeSpanNanoMax;
+    protected long executeSpanNanoMax;
 
     @MField(name = "running", aggregate = AggregateType.Last)
-    protected int       runningCount;
+    protected int runningCount;
 
     @MField(aggregate = AggregateType.Max)
-    protected int       concurrentMax;
+    protected int concurrentMax;
 
     @MField(name = "rsHoldTime", aggregate = AggregateType.Sum)
-    protected long      resultSetHoldTimeNano;
+    protected long resultSetHoldTimeNano;
 
     @MField(name = "execRsHoldTime", aggregate = AggregateType.Sum)
-    protected long      executeAndResultSetHoldTime;
+    protected long executeAndResultSetHoldTime;
 
     @MField(aggregate = AggregateType.None)
-    protected String    name;
+    protected String name;
 
     @MField(aggregate = AggregateType.None)
-    protected String    file;
+    protected String file;
 
     @MField(aggregate = AggregateType.None)
-    protected String    dbType;
+    protected String dbType;
 
     @MField(name = "execNanoMaxOccurTime", aggregate = AggregateType.Max)
-    protected long      executeNanoSpanMaxOccurTime;
+    protected long executeNanoSpanMaxOccurTime;
 
     @MField(name = "errorCount", aggregate = AggregateType.Sum)
-    protected long      executeErrorCount;
+    protected long executeErrorCount;
 
     protected Throwable executeErrorLast;
 
     @MField(name = "errorLastMsg", aggregate = AggregateType.Last)
-    protected String    executeErrorLastMessage;
+    protected String executeErrorLastMessage;
 
     @MField(name = "errorLastClass", aggregate = AggregateType.Last)
-    protected String    executeErrorLastClass;
+    protected String executeErrorLastClass;
 
     @MField(name = "errorLastStackTrace", aggregate = AggregateType.Last)
-    protected String    executeErrorLastStackTrace;
+    protected String executeErrorLastStackTrace;
 
     @MField(name = "errorLastTime", aggregate = AggregateType.Last)
-    protected long      executeErrorLastTime;
+    protected long executeErrorLastTime;
 
     @MField(aggregate = AggregateType.Sum)
-    protected long      updateCount;
+    protected long updateCount;
 
     @MField(aggregate = AggregateType.Sum)
-    protected long      updateCountMax;
+    protected long updateCountMax;
 
     @MField(aggregate = AggregateType.Sum)
-    protected long      fetchRowCount;
+    protected long fetchRowCount;
 
     @MField(aggregate = AggregateType.Sum)
-    protected long      fetchRowCountMax;
+    protected long fetchRowCountMax;
 
     @MField(name = "inTxnCount", aggregate = AggregateType.Sum)
-    protected long      inTransactionCount;
+    protected long inTransactionCount;
 
     @MField(aggregate = AggregateType.Last)
-    protected String    lastSlowParameters;
+    protected String lastSlowParameters;
 
     @MField(aggregate = AggregateType.Sum)
-    protected long      clobOpenCount;
+    protected long clobOpenCount;
 
     @MField(aggregate = AggregateType.Sum)
-    protected long      blobOpenCount;
+    protected long blobOpenCount;
 
     @MField(aggregate = AggregateType.Sum)
-    protected long      readStringLength;
+    protected long readStringLength;
 
     @MField(aggregate = AggregateType.Sum)
-    protected long      readBytesLength;
+    protected long readBytesLength;
 
     @MField(aggregate = AggregateType.Sum)
-    protected long      inputStreamOpenCount;
+    protected long inputStreamOpenCount;
 
     @MField(aggregate = AggregateType.Sum)
-    protected long      readerOpenCount;
+    protected long readerOpenCount;
 
     @MField(name = "h1", aggregate = AggregateType.Sum)
-    protected long      histogram_0_1;
+    protected long histogram_0_1;
 
     @MField(name = "h10", aggregate = AggregateType.Sum)
-    protected long      histogram_1_10;
+    protected long histogram_1_10;
 
     @MField(name = "h100", aggregate = AggregateType.Sum)
-    protected int       histogram_10_100;
+    protected int histogram_10_100;
 
     @MField(name = "h1000", aggregate = AggregateType.Sum)
-    protected int       histogram_100_1000;
+    protected int histogram_100_1000;
 
     @MField(name = "h10000", aggregate = AggregateType.Sum)
-    protected int       histogram_1000_10000;
+    protected int histogram_1000_10000;
 
     @MField(name = "h100000", aggregate = AggregateType.Sum)
-    protected int       histogram_10000_100000;
+    protected int histogram_10000_100000;
 
     @MField(name = "h1000000", aggregate = AggregateType.Sum)
-    protected int       histogram_100000_1000000;
+    protected int histogram_100000_1000000;
 
     @MField(name = "hmore", aggregate = AggregateType.Sum)
-    protected int       histogram_1000000_more;
+    protected int histogram_1000000_more;
 
     public long[] getExecuteHistogram() {
-        return new long[] { histogram_0_1, //
+        return new long[]{histogram_0_1, //
                 histogram_1_10, //
                 histogram_10_100, //
                 histogram_100_1000, //
@@ -178,25 +177,25 @@ public class JdbcSqlStatValue {
     protected long executeAndResultHoldTime_1_10;
 
     @MField(name = "eh100", aggregate = AggregateType.Sum)
-    protected int  executeAndResultHoldTime_10_100;
+    protected int executeAndResultHoldTime_10_100;
 
     @MField(name = "eh1000", aggregate = AggregateType.Sum)
-    protected int  executeAndResultHoldTime_100_1000;
+    protected int executeAndResultHoldTime_100_1000;
 
     @MField(name = "eh10000", aggregate = AggregateType.Sum)
-    protected int  executeAndResultHoldTime_1000_10000;
+    protected int executeAndResultHoldTime_1000_10000;
 
     @MField(name = "eh100000", aggregate = AggregateType.Sum)
-    protected int  executeAndResultHoldTime_10000_100000;
+    protected int executeAndResultHoldTime_10000_100000;
 
     @MField(name = "eh1000000", aggregate = AggregateType.Sum)
-    protected int  executeAndResultHoldTime_100000_1000000;
+    protected int executeAndResultHoldTime_100000_1000000;
 
     @MField(name = "ehmore", aggregate = AggregateType.Sum)
-    protected int  executeAndResultHoldTime_1000000_more;
+    protected int executeAndResultHoldTime_1000000_more;
 
     public long[] getExecuteAndResultHoldHistogram() {
-        return new long[] { executeAndResultHoldTime_0_1, //
+        return new long[]{executeAndResultHoldTime_0_1, //
                 executeAndResultHoldTime_1_10, //
                 executeAndResultHoldTime_10_100, //
                 executeAndResultHoldTime_100_1000, //
@@ -217,16 +216,16 @@ public class JdbcSqlStatValue {
     protected long fetchRowCount_10_100;
 
     @MField(name = "f1000", aggregate = AggregateType.Sum)
-    protected int  fetchRowCount_100_1000;
+    protected int fetchRowCount_100_1000;
 
     @MField(name = "f10000", aggregate = AggregateType.Sum)
-    protected int  fetchRowCount_1000_10000;
+    protected int fetchRowCount_1000_10000;
 
     @MField(name = "fmore", aggregate = AggregateType.Sum)
-    protected int  fetchRowCount_10000_more;
+    protected int fetchRowCount_10000_more;
 
     public long[] getFetchRowHistogram() {
-        return new long[] { fetchRowCount_0_1, //
+        return new long[]{fetchRowCount_0_1, //
                 fetchRowCount_1_10, //
                 fetchRowCount_10_100, //
                 fetchRowCount_100_1000, //
@@ -245,16 +244,16 @@ public class JdbcSqlStatValue {
     protected long updateCount_10_100;
 
     @MField(name = "u1000", aggregate = AggregateType.Sum)
-    protected int  updateCount_100_1000;
+    protected int updateCount_100_1000;
 
     @MField(name = "u10000", aggregate = AggregateType.Sum)
-    protected int  updateCount_1000_10000;
+    protected int updateCount_1000_10000;
 
     @MField(name = "umore", aggregate = AggregateType.Sum)
-    protected int  updateCount_10000_more;
+    protected int updateCount_10000_more;
 
     public long[] getUpdateHistogram() {
-        return new long[] { updateCount_0_1, //
+        return new long[]{updateCount_0_1, //
                 updateCount_1_10, //
                 updateCount_10_100, //
                 updateCount_100_1000, //
@@ -568,7 +567,7 @@ public class JdbcSqlStatValue {
     }
 
     public long[] getHistogramValues() {
-        return new long[] {
+        return new long[]{
                 //
                 histogram_0_1, //
                 histogram_1_10, //
@@ -582,7 +581,7 @@ public class JdbcSqlStatValue {
     }
 
     public long[] getFetchRowCountHistogramValues() {
-        return new long[] {
+        return new long[]{
                 //
                 fetchRowCount_0_1, //
                 fetchRowCount_1_10, //
@@ -594,7 +593,7 @@ public class JdbcSqlStatValue {
     }
 
     public long[] getUpdateCountHistogramValues() {
-        return new long[] {
+        return new long[]{
                 //
                 updateCount_0_1, //
                 updateCount_1_10, //
@@ -606,7 +605,7 @@ public class JdbcSqlStatValue {
     }
 
     public long[] getExecuteAndResultHoldTimeHistogramValues() {
-        return new long[] {
+        return new long[]{
                 //
                 executeAndResultHoldTime_0_1, //
                 executeAndResultHoldTime_1_10, //

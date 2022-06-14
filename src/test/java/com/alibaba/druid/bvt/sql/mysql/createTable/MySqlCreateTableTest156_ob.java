@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 
 public class MySqlCreateTableTest156_ob
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create table `ar_ranking_001_t` (\n" +
                 "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +

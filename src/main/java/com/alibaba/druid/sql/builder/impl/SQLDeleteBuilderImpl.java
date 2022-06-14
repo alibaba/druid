@@ -31,15 +31,14 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import java.util.List;
 
 public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
-
     private SQLDeleteStatement stmt;
-    private DbType             dbType;
+    private DbType dbType;
 
-    public SQLDeleteBuilderImpl(DbType dbType){
+    public SQLDeleteBuilderImpl(DbType dbType) {
         this.dbType = dbType;
     }
-    
-    public SQLDeleteBuilderImpl(String sql, DbType dbType){
+
+    public SQLDeleteBuilderImpl(String sql, DbType dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.isEmpty()) {
@@ -55,7 +54,7 @@ public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
         this.dbType = dbType;
     }
 
-    public SQLDeleteBuilderImpl(SQLDeleteStatement stmt, DbType dbType){
+    public SQLDeleteBuilderImpl(SQLDeleteStatement stmt, DbType dbType) {
         this.stmt = stmt;
         this.dbType = dbType;
     }

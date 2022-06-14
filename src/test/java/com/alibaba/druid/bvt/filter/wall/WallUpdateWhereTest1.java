@@ -26,8 +26,7 @@ import com.alibaba.druid.wall.WallUtils;
  * @author wenshao
  */
 public class WallUpdateWhereTest1 extends TestCase {
-
-    private String sql  = "update wx_shop set shop_view = shop_view + 1 where id = 118 OR 69=69 LIMIT 100 --";
+    private String sql = "update wx_shop set shop_view = shop_view + 1 where id = 118 OR 69=69 LIMIT 100 --";
     private String sql1 = "update wx_shop set shop_view = shop_view + 1 where id = 118 OR 69=69 LIMIT 100 #and c=1";
 
     public void test_check_true() throws Exception {

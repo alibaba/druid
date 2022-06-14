@@ -24,7 +24,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_217_unnest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select x from unnest(array[1, 2, 3]) t(x)";
 

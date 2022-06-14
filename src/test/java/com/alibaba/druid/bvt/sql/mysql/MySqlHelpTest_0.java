@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlHelpTest_0 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "HELP 'search_string'";
 
@@ -39,23 +38,23 @@ public class MySqlHelpTest_0 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("HELP 'search_string'", //
-                            output);
+                output);
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

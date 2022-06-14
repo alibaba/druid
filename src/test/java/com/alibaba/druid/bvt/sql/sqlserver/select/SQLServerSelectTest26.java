@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SQLServerSelectTest26 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = //
                 "-- ----------------------------\n" +

@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_8 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT unique id FROM DSN81010.EMP where id = 1;";
 
@@ -58,12 +57,12 @@ public class DB2SelectTest_8 extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         Assert.assertEquals("SELECT UNIQUE id" //
-                            + "\nFROM DSN81010.EMP"
-                            + "\nWHERE id = 1;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+                        + "\nFROM DSN81010.EMP"
+                        + "\nWHERE id = 1;", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         Assert.assertEquals("select unique id" //
-                            + "\nfrom DSN81010.EMP"
-                            + "\nwhere id = 1;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                        + "\nfrom DSN81010.EMP"
+                        + "\nwhere id = 1;", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

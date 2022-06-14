@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTypeTest5 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE TYPE T_PMINFO_LOAN_OBJECT                                                                               \n" +
                 "is object(\n" +
@@ -56,7 +55,7 @@ public class OracleCreateTypeTest5 extends OracleTest {
                         "\tcarriert_type varchar2(20), \n" +
                         "\tdept_id number(10)\n" +
                         ") NOT FINAL INSTANTIABLE;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

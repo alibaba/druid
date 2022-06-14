@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGInsertTest6_multi extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO products (product_no, name, price) VALUES"
                 + "\n    (1, 'Cheese', 9.99),"

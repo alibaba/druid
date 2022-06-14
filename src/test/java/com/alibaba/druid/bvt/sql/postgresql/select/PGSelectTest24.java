@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest24 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select wm_concat(article_id) over() from t_nds_web_article";
 
@@ -35,7 +34,7 @@ public class PGSelectTest24 extends PGTest {
 
         Assert.assertEquals("SELECT wm_concat(article_id) OVER ()"
                 + "\nFROM t_nds_web_article", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("select wm_concat(article_id) over ()"
                 + "\nfrom t_nds_web_article", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

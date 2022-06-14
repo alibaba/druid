@@ -12,10 +12,9 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceTest_fill2 extends TestCase {
-
     private DruidDataSource dataSource;
 
-    private int             maxActive = 100;
+    private int maxActive = 100;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -37,7 +36,6 @@ public class DruidDataSourceTest_fill2 extends TestCase {
         Thread[] threads = new Thread[THREAD_COUNT];
         for (int i = 0; i < THREAD_COUNT; ++i) {
             threads[i] = new Thread("thread-" + i) {
-
                 public void run() {
                     startLatch.countDown();
                     try {
@@ -60,7 +58,6 @@ public class DruidDataSourceTest_fill2 extends TestCase {
         final AtomicLong fillErrorCount = new AtomicLong();
         final AtomicLong fillCount = new AtomicLong();
         Thread fillThread = new Thread() {
-
             public void run() {
                 try {
                     int count = dataSource.fill();
@@ -73,7 +70,7 @@ public class DruidDataSourceTest_fill2 extends TestCase {
             }
         };
         fillThread.start();
-        
+
         fillLatch.await(1000, TimeUnit.MILLISECONDS);
 
         Assert.assertEquals(0, fillErrorCount.get());

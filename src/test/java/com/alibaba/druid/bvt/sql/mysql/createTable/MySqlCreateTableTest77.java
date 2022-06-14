@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlCreateTableTest77 extends MysqlTest {
-
     public void test_one() throws Exception {
         String sql = "-- table-name-bean-name:some --\n" +
                 "CREATE TABLE `some_table` (\n" +
@@ -35,7 +34,7 @@ public class MySqlCreateTableTest77 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         Column column = visitor.getColumn("some_table", "id");
         assertNotNull(column);
         assertEquals("bigint", column.getDataType());
@@ -47,7 +46,7 @@ public class MySqlCreateTableTest77 extends MysqlTest {
                     "\t`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键'\n" +
                     ")", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("-- table-name-bean-name:some --\n" +

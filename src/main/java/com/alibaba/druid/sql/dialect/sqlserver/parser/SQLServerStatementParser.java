@@ -30,12 +30,11 @@ import java.util.Collection;
 import java.util.List;
 
 public class SQLServerStatementParser extends SQLStatementParser {
-
-    public SQLServerStatementParser(String sql){
+    public SQLServerStatementParser(String sql) {
         super(new SQLServerExprParser(sql));
     }
 
-    public SQLServerStatementParser(String sql, SQLParserFeature... features){
+    public SQLServerStatementParser(String sql, SQLParserFeature... features) {
         super(new SQLServerExprParser(sql, features));
     }
 
@@ -43,7 +42,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         return new SQLServerSelectParser(this.exprParser, selectListCache);
     }
 
-    public SQLServerStatementParser(Lexer lexer){
+    public SQLServerStatementParser(Lexer lexer) {
         super(new SQLServerExprParser(lexer));
     }
 
@@ -80,12 +79,12 @@ public class SQLServerStatementParser extends SQLStatementParser {
             statementList.add(execStmt);
             return true;
         }
-        
+
         if (lexer.token() == Token.DECLARE) {
             statementList.add(this.parseDeclare());
             return true;
         }
-        
+
         if (lexer.token() == Token.IF) {
             statementList.add(this.parseIf());
             return true;
@@ -95,7 +94,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             statementList.add(this.parseBlock());
             return true;
         }
-        
+
         if (lexer.token() == Token.COMMIT) {
             statementList.add(this.parseCommit());
             return true;
@@ -113,11 +112,13 @@ public class SQLServerStatementParser extends SQLStatementParser {
             statementList.add(stmt);
             return true;
         }
-        
+
         return false;
     }
+
     /**
      * SQLServer parse Parameter statement support out type
+     *
      * @author zz [455910092@qq.com]
      */
     public void parseExecParameter(Collection<SQLServerParameter> exprCol, SQLObject parent) {
@@ -150,16 +151,16 @@ public class SQLServerStatementParser extends SQLStatementParser {
             exprCol.add(param);
         }
     }
-    
+
     public SQLStatement parseDeclare() {
         this.accept(Token.DECLARE);
 
         SQLDeclareStatement declareStatement = new SQLDeclareStatement();
-        
-        for (;;) {
-            SQLDeclareItem item = new  SQLDeclareItem();
+
+        for (; ; ) {
+            SQLDeclareItem item = new SQLDeclareItem();
             declareStatement.addItem(item);
-            
+
             item.setName(this.exprParser.name());
 
             if (lexer.token() == Token.AS) {
@@ -169,19 +170,19 @@ public class SQLServerStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.TABLE) {
                 lexer.nextToken();
                 item.setType(SQLDeclareItem.Type.TABLE);
-                
+
                 if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
 
-                    for (;;) {
+                    for (; ; ) {
                         if (lexer.token() == Token.IDENTIFIER //
-                            || lexer.token() == Token.LITERAL_ALIAS) {
+                                || lexer.token() == Token.LITERAL_ALIAS) {
                             SQLColumnDefinition column = this.exprParser.parseColumn();
                             item.getTableElementList().add(column);
                         } else if (lexer.token() == Token.PRIMARY //
-                                   || lexer.token() == Token.UNIQUE //
-                                   || lexer.token() == Token.CHECK //
-                                   || lexer.token() == Token.CONSTRAINT) {
+                                || lexer.token() == Token.UNIQUE //
+                                || lexer.token() == Token.CHECK //
+                                || lexer.token() == Token.CONSTRAINT) {
                             SQLConstraint constraint = this.exprParser.parseConstaint();
                             constraint.setParent(item);
                             item.getTableElementList().add((SQLTableElement) constraint);
@@ -241,7 +242,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
     protected void parseInsert0(SQLInsertInto insert, boolean acceptSubQuery) {
         SQLServerInsertStatement insertStatement = (SQLServerInsertStatement) insert;
-        
+
         SQLServerTop top = this.getExprParser().parseTop();
         if (top != null) {
             insertStatement.setTop(top);
@@ -250,7 +251,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.INTO) {
             lexer.nextToken();
         }
-        
+
         SQLName tableName = this.exprParser.name();
         insertStatement.setTableName(tableName);
 
@@ -270,7 +271,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             this.exprParser.exprList(insertStatement.getColumns(), insertStatement);
             accept(Token.RPAREN);
         }
-        
+
         SQLServerOutput output = this.getExprParser().parserOutput();
         if (output != null) {
             insertStatement.setOutput(output);
@@ -279,7 +280,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.VALUES) {
             lexer.nextToken();
 
-            for (;;) {
+            for (; ; ) {
                 accept(Token.LPAREN);
                 SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
                 this.exprParser.exprList(values.getValues(), values);
@@ -290,7 +291,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                     lexer.skipToEOF();
                     break;
                 }
-                
+
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
@@ -326,7 +327,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         udpateStatement.setTableSource(tableSource);
 
         parseUpdateSet(udpateStatement);
-        
+
         SQLServerOutput output = this.getExprParser().parserOutput();
         if (output != null) {
             udpateStatement.setOutput(output);
@@ -345,12 +346,12 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         return udpateStatement;
     }
-    
+
     @Override
     public SQLServerExprParser getExprParser() {
         return (SQLServerExprParser) exprParser;
     }
-    
+
     public SQLStatement parseSet() {
         accept(Token.SET);
 
@@ -400,8 +401,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             SQLSetStatement stmt = new SQLSetStatement();
 
             if (lexer.identifierEquals("IO") || lexer.identifierEquals("XML") || lexer.identifierEquals("PROFILE")
-                || lexer.identifierEquals("TIME")) {
-
+                    || lexer.identifierEquals("TIME")) {
                 SQLExpr target = new SQLIdentifierExpr("STATISTICS " + lexer.stringVal().toUpperCase());
 
                 lexer.nextToken();
@@ -455,7 +455,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             return stmt;
         }
     }
-    
+
     public SQLIfStatement parseIf() {
         accept(Token.IF);
 
@@ -464,8 +464,8 @@ public class SQLServerStatementParser extends SQLStatementParser {
         stmt.setCondition(this.exprParser.expr());
 
         this.parseStatementList(stmt.getStatements(), 1, stmt);
-        
-        if(lexer.token() == Token.SEMI) {
+
+        if (lexer.token() == Token.SEMI) {
             lexer.nextToken();
         }
 
@@ -502,7 +502,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         return block;
     }
-    
+
     public SQLStatement parseCommit() {
         acceptIdentifier("COMMIT");
 
@@ -532,7 +532,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         return stmt;
     }
-    
+
     public SQLServerRollbackStatement parseRollback() {
         acceptIdentifier("ROLLBACK");
 
@@ -549,12 +549,11 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 stmt.setName(this.exprParser.expr());
             }
 
-
         }
 
         return stmt;
     }
-    
+
     public SQLServerWaitForStatement parseWaitFor() {
         acceptIdentifier("WAITFOR");
 

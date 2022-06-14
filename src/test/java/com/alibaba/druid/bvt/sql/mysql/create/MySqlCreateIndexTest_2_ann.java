@@ -25,7 +25,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateIndexTest_2_ann extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE ANN INDEX facefea_index3 ON face_feature (facefea) DistanceMeasure = DotProduct ALGORITHM = IVF;";

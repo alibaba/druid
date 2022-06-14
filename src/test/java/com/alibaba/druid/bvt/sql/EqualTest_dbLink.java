@@ -8,7 +8,6 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 
 public class EqualTest_dbLink extends TestCase {
-
     public void test_eq() throws Exception {
         String sql = "a@b";
         String sql_c = "a@c";

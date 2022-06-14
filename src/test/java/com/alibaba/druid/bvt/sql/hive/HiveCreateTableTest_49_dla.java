@@ -23,15 +23,14 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class HiveCreateTableTest_49_dla
         extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "create external  table `dla_result`.`sgm_add`\n" +
                 "STORED AS parquet \n" +
                 "LOCATION  \n" +
                 "'oss://aliyun-oa-query-results-1408722774623865-oss-cn-zhangjiakou/DLA_Result/sgm_add/'\n" +
                 "TBLPROPERTIES ('auto.create.location' = 'true') like select pure_date,(substr(regexp_extract(fld11, '\"sgm_add\":\"?([^\"}]*)', 1), 1, 10)) AS sgm_add from \n" +
-                "log_push_1912 where pure_date = 20191120" ;
-        SQLStatement stmt =  SQLUtils.parseSingleStatement(sql, DbType.hive, SQLParserFeature.KeepComments);
+                "log_push_1912 where pure_date = 20191120";
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.hive, SQLParserFeature.KeepComments);
 
         SQLStatement clone = stmt.clone();
 

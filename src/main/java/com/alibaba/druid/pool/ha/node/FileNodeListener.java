@@ -33,10 +33,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author DigitalSonic
  */
 public class FileNodeListener extends NodeListener {
-    private final static Log LOG = LogFactory.getLog(FileNodeListener.class);
+    private static final Log LOG = LogFactory.getLog(FileNodeListener.class);
 
     private Lock lock = new ReentrantLock();
-    private String file = null;
+    private String file;
     private int intervalSeconds = 60;
     private ScheduledExecutorService executor;
 

@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest2 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM t1 NATURAL INNER JOIN t2;";
 

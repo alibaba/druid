@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
@@ -11,10 +11,9 @@ import java.util.List;
 
 public class MySqlParameterizedOutputVisitorTest_67 extends TestCase {
     public void test_for_parameterize() throws Exception {
-
         String sql = "select dep_id, dep_name, count(1) from t where dep_tpe = 'aa' group by dep_id having count(1) > 10";
 
-        List<Object> params =  new ArrayList<Object>();
+        List<Object> params = new ArrayList<Object>();
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql);
         assertEquals("SELECT dep_id, dep_name, count(1)\n" +
                 "FROM t\n" +

@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableCoalescePartition extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLExpr count;
 
     public SQLExpr getCount() {

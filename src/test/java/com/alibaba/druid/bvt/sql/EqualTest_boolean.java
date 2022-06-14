@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 
 public class EqualTest_boolean extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "true";
         String sql_c = "false";
@@ -31,7 +30,7 @@ public class EqualTest_boolean extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new SQLBooleanExpr(), new SQLBooleanExpr());
         Assert.assertEquals(new SQLBooleanExpr().hashCode(), new SQLBooleanExpr().hashCode());
     }

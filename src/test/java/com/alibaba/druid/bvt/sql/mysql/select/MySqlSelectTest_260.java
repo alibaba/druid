@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 
 public class MySqlSelectTest_260 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT x.c as x\n" +
                 "FROM (VALUES 1) x(c)\n" +

@@ -25,13 +25,12 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest7 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM employees " + //
-                     "   WHERE department_id NOT IN " + //
-                     "   (SELECT department_id FROM departments " + //
-                     "       WHERE location_id = 1700)" + //
-                     "   ORDER BY last_name;";
+                "   WHERE department_id NOT IN " + //
+                "   (SELECT department_id FROM departments " + //
+                "       WHERE location_id = 1700)" + //
+                "   ORDER BY last_name;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -61,7 +60,7 @@ public class OracleSelectTest7 extends OracleTest {
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "location_id")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "*")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
-        
+
         Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

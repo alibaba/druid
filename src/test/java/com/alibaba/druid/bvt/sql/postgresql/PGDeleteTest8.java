@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGDeleteTest8 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "WITH RECURSIVE included_parts(sub_part, part) AS ("
                 + "    SELECT sub_part, part FROM parts WHERE part = 'our_product'"
@@ -55,11 +54,11 @@ public class PGDeleteTest8 extends PGTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("parts")));
 
-        assertEquals(2, visitor.getColumns().size() );
-        
+        assertEquals(2, visitor.getColumns().size());
+
         assertTrue(visitor.containsColumn("parts", "sub_part"));
         assertTrue(visitor.containsColumn("parts", "sub_part"));
     }
 
-    
+
 }

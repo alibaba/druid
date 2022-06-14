@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class HiveCreateTableTest_47_dla
         extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE external TABLE IF NOT EXISTS dwd_tfc_bas_rdnet_inter_info (\n" +
                 "inter_id varchar(225) NOT NULL COMMENT ' 路口id ',\n" +
@@ -42,8 +41,8 @@ public class HiveCreateTableTest_47_dla
                 "adcode varchar(225) NOT NULL COMMENT ' 所属城市代码，标准6位数字代码 ',\n" +
                 "PRIMARY KEY (`inter_id`, `data_version`, `adcode`),\n" +
                 "KEY `index_id` (`inter_id`)\n" +
-                ") ENGINE = innodb CHARSET = utf8 COMMENT '路口基本信息';" ;
-        SQLStatement stmt =  SQLUtils.parseSingleStatement(sql, DbType.hive, SQLParserFeature.KeepComments);
+                ") ENGINE = innodb CHARSET = utf8 COMMENT '路口基本信息';";
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.hive, SQLParserFeature.KeepComments);
 
         assertEquals("CREATE EXTERNAL TABLE IF NOT EXISTS dwd_tfc_bas_rdnet_inter_info (\n" +
                 "\tinter_id varchar(225) NOT NULL COMMENT ' 路口id ',\n" +

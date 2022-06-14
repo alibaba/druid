@@ -29,7 +29,6 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_5 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM (SELECT TEMP_TAB.*,ROWNUMBER() OVER() AS IDX FROM (SELECT" //
                 + "            DISTINCT  ( OH.ORDER_ID )" //
@@ -87,6 +86,6 @@ public class DB2SelectTest_5 extends DB2Test {
                         ") TEMP_TAB_WITH_IDX\n" +
                         "WHERE TEMP_TAB_WITH_IDX.IDX > 0\n" +
                         "\tAND TEMP_TAB_WITH_IDX.IDX <= 20", //
-                            output);
+                output);
     }
 }

@@ -27,7 +27,6 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class TestStat extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -47,7 +46,6 @@ public class TestStat extends TestCase {
     }
 
     public void test_stat() throws Exception {
-
         String sql = "SELECT 1";
 
         Connection conn = dataSource.getConnection();

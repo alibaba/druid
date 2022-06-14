@@ -24,30 +24,29 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_exception_1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE OR REPLACE PROCEDURE loc_var AUTHID DEFINER IS\n" +
-				"  stmt_no  POSITIVE;\n" +
-				"  name_    VARCHAR2(100);\n" +
-				"BEGIN\n" +
-				"  stmt_no := 1;\n" +
-				"\n" +
-				"  SELECT table_name INTO name_\n" +
-				"  FROM user_tables\n" +
-				"  WHERE table_name LIKE 'ABC%';\n" +
-				"\n" +
-				"  stmt_no := 2;\n" +
-				"\n" +
-				"  SELECT table_name INTO name_\n" +
-				"  FROM user_tables\n" +
-				"  WHERE table_name LIKE 'XYZ%';\n" +
-				"EXCEPTION\n" +
-				"  WHEN NO_DATA_FOUND THEN\n" +
-				"    DBMS_OUTPUT.PUT_LINE ('Table name not found in query ' || stmt_no);\n" +
-				"END;"; //
+                "  stmt_no  POSITIVE;\n" +
+                "  name_    VARCHAR2(100);\n" +
+                "BEGIN\n" +
+                "  stmt_no := 1;\n" +
+                "\n" +
+                "  SELECT table_name INTO name_\n" +
+                "  FROM user_tables\n" +
+                "  WHERE table_name LIKE 'ABC%';\n" +
+                "\n" +
+                "  stmt_no := 2;\n" +
+                "\n" +
+                "  SELECT table_name INTO name_\n" +
+                "  FROM user_tables\n" +
+                "  WHERE table_name LIKE 'XYZ%';\n" +
+                "EXCEPTION\n" +
+                "  WHEN NO_DATA_FOUND THEN\n" +
+                "    DBMS_OUTPUT.PUT_LINE ('Table name not found in query ' || stmt_no);\n" +
+                "END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -71,50 +70,50 @@ public class Oracle_pl_exception_1 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
-			System.out.println(output);
-			assertEquals("CREATE OR REPLACE PROCEDURE loc_var AUTHID DEFINER\n" +
-							"AS\n" +
-							"\tstmt_no POSITIVE;\n" +
-							"\tname_ VARCHAR2(100);\n" +
-							"BEGIN\n" +
-							"\tstmt_no := 1;\n" +
-							"\tSELECT table_name\n" +
-							"\tINTO name_\n" +
-							"\tFROM user_tables\n" +
-							"\tWHERE table_name LIKE 'ABC%';\n" +
-							"\tstmt_no := 2;\n" +
-							"\tSELECT table_name\n" +
-							"\tINTO name_\n" +
-							"\tFROM user_tables\n" +
-							"\tWHERE table_name LIKE 'XYZ%';\n" +
-							"EXCEPTION\n" +
-							"\tWHEN NO_DATA_FOUND THEN DBMS_OUTPUT.PUT_LINE('Table name not found in query ' || stmt_no);\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("create or replace procedure loc_var authid DEFINER\n" +
-							"as\n" +
-							"\tstmt_no POSITIVE;\n" +
-							"\tname_ VARCHAR2(100);\n" +
-							"begin\n" +
-							"\tstmt_no := 1;\n" +
-							"\tselect table_name\n" +
-							"\tinto name_\n" +
-							"\tfrom user_tables\n" +
-							"\twhere table_name like 'ABC%';\n" +
-							"\tstmt_no := 2;\n" +
-							"\tselect table_name\n" +
-							"\tinto name_\n" +
-							"\tfrom user_tables\n" +
-							"\twhere table_name like 'XYZ%';\n" +
-							"exception\n" +
-							"\twhen NO_DATA_FOUND then DBMS_OUTPUT.PUT_LINE('Table name not found in query ' || stmt_no);\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+            System.out.println(output);
+            assertEquals("CREATE OR REPLACE PROCEDURE loc_var AUTHID DEFINER\n" +
+                            "AS\n" +
+                            "\tstmt_no POSITIVE;\n" +
+                            "\tname_ VARCHAR2(100);\n" +
+                            "BEGIN\n" +
+                            "\tstmt_no := 1;\n" +
+                            "\tSELECT table_name\n" +
+                            "\tINTO name_\n" +
+                            "\tFROM user_tables\n" +
+                            "\tWHERE table_name LIKE 'ABC%';\n" +
+                            "\tstmt_no := 2;\n" +
+                            "\tSELECT table_name\n" +
+                            "\tINTO name_\n" +
+                            "\tFROM user_tables\n" +
+                            "\tWHERE table_name LIKE 'XYZ%';\n" +
+                            "EXCEPTION\n" +
+                            "\tWHEN NO_DATA_FOUND THEN DBMS_OUTPUT.PUT_LINE('Table name not found in query ' || stmt_no);\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("create or replace procedure loc_var authid DEFINER\n" +
+                            "as\n" +
+                            "\tstmt_no POSITIVE;\n" +
+                            "\tname_ VARCHAR2(100);\n" +
+                            "begin\n" +
+                            "\tstmt_no := 1;\n" +
+                            "\tselect table_name\n" +
+                            "\tinto name_\n" +
+                            "\tfrom user_tables\n" +
+                            "\twhere table_name like 'ABC%';\n" +
+                            "\tstmt_no := 2;\n" +
+                            "\tselect table_name\n" +
+                            "\tinto name_\n" +
+                            "\tfrom user_tables\n" +
+                            "\twhere table_name like 'XYZ%';\n" +
+                            "exception\n" +
+                            "\twhen NO_DATA_FOUND then DBMS_OUTPUT.PUT_LINE('Table name not found in query ' || stmt_no);\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

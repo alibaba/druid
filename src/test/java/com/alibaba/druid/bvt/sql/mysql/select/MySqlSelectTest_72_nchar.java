@@ -27,9 +27,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_72_nchar extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "select N'abc' \"bcd\" 'asdfasdf' as tstConstNAndConcat;";
+        String sql = "select N'abc' \"bcd\" 'asdfasdf' as tstConstNAndConcat;";
 
         System.out.println(sql);
 
@@ -44,12 +43,12 @@ public class MySqlSelectTest_72_nchar extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT CONCAT(N'abc', 'bcd', 'asdfasdf') AS tstConstNAndConcat;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select CONCAT(n'abc', 'bcd', 'asdfasdf') as tstConstNAndConcat;", //
-                                output);
+                    output);
         }
 
         {

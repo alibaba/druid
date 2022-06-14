@@ -26,12 +26,11 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import java.util.List;
 
 public class MySqlShowTest_15_outlines extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW OUTLINES";
 
         SQLStatement stmt = SQLUtils.parseStatements(sql, DbType.mysql).get(0);
-        
+
         String result = SQLUtils.toMySqlString(stmt);
         assertEquals("SHOW OUTLINES", result);
 

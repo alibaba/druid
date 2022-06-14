@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTypeTest9 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE TYPE \"T_EVA_PM_INFO_OBJECT\"                    \n" +
                 "under ecc_pm.t_pminfo_loan_object(\n" +
@@ -61,7 +60,7 @@ public class OracleCreateTypeTest9 extends OracleTest {
                         "\tsanctionedParty12 varchar2(256), \n" +
                         "\tsanctionedParty22 varchar2(256)\n" +
                         ");",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

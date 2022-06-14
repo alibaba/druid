@@ -32,7 +32,7 @@ public class BooleanTest extends PGTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test1")));
 
         Assert.assertEquals(0, visitor.getColumns().size());
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "kind")));
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "code")));
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "date_prod")));

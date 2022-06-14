@@ -24,18 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLCloneTableStatement extends SQLStatementImpl {
-
     protected SQLExprTableSource from;
 
     protected List<SQLAssignItem> partitions = new ArrayList<>();
 
     protected SQLExprTableSource to;
 
-    protected boolean ifExistsOverwrite = false;
-    protected boolean ifExistsIgnore = false;
+    protected boolean ifExistsOverwrite;
+    protected boolean ifExistsIgnore;
 
     public SQLCloneTableStatement() {
-
     }
 
     public SQLCloneTableStatement(SQLExpr to) {

@@ -24,15 +24,14 @@ import java.sql.Statement;
 import java.util.Date;
 
 public class DruidTest {
-
     private static DruidDataSource DS;
 
-    public DruidTest(String connectURI){
+    public DruidTest(String connectURI) {
         initDS(connectURI);
     }
 
     public DruidTest(String connectURI, String username, String pswd, String driverClass, int initialSize,
-                     int maxActive, int maxIdle, int minIdle, int maxWait){
+                     int maxActive, int maxIdle, int minIdle, int maxWait) {
         initDS(connectURI, username, pswd, driverClass, initialSize, maxActive, minIdle, maxIdle, maxWait);
     }
 
@@ -75,7 +74,6 @@ public class DruidTest {
     }
 
     public static void main(String[] args) throws IOException, SQLException {
-
         DruidTest db = new DruidTest("jdbc:mysql://a.b.c.d:8066/amoeba");
         Connection conn = null;
         Statement stmt = null;

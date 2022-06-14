@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.transform.SQLUnifiedUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 
 public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
-
     public void test1() throws Exception {
         String sql = "create materialized view `a` (\n" +
                 "    `__adb_auto_id__` bigint AUTO_INCREMENT,\n" +

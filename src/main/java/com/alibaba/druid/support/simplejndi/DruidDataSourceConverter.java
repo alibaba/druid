@@ -16,57 +16,56 @@
 
 package com.alibaba.druid.support.simplejndi;
 
-import java.sql.SQLException;
-import java.util.Properties;
-
-import org.osjava.sj.loader.convert.Converter;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import org.osjava.sj.loader.convert.Converter;
+
+import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * 支持simple-jndi
  * <h1>配置示例：</h1>
  * <pre>
-pgDruidTest/converter=com.alibaba.druid.support.simplejndi.DruidDataSourceConverter
-pgDruidTest/type=javax.sql.DataSource
-pgDruidTest/driverClassName=org.postgresql.Driver
-pgDruidTest/url=jdbc:postgresql://127.0.0.1:5432/kettleRep
-pgDruidTest/username=postgres
-pgDruidTest/password=postgres
-pgDruidTest/maxActive=50
-pgDruidTest/minIdle=10
-pgDruidTest/initialSize=5
-pgDruidTest/validationQuery=SELECT 1
-pgDruidTest/maxWait=10000
-pgDruidTest/removeabandoned=true
-pgDruidTest/removeabandonedtimeout=60
-pgDruidTest/logabandoned=false
-pgDruidTest/filters=stat,config,log4j
-pgDruidTest/connectionProperties=druid.log.stmt.executableSql=true
-   </pre>
- * date: 2016年1月31日 下午12:54:10 
+ * pgDruidTest/converter=com.alibaba.druid.support.simplejndi.DruidDataSourceConverter
+ * pgDruidTest/type=javax.sql.DataSource
+ * pgDruidTest/driverClassName=org.postgresql.Driver
+ * pgDruidTest/url=jdbc:postgresql://127.0.0.1:5432/kettleRep
+ * pgDruidTest/username=postgres
+ * pgDruidTest/password=postgres
+ * pgDruidTest/maxActive=50
+ * pgDruidTest/minIdle=10
+ * pgDruidTest/initialSize=5
+ * pgDruidTest/validationQuery=SELECT 1
+ * pgDruidTest/maxWait=10000
+ * pgDruidTest/removeabandoned=true
+ * pgDruidTest/removeabandonedtimeout=60
+ * pgDruidTest/logabandoned=false
+ * pgDruidTest/filters=stat,config,log4j
+ * pgDruidTest/connectionProperties=druid.log.stmt.executableSql=true
+ * </pre>
+ * date: 2016年1月31日 下午12:54:10
+ *
  * @author jinjuma@yeah.net
  */
 public class DruidDataSourceConverter implements Converter {
+    private static final Log LOG = LogFactory.getLog(DruidDataSourceConverter.class);
 
-    private final static Log LOG = LogFactory.getLog(DruidDataSourceConverter.class);
-	/**
-	 * 
-	 * @see org.osjava.sj.loader.convert.Converter#convert(java.util.Properties, java.lang.String)
-	 */
-	@Override
-	public Object convert(Properties properties, String type) {
+    /**
+     * @see org.osjava.sj.loader.convert.Converter#convert(java.util.Properties, java.lang.String)
+     */
+    @Override
+    public Object convert(Properties properties, String type) {
         try {
             DruidDataSource dataSource = new DruidDataSource();
-        	DruidDataSourceFactory.config(dataSource, properties);
-        	return dataSource;
-		} catch (SQLException e) {
-			LOG.error("properties:"+properties, e);
-		}
+            DruidDataSourceFactory.config(dataSource, properties);
+            return dataSource;
+        } catch (SQLException e) {
+            LOG.error("properties:" + properties, e);
+        }
         return null;
-	}
+    }
 
 }

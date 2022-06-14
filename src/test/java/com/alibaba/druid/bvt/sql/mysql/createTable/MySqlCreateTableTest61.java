@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest61 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create table t (pk int auto_increment primary key,a timestamp null default current_timestamp on update current_timestamp, b timestamp null)";

@@ -15,19 +15,14 @@
  */
 package com.alibaba.druid.support.profile;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ProfileStat {
-
     private Map<ProfileEntryKey, ProfileEntryStat> entries = new LinkedHashMap<ProfileEntryKey, ProfileEntryStat>(4);
 
-    private ReadWriteLock                          lock    = new ReentrantReadWriteLock();
+    private ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public Map<ProfileEntryKey, ProfileEntryStat> getEntries() {
         return entries;
@@ -50,7 +45,6 @@ public class ProfileStat {
     }
 
     private ProfileEntryStat getProfileEntry(ProfileEntryKey entryKey) {
-
         lock.readLock().lock();
         try {
             ProfileEntryStat entryStat = entries.get(entryKey);
@@ -75,9 +69,8 @@ public class ProfileStat {
     }
 
     public List<Map<String, Object>> getStatData() {
-
         List<ProfileEntryStatValue> statValueList = getStatValue(false);
-        
+
         int size = statValueList.size();
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(size);
         for (ProfileEntryStatValue profileEntryStatValue : statValueList) {

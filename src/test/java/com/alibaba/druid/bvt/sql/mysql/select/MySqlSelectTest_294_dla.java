@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class MySqlSelectTest_294_dla extends MysqlTest {
 
-
     public void test_1() throws Exception {
         String sql = "/*+engine=spark*/\n" +
                 "select  date_p,os_p,nvl(channel,'新增') as channel,\n" +
@@ -98,7 +97,6 @@ public class MySqlSelectTest_294_dla extends MysqlTest {
 
         System.out.println(stmt.toString());
     }
-
 
 
     public void testRemoveBackQuoteFromSql() {

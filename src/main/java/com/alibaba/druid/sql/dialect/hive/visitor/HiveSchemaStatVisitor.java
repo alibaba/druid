@@ -20,15 +20,12 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateFunctionStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveMsckRepairStatement;
 import com.alibaba.druid.sql.repository.SchemaRepository;
@@ -38,7 +35,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTVisitor {
-
     public HiveSchemaStatVisitor() {
         super(DbType.hive);
     }
@@ -48,7 +44,7 @@ public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTV
     }
 
     public HiveSchemaStatVisitor(SchemaRepository repository) {
-        super (repository);
+        super(repository);
     }
 
     @Override
@@ -72,7 +68,6 @@ public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTV
 
         return false;
     }
-
 
     @Override
     public boolean visit(HiveMultiInsertStatement x) {
@@ -135,7 +130,8 @@ public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTV
         return false;
     }
 
-    @Override public boolean visit(HiveMsckRepairStatement x) {
+    @Override
+    public boolean visit(HiveMsckRepairStatement x) {
         return false;
     }
 

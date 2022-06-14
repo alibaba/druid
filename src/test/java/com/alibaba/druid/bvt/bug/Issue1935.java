@@ -28,11 +28,10 @@ public class Issue1935 extends TestCase {
             MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
             stmt.accept(visitor);
 
-
             //获取操作方法名称,依赖于表名称
             System.out.println("涉及到的所有表 : " + visitor.getTables());
             Map<TableStat.Name, TableStat> table_map = visitor.getTables();
-            for(Map.Entry<TableStat.Name, TableStat> entry : table_map.entrySet()){
+            for (Map.Entry<TableStat.Name, TableStat> entry : table_map.entrySet()) {
                 TableStat.Name name = entry.getKey();
                 name.getName();
                 //存储表的调度次数，包括select ，update等
@@ -40,27 +39,26 @@ public class Issue1935 extends TestCase {
 
             }
             //获取字段名称
-            System.out.println( visitor.getParameters());
+            System.out.println(visitor.getParameters());
             //获取列名
             System.out.println("查询的列信息 : " + visitor.getColumns());
             Collection<TableStat.Column> cc = visitor.getColumns();
             //column 存储了表名，列名，以及列是出现的位置，where，select，groupby ，order
-            for(TableStat.Column column : cc){
-
+            for (TableStat.Column column : cc) {
             }
-            System.out.println("conditions : " + visitor.getConditions() );
+            System.out.println("conditions : " + visitor.getConditions());
             List<TableStat.Condition> conditions = visitor.getConditions();
             System.out.println("----------------------------");
-            for(TableStat.Condition cond : conditions){
-                System.out.println( "column : " + cond.getColumn());
-                System.out.println( "operator : " + cond.getOperator());
-                System.out.println( "values  : " + cond.getValues());
+            for (TableStat.Condition cond : conditions) {
+                System.out.println("column : " + cond.getColumn());
+                System.out.println("operator : " + cond.getOperator());
+                System.out.println("values  : " + cond.getValues());
 
                 System.out.println("----------------------------");
             }
-            System.out.println("group by : " + visitor.getGroupByColumns() );
-            System.out.println("order by : " + visitor.getOrderByColumns() );
-            System.out.println("relations ships  : " + visitor.getRelationships() );
+            System.out.println("group by : " + visitor.getGroupByColumns());
+            System.out.println("order by : " + visitor.getOrderByColumns());
+            System.out.println("relations ships  : " + visitor.getRelationships());
 
         }
 

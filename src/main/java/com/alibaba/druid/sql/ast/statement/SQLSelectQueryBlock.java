@@ -30,47 +30,46 @@ import java.util.List;
 import java.util.TreeSet;
 
 public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplaceable, SQLDbTypedObject {
-    protected int                        distionOption;
-    protected final List<SQLSelectItem>  selectList      = new ArrayList<SQLSelectItem>();
+    protected int distionOption;
+    protected final List<SQLSelectItem> selectList = new ArrayList<SQLSelectItem>();
 
-    protected SQLTableSource             from;
-    protected SQLExprTableSource         into;
-    protected SQLExpr                    where;
+    protected SQLTableSource from;
+    protected SQLExprTableSource into;
+    protected SQLExpr where;
 
     // for oracle & oceanbase
-    protected SQLExpr                    startWith;
-    protected SQLExpr                    connectBy;
-    protected boolean                    prior           = false;
-    protected boolean                    noCycle         = false;
-    protected SQLOrderBy                 orderBySiblings;
+    protected SQLExpr startWith;
+    protected SQLExpr connectBy;
+    protected boolean prior;
+    protected boolean noCycle;
+    protected SQLOrderBy orderBySiblings;
 
-    protected SQLSelectGroupByClause     groupBy;
-    protected List<SQLWindow>            windows;
-    protected SQLOrderBy                 orderBy;
-    protected boolean                    forUpdate       = false;
-    protected boolean                    noWait          = false;
-    protected boolean                    skipLocked      = false;
-    protected boolean                    forShare        = false;
-    protected SQLExpr                    waitTime;
-    protected SQLLimit                   limit;
+    protected SQLSelectGroupByClause groupBy;
+    protected List<SQLWindow> windows;
+    protected SQLOrderBy orderBy;
+    protected boolean forUpdate;
+    protected boolean noWait;
+    protected boolean skipLocked;
+    protected boolean forShare;
+    protected SQLExpr waitTime;
+    protected SQLLimit limit;
 
     // for oracle
-    protected List<SQLExpr>              forUpdateOf;
+    protected List<SQLExpr> forUpdateOf;
     protected List<SQLSelectOrderByItem> distributeBy;
     protected List<SQLSelectOrderByItem> sortBy;
     protected List<SQLSelectOrderByItem> clusterBy;
 
-    protected String                     cachedSelectList; // optimized for SelectListCache
-    protected long                       cachedSelectListHash; // optimized for SelectListCache
+    protected String cachedSelectList; // optimized for SelectListCache
+    protected long cachedSelectListHash; // optimized for SelectListCache
 
-    protected DbType                     dbType;
-    protected List<SQLCommentHint>       hints;
+    protected DbType dbType;
+    protected List<SQLCommentHint> hints;
 
-    public SQLSelectQueryBlock(){
-
+    public SQLSelectQueryBlock() {
     }
 
-    public SQLSelectQueryBlock(DbType dbType){
+    public SQLSelectQueryBlock(DbType dbType) {
         this.dbType = dbType;
     }
 
@@ -289,7 +288,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
         groupBy.addHaving(condition);
     }
-    
+
     public SQLOrderBy getOrderBy() {
         return orderBy;
     }
@@ -298,7 +297,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
         if (orderBy != null) {
             orderBy.setParent(this);
         }
-        
+
         this.orderBy = orderBy;
     }
 
@@ -425,7 +424,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
     public SQLSelectItem getSelectItem(int i) {
         return this.selectList.get(i);
     }
-    
+
     public void addSelectItem(SQLSelectItem item) {
         this.selectList.add(item);
         item.setParent(this);
@@ -447,12 +446,13 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
     }
 
     private static class AggregationStatVisitor extends SQLASTVisitorAdapter {
-        private boolean aggregation = false;
+        private boolean aggregation;
+
         public boolean visit(SQLAggregateExpr x) {
             aggregation = true;
             return false;
         }
-    };
+    }
 
     public boolean hasSelectAggregation() {
         AggregationStatVisitor v = new AggregationStatVisitor();
@@ -508,7 +508,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
         }
         this.setFrom(from);
     }
-	
+
     public boolean isForUpdate() {
         return forUpdate;
     }
@@ -516,7 +516,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
     public void setForUpdate(boolean forUpdate) {
         this.forUpdate = forUpdate;
     }
-    
+
     public boolean isNoWait() {
         return noWait;
     }
@@ -544,7 +544,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
     public SQLExpr getWaitTime() {
         return waitTime;
     }
-    
+
     public void setWaitTime(SQLExpr waitTime) {
         if (waitTime != null) {
             waitTime.setParent(this);
@@ -696,7 +696,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
         this.sortBy.add(item);
     }
 
-	@Override
+    @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             for (int i = 0; i < this.selectList.size(); i++) {
@@ -768,38 +768,84 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLSelectQueryBlock that = (SQLSelectQueryBlock) o;
 
-        if (distionOption != that.distionOption) return false;
-        if (prior != that.prior) return false;
-        if (noCycle != that.noCycle) return false;
-        if (parenthesized != that.parenthesized) return false;
-        if (forUpdate != that.forUpdate) return false;
-        if (noWait != that.noWait) return false;
-        if (cachedSelectListHash != that.cachedSelectListHash) return false;
+        if (distionOption != that.distionOption) {
+            return false;
+        }
+        if (prior != that.prior) {
+            return false;
+        }
+        if (noCycle != that.noCycle) {
+            return false;
+        }
+        if (parenthesized != that.parenthesized) {
+            return false;
+        }
+        if (forUpdate != that.forUpdate) {
+            return false;
+        }
+        if (noWait != that.noWait) {
+            return false;
+        }
+        if (cachedSelectListHash != that.cachedSelectListHash) {
+            return false;
+        }
         if (selectList != null ? !selectList.equals(that.selectList) : that.selectList != null) {
             return false;
         }
-        if (from != null ? !from.equals(that.from) : that.from != null) return false;
-        if (into != null ? !into.equals(that.into) : that.into != null) return false;
-        if (where != null ? !where.equals(that.where) : that.where != null) return false;
-        if (startWith != null ? !startWith.equals(that.startWith) : that.startWith != null) return false;
-        if (connectBy != null ? !connectBy.equals(that.connectBy) : that.connectBy != null) return false;
-        if (orderBySiblings != null ? !orderBySiblings.equals(that.orderBySiblings) : that.orderBySiblings != null)
+        if (from != null ? !from.equals(that.from) : that.from != null) {
             return false;
-        if (groupBy != null ? !groupBy.equals(that.groupBy) : that.groupBy != null) return false;
-        if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) return false;
-        if (waitTime != null ? !waitTime.equals(that.waitTime) : that.waitTime != null) return false;
-        if (limit != null ? !limit.equals(that.limit) : that.limit != null) return false;
-        if (forUpdateOf != null ? !forUpdateOf.equals(that.forUpdateOf) : that.forUpdateOf != null) return false;
-        if (distributeBy != null ? !distributeBy.equals(that.distributeBy) : that.distributeBy != null) return false;
-        if (sortBy != null ? !sortBy.equals(that.sortBy) : that.sortBy != null) return false;
-        if (cachedSelectList != null ? !cachedSelectList.equals(that.cachedSelectList) : that.cachedSelectList != null)
+        }
+        if (into != null ? !into.equals(that.into) : that.into != null) {
             return false;
-        if (dbType != that.dbType) return false;
+        }
+        if (where != null ? !where.equals(that.where) : that.where != null) {
+            return false;
+        }
+        if (startWith != null ? !startWith.equals(that.startWith) : that.startWith != null) {
+            return false;
+        }
+        if (connectBy != null ? !connectBy.equals(that.connectBy) : that.connectBy != null) {
+            return false;
+        }
+        if (orderBySiblings != null ? !orderBySiblings.equals(that.orderBySiblings) : that.orderBySiblings != null) {
+            return false;
+        }
+        if (groupBy != null ? !groupBy.equals(that.groupBy) : that.groupBy != null) {
+            return false;
+        }
+        if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) {
+            return false;
+        }
+        if (waitTime != null ? !waitTime.equals(that.waitTime) : that.waitTime != null) {
+            return false;
+        }
+        if (limit != null ? !limit.equals(that.limit) : that.limit != null) {
+            return false;
+        }
+        if (forUpdateOf != null ? !forUpdateOf.equals(that.forUpdateOf) : that.forUpdateOf != null) {
+            return false;
+        }
+        if (distributeBy != null ? !distributeBy.equals(that.distributeBy) : that.distributeBy != null) {
+            return false;
+        }
+        if (sortBy != null ? !sortBy.equals(that.sortBy) : that.sortBy != null) {
+            return false;
+        }
+        if (cachedSelectList != null ? !cachedSelectList.equals(that.cachedSelectList) : that.cachedSelectList != null) {
+            return false;
+        }
+        if (dbType != that.dbType) {
+            return false;
+        }
         return hints != null ? hints.equals(that.hints) : that.hints == null;
     }
 
@@ -833,37 +879,81 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
     }
 
     public boolean equalsForMergeJoin(SQLSelectQueryBlock that) {
-        if (this == that) return true;
-        if (that == null) return false;
+        if (this == that) {
+            return true;
+        }
+        if (that == null) {
+            return false;
+        }
 
         if (into != null || limit != null || groupBy != null) {
             return false;
         }
 
-        if (distionOption != that.distionOption) return false;
-        if (prior != that.prior) return false;
-        if (noCycle != that.noCycle) return false;
-        if (parenthesized != that.parenthesized) return false;
-        if (forUpdate != that.forUpdate) return false;
-        if (noWait != that.noWait) return false;
-        if (cachedSelectListHash != that.cachedSelectListHash) return false;
-        if (selectList != null ? !selectList.equals(that.selectList) : that.selectList != null) return false;
-        if (from != null ? !from.equals(that.from) : that.from != null) return false;
-        if (into != null ? !into.equals(that.into) : that.into != null) return false;
+        if (distionOption != that.distionOption) {
+            return false;
+        }
+        if (prior != that.prior) {
+            return false;
+        }
+        if (noCycle != that.noCycle) {
+            return false;
+        }
+        if (parenthesized != that.parenthesized) {
+            return false;
+        }
+        if (forUpdate != that.forUpdate) {
+            return false;
+        }
+        if (noWait != that.noWait) {
+            return false;
+        }
+        if (cachedSelectListHash != that.cachedSelectListHash) {
+            return false;
+        }
+        if (selectList != null ? !selectList.equals(that.selectList) : that.selectList != null) {
+            return false;
+        }
+        if (from != null ? !from.equals(that.from) : that.from != null) {
+            return false;
+        }
+        if (into != null ? !into.equals(that.into) : that.into != null) {
+            return false;
+        }
 //        if (where != null ? !where.equals(that.where) : that.where != null) return false;
-        if (startWith != null ? !startWith.equals(that.startWith) : that.startWith != null) return false;
-        if (connectBy != null ? !connectBy.equals(that.connectBy) : that.connectBy != null) return false;
-        if (orderBySiblings != null ? !orderBySiblings.equals(that.orderBySiblings) : that.orderBySiblings != null)
+        if (startWith != null ? !startWith.equals(that.startWith) : that.startWith != null) {
             return false;
-        if (groupBy != null ? !groupBy.equals(that.groupBy) : that.groupBy != null) return false;
-        if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) return false;
-        if (waitTime != null ? !waitTime.equals(that.waitTime) : that.waitTime != null) return false;
-        if (limit != null ? !limit.equals(that.limit) : that.limit != null) return false;
-        if (forUpdateOf != null ? !forUpdateOf.equals(that.forUpdateOf) : that.forUpdateOf != null) return false;
-        if (distributeBy != null ? !distributeBy.equals(that.distributeBy) : that.distributeBy != null) return false;
-        if (sortBy != null ? !sortBy.equals(that.sortBy) : that.sortBy != null) return false;
-        if (cachedSelectList != null ? !cachedSelectList.equals(that.cachedSelectList) : that.cachedSelectList != null)
+        }
+        if (connectBy != null ? !connectBy.equals(that.connectBy) : that.connectBy != null) {
             return false;
+        }
+        if (orderBySiblings != null ? !orderBySiblings.equals(that.orderBySiblings) : that.orderBySiblings != null) {
+            return false;
+        }
+        if (groupBy != null ? !groupBy.equals(that.groupBy) : that.groupBy != null) {
+            return false;
+        }
+        if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) {
+            return false;
+        }
+        if (waitTime != null ? !waitTime.equals(that.waitTime) : that.waitTime != null) {
+            return false;
+        }
+        if (limit != null ? !limit.equals(that.limit) : that.limit != null) {
+            return false;
+        }
+        if (forUpdateOf != null ? !forUpdateOf.equals(that.forUpdateOf) : that.forUpdateOf != null) {
+            return false;
+        }
+        if (distributeBy != null ? !distributeBy.equals(that.distributeBy) : that.distributeBy != null) {
+            return false;
+        }
+        if (sortBy != null ? !sortBy.equals(that.sortBy) : that.sortBy != null) {
+            return false;
+        }
+        if (cachedSelectList != null ? !cachedSelectList.equals(that.cachedSelectList) : that.cachedSelectList != null) {
+            return false;
+        }
         return dbType == that.dbType;
     }
 
@@ -987,7 +1077,6 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
                 x.clusterBy.add(item);
             }
         }
-
 
         x.parenthesized = parenthesized;
         x.forUpdate = forUpdate;
@@ -1189,6 +1278,18 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
                     && ((SQLPropertyExpr) selectItemExpr).getName().equals("*")) {
                 SQLTableSource resolvedTableSource = ((SQLPropertyExpr) selectItemExpr).getResolvedTableSource();
                 if (resolvedTableSource instanceof SQLSubqueryTableSource) {
+                    boolean isParentTableSource = false;
+                    for (SQLObject parent = this.getParent(); parent != null; parent = parent.getParent()) {
+                        if (parent == resolvedTableSource) {
+                            isParentTableSource = true;
+                            break;
+                        }
+                    }
+
+                    if (isParentTableSource) {
+                        return null;
+                    }
+
                     SQLObject resolveColumn = resolvedTableSource.resolveColum(columnNameHash);
                     if (resolveColumn != null) {
                         return resolveColumn;
@@ -1205,7 +1306,6 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
             return null;
         }
     }
-
 
     public void addCondition(String conditionSql) {
         if (conditionSql == null || conditionSql.length() == 0) {

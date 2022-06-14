@@ -1,9 +1,9 @@
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPartitionSpec extends SQLObjectImpl implements Cloneable {
     private List<Item> items = new ArrayList<Item>();

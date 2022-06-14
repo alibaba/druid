@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSetTest_2 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "set character set utf8, names utf8mb4;";
 

@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlGrantTest_35 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "GRANT CREATE ON . TO hello@'%'; ";
 
@@ -37,10 +36,10 @@ public class MySqlGrantTest_35 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("GRANT CREATE ON * TO 'hello'@'%';", //
-                            output);
+                output);
 
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());

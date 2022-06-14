@@ -26,17 +26,16 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class OracleCreateTableTest15 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "create table T (" + //
-                "F1 TIMESTAMP," + //
-                "F2 TIMESTAMP(9), " + //
-                "F3 TIMESTAMP WITH TIME ZONE," + //
-                "F4 TIMESTAMP(9) WITH TIME ZONE, " + //
-                "F5 TIMESTAMP WITH TIME ZONE," + //
-                "F6 TIMESTAMP(9) WITH TIME ZONE" + //
-                ") ";
+                "create table T (" + //
+                        "F1 TIMESTAMP," + //
+                        "F2 TIMESTAMP(9), " + //
+                        "F3 TIMESTAMP WITH TIME ZONE," + //
+                        "F4 TIMESTAMP(9) WITH TIME ZONE, " + //
+                        "F5 TIMESTAMP WITH TIME ZONE," + //
+                        "F6 TIMESTAMP(9) WITH TIME ZONE" + //
+                        ") ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -46,13 +45,13 @@ public class OracleCreateTableTest15 extends OracleTest {
         assertEquals(1, statementList.size());
 
         assertEquals("CREATE TABLE T (" + //
-                            "\n\tF1 TIMESTAMP," + //
-                            "\n\tF2 TIMESTAMP(9)," + //
-                            "\n\tF3 TIMESTAMP WITH TIME ZONE," + //
-                            "\n\tF4 TIMESTAMP(9) WITH TIME ZONE," + //
-                            "\n\tF5 TIMESTAMP WITH TIME ZONE," + //
-                            "\n\tF6 TIMESTAMP(9) WITH TIME ZONE" + //
-                            "\n)", SQLUtils.toSQLString(statement, DbType.oracle));
+                "\n\tF1 TIMESTAMP," + //
+                "\n\tF2 TIMESTAMP(9)," + //
+                "\n\tF3 TIMESTAMP WITH TIME ZONE," + //
+                "\n\tF4 TIMESTAMP(9) WITH TIME ZONE," + //
+                "\n\tF5 TIMESTAMP WITH TIME ZONE," + //
+                "\n\tF6 TIMESTAMP(9) WITH TIME ZONE" + //
+                "\n)", SQLUtils.toSQLString(statement, DbType.oracle));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);

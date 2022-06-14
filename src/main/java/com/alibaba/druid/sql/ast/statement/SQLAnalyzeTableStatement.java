@@ -19,32 +19,27 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatementImpl;
-import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAnalyzeTableStatement extends SQLStatementImpl {
-    protected final List<SQLExprTableSource> tableSources    = new ArrayList<SQLExprTableSource>();
+    protected final List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>();
 
-    private SQLPartitionRef     partition;
-    private boolean             forColums = false;
-    private List<SQLName>       columns = new ArrayList<>();
-    private boolean             cacheMetadata;
-    private boolean             noscan;
-    private boolean             computeStatistics;
+    private SQLPartitionRef partition;
+    private boolean forColums;
+    private List<SQLName> columns = new ArrayList<>();
+    private boolean cacheMetadata;
+    private boolean noscan;
+    private boolean computeStatistics;
 
-    private SQLIdentifierExpr   adbSchema; // for ADB
+    private SQLIdentifierExpr adbSchema; // for ADB
     private List<SQLIdentifierExpr> adbColumns = new ArrayList<SQLIdentifierExpr>(); // for ADB
     private List<SQLIdentifierExpr> adbColumnsGroup = new ArrayList<SQLIdentifierExpr>(); // for ADB
     private SQLExpr adbWhere; // for ADB
 
     public SQLAnalyzeTableStatement() {
-
     }
 
     @Override

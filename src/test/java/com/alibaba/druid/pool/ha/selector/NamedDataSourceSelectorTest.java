@@ -47,7 +47,7 @@ public class NamedDataSourceSelectorTest {
         dataSourceMap.remove("foo");
         NamedDataSourceSelector selector = new NamedDataSourceSelector(dataSource);
         for (int i = 0; i < 50; i++) {
-            assertEquals("bar", ((MockDataSource)selector.get()).getName());
+            assertEquals("bar", ((MockDataSource) selector.get()).getName());
         }
     }
 
@@ -57,9 +57,9 @@ public class NamedDataSourceSelectorTest {
 
         assertNull(selector.get());
         selector.setTarget("foo");
-        assertEquals("foo", ((MockDataSource)selector.get()).getName());
+        assertEquals("foo", ((MockDataSource) selector.get()).getName());
         selector.resetDataSourceName();
         selector.setDefaultName("bar");
-        assertEquals("bar", ((MockDataSource)selector.get()).getName());
+        assertEquals("bar", ((MockDataSource) selector.get()).getName());
     }
 }

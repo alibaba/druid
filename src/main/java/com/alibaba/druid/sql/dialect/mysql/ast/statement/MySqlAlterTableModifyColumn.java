@@ -22,13 +22,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlAlterTableModifyColumn extends MySqlObjectImpl implements SQLAlterTableItem {
-
     private SQLColumnDefinition newColumnDefinition;
 
-    private boolean             first;
+    private boolean first;
 
-    private SQLName             firstColumn;
-    private SQLName             afterColumn;
+    private SQLName firstColumn;
+    private SQLName afterColumn;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {

@@ -24,16 +24,15 @@ import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.stat.TableStat;
 
 public class MySQLCreateMaterializedViewTest4 extends MysqlTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE MATERIALIZED VIEW mymv (\n" +
-                "  PRIMARY KEY(id)\n" +
-                ")\n" +
-                "DISTRIBUTED BY HASH (id)\n" +
-                "REFRESH COMPLETE ON DEMAND\n" +
-                "ENABLE QUERY REWRITE\n" +
-                "AS SELECT id FROM base;";
+                "CREATE MATERIALIZED VIEW mymv (\n" +
+                        "  PRIMARY KEY(id)\n" +
+                        ")\n" +
+                        "DISTRIBUTED BY HASH (id)\n" +
+                        "REFRESH COMPLETE ON DEMAND\n" +
+                        "ENABLE QUERY REWRITE\n" +
+                        "AS SELECT id FROM base;";
 
         SQLStatement stmt = SQLUtils.parseSingleMysqlStatement(sql);
 

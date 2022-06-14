@@ -29,7 +29,6 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import junit.framework.TestCase;
 
 public class SELECT_Syntax_Test extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT year, SUM(profit) FROM sales GROUP BY year WITH ROLLUP;";
 
@@ -52,7 +51,7 @@ public class SELECT_Syntax_Test extends TestCase {
 
         Assert.assertEquals("SELECT *\nFROM T\nFOR UPDATE;", text);
     }
-    
+
     public void test_with_cube() throws Exception {
         String sql = "SELECT year, SUM(profit) FROM sales GROUP BY year WITH CUBE;";
 
@@ -85,7 +84,7 @@ public class SELECT_Syntax_Test extends TestCase {
         String text = output(stmtList);
 
         Assert.assertEquals("SELECT a, b, a + b\nINTO OUTFILE '/tmp/result.txt' COLUMNS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n'\nFROM test_table;",
-                            text);
+                text);
     }
 
     public void test_4() throws Exception {
@@ -151,13 +150,13 @@ public class SELECT_Syntax_Test extends TestCase {
         String text = output(stmtList);
 
         Assert.assertEquals("SELECT DISTINCT store_type" //
-                + "\nFROM stores" //
-                + "\nWHERE NOT EXISTS (" //
-                + "\n\tSELECT *"
-                + "\n\tFROM cities_stores"
-                + "\n\tWHERE cities_stores.store_type = stores.store_type"
-                + "\n);",
-                            text);
+                        + "\nFROM stores" //
+                        + "\nWHERE NOT EXISTS (" //
+                        + "\n\tSELECT *"
+                        + "\n\tFROM cities_stores"
+                        + "\n\tWHERE cities_stores.store_type = stores.store_type"
+                        + "\n);",
+                text);
     }
 
     public void test_9() throws Exception {
@@ -228,7 +227,7 @@ public class SELECT_Syntax_Test extends TestCase {
                 "\tfrom t2\n" +
                 ");", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-    
+
     public void test_13() throws Exception {
         String sql = "SELECT s1 FROM t1 WHERE s1 IN (SELECT s1 FROM t2);";
 
@@ -249,7 +248,7 @@ public class SELECT_Syntax_Test extends TestCase {
                 "\tfrom t2\n" +
                 ");", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-    
+
     public void test_14() throws Exception {
         String sql = "SELECT s1 FROM t1 WHERE s1 IN (?, ?, ?);";
 
@@ -260,7 +259,7 @@ public class SELECT_Syntax_Test extends TestCase {
         Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 IN (?, ?, ?);", SQLUtils.toMySqlString(stmt));
         Assert.assertEquals("select s1\nfrom t1\nwhere s1 in (?, ?, ?);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-    
+
     public void test_15() throws Exception {
         String sql = "SELECT s1 FROM t1 WHERE s1 NOT IN (?, ?, ?);";
 

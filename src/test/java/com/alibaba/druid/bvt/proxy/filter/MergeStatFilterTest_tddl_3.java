@@ -30,7 +30,6 @@ import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class MergeStatFilterTest_tddl_3 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -41,7 +40,7 @@ public class MergeStatFilterTest_tddl_3 extends TestCase {
                 System.out.println(text);
             }
         }
-        
+
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
         dataSource = new DruidDataSource();
@@ -60,7 +59,7 @@ public class MergeStatFilterTest_tddl_3 extends TestCase {
     public void test_merge() throws Exception {
         for (int i = 1000; i < 2000; ++i) {
             String tableName = "t_" + i;
-            
+
             Connection conn = dataSource.getConnection();
 
             String sql = "update " + tableName + " SET a = ? WHERE b = ?";

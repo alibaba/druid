@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class OdpsCreateTableTest4 extends TestCase {
-
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "CREATE TABLE T1 (a string, b string, c bigint) CLUSTERED BY (c) SORTED by (c) INTO 1024 BUCKETS;";//
@@ -45,28 +44,27 @@ public class OdpsCreateTableTest4 extends TestCase {
                 "clustered by (c)\n" +
                 "sorted by (c)\n" +
                 "into 1024 buckets;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
         assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
 //        System.out.println("Tables : " + visitor.getTables());
-      System.out.println("fields : " + visitor.getColumns());
+        System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(1, visitor.getTables().size());
         assertEquals(3, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));
-        
+
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 
 }

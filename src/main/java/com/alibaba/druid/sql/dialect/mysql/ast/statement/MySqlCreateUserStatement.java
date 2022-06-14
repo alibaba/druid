@@ -25,10 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlCreateUserStatement extends MySqlStatementImpl implements SQLCreateStatement {
-
     private List<UserSpecification> users = new ArrayList<UserSpecification>(2);
 
-    private boolean ifNotExists = false;
+    private boolean ifNotExists;
 
     public List<UserSpecification> getUsers() {
         return users;
@@ -58,9 +57,8 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl implements SQLC
     }
 
     public static class UserSpecification extends MySqlObjectImpl {
-
         private SQLExpr user;
-        private boolean passwordHash = false;
+        private boolean passwordHash;
         private SQLExpr password;
         private SQLExpr authPlugin;
         private boolean pluginAs;
@@ -114,7 +112,6 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl implements SQLC
             }
             visitor.endVisit(this);
         }
-
 
     }
 }

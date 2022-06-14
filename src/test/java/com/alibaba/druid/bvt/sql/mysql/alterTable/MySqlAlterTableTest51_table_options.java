@@ -8,7 +8,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest51_table_options extends TestCase {
-
     public void test_0_options_no_comma_no_eq() {
         String sql = "alter table test001\n" +
                 "auto_increment 1\n" +

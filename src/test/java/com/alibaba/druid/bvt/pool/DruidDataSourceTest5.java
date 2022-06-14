@@ -12,21 +12,19 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 
 public class DruidDataSourceTest5 extends TestCase {
-
-    private DruidDataSource     dataSource;
+    private DruidDataSource dataSource;
 
     private final AtomicBoolean validate = new AtomicBoolean(true);
 
     protected void setUp() throws Exception {
         validate.set(true);
-        
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setInitialSize(1);
 
         dataSource.setValidConnectionChecker(new ValidConnectionCheckerAdapter() {
-
             @Override
             public boolean isValidConnection(Connection c, String query, int validationQueryTimeout) {
                 return validate.get();
@@ -67,14 +65,14 @@ public class DruidDataSourceTest5 extends TestCase {
         Assert.assertNotNull(error);
 
         validate.set(true);
-        
+
         Connection conn = dataSource.getConnection();
         conn.close();
     }
-    
+
     public void testValidate_3() throws Exception {
         validate.set(false);
-        
+
         Exception error = null;
         try {
             dataSource.init();
@@ -82,9 +80,9 @@ public class DruidDataSourceTest5 extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         validate.set(true);
-        
+
         Connection conn = dataSource.getConnection();
         conn.close();
     }

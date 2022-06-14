@@ -27,7 +27,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlCreateViewTest5 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "create or replace definer = current_user sql security invoker view my_view4(c1, 1c, _, c1_2) \n" +
                 "\tas select * from  (t1 as tt1, t2 as tt2) inner join t1 on t1.col1 = tt1.col1;";

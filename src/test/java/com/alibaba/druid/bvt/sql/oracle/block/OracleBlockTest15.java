@@ -27,22 +27,21 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleBlockTest15 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
-				"   sales  NUMBER(8,2) := 10100;\n" +
-				"   quota  NUMBER(8,2) := 10000;\n" +
-				"   bonus  NUMBER(6,2);\n" +
-				"   emp_id NUMBER(6) := 120;\n" +
-				" BEGIN\n" +
-				"   IF sales > (quota + 200) THEN\n" +
-				"      bonus := (sales - quota)/4;\n" +
-				" \n" +
-				"      UPDATE employees SET salary =\n" +
-				"        salary + bonus\n" +
-				"          WHERE employee_id = emp_id;\n" +
-				"   END IF;\n" +
-				" END;"; //
+                "   sales  NUMBER(8,2) := 10100;\n" +
+                "   quota  NUMBER(8,2) := 10000;\n" +
+                "   bonus  NUMBER(6,2);\n" +
+                "   emp_id NUMBER(6) := 120;\n" +
+                " BEGIN\n" +
+                "   IF sales > (quota + 200) THEN\n" +
+                "      bonus := (sales - quota)/4;\n" +
+                " \n" +
+                "      UPDATE employees SET salary =\n" +
+                "        salary + bonus\n" +
+                "          WHERE employee_id = emp_id;\n" +
+                "   END IF;\n" +
+                " END;"; //
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());

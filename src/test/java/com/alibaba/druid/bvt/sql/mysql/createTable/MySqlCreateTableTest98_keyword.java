@@ -10,7 +10,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlCreateTableTest98_keyword extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = " CREATE TABLE IF NOT EXISTS meta.view (\n" +
                 "                cluster_name varchar(16) ,\n" +
@@ -21,7 +20,7 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 "                )";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(5, stmt.getTableElementList().size());
@@ -46,7 +45,7 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 "                )";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(5, stmt.getTableElementList().size());
@@ -71,7 +70,7 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 "                )";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(5, stmt.getTableElementList().size());
@@ -101,7 +100,7 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 + ")";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(10, stmt.getTableElementList().size());
@@ -131,7 +130,7 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 ") ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Database privileges'";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(5, stmt.getTableElementList().size());

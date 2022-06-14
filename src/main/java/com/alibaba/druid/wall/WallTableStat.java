@@ -15,125 +15,123 @@
  */
 package com.alibaba.druid.wall;
 
-import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+import com.alibaba.druid.support.json.JSONUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
-import com.alibaba.druid.support.json.JSONUtils;
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
 
 public class WallTableStat {
+    private volatile long selectCount;
+    private volatile long selectIntoCount;
+    private volatile long insertCount;
+    private volatile long updateCount;
+    private volatile long deleteCount;
+    private volatile long truncateCount;
+    private volatile long createCount;
+    private volatile long alterCount;
+    private volatile long dropCount;
+    private volatile long replaceCount;
+    private volatile long deleteDataCount;
+    private volatile long updateDataCount;
+    private volatile long insertDataCount;
+    private volatile long fetchRowCount;
 
-    private volatile long                                 selectCount;
-    private volatile long                                 selectIntoCount;
-    private volatile long                                 insertCount;
-    private volatile long                                 updateCount;
-    private volatile long                                 deleteCount;
-    private volatile long                                 truncateCount;
-    private volatile long                                 createCount;
-    private volatile long                                 alterCount;
-    private volatile long                                 dropCount;
-    private volatile long                                 replaceCount;
-    private volatile long                                 deleteDataCount;
-    private volatile long                                 updateDataCount;
-    private volatile long                                 insertDataCount;
-    private volatile long                                 fetchRowCount;
+    static final AtomicLongFieldUpdater<WallTableStat> selectCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "selectCount");
+    static final AtomicLongFieldUpdater<WallTableStat> selectIntoCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "selectIntoCount");
+    static final AtomicLongFieldUpdater<WallTableStat> insertCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "insertCount");
+    static final AtomicLongFieldUpdater<WallTableStat> updateCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "updateCount");
+    static final AtomicLongFieldUpdater<WallTableStat> deleteCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "deleteCount");
+    static final AtomicLongFieldUpdater<WallTableStat> truncateCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "truncateCount");
+    static final AtomicLongFieldUpdater<WallTableStat> createCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "createCount");
+    static final AtomicLongFieldUpdater<WallTableStat> alterCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "alterCount");
+    static final AtomicLongFieldUpdater<WallTableStat> dropCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "dropCount");
+    static final AtomicLongFieldUpdater<WallTableStat> replaceCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "replaceCount");
 
-    final static AtomicLongFieldUpdater<WallTableStat>    selectCountUpdater                 = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "selectCount");
-    final static AtomicLongFieldUpdater<WallTableStat>    selectIntoCountUpdater             = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "selectIntoCount");
-    final static AtomicLongFieldUpdater<WallTableStat>    insertCountUpdater                 = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "insertCount");
-    final static AtomicLongFieldUpdater<WallTableStat>    updateCountUpdater                 = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "updateCount");
-    final static AtomicLongFieldUpdater<WallTableStat>    deleteCountUpdater                 = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "deleteCount");
-    final static AtomicLongFieldUpdater<WallTableStat>    truncateCountUpdater               = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "truncateCount");
-    final static AtomicLongFieldUpdater<WallTableStat>    createCountUpdater                 = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "createCount");
-    final static AtomicLongFieldUpdater<WallTableStat>    alterCountUpdater                  = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "alterCount");
-    final static AtomicLongFieldUpdater<WallTableStat>    dropCountUpdater                   = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "dropCount");
-    final static AtomicLongFieldUpdater<WallTableStat>    replaceCountUpdater                = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "replaceCount");
+    static final AtomicLongFieldUpdater<WallTableStat> deleteDataCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "deleteDataCount");
+    static final AtomicLongFieldUpdater<WallTableStat> insertDataCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "insertDataCount");
+    static final AtomicLongFieldUpdater<WallTableStat> updateDataCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "updateDataCount");
 
-    final static AtomicLongFieldUpdater<WallTableStat>    deleteDataCountUpdater             = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "deleteDataCount");
-    final static AtomicLongFieldUpdater<WallTableStat>    insertDataCountUpdater             = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "insertDataCount");
-    final static AtomicLongFieldUpdater<WallTableStat>    updateDataCountUpdater             = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "updateDataCount");
+    static final AtomicLongFieldUpdater<WallTableStat> fetchRowCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "fetchRowCount");
 
-    final static AtomicLongFieldUpdater<WallTableStat>    fetchRowCountUpdater               = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "fetchRowCount");
+    private volatile long fetchRowCount_0_1;
+    private volatile long fetchRowCount_1_10;
+    private volatile long fetchRowCount_10_100;
+    private volatile int fetchRowCount_100_1000;
+    private volatile int fetchRowCount_1000_10000;
+    private volatile int fetchRowCount_10000_more;
 
-    private volatile long                                 fetchRowCount_0_1;
-    private volatile long                                 fetchRowCount_1_10;
-    private volatile long                                 fetchRowCount_10_100;
-    private volatile int                                  fetchRowCount_100_1000;
-    private volatile int                                  fetchRowCount_1000_10000;
-    private volatile int                                  fetchRowCount_10000_more;
+    static final AtomicLongFieldUpdater<WallTableStat> fetchRowCount_0_1_Updater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "fetchRowCount_0_1");
+    static final AtomicLongFieldUpdater<WallTableStat> fetchRowCount_1_10_Updater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "fetchRowCount_1_10");
+    static final AtomicLongFieldUpdater<WallTableStat> fetchRowCount_10_100_Updater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "fetchRowCount_10_100");
+    static final AtomicIntegerFieldUpdater<WallTableStat> fetchRowCount_100_1000_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
+            "fetchRowCount_100_1000");
+    static final AtomicIntegerFieldUpdater<WallTableStat> fetchRowCount_1000_10000_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
+            "fetchRowCount_1000_10000");
+    static final AtomicIntegerFieldUpdater<WallTableStat> fetchRowCount_10000_more_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
+            "fetchRowCount_10000_more");
 
-    final static AtomicLongFieldUpdater<WallTableStat>    fetchRowCount_0_1_Updater          = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "fetchRowCount_0_1");
-    final static AtomicLongFieldUpdater<WallTableStat>    fetchRowCount_1_10_Updater         = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "fetchRowCount_1_10");
-    final static AtomicLongFieldUpdater<WallTableStat>    fetchRowCount_10_100_Updater       = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "fetchRowCount_10_100");
-    final static AtomicIntegerFieldUpdater<WallTableStat> fetchRowCount_100_1000_Updater     = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                    "fetchRowCount_100_1000");
-    final static AtomicIntegerFieldUpdater<WallTableStat> fetchRowCount_1000_10000_Updater   = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                    "fetchRowCount_1000_10000");
-    final static AtomicIntegerFieldUpdater<WallTableStat> fetchRowCount_10000_more_Updater   = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                    "fetchRowCount_10000_more");
+    private volatile long updateDataCount_0_1;
+    private volatile long updateDataCount_1_10;
+    private volatile long updateDataCount_10_100;
+    private volatile int updateDataCount_100_1000;
+    private volatile int updateDataCount_1000_10000;
+    private volatile int updateDataCount_10000_more;
 
-    private volatile long                                 updateDataCount_0_1;
-    private volatile long                                 updateDataCount_1_10;
-    private volatile long                                 updateDataCount_10_100;
-    private volatile int                                  updateDataCount_100_1000;
-    private volatile int                                  updateDataCount_1000_10000;
-    private volatile int                                  updateDataCount_10000_more;
+    static final AtomicLongFieldUpdater<WallTableStat> updateDataCount_0_1_Updater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "updateDataCount_0_1");
+    static final AtomicLongFieldUpdater<WallTableStat> updateDataCount_1_10_Updater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "updateDataCount_1_10");
+    static final AtomicLongFieldUpdater<WallTableStat> updateDataCount_10_100_Updater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "updateDataCount_10_100");
+    static final AtomicIntegerFieldUpdater<WallTableStat> updateDataCount_100_1000_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
+            "updateDataCount_100_1000");
+    static final AtomicIntegerFieldUpdater<WallTableStat> updateDataCount_1000_10000_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
+            "updateDataCount_1000_10000");
+    static final AtomicIntegerFieldUpdater<WallTableStat> updateDataCount_10000_more_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
+            "updateDataCount_10000_more");
 
-    final static AtomicLongFieldUpdater<WallTableStat>    updateDataCount_0_1_Updater        = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "updateDataCount_0_1");
-    final static AtomicLongFieldUpdater<WallTableStat>    updateDataCount_1_10_Updater       = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "updateDataCount_1_10");
-    final static AtomicLongFieldUpdater<WallTableStat>    updateDataCount_10_100_Updater     = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "updateDataCount_10_100");
-    final static AtomicIntegerFieldUpdater<WallTableStat> updateDataCount_100_1000_Updater   = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                    "updateDataCount_100_1000");
-    final static AtomicIntegerFieldUpdater<WallTableStat> updateDataCount_1000_10000_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                    "updateDataCount_1000_10000");
-    final static AtomicIntegerFieldUpdater<WallTableStat> updateDataCount_10000_more_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                    "updateDataCount_10000_more");
+    private volatile long deleteDataCount_0_1;
+    private volatile long deleteDataCount_1_10;
+    private volatile long deleteDataCount_10_100;
+    private volatile int deleteDataCount_100_1000;
+    private volatile int deleteDataCount_1000_10000;
+    private volatile int deleteDataCount_10000_more;
 
-    private volatile long                                 deleteDataCount_0_1;
-    private volatile long                                 deleteDataCount_1_10;
-    private volatile long                                 deleteDataCount_10_100;
-    private volatile int                                  deleteDataCount_100_1000;
-    private volatile int                                  deleteDataCount_1000_10000;
-    private volatile int                                  deleteDataCount_10000_more;
+    static final AtomicLongFieldUpdater<WallTableStat> deleteDataCount_0_1_Updater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "deleteDataCount_0_1");
+    static final AtomicLongFieldUpdater<WallTableStat> deleteDataCount_1_10_Updater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "deleteDataCount_1_10");
+    static final AtomicLongFieldUpdater<WallTableStat> deleteDataCount_10_100_Updater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+            "deleteDataCount_10_100");
+    static final AtomicIntegerFieldUpdater<WallTableStat> deleteDataCount_100_1000_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
+            "deleteDataCount_100_1000");
+    static final AtomicIntegerFieldUpdater<WallTableStat> deleteDataCount_1000_10000_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
+            "deleteDataCount_1000_10000");
+    static final AtomicIntegerFieldUpdater<WallTableStat> deleteDataCount_10000_more_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
+            "deleteDataCount_10000_more");
 
-    final static AtomicLongFieldUpdater<WallTableStat>    deleteDataCount_0_1_Updater        = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "deleteDataCount_0_1");
-    final static AtomicLongFieldUpdater<WallTableStat>    deleteDataCount_1_10_Updater       = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "deleteDataCount_1_10");
-    final static AtomicLongFieldUpdater<WallTableStat>    deleteDataCount_10_100_Updater     = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                 "deleteDataCount_10_100");
-    final static AtomicIntegerFieldUpdater<WallTableStat> deleteDataCount_100_1000_Updater   = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                    "deleteDataCount_100_1000");
-    final static AtomicIntegerFieldUpdater<WallTableStat> deleteDataCount_1000_10000_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                    "deleteDataCount_1000_10000");
-    final static AtomicIntegerFieldUpdater<WallTableStat> deleteDataCount_10000_more_Updater = AtomicIntegerFieldUpdater.newUpdater(WallTableStat.class,
-                                                                                                                                    "deleteDataCount_10000_more");
-
-    public WallTableStat(){
-
+    public WallTableStat() {
     }
 
     public long getSelectCount() {
@@ -181,7 +179,7 @@ public class WallTableStat {
     }
 
     public long[] getDeleteDataCountHistogramValues() {
-        return new long[] {
+        return new long[]{
                 //
                 deleteDataCount_0_1, //
                 deleteDataCount_1_10, //
@@ -194,7 +192,7 @@ public class WallTableStat {
 
     public void addDeleteDataCount(long delta) {
         deleteDataCountUpdater.addAndGet(this, delta);
-        
+
         if (delta < 1) {
             deleteDataCount_0_1_Updater.incrementAndGet(this);
         } else if (delta < 10) {
@@ -215,7 +213,7 @@ public class WallTableStat {
     }
 
     public long[] getUpdateDataCountHistogramValues() {
-        return new long[] {
+        return new long[]{
                 //
                 updateDataCount_0_1, //
                 updateDataCount_1_10, //
@@ -257,7 +255,7 @@ public class WallTableStat {
     }
 
     public long[] getFetchRowCountHistogramValues() {
-        return new long[] {
+        return new long[]{
                 //
                 fetchRowCount_0_1, //
                 fetchRowCount_1_10, //
@@ -350,7 +348,6 @@ public class WallTableStat {
     }
 
     public String toString() {
-
         Map<String, Object> map = toMap();
 
         return JSONUtils.toJSONString(map);

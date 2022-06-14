@@ -23,17 +23,16 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest14 extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "SELECT index_privacy AS index,info_privacy AS ?,msgboard_privacy AS messageboard,photos_privacy AS photos," + //
-                "diary_privacy AS diary,owrite_privacy AS weibo " + //
-                "FROM pw_ouserdata WHERE uid= ?")); //
+                "SELECT index_privacy AS index,info_privacy AS ?,msgboard_privacy AS messageboard,photos_privacy AS photos," + //
+                        "diary_privacy AS diary,owrite_privacy AS weibo " + //
+                        "FROM pw_ouserdata WHERE uid= ?")); //
     }
 }

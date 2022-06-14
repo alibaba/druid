@@ -17,7 +17,6 @@ import java.sql.SQLException;
  * @author yinheli
  */
 public class KylinDriverSupportTest {
-
     // test config
     private static final String URL = "jdbc:kylin://172.168.1.111:7070/jlkBigData";
     private static final String USER_NAME = "ADMIN";

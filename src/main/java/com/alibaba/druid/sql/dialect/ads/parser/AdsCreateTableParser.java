@@ -1,14 +1,11 @@
 package com.alibaba.druid.sql.dialect.ads.parser;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 public class AdsCreateTableParser extends SQLCreateTableParser {
@@ -66,14 +63,14 @@ public class AdsCreateTableParser extends SQLCreateTableParser {
                     constraint.setParent(stmt);
                     stmt.getTableElementList().add((SQLTableElement) constraint);
                 } else if (token == Token.TABLESPACE) {
-                    throw new ParserException("TODO "  + lexer.info());
+                    throw new ParserException("TODO " + lexer.info());
                 } else if (lexer.token() == Token.INDEX) { //skip index
                     lexer.nextToken();
                     accept(Token.IDENTIFIER);
                     accept(Token.IDENTIFIER);
                     accept(Token.LPAREN);
                     accept(Token.IDENTIFIER);
-                    for(;;) {
+                    for (; ; ) {
                         if (lexer.token() == Token.COMMA) {
                             accept(Token.IDENTIFIER);
                             continue;
@@ -81,8 +78,7 @@ public class AdsCreateTableParser extends SQLCreateTableParser {
                         break;
                     }
                     accept(Token.RPAREN);
-                }
-                else {
+                } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     stmt.getTableElementList().add(column);
                 }
@@ -102,7 +98,6 @@ public class AdsCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
 
         }
-
 
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
@@ -196,7 +191,6 @@ public class AdsCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
             accept(Token.LITERAL_CHARS);
         }
-
 
         return stmt;
     }

@@ -17,16 +17,11 @@ package com.alibaba.druid.pool.ha;
 
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Utilities for Properties.
@@ -34,7 +29,7 @@ import java.util.Set;
  * @author DigitalSonic
  */
 public class PropertiesUtils {
-    private final static Log LOG = LogFactory.getLog(PropertiesUtils.class);
+    private static final Log LOG = LogFactory.getLog(PropertiesUtils.class);
 
     /**
      * Load properties from the given file into Properties.
@@ -49,7 +44,7 @@ public class PropertiesUtils {
         try {
             LOG.debug("Trying to load " + file + " from FileSystem.");
             is = new FileInputStream(file);
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             LOG.debug("Trying to load " + file + " from Classpath.");
             try {
                 is = PropertiesUtils.class.getResourceAsStream(file);
@@ -60,7 +55,7 @@ public class PropertiesUtils {
         if (is != null) {
             try {
                 properties.load(is);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 LOG.error("Exception occurred while loading " + file, e);
             } finally {
                 if (is != null) {

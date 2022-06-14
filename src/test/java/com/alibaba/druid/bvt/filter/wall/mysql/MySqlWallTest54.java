@@ -24,29 +24,28 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest54 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(false);
 
         Assert.assertTrue(provider.checkValid(//
-        "SELECT *FROM T UNION select `ENGINE`, `SUPPORT` from information_schema.Engines"));
+                "SELECT *FROM T UNION select `ENGINE`, `SUPPORT` from information_schema.Engines"));
 
         Assert.assertEquals(2, provider.getTableStats().size());
     }
-    
+
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         Assert.assertFalse(provider.checkValid(//
                 "SELECT *FROM T UNION select `ENGINE`, `SUPPORT` from information_schema.Engines"));
-        
+
         Assert.assertEquals(2, provider.getTableStats().size());
     }
 }

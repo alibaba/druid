@@ -24,15 +24,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OracleRangeExpr extends OracleSQLObjectImpl implements SQLExpr {
-
     private SQLExpr lowBound;
     private SQLExpr upBound;
 
-    public OracleRangeExpr(){
-
+    public OracleRangeExpr() {
     }
 
-    public OracleRangeExpr(SQLExpr lowBound, SQLExpr upBound){
+    public OracleRangeExpr(SQLExpr lowBound, SQLExpr upBound) {
         setLowBound(lowBound);
         setUpBound(upBound);
     }
@@ -71,7 +69,6 @@ public class OracleRangeExpr extends OracleSQLObjectImpl implements SQLExpr {
         }
         this.upBound = upBound;
     }
-
 
     public OracleRangeExpr clone() {
         OracleRangeExpr x = new OracleRangeExpr();

@@ -26,18 +26,17 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleBlockTest10 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE" + //
-                     "  CURSOR c1 IS" + //
-                     "    SELECT last_name, department_name" + //
-                     "    FROM employees, departments" + //
-                     "    WHERE employees.department_id = departments.department_id " + //
-                     "    AND job_id = 'SA_MAN'" + //
-                     "    FOR UPDATE OF salary;" + //
-                     "BEGIN" + //
-                     "  NULL;" + //
-                     "END;"; //
+                "  CURSOR c1 IS" + //
+                "    SELECT last_name, department_name" + //
+                "    FROM employees, departments" + //
+                "    WHERE employees.department_id = departments.department_id " + //
+                "    AND job_id = 'SA_MAN'" + //
+                "    FOR UPDATE OF salary;" + //
+                "BEGIN" + //
+                "  NULL;" + //
+                "END;"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

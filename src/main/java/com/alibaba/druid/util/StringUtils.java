@@ -15,17 +15,16 @@
  */
 package com.alibaba.druid.util;
 
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * @author sandzhang[sandzhangtoo@gmail.com]
  */
 public class StringUtils {
-
     private static final Log LOG = LogFactory.getLog(StringUtils.class);
 
     private StringUtils() {
@@ -33,7 +32,7 @@ public class StringUtils {
 
     /**
      * Example: subString("12345","1","4")=23
-     * 
+     *
      * @param src
      * @param start
      * @param to
@@ -45,10 +44,10 @@ public class StringUtils {
 
     /**
      * Example: subString("abcd","a","c")="b"
-     * 
+     *
      * @param src
      * @param start null while start from index=0
-     * @param to null while to index=src.length
+     * @param to    null while to index=src.length
      * @return
      */
     public static String subString(String src, String start, String to) {
@@ -57,10 +56,10 @@ public class StringUtils {
 
     /**
      * Example: subString("abcdc","a","c",true)="bcd"
-     * 
+     *
      * @param src
-     * @param start null while start from index=0
-     * @param to null while to index=src.length
+     * @param start  null while start from index=0
+     * @param to     null while to index=src.length
      * @param toLast true while to index=src.lastIndexOf(to)
      * @return
      */
@@ -95,7 +94,7 @@ public class StringUtils {
         if (in.length() == 0) {
             return null;
         }
-        
+
         try {
             return Integer.parseInt(in);
         } catch (NumberFormatException e) {
@@ -110,7 +109,7 @@ public class StringUtils {
         }
         return a.equals(b);
     }
-    
+
     public static boolean equalsIgnoreCase(String a, String b) {
         if (a == null) {
             return b == null;
@@ -121,7 +120,7 @@ public class StringUtils {
     public static boolean isEmpty(CharSequence value) {
         return value == null || value.length() == 0;
     }
-    
+
     public static int lowerHashCode(String text) {
         if (text == null) {
             return 0;
@@ -354,25 +353,25 @@ public class StringUtils {
         int second = cale.get(Calendar.SECOND);
 
         char[] chars = new char[19];
-        chars[0] = (char) (year/1000 + '0');
-        chars[1] = (char) ((year/100)%10 + '0');
-        chars[2] = (char) ((year/10)%10 + '0');
-        chars[3] = (char) (year%10 + '0');
+        chars[0] = (char) (year / 1000 + '0');
+        chars[1] = (char) ((year / 100) % 10 + '0');
+        chars[2] = (char) ((year / 10) % 10 + '0');
+        chars[3] = (char) (year % 10 + '0');
         chars[4] = '-';
-        chars[5] = (char) (month/10 + '0');
-        chars[6] = (char) (month%10 + '0');
+        chars[5] = (char) (month / 10 + '0');
+        chars[6] = (char) (month % 10 + '0');
         chars[7] = '-';
-        chars[8] = (char) (dayOfMonth/10 + '0');
-        chars[9] = (char) (dayOfMonth%10 + '0');
+        chars[8] = (char) (dayOfMonth / 10 + '0');
+        chars[9] = (char) (dayOfMonth % 10 + '0');
         chars[10] = ' ';
-        chars[11] = (char) (hour/10 + '0');
-        chars[12] = (char) (hour%10 + '0');
+        chars[11] = (char) (hour / 10 + '0');
+        chars[12] = (char) (hour % 10 + '0');
         chars[13] = ':';
-        chars[14] = (char) (minute/10 + '0');
-        chars[15] = (char) (minute%10 + '0');
+        chars[14] = (char) (minute / 10 + '0');
+        chars[15] = (char) (minute % 10 + '0');
         chars[16] = ':';
-        chars[17] = (char) (second/10 + '0');
-        chars[18] = (char) (second%10 + '0');
+        chars[17] = (char) (second / 10 + '0');
+        chars[18] = (char) (second % 10 + '0');
         return new String(chars);
     }
 
@@ -384,7 +383,7 @@ public class StringUtils {
         char c0 = s.charAt(0);
         char last = s.charAt(len - 1);
 
-        if (c0 == last && (c0 == '`' || c0 == '\'' || c0 == '\"') ) {
+        if (c0 == last && (c0 == '`' || c0 == '\'' || c0 == '\"')) {
             return s.substring(1, len - 1);
         }
         return s;

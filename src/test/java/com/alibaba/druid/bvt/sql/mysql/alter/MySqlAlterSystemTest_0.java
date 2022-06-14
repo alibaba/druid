@@ -22,13 +22,12 @@ import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
 
 public class MySqlAlterSystemTest_0 extends TestCase {
-
     public void test_alter1() throws Exception {
         String sql = "ALTER SYSTEM SET CONFIG useAuth=true";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         assertEquals("ALTER SYSTEM SET COFNIG useAuth = true", SQLUtils.toMySqlString(stmt));
     }
 

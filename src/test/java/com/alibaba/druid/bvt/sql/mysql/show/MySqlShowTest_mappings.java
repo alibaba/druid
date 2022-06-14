@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.show;
 
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -30,7 +29,6 @@ import java.util.List;
 
 public class MySqlShowTest_mappings
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "show databases where type = 'mapping' and user_name = 'user001'";
 

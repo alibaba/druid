@@ -27,9 +27,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_81_hints extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "select * from t /*! where col = somefunc(col2) order by sortcol */;";
+        String sql = "select * from t /*! where col = somefunc(col2) order by sortcol */;";
 
         System.out.println(sql);
 
@@ -45,13 +44,13 @@ public class MySqlSelectTest_81_hints extends MysqlTest {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT *\n" +
                             "FROM t/*! where col = somefunc(col2) order by sortcol */;", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select *\n" +
                             "from t/*! where col = somefunc(col2) order by sortcol */;", //
-                                output);
+                    output);
         }
 
         {

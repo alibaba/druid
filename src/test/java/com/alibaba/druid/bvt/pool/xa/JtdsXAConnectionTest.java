@@ -12,7 +12,6 @@ import com.alibaba.druid.pool.xa.JtdsXAConnection;
 import com.alibaba.druid.pool.xa.JtdsXAResource;
 
 public class JtdsXAConnectionTest extends PoolTestCase {
-
     public void test_jtds() throws Exception {
         Constructor<JtdsConnection> constrcutor = JtdsConnection.class.getDeclaredConstructor();
         constrcutor.setAccessible(true);

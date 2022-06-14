@@ -15,60 +15,45 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
+import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.stat.JdbcSqlStat;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.SQLXML;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.druid.filter.FilterChainImpl;
-import com.alibaba.druid.stat.JdbcSqlStat;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetProxy {
+    private final ResultSet resultSet;
+    private final StatementProxy statement;
+    private final String sql;
 
-    private final ResultSet       resultSet;
-    private final StatementProxy  statement;
-    private final String          sql;
+    protected int cursorIndex;
+    protected int fetchRowCount;
+    protected long constructNano;
+    protected final JdbcSqlStat sqlStat;
+    private int closeCount;
 
-    protected int                 cursorIndex          = 0;
-    protected int                 fetchRowCount        = 0;
-    protected long                constructNano;
-    protected final JdbcSqlStat   sqlStat;
-    private int                   closeCount           = 0;
+    private long readStringLength;
+    private long readBytesLength;
 
-    private long                  readStringLength     = 0;
-    private long                  readBytesLength      = 0;
+    private int openInputStreamCount;
+    private int openReaderCount;
 
-    private int                   openInputStreamCount = 0;
-    private int                   openReaderCount      = 0;
+    private Map<Integer, Integer> logicColumnMap;
+    private Map<Integer, Integer> physicalColumnMap;
+    private List<Integer> hiddenColumns;
 
-    private Map<Integer, Integer> logicColumnMap       = null;
-    private Map<Integer, Integer> physicalColumnMap    = null;
-    private List<Integer>         hiddenColumns        = null;
+    private FilterChainImpl filterChain;
 
-    private FilterChainImpl       filterChain          = null;
-
-    public ResultSetProxyImpl(StatementProxy statement, ResultSet resultSet, long id, String sql){
+    public ResultSetProxyImpl(StatementProxy statement, ResultSet resultSet, long id, String sql) {
         super(resultSet, id);
         this.statement = statement;
         this.resultSet = resultSet;

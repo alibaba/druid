@@ -28,7 +28,6 @@ import com.alibaba.druid.pool.ExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestDataSourceBasic2 extends PoolTestCase {
-
     public void test_0() throws Exception {
         DruidDataSourceStatManager.clear();
 
@@ -55,7 +54,7 @@ public class TestDataSourceBasic2 extends PoolTestCase {
         assertEquals(1, dataSource.getConnectProperties().size());
 
         assertEquals(0, dataSource.getConnectionInitSqls().size());
-        dataSource.setConnectionInitSqls(Arrays.<Object> asList("SELECT 1", null, ""));
+        dataSource.setConnectionInitSqls(Arrays.<Object>asList("SELECT 1", null, ""));
         assertEquals(1, dataSource.getConnectionInitSqls().size());
 
         assertEquals(500, dataSource.getTimeBetweenConnectErrorMillis());

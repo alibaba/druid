@@ -38,12 +38,10 @@ public class MockDataSource extends WrapperAdapter implements DataSource {
 
     @Override
     public void setLogWriter(PrintWriter out) throws SQLException {
-
     }
 
     @Override
     public void setLoginTimeout(int seconds) throws SQLException {
-
     }
 
     @Override

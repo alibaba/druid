@@ -25,48 +25,47 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest18 extends MysqlTest {
+    public void test_0() throws Exception {
+        String sql = "CREATE TABLE IF NOT EXISTS `t_awards` (" + //
+                "  `id` int(11) NOT NULL AUTO_INCREMENT," + //
+                "  `seller_id` int(11) NOT NULL," + //
+                "  `shop_id` int(11) DEFAULT NULL," + //
+                "  `mode` int(4) NOT NULL," + //
+                "  `draw_rate_1` int(11) NOT NULL," + //
+                "  `draw_rate_2` int(11) NOT NULL," + //
+                "  `amount` int(11) NOT NULL," + //
+                "  `position_code` int(11) NOT NULL," + //
+                "  `f_denomination` int(11) DEFAULT NULL," + //
+                "  `f_description` text," + //
+                "  `f_url` text," + //
+                "  `f_type` int(4) DEFAULT NULL," + //
+                "  PRIMARY KEY (`id`)," + //
+                "  UNIQUE KEY `id` (`id`)" + //
+                ") ENGINE=InnoDB  DEFAULT CHARSET=gbk" + //
+                ";";
 
-	public void test_0() throws Exception {
-		String sql = "CREATE TABLE IF NOT EXISTS `t_awards` (" + //
-				"  `id` int(11) NOT NULL AUTO_INCREMENT," + //
-				"  `seller_id` int(11) NOT NULL," + //
-				"  `shop_id` int(11) DEFAULT NULL," + //
-				"  `mode` int(4) NOT NULL," + //
-				"  `draw_rate_1` int(11) NOT NULL," + //
-				"  `draw_rate_2` int(11) NOT NULL," + //
-				"  `amount` int(11) NOT NULL," + //
-				"  `position_code` int(11) NOT NULL," + //
-				"  `f_denomination` int(11) DEFAULT NULL," + //
-				"  `f_description` text," + //
-				"  `f_url` text," + //
-				"  `f_type` int(4) DEFAULT NULL," + //
-				"  PRIMARY KEY (`id`)," + //
-				"  UNIQUE KEY `id` (`id`)" + //
-				") ENGINE=InnoDB  DEFAULT CHARSET=gbk" + //
-				";";
-
-		MySqlStatementParser parser = new MySqlStatementParser(sql);
-		List<SQLStatement> statementList = parser.parseStatementList();
-		SQLStatement statemen = statementList.get(0);
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
 //		print(statementList);
 
-		Assert.assertEquals(1, statementList.size());
+        Assert.assertEquals(1, statementList.size());
 
-		MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-		statemen.accept(visitor);
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        statemen.accept(visitor);
 
 //		System.out.println("Tables : " + visitor.getTables());
-		System.out.println("fields : " + visitor.getColumns());
+        System.out.println("fields : " + visitor.getColumns());
 //		System.out.println("coditions : " + visitor.getConditions());
 //		System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-		Assert.assertEquals(1, visitor.getTables().size());
-		Assert.assertEquals(12, visitor.getColumns().size());
-		Assert.assertEquals(0, visitor.getConditions().size());
+        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(12, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getConditions().size());
 
-		Assert.assertTrue(visitor.getTables().containsKey(
-				new TableStat.Name("t_awards")));
+        Assert.assertTrue(visitor.getTables().containsKey(
+                new TableStat.Name("t_awards")));
 
-		Assert.assertTrue(visitor.containsColumn("t_awards", "f_type"));
-	}
+        Assert.assertTrue(visitor.containsColumn("t_awards", "f_type"));
+    }
 }

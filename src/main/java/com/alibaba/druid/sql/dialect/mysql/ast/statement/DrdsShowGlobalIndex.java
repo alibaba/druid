@@ -10,8 +10,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
  * Date 2019/10/8 20:06
  */
 public class DrdsShowGlobalIndex extends MySqlStatementImpl implements SQLShowStatement {
-
-    private SQLName tableName = null;
+    private SQLName tableName;
 
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);

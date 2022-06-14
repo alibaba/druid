@@ -15,18 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLListResourceGroupStatement
         extends SQLStatementImpl implements SQLCreateStatement {
-
     public void accept0(SQLASTVisitor v) {
-        if (v.visit(this)) {
-        }
+        v.visit(this);
         v.endVisit(this);
     }
 }

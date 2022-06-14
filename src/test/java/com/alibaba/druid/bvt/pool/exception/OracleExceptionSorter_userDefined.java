@@ -10,7 +10,6 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 
 public class OracleExceptionSorter_userDefined extends PoolTestCase {
-
     protected void setUp() throws Exception {
         super.setUp();
 

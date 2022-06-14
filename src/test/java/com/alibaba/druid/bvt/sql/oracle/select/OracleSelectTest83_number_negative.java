@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest83_number_negative extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select -3.5,4.7 from dual"; //
@@ -36,7 +35,6 @@ public class OracleSelectTest83_number_negative extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
-
 
 
         Assert.assertEquals(1, statementList.size());

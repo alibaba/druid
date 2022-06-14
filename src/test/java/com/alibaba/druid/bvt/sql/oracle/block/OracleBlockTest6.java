@@ -25,35 +25,34 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleBlockTest6 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "declare" + //
-                     "     l_line varchar2(32767);" + //
-                     "     l_done number;" + //
-                     "     l_buffer varchar2(32767) := '';" + //
-                     "    l_lengthbuffer number := 0;" + //
-                     "    l_lengthline number := 0;  " + //
-                     "begin" + //
-                     "   loop" + //
-                     "     dbms_output.get_line( l_line, l_done );" + //
-                     "     if (l_buffer is null) then" + //
-                     "       l_lengthbuffer := 0;" + //
-                     "     else" + //
-                     "       l_lengthbuffer := length(l_buffer);" + //
-                     "     end if;" + //
-                     "     if (l_line is null) then" + //
-                     "       l_lengthline := 0;" + //
-                     "     else" + //
-                     "       l_lengthline := length(l_line);" + //
-                     "     end if;" + //
-                     "     exit when l_lengthbuffer + l_lengthline > :maxbytes " + //
-                     "          OR l_lengthbuffer + l_lengthline > 32767 OR l_done = 1;" + //
-                     "     l_buffer := l_buffer || l_line || chr(10);" + //
-                     "   end loop;" + //
-                     "  :done := l_done;" + //
-                     "  :buffer := l_buffer;" + //
-                     "  :line := l_line; " + //
-                     "end;";
+                "     l_line varchar2(32767);" + //
+                "     l_done number;" + //
+                "     l_buffer varchar2(32767) := '';" + //
+                "    l_lengthbuffer number := 0;" + //
+                "    l_lengthline number := 0;  " + //
+                "begin" + //
+                "   loop" + //
+                "     dbms_output.get_line( l_line, l_done );" + //
+                "     if (l_buffer is null) then" + //
+                "       l_lengthbuffer := 0;" + //
+                "     else" + //
+                "       l_lengthbuffer := length(l_buffer);" + //
+                "     end if;" + //
+                "     if (l_line is null) then" + //
+                "       l_lengthline := 0;" + //
+                "     else" + //
+                "       l_lengthline := length(l_line);" + //
+                "     end if;" + //
+                "     exit when l_lengthbuffer + l_lengthline > :maxbytes " + //
+                "          OR l_lengthbuffer + l_lengthline > 32767 OR l_done = 1;" + //
+                "     l_buffer := l_buffer || l_line || chr(10);" + //
+                "   end loop;" + //
+                "  :done := l_done;" + //
+                "  :buffer := l_buffer;" + //
+                "  :line := l_line; " + //
+                "end;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

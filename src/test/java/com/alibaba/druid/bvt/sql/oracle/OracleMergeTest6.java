@@ -26,15 +26,14 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleMergeTest6 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "MERGE INTO console_stb_ipstatus T1 " + //
-                     "USING (SELECT '02222601005592002863423471' AS stbid  FROM dual) T2 " + //
-                     "ON ( T1.stbid=T2.stbid) " + //
-                     "WHEN MATCHED THEN " + //
-                     "update set t1.ip='10.104.131.175',t1.port='6666',t1.status = 1, t1.time = to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss')  " + //
-                     "WHEN NOT MATCHED THEN  insert (id, stbid, ip, port, time, firsttime, status) " + //
-                     "values (CONSOLE_SEQ.nextval,'02222601005592002863423471','10.104.131.175','6666',to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss'),to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss'),1) ";
+                "USING (SELECT '02222601005592002863423471' AS stbid  FROM dual) T2 " + //
+                "ON ( T1.stbid=T2.stbid) " + //
+                "WHEN MATCHED THEN " + //
+                "update set t1.ip='10.104.131.175',t1.port='6666',t1.status = 1, t1.time = to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss')  " + //
+                "WHEN NOT MATCHED THEN  insert (id, stbid, ip, port, time, firsttime, status) " + //
+                "values (CONSOLE_SEQ.nextval,'02222601005592002863423471','10.104.131.175','6666',to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss'),to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss'),1) ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -58,13 +57,13 @@ public class OracleMergeTest6 extends OracleTest {
 
         Assert.assertEquals(7, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "stbid"));
-         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "ip"));
-         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "port"));
-         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "status"));
-         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "time"));
-         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "id"));
-         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "firsttime"));
+        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "stbid"));
+        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "ip"));
+        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "port"));
+        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "status"));
+        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "time"));
+        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "id"));
+        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "firsttime"));
     }
 
 }

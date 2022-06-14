@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest18 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE project_measures DROP (diff_value_1, diff_value_2, diff_value_3)";
+                "ALTER TABLE project_measures DROP (diff_value_1, diff_value_2, diff_value_3)";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

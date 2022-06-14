@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.MysqlTest;
 
 public class MySqlSelectTest_311_issue
         extends MysqlTest {
-
     public void test_join() throws Exception {
         String sql = "create view 054839e135a0be669145f2b90c4e8fcf5af46b as select 1";
 

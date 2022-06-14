@@ -10,8 +10,7 @@ import java.util.List;
 
 public class HiveSelectTest_4_array
         extends TestCase {
-    public void test_select() throws Exception
-    {
+    public void test_select() throws Exception {
         String sql = "select religions['catholic'][0] from json_nested_test;";//
         assertEquals("SELECT religions['catholic'][0]\n" +
                 "FROM json_nested_test;", SQLUtils.formatHive(sql));
@@ -26,9 +25,8 @@ public class HiveSelectTest_4_array
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
 
-
         System.out.println("Tables : " + visitor.getTables());
-      System.out.println("fields : " + visitor.getColumns());
+        System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
 

@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest16 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE extensions DROP COLUMN category";
+                "ALTER TABLE extensions DROP COLUMN category";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

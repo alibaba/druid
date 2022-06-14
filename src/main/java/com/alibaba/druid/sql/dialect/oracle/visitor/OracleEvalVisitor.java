@@ -26,19 +26,18 @@ import java.util.List;
 import java.util.Map;
 
 public class OracleEvalVisitor extends OracleASTVisitorAdapter implements SQLEvalVisitor {
+    private Map<String, Function> functions = new HashMap<String, Function>();
+    private List<Object> parameters = new ArrayList<Object>();
 
-    private Map<String, Function> functions        = new HashMap<String, Function>();
-    private List<Object>          parameters       = new ArrayList<Object>();
+    private int variantIndex = -1;
 
-    private int                   variantIndex     = -1;
+    private boolean markVariantIndex = true;
 
-    private boolean               markVariantIndex = true;
-
-    public OracleEvalVisitor(){
+    public OracleEvalVisitor() {
         this(new ArrayList<Object>(1));
     }
 
-    public OracleEvalVisitor(List<Object> parameters){
+    public OracleEvalVisitor(List<Object> parameters) {
         this.parameters = parameters;
     }
 
@@ -124,7 +123,7 @@ public class OracleEvalVisitor extends OracleASTVisitorAdapter implements SQLEva
     public void registerFunction(String funcName, Function function) {
         functions.put(funcName, function);
     }
-    
+
     @Override
     public void unregisterFunction(String funcName) {
         functions.remove(funcName);

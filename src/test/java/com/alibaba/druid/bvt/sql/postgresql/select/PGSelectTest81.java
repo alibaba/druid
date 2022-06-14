@@ -10,7 +10,7 @@ import java.util.List;
 public class PGSelectTest81
         extends TestCase {
     public void test_0() throws Exception {
-        String sql =  "select field from table where field like 'aa''a';";
+        String sql = "select field from table where field like 'aa''a';";
 
         final List<SQLStatement> statements = SQLUtils.parseStatements(sql, JdbcConstants.POSTGRESQL);
         assertEquals(1, statements.size());
@@ -19,8 +19,8 @@ public class PGSelectTest81
         System.out.println(stmt);
 
         assertEquals("SELECT field\n" +
-                "FROM table\n" +
-                "WHERE field LIKE 'aa''a';"
+                        "FROM table\n" +
+                        "WHERE field LIKE 'aa''a';"
                 , stmt.toString());
 
         assertEquals("select field\n" +

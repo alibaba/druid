@@ -15,13 +15,6 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
@@ -29,17 +22,23 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.OracleUtils;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class PreparedStatementPool {
+    private static final Log LOG = LogFactory.getLog(PreparedStatementPool.class);
 
-    private final static Log              LOG = LogFactory.getLog(PreparedStatementPool.class);
-
-    private final LRUCache                map;
+    private final LRUCache map;
     private final DruidAbstractDataSource dataSource;
 
-    public PreparedStatementPool(DruidConnectionHolder holder){
+    public PreparedStatementPool(DruidConnectionHolder holder) {
         this.dataSource = holder.getDataSource();
         int initCapacity = holder.getDataSource().getMaxPoolPreparedStatementPerConnectionSize();
         if (initCapacity <= 0) {
@@ -117,10 +116,10 @@ public class PreparedStatementPool {
                 PreparedStatementProxy stmtProxy = (PreparedStatementProxy) stmtHolder.statement;
                 if (stmtProxy instanceof CallableStatementProxy) {
                     message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", cstmt-" + stmtProxy.getId()
-                              + "} enter cache";
+                            + "} enter cache";
                 } else {
                     message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", pstmt-" + stmtProxy.getId()
-                              + "} enter cache";
+                            + "} enter cache";
                 }
             } else {
                 message = "stmt enter cache";
@@ -148,10 +147,10 @@ public class PreparedStatementPool {
                 PreparedStatementProxy stmtProxy = (PreparedStatementProxy) holder.statement;
                 if (stmtProxy instanceof CallableStatementProxy) {
                     message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", cstmt-" + stmtProxy.getId()
-                              + "} exit cache";
+                            + "} exit cache";
                 } else {
                     message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", pstmt-" + stmtProxy.getId()
-                              + "} exit cache";
+                            + "} exit cache";
                 }
             } else {
                 message = "stmt exit cache";
@@ -184,10 +183,9 @@ public class PreparedStatementPool {
     }
 
     public class LRUCache extends LinkedHashMap<PreparedStatementKey, PreparedStatementHolder> {
-
         private static final long serialVersionUID = 1L;
 
-        public LRUCache(int maxSize){
+        public LRUCache(int maxSize) {
             super(maxSize, 0.75f, true);
         }
 

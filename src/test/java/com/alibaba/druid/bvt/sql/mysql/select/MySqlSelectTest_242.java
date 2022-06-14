@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 
 public class MySqlSelectTest_242 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT ip.*\n" +
                 "FROM ba_customer_connect connect, ba_customer_connect_ip ip\n" +
@@ -41,7 +40,6 @@ public class MySqlSelectTest_242 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
 
 
 }

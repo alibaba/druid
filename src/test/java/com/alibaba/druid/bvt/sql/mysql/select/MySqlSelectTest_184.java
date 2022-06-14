@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class MySqlSelectTest_184 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT \"B\".\"col_new\" FROM \"wenyu_meta_test\".\"WENBO6_CONFIG_TEST\" AS \"a\", \"wenyu_meta_test\".\"WENYU_CONFIG_TEST\" AS \"b\" WHERE \"A\".\"cid\" = \"B\".\"cid\" AND \"A\".\"cname\" = \"B\".\"cname\" LIMIT 4";
 
@@ -70,7 +69,7 @@ public class MySqlSelectTest_184 extends MysqlTest {
                         "WHERE A.\"cid\" = B.\"cid\"\n" +
                         "\tAND A.\"cname\" = B.\"cname\"\n" +
                         "LIMIT 4", //
-                            output);
+                output);
     }
 
     public void test_1() throws Exception {

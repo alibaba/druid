@@ -43,7 +43,6 @@ public class MySqlParameterizedOutputVisitorTest_52_schema extends TestCase {
 
         System.out.println(psql);
 
-
         assertEquals("UPDATE buyer.xc_yy_order\n" +
                 "SET `ALIPAY_BUYER_ID` = ?, `GMT_MODIFIED` = ?\n" +
                 "WHERE `PAY_ORDER_ID` = ?", psql);

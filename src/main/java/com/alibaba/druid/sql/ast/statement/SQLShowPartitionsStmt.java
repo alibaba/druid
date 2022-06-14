@@ -18,23 +18,20 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLShowPartitionsStmt extends SQLStatementImpl implements SQLShowStatement {
-
     private SQLExprTableSource tableSource;
 
     private List<SQLAssignItem> partition = new ArrayList<SQLAssignItem>();
 
     private SQLExpr where;
-    
+
     public SQLShowPartitionsStmt() {
-        super (DbType.odps);
+        super(DbType.odps);
     }
 
     public SQLExprTableSource getTableSource() {

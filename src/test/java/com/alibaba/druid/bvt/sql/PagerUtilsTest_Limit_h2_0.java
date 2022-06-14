@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class PagerUtilsTest_Limit_h2_0 extends TestCase {
-
     public void test_db2_union() throws Exception {
         String sql = "select * from t1 union select * from t2";
         String result = PagerUtils.limit("SELECT * FROM test", JdbcUtils.H2, 0, 10);

@@ -17,21 +17,20 @@ import java.util.List;
 import java.util.Set;
 
 public class CreateTableSetSchemaDemo extends TestCase {
-
     public void test_schemaStat() throws Exception {
-String sql = "create table t(fid varchar(20))";
+        String sql = "create table t(fid varchar(20))";
 
-DbType dbType = DbType.oracle;
-SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
-List<SQLStatement> stmtList = parser.parseStatementList();
+        DbType dbType = DbType.oracle;
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
+        List<SQLStatement> stmtList = parser.parseStatementList();
 
-SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(dbType);
-for (SQLStatement stmt : stmtList) {
-    SQLCreateTableStatement createTable = ((SQLCreateTableStatement) stmt);
-    createTable.setSchema("sc001");
-}
+        SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(dbType);
+        for (SQLStatement stmt : stmtList) {
+            SQLCreateTableStatement createTable = ((SQLCreateTableStatement) stmt);
+            createTable.setSchema("sc001");
+        }
 
-String sql2 = SQLUtils.toSQLString(stmtList, DbType.oracle);
-System.out.println(sql2);
+        String sql2 = SQLUtils.toSQLString(stmtList, DbType.oracle);
+        System.out.println(sql2);
     }
 }

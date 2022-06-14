@@ -23,14 +23,13 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.TestCase;
 
 public class ConcurrentTest2 extends TestCase {
-
     private String jdbcUrl;
     private String user;
     private String password;
     private String driverClass;
-    private int    minPoolSize = 1;
-    private int    maxPoolSize = 8;
-    private int    maxActive   = 500;
+    private int minPoolSize = 1;
+    private int maxPoolSize = 8;
+    private int maxActive = 500;
 
     protected void setUp() throws Exception {
         // jdbcUrl =
@@ -67,9 +66,8 @@ public class ConcurrentTest2 extends TestCase {
 
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(THREAD_COUNT);
-        
+
         final CyclicBarrier barrier = new CyclicBarrier(5, new Runnable() {
-            
             @Override
             public void run() {
                 dataSource.shrink();
@@ -78,7 +76,6 @@ public class ConcurrentTest2 extends TestCase {
 
         for (int threadIndex = 0; threadIndex < THREAD_COUNT; ++threadIndex) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         startLatch.await();
@@ -86,7 +83,7 @@ public class ConcurrentTest2 extends TestCase {
                         for (int i = 0; i < LOOP_COUNT; ++i) {
                             Connection conn = dataSource.getConnection();
                             conn.close();
-                            
+
                             barrier.await(10, TimeUnit.SECONDS);
                         }
                     } catch (Throwable e) {

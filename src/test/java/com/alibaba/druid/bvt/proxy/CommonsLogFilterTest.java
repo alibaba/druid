@@ -31,7 +31,7 @@ public class CommonsLogFilterTest extends TestCase {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
-    
+
     public void test_logger() throws Exception {
         CommonsLogFilter filter = new CommonsLogFilter();
 
@@ -226,10 +226,9 @@ public class CommonsLogFilterTest extends TestCase {
 
     @SuppressWarnings("serial")
     public static class FakeLogger extends Log4JLogger {
-
         private boolean enable;
 
-        public FakeLogger(String name, boolean enable){
+        public FakeLogger(String name, boolean enable) {
             super(name);
             this.enable = enable;
         }

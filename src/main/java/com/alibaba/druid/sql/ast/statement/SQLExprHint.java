@@ -21,14 +21,12 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLExprHint extends SQLObjectImpl implements SQLHint {
-
     private SQLExpr expr;
 
-    public SQLExprHint(){
-
+    public SQLExprHint() {
     }
 
-    public SQLExprHint(SQLExpr expr){
+    public SQLExprHint(SQLExpr expr) {
         this.setExpr(expr);
     }
 

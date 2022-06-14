@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class OdpsSelectTest2 extends TestCase {
-
     public void test_distribute_by() throws Exception {
         String sql = "SELECT user_id,user_flag,cat1_id,wireless_client_type,alipay_num,last_buy_time,md5,my_udf_001('t_datax_odps2ots_resource_tcif_dmp_user_topup_d',md5) AS datax_pt FROM mytable_001 WHERE ds='20150819'  DISTRIBUTE BY cast (datax_pt as BIGINT) SORT BY md5,user_id,user_flag,cat1_id,wireless_client_type";//
         Assert.assertEquals("SELECT user_id, user_flag, cat1_id, wireless_client_type, alipay_num\n" +
@@ -30,6 +29,5 @@ public class OdpsSelectTest2 extends TestCase {
                 "DISTRIBUTE BY CAST(datax_pt AS BIGINT)\n" +
                 "SORT BY md5, user_id, user_flag, cat1_id, wireless_client_type", SQLUtils.formatOdps(sql));
     }
-
 
 }

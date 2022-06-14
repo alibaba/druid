@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlRevokeTest_ads_1 extends MysqlTest {
-
     public void test_doc_0() throws Exception {
         String sql = "REVOKE describe, select ON db_name.table_group_name FROM 'ALIYUN$account_name'@'%';";
 
@@ -122,7 +121,6 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
         assertEquals("show grants for 'user'@''", //
                 stmt.toLowerCaseString());
 
-
         MySqlUserName userName = new MySqlUserName();
         userName.setUserName("");
         userName.setHost("");
@@ -131,7 +129,6 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
 
         userName.toString();
     }
-
 
     public void test_show_3() throws Exception {
         String sql = "show grants for 'user'@'localhost' ";
@@ -148,6 +145,5 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
                 stmt.toLowerCaseString());
 
     }
-
 
 }

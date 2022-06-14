@@ -16,13 +16,13 @@ public class PropertyTest_testWhileIdle extends TestCase {
         dataSource = new DruidDataSource();
         Assert.assertTrue(dataSource.isTestWhileIdle());
     }
-    
+
     public void test_false() {
         System.setProperty("druid.testWhileIdle", "false");
         dataSource = new DruidDataSource();
         Assert.assertFalse(dataSource.isTestWhileIdle());
     }
-    
+
     protected void tearDown() throws Exception {
         System.clearProperty("druid.testWhileIdle");
         JdbcUtils.close(dataSource);

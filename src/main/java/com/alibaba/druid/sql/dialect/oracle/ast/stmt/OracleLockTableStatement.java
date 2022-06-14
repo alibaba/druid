@@ -26,12 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleLockTableStatement extends OracleStatementImpl implements SQLLockTableStatement {
-
     private SQLExprTableSource table;
     private LockMode lockMode;
-    private boolean  noWait = false;
-    private SQLExpr  wait;
-    private SQLExpr  partition;
+    private boolean noWait;
+    private SQLExpr wait;
+    private SQLExpr partition;
 
     public boolean isNoWait() {
         return noWait;
@@ -111,8 +110,7 @@ public class OracleLockTableStatement extends OracleStatementImpl implements SQL
         SHARE_UPDATE,
         SHARE,
         SHARE_ROW_EXCLUSIVE,
-        EXCLUSIVE,
-        ;
+        EXCLUSIVE;
 
         public String toString() {
             switch (this) {

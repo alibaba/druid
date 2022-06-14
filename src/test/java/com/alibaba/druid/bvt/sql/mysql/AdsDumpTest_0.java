@@ -9,12 +9,11 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class AdsDumpTest_0 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "/*+dump-merge=true*/DUMP DATA SELECT amp.buyer_add_cart_info.buyer_id,amp.buyer_add_cart_info.pre_score,amp.buyer_add_cart_info.cart_price FROM amp.buyer_add_cart_info  JOIN amp.crm_user_base_info ON amp.crm_user_base_info.user_id = amp.buyer_add_cart_info.buyer_id where (((amp.buyer_add_cart_info.seller_id=1921906956)) AND ((amp.buyer_add_cart_info.auction_id=562769960283)) AND ((amp.buyer_add_cart_info.show_price>=13300))) LIMIT 144800 ";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLDumpStatement stmt = (SQLDumpStatement)statementList.get(0);
+        SQLDumpStatement stmt = (SQLDumpStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

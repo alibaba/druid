@@ -29,13 +29,12 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.List;
 
 public class SQLASTParameterizedVisitor extends SQLASTVisitorAdapter {
-
     protected DbType dbType;
 
     protected List<Object> parameters;
-    private int replaceCount = 0;
+    private int replaceCount;
 
-    public SQLASTParameterizedVisitor(DbType dbType){
+    public SQLASTParameterizedVisitor(DbType dbType) {
         this.dbType = dbType;
     }
 
@@ -103,7 +102,6 @@ public class SQLASTParameterizedVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
-
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
         List<SQLExpr> arguments = x.getArguments();
@@ -154,7 +152,6 @@ public class SQLASTParameterizedVisitor extends SQLASTVisitorAdapter {
         parameterizeAndExportPara(x);
         return false;
     }
-
 
     @Override
     public boolean visit(SQLHexExpr x) {

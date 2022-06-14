@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest135_isString extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create table t(\n" +
                 "f1 varchar(50), \n" +
@@ -22,7 +21,7 @@ public class MySqlCreateTableTest135_isString extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -32,8 +31,6 @@ public class MySqlCreateTableTest135_isString extends MysqlTest {
 
 
     }
-
-
 
 
 }

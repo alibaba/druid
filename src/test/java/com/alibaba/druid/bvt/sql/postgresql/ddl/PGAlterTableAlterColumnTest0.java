@@ -11,7 +11,7 @@ import java.util.List;
 
 
 public class PGAlterTableAlterColumnTest0 extends PGTest {
-    public void test_0 () throws Exception {
+    public void test_0() throws Exception {
         String sql = "ALTER TABLE organizations ALTER COLUMN guarded TYPE BOOLEAN, ALTER COLUMN guarded DROP NOT NULL";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -30,7 +30,7 @@ public class PGAlterTableAlterColumnTest0 extends PGTest {
         System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("organizations")));
-        
+
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("organizations")).getAlterCount() == 1);
 
         Assert.assertTrue(visitor.getColumns().size() == 1);

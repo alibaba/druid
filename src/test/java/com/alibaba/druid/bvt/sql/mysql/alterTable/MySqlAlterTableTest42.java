@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlAlterTableTest42 extends TestCase {
-
     public void test_alter_modify_clustered_by() throws Exception {
         String sql = "alter table task AUTO_INCREMENT = 20000000 COMMENT ='自增起始值'";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);

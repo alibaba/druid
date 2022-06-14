@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2CreateTableTest_04 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE CUSTOMER\n" +
                 "          (CUSTOMERNUM      INTEGER,\n" +
@@ -73,8 +72,8 @@ public class DB2CreateTableTest_04 extends DB2Test {
                         "\tCUSTOMERNUMDIM INTEGER\n" +
                         ")\n" +
                         "COMPRESS YES;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("create table CUSTOMER (\n" +
                         "\tCUSTOMERNUM INTEGER,\n" +
                         "\tCUSTOMERNAME VARCHAR(80),\n" +
@@ -85,6 +84,6 @@ public class DB2CreateTableTest_04 extends DB2Test {
                         "\tCUSTOMERNUMDIM INTEGER\n" +
                         ")\n" +
                         "compress yes;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

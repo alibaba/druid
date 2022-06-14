@@ -29,7 +29,6 @@ public class SQLFlashbackExpr extends SQLExprImpl implements SQLReplaceable {
     private SQLExpr expr;
 
     public SQLFlashbackExpr() {
-
     }
 
     public SQLFlashbackExpr(Type type, SQLExpr expr) {
@@ -91,12 +90,18 @@ public class SQLFlashbackExpr extends SQLExprImpl implements SQLReplaceable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLFlashbackExpr that = (SQLFlashbackExpr) o;
 
-        if (type != that.type) return false;
+        if (type != that.type) {
+            return false;
+        }
         return expr != null ? expr.equals(that.expr) : that.expr == null;
     }
 

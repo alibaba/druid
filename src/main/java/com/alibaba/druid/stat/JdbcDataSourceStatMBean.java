@@ -19,7 +19,6 @@ import javax.management.JMException;
 import javax.management.openmbean.TabularData;
 
 public interface JdbcDataSourceStatMBean {
-
     void reset();
 
     TabularData getSqlList() throws JMException;

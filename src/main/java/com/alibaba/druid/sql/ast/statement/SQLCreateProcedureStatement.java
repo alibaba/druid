@@ -26,31 +26,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQLCreateStatement {
+    private SQLName definer;
 
-    private SQLName            definer;
-
-    private boolean            create     = true;
-    private boolean            orReplace;
-    private SQLName            name;
-    private SQLStatement       block;
+    private boolean create = true;
+    private boolean orReplace;
+    private SQLName name;
+    private SQLStatement block;
     private List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
     // for oracle
-    private String             javaCallSpec;
+    private String javaCallSpec;
 
-    private SQLName            authid;
+    private SQLName authid;
 
     // for mysql
-    private boolean            deterministic;
-    private boolean            containsSql;
-    private boolean            noSql;
-    private boolean            readSqlData;
-    private boolean            modifiesSqlData;
-    private boolean            languageSql;
+    private boolean deterministic;
+    private boolean containsSql;
+    private boolean noSql;
+    private boolean readSqlData;
+    private boolean modifiesSqlData;
+    private boolean languageSql;
 
-    private String             wrappedSource;
+    private String wrappedSource;
 
-    private SQLCharExpr        comment;
+    private SQLCharExpr comment;
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -113,7 +112,7 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
     public SQLName getDefiner() {
         return definer;
     }
-    
+
     public void setDefiner(SQLName definer) {
         this.definer = definer;
     }

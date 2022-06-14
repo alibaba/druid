@@ -27,14 +27,13 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest21 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE divisions " //
-                + "    (div_no     NUMBER(2), " //
-                + "     div_name   VARCHAR2(14), "//
-                + "     location   VARCHAR2(13) ) " //
-                + "     STORAGE  ( INITIAL 8M MAXSIZE 1G );";
+                "CREATE TABLE divisions " //
+                        + "    (div_no     NUMBER(2), " //
+                        + "     div_name   VARCHAR2(14), "//
+                        + "     location   VARCHAR2(13) ) " //
+                        + "     STORAGE  ( INITIAL 8M MAXSIZE 1G );";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,7 +51,7 @@ public class OracleCreateTableTest21 extends OracleTest {
                         "\tINITIAL 8M\n" +
                         "\tMAXSIZE 1G\n" +
                         ");",//
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);

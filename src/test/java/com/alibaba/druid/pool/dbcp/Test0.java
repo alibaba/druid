@@ -24,7 +24,6 @@ import org.apache.commons.dbcp.BasicDataSource;
 import com.alibaba.druid.mock.MockDriver;
 
 public class Test0 extends TestCase {
-
     public void test_idle() throws Exception {
         MockDriver driver = MockDriver.instance;
 

@@ -32,7 +32,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.impl.NewProxyConnection;
 
 public class TestLRU extends TestCase {
-
     public void f_test_boneCP() throws Exception {
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setJdbcUrl("jdbc:mock:test");
@@ -56,24 +55,24 @@ public class TestLRU extends TestCase {
             System.out.println("--------------------------------------------");
         }
     }
-    
+
     public void f_test_dbcp() throws Exception {
         BasicDataSource ds = new BasicDataSource();
         ds.setUrl("jdbc:mock:test");
         ds.setMaxIdle(10);
-        
+
         for (int i = 0; i < 10; ++i) {
             f(ds, 5);
             System.out.println("--------------------------------------------");
         }
     }
-    
+
     public void f_test_c3p0() throws Exception {
         ComboPooledDataSource ds = new ComboPooledDataSource();
         ds.setJdbcUrl("jdbc:mock:test");
         ds.setMaxPoolSize(10);
         ds.setMinPoolSize(0);
-        
+
         for (int i = 0; i < 10; ++i) {
             f(ds, 5);
             System.out.println("--------------------------------------------");
@@ -102,12 +101,12 @@ public class TestLRU extends TestCase {
         }
         if (conn instanceof NewProxyConnection) {
             NewProxyConnection handle = (NewProxyConnection) conn;
-            
+
             Field field = NewProxyConnection.class.getDeclaredField("inner");
             field.setAccessible(true);
             return (MockConnection) field.get(handle);
         }
-        
+
         return conn.unwrap(MockConnection.class);
     }
 

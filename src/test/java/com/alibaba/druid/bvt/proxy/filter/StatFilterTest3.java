@@ -12,36 +12,36 @@ public class StatFilterTest3 extends TestCase {
     @SuppressWarnings("deprecation")
     public void test_dbType() throws Exception {
         StatFilter filter = new StatFilter();
-        
+
         Assert.assertFalse(filter.isMergeSql());
-        
+
         filter.setDbType("mysql");
         filter.setMergeSql(true);
-        
+
         Assert.assertTrue(filter.isMergeSql());
         Assert.assertEquals(DbType.mysql, filter.getDbType());
-        
-        Assert.assertEquals("SELECT ?\nLIMIT ?" , filter.mergeSql("select 'x' limit 1"));
+
+        Assert.assertEquals("SELECT ?\nLIMIT ?", filter.mergeSql("select 'x' limit 1"));
     }
-    
+
     public void test_dbType_error() throws Exception {
         StatFilter filter = new StatFilter();
         filter.setDbType("mysql");
         filter.setMergeSql(true);
-        
+
         Assert.assertEquals(DbType.mysql, filter.getDbType());
-        
-        Assert.assertEquals("sdafawer asf " , filter.mergeSql("sdafawer asf "));
+
+        Assert.assertEquals("sdafawer asf ", filter.mergeSql("sdafawer asf "));
     }
-    
+
     public void test_merge() throws Exception {
         StatFilter filter = new StatFilter();
         filter.setDbType("mysql");
         filter.setMergeSql(false);
-        
+
         Assert.assertEquals(DbType.mysql, filter.getDbType());
-        
-        Assert.assertEquals("select 'x' limit 1" , filter.mergeSql("select 'x' limit 1"));
+
+        Assert.assertEquals("select 'x' limit 1", filter.mergeSql("select 'x' limit 1"));
     }
 
 
@@ -59,7 +59,7 @@ public class StatFilterTest3 extends TestCase {
                 "FROM postman_trace_info_one\n" +
                 "WHERE lng > ?\n" +
                 "\tAND lat > ?\n" +
-                "\tAND site_id = ?;" , filter.mergeSql("drop table if exists test_site_data_select_111; create table test_site_data_select_111 AS select * from postman_trace_info_one  where lng>0 and lat>0  and site_id='17814' ;", JdbcConstants.POSTGRESQL));
+                "\tAND site_id = ?;", filter.mergeSql("drop table if exists test_site_data_select_111; create table test_site_data_select_111 AS select * from postman_trace_info_one  where lng>0 and lat>0  and site_id='17814' ;", JdbcConstants.POSTGRESQL));
     }
 
     public void test_merge_oracle() throws Exception {

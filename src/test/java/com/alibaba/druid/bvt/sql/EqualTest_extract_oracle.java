@@ -8,7 +8,6 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 
 public class EqualTest_extract_oracle extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "EXTRACT(MONTH FROM x)";
         String sql_c = "EXTRACT(MONTH FROM 7)";
@@ -30,7 +29,7 @@ public class EqualTest_extract_oracle extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new SQLMethodInvokeExpr(), new SQLMethodInvokeExpr());
         Assert.assertEquals(new SQLMethodInvokeExpr().hashCode(), new SQLMethodInvokeExpr().hashCode());
     }

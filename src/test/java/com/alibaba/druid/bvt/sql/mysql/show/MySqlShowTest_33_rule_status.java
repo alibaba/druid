@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import java.util.List;
 
 public class MySqlShowTest_33_rule_status extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW RULE STATUS";
 
@@ -96,7 +95,7 @@ public class MySqlShowTest_33_rule_status extends MysqlTest {
 
     public void test_3() throws Exception {
         String sql = "SHOW RULE FULL STATUS where GMT_MODIFIED_MANAGER > \"2018-03-29 13:53:18\" order by VERSION "
-            + "desc limit 1,2";
+                + "desc limit 1,2";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql, SQLParserFeature.TDDLHint);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -115,8 +114,8 @@ public class MySqlShowTest_33_rule_status extends MysqlTest {
         // assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
 
         assertEquals("SHOW RULE FULL STATUS WHERE GMT_MODIFIED_MANAGER > '2018-03-29 13:53:18' ORDER BY VERSION "
-            + "DESC LIMIT 1, 2", stmt.toString());
+                + "DESC LIMIT 1, 2", stmt.toString());
         assertEquals("show rule full status where GMT_MODIFIED_MANAGER > '2018-03-29 13:53:18' order by VERSION "
-            + "desc limit 1, 2", stmt.toLowerCaseString());
+                + "desc limit 1, 2", stmt.toLowerCaseString());
     }
 }

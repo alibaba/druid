@@ -26,16 +26,15 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableAddIndex_2 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE geom ADD SPATIAL INDEX(g);";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         Assert.assertEquals("ALTER TABLE geom\n" +
                 "\tADD SPATIAL INDEX (g);", SQLUtils.toMySqlString(stmt));
-        
+
         Assert.assertEquals("alter table geom\n" +
                 "\tadd spatial index (g);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

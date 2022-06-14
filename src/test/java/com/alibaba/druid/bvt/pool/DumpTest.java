@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
  * limitations under the License.
  */
 public class DumpTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -72,7 +71,7 @@ public class DumpTest extends TestCase {
 
             conn.close();
         }
-        
+
         String sql = "select ?, ?";
         Connection conn = dataSource.getConnection();
 

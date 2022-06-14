@@ -15,32 +15,22 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.CallableStatement;
-import java.sql.Clob;
-import java.sql.NClob;
-import java.sql.PreparedStatement;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLXML;
+import java.sql.*;
 import java.util.Calendar;
-
-import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidPooledCallableStatement extends DruidPooledPreparedStatement implements CallableStatement {
-
     private CallableStatement stmt;
 
-    public DruidPooledCallableStatement(DruidPooledConnection conn, PreparedStatementHolder holder) throws SQLException{
+    public DruidPooledCallableStatement(DruidPooledConnection conn,
+                                        PreparedStatementHolder holder) throws SQLException {
         super(conn, holder);
         this.stmt = (CallableStatement) holder.statement;
     }
@@ -207,13 +197,13 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
     private Object wrapObject(Object obj) {
         if (obj instanceof ResultSet) {
             ResultSet rs = (ResultSet) obj;
-            
+
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
             addResultSetTrace(poolableResultSet);
-            
+
             obj = poolableResultSet;
         }
-        
+
         return obj;
     }
 
@@ -444,7 +434,7 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
     }
 
     @Override
-    public void setBytes(String parameterName, byte x[]) throws SQLException {
+    public void setBytes(String parameterName, byte[] x) throws SQLException {
         try {
             stmt.setBytes(parameterName, x);
         } catch (Throwable t) {
@@ -1082,7 +1072,7 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
             }
             return (T) stmt;
         }
-        
+
         return super.unwrap(iface);
     }
 }

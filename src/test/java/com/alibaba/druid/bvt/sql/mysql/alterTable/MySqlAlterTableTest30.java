@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest30 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE test_table_normal\n" +
                 "ADD FOREIGN KEY (stuID)\n" +

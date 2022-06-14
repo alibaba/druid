@@ -23,19 +23,18 @@ import java.util.Map;
 import java.util.Properties;
 
 public abstract class ConnectionBase implements Connection {
+    private boolean autoCommit = true;
+    private String catalog;
+    private int transactionIsolation;
+    private int holdability;
+    private Map<String, Class<?>> typeMap = new HashMap<String, Class<?>>();
+    private SQLWarning warnings;
+    private boolean readOnly;
 
-    private boolean               autoCommit = true;
-    private String                catalog;
-    private int                   transactionIsolation;
-    private int                   holdability;
-    private Map<String, Class<?>> typeMap    = new HashMap<String, Class<?>>();
-    private SQLWarning            warnings;
-    private boolean               readOnly;
+    private String url;
+    private Properties info;
 
-    private String                url;
-    private Properties            info;
-
-    public ConnectionBase(String url, Properties info){
+    public ConnectionBase(String url, Properties info) {
         this.url = url;
         this.info = info;
     }
@@ -68,9 +67,8 @@ public abstract class ConnectionBase implements Connection {
     public String getCatalog() throws SQLException {
         return catalog;
     }
-    
+
     public void checkState() throws SQLException {
-        
     }
 
     @Override

@@ -20,14 +20,13 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class OracleWallTest9_exists extends TestCase {
-
     public void test_true() throws Exception {
         String sql = //
-        "select *\n" +
-                "  from V v\n" +
-                " where  v.u_id in (select id from U where wx_b = 1)\n" +
-                "   and not exists (select 1 from M where code = v.code)\n" +
-                "   and rownum < 1000";
+                "select *\n" +
+                        "  from V v\n" +
+                        " where  v.u_id in (select id from U where wx_b = 1)\n" +
+                        "   and not exists (select 1 from M where code = v.code)\n" +
+                        "   and rownum < 1000";
         Assert.assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

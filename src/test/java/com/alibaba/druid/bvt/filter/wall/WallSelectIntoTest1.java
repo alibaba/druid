@@ -24,9 +24,9 @@ import com.alibaba.druid.wall.WallUtils;
 
 public class WallSelectIntoTest1 extends TestCase {
     private String sql = "SELECT F1, F2 INTO T2 FROM T1";
-    
+
     private WallConfig config = new WallConfig();
-    
+
     protected void setUp() throws Exception {
         config.setSelectIntoAllow(false);
     }
@@ -34,9 +34,8 @@ public class WallSelectIntoTest1 extends TestCase {
     public void testMySql() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
     }
-    
+
     public void testORACLE() throws Exception {
-        
         Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

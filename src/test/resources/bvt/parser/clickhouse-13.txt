@@ -1,0 +1,3 @@
+OPTIMIZE TABLE table1 DEDUPLICATE;
+---------------------------
+OPTIMIZE TABLE table1 DEDUPLICATE;

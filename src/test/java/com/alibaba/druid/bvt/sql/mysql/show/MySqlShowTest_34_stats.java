@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import java.util.List;
 
 public class MySqlShowTest_34_stats extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW STATS";
 

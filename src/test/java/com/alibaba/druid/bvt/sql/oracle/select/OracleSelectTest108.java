@@ -28,17 +28,16 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class OracleSelectTest108 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT\n" + "  OBJID,\n" + "  NAME,\n" + "  OWNER,\n" + "  OWNERID,\n" + "  TABLESPACE,\n"
-                + "  TSNO,\n" + "  FILENO,\n" + "  BLOCKNO,\n" + "  AUDIT$,\n" + "  COMMENT$,\n" + "  CLUSTERFLAG,\n"
-                + "  PCTFREE$,\n" + "  PCTUSED$,\n" + "  INITRANS,\n" + "  MAXTRANS,\n" + "  DEGREE,\n"
-                + "  INSTANCES,\n" + "  CACHE,\n" + "  PROPERTY,\n" + "  DEFLOG,\n" + "  TSDEFLOG,\n" + "  ROID,\n"
-                + "  ROWCNT,\n" + "  BLKCNT,\n" + "  AVGRLEN,\n" + "  TFLAGS,\n" + "  TRIGFLAG,\n" + "  OBJSTATUS,\n"
-                + "  XDBOOL\n" + "FROM SYS.EXU10TABU T$\n" + "WHERE NOT EXISTS(SELECT NAME\n"
-                + "                 FROM SYS.EXU8NXPU N$\n"
-                + "                 WHERE N$.NAME = T$.NAME AND N$.TYPE = 2)\n" + "ORDER BY T$.XDBOOL DESC, T$.NAME";
+                        + "  TSNO,\n" + "  FILENO,\n" + "  BLOCKNO,\n" + "  AUDIT$,\n" + "  COMMENT$,\n" + "  CLUSTERFLAG,\n"
+                        + "  PCTFREE$,\n" + "  PCTUSED$,\n" + "  INITRANS,\n" + "  MAXTRANS,\n" + "  DEGREE,\n"
+                        + "  INSTANCES,\n" + "  CACHE,\n" + "  PROPERTY,\n" + "  DEFLOG,\n" + "  TSDEFLOG,\n" + "  ROID,\n"
+                        + "  ROWCNT,\n" + "  BLKCNT,\n" + "  AVGRLEN,\n" + "  TFLAGS,\n" + "  TRIGFLAG,\n" + "  OBJSTATUS,\n"
+                        + "  XDBOOL\n" + "FROM SYS.EXU10TABU T$\n" + "WHERE NOT EXISTS(SELECT NAME\n"
+                        + "                 FROM SYS.EXU8NXPU N$\n"
+                        + "                 WHERE N$.NAME = T$.NAME AND N$.TYPE = 2)\n" + "ORDER BY T$.XDBOOL DESC, T$.NAME";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -57,13 +56,13 @@ public class OracleSelectTest108 extends OracleTest {
             String text = SQLUtils.toOracleString(stmt);
 
             assertEquals("SELECT OBJID, NAME, OWNER, OWNERID, TABLESPACE\n"
-                         + "\t, TSNO, FILENO, BLOCKNO, AUDIT$, COMMENT$\n"
-                         + "\t, CLUSTERFLAG, PCTFREE$, PCTUSED$, INITRANS, MAXTRANS\n"
-                         + "\t, DEGREE, INSTANCES, CACHE, PROPERTY, DEFLOG\n"
-                         + "\t, TSDEFLOG, ROID, ROWCNT, BLKCNT, AVGRLEN\n" + "\t, TFLAGS, TRIGFLAG, OBJSTATUS, XDBOOL\n"
-                         + "FROM SYS.EXU10TABU T$\n" + "WHERE NOT EXISTS (\n" + "\tSELECT NAME\n"
-                         + "\tFROM SYS.EXU8NXPU N$\n" + "\tWHERE N$.NAME = T$.NAME\n" + "\t\tAND N$.TYPE = 2\n" + ")\n"
-                         + "ORDER BY T$.XDBOOL DESC, T$.NAME", text);
+                    + "\t, TSNO, FILENO, BLOCKNO, AUDIT$, COMMENT$\n"
+                    + "\t, CLUSTERFLAG, PCTFREE$, PCTUSED$, INITRANS, MAXTRANS\n"
+                    + "\t, DEGREE, INSTANCES, CACHE, PROPERTY, DEFLOG\n"
+                    + "\t, TSDEFLOG, ROID, ROWCNT, BLKCNT, AVGRLEN\n" + "\t, TFLAGS, TRIGFLAG, OBJSTATUS, XDBOOL\n"
+                    + "FROM SYS.EXU10TABU T$\n" + "WHERE NOT EXISTS (\n" + "\tSELECT NAME\n"
+                    + "\tFROM SYS.EXU8NXPU N$\n" + "\tWHERE N$.NAME = T$.NAME\n" + "\t\tAND N$.TYPE = 2\n" + ")\n"
+                    + "ORDER BY T$.XDBOOL DESC, T$.NAME", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());

@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class BigOrTest extends TestCase {
-
     public void testBigOr() throws Exception {
         StringBuilder buf = new StringBuilder();
         buf.append("SELECT * FROM T WHERE FID = ?");

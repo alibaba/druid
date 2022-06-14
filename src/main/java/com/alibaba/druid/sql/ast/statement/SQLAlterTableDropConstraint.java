@@ -20,11 +20,10 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableDropConstraint extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLName constraintName;
 
-    protected boolean cascade = false;
-    protected boolean restrict = false;
+    protected boolean cascade;
+    protected boolean restrict;
 
     public boolean isCascade() {
         return cascade;

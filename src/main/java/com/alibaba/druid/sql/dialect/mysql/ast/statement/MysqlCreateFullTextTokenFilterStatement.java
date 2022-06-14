@@ -16,8 +16,7 @@ import java.util.List;
  * @author lijun.cailj 2018/8/13
  */
 public class MysqlCreateFullTextTokenFilterStatement extends MySqlStatementImpl {
-
-    private SQLName            name;
+    private SQLName name;
     private SQLTextLiteralExpr typeName;
     protected final List<SQLAssignItem> options = new ArrayList<SQLAssignItem>();
 

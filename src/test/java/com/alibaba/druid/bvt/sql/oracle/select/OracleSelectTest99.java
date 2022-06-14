@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest99 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT last_name, hire_date, salary, SUM(salary) \n" +
@@ -72,5 +71,5 @@ public class OracleSelectTest99 extends OracleTest {
         assertEquals(1, visitor.getOrderByColumns().size());
     }
 
-   
+
 }

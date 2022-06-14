@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import java.util.List;
 
 public class OracleSelectTest113 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "select zs,ybl,zs-ybl-wxbl wbl,wxbl,xzcs,xscs,dw dwid,pkg_unit.getDwmcById(dw)dwmc from ( select count(1)zs, count(case when l.tbbz = '1' then 1 end)ybl,count(case when l.tbbz = '3' then 1 end)wxbl,count(case when s.a_ajfl='10' and nvl(l.blsj,sysdate)-l.lrsj>1 and l.lrsj>to_date('20150713','yyyymmdd') and l.tbbz!='3' then 1end)xscs, count(case when s.a_ajfl='20' and nvl(l.blsj,sysdate)-l.lrsj>3 and l.lrsj>to_date('20150713','yyyymmdd') and l.tbbz!='3' then 1end)xzcs, substr(sys_dwdm, 0, 8)||'0000' dw from case_m_detail l,case_s_process s where l.a_ajbh=s.a_ajbh and l.sys_dwdm is not null and l.scbz = '0' and l.lrsj >= to_date('2018-01-17','yyyy-mm-dd') and l.lrsj <= to_date('2018-01-24 23:59','yyyy-mm-dd hh24:mi') and l.sys_dwdm like '331126%' group by substr(sys_dwdm, 0, 8)||'0000' ) order by dw";
 
@@ -94,5 +93,5 @@ public class OracleSelectTest113 extends OracleTest {
         assertEquals(1, visitor.getOrderByColumns().size());
 
     }
-   
+
 }

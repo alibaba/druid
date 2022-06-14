@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleExecuteImmediateStatement extends OracleStatementImpl {
-
     private SQLExpr dynamicSql;
 
     private final List<SQLArgument> arguments = new ArrayList<SQLArgument>();
@@ -33,10 +32,10 @@ public class OracleExecuteImmediateStatement extends OracleStatementImpl {
 
     private final List<SQLExpr> returnInto = new ArrayList<SQLExpr>();
 
-    public OracleExecuteImmediateStatement(){
+    public OracleExecuteImmediateStatement() {
     }
 
-    public OracleExecuteImmediateStatement(String dynamicSql){
+    public OracleExecuteImmediateStatement(String dynamicSql) {
         this.setDynamicSql(dynamicSql);
     }
 

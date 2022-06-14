@@ -25,12 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLUnionQueryTableSource extends SQLTableSourceImpl {
-
     private SQLUnionQuery union;
     protected List<SQLName> columns = new ArrayList<SQLName>();
 
     public SQLUnionQueryTableSource() {
-
     }
 
     public SQLUnionQueryTableSource(String alias) {
@@ -79,7 +77,6 @@ public class SQLUnionQueryTableSource extends SQLTableSourceImpl {
 
     @Override
     public SQLUnionQueryTableSource clone() {
-
         SQLUnionQueryTableSource x = new SQLUnionQueryTableSource(this.union.clone(), alias);
 
         if (this.flashback != null) {
@@ -103,13 +100,21 @@ public class SQLUnionQueryTableSource extends SQLTableSourceImpl {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         SQLUnionQueryTableSource that = (SQLUnionQueryTableSource) o;
 
-        if (union != null ? !union.equals(that.union) : that.union != null) return false;
+        if (union != null ? !union.equals(that.union) : that.union != null) {
+            return false;
+        }
         return columns != null ? columns.equals(that.columns) : that.columns == null;
     }
 

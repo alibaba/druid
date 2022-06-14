@@ -32,11 +32,10 @@ public class SQLAlterOutlineStatement extends SQLStatementImpl implements SQLAlt
     private boolean enable;
 
     public SQLAlterOutlineStatement() {
-
     }
 
     public SQLAlterOutlineStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

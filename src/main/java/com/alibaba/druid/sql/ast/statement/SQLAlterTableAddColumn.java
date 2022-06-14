@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -34,7 +33,6 @@ public class SQLAlterTableAddColumn extends SQLObjectImpl implements SQLAlterTab
     private boolean cascade;
 
     public SQLAlterTableAddColumn() {
-
     }
 
     @Override
@@ -48,7 +46,7 @@ public class SQLAlterTableAddColumn extends SQLObjectImpl implements SQLAlterTab
     public List<SQLColumnDefinition> getColumns() {
         return columns;
     }
-    
+
     public void addColumn(SQLColumnDefinition column) {
         if (column != null) {
             column.setParent(this);

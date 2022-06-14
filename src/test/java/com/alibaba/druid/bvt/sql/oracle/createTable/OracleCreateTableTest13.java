@@ -25,18 +25,17 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest13 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "create table T (" + //
-                "F1 CHAR(1)," + //
-                "F2 VARCHAR2(2)," + //
-                "F3 NCHAR(3), " + //
-                "F4 NVARCHAR2(4), " + //
-                "F5 NUMBER (10, 2)," + //
-                "F6 NUMBER(10)," + //
-                "F7 FLOAT(126)" + //
-                ") ";
+                "create table T (" + //
+                        "F1 CHAR(1)," + //
+                        "F2 VARCHAR2(2)," + //
+                        "F3 NCHAR(3), " + //
+                        "F4 NVARCHAR2(4), " + //
+                        "F5 NUMBER (10, 2)," + //
+                        "F6 NUMBER(10)," + //
+                        "F7 FLOAT(126)" + //
+                        ") ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

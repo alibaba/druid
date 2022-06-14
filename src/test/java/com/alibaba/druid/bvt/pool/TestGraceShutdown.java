@@ -28,8 +28,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestGraceShutdown extends TestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -64,7 +63,6 @@ public class TestGraceShutdown extends TestCase {
 
         for (int i = 0; i < threadCount; ++i) {
             threads[i] = new Thread("thread-" + i) {
-
                 public void run() {
                     try {
                         startLatch.await();
@@ -86,7 +84,6 @@ public class TestGraceShutdown extends TestCase {
         Thread.sleep(1000);
 
         new Thread("close thread") {
-
             public void run() {
                 dataSource.close();
             }

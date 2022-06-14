@@ -24,17 +24,16 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_if_2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "IF l_salary <= 40000\n" +
-				"THEN\n" +
-				"   give_bonus (l_employee_id, 0);\n" +
-				"ELSE\n" +
-				"   give_bonus (l_employee_id, 500);\n" +
-				"END IF;"; //
+                "THEN\n" +
+                "   give_bonus (l_employee_id, 0);\n" +
+                "ELSE\n" +
+                "   give_bonus (l_employee_id, 500);\n" +
+                "END IF;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		SQLStatement stmt = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -60,23 +59,23 @@ public class Oracle_pl_if_2 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("IF l_salary <= 40000 THEN\n" +
-							"\tgive_bonus(l_employee_id, 0);\n" +
-							"ELSE\n" +
-							"\tgive_bonus(l_employee_id, 500);\n" +
-							"END IF;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("if l_salary <= 40000 then\n" +
-							"\tgive_bonus(l_employee_id, 0);\n" +
-							"else\n" +
-							"\tgive_bonus(l_employee_id, 500);\n" +
-							"end if;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toOracleString(stmt);
+            assertEquals("IF l_salary <= 40000 THEN\n" +
+                            "\tgive_bonus(l_employee_id, 0);\n" +
+                            "ELSE\n" +
+                            "\tgive_bonus(l_employee_id, 500);\n" +
+                            "END IF;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("if l_salary <= 40000 then\n" +
+                            "\tgive_bonus(l_employee_id, 0);\n" +
+                            "else\n" +
+                            "\tgive_bonus(l_employee_id, 500);\n" +
+                            "end if;", //
+                    output);
+        }
+    }
 }

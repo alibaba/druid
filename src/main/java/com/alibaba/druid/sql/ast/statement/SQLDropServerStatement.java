@@ -23,16 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropServerStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
-
     private SQLExpr name;
     private boolean ifExists;
 
     public SQLDropServerStatement() {
-
     }
 
     public SQLDropServerStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

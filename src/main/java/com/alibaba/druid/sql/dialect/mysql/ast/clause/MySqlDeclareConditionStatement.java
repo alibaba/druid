@@ -15,52 +15,38 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.clause;
 
-
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 /**
- * 
  * @author zhujun [455910092@qq.com]
  */
-public class MySqlDeclareConditionStatement extends MySqlStatementImpl{
-	
-	/*
-	DECLARE condition_name CONDITION FOR condition_value
+public class MySqlDeclareConditionStatement extends MySqlStatementImpl {
+    private String conditionName;
+    //sp statement
+    private ConditionValue conditionValue;
 
-	condition_value:
-	    SQLSTATE [VALUE] sqlstate_value
-	  | mysql_error_code
-	*/
-	
-	//condition_name
-	private String conditionName; 
-	//sp statement
-	private ConditionValue conditionValue;
-	
-	public String getConditionName() {
-		return conditionName;
-	}
+    public String getConditionName() {
+        return conditionName;
+    }
 
-	public void setConditionName(String conditionName) {
-		this.conditionName = conditionName;
-	}
+    public void setConditionName(String conditionName) {
+        this.conditionName = conditionName;
+    }
 
-	public ConditionValue getConditionValue() {
-		return conditionValue;
-	}
+    public ConditionValue getConditionValue() {
+        return conditionValue;
+    }
 
-	public void setConditionValue(ConditionValue conditionValue) {
-		this.conditionValue = conditionValue;
-	}
+    public void setConditionValue(ConditionValue conditionValue) {
+        this.conditionValue = conditionValue;
+    }
 
-	@Override
-	public void accept0(MySqlASTVisitor visitor) {
-		// TODO Auto-generated method stub
-		visitor.visit(this);
-	    visitor.endVisit(this);
-		
-	}
+    @Override
+    public void accept0(MySqlASTVisitor visitor) {
+        // TODO Auto-generated method stub
+        visitor.visit(this);
+        visitor.endVisit(this);
 
+    }
 }
-

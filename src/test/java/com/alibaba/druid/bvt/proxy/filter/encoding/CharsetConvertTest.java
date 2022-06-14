@@ -26,10 +26,9 @@ import com.alibaba.druid.filter.encoding.CharsetConvert;
  * @author gang.su
  */
 public class CharsetConvertTest extends TestCase {
-
-    private final static String CLIENT_ENCODEING = "gbk";
-    private final static String SERVER_ENCODEING = "utf-8";
-    public CharsetConvert       charsetConvert   = new CharsetConvert(CLIENT_ENCODEING, SERVER_ENCODEING);
+    private static final String CLIENT_ENCODEING = "gbk";
+    private static final String SERVER_ENCODEING = "utf-8";
+    public CharsetConvert charsetConvert = new CharsetConvert(CLIENT_ENCODEING, SERVER_ENCODEING);
 
     public void testIsEmpty() {
         Assert.assertTrue(charsetConvert.isEmpty(null));

@@ -12,7 +12,6 @@ import com.alibaba.druid.pool.ExceptionSorter;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
 
 public class DruidDataSourceTest4 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -81,7 +80,7 @@ public class DruidDataSourceTest4 extends TestCase {
         }
         Assert.assertNotNull(error);
     }
-    
+
     public void test_getParentLogger() throws Exception {
         Exception error = null;
         try {
@@ -93,7 +92,6 @@ public class DruidDataSourceTest4 extends TestCase {
     }
 
     private class MyExceptionSorter implements ExceptionSorter {
-
         @Override
         public boolean isExceptionFatal(SQLException e) {
             return false;
@@ -102,7 +100,7 @@ public class DruidDataSourceTest4 extends TestCase {
         @Override
         public void configFromProperties(Properties properties) {
             // TODO Auto-generated method stub
-            
+
         }
 
     }

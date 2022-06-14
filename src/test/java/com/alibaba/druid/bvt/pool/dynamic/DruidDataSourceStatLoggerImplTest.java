@@ -13,10 +13,9 @@ import com.alibaba.druid.pool.DruidDataSourceStatLoggerImpl;
 import com.alibaba.druid.support.logging.Log;
 
 public class DruidDataSourceStatLoggerImplTest extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
-    private Log             statLog;
+    private Log statLog;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -47,7 +46,7 @@ public class DruidDataSourceStatLoggerImplTest extends PoolTestCase {
         Assert.assertTrue(dataSource.isWrapperFor(DruidDataSourceStatLoggerImpl.class));
         DruidDataSourceStatLoggerImpl loggerImpl = dataSource.unwrap(DruidDataSourceStatLoggerImpl.class);
         Assert.assertSame(statLog, loggerImpl.getLogger());
-        
+
         dataSource.setConnectionProperties("druid.stat.loggerName=xxx");
         Assert.assertNotSame(statLog, loggerImpl.getLogger());
     }

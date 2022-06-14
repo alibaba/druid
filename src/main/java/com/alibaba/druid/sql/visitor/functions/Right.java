@@ -23,8 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Right implements Function {
-
-    public final static Right instance = new Right();
+    public static final Right instance = new Right();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getArguments().size() != 2) {

@@ -15,6 +15,11 @@
  */
 package com.alibaba.druid.filter;
 
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -25,14 +30,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.Utils;
-
 public class FilterManager {
-
-    private final static Log                               LOG      = LogFactory.getLog(FilterManager.class);
+    private static final Log LOG = LogFactory.getLog(FilterManager.class);
 
     private static final ConcurrentHashMap<String, String> aliasMap = new ConcurrentHashMap<String, String>(16, 0.75f, 1);
 
@@ -79,8 +78,8 @@ public class FilterManager {
         if (classLoader == null) {
             return;
         }
-        
-        for (Enumeration<URL> e = classLoader.getResources("META-INF/druid-filter.properties"); e.hasMoreElements();) {
+
+        for (Enumeration<URL> e = classLoader.getResources("META-INF/druid-filter.properties"); e.hasMoreElements(); ) {
             URL url = e.nextElement();
 
             Properties property = new Properties();
@@ -122,6 +121,9 @@ public class FilterManager {
                 try {
                     filter = (Filter) filterClass.newInstance();
                 } catch (ClassCastException e) {
+                    LOG.error("load filter error.", e);
+                    continue;
+                } catch (NoSuchFieldError e) {
                     LOG.error("load filter error.", e);
                     continue;
                 } catch (InstantiationException e) {

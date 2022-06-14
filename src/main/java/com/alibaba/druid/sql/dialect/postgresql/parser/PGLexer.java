@@ -25,8 +25,7 @@ import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class PGLexer extends Lexer {
-
-    public final static Keywords DEFAULT_PG_KEYWORDS;
+    public static final Keywords DEFAULT_PG_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -58,10 +57,10 @@ public class PGLexer extends Lexer {
         map.put("SHARE", Token.SHARE);
         map.put("SHOW", Token.SHOW);
         map.put("START", Token.START);
-        
+
         map.put("USING", Token.USING);
         map.put("WINDOW", Token.WINDOW);
-        
+
         map.put("TRUE", Token.TRUE);
         map.put("FALSE", Token.FALSE);
         map.put("ARRAY", Token.ARRAY);
@@ -71,11 +70,12 @@ public class PGLexer extends Lexer {
         map.put("MERGE", Token.MERGE);
         map.put("MATCHED", Token.MATCHED);
         map.put("PARTITION", Token.PARTITION);
+        map.put("INTERVAL", Token.INTERVAL);
 
         DEFAULT_PG_KEYWORDS = new Keywords(map);
     }
 
-    public PGLexer(String input, SQLParserFeature... features){
+    public PGLexer(String input, SQLParserFeature... features) {
         super(input, true);
         this.keepComments = true;
         super.keywords = DEFAULT_PG_KEYWORDS;
@@ -84,12 +84,12 @@ public class PGLexer extends Lexer {
             config(feature, true);
         }
     }
-    
+
     protected void scanString() {
         mark = pos;
         boolean hasSpecial = false;
 
-        for (;;) {
+        for (; ; ) {
             if (isEOF()) {
                 lexError("unclosed.str.lit");
                 return;
@@ -175,7 +175,7 @@ public class PGLexer extends Lexer {
             stringVal = new String(buf, 0, bufPos);
         }
     }
-    
+
     public void scanSharp() {
         scanChar();
         if (ch == '>') {
@@ -213,7 +213,7 @@ public class PGLexer extends Lexer {
             return;
         }
 
-        for (;;) {
+        for (; ; ) {
             ch = charAt(++pos);
 
             if (!isIdentifierChar(ch)) {

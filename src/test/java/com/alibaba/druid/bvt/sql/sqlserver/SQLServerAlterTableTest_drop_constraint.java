@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerAlterTableTest_drop_constraint extends TestCase {
-
     public void test_alter_constraint() throws Exception {
         String sql = "alter table SSHE.dbo.TUSER drop constraint UK_084c17821a8f47e8b31fbb126b6";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -44,7 +43,7 @@ public class SQLServerAlterTableTest_drop_constraint extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("ALTER TABLE SSHE.dbo.TUSER" + //
-                            "\n\tDROP CONSTRAINT UK_084c17821a8f47e8b31fbb126b6", output);
+                "\n\tDROP CONSTRAINT UK_084c17821a8f47e8b31fbb126b6", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

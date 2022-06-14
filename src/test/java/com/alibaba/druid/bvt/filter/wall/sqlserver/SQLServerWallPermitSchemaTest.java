@@ -29,7 +29,6 @@ import com.alibaba.druid.wall.WallUtils;
  * @see
  */
 public class SQLServerWallPermitSchemaTest extends TestCase {
-
     /**
      * @param name
      */

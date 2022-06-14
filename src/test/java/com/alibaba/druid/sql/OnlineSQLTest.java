@@ -33,9 +33,8 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 
 public class OnlineSQLTest extends TestCase {
-
-    private String url      = "jdbc:mysql://a.b.c.d/dragoon_v25monitordb_online";
-    private String user     = "dragoon";
+    private String url = "jdbc:mysql://a.b.c.d/dragoon_v25monitordb_online";
+    private String user = "dragoon";
     private String password = "dragoon";
 
     public void test_list_sql() throws Exception {
@@ -125,7 +124,7 @@ public class OnlineSQLTest extends TestCase {
         boolean sqlFlag = false;
         String lowerSql = sql.toLowerCase();
         if (lowerSql.startsWith("insert") || lowerSql.startsWith("select") || lowerSql.startsWith("upate")
-            || lowerSql.startsWith("delete") || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
+                || lowerSql.startsWith("delete") || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
             sqlFlag = true;
         }
 
@@ -154,7 +153,7 @@ public class OnlineSQLTest extends TestCase {
         boolean sqlFlag = false;
         String lowerSql = sql.toLowerCase();
         if (lowerSql.startsWith("insert") || lowerSql.startsWith("select") || lowerSql.startsWith("upate")
-            || lowerSql.startsWith("delete") || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
+                || lowerSql.startsWith("delete") || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
             sqlFlag = true;
         }
 

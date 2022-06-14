@@ -11,7 +11,6 @@ import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 /**
- *
  * @author peiheng.qph
  * @version $Id: AntsparkSchemaStatVisitor.java, v 0.1 2018年09月16日 23:09 peiheng.qph Exp $
  */
@@ -36,6 +35,5 @@ public class AntsparkSchemaStatVisitor extends SchemaStatVisitor implements Ants
     @Override
     public void endVisit(AntsparkCreateTableStatement x) {
         super.endVisit((SQLCreateTableStatement) x);
-
     }
 }

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface PGASTVisitor extends SQLASTVisitor {
-
     default void endVisit(PGSelectQueryBlock x) {
         endVisit((SQLSelectQueryBlock) x);
     }
@@ -52,7 +51,8 @@ public interface PGASTVisitor extends SQLASTVisitor {
         return true;
     }
 
-    default void endVisit(PGInsertStatement x) {}
+    default void endVisit(PGInsertStatement x) {
+    }
 
     default boolean visit(PGInsertStatement x) {
         return true;

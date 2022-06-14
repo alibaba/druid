@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 
 public class MySqlSelectTest_283_current_user extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT current_user from t where u = CURRENT_USER";
 
@@ -53,7 +52,6 @@ public class MySqlSelectTest_283_current_user extends MysqlTest {
                 "from t\n" +
                 "where u = current_user", stmt.toLowerCaseString());
     }
-
 
 
 }

@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class PagerUtilsTest_Limit_SQLServer_4 extends TestCase {
-
     public void test_db2_union() throws Exception {
         String sql = "select * from t1 where id > 1";
         String result = PagerUtils.limit(sql, JdbcConstants.SQL_SERVER, 100, 10);

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest70 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT CAST(a.nsrdzdah AS char)\n" +

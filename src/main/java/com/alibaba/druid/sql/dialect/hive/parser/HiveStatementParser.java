@@ -31,15 +31,16 @@ public class HiveStatementParser extends SQLStatementParser {
     {
         dbType = DbType.hive;
     }
+
     public HiveStatementParser(String sql) {
-        super (new HiveExprParser(sql));
+        super(new HiveExprParser(sql));
     }
 
     public HiveStatementParser(String sql, SQLParserFeature... features) {
-        super (new HiveExprParser(sql, features));
+        super(new HiveExprParser(sql, features));
     }
 
-    public HiveStatementParser(Lexer lexer){
+    public HiveStatementParser(Lexer lexer) {
         super(new HiveExprParser(lexer));
     }
 
@@ -94,7 +95,7 @@ public class HiveStatementParser extends SQLStatementParser {
                 stmt.setFrom(from);
             }
 
-            for (;;) {
+            for (; ; ) {
                 HiveInsert insert = parseHiveInsert();
                 stmt.addItem(insert);
 
@@ -367,7 +368,7 @@ public class HiveStatementParser extends SQLStatementParser {
     }
 
     public SQLCreateFunctionStatement parseCreateFunction() {
-       return parseHiveCreateFunction();
+        return parseHiveCreateFunction();
     }
 
     public SQLCreateIndexStatement parseCreateIndex(boolean acceptCreate) {
@@ -390,7 +391,7 @@ public class HiveStatementParser extends SQLStatementParser {
 
         accept(Token.LPAREN);
 
-        for (;;) {
+        for (; ; ) {
             SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
             item.setParent(stmt);
             stmt.addItem(item);

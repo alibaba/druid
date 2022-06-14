@@ -19,17 +19,16 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.Arrays;
 
 /**
- *
  * @author peiheng.qph
  * @version $Id: AntsparkExprParser.java, v 0.1 2018年09月14日 15:04 peiheng.qph Exp $
  */
-public class AntsparkExprParser  extends SQLExprParser {
-    private final static String[] AGGREGATE_FUNCTIONS;
-    private final static long[] AGGREGATE_FUNCTIONS_CODES;
+public class AntsparkExprParser extends SQLExprParser {
+    private static final String[] AGGREGATE_FUNCTIONS;
+    private static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
-                "ROWNUMBER" };
+        String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
+                "ROWNUMBER"};
 
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
@@ -40,12 +39,12 @@ public class AntsparkExprParser  extends SQLExprParser {
         }
     }
 
-    public AntsparkExprParser(String sql){
+    public AntsparkExprParser(String sql) {
         this(new AntsparkLexer(sql));
         this.lexer.nextToken();
     }
 
-    public AntsparkExprParser(Lexer lexer){
+    public AntsparkExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
@@ -74,7 +73,7 @@ public class AntsparkExprParser  extends SQLExprParser {
         final Token tok = lexer.token();
         switch (tok) {
             case IDENTIFIER:
-                final long hash_lower = lexer.hash_lower();
+                final long hash_lower = lexer.hashLCase();
                 if (hash_lower == FnvHash.Constants.OUTLINE) {
                     lexer.nextToken();
                     SQLExpr file = primary();
@@ -180,10 +179,12 @@ public class AntsparkExprParser  extends SQLExprParser {
         String chars = alias.substring(1, alias.length() - 1);
         return new SQLCharExpr(chars);
     }
+
     protected SQLExpr parseDatasource(String alias) {
         String chars = alias.substring(1, alias.length() - 1);
         return new SQLCharExpr(chars);
     }
+
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         if (lexer.identifierEquals(FnvHash.Constants.MAPPED)) {
             lexer.nextToken();
@@ -196,9 +197,6 @@ public class AntsparkExprParser  extends SQLExprParser {
             this.parseAssignItem(column.getColProperties(), column);
         }
 
-
         return super.parseColumnRest(column);
     }
-
-
 }

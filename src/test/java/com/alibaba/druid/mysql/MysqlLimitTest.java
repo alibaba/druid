@@ -11,10 +11,9 @@ import java.util.List;
  * Created by tianzhen.wtz on 2016/6/7.
  * 类说明：
  */
-public class MysqlLimitTest extends TestCase{
+public class MysqlLimitTest extends TestCase {
 
-
-    public void testLimit(){
+    public void testLimit() {
         String sql = "select * from aaa limit 20exx";
         SQLStatementParser statementParser = SQLParserUtils.createSQLStatementParser(sql, "mysql");
         try {

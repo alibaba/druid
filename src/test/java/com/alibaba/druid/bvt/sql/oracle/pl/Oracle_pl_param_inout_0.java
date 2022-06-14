@@ -24,18 +24,17 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_param_inout_0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE OR REPLACE PROCEDURE reassign (\n" +
-				"  p IN OUT NOCOPY hr.person_typ,\n" +
-				"  new_job VARCHAR2\n" +
-				") AS\n" +
-				"BEGIN\n" +
-				"  p.change_job(new_job);  -- runs with privileges of OE\n" +
-				"END;"; //
+                "  p IN OUT NOCOPY hr.person_typ,\n" +
+                "  new_job VARCHAR2\n" +
+                ") AS\n" +
+                "BEGIN\n" +
+                "  p.change_job(new_job);  -- runs with privileges of OE\n" +
+                "END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		SQLStatement stmt = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -61,29 +60,29 @@ public class Oracle_pl_param_inout_0 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("CREATE OR REPLACE PROCEDURE reassign (\n" +
-							"\tp IN OUT NOCOPY hr.person_typ, \n" +
-							"\tnew_job VARCHAR2\n" +
-							")\n" +
-							"IS\n" +
-							"BEGIN\n" +
-							"\tp.change_job(new_job);\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("create or replace procedure reassign (\n" +
-							"\tp in out nocopy hr.person_typ, \n" +
-							"\tnew_job VARCHAR2\n" +
-							")\n" +
-							"is\n" +
-							"begin\n" +
-							"\tp.change_job(new_job);\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toOracleString(stmt);
+            assertEquals("CREATE OR REPLACE PROCEDURE reassign (\n" +
+                            "\tp IN OUT NOCOPY hr.person_typ, \n" +
+                            "\tnew_job VARCHAR2\n" +
+                            ")\n" +
+                            "IS\n" +
+                            "BEGIN\n" +
+                            "\tp.change_job(new_job);\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("create or replace procedure reassign (\n" +
+                            "\tp in out nocopy hr.person_typ, \n" +
+                            "\tnew_job VARCHAR2\n" +
+                            ")\n" +
+                            "is\n" +
+                            "begin\n" +
+                            "\tp.change_job(new_job);\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

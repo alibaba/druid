@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.pool.ha.selector;
 
-import java.util.Map;
+import com.alibaba.druid.pool.ha.HighAvailableDataSource;
 
 import javax.sql.DataSource;
 
-import com.alibaba.druid.pool.ha.HighAvailableDataSource;
+import java.util.Map;
 
 /**
  * Use the given name in ThreadLocal variable to choose DataSource.

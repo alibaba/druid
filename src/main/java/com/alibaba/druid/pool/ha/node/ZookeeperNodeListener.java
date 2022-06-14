@@ -63,11 +63,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author DigitalSonic
  */
 public class ZookeeperNodeListener extends NodeListener {
-    private final static Log LOG = LogFactory.getLog(ZookeeperNodeListener.class);
+    private static final Log LOG = LogFactory.getLog(ZookeeperNodeListener.class);
     private String zkConnectString;
     private String path = "/ha-druid-datasources";
     private Lock lock = new ReentrantLock();
-    private boolean privateZkClient = false; // Should I close the client?
+    private boolean privateZkClient; // Should I close the client?
     private PathChildrenCache cache;
     private CuratorFramework client;
     /**

@@ -21,10 +21,9 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.DruidPasswordCallback;
 
 public class DruidDataSourceTest6 extends TestCase {
+    private DruidDataSource dataSource;
 
-    private DruidDataSource     dataSource;
-
-    private final AtomicInteger errorCount       = new AtomicInteger();
+    private final AtomicInteger errorCount = new AtomicInteger();
     private final AtomicInteger returnEmptyCount = new AtomicInteger();
 
     protected void setUp() throws Exception {
@@ -37,11 +36,10 @@ public class DruidDataSourceTest6 extends TestCase {
         dataSource.setValidationQuery("select 1");
         dataSource.setValidationQueryTimeout(10);
         dataSource.setQueryTimeout(100);
-        
+
         dataSource.setUserCallback(new NameCallback("xx") {
-       
         });
-        
+
         dataSource.setPasswordCallback(new DruidPasswordCallback() {
             @Override
             public char[] getPassword() {
@@ -50,9 +48,8 @@ public class DruidDataSourceTest6 extends TestCase {
         });
 
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             public ResultSetProxy statement_executeQuery(FilterChain chain, StatementProxy statement, String sql)
-                                                                                                                 throws SQLException {
+                    throws SQLException {
                 if (errorCount.get() > 0) {
                     errorCount.decrementAndGet();
                     throw new RuntimeException();
@@ -94,19 +91,19 @@ public class DruidDataSourceTest6 extends TestCase {
             Connection conn = dataSource.getConnection();
             conn.close();
         }
-        
+
         {
             errorCount.set(1);
             Connection conn = dataSource.getConnection();
             conn.close();
         }
-        
+
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
         Assert.assertEquals(100, stmt.getQueryTimeout());
         stmt.close();
-        
+
         conn.close();
     }
 

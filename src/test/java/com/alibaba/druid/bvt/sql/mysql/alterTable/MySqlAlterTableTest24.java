@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest24 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "alter table xxxxx modify (f0 default '0',f1 default '0');";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -31,7 +30,7 @@ public class MySqlAlterTableTest24 extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE xxxxx"
-        		+ "\n\tMODIFY COLUMN f0 DEFAULT '0',"
-        		+ "\n\tMODIFY COLUMN f1 DEFAULT '0';", output);
+                + "\n\tMODIFY COLUMN f0 DEFAULT '0',"
+                + "\n\tMODIFY COLUMN f1 DEFAULT '0';", output);
     }
 }

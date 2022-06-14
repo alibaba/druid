@@ -25,16 +25,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTableSource {
-    protected String        alias;
+    protected String alias;
     protected List<SQLHint> hints;
-    protected SQLExpr       flashback;
+    protected SQLExpr flashback;
     protected long aliasHashCode64;
 
-    public SQLTableSourceImpl(){
-
+    public SQLTableSourceImpl() {
     }
 
-    public SQLTableSourceImpl(String alias){
+    public SQLTableSourceImpl(String alias) {
         this.alias = alias;
     }
 
@@ -189,13 +188,21 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLTableSourceImpl that = (SQLTableSourceImpl) o;
 
-        if (aliasHashCode64() != that.aliasHashCode64()) return false;
-        if (hints != null ? !hints.equals(that.hints) : that.hints != null) return false;
+        if (aliasHashCode64() != that.aliasHashCode64()) {
+            return false;
+        }
+        if (hints != null ? !hints.equals(that.hints) : that.hints != null) {
+            return false;
+        }
         return flashback != null ? flashback.equals(that.flashback) : that.flashback == null;
     }
 

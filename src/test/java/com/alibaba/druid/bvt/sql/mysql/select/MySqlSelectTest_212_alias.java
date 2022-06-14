@@ -24,7 +24,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_212_alias extends MysqlTest {
-
     public void test_2() throws Exception {
         String sql = "SELECT count(1) from information_schema.tables;";
 

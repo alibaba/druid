@@ -32,9 +32,7 @@ public class SQLAlterTableChangeOwner extends SQLObjectImpl implements SQLAlterT
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor.visit(this)) {
-
-        }
+        visitor.visit(this);
         visitor.endVisit(this);
     }
 

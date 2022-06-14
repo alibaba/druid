@@ -24,12 +24,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement, SQLTableConstraint {
-
     private OracleUsingIndexClause using;
-    private SQLName                exceptionsInto;
-    private Boolean                enable;
-    private Initially              initially;
-    private Boolean                deferrable;
+    private SQLName exceptionsInto;
+    private Boolean enable;
+    private Initially initially;
+    private Boolean deferrable;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

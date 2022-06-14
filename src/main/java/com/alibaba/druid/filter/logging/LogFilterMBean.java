@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.SQLUtils.FormatOption;
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface LogFilterMBean {
-
     String getDataSourceLoggerName();
 
     void setDataSourceLoggerName(String loggerName);

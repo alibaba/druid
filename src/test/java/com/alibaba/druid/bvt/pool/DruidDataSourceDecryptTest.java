@@ -12,7 +12,6 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author Jonas Yang
  */
 public class DruidDataSourceDecryptTest {
-
     @Test
     public void testDecrypt() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();

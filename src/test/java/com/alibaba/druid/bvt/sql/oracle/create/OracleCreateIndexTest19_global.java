@@ -25,12 +25,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest19_global extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE INDEX cust_last_name_ix ON customers (cust_last_name)\n" +
-                "  GLOBAL PARTITION BY HASH (cust_last_name)\n" +
-                "  PARTITIONS 4;";
+                "CREATE INDEX cust_last_name_ix ON customers (cust_last_name)\n" +
+                        "  GLOBAL PARTITION BY HASH (cust_last_name)\n" +
+                        "  PARTITIONS 4;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

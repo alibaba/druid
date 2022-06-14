@@ -26,25 +26,24 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleBlockTest2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "declare   i integer := 0; " //
-                     + "begin   " + //
-                     "  for c in (" + //
-                     "      select id " + //
-                     "      from wl_ship_order" + //
-                     "      where forwarder_service is null or status is null) " + //
-                     "  loop" + //
-                     "      update wl_ship_order" + //
-                     "          set forwarder_service = nvl(forwarder_service, 'UPS'), status = nvl(status, 500)" + //
-                     "      where id = c.id;" + //
-                     "      i := i + 1;" + //
-                     "      if mod(i, 100) = 0 then" + //
-                     "          commit;" + //
-                     "      end if;" + //
-                     "  end loop;" + //
-                     "  commit; " + //
-                     "end;";
+                + "begin   " + //
+                "  for c in (" + //
+                "      select id " + //
+                "      from wl_ship_order" + //
+                "      where forwarder_service is null or status is null) " + //
+                "  loop" + //
+                "      update wl_ship_order" + //
+                "          set forwarder_service = nvl(forwarder_service, 'UPS'), status = nvl(status, 500)" + //
+                "      where id = c.id;" + //
+                "      i := i + 1;" + //
+                "      if mod(i, 100) = 0 then" + //
+                "          commit;" + //
+                "      end if;" + //
+                "  end loop;" + //
+                "  commit; " + //
+                "end;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

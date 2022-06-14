@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 
 public class SQLServerInsertTest6 extends TestCase {
-
     public void test() throws Exception {
         String sql = "INSERT [dbo].[SurveyAnswer]([CustomerId], [QuestionId], [OptionId], [CreateTime], [LastUpdateTime]) VALUES (@0, @1, @2, @3, @4)";
 
@@ -49,7 +48,7 @@ public class SQLServerInsertTest6 extends TestCase {
         stmt.accept(visitor);
 
         String formatSql = "INSERT INTO [dbo].[SurveyAnswer] ([CustomerId], [QuestionId], [OptionId], [CreateTime], [LastUpdateTime])"//
-                           + "\nVALUES (@0, @1, @2, @3, @4)";
+                + "\nVALUES (@0, @1, @2, @3, @4)";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 

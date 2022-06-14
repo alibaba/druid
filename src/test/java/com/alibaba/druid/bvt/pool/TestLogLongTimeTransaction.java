@@ -29,13 +29,11 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestLogLongTimeTransaction extends TestCase {
-
     private DruidDataSource dataSource;
-    private MockDriver      driver;
+    private MockDriver driver;
 
     protected void setUp() throws Exception {
         driver = new MockDriver() {
-
             protected ResultSet executeQuery(MockStatement stmt, String sql) throws SQLException {
                 try {
                     Thread.sleep(2);

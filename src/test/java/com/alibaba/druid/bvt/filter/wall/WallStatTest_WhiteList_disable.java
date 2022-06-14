@@ -10,7 +10,6 @@ import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class WallStatTest_WhiteList_disable extends TestCase {
-
     protected void setUp() throws Exception {
         WallContext.clearContext();
     }

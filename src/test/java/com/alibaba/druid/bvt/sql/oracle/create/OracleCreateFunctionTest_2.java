@@ -25,11 +25,10 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateFunctionTest_2 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE FUNCTION StockPivot(p refcur_pkg.refcur_t) \n" +
-                "  RETURN TickerTypeSet PIPELINED USING StockPivotImpl;\n";
+                "CREATE FUNCTION StockPivot(p refcur_pkg.refcur_t) \n" +
+                        "  RETURN TickerTypeSet PIPELINED USING StockPivotImpl;\n";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -43,7 +42,7 @@ public class OracleCreateFunctionTest_2 extends OracleTest {
                         ")\n" +
                         "RETURN TickerTypeSetPIPELINED \n" +
                         "USING StockPivotImpl;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

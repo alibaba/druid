@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class MySqlSelectTest_307_lateralview
         extends MysqlTest {
-
     public void test_1() throws Exception {
         String sql = "select tf.* from (select 0) t lateral view explode(array('A','B','C')) tf;";
 

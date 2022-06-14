@@ -16,7 +16,6 @@ public class SQLForStatement extends SQLStatementImpl {
     protected List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
     public SQLForStatement() {
-
     }
 
     public SQLName getIndex() {

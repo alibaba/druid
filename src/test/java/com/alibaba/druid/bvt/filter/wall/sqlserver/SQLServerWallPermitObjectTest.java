@@ -23,17 +23,16 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallPermitObjectTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class SQLServerWallPermitObjectTest extends TestCase {
-
     /**
      * @param name
      */
-    public SQLServerWallPermitObjectTest(String name){
+    public SQLServerWallPermitObjectTest(String name) {
         super(name);
     }
 

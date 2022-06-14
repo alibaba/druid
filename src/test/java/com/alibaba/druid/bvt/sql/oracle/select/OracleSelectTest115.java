@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import java.util.List;
 
 public class OracleSelectTest115 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "select * from ( select row_.*, rownum rownum_ from ( select HYKY as HYKY,WHCD as WHCD,ZASD as ZASD,TX as TX,XZFS as XZFS,SSGAJGMC as SSGAJGMC,XZDX as XZDX,HJDDZQH as HJDDZQH,XX as XX,MZ as MZ,TSTX as TSTX,SJJZDDZQH as SJJZDDZQH,HDDQ as HDDQ,ZY as ZY,XZCS as XZCS,BMCH as BMCH,CSD as CSD,ZAGJ as ZAGJ,XB as XB,XZWP as XZWP,CSRQ as CSRQ,SSGAJGJGDM as SSGAJGJGDM,AJLB as AJLB,TBTSBJ as TBTSBJ,LX as LX,XP as XP, '' as  from QQFW_ZYK.GZDX where (XM='忘轻春') ) row_ where rownum <= 5)";
 
@@ -73,5 +72,5 @@ public class OracleSelectTest115 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
     }
-   
+
 }

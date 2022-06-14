@@ -24,18 +24,17 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerUpdateTest1 extends TestCase {
-
     public void test_update() throws Exception {
         String sql = "UPDATE dbo.Table2 " + //
-                     "SET dbo.Table2.ColB = dbo.Table2.ColB + dbo.Table1.ColB " + //
-                     "FROM dbo.Table2 " + //
-                     "    INNER JOIN dbo.Table1 " + //
-                     "    ON (dbo.Table2.ColA = dbo.Table1.ColA);";
+                "SET dbo.Table2.ColB = dbo.Table2.ColB + dbo.Table1.ColB " + //
+                "FROM dbo.Table2 " + //
+                "    INNER JOIN dbo.Table1 " + //
+                "    ON (dbo.Table2.ColA = dbo.Table1.ColA);";
 
         String expect = "UPDATE dbo.Table2" + //
-                        "\nSET dbo.Table2.ColB = dbo.Table2.ColB + dbo.Table1.ColB" + //
-                        "\nFROM dbo.Table2" + //
-                        "\n\tINNER JOIN dbo.Table1 ON dbo.Table2.ColA = dbo.Table1.ColA;";
+                "\nSET dbo.Table2.ColB = dbo.Table2.ColB + dbo.Table1.ColB" + //
+                "\nFROM dbo.Table2" + //
+                "\n\tINNER JOIN dbo.Table1 ON dbo.Table2.ColA = dbo.Table1.ColA;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

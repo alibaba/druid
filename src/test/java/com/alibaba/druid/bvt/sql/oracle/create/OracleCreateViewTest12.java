@@ -26,127 +26,126 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateViewTest12 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE OR REPLACE FORCE VIEW \"TCP_CPR\".\"DIFF_CON_CONFIG_ALL_V\" (\"OSG_TYPE_ID\", \"CONTRACT_HEADER_ID\", \"CONTRACT_NUMBER\", \"ORGANIZATION_ID\", \"CONTRACT_PRODUCT_ID\", \"PROD_ID\", \"PROD_DES\", \"MI\", \"CONTRACT_DEVICE_ID\", \"DEV_ID\", \"DEV_DES\", \"SITE_ID\", \"SITE_QUANTITY\", \"SITE_DES\", \"CONTRACT_MODULE_ID\", \"MOD_ID\", \"MOD_DES\", \"MODULE_QUANTITY\", \"CONTRACT_ITEM_ID\", \"ITEM_ID\", \"ITEM_DES\", \"ITEM_TYPE\", \"ITEM_QUANTITY\", \"HARD_PARAM\", \"SOFT_PARAM\", \"MAKE_PARAM\", \"RISK_PARAM\", \"SOFT_COST_PARAM\", \"PROD_MANAGER\", \"COST_PRICE04\", \"CONFIRM_ITEM_PARAM\", \"CONFIRM_FLAG04\", \"COST_PRICE\", \"COST_PRICE_PARAMETER\", \"OLD_COST\", \"LIST_PRICE\", \"ITEM_CODE\", \"CONFIRM_COST_PRICE04\", \"CUSTOMIZE_SITES_ID\", \"SPARE_FLAG\") AS \n" +
-                "  SELECT I.osg_type_id, M.CONTRACT_HEADER_ID,M.CONTRACT_NUMBER,\n" +
-                "       M.ORGANIZATION_ID,\n" +
-                "       M.CONTRACT_PRODUCT_ID,\n" +
-                "       M.prod_id,\n" +
-                "       M.prod_des,M.MI,\n" +
-                "       M.CONTRACT_DEVICE_ID,\n" +
-                "       M.dev_id,\n" +
-                "       m.dev_des,\n" +
-                "       M.SITE_ID ,\n" +
-                "       M.SITE_QUANTITY,\n" +
-                "       M.site_des,\n" +
-                "       M.CONTRACT_MODULE_ID,\n" +
-                "       M.mod_id,\n" +
-                "       M.mod_des,\n" +
-                "       M.MODULE_QUANTITY,\n" +
-                "       I.CONTRACT_ITEM_ID,\n" +
-                "       I.ITEM_ID,\n" +
-                "       I.ITEM_DES,\n" +
-                "       I.ITEM_TYPE,\n" +
-                "       I.item_quantity,\n" +
-                "       M.hard_param,\n" +
-                "       M.soft_param, M.make_param,M.risk_param, M.soft_cost_param,\n" +
-                "       M.prod_manager, I.COST_PRICE04, I.CONFIRM_ITEM_PARAM, I.CONFIRM_FLAG04,\n" +
-                "       I.cost_price,I.COST_PRICE_PARAMETER,I.OLD_COST,I.LIST_PRICE,I.ITEM_CODE,\n" +
-                "       I.CONFIRM_COST_PRICE04\n" +
-                "       --,I.PROD_ATTRIBUTE_ID,I.ITEM_CHIP\n" +
-                "       ,M.customize_sites_id\n" +
-                "       ,M.spare_flag\n" +
-                "  FROM TCP_CPR.DIFF_CON_CONFIG_MODULE_V M\n" +
-                "  LEFT JOIN\n" +
-                "  (\n" +
-                "      (\n" +
-                "        select 0 osg_type_id,\n" +
-                "               v.contract_module_id,\n" +
-                "               v.item_id,\n" +
-                "               v.contract_item_id,\n" +
-                "               v.item_des,\n" +
-                "               v.item_type,\n" +
-                "               v.ITEM_QUANTITY,\n" +
-                "               v.cost_price,\n" +
-                "               v.COST_PRICE_PARAMETER,\n" +
-                "               v.CONFIRM_FLAG,\n" +
-                "               v.COST_PRICE04,\n" +
-                "               v.CONFIRM_ITEM_PARAM,\n" +
-                "               v.CONFIRM_FLAG04,\n" +
-                "               v.OLD_COST,\n" +
-                "               v.LIST_PRICE,\n" +
-                "               v.ITEM_CODE,\n" +
-                "               v.CONFIRM_COST_PRICE04\n" +
-                "        from TCP_CPR.DIFF_CON_CONFIG_ITEM_V v\n" +
-                "      )\n" +
-                "      union all\n" +
-                "      (\n" +
-                "        SELECT header.product_id osg_type_id,\n" +
-                "               HEADER.PARENT_ID CONTRACT_MODULE_ID,\n" +
-                "               HEADER.SERIAL_ID item_id,\n" +
-                "               HEADER.OSG_HEADER_ID CONTRACT_ITEM_ID,\n" +
-                "               ser.product_serial item_name,\n" +
-                "               'OSG' item_type,\n" +
-                "               HEADER.QUANTITY item_quantity,\n" +
-                "               (LINE.REF_PRICE+ nvl(REPLY.MARKET_REFERENCE_PRICE,0)) COST_PRICE,\n" +
-                "               1 COST_PRICE_PARAMETER,\n" +
-                "               'Y' CONFIRM_FLAG,\n" +
-                "               0 COST_PRICE04,\n" +
-                "               1 CONFIRM_ITEM_PARAM,\n" +
-                "               'Y' CONFIRM_FLAG04,\n" +
-                "               1 OLD_COST,\n" +
-                "               --LINE.PRICE+nvl(REPLY.LIST_PRICE,0) LIST_PRICE,\n" +
-                "               HEADER.LIST_PRICE LIST_PRICE,\n" +
-                "               '+Mn\u0016-�' ITEM_CODE,\n" +
-                "              (LINE.COST+ nvl(REPLY.RMBPRICE_WITHTAX,0)) CONFIRM_COST_PRICE04\n" +
-                "             --0 PROD_ATTRIBUTE_ID,0 ITEM_CHIP\n" +
-                "          FROM TCP_CPR.DIFF_CON_OSG3_HEADERS HEADER,ERP_ZTE.ZTE_KX_OSG3_SERIALS ser, ERP_ZTE.zte_kx_osg3_reply_headers\n" +
-                "            REPLY, (\n" +
-                "            select LINE.OSG_HEADER_ID,SUM((LINE.QUANTITY-LINE.THEORETIC_QTY)*\n" +
-                "                PART.rmbprice_withtax) COST, SUM((LINE.QUANTITY-\n" +
-                "                LINE.THEORETIC_QTY)* PART.LIST_PRICE) PRICE, SUM((\n" +
-                "                LINE.QUANTITY-LINE.THEORETIC_QTY)* PART.MARKET_REFERENCE_PRICE\n" +
-                "                ) REF_PRICE\n" +
-                "              from TCP_CPR.DIFF_CON_OSG3_LINES LINE,\n" +
-                "                ERP_ZTE.ZTE_KX_OSG3_PART_DETAILS PART\n" +
-                "              WHERE LINE.PART_DETAIL_ID = PART.PART_DETAIL_ID\n" +
-                "                AND LINE.ENABLED_FLAG = 'Y'\n" +
-                "              GROUP BY LINE.OSG_HEADER_ID) LINE\n" +
-                "          where HEADER.ENABLED_FLAG = 'Y' AND ser.serial_id=HEADER.Serial_Id\n" +
-                "            and header.REPLY_ID = reply.reply_head_id(+)\n" +
-                "            and header.OSG_HEADER_ID = line.OSG_HEADER_ID\n" +
-                "      )\n" +
-                "      union all\n" +
-                "      (\n" +
-                "        SELECT item.osg_type_id osg_type_id,\n" +
-                "               ITEM.PARENT_ID CONTRACT_MODULE_ID,\n" +
-                "               item.osg_item_id item_id,\n" +
-                "               ITEM.OSG_ITEM_ID CONTRACT_ITEM_ID,\n" +
-                "               SYS_ITEM.DESCRIPTION item_name,\n" +
-                "               'SINGLEOSG' item_type,\n" +
-                "               ITEM.QUANTITY item_quantity,\n" +
-                "               SYS_ITEM.MARKET_REFERENCE_PRICE COST_PRICE,\n" +
-                "               1 COST_PRICE_PARAMETER,\n" +
-                "               SYS_ITEM.ENABLED_FLAG CONFIRM_FLAG,\n" +
-                "               0 COST_PRICE04,\n" +
-                "               1 CONFIRM_ITEM_PARAM,\n" +
-                "               'Y' CONFIRM_FLAG04,\n" +
-                "               1 OLD_COST,\n" +
-                "               --SYS_ITEM.LIST_PRICE LIST_PRICE,\n" +
-                "               ITEM.LIST_PRICE LIST_PRICE,\n" +
-                "               SYS_ITEM.INVENTORY_ID||'\n" +
-                "+Mn\u0016-�' ITEM_CODE,\n" +
-                "               SYS_ITEM.PRICE CONFIRM_COST_PRICE04--, 0 PROD_ATTRIBUTE_ID--,0 ITEM_CHIP\n" +
-                "          FROM TCP_CPR.DIFF_CON_OSG3A_HEADERS ITEM,ERP_ZTE.ZTE_KX_OSG3_ITEMS\n" +
-                "            SYS_ITEM\n" +
-                "          where ITEM.OSG_ITEM_ID = SYS_ITEM.OSG_ITEM_ID\n" +
-                "            AND ITEM.ENABLED_FLAG = 'Y'\n" +
-                "       )\n" +
-                "  ) I\n" +
-                "  ON M.CONTRACT_MODULE_ID = I.CONTRACT_MODULE_ID\n" +
-                "  WHERE item_quantity>=0";
+                "CREATE OR REPLACE FORCE VIEW \"TCP_CPR\".\"DIFF_CON_CONFIG_ALL_V\" (\"OSG_TYPE_ID\", \"CONTRACT_HEADER_ID\", \"CONTRACT_NUMBER\", \"ORGANIZATION_ID\", \"CONTRACT_PRODUCT_ID\", \"PROD_ID\", \"PROD_DES\", \"MI\", \"CONTRACT_DEVICE_ID\", \"DEV_ID\", \"DEV_DES\", \"SITE_ID\", \"SITE_QUANTITY\", \"SITE_DES\", \"CONTRACT_MODULE_ID\", \"MOD_ID\", \"MOD_DES\", \"MODULE_QUANTITY\", \"CONTRACT_ITEM_ID\", \"ITEM_ID\", \"ITEM_DES\", \"ITEM_TYPE\", \"ITEM_QUANTITY\", \"HARD_PARAM\", \"SOFT_PARAM\", \"MAKE_PARAM\", \"RISK_PARAM\", \"SOFT_COST_PARAM\", \"PROD_MANAGER\", \"COST_PRICE04\", \"CONFIRM_ITEM_PARAM\", \"CONFIRM_FLAG04\", \"COST_PRICE\", \"COST_PRICE_PARAMETER\", \"OLD_COST\", \"LIST_PRICE\", \"ITEM_CODE\", \"CONFIRM_COST_PRICE04\", \"CUSTOMIZE_SITES_ID\", \"SPARE_FLAG\") AS \n" +
+                        "  SELECT I.osg_type_id, M.CONTRACT_HEADER_ID,M.CONTRACT_NUMBER,\n" +
+                        "       M.ORGANIZATION_ID,\n" +
+                        "       M.CONTRACT_PRODUCT_ID,\n" +
+                        "       M.prod_id,\n" +
+                        "       M.prod_des,M.MI,\n" +
+                        "       M.CONTRACT_DEVICE_ID,\n" +
+                        "       M.dev_id,\n" +
+                        "       m.dev_des,\n" +
+                        "       M.SITE_ID ,\n" +
+                        "       M.SITE_QUANTITY,\n" +
+                        "       M.site_des,\n" +
+                        "       M.CONTRACT_MODULE_ID,\n" +
+                        "       M.mod_id,\n" +
+                        "       M.mod_des,\n" +
+                        "       M.MODULE_QUANTITY,\n" +
+                        "       I.CONTRACT_ITEM_ID,\n" +
+                        "       I.ITEM_ID,\n" +
+                        "       I.ITEM_DES,\n" +
+                        "       I.ITEM_TYPE,\n" +
+                        "       I.item_quantity,\n" +
+                        "       M.hard_param,\n" +
+                        "       M.soft_param, M.make_param,M.risk_param, M.soft_cost_param,\n" +
+                        "       M.prod_manager, I.COST_PRICE04, I.CONFIRM_ITEM_PARAM, I.CONFIRM_FLAG04,\n" +
+                        "       I.cost_price,I.COST_PRICE_PARAMETER,I.OLD_COST,I.LIST_PRICE,I.ITEM_CODE,\n" +
+                        "       I.CONFIRM_COST_PRICE04\n" +
+                        "       --,I.PROD_ATTRIBUTE_ID,I.ITEM_CHIP\n" +
+                        "       ,M.customize_sites_id\n" +
+                        "       ,M.spare_flag\n" +
+                        "  FROM TCP_CPR.DIFF_CON_CONFIG_MODULE_V M\n" +
+                        "  LEFT JOIN\n" +
+                        "  (\n" +
+                        "      (\n" +
+                        "        select 0 osg_type_id,\n" +
+                        "               v.contract_module_id,\n" +
+                        "               v.item_id,\n" +
+                        "               v.contract_item_id,\n" +
+                        "               v.item_des,\n" +
+                        "               v.item_type,\n" +
+                        "               v.ITEM_QUANTITY,\n" +
+                        "               v.cost_price,\n" +
+                        "               v.COST_PRICE_PARAMETER,\n" +
+                        "               v.CONFIRM_FLAG,\n" +
+                        "               v.COST_PRICE04,\n" +
+                        "               v.CONFIRM_ITEM_PARAM,\n" +
+                        "               v.CONFIRM_FLAG04,\n" +
+                        "               v.OLD_COST,\n" +
+                        "               v.LIST_PRICE,\n" +
+                        "               v.ITEM_CODE,\n" +
+                        "               v.CONFIRM_COST_PRICE04\n" +
+                        "        from TCP_CPR.DIFF_CON_CONFIG_ITEM_V v\n" +
+                        "      )\n" +
+                        "      union all\n" +
+                        "      (\n" +
+                        "        SELECT header.product_id osg_type_id,\n" +
+                        "               HEADER.PARENT_ID CONTRACT_MODULE_ID,\n" +
+                        "               HEADER.SERIAL_ID item_id,\n" +
+                        "               HEADER.OSG_HEADER_ID CONTRACT_ITEM_ID,\n" +
+                        "               ser.product_serial item_name,\n" +
+                        "               'OSG' item_type,\n" +
+                        "               HEADER.QUANTITY item_quantity,\n" +
+                        "               (LINE.REF_PRICE+ nvl(REPLY.MARKET_REFERENCE_PRICE,0)) COST_PRICE,\n" +
+                        "               1 COST_PRICE_PARAMETER,\n" +
+                        "               'Y' CONFIRM_FLAG,\n" +
+                        "               0 COST_PRICE04,\n" +
+                        "               1 CONFIRM_ITEM_PARAM,\n" +
+                        "               'Y' CONFIRM_FLAG04,\n" +
+                        "               1 OLD_COST,\n" +
+                        "               --LINE.PRICE+nvl(REPLY.LIST_PRICE,0) LIST_PRICE,\n" +
+                        "               HEADER.LIST_PRICE LIST_PRICE,\n" +
+                        "               '+Mn\u0016-�' ITEM_CODE,\n" +
+                        "              (LINE.COST+ nvl(REPLY.RMBPRICE_WITHTAX,0)) CONFIRM_COST_PRICE04\n" +
+                        "             --0 PROD_ATTRIBUTE_ID,0 ITEM_CHIP\n" +
+                        "          FROM TCP_CPR.DIFF_CON_OSG3_HEADERS HEADER,ERP_ZTE.ZTE_KX_OSG3_SERIALS ser, ERP_ZTE.zte_kx_osg3_reply_headers\n" +
+                        "            REPLY, (\n" +
+                        "            select LINE.OSG_HEADER_ID,SUM((LINE.QUANTITY-LINE.THEORETIC_QTY)*\n" +
+                        "                PART.rmbprice_withtax) COST, SUM((LINE.QUANTITY-\n" +
+                        "                LINE.THEORETIC_QTY)* PART.LIST_PRICE) PRICE, SUM((\n" +
+                        "                LINE.QUANTITY-LINE.THEORETIC_QTY)* PART.MARKET_REFERENCE_PRICE\n" +
+                        "                ) REF_PRICE\n" +
+                        "              from TCP_CPR.DIFF_CON_OSG3_LINES LINE,\n" +
+                        "                ERP_ZTE.ZTE_KX_OSG3_PART_DETAILS PART\n" +
+                        "              WHERE LINE.PART_DETAIL_ID = PART.PART_DETAIL_ID\n" +
+                        "                AND LINE.ENABLED_FLAG = 'Y'\n" +
+                        "              GROUP BY LINE.OSG_HEADER_ID) LINE\n" +
+                        "          where HEADER.ENABLED_FLAG = 'Y' AND ser.serial_id=HEADER.Serial_Id\n" +
+                        "            and header.REPLY_ID = reply.reply_head_id(+)\n" +
+                        "            and header.OSG_HEADER_ID = line.OSG_HEADER_ID\n" +
+                        "      )\n" +
+                        "      union all\n" +
+                        "      (\n" +
+                        "        SELECT item.osg_type_id osg_type_id,\n" +
+                        "               ITEM.PARENT_ID CONTRACT_MODULE_ID,\n" +
+                        "               item.osg_item_id item_id,\n" +
+                        "               ITEM.OSG_ITEM_ID CONTRACT_ITEM_ID,\n" +
+                        "               SYS_ITEM.DESCRIPTION item_name,\n" +
+                        "               'SINGLEOSG' item_type,\n" +
+                        "               ITEM.QUANTITY item_quantity,\n" +
+                        "               SYS_ITEM.MARKET_REFERENCE_PRICE COST_PRICE,\n" +
+                        "               1 COST_PRICE_PARAMETER,\n" +
+                        "               SYS_ITEM.ENABLED_FLAG CONFIRM_FLAG,\n" +
+                        "               0 COST_PRICE04,\n" +
+                        "               1 CONFIRM_ITEM_PARAM,\n" +
+                        "               'Y' CONFIRM_FLAG04,\n" +
+                        "               1 OLD_COST,\n" +
+                        "               --SYS_ITEM.LIST_PRICE LIST_PRICE,\n" +
+                        "               ITEM.LIST_PRICE LIST_PRICE,\n" +
+                        "               SYS_ITEM.INVENTORY_ID||'\n" +
+                        "+Mn\u0016-�' ITEM_CODE,\n" +
+                        "               SYS_ITEM.PRICE CONFIRM_COST_PRICE04--, 0 PROD_ATTRIBUTE_ID--,0 ITEM_CHIP\n" +
+                        "          FROM TCP_CPR.DIFF_CON_OSG3A_HEADERS ITEM,ERP_ZTE.ZTE_KX_OSG3_ITEMS\n" +
+                        "            SYS_ITEM\n" +
+                        "          where ITEM.OSG_ITEM_ID = SYS_ITEM.OSG_ITEM_ID\n" +
+                        "            AND ITEM.ENABLED_FLAG = 'Y'\n" +
+                        "       )\n" +
+                        "  ) I\n" +
+                        "  ON M.CONTRACT_MODULE_ID = I.CONTRACT_MODULE_ID\n" +
+                        "  WHERE item_quantity>=0";
 
         System.out.println(sql);
 
@@ -220,7 +219,8 @@ public class OracleCreateViewTest12 extends OracleTest {
                         "\t\t\t, 'OSG' AS item_type, HEADER.QUANTITY AS item_quantity\n" +
                         "\t\t\t, LINE.REF_PRICE + nvl(REPLY.MARKET_REFERENCE_PRICE, 0) AS COST_PRICE\n" +
                         "\t\t\t, 1 AS COST_PRICE_PARAMETER, 'Y' AS CONFIRM_FLAG, 0 AS COST_PRICE04, 1 AS CONFIRM_ITEM_PARAM, 'Y' AS CONFIRM_FLAG04\n" +
-                        "\t\t\t, 1 AS OLD_COST, HEADER.LIST_PRICE AS LIST_PRICE, '+Mn\u0016-�' AS ITEM_CODE\n" +
+                        "\t\t\t, 1 AS OLD_COST -- LINE.PRICE+nvl(REPLY.LIST_PRICE,0) LIST_PRICE,\n" +
+                        "\t\t\t, HEADER.LIST_PRICE AS LIST_PRICE, '+Mn\u0016-�' AS ITEM_CODE\n" +
                         "\t\t\t, LINE.COST + nvl(REPLY.RMBPRICE_WITHTAX, 0) AS CONFIRM_COST_PRICE04\n" +
                         "\t\tFROM TCP_CPR.DIFF_CON_OSG3_HEADERS HEADER, ERP_ZTE.ZTE_KX_OSG3_SERIALS ser, ERP_ZTE.zte_kx_osg3_reply_headers REPLY, (\n" +
                         "\t\t\tSELECT LINE.OSG_HEADER_ID, SUM((LINE.QUANTITY - LINE.THEORETIC_QTY) * PART.rmbprice_withtax) AS COST\n" +
@@ -238,15 +238,15 @@ public class OracleCreateViewTest12 extends OracleTest {
                         "\t\tUNION ALL\n" +
                         "\t\tSELECT item.osg_type_id AS osg_type_id, ITEM.PARENT_ID AS CONTRACT_MODULE_ID, item.osg_item_id AS item_id, ITEM.OSG_ITEM_ID AS CONTRACT_ITEM_ID, SYS_ITEM.DESCRIPTION AS item_name\n" +
                         "\t\t\t, 'SINGLEOSG' AS item_type, ITEM.QUANTITY AS item_quantity, SYS_ITEM.MARKET_REFERENCE_PRICE AS COST_PRICE, 1 AS COST_PRICE_PARAMETER, SYS_ITEM.ENABLED_FLAG AS CONFIRM_FLAG\n" +
-                        "\t\t\t, 0 AS COST_PRICE04, 1 AS CONFIRM_ITEM_PARAM, 'Y' AS CONFIRM_FLAG04, 1 AS OLD_COST, ITEM.LIST_PRICE AS LIST_PRICE\n" +
-                        "\t\t\t, SYS_ITEM.INVENTORY_ID || '\n" +
+                        "\t\t\t, 0 AS COST_PRICE04, 1 AS CONFIRM_ITEM_PARAM, 'Y' AS CONFIRM_FLAG04, 1 AS OLD_COST -- SYS_ITEM.LIST_PRICE LIST_PRICE,\n" +
+                        "\t\t\t, ITEM.LIST_PRICE AS LIST_PRICE, SYS_ITEM.INVENTORY_ID || '\n" +
                         "+Mn\u0016-�' AS ITEM_CODE, SYS_ITEM.PRICE AS CONFIRM_COST_PRICE04\n" +
                         "\t\tFROM TCP_CPR.DIFF_CON_OSG3A_HEADERS ITEM, ERP_ZTE.ZTE_KX_OSG3_ITEMS SYS_ITEM\n" +
                         "\t\tWHERE ITEM.OSG_ITEM_ID = SYS_ITEM.OSG_ITEM_ID\n" +
                         "\t\t\tAND ITEM.ENABLED_FLAG = 'Y'\n" +
                         "\t) I ON M.CONTRACT_MODULE_ID = I.CONTRACT_MODULE_ID \n" +
                         "WHERE item_quantity >= 0",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

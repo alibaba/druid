@@ -29,14 +29,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface OracleASTVisitor extends SQLASTVisitor {
-
-
     default void endVisit(OracleAnalytic x) {
-
     }
 
     default void endVisit(OracleAnalyticWindowing x) {
-
     }
 
     default void endVisit(OracleDeleteStatement x) {
@@ -44,43 +40,33 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleIntervalExpr x) {
-
     }
 
     default void endVisit(OracleOuterExpr x) {
-
     }
 
     default void endVisit(OracleSelectJoin x) {
-
     }
 
     default void endVisit(OracleSelectPivot x) {
-
     }
 
     default void endVisit(OracleSelectPivot.Item x) {
-
     }
 
     default void endVisit(OracleSelectRestriction.CheckOption x) {
-
     }
 
     default void endVisit(OracleSelectRestriction.ReadOnly x) {
-
     }
 
     default void endVisit(OracleSelectSubqueryTableSource x) {
-
     }
 
     default void endVisit(OracleSelectUnPivot x) {
-
     }
 
     default void endVisit(OracleUpdateStatement x) {
-
     }
 
     default boolean visit(OracleAnalytic x) {
@@ -140,7 +126,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(SampleClause x) {
-
     }
 
     default boolean visit(OracleSelectTableReference x) {
@@ -148,7 +133,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleSelectTableReference x) {
-
     }
 
     default boolean visit(PartitionExtensionClause x) {
@@ -156,7 +140,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(PartitionExtensionClause x) {
-
     }
 
     default boolean visit(OracleWithSubqueryEntry x) {
@@ -164,7 +147,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleWithSubqueryEntry x) {
-
     }
 
     default boolean visit(SearchClause x) {
@@ -172,7 +154,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(SearchClause x) {
-
     }
 
     default boolean visit(CycleClause x) {
@@ -180,7 +161,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(CycleClause x) {
-
     }
 
     default boolean visit(OracleBinaryFloatExpr x) {
@@ -188,7 +168,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleBinaryFloatExpr x) {
-
     }
 
     default boolean visit(OracleBinaryDoubleExpr x) {
@@ -196,7 +175,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleBinaryDoubleExpr x) {
-
     }
 
     default boolean visit(OracleCursorExpr x) {
@@ -204,7 +182,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleCursorExpr x) {
-
     }
 
     default boolean visit(OracleIsSetExpr x) {
@@ -212,7 +189,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleIsSetExpr x) {
-
     }
 
     default boolean visit(ModelClause.ReturnRowsClause x) {
@@ -220,7 +196,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(ModelClause.ReturnRowsClause x) {
-
     }
 
     default boolean visit(ModelClause.MainModelClause x) {
@@ -228,7 +203,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(ModelClause.MainModelClause x) {
-
     }
 
     default boolean visit(ModelClause.ModelColumnClause x) {
@@ -236,7 +210,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(ModelClause.ModelColumnClause x) {
-
     }
 
     default boolean visit(ModelClause.QueryPartitionClause x) {
@@ -244,7 +217,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(ModelClause.QueryPartitionClause x) {
-
     }
 
     default boolean visit(ModelClause.ModelColumn x) {
@@ -252,7 +224,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(ModelClause.ModelColumn x) {
-
     }
 
     default boolean visit(ModelClause.ModelRulesClause x) {
@@ -260,7 +231,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(ModelClause.ModelRulesClause x) {
-
     }
 
     default boolean visit(ModelClause.CellAssignmentItem x) {
@@ -268,7 +238,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(ModelClause.CellAssignmentItem x) {
-
     }
 
     default boolean visit(ModelClause.CellAssignment x) {
@@ -276,7 +245,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(ModelClause.CellAssignment x) {
-
     }
 
     default boolean visit(ModelClause x) {
@@ -284,7 +252,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(ModelClause x) {
-
     }
 
     default boolean visit(OracleReturningClause x) {
@@ -292,7 +259,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleReturningClause x) {
-
     }
 
     default boolean visit(OracleInsertStatement x) {
@@ -308,7 +274,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(InsertIntoClause x) {
-
     }
 
     default boolean visit(OracleMultiInsertStatement x) {
@@ -316,7 +281,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleMultiInsertStatement x) {
-
     }
 
     default boolean visit(ConditionalInsertClause x) {
@@ -324,7 +288,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(ConditionalInsertClause x) {
-
     }
 
     default boolean visit(ConditionalInsertClauseItem x) {
@@ -332,7 +295,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(ConditionalInsertClauseItem x) {
-
     }
 
     default boolean visit(OracleSelectQueryBlock x) {
@@ -348,7 +310,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleLockTableStatement x) {
-
     }
 
     default boolean visit(OracleAlterSessionStatement x) {
@@ -356,7 +317,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterSessionStatement x) {
-
     }
 
     default boolean visit(OracleDatetimeExpr x) {
@@ -364,7 +324,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleDatetimeExpr x) {
-
     }
 
     default boolean visit(OracleSysdateExpr x) {
@@ -372,7 +331,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleSysdateExpr x) {
-
     }
 
     default boolean visit(OracleExceptionStatement x) {
@@ -380,7 +338,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleExceptionStatement x) {
-
     }
 
     default boolean visit(OracleExceptionStatement.Item x) {
@@ -388,7 +345,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleExceptionStatement.Item x) {
-
     }
 
     default boolean visit(OracleArgumentExpr x) {
@@ -396,7 +352,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleArgumentExpr x) {
-
     }
 
     default boolean visit(OracleSetTransactionStatement x) {
@@ -404,7 +359,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleSetTransactionStatement x) {
-
     }
 
     default boolean visit(OracleExplainStatement x) {
@@ -412,7 +366,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleExplainStatement x) {
-
     }
 
     default boolean visit(OracleAlterTableDropPartition x) {
@@ -420,7 +373,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTableDropPartition x) {
-
     }
 
     default boolean visit(OracleAlterTableTruncatePartition x) {
@@ -428,7 +380,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTableTruncatePartition x) {
-
     }
 
     default boolean visit(OracleAlterTableSplitPartition.TableSpaceItem x) {
@@ -436,7 +387,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTableSplitPartition.TableSpaceItem x) {
-
     }
 
     default boolean visit(OracleAlterTableSplitPartition.UpdateIndexesClause x) {
@@ -444,7 +394,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTableSplitPartition.UpdateIndexesClause x) {
-
     }
 
     default boolean visit(OracleAlterTableSplitPartition.NestedTablePartitionSpec x) {
@@ -452,7 +401,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTableSplitPartition.NestedTablePartitionSpec x) {
-
     }
 
     default boolean visit(OracleAlterTableSplitPartition x) {
@@ -460,7 +408,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTableSplitPartition x) {
-
     }
 
     default boolean visit(OracleAlterTableModify x) {
@@ -468,7 +415,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTableModify x) {
-
     }
 
     default boolean visit(OracleCreateIndexStatement x) {
@@ -484,7 +430,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleForStatement x) {
-
     }
 
     default boolean visit(OracleRangeExpr x) {
@@ -492,7 +437,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleRangeExpr x) {
-
     }
 
     default boolean visit(OraclePrimaryKey x) {
@@ -500,7 +444,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OraclePrimaryKey x) {
-
     }
 
     default boolean visit(OracleCreateTableStatement x) {
@@ -516,7 +459,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleStorageClause x) {
-
     }
 
     default boolean visit(OracleGotoStatement x) {
@@ -524,7 +466,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleGotoStatement x) {
-
     }
 
     default boolean visit(OracleLabelStatement x) {
@@ -532,7 +473,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleLabelStatement x) {
-
     }
 
     default boolean visit(OracleAlterTriggerStatement x) {
@@ -540,7 +480,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTriggerStatement x) {
-
     }
 
     default boolean visit(OracleAlterSynonymStatement x) {
@@ -548,7 +487,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterSynonymStatement x) {
-
     }
 
     default boolean visit(OracleAlterViewStatement x) {
@@ -556,7 +494,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterViewStatement x) {
-
     }
 
     default boolean visit(OracleAlterTableMoveTablespace x) {
@@ -564,7 +501,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTableMoveTablespace x) {
-
     }
 
     default boolean visit(OracleFileSpecification x) {
@@ -572,7 +508,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleFileSpecification x) {
-
     }
 
     default boolean visit(OracleAlterTablespaceAddDataFile x) {
@@ -580,7 +515,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTablespaceAddDataFile x) {
-
     }
 
     default boolean visit(OracleAlterTablespaceStatement x) {
@@ -588,7 +522,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTablespaceStatement x) {
-
     }
 
     default boolean visit(OracleExitStatement x) {
@@ -596,7 +529,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleExitStatement x) {
-
     }
 
     default boolean visit(OracleContinueStatement x) {
@@ -604,7 +536,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleContinueStatement x) {
-
     }
 
     default boolean visit(OracleRaiseStatement x) {
@@ -612,7 +543,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleRaiseStatement x) {
-
     }
 
     default boolean visit(OracleCreateDatabaseDbLinkStatement x) {
@@ -620,7 +550,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleCreateDatabaseDbLinkStatement x) {
-
     }
 
     default boolean visit(OracleDropDbLinkStatement x) {
@@ -628,7 +557,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleDropDbLinkStatement x) {
-
     }
 
     default boolean visit(OracleDataTypeIntervalYear x) {
@@ -636,7 +564,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleDataTypeIntervalYear x) {
-
     }
 
     default boolean visit(OracleDataTypeIntervalDay x) {
@@ -644,7 +571,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleDataTypeIntervalDay x) {
-
     }
 
     default boolean visit(OracleUsingIndexClause x) {
@@ -652,7 +578,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleUsingIndexClause x) {
-
     }
 
     default boolean visit(OracleLobStorageClause x) {
@@ -660,7 +585,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleLobStorageClause x) {
-
     }
 
     default boolean visit(OracleUnique x) {
@@ -692,7 +616,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleSupplementalIdKey x) {
-
     }
 
     default boolean visit(OracleSupplementalLogGrp x) {
@@ -700,7 +623,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleSupplementalLogGrp x) {
-
     }
 
     default boolean visit(OracleCreateTableStatement.Organization x) {
@@ -708,7 +630,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleCreateTableStatement.Organization x) {
-
     }
 
     default boolean visit(OracleCreateTableStatement.OIDIndex x) {
@@ -716,7 +637,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleCreateTableStatement.OIDIndex x) {
-
     }
 
     default boolean visit(OracleCreatePackageStatement x) {
@@ -724,7 +644,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleCreatePackageStatement x) {
-
     }
 
     default boolean visit(OracleExecuteImmediateStatement x) {
@@ -732,7 +651,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleExecuteImmediateStatement x) {
-
     }
 
     default boolean visit(OracleTreatExpr x) {
@@ -740,7 +658,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleTreatExpr x) {
-
     }
 
     default boolean visit(OracleCreateSynonymStatement x) {
@@ -748,7 +665,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleCreateSynonymStatement x) {
-
     }
 
     default boolean visit(OracleCreateTypeStatement x) {
@@ -756,7 +672,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleCreateTypeStatement x) {
-
     }
 
     default boolean visit(OraclePipeRowStatement x) {
@@ -764,7 +679,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OraclePipeRowStatement x) {
-
     }
 
     default boolean visit(OracleIsOfTypeExpr x) {
@@ -772,7 +686,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleIsOfTypeExpr x) {
-
     }
 
     default boolean visit(OracleRunStatement x) {
@@ -780,7 +693,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleRunStatement x) {
-
     }
 
     default boolean visit(OracleXmlColumnProperties x) {
@@ -788,7 +700,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleXmlColumnProperties x) {
-
     }
 
     default boolean visit(OracleXmlColumnProperties.OracleXMLTypeStorage x) {
@@ -796,6 +707,5 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleXmlColumnProperties.OracleXMLTypeStorage x) {
-
     }
 }

@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import junit.framework.TestCase;
 
 public class UnsignedBigIntTest extends TestCase {
-
     public void test_mysqlUnsignedBitInt() throws Exception {
         String sql = "SELECT a from b where c <> 1 LIMIT 18446744073709551615 OFFSET 0";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

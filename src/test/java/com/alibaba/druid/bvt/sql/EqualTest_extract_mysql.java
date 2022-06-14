@@ -8,7 +8,6 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 
 public class EqualTest_extract_mysql extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "EXTRACT (YEAR FROM x)";
         String sql_c = "EXTRACT (MONTH FROM y)";

@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlAlterTableTest44 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "ALTER TABLE logical_db.logical_tb SET TBLPROPERTIES ('read_only'=1)";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);

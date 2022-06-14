@@ -15,11 +15,10 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 
 /**
  * 这个场景测试defaultAutoCommit
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_autocommit extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -44,9 +43,9 @@ public class DruidDataSourceTest_autocommit extends TestCase {
 
     public void test_autoCommit() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Assert.assertTrue(conn.getAutoCommit());
-        
+
         conn.close();
     }
 }

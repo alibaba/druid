@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest27 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE app_key ROW_FORMAT = DEFAULT";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

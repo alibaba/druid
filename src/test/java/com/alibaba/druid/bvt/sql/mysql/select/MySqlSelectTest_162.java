@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.select;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlSelectTest_162 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "WITH RECURSIVE cte (n) AS\n" +
                 "(\n" +
@@ -25,7 +24,7 @@ public class MySqlSelectTest_162 extends MysqlTest {
                 "SELECT /*+ MAX_EXECUTION_TIME(1000) */ * FROM cte;";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

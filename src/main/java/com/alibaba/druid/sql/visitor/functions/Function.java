@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.visitor.functions;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 
-
 public interface Function {
     Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x);
 }

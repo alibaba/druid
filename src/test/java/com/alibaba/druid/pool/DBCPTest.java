@@ -25,7 +25,6 @@ import org.apache.commons.dbcp.BasicDataSource;
 import com.alibaba.druid.mock.MockDriver;
 
 public class DBCPTest extends TestCase {
-
     public void test_dbcp() throws Exception {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(MockDriver.class.getName());

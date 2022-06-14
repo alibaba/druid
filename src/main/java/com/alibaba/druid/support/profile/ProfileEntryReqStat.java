@@ -16,7 +16,6 @@
 package com.alibaba.druid.support.profile;
 
 public class ProfileEntryReqStat {
-
     private long executeCount;
     private long executeTimeNanos;
 

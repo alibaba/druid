@@ -19,18 +19,17 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
 public class WallDenyStat {
+    private volatile long denyCount;
 
-    private volatile long                             denyCount;
+    private volatile long lastDenyTimeMillis;
 
-    private volatile long                             lastDenyTimeMillis;
+    private volatile long resetCount;
 
-    private volatile long                             resetCount;
+    static final AtomicLongFieldUpdater<WallDenyStat> denyCountUpdater = AtomicLongFieldUpdater.newUpdater(WallDenyStat.class,
+            "denyCount");
 
-    final static AtomicLongFieldUpdater<WallDenyStat> denyCountUpdater  = AtomicLongFieldUpdater.newUpdater(WallDenyStat.class,
-                                                                                                            "denyCount");
-
-    final static AtomicLongFieldUpdater<WallDenyStat> resetCountUpdater = AtomicLongFieldUpdater.newUpdater(WallDenyStat.class,
-                                                                                                            "resetCount");
+    static final AtomicLongFieldUpdater<WallDenyStat> resetCountUpdater = AtomicLongFieldUpdater.newUpdater(WallDenyStat.class,
+            "resetCount");
 
     public long incrementAndGetDenyCount() {
         lastDenyTimeMillis = System.currentTimeMillis();

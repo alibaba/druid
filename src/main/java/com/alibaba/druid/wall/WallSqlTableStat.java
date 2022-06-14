@@ -16,18 +16,17 @@ package com.alibaba.druid.wall;
  * limitations under the License.
  */
 public class WallSqlTableStat {
-
-    private int    selectCount;
-    private int    selectIntoCount;
-    private int    insertCount;
-    private int    updateCount;
-    private int    deleteCount;
-    private int    truncateCount;
-    private int    createCount;
-    private int    alterCount;
-    private int    dropCount;
-    private int    replaceCount;
-    private int    showCount;
+    private int selectCount;
+    private int selectIntoCount;
+    private int insertCount;
+    private int updateCount;
+    private int deleteCount;
+    private int truncateCount;
+    private int createCount;
+    private int alterCount;
+    private int dropCount;
+    private int replaceCount;
+    private int showCount;
 
     private String sample;
 

@@ -16,5 +16,4 @@
 package com.alibaba.druid.sql.transform;
 
 public class SQLDataTypeTransform extends SQLTranformImpl {
-
 }

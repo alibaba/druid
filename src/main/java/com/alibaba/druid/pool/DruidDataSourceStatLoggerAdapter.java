@@ -15,35 +15,29 @@
  */
 package com.alibaba.druid.pool;
 
-import java.util.Properties;
-
 import com.alibaba.druid.support.logging.Log;
 
+import java.util.Properties;
+
 /**
- * 
  * @author wenshao [szujobs@hotmail.com]
  * @since 0.2.21
  */
 public class DruidDataSourceStatLoggerAdapter implements DruidDataSourceStatLogger {
-
     @Override
     public void log(DruidDataSourceStatValue statValue) {
-        
     }
 
     @Override
     public void configFromProperties(Properties properties) {
-        
     }
 
     @Override
     public void setLogger(Log logger) {
-        
     }
 
     @Override
     public void setLoggerName(String loggerName) {
-        
     }
 
 }

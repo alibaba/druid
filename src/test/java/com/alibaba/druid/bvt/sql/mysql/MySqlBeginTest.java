@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlBeginTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "START TRANSACTION;"
                 + "\nSELECT @A:=SUM(salary) FROM table1 WHERE type=1;"
@@ -35,7 +34,7 @@ public class MySqlBeginTest extends MysqlTest {
                 + "\nCOMMIT;"
                 + "\n";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 //        print(statementList);
@@ -51,44 +50,43 @@ public class MySqlBeginTest extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.MYSQL);
             assertEquals("START TRANSACTION;"
-                    + "\n"
-                    + "\nSELECT @A := SUM(salary)"
-                    + "\nFROM table1"
-                    + "\nWHERE type = 1;"
-                    + "\n"
-                    + "\nUPDATE table2"
-                    + "\nSET summary = @A"
-                    + "\nWHERE type = 1;"
-                    + "\n"
-                    + "\nCOMMIT;", //
-                                output);
+                            + "\n"
+                            + "\nSELECT @A := SUM(salary)"
+                            + "\nFROM table1"
+                            + "\nWHERE type = 1;"
+                            + "\n"
+                            + "\nUPDATE table2"
+                            + "\nSET summary = @A"
+                            + "\nWHERE type = 1;"
+                            + "\n"
+                            + "\nCOMMIT;", //
+                    output);
         }
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.MYSQL, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("start transaction;"
-                    + "\n"
-                    + "\nselect @A := sum(salary)"
-                    + "\nfrom table1"
-                    + "\nwhere type = 1;"
-                    + "\n"
-                    + "\nupdate table2"
-                    + "\nset summary = @A"
-                    + "\nwhere type = 1;"
-                    + "\n"
-                    + "\ncommit;", //
-                                output);
+                            + "\n"
+                            + "\nselect @A := sum(salary)"
+                            + "\nfrom table1"
+                            + "\nwhere type = 1;"
+                            + "\n"
+                            + "\nupdate table2"
+                            + "\nset summary = @A"
+                            + "\nwhere type = 1;"
+                            + "\n"
+                            + "\ncommit;", //
+                    output);
         }
     }
-    
-    
-    
+
+
 }

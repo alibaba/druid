@@ -23,7 +23,6 @@ import com.alibaba.druid.support.spring.stat.SpringMethodStat;
 import com.alibaba.druid.support.spring.stat.SpringStat;
 
 public class SpringMethodInfoTest extends TestCase {
-
     public void test_equals() throws Exception {
         SpringMethodInfo b1 = new SpringMethodInfo(B.class, B.class.getMethod("f", int.class));
         SpringMethodInfo c = new SpringMethodInfo(C.class, C.class.getMethod("f", int.class));
@@ -49,17 +48,13 @@ public class SpringMethodInfoTest extends TestCase {
     }
 
     public static class A {
-
         public void f(int i) {
-
         }
     }
 
     public static class B extends A {
-
     }
 
     public static class C extends A {
-
     }
 }

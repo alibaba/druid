@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleBlockTest22_comment extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
                 "  howmany     NUMBER;\n" +
@@ -76,7 +75,7 @@ public class OracleBlockTest22_comment extends OracleTest {
         assertEquals(1, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
 
-         assertTrue(visitor.containsColumn("USER_OBJECTS", "OBJECT_TYPE"));
-         assertTrue(visitor.containsColumn("USER_OBJECTS", "*"));
+        assertTrue(visitor.containsColumn("USER_OBJECTS", "OBJECT_TYPE"));
+        assertTrue(visitor.containsColumn("USER_OBJECTS", "*"));
     }
 }

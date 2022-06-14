@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class MySqlSelectTest_295
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from teacher_text a join teacher b on a.id=b.id  where row(a.id,'B') not in (select a.id,a.coid from community a where coid ='B') order by 1;";
 
@@ -72,7 +71,6 @@ public class MySqlSelectTest_295
 
         assertEquals("SELECT CAST(row(1, row(2, 3)) AS ROW(varchar,ROW(integer)));", stmt.toString());
     }
-
 
 
 }

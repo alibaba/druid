@@ -12,7 +12,6 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
  * @Date 2019/10/8 19:25
  */
 public class MySqlCreateTableTest157_shadow extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create shadow table `ar_ranking_001_t` (\n" +
                 "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +

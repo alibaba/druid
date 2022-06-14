@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import junit.framework.TestCase;
 
 public class PerfTest extends TestCase {
-
     public void test_0() throws Exception {
         for (int i = 0; i < 3; ++i) {
             long startMillis = System.currentTimeMillis();
@@ -31,8 +30,7 @@ public class PerfTest extends TestCase {
     }
 
     public static class A {
-
-        private volatile long                  value;
+        private volatile long value;
 
         static final AtomicLongFieldUpdater<A> updater = AtomicLongFieldUpdater.newUpdater(A.class, "value");
 
@@ -46,7 +44,6 @@ public class PerfTest extends TestCase {
     }
 
     public static class B {
-
         private final AtomicLong value = new AtomicLong();
 
         public long incrementAndGet() {

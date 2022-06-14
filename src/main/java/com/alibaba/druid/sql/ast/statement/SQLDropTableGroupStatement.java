@@ -23,15 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropTableGroupStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
-
     protected SQLName name;
-    protected boolean ifExists = false;
+    protected boolean ifExists;
 
-    public SQLDropTableGroupStatement(){
+    public SQLDropTableGroupStatement() {
     }
 
-    public SQLDropTableGroupStatement(DbType dbType){
-        super (dbType);
+    public SQLDropTableGroupStatement(DbType dbType) {
+        super(dbType);
     }
 
     @Override
@@ -74,7 +73,7 @@ public class SQLDropTableGroupStatement extends SQLStatementImpl implements SQLD
     public boolean isIfExists() {
         return ifExists;
     }
-    
+
     public void setIfExists(boolean ifNotExists) {
         this.ifExists = ifNotExists;
     }

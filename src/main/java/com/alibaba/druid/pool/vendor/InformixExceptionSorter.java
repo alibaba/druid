@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid.pool.vendor;
 
+import com.alibaba.druid.pool.ExceptionSorter;
+
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
-import com.alibaba.druid.pool.ExceptionSorter;
-
 public class InformixExceptionSorter implements ExceptionSorter, Serializable {
-
     private static final long serialVersionUID = -5175884111768095263L;
 
     public boolean isExceptionFatal(SQLException e) {
@@ -55,9 +54,8 @@ public class InformixExceptionSorter implements ExceptionSorter, Serializable {
 
         return false;
     }
-    
+
     public void configFromProperties(Properties properties) {
-        
     }
 
 }

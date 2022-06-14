@@ -19,12 +19,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- *
  * @author peiheng.qph
  * @version $Id: AntsparkOutputVisitor.java, v 0.1 2018年09月17日 10:40 peiheng.qph Exp $
  */
 public class AntsparkOutputVisitor extends HiveOutputVisitor implements AntsparkVisitor {
-
     public AntsparkOutputVisitor(Appendable appender, DbType dbType) {
         super(appender, dbType);
     }
@@ -87,9 +85,9 @@ public class AntsparkOutputVisitor extends HiveOutputVisitor implements Antspark
             println();
             print(')');
         }
-        if(x.getDatasource()!=null){
+        if (x.getDatasource() != null) {
             println();
-            print0(ucase?"USING ":"using ");
+            print0(ucase ? "USING " : "using ");
             print0(x.getDatasource().toString());
         }
         if (x.getComment() != null) {
@@ -97,7 +95,6 @@ public class AntsparkOutputVisitor extends HiveOutputVisitor implements Antspark
             print0(ucase ? "COMMENT " : "comment ");
             x.getComment().accept(this);
         }
-
 
         int partitionSize = x.getPartitionColumns().size();
         if (partitionSize > 0) {
@@ -169,12 +166,12 @@ public class AntsparkOutputVisitor extends HiveOutputVisitor implements Antspark
         if (serdeProperties.size() > 0) {
             println();
             print0(ucase ? "TBLPROPERTIES (" : "tblproperties (");
-            String seperator="";
-            for(Entry<String,SQLObject> entry:serdeProperties.entrySet()){
-                print0("'"+entry.getKey()+"'='");
+            String seperator = "";
+            for (Entry<String, SQLObject> entry : serdeProperties.entrySet()) {
+                print0("'" + entry.getKey() + "'='");
                 entry.getValue().accept(this);
-                print0("'"+seperator);
-                seperator=",";
+                print0("'" + seperator);
+                seperator = ",";
             }
             print(')');
         }
@@ -191,6 +188,5 @@ public class AntsparkOutputVisitor extends HiveOutputVisitor implements Antspark
 
     @Override
     public void endVisit(AntsparkCreateTableStatement x) {
-
     }
 }

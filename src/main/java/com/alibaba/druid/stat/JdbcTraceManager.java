@@ -17,8 +17,7 @@ package com.alibaba.druid.stat;
 
 @Deprecated
 public class JdbcTraceManager implements JdbcTraceManagerMBean {
-
-    private final static JdbcTraceManager instance = new JdbcTraceManager();
+    private static final JdbcTraceManager instance = new JdbcTraceManager();
 
     public static JdbcTraceManager getInstance() {
         return instance;

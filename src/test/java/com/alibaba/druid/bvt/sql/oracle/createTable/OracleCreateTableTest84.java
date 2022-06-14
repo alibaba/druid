@@ -24,7 +24,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest84 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
                 "CREATE TABLE \"IX\".\"ORDERS_QUEUETABLE\" \n" +
@@ -153,7 +152,7 @@ public class OracleCreateTableTest84 extends OracleTest {
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         stmt.renameColumn("ID", "FID");
 

@@ -24,14 +24,13 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerSelectTest12 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = "SELECT Row, Name " + //
-                     "FROM(" + //
-                     "SELECT ROW_NUMBER() OVER (ORDER BY ProductID) AS Row, Name " + //
-                     "FROM Product " + //
-                     ") AS ProductsWithRowNumbers " + //
-                     "WHERE Row >= 6 AND Row <= 10";
+                "FROM(" + //
+                "SELECT ROW_NUMBER() OVER (ORDER BY ProductID) AS Row, Name " + //
+                "FROM Product " + //
+                ") AS ProductsWithRowNumbers " + //
+                "WHERE Row >= 6 AND Row <= 10";
 
         String expect = "SELECT Row, Name\n" +
                 "FROM (\n" +

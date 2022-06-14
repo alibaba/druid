@@ -31,23 +31,22 @@ import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class Case_Concurrent_50 extends TestCase {
+    private String jdbcUrl;
+    private String user;
+    private String password;
+    private String driverClass;
+    private int initialSize = 0;
+    private int minIdle = 3;
+    private int maxIdle = 5;
+    private int maxActive = 10;
+    private String validationQuery = "SELECT 1";
+    private boolean testOnBorrow = false;
 
-    private String    jdbcUrl;
-    private String    user;
-    private String    password;
-    private String    driverClass;
-    private int       initialSize                = 0;
-    private int       minIdle                    = 3;
-    private int       maxIdle                    = 5;
-    private int       maxActive                  = 10;
-    private String    validationQuery            = "SELECT 1";
-    private boolean   testOnBorrow               = false;
+    private long minEvictableIdleTimeMillis = 3000;
+    public final int LOOP_COUNT = 5;
+    public final int COUNT = 1000 * 10;
 
-    private long      minEvictableIdleTimeMillis = 3000;
-    public final int  LOOP_COUNT                 = 5;
-    public final int  COUNT                      = 1000 * 10;
-
-    private final int THREAD_COUNT               = 50;
+    private final int THREAD_COUNT = 50;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -113,10 +112,8 @@ public class Case_Concurrent_50 extends TestCase {
         final CountDownLatch endLatch = new CountDownLatch(THREAD_COUNT);
         for (int i = 0; i < THREAD_COUNT; ++i) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
-
                         for (int i = 0; i < COUNT; ++i) {
                             Connection conn = dataSource.getConnection();
                             Statement stmt = conn.createStatement();
@@ -143,6 +140,6 @@ public class Case_Concurrent_50 extends TestCase {
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
         System.out.println(name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC "
-                           + fullGC);
+                + fullGC);
     }
 }

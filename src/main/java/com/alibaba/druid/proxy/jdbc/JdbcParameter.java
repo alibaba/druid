@@ -21,22 +21,20 @@ import java.util.Calendar;
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface JdbcParameter {
-
-    public static final int BinaryInputStream     = 10001;
-    public static final int AsciiInputStream      = 10002;
-    public static final int CharacterInputStream  = 10003;
+    public static final int BinaryInputStream = 10001;
+    public static final int AsciiInputStream = 10002;
+    public static final int CharacterInputStream = 10003;
     public static final int NCharacterInputStream = 10004;
-    public static final int URL                   = 10005;
+    public static final int URL = 10005;
 
     public static interface TYPE {
-
-        public static final int BinaryInputStream     = 10001;
-        public static final int AsciiInputStream      = 10002;
-        public static final int CharacterInputStream  = 10003;
+        public static final int BinaryInputStream = 10001;
+        public static final int AsciiInputStream = 10002;
+        public static final int CharacterInputStream = 10003;
         public static final int NCharacterInputStream = 10004;
-        public static final int URL                   = 10005;
-        public static final int UnicodeStream         = 10006;
-        public static final int BYTES                 = 10007;
+        public static final int URL = 10005;
+        public static final int UnicodeStream = 10006;
+        public static final int BYTES = 10007;
 
     }
 

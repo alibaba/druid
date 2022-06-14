@@ -27,22 +27,20 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLSelectStatement extends SQLStatementImpl {
-
     protected SQLSelect select;
 
-    public SQLSelectStatement(){
-
+    public SQLSelectStatement() {
     }
 
-    public SQLSelectStatement(DbType dbType){
-        super (dbType);
+    public SQLSelectStatement(DbType dbType) {
+        super(dbType);
     }
 
-    public SQLSelectStatement(SQLSelect select){
+    public SQLSelectStatement(SQLSelect select) {
         this.setSelect(select);
     }
 
-    public SQLSelectStatement(SQLSelect select, DbType dbType){
+    public SQLSelectStatement(SQLSelect select, DbType dbType) {
         this(dbType);
         this.setSelect(select);
     }
@@ -98,8 +96,12 @@ public class SQLSelectStatement extends SQLStatementImpl {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLSelectStatement that = (SQLSelectStatement) o;
 

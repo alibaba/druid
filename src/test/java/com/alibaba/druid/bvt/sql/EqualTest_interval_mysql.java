@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 
 public class EqualTest_interval_mysql extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "INTERVAL 3 YEAR";
         String sql_c = "INTERVAL 3 MONTH";
@@ -31,7 +30,7 @@ public class EqualTest_interval_mysql extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new SQLIntervalExpr(), new SQLIntervalExpr());
         Assert.assertEquals(new SQLIntervalExpr().hashCode(), new SQLIntervalExpr().hashCode());
     }
